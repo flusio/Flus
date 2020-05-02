@@ -1,4 +1,4 @@
-<h1 align="center">Flusio</h1>
+<h1 align="center">flusio</h1>
 
 <p align="center">
     <strong>A citizen social media to soothe our online relationship with the news.</strong>
@@ -6,7 +6,7 @@
 
 ---
 
-Flusio is another yet social media. It brings together social bookmarking and
+flusio is another yet social media. It brings together social bookmarking and
 Web syndication to allow communities to stay up to date with the news and to
 enhance their knowledge.
 
@@ -23,4 +23,4 @@ There’s no process to contribute yet, but feel free to [reach me by email](mai
 
 ## License
 
-Flusio is licensed under [AGPL 3](LICENSE.txt).
+flusio is licensed under [AGPL 3](LICENSE.txt).
