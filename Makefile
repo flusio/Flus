@@ -2,6 +2,14 @@
 
 USER = $(shell id -u):$(shell id -g)
 
+ifdef NO_DOCKER
+	PHP = php
+	COMPOSER = composer
+else
+	PHP = ./docker/bin/php
+	COMPOSER = ./docker/bin/composer
+endif
+
 .PHONY: start
 start: ## Start a development server (use Docker)
 	@echo "Running webserver on http://localhost:8000"
@@ -10,6 +18,22 @@ start: ## Start a development server (use Docker)
 .PHONY: stop
 stop: ## Stop and clean Docker server
 	docker-compose -f docker/docker-compose.yml down
+
+.PHONY: install
+install: ## Install the dependencies
+	$(COMPOSER) install
+
+.PHONY: test
+test: ## Run the test suite
+	$(PHP) ./vendor/bin/phpunit --coverage-text --whitelist ./src --bootstrap ./tests/bootstrap.php --testdox ./tests
+
+.PHONY: lint
+lint: ## Run the linter on the PHP files
+	$(PHP) ./vendor/bin/phpcs --standard=PSR12 ./src ./tests
+
+.PHONY: lint-fix
+lint-fix: ## Fix the errors detected by the linter
+	$(PHP) ./vendor/bin/phpcbf --standard=PSR12 ./src ./tests
 
 .PHONY: help
 help:
