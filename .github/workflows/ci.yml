@@ -1,0 +1,74 @@
+name: Continuous Integration
+
+on:
+    push:
+        branches: [ master ]
+    pull_request:
+        branches: [ master ]
+
+env:
+    NO_DOCKER: true
+    APP_ENVIRONMENT: test
+    DB_HOST: localhost
+    DB_USERNAME: postgres
+    DB_PASSWORD: postgres
+
+jobs:
+    build:
+        runs-on: ${{ matrix.operating-system }}
+
+        strategy:
+            matrix:
+                operating-system: [ubuntu-latest]
+                php-versions: ['7.3', '7.4']
+
+        services:
+            postgres:
+                image: postgres:12-alpine
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                ports:
+                    - 5432/tcp
+                options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+
+        name: PHP ${{ matrix.php-versions }} CI on ${{ matrix.operating-system }}
+
+        steps:
+        - uses: actions/checkout@v2
+          with:
+              submodules: true
+
+        - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+              php-version: ${{ matrix.php-versions }}
+              coverage: xdebug
+              extensions: intl, gettext, pdo, pdo_pgsql
+
+        - name: Get composer cache directory
+          id: composer-cache
+          run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+        - name: Cache composer dependencies
+          uses: actions/cache@v1
+          with:
+              path: ${{ steps.composer-cache.outputs.dir }}
+              key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+              restore-keys: ${{ runner.os }}-composer-
+
+        - name: Install dependencies
+          run: make install
+
+        - name: Setup the application
+          run: make setup
+          env:
+              DB_PORT: ${{ job.services.postgres.ports[5432] }}
+
+        - name: Run the linter
+          run: make lint
+
+        - name: Run the test suite
+          run: make test
+          env:
+              DB_PORT: ${{ job.services.postgres.ports[5432] }}
