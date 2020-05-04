@@ -23,6 +23,13 @@ stop: ## Stop and clean Docker server
 install: ## Install the dependencies
 	$(COMPOSER) install
 
+.PHONY: setup
+setup: .env ## Setup the application system
+	$(PHP) ./cli --request /system/setup
+
+.PHONY: update
+update: setup ## Update the application
+
 .PHONY: test
 test: ## Run the test suite
 	$(PHP) ./vendor/bin/phpunit --coverage-text --whitelist ./src --bootstrap ./tests/bootstrap.php --testdox ./tests
@@ -38,3 +45,6 @@ lint-fix: ## Fix the errors detected by the linter
 .PHONY: help
 help:
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.env:
+	@cp env.sample .env
