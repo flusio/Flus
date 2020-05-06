@@ -1,2 +1,5 @@
 /.env
 /vendor
+
+/data/*
+!/data/.keep
