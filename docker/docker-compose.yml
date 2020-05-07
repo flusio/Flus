@@ -26,5 +26,14 @@ services:
         ports:
             - "5432:5432"
 
+    bundler:
+        image: node:14-alpine
+        restart: unless-stopped
+        command: npm run watch
+        working_dir: /app
+        volumes:
+            - ..:/app:z
+        user: $USER
+
 volumes:
     composer: {}

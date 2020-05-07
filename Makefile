@@ -5,9 +5,11 @@ USER = $(shell id -u):$(shell id -g)
 ifdef NO_DOCKER
 	PHP = php
 	COMPOSER = composer
+	NPM = npm
 else
 	PHP = ./docker/bin/php
 	COMPOSER = ./docker/bin/composer
+	NPM = ./docker/bin/npm
 endif
 
 .PHONY: start
@@ -22,6 +24,7 @@ stop: ## Stop and clean Docker server
 .PHONY: install
 install: ## Install the dependencies
 	$(COMPOSER) install
+	$(NPM) install
 
 .PHONY: setup
 setup: .env ## Setup the application system

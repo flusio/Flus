@@ -1,5 +1,10 @@
 /.env
 /vendor
+/node_modules
+/.parcel-cache
 
 /data/*
 !/data/.keep
+
+/public/static/javascripts
+/public/static/stylesheets

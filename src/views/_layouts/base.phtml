@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <link rel="canonical" href="<?= $canonical ?>">
+
+        <link rel="stylesheet" href="<?= url_static('stylesheets/application.css') ?>">
+        <script src="<?= url_static('javascripts/application.js') ?>" defer></script>
+
+        <title><?= $title ?></title>
+    </head>
+
+    <body>
+        <?= $this->safe('content') ?>
+    </body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "flusio",
+  "license": "AGPL-3.0-or-later",
+  "repository": "github:flusio/flusio",
+  "scripts": {
+    "watch": "parcel watch --no-hmr --dist-dir public/static src/assets/*/application.*"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-nightly.251"
+  }
+}
