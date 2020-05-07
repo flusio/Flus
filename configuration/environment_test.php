@@ -20,5 +20,10 @@ return [
         'password' => $dotenv->pop('DB_PASSWORD'),
     ],
 
+    'mailer' => [
+        'type' => 'mail',
+        'from' => 'root@localhost',
+    ],
+
     'no_syslog' => !getenv('APP_SYSLOG_ENABLED'),
 ];

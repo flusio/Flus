@@ -19,4 +19,19 @@ return [
         'username' => $dotenv->pop('DB_USERNAME'),
         'password' => $dotenv->pop('DB_PASSWORD'),
     ],
+
+    'mailer' => [
+        'type' => getenv('APP_MAILER'),
+        'from' => getenv('SMTP_FROM'),
+        'smtp' => [
+            'domain' => getenv('SMTP_DOMAIN'),
+            'host' => getenv('SMTP_HOST'),
+            'port' => intval(getenv('SMTP_PORT')),
+            'auth' => (bool)getenv('SMTP_AUTH'),
+            'auth_type' => getenv('SMTP_AUTH_TYPE'),
+            'username' => getenv('SMTP_USERNAME'),
+            'password' => getenv('SMTP_PASSWORD'),
+            'secure' => getenv('SMTP_SECURE'),
+        ],
+    ],
 ];
