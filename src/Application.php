@@ -32,9 +32,14 @@ class Application
         // Initialize the routes
         $router = new \Minz\Router();
         $router->addRoute('get', '/', 'Pages#home', 'home');
+        $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
+
+        // Initialize the localization
+        bindtextdomain('main', utils\Locale::localesPath());
+        textdomain('main');
     }
 
     /**
@@ -46,10 +51,19 @@ class Application
      */
     public function run($request)
     {
+        // Setup current localization
+        if (isset($_SESSION['locale'])) {
+            $locale = $_SESSION['locale'];
+        } else {
+            $locale = utils\Locale::DEFAULT_LOCALE;
+        }
+        utils\Locale::setCurrentLocale($locale);
+
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
             'errors' => [],
             'error' => null,
+            'current_locale' => $locale,
         ]);
 
         return $this->engine->run($request);
