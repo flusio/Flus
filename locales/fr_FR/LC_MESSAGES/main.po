@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-05-07 10:31+0200\n"
-"PO-Revision-Date: 2020-05-07 10:31+0200\n"
+"POT-Creation-Date: 2020-05-08 16:37+0200\n"
+"PO-Revision-Date: 2020-05-08 16:37+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,14 +15,26 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: views/pages/home.phtml:2
+#: views/pages/about.phtml:3
+msgid "About"
+msgstr "À propos"
+
+#: views/pages/about.phtml:10 views/pages/home.phtml:3
+msgid "Home"
+msgstr "Accueil"
+
+#: views/pages/home.phtml:9
 msgid "Hello World!"
 msgstr "Bonjour le monde !"
 
-#: views/pages/home.phtml:11
+#: views/pages/home.phtml:14
+msgid "About flusio"
+msgstr "À propos de flusio"
+
+#: views/pages/home.phtml:24
 msgid "Language"
 msgstr "Langue"
 
-#: views/pages/home.phtml:25
+#: views/pages/home.phtml:38
 msgid "Change"
 msgstr "Changer"
