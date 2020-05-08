@@ -40,7 +40,11 @@ because I plan to use specific features from it. Please do not ask support for
 other kind of databases: even if it might work, this would add complexity to
 maintain the whole software.
 
-The assets (CSS and JS) are bundled with [Parcel](https://parceljs.org/).
+The assets (CSS and JS) are bundled with [Parcel](https://parceljs.org/). The
+JavaScript relies on both [Stimulus](https://github.com/stimulusjs/stimulus) (a
+“modest” framework) and [Turbolinks](https://github.com/turbolinks/turbolinks)
+(used to speed up navigation on the application). The dependencies are managed
+with [NPM](https://www.npmjs.com/), the default Node package manager.
 
 The test suite is runned over [GitHub Actions](https://github.com/features/actions).
 It’s using [PHPUnit 9](https://phpunit.de/) as a testing framework and

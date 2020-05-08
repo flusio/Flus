@@ -23,4 +23,14 @@ class Pages
             'available_locales' => utils\Locale::availableLocales(),
         ]);
     }
+
+    /**
+     * Show the about page.
+     *
+     * @return \Minz\Response
+     */
+    public function about()
+    {
+        return Response::ok('pages/about.phtml');
+    }
 }

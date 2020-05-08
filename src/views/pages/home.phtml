@@ -5,8 +5,14 @@
     ]);
 ?>
 
-<p>
+<p data-controller="hello">
     <?= _('Hello World!') ?>
+</p>
+
+<p>
+    <a href="<?= url('about') ?>">
+        <?= _('About flusio') ?>
+    </a>
 </p>
 
 <form method="post" action="<?= url('change locale') ?>">
