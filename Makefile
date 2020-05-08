@@ -38,12 +38,14 @@ test: ## Run the test suite
 	$(PHP) ./vendor/bin/phpunit --coverage-text --whitelist ./src --bootstrap ./tests/bootstrap.php --testdox ./tests
 
 .PHONY: lint
-lint: ## Run the linter on the PHP files
-	$(PHP) ./vendor/bin/phpcs --standard=PSR12 ./src ./tests
+lint: ## Run the linters on the PHP and JS files
+	$(PHP) ./vendor/bin/phpcs --extensions=php --standard=PSR12 ./src ./tests
+	$(NPM) run lint
 
 .PHONY: lint-fix
-lint-fix: ## Fix the errors detected by the linter
-	$(PHP) ./vendor/bin/phpcbf --standard=PSR12 ./src ./tests
+lint-fix: ## Fix the errors detected by the linters
+	$(PHP) ./vendor/bin/phpcbf --extensions=php --standard=PSR12 ./src ./tests
+	$(NPM) run lint-fix
 
 .PHONY: help
 help:

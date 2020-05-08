@@ -44,7 +44,8 @@ The assets (CSS and JS) are bundled with [Parcel](https://parceljs.org/).
 
 The test suite is runned over [GitHub Actions](https://github.com/features/actions).
 It’s using [PHPUnit 9](https://phpunit.de/) as a testing framework and
-[PHP\_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) as a linter.
+[PHP\_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) as a linter
+for the PHP files. JS files are linted with [ESLint](https://eslint.org/docs/rules/semi).
 
 The development environment is powered by Docker and docker-compose setting up
 3 containers: a PHP development server, a PostgreSQL database and a Node
@@ -216,11 +217,11 @@ The tests can be simply executed with:
 $ make test
 ```
 
-You also can run the linter:
+You also can run the linters for JavaScript and PHP files:
 
 ```console
 $ make lint
-$ # or, to fix errors detected by the linter
+$ # or, to fix errors detected by the linters
 $ make lint-fix
 ```
 

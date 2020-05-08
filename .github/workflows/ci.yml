@@ -65,7 +65,7 @@ jobs:
           env:
               DB_PORT: ${{ job.services.postgres.ports[5432] }}
 
-        - name: Run the linter
+        - name: Run the linters
           run: make lint
 
         - name: Run the test suite
