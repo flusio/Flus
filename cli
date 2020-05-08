@@ -1,0 +1,67 @@
+#!/bin/env php
+<?php
+
+/**
+ * @author Marien Fressinaud <dev@marienfressinaud.fr>
+ * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
+ */
+
+if (php_sapi_name() !== 'cli') {
+    die('This script must be called from command line.');
+}
+
+// Setup the Minz framework
+$app_path = __DIR__;
+
+include $app_path . '/autoload.php';
+\Minz\Configuration::load('dotenv', $app_path);
+\Minz\Environment::initialize();
+
+// Read command line parameters to create a Request
+$shortopts = 'p::';
+$longopts = [
+    'request:',
+];
+$options = getopt($shortopts, $longopts);
+
+if (!isset($options['request']) || !$options['request']) {
+    die("--request is required and must be a valid URI path.\n");
+}
+
+$parameters = [];
+if (isset($options['p'])) {
+    $cli_parameters = $options['p'];
+    if (!is_array($cli_parameters)) {
+        $cli_parameters = array($cli_parameters);
+    }
+
+    foreach ($cli_parameters as $parameter) {
+        if (strpos($parameter, '=') === false) {
+            die("Parameters must be in the form key=value ({$parameter}).\n");
+        }
+
+        list($key, $value) = explode('=', $parameter);
+        $parameters[$key] = $value;
+    }
+}
+
+try {
+    $request = new \Minz\Request('cli', $options['request'], $parameters);
+} catch (\Minz\Errors\RequestError $e) {
+    die($e->getMessage() . "\n");
+}
+
+// Initialize the Application and execute the request to get a Response
+$application = new \flusio\cli\Application();
+$response = $application->run($request);
+
+// Display the content
+echo $response->render();
+echo "\n";
+
+$code = $response->code();
+if ($code >= 200 && $code < 300) {
+    exit(0);
+} else {
+    exit(1);
+}

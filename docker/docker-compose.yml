@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+    php:
+        image: flusio_php:dev
+        build:
+            context: .
+            dockerfile: Dockerfile.php
+        restart: unless-stopped
+        command: php -t ./public/ -S 0.0.0.0:8000
+        ports:
+            - "8000:8000"
+        volumes:
+            - ..:/var/www/html:z
+            - composer:/tmp
+        user: $USER
+        links:
+            - database
+
+    database:
+        image: postgres:12-alpine
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+        ports:
+            - "5432:5432"
+
+    bundler:
+        image: node:14-alpine
+        restart: unless-stopped
+        command: npm run watch
+        working_dir: /app
+        volumes:
+            - ..:/app:z
+        user: $USER
+
+volumes:
+    composer: {}

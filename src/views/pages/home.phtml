@@ -1,0 +1,34 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Home'),
+        'canonical' => url_full('home'),
+    ]);
+?>
+
+<p>
+    <?= _('Hello World!') ?>
+</p>
+
+<form method="post" action="<?= url('change locale') ?>">
+    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+    <input type="hidden" name="back" value="home" />
+
+    <div class="form-group">
+        <label for="locale">
+            <?= _('Language') ?>
+        </label>
+
+        <select id="locale" name="locale">
+            <?php foreach ($available_locales as $locale_value => $locale_name): ?>
+                <option
+                    value="<?= $locale_value ?>"
+                    <?= $locale_value === $current_locale ? 'selected' : '' ?>
+                >
+                    <?= $locale_name ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <button type="submit"><?= _('Change') ?></button>
+    </div>
+</form>
