@@ -49,7 +49,8 @@ with [NPM](https://www.npmjs.com/), the default Node package manager.
 The test suite is runned over [GitHub Actions](https://github.com/features/actions).
 It’s using [PHPUnit 9](https://phpunit.de/) as a testing framework and
 [PHP\_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) as a linter
-for the PHP files. JS files are linted with [ESLint](https://eslint.org/docs/rules/semi).
+for the PHP files. JS files are linted with [ESLint](https://eslint.org/docs/rules/semi)
+and CSS files with [stylelint](https://stylelint.io/).
 
 The development environment is powered by Docker and docker-compose setting up
 3 containers: a PHP development server, a PostgreSQL database and a Node
@@ -221,7 +222,7 @@ The tests can be simply executed with:
 $ make test
 ```
 
-You also can run the linters for JavaScript and PHP files:
+You also can run the linters with:
 
 ```console
 $ make lint

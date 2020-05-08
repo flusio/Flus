@@ -40,12 +40,14 @@ test: ## Run the test suite
 .PHONY: lint
 lint: ## Run the linters on the PHP and JS files
 	$(PHP) ./vendor/bin/phpcs --extensions=php --standard=PSR12 ./src ./tests
-	$(NPM) run lint
+	$(NPM) run lint-js
+	$(NPM) run lint-css
 
 .PHONY: lint-fix
 lint-fix: ## Fix the errors detected by the linters
 	$(PHP) ./vendor/bin/phpcbf --extensions=php --standard=PSR12 ./src ./tests
-	$(NPM) run lint-fix
+	$(NPM) run lint-js-fix
+	$(NPM) run lint-css-fix
 
 .PHONY: help
 help:
