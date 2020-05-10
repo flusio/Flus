@@ -21,6 +21,20 @@ $http_parameters = array_merge($_GET, $_POST);
 
 $request = new \Minz\Request($http_method, $http_uri, $http_parameters, $_SERVER);
 
+// In development mode, all the requests are redirected to this file. However,
+// if the file exists, we want to serve it as-is, which is done by returning
+// false. It could be less hacky with Nginx, but I'd like to avoid to add
+// another dependency as long as possible.
+// @see https://www.php.net/manual/features.commandline.webserver.php
+$current_filepath = $_SERVER['PHP_SELF'];
+if (\Minz\Configuration::$environment === 'development' && $current_filepath !== '/index.php') {
+    $public_path = $app_path . '/public';
+    $filepath = realpath($public_path . $current_filepath);
+    if (\flusio\utils\Belt::startsWith($filepath, $public_path) && file_exists($filepath)) {
+        return false;
+    }
+}
+
 // Initialize the Application and execute the request to get a Response
 $application = new \flusio\Application();
 $response = $application->run($request);

@@ -7,7 +7,7 @@ services:
             context: .
             dockerfile: Dockerfile.php
         restart: unless-stopped
-        command: php -t ./public/ -S 0.0.0.0:8000
+        command: php -t ./public/ -S 0.0.0.0:8000 ./public/index.php
         ports:
             - "8000:8000"
         volumes:
