@@ -157,7 +157,7 @@ $ make setup
 You’re all good now, just start a PHP development server:
 
 ```console
-$ php -t public/ -S localhost:8000
+$ php -t public/ -S localhost:8000 public/index.php
 ```
 
 And Parcel in another console:
