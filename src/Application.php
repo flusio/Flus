@@ -35,6 +35,9 @@ class Application
         $router->addRoute('get', '/about', 'Pages#about', 'about');
         $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
+        // This should be used only for source mapping
+        $router->addRoute('get', '/src/assets/*', 'Assets#show');
+
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
 

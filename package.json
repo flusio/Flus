@@ -9,6 +9,15 @@
     "lint-css": "stylelint src/assets/stylesheets/**/*.css",
     "lint-css-fix": "stylelint --fix src/assets/stylesheets/**/*.css"
   },
+  "targets": {
+    "default": {
+      "sourceMap": {
+        "inline": false,
+        "inlineSources": false,
+        "sourceRoot": ""
+      }
+    }
+  },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.1",
