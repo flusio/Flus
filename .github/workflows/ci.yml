@@ -46,6 +46,11 @@ jobs:
               coverage: xdebug
               extensions: intl, gettext, pdo, pdo_pgsql
 
+        - name: Setup locales
+          run: |
+              sudo apt-get install locales
+              sudo locale-gen fr_FR.UTF-8 en_GB.UTF-8
+
         - name: Get composer cache directory
           id: composer-cache
           run: echo "::set-output name=dir::$(composer config cache-files-dir)"

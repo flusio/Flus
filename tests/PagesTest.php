@@ -16,4 +16,15 @@ class PagesTest extends IntegrationTestCase
         $pointer = $response->output()->pointer();
         $this->assertSame('pages/home.phtml', $pointer);
     }
+
+    public function testAboutRendersCorrectly()
+    {
+        $request = new \Minz\Request('GET', '/about');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200);
+        $pointer = $response->output()->pointer();
+        $this->assertSame('pages/about.phtml', $pointer);
+    }
 }

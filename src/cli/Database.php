@@ -22,12 +22,7 @@ class Database
         try {
             $database = \Minz\Database::get(false);
             $result = $database->exec('SELECT 1');
-            if ($result !== false) {
-                return Response::text(200, 'Database status: OK');
-            } else {
-                $status = $database->errorInfo()[2];
-                return Response::text(500, 'Database status: ' . $status);
-            }
+            return Response::text(200, 'Database status: OK');
         } catch (\Minz\Errors\DatabaseError $e) {
             $status = $e->getMessage();
             return Response::text(500, 'Database status: ' . $status);

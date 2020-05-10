@@ -23,4 +23,37 @@ class SessionsTest extends IntegrationTestCase
         ]);
         $this->assertSame('fr_FR', $_SESSION['locale']);
     }
+
+    public function testChangeLocaleWithWrongCsrfDoesntSetsSessionLocale()
+    {
+        (new \Minz\CSRF())->generateToken();
+        $request = new \Minz\Request('post', '/sessions/locale', [
+            'csrf' => 'not the token',
+            'locale' => 'fr_FR',
+            'back' => 'home',
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/',
+        ]);
+        $this->assertArrayNotHasKey('locale', $_SESSION);
+    }
+
+    public function testChangeLocaleWithUnsupportedLocaleDoesntSetsSessionLocale()
+    {
+        $request = new \Minz\Request('post', '/sessions/locale', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'locale' => 'zu',
+            'back' => 'home',
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/',
+        ]);
+        $this->assertArrayNotHasKey('locale', $_SESSION);
+    }
 }
