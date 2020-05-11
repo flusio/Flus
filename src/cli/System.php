@@ -48,7 +48,7 @@ class System
         if ($schema) {
             $database = \Minz\Database::get();
             $result = $database->exec($schema);
-            if (!$result) {
+            if ($result === false) {
                 return Response::text(500, 'The database schema couldn’t be loaded.');
             }
         }
