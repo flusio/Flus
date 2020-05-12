@@ -1,0 +1,90 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Registration'),
+        'canonical' => url_full('registration'),
+    ]);
+?>
+
+<form method="post" action="<?= url('create user') ?>">
+    <?php if ($error): ?>
+        <p class="form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+
+    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+    <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">
+        <label for="username">
+            <?= _('How should we name you?') ?>
+        </label>
+
+        <input
+            id="username"
+            name="username"
+            type="text"
+            value="<?= $username ?>"
+            required
+        />
+
+        <?php if (isset($errors['username'])): ?>
+            <p class="form-group__error">
+                <?= $errors['username'] ?>
+            </p>
+        <?php endif; ?>
+    </div>
+
+    <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+        <label for="email">
+            <?= _('Your email address') ?>
+        </label>
+
+        <p class="form-group__caption">
+            <?= _('We’ll only use it to send you important emails.') ?>
+        </p>
+
+        <input
+            id="email"
+            name="email"
+            type="email"
+            value="<?= $email ?>"
+            required
+        />
+
+        <?php if (isset($errors['email'])): ?>
+            <p class="form-group__error">
+                <?= $errors['email'] ?>
+            </p>
+        <?php endif; ?>
+    </div>
+
+    <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
+        <label for="password">
+            <?= _('And a password') ?>
+        </label>
+
+        <p class="form-group__caption">
+            <?= _('A strong password is at least 8 characters long.') ?>
+        </p>
+
+        <input
+            id="password"
+            name="password"
+            type="password"
+            value="<?= $password ?>"
+            required
+        />
+
+        <?php if (isset($errors['password_hash'])): ?>
+            <p class="form-group__error">
+                <?= $errors['password_hash'] ?>
+            </p>
+        <?php endif; ?>
+    </div>
+
+    <div class="form__actions">
+        <button type="submit" class="button--primary">
+            <?= _('Sign Up') ?>
+        </button>
+    </div>
+</form>

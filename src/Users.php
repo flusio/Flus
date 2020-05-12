@@ -1,0 +1,123 @@
+<?php
+
+namespace flusio;
+
+use Minz\Response;
+
+/**
+ * Handle the requests related to the users.
+ *
+ * @author  Marien Fressinaud <dev@marienfressinaud.fr>
+ * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
+ */
+class Users
+{
+    /**
+     * Show the registration form.
+     *
+     * @response 200
+     *
+     * @return \Minz\Response
+     */
+    public function registration()
+    {
+        return Response::ok('users/registration.phtml', [
+            'username' => '',
+            'email' => '',
+            'password' => '',
+        ]);
+    }
+
+    /**
+     * Create a user.
+     *
+     * @request_param string csrf
+     * @request_param string email
+     * @request_param string username
+     * @request_param string password
+     *
+     * @response 302 /
+     * @response 400 if CSRF token is wrong
+     * @response 400 if email, username or password is missing/invalid
+     * @response 400 if email already exists
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function create($request)
+    {
+        $username = $request->param('username');
+        $email = $request->param('email');
+        $password = $request->param('password');
+        $user_dao = new models\dao\User();
+        $csrf = new \Minz\CSRF();
+
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('users/registration.phtml', [
+                'username' => $username,
+                'email' => $email,
+                'password' => $password,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        try {
+            $user = models\User::init($username, $email, $password);
+        } catch (\Minz\Errors\ModelPropertyError $e) {
+            return Response::badRequest('users/registration.phtml', [
+                'username' => $username,
+                'email' => $email,
+                'password' => $password,
+                'errors' => [
+                    $e->property() => $this->formatUserError($e),
+                ],
+            ]);
+        }
+
+        if ($user_dao->findBy(['email' => $user->email])) {
+            return Response::badRequest('users/registration.phtml', [
+                'username' => $username,
+                'email' => $email,
+                'password' => $password,
+                'errors' => [
+                    'email' => _('An account already exists with this email address.'),
+                ],
+            ]);
+        }
+
+        $user_dao->save($user);
+
+        return Response::redirect('home');
+    }
+
+    /**
+     * @param \Minz\Errors\ModelPropertyError $error
+     *
+     * @throws \Minz\Errors\ModelPropertyError if the error is not supported
+     *
+     * @return string
+     */
+    private function formatUserError($error)
+    {
+        $property = $error->property();
+        $code = $error->getCode();
+        if ($property === 'username') {
+            if ($code === \Minz\Errors\ModelPropertyError::PROPERTY_REQUIRED) {
+                return _('The username is required.');
+            } else {
+                return _('The username must be less than 50 characters.');
+            }
+        } elseif ($property === 'email') {
+            if ($code === \Minz\Errors\ModelPropertyError::PROPERTY_REQUIRED) {
+                return _('The address email is required.');
+            } else {
+                return _('The address email is invalid.');
+            }
+        } elseif ($property === 'password_hash') {
+            return _('The password is required.');
+        } else {
+            throw $error; // @codeCoverageIgnore
+        }
+    }
+}
