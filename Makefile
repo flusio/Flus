@@ -12,6 +12,12 @@ else
 	NPM = ./docker/bin/npm
 endif
 
+ifdef FILE
+	PHPUNIT = $(PHP) ./vendor/bin/phpunit --bootstrap ./tests/bootstrap.php --testdox $(FILE)
+else
+	PHPUNIT = $(PHP) ./vendor/bin/phpunit --coverage-text --whitelist ./src --bootstrap ./tests/bootstrap.php --testdox ./tests
+endif
+
 .PHONY: start
 start: ## Start a development server (use Docker)
 	@echo "Running webserver on http://localhost:8000"
@@ -35,7 +41,7 @@ update: setup ## Update the application
 
 .PHONY: test
 test: ## Run the test suite
-	$(PHP) ./vendor/bin/phpunit --coverage-text --whitelist ./src --bootstrap ./tests/bootstrap.php --testdox ./tests
+	$(PHPUNIT)
 
 .PHONY: lint
 lint: ## Run the linters on the PHP and JS files
