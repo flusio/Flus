@@ -12,10 +12,14 @@ else
 	NPM = ./docker/bin/npm
 endif
 
+ifndef COVERAGE
+	COVERAGE = --coverage-html ./coverage
+endif
+
 ifdef FILE
 	PHPUNIT = $(PHP) ./vendor/bin/phpunit --bootstrap ./tests/bootstrap.php --testdox $(FILE)
 else
-	PHPUNIT = $(PHP) ./vendor/bin/phpunit --coverage-text --whitelist ./src --bootstrap ./tests/bootstrap.php --testdox ./tests
+	PHPUNIT = $(PHP) ./vendor/bin/phpunit $(COVERAGE) --whitelist ./src --bootstrap ./tests/bootstrap.php --testdox ./tests
 endif
 
 .PHONY: start

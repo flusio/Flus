@@ -2,6 +2,7 @@
 /vendor
 /node_modules
 /.parcel-cache
+/coverage
 
 /data/*
 !/data/.keep

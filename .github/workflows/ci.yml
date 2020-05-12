@@ -12,6 +12,7 @@ env:
     DB_HOST: localhost
     DB_USERNAME: postgres
     DB_PASSWORD: postgres
+    COVERAGE: --coverage-text
 
 jobs:
     build:
