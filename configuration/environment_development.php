@@ -21,17 +21,17 @@ return [
     ],
 
     'mailer' => [
-        'type' => getenv('APP_MAILER'),
-        'from' => getenv('SMTP_FROM'),
+        'type' => $dotenv->pop('APP_MAILER'),
+        'from' => $dotenv->pop('SMTP_FROM'),
         'smtp' => [
-            'domain' => getenv('SMTP_DOMAIN'),
-            'host' => getenv('SMTP_HOST'),
-            'port' => intval(getenv('SMTP_PORT')),
-            'auth' => (bool)getenv('SMTP_AUTH'),
-            'auth_type' => getenv('SMTP_AUTH_TYPE'),
-            'username' => getenv('SMTP_USERNAME'),
-            'password' => getenv('SMTP_PASSWORD'),
-            'secure' => getenv('SMTP_SECURE'),
+            'domain' => $dotenv->pop('SMTP_DOMAIN'),
+            'host' => $dotenv->pop('SMTP_HOST'),
+            'port' => intval($dotenv->pop('SMTP_PORT')),
+            'auth' => (bool)$dotenv->pop('SMTP_AUTH'),
+            'auth_type' => $dotenv->pop('SMTP_AUTH_TYPE'),
+            'username' => $dotenv->pop('SMTP_USERNAME'),
+            'password' => $dotenv->pop('SMTP_PASSWORD'),
+            'secure' => $dotenv->pop('SMTP_SECURE'),
         ],
     ],
 ];
