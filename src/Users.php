@@ -51,6 +51,7 @@ class Users
         $email = $request->param('email');
         $password = $request->param('password');
         $user_dao = new models\dao\User();
+        $token_dao = new models\dao\Token();
         $csrf = new \Minz\CSRF();
 
         if (!$csrf->validateToken($request->param('csrf'))) {
@@ -88,7 +89,31 @@ class Users
 
         $user_dao->save($user);
 
+        $token = models\Token::initRegistrationValidationToken($user->id);
+        $token_dao->save($token);
+        $users_mailer = new mailers\Users();
+        $users_mailer->sendRegistrationValidationEmail($user, $token);
+
         return Response::redirect('home');
+    }
+
+    /**
+     * Validate a registration.
+     *
+     * @request_param string t The registration validation token
+     *
+     * @response 200 if the token is valid and the registration validated
+     * @response 302 / if the token is valid and the registration already validated
+     * @response 400 if the token has expired
+     * @response 404 if the token doesn't exist
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function validation($request)
+    {
+        return Response::ok('users/validation.phtml');
     }
 
     /**

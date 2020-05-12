@@ -36,6 +36,60 @@ class UsersTest extends Tests\IntegrationTestCase
         ]);
     }
 
+    public function testCreateCreatesARegistrationValidationToken()
+    {
+        $faker = \Faker\Factory::create();
+        \Minz\Time::freeze($faker->dateTime);
+
+        $user_dao = new models\dao\User();
+        $token_dao = new models\dao\Token();
+        $request = new \Minz\Request('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $faker->name,
+            'email' => $faker->email,
+            'password' => $faker->password,
+        ]);
+
+        $this->assertSame(0, $token_dao->count());
+
+        $response = self::$application->run($request);
+
+        $this->assertSame(1, $token_dao->count());
+
+        $user = new Models\User($user_dao->listAll()[0]);
+        $token = new Models\Token($token_dao->listAll()[0]);
+        $this->assertSame($user->id, $token->user_id);
+        $this->assertSame('registration_validation', $token->type);
+        $this->assertEquals(\Minz\Time::fromNow(1, 'day'), $token->expired_at);
+
+        \Minz\Time::unfreeze();
+    }
+
+    public function testCreateSendsAValidationEmail()
+    {
+        $faker = \Faker\Factory::create();
+        $token_dao = new models\dao\Token();
+        $email = $faker->email;
+        $request = new \Minz\Request('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $faker->name,
+            'email' => $email,
+            'password' => $faker->password,
+        ]);
+
+        $this->assertSame(0, count(Tests\Mailer::$emails));
+
+        $response = self::$application->run($request);
+
+        $this->assertSame(1, count(Tests\Mailer::$emails));
+
+        $token = new Models\Token($token_dao->listAll()[0]);
+        $phpmailer = Tests\Mailer::$emails[0];
+        $this->assertSame('[flusio] Confirm your registration', $phpmailer->Subject);
+        $this->assertContains($email, $phpmailer->getToAddresses()[0]);
+        $this->assertStringContainsString($token->token, $phpmailer->Body);
+    }
+
     public function testCreateFailsIfCsrfIsWrong()
     {
         $faker = \Faker\Factory::create();
@@ -157,5 +211,14 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $this->assertSame(0, $user_dao->count());
         $this->assertResponse($response, 400, 'The password is required');
+    }
+
+    public function testValidationRendersCorrectly()
+    {
+        $request = new \Minz\Request('get', '/registration/validation');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200);
     }
 }
