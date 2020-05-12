@@ -113,6 +113,32 @@ class Users
      */
     public function validation($request)
     {
+        $user_dao = new models\dao\User();
+        $token_dao = new models\dao\Token();
+
+        $raw_token = $token_dao->find($request->param('t'));
+        if (!$raw_token) {
+            return Response::notFound('users/validation.phtml', [
+                'error' => _('The token doesn’t exist.'),
+            ]);
+        }
+
+        $token = new models\Token($raw_token);
+        if ($token->hasExpired()) {
+            return Response::badRequest('users/validation.phtml', [
+                'error' => _('The token has expired.'),
+            ]);
+        }
+
+        $raw_user = $user_dao->find($token->user_id);
+        $user = new models\User($raw_user);
+        if ($user->validated_at) {
+            return Response::redirect('home');
+        }
+
+        $user->setProperty('validated_at', \Minz\Time::now());
+        $user_dao->save($user);
+
         return Response::ok('users/validation.phtml');
     }
 

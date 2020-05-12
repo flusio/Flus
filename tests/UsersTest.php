@@ -213,12 +213,107 @@ class UsersTest extends Tests\IntegrationTestCase
         $this->assertResponse($response, 400, 'The password is required');
     }
 
-    public function testValidationRendersCorrectly()
+    public function testValidationRendersCorrectlyAndValidatesRegistration()
     {
-        $request = new \Minz\Request('get', '/registration/validation');
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        \Minz\Time::freeze($faker->dateTime());
+
+        $user_id = self::$factories['users']->create([
+            'validated_at' => null,
+        ]);
+        $token = self::$factories['tokens']->create([
+            'type' => 'registration_validation',
+            'expired_at' => \Minz\Time::fromNow($faker->randomNumber, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $user_id,
+        ]);
+
+        $request = new \Minz\Request('get', '/registration/validation', [
+            't' => $token,
+        ]);
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 200);
+        $this->assertResponse($response, 200, 'Your registration is now validated');
+        $user = new models\User($user_dao->find($user_id));
+        $this->assertEquals(\Minz\Time::now(), $user->validated_at);
+    }
+
+    public function testValidationRedirectsIfRegistrationAlreadyValidated()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        \Minz\Time::freeze($faker->dateTime());
+
+        $user_id = self::$factories['users']->create([
+            'validated_at' => $faker->iso8601,
+        ]);
+        $token = self::$factories['tokens']->create([
+            'type' => 'registration_validation',
+            'expired_at' => \Minz\Time::fromNow($faker->randomNumber, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $user_id,
+        ]);
+
+        $request = new \Minz\Request('get', '/registration/validation', [
+            't' => $token,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/',
+        ]);
+    }
+
+    public function testValidationFailsIfTokenHasExpired()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        \Minz\Time::freeze($faker->dateTime());
+
+        $user_id = self::$factories['users']->create([
+            'validated_at' => null,
+        ]);
+        $token = self::$factories['tokens']->create([
+            'type' => 'registration_validation',
+            'expired_at' => \Minz\Time::ago($faker->randomNumber, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $user_id,
+        ]);
+
+        $request = new \Minz\Request('get', '/registration/validation', [
+            't' => $token,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 400, 'The token has expired');
+        $user = new models\User($user_dao->find($user_id));
+        $this->assertNull($user->validated_at);
+    }
+
+    public function testValidationFailsIfTokenDoesNotExist()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        \Minz\Time::freeze($faker->dateTime());
+
+        $user_id = self::$factories['users']->create([
+            'validated_at' => null,
+        ]);
+        $token = self::$factories['tokens']->create([
+            'type' => 'registration_validation',
+            'expired_at' => \Minz\Time::ago($faker->randomNumber, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $user_id,
+        ]);
+
+        $request = new \Minz\Request('get', '/registration/validation', [
+            't' => 'not the token',
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 404, 'The token doesn’t exist');
+        $user = new models\User($user_dao->find($user_id));
+        $this->assertNull($user->validated_at);
     }
 }
