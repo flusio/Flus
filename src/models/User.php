@@ -20,6 +20,8 @@ class User extends \Minz\Model
 
         'validated_at' => 'datetime',
 
+        'validation_token' => 'string',
+
         'email' => [
             'type' => 'string',
             'required' => true,

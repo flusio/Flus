@@ -5,7 +5,7 @@ namespace flusio\migrations;
 /**
  * @codeCoverageIgnore
  */
-class Migration202005111350CreateToken
+class Migration202005111150CreateToken
 {
     public function migrate()
     {
@@ -16,8 +16,6 @@ class Migration202005111350CreateToken
                 token TEXT PRIMARY KEY,
                 created_at TIMESTAMPTZ NOT NULL,
                 expired_at TIMESTAMPTZ NOT NULL,
-                type TEXT NOT NULL,
-                user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
                 invalidated_at TIMESTAMPTZ
             );
         SQL;

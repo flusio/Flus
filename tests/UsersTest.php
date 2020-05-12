@@ -58,8 +58,7 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $user = new Models\User($user_dao->listAll()[0]);
         $token = new Models\Token($token_dao->listAll()[0]);
-        $this->assertSame($user->id, $token->user_id);
-        $this->assertSame('registration_validation', $token->type);
+        $this->assertSame($user->validation_token, $token->token);
         $this->assertEquals(\Minz\Time::fromNow(1, 'day'), $token->expired_at);
 
         \Minz\Time::unfreeze();
@@ -219,13 +218,13 @@ class UsersTest extends Tests\IntegrationTestCase
         $user_dao = new models\dao\User();
         \Minz\Time::freeze($faker->dateTime());
 
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = self::$factories['tokens']->create([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id = self::$factories['users']->create([
             'validated_at' => null,
-        ]);
-        $token = self::$factories['tokens']->create([
-            'type' => 'registration_validation',
-            'expired_at' => \Minz\Time::fromNow($faker->randomNumber, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
-            'user_id' => $user_id,
+            'validation_token' => $token,
         ]);
 
         $request = new \Minz\Request('get', '/registration/validation', [
@@ -245,13 +244,13 @@ class UsersTest extends Tests\IntegrationTestCase
         $user_dao = new models\dao\User();
         \Minz\Time::freeze($faker->dateTime());
 
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = self::$factories['tokens']->create([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id = self::$factories['users']->create([
             'validated_at' => $faker->iso8601,
-        ]);
-        $token = self::$factories['tokens']->create([
-            'type' => 'registration_validation',
-            'expired_at' => \Minz\Time::fromNow($faker->randomNumber, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
-            'user_id' => $user_id,
+            'validation_token' => $token,
         ]);
 
         $request = new \Minz\Request('get', '/registration/validation', [
@@ -271,13 +270,13 @@ class UsersTest extends Tests\IntegrationTestCase
         $user_dao = new models\dao\User();
         \Minz\Time::freeze($faker->dateTime());
 
+        $expired_at = \Minz\Time::ago($faker->numberBetween(1, 9000), 'minutes');
+        $token = self::$factories['tokens']->create([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id = self::$factories['users']->create([
             'validated_at' => null,
-        ]);
-        $token = self::$factories['tokens']->create([
-            'type' => 'registration_validation',
-            'expired_at' => \Minz\Time::ago($faker->randomNumber, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
-            'user_id' => $user_id,
+            'validation_token' => $token,
         ]);
 
         $request = new \Minz\Request('get', '/registration/validation', [
@@ -297,13 +296,13 @@ class UsersTest extends Tests\IntegrationTestCase
         $user_dao = new models\dao\User();
         \Minz\Time::freeze($faker->dateTime());
 
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = self::$factories['tokens']->create([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id = self::$factories['users']->create([
             'validated_at' => null,
-        ]);
-        $token = self::$factories['tokens']->create([
-            'type' => 'registration_validation',
-            'expired_at' => \Minz\Time::ago($faker->randomNumber, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
-            'user_id' => $user_id,
+            'validation_token' => $token,
         ]);
 
         $request = new \Minz\Request('get', '/registration/validation', [

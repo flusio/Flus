@@ -87,10 +87,12 @@ class Users
             ]);
         }
 
+        $token = models\Token::init();
+        $token_dao->save($token);
+
+        $user->setProperty('validation_token', $token->token);
         $user_dao->save($user);
 
-        $token = models\Token::initRegistrationValidationToken($user->id);
-        $token_dao->save($token);
         $users_mailer = new mailers\Users();
         $users_mailer->sendRegistrationValidationEmail($user, $token);
 
@@ -130,7 +132,7 @@ class Users
             ]);
         }
 
-        $raw_user = $user_dao->find($token->user_id);
+        $raw_user = $user_dao->findBy(['validation_token' => $token->token]);
         $user = new models\User($raw_user);
         if ($user->validated_at) {
             return Response::redirect('home');

@@ -5,7 +5,7 @@ namespace flusio\migrations;
 /**
  * @codeCoverageIgnore
  */
-class Migration202005111130CreateUser
+class Migration202005111330CreateUser
 {
     public function migrate()
     {
@@ -18,7 +18,8 @@ class Migration202005111130CreateUser
                 email TEXT UNIQUE NOT NULL,
                 username TEXT NOT NULL,
                 password_hash TEXT NOT NULL,
-                validated_at TIMESTAMPTZ
+                validated_at TIMESTAMPTZ,
+                validation_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE
             );
         SQL;
 

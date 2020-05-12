@@ -8,8 +8,6 @@ namespace flusio\models;
  */
 class Token extends \Minz\Model
 {
-    public const VALID_TYPES = ['registration_validation'];
-
     public const PROPERTIES = [
         'created_at' => 'datetime',
 
@@ -25,31 +23,16 @@ class Token extends \Minz\Model
             'required' => true,
             'validator' => '\flusio\models\Token::validateToken',
         ],
-
-        'type' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\Token::validateType',
-        ],
-
-        'user_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
     ];
 
     /**
-     * @param string $user_id
-     *
-     * @throws \Minz\Error\ModelPropertyError if one of the property is invalid
+     * Initialize a token
      */
-    public static function initRegistrationValidationToken($user_id)
+    public static function init()
     {
         return new self([
             'expired_at' => \Minz\Time::fromNow(1, 'day'),
             'token' => bin2hex(random_bytes(8)),
-            'type' => 'registration_validation',
-            'user_id' => $user_id,
         ]);
     }
 
@@ -83,14 +66,5 @@ class Token extends \Minz\Model
     public static function validateToken($token)
     {
         return strlen($token) >= 16;
-    }
-
-    /**
-     * @param string $type
-     * @return boolean
-     */
-    public static function validateType($type)
-    {
-        return in_array($type, self::VALID_TYPES);
     }
 }
