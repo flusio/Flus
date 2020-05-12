@@ -13,6 +13,8 @@ services:
         volumes:
             - ..:/var/www/html:z
             - composer:/tmp
+        environment:
+            SEED: $SEED
         user: $USER
         links:
             - database
