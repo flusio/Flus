@@ -214,6 +214,68 @@ class Users
     }
 
     /**
+     * Show the deletion form.
+     *
+     * @response 200
+     * @response 302 /login?redirect_to=/settings/deletion if the user is not connected
+     *
+     * @return \Minz\Response
+     */
+    public function deletion()
+    {
+        if (!utils\CurrentUser::get()) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('user deletion'),
+            ]);
+        }
+
+        return Response::ok('users/deletion.phtml');
+    }
+
+    /**
+     * Delete the current user.
+     *
+     * @request_param string csrf
+     * @request_param string password
+     *
+     * @response 302 /
+     * @response 302 /login?redirect_to=/settings/deletion if the user is not connected
+     * @response 400 if CSRF token or password is wrong
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function delete($request)
+    {
+        $current_user = utils\CurrentUser::get();
+        if (!$current_user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('user deletion'),
+            ]);
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('users/deletion.phtml', [
+                'error' => _('A security verification failed: you should try again.'),
+            ]);
+        }
+
+        $password = $request->param('password');
+        if (!$current_user->verifyPassword($password)) {
+            return Response::badRequest('users/deletion.phtml', [
+                'error' => _('The password is incorrect.'),
+            ]);
+        }
+
+        $user_dao = new models\dao\User();
+        $user_dao->delete($current_user->id);
+        utils\CurrentUser::reset();
+        return Response::redirect('home');
+    }
+
+    /**
      * @param \Minz\Errors\ModelPropertyError $error
      *
      * @throws \Minz\Errors\ModelPropertyError if the error is not supported

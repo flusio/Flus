@@ -32,6 +32,14 @@
     <?php endif; ?>
 <?php endif; ?>
 
+<?php if ($current_user): ?>
+    <p>
+        <a href="<?= url('user deletion') ?>">
+            <?= _('Do you want to leave?') ?>
+        </a>
+    </p>
+<?php endif; ?>
+
 <p data-controller="hello">
     <?= _('Hello World!') ?>
 </p>

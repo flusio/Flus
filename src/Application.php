@@ -46,6 +46,13 @@ class Application
             'resend validation email'
         );
 
+        // this is temporary while there's no login page
+        $router->addRoute('get', '/login', 'Pages#home', 'login');
+
+        // Settings
+        $router->addRoute('get', '/settings/deletion', 'Users#deletion', 'user deletion');
+        $router->addRoute('post', '/settings/deletion', 'Users#delete', 'delete user');
+
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');
 

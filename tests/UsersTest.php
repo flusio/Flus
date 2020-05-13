@@ -513,4 +513,104 @@ class UsersTest extends Tests\IntegrationTestCase
         $this->assertResponse($response, 401, 'You must be connected to perform this action');
         $this->assertSame(0, count(Tests\Mailer::$emails));
     }
+
+    public function testDeletionRendersCorrectly()
+    {
+        \tests\Utils::login();
+
+        $request = new \Minz\Request('get', '/settings/deletion');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200);
+    }
+
+    public function testDeletionRedirectsToLoginIfUserNotConnected()
+    {
+        $request = new \Minz\Request('get', '/settings/deletion');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/login?redirect_to=%2Fsettings%2Fdeletion',
+        ]);
+    }
+    public function testDeleteRedirectsToTheHomePageAndDeletesTheUser()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+
+        $password = $faker->password;
+        $user = \tests\Utils::login([
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+        ]);
+        $request = new \Minz\Request('post', '/settings/deletion', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'password' => $password,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/',
+        ]);
+        $this->assertNull($user_dao->find($user->id));
+        $this->assertNull(utils\CurrentUser::get());
+    }
+
+    public function testDeleteRedirectsToLoginIfUserIsNotConnected()
+    {
+        $faker = \Faker\Factory::create();
+        $request = new \Minz\Request('post', '/settings/deletion', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'password' => $faker->password,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/login?redirect_to=%2Fsettings%2Fdeletion',
+        ]);
+    }
+
+    public function testDeleteFailsIfPasswordIsIncorrect()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+
+        $password = $faker->password;
+        $user = \tests\Utils::login([
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+        ]);
+        $request = new \Minz\Request('post', '/settings/deletion', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'password' => 'not the password',
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 400, 'The password is incorrect.');
+        $this->assertNotNull($user_dao->find($user->id));
+    }
+
+    public function testDeleteFailsIfCsrfIsInvalid()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+
+        $password = $faker->password;
+        $user = \tests\Utils::login([
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+        ]);
+        (new \Minz\CSRF())->generateToken();
+        $request = new \Minz\Request('post', '/settings/deletion', [
+            'csrf' => 'not the token',
+            'password' => $password,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertNotNull($user_dao->find($user->id));
+    }
 }

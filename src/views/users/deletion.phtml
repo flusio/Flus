@@ -1,0 +1,44 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Account deletion'),
+        'canonical' => url_full('account deletion'),
+    ]);
+?>
+
+<form method="post" action="<?= url('delete user') ?>">
+    <p>
+        <?= _('You’re about to delete your account and your data will be lost. This can’t be canceled!') ?>
+    </p>
+
+    <?php if ($error): ?>
+        <p>
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+
+    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+    <div class="form-group">
+        <label for="password">
+            <?= _('Your password') ?>
+        </label>
+
+        <p class="form-group__caption">
+            <?= _('You must type your password so we can confirm your identity.') ?>
+        </p>
+
+        <input
+            id="password"
+            name="password"
+            type="password"
+            value=""
+            required
+        />
+    </div>
+
+    <div class="form__actions">
+        <button type="submit" class="button--primary">
+            <?= _('Delete the account') ?>
+        </button>
+    </div>
+</form>
