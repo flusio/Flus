@@ -35,6 +35,11 @@ class Application
         $router->addRoute('get', '/about', 'Pages#about', 'about');
         $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
+        // Registration
+        $router->addRoute('get', '/registration', 'Users#registration', 'registration');
+        $router->addRoute('post', '/registration', 'Users#create', 'create user');
+        $router->addRoute('get', '/registration/validation', 'Users#validation', 'registration validation');
+
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');
 

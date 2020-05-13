@@ -1,0 +1,14 @@
+<p>
+    <?= _f('Welcome %s,', $username) ?>
+</p>
+
+<p>
+    <?= _f('Thank you for your inscription on %s. To finish, you’ll have to confirm your email address. You just have to click on the following link, and you should be all good then:', url_full('home')) ?></br />
+    <a href="<?= url_full('registration validation', ['t' => $token]) ?>">
+        <?= url_full('registration validation', ['t' => $token]) ?>
+    </a>
+</p>
+
+<p>
+    <?= _('Have a nice day!') ?>
+</p>

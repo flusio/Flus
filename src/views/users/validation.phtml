@@ -1,0 +1,22 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Registration validation'),
+        'canonical' => url_full('registration validation'),
+    ]);
+?>
+
+<?php if ($error): ?>
+    <p>
+        <?= $error ?>
+    </p>
+<?php else: ?>
+    <p>
+        <?= _('Your registration is now validated.') ?>
+    </p>
+
+    <p>
+        <a href="<?= url('home') ?>">
+            <?= _('Back to home') ?>
+        </a>
+    </p>
+<?php endif; ?>
