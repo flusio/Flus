@@ -91,7 +91,9 @@ class Users
         $token_dao->save($token);
 
         $user->setProperty('validation_token', $token->token);
-        $user_dao->save($user);
+        $user_id = $user_dao->save($user);
+
+        utils\CurrentUser::set($user_id);
 
         $users_mailer = new mailers\Users();
         $users_mailer->sendRegistrationValidationEmail($user, $token);

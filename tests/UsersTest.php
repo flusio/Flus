@@ -6,6 +6,14 @@ use Minz\Tests;
 
 class UsersTest extends Tests\IntegrationTestCase
 {
+    /**
+     * @after
+     */
+    public function logout()
+    {
+        \tests\Utils::logout();
+    }
+
     public function testRegistrationRendersCorrectly()
     {
         $request = new \Minz\Request('get', '/registration');
@@ -87,6 +95,27 @@ class UsersTest extends Tests\IntegrationTestCase
         $this->assertSame('[flusio] Confirm your registration', $phpmailer->Subject);
         $this->assertContains($email, $phpmailer->getToAddresses()[0]);
         $this->assertStringContainsString($token->token, $phpmailer->Body);
+    }
+
+    public function testCreateLogsTheUserIn()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        $email = $faker->email;
+        $request = new \Minz\Request('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $faker->name,
+            'email' => $email,
+            'password' => $faker->password,
+        ]);
+
+        $user = utils\CurrentUser::get();
+        $this->assertNull($user);
+
+        $response = self::$application->run($request);
+
+        $user = utils\CurrentUser::get();
+        $this->assertSame($email, $user->email);
     }
 
     public function testCreateFailsIfCsrfIsWrong()
