@@ -18,9 +18,7 @@ class SessionsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/',
-        ]);
+        $this->assertResponse($response, 302, '/');
         $this->assertSame('fr_FR', $_SESSION['locale']);
     }
 
@@ -35,9 +33,7 @@ class SessionsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/',
-        ]);
+        $this->assertResponse($response, 302, '/');
         $this->assertArrayNotHasKey('locale', $_SESSION);
     }
 
@@ -51,9 +47,7 @@ class SessionsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/',
-        ]);
+        $this->assertResponse($response, 302, '/');
         $this->assertArrayNotHasKey('locale', $_SESSION);
     }
 }

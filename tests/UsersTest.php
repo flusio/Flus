@@ -31,9 +31,7 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/',
-        ]);
+        $this->assertResponse($response, 302, '/');
     }
 
     public function testCreateCreatesAUserAndRedirects()
@@ -52,9 +50,7 @@ class UsersTest extends Tests\IntegrationTestCase
         $response = self::$application->run($request);
 
         $this->assertSame(1, $user_dao->count());
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/',
-        ]);
+        $this->assertResponse($response, 302, '/');
     }
 
     public function testCreateCreatesARegistrationValidationToken()
@@ -149,9 +145,7 @@ class UsersTest extends Tests\IntegrationTestCase
         $response = self::$application->run($request);
 
         $this->assertSame(1, $user_dao->count());
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/',
-        ]);
+        $this->assertResponse($response, 302, '/');
     }
 
     public function testCreateFailsIfCsrfIsWrong()
@@ -324,9 +318,7 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/',
-        ]);
+        $this->assertResponse($response, 302, '/');
     }
 
     public function testValidationFailsIfTokenHasExpired()
@@ -402,9 +394,7 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/?status=validation_email_sent'
-        ]);
+        $this->assertResponse($response, 302, '/?status=validation_email_sent');
         $this->assertSame(1, count(Tests\Mailer::$emails));
         $phpmailer = Tests\Mailer::$emails[0];
         $this->assertSame('[flusio] Confirm your registration', $phpmailer->Subject);
@@ -430,9 +420,7 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/about?status=validation_email_sent'
-        ]);
+        $this->assertResponse($response, 302, '/about?status=validation_email_sent');
     }
 
     public function testResendValidationEmailCreatesANewTokenIfExpiresSoon()
@@ -474,9 +462,7 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/'
-        ]);
+        $this->assertResponse($response, 302, '/');
         $this->assertSame(0, count(Tests\Mailer::$emails));
     }
 
@@ -531,9 +517,7 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/login?redirect_to=%2Fsettings%2Fdeletion',
-        ]);
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fsettings%2Fdeletion');
     }
     public function testDeleteRedirectsToTheHomePageAndDeletesTheUser()
     {
@@ -551,9 +535,7 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/',
-        ]);
+        $this->assertResponse($response, 302, '/');
         $this->assertNull($user_dao->find($user->id));
         $this->assertNull(utils\CurrentUser::get());
     }
@@ -568,9 +550,7 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 302, null, [
-            'Location' => '/login?redirect_to=%2Fsettings%2Fdeletion',
-        ]);
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fsettings%2Fdeletion');
     }
 
     public function testDeleteFailsIfPasswordIsIncorrect()
