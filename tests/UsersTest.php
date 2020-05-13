@@ -23,6 +23,19 @@ class UsersTest extends Tests\IntegrationTestCase
         $this->assertResponse($response, 200);
     }
 
+    public function testRegistrationRedirectsToHomeIfConnected()
+    {
+        \tests\Utils::login();
+
+        $request = new \Minz\Request('get', '/registration');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/',
+        ]);
+    }
+
     public function testCreateCreatesAUserAndRedirects()
     {
         $faker = \Faker\Factory::create();
@@ -116,6 +129,29 @@ class UsersTest extends Tests\IntegrationTestCase
 
         $user = utils\CurrentUser::get();
         $this->assertSame($email, $user->email);
+    }
+
+    public function testCreateRedirectsToHomeIfConnected()
+    {
+        \tests\Utils::login();
+
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        $request = new \Minz\Request('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $faker->name,
+            'email' => $faker->email,
+            'password' => $faker->password,
+        ]);
+
+        $this->assertSame(1, $user_dao->count());
+
+        $response = self::$application->run($request);
+
+        $this->assertSame(1, $user_dao->count());
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/',
+        ]);
     }
 
     public function testCreateFailsIfCsrfIsWrong()

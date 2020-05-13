@@ -5,11 +5,13 @@
     ]);
 ?>
 
-<p>
-    <a href="<?= url('registration') ?>">
-        <?= _('Sign up for flusio') ?>
-    </a>
-</p>
+<?php if (!$current_user): ?>
+    <p>
+        <a href="<?= url('registration') ?>">
+            <?= _('Sign up for flusio') ?>
+        </a>
+    </p>
+<?php endif; ?>
 
 <p data-controller="hello">
     <?= _('Hello World!') ?>

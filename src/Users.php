@@ -21,6 +21,10 @@ class Users
      */
     public function registration()
     {
+        if (utils\CurrentUser::get()) {
+            return Response::redirect('home');
+        }
+
         return Response::ok('users/registration.phtml', [
             'username' => '',
             'email' => '',
@@ -47,6 +51,10 @@ class Users
      */
     public function create($request)
     {
+        if (utils\CurrentUser::get()) {
+            return Response::redirect('home');
+        }
+
         $username = $request->param('username');
         $email = $request->param('email');
         $password = $request->param('password');

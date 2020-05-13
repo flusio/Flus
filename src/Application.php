@@ -60,6 +60,8 @@ class Application
      */
     public function run($request)
     {
+        $current_user = utils\CurrentUser::get();
+
         // Setup current localization
         if (isset($_SESSION['locale'])) {
             $locale = $_SESSION['locale'];
@@ -73,6 +75,7 @@ class Application
             'errors' => [],
             'error' => null,
             'current_locale' => $locale,
+            'current_user' => $current_user,
         ]);
 
         return $this->engine->run($request);
