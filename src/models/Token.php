@@ -60,6 +60,21 @@ class Token extends \Minz\Model
     }
 
     /**
+     * Return wheter the token is going to expire in the next $number of $units.
+     *
+     * @see https://www.php.net/manual/datetime.formats.relative.php
+     *
+     * @param integer $number
+     * @param string $unit
+     *
+     * @return boolean
+     */
+    public function expiresIn($number, $unit)
+    {
+        return \Minz\Time::fromNow($number, $unit) >= $this->expired_at;
+    }
+
+    /**
      * @param string $token
      * @return boolean
      */

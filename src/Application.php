@@ -39,6 +39,12 @@ class Application
         $router->addRoute('get', '/registration', 'Users#registration', 'registration');
         $router->addRoute('post', '/registration', 'Users#create', 'create user');
         $router->addRoute('get', '/registration/validation', 'Users#validation', 'registration validation');
+        $router->addRoute(
+            'post',
+            '/registration/validation/email',
+            'Users#resendValidationEmail',
+            'resend validation email'
+        );
 
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');
@@ -74,6 +80,7 @@ class Application
             'environment' => \Minz\Configuration::$environment,
             'errors' => [],
             'error' => null,
+            'status' => $request->param('status'),
             'current_locale' => $locale,
             'current_user' => $current_user,
         ]);

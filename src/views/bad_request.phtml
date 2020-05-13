@@ -1,0 +1,21 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Unauthorized'),
+    ]);
+?>
+
+<p>
+    <?= $error ?>
+</p>
+
+<p>
+    <?php if (isset($link_to)): ?>
+        <a href="<?= url($link_to) ?>">
+            <?= _('Back to the previous page') ?>
+        </a>
+    <?php else: ?>
+        <a href="<?= url('home') ?>">
+            <?= _('Back to the home page') ?>
+        </a>
+    <?php endif; ?>
+</p>

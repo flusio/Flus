@@ -155,6 +155,65 @@ class Users
     }
 
     /**
+     * Resend a registration validation email.
+     *
+     * A new token is generated if the current one expires soon (i.e. <= 30
+     * minutes).
+     *
+     * @request_param string csrf
+     * @request_param string redirect_to (default: home)
+     *
+     * @response 302 $redirect_to?status=validation_email_sent
+     * @response 302 $redirect_to if the user was already validated
+     * @response 400 if CSRF token is wrong
+     * @response 401 if the user is not connected
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function resendValidationEmail($request)
+    {
+        $user_dao = new models\dao\User();
+        $token_dao = new models\dao\Token();
+        $redirect_to = $request->param('redirect_to', 'home');
+        $csrf = new \Minz\CSRF();
+        $user = utils\CurrentUser::get();
+
+        if (!$user) {
+            return Response::unauthorized('unauthorized.phtml', [
+                'link_to' => $redirect_to,
+            ]);
+        }
+
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('bad_request.phtml', [
+                'error' => _('A security verification failed: you should try again.'),
+                'link_to' => $redirect_to,
+            ]);
+        }
+
+        if ($user->validated_at) {
+            // nothing to do, the user is already validated
+            return Response::redirect($redirect_to);
+        }
+
+        $token = new models\Token($token_dao->find($user->validation_token));
+        if ($token->expiresIn(30, 'minutes')) {
+            // the token will expire soon, let's regenerate a new one
+            $token = models\Token::init();
+            $token_dao->save($token);
+            $user->setProperty('validation_token', $token->token);
+            $user_dao->save($user);
+        }
+
+        $users_mailer = new mailers\Users();
+        $users_mailer->sendRegistrationValidationEmail($user, $token);
+
+        return Response::redirect($redirect_to, ['status' => 'validation_email_sent']);
+    }
+
+    /**
      * @param \Minz\Errors\ModelPropertyError $error
      *
      * @throws \Minz\Errors\ModelPropertyError if the error is not supported
