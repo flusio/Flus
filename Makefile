@@ -70,6 +70,10 @@ lint-fix: ## Fix the errors detected by the linters
 	$(NPM) run lint-js-fix
 	$(NPM) run lint-css-fix
 
+.PHONY: tree
+tree:  ## Display the structure of the application
+	tree -I 'lib|vendor|node_modules|coverage' --dirsfirst -CA
+
 .PHONY: help
 help:
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

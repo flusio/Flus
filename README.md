@@ -264,7 +264,16 @@ do is to understand [Minz](https://github.com/flusio/Minz/). Unfortunately, I
 didn’t write its documentation yet so I’m going to give you some indications
 here.
 
-First thing, the entrypoint for the browser is the [`public/index.php`
+First thing is you can take a look at the whole structure of the project with:
+
+```console
+$ make tree
+```
+
+It will show you all the folders and files of the project, except the
+dependencies including the Minz library (which is under [the `lib/` folder](./lib/)).
+
+Then, you should know that the entrypoint for the browser is the [`public/index.php`
 file](./public/index.php). In fact, a correctly configured Web server must
 never give access to another folder than `public/`. Otherwise, you have a
 serious security breach in your system!
