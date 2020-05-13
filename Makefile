@@ -16,10 +16,16 @@ ifndef COVERAGE
 	COVERAGE = --coverage-html ./coverage
 endif
 
-ifdef FILE
-	PHPUNIT = $(PHP) ./vendor/bin/phpunit --bootstrap ./tests/bootstrap.php --testdox $(FILE)
+ifdef FILTER
+	PHPUNIT_FILTER = --filter=$(FILTER)
 else
-	PHPUNIT = $(PHP) ./vendor/bin/phpunit $(COVERAGE) --whitelist ./src --bootstrap ./tests/bootstrap.php --testdox ./tests
+	PHPUNIT_FILTER =
+endif
+
+ifdef FILE
+	PHPUNIT_FILE = $(FILE)
+else
+	PHPUNIT_FILE = ./tests
 endif
 
 .PHONY: start
@@ -45,7 +51,12 @@ update: setup ## Update the application
 
 .PHONY: test
 test: ## Run the test suite
-	$(PHPUNIT)
+	$(PHP) ./vendor/bin/phpunit \
+		$(COVERAGE) --whitelist ./src \
+		--bootstrap ./tests/bootstrap.php \
+		--testdox \
+		$(PHPUNIT_FILTER) \
+		$(PHPUNIT_FILE)
 
 .PHONY: lint
 lint: ## Run the linters on the PHP and JS files
