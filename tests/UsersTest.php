@@ -6,6 +6,14 @@ use Minz\Tests;
 
 class UsersTest extends Tests\IntegrationTestCase
 {
+    /**
+     * @after
+     */
+    public function logout()
+    {
+        \tests\Utils::logout();
+    }
+
     public function testRegistrationRendersCorrectly()
     {
         $request = new \Minz\Request('get', '/registration');
@@ -13,6 +21,19 @@ class UsersTest extends Tests\IntegrationTestCase
         $response = self::$application->run($request);
 
         $this->assertResponse($response, 200);
+    }
+
+    public function testRegistrationRedirectsToHomeIfConnected()
+    {
+        \tests\Utils::login();
+
+        $request = new \Minz\Request('get', '/registration');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/',
+        ]);
     }
 
     public function testCreateCreatesAUserAndRedirects()
@@ -87,6 +108,50 @@ class UsersTest extends Tests\IntegrationTestCase
         $this->assertSame('[flusio] Confirm your registration', $phpmailer->Subject);
         $this->assertContains($email, $phpmailer->getToAddresses()[0]);
         $this->assertStringContainsString($token->token, $phpmailer->Body);
+    }
+
+    public function testCreateLogsTheUserIn()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        $email = $faker->email;
+        $request = new \Minz\Request('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $faker->name,
+            'email' => $email,
+            'password' => $faker->password,
+        ]);
+
+        $user = utils\CurrentUser::get();
+        $this->assertNull($user);
+
+        $response = self::$application->run($request);
+
+        $user = utils\CurrentUser::get();
+        $this->assertSame($email, $user->email);
+    }
+
+    public function testCreateRedirectsToHomeIfConnected()
+    {
+        \tests\Utils::login();
+
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        $request = new \Minz\Request('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $faker->name,
+            'email' => $faker->email,
+            'password' => $faker->password,
+        ]);
+
+        $this->assertSame(1, $user_dao->count());
+
+        $response = self::$application->run($request);
+
+        $this->assertSame(1, $user_dao->count());
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/',
+        ]);
     }
 
     public function testCreateFailsIfCsrfIsWrong()
@@ -314,5 +379,138 @@ class UsersTest extends Tests\IntegrationTestCase
         $this->assertResponse($response, 404, 'The token doesn’t exist');
         $user = new models\User($user_dao->find($user_id));
         $this->assertNull($user->validated_at);
+    }
+
+    public function testResendValidationEmailSendsAnEmailAndRedirects()
+    {
+        $faker = \Faker\Factory::create();
+        $email = $faker->email;
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = self::$factories['tokens']->create([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        \tests\Utils::login([
+            'email' => $email,
+            'validated_at' => null,
+            'validation_token' => $token,
+        ]);
+        $request = new \Minz\Request('post', '/registration/validation/email', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertSame(0, count(Tests\Mailer::$emails));
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/?status=validation_email_sent'
+        ]);
+        $this->assertSame(1, count(Tests\Mailer::$emails));
+        $phpmailer = Tests\Mailer::$emails[0];
+        $this->assertSame('[flusio] Confirm your registration', $phpmailer->Subject);
+        $this->assertContains($email, $phpmailer->getToAddresses()[0]);
+        $this->assertStringContainsString($token, $phpmailer->Body);
+    }
+
+    public function testResendValidationEmailRedirectsToRedictTo()
+    {
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(31, 9000), 'minutes');
+        $token = self::$factories['tokens']->create([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        \tests\Utils::login([
+            'validated_at' => null,
+            'validation_token' => $token,
+        ]);
+        $request = new \Minz\Request('post', '/registration/validation/email', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'redirect_to' => 'about',
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/about?status=validation_email_sent'
+        ]);
+    }
+
+    public function testResendValidationEmailCreatesANewTokenIfExpiresSoon()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        $token_dao = new models\dao\Token();
+
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(0, 30), 'minutes');
+        $token = self::$factories['tokens']->create([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $user = \tests\Utils::login([
+            'validated_at' => null,
+            'validation_token' => $token,
+        ]);
+        $request = new \Minz\Request('post', '/registration/validation/email', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertSame(1, $token_dao->count());
+
+        $response = self::$application->run($request);
+
+        $this->assertSame(2, $token_dao->count());
+        $user = new models\User($user_dao->find($user->id)); // reload the user
+        $this->assertNotSame($user->validation_token, $token);
+    }
+
+    public function testResendValidationEmailRedirectsSilentlyIfAlreadyValidated()
+    {
+        $faker = \Faker\Factory::create();
+        \tests\Utils::login([
+            'validated_at' => $faker->iso8601,
+        ]);
+        $request = new \Minz\Request('post', '/registration/validation/email', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 302, null, [
+            'Location' => '/'
+        ]);
+        $this->assertSame(0, count(Tests\Mailer::$emails));
+    }
+
+    public function testResendValidationEmailFailsIfCsrfIsInvalid()
+    {
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = self::$factories['tokens']->create([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        \tests\Utils::login([
+            'validated_at' => null,
+            'validation_token' => $token,
+        ]);
+        (new \Minz\CSRF())->generateToken();
+        $request = new \Minz\Request('post', '/registration/validation/email', [
+            'csrf' => 'not the token',
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertSame(0, count(Tests\Mailer::$emails));
+    }
+
+    public function testResendValidationEmailFailsIfUserNotConnected()
+    {
+        $request = new \Minz\Request('post', '/registration/validation/email', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 401, 'You must be connected to perform this action');
+        $this->assertSame(0, count(Tests\Mailer::$emails));
     }
 }

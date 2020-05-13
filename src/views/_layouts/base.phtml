@@ -3,7 +3,9 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="initial-scale=1.0" />
-        <link rel="canonical" href="<?= $canonical ?>">
+        <?php if(isset($canonical)): ?>
+            <link rel="canonical" href="<?= $canonical ?>">
+        <?php endif; ?>
 
         <link rel="stylesheet" href="<?= url_static('stylesheets/application.css') ?>" data-turbolinks-track="reload">
         <script src="<?= url_static('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>

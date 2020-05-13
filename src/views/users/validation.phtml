@@ -5,11 +5,7 @@
     ]);
 ?>
 
-<?php if ($error): ?>
-    <p>
-        <?= $error ?>
-    </p>
-<?php else: ?>
+<?php if (!$error): ?>
     <p>
         <?= _('Your registration is now validated.') ?>
     </p>
@@ -19,4 +15,17 @@
             <?= _('Back to home') ?>
         </a>
     </p>
+<?php else: ?>
+    <p>
+        <?= $error ?>
+    </p>
+
+    <?php if ($current_user && !$current_user->validated_at): ?>
+        <form method="post" action="<?= url('resend validation email') ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <button type="submit">
+                <?= _('Send an email with a valid token') ?>
+            </button>
+        </form>
+    <?php endif; ?>
 <?php endif; ?>
