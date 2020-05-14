@@ -23,6 +23,12 @@ For now, the software doesn’t exist yet.
 
 There’s no process to contribute yet, but feel free to [reach me by email](mailto://marien@flus.io).
 
+If you open a pull request anyway, please fill the pull request message
+properly. It’s intented to remind you (and me!) important things to check when
+code is changed. You’ll have to wait for the CI to run over your code then. If
+everything is fine, the status should tell you the checks are successful and
+the pull request can be merged.
+
 ## What’s the technical stack
 
 flusio is using [PHP](https://www.php.net/) 7.3+. The version isn’t strongly
