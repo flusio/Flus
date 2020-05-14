@@ -83,16 +83,19 @@ class Application
         }
         utils\Locale::setCurrentLocale($locale);
 
+        $response = $this->engine->run($request);
+
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
             'errors' => [],
             'error' => null,
             'status' => $request->param('status'),
+            'current_action_pointer' => $request->param('_action_pointer'),
             'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,
             'current_user' => $current_user,
         ]);
 
-        return $this->engine->run($request);
+        return $response;
     }
 }
