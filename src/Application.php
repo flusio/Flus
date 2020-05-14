@@ -88,6 +88,7 @@ class Application
             'errors' => [],
             'error' => null,
             'status' => $request->param('status'),
+            'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,
             'current_user' => $current_user,
         ]);

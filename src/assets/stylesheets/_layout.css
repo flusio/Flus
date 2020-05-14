@@ -1,0 +1,13 @@
+.layout {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.layout__content {
+    min-height: 80vh;
+}
+
+.layout__footer {
+    text-align: center;
+}

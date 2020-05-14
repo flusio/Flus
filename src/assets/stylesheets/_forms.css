@@ -1,0 +1,28 @@
+label {
+    display: block;
+}
+
+.form--inline label {
+    display: inline;
+}
+
+input {
+    width: 100%;
+}
+
+.form__actions {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+}
+
+.form-group {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+}
+
+.form-group__caption {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    font-size: 0.9em;
+}

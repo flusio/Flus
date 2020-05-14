@@ -12,7 +12,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/');
 
-        $this->assertResponse($response, 200, 'Hello World!');
+        $this->assertResponse($response, 200);
         $this->assertPointer($response, 'pages/home.phtml');
     }
 

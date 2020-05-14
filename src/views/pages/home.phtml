@@ -5,14 +5,6 @@
     ]);
 ?>
 
-<?php if (!$current_user): ?>
-    <p>
-        <a href="<?= url('registration') ?>">
-            <?= _('Sign up for flusio') ?>
-        </a>
-    </p>
-<?php endif; ?>
-
 <?php if ($current_user && !$current_user->validated_at): ?>
     <p>
         <?= _('You must validate your registration: you should have received an email containing a link intended to this purpose.') ?>
@@ -31,45 +23,3 @@
         </form>
     <?php endif; ?>
 <?php endif; ?>
-
-<?php if ($current_user): ?>
-    <p>
-        <a href="<?= url('user deletion') ?>">
-            <?= _('Do you want to leave?') ?>
-        </a>
-    </p>
-<?php endif; ?>
-
-<p data-controller="hello">
-    <?= _('Hello World!') ?>
-</p>
-
-<p>
-    <a href="<?= url('about') ?>">
-        <?= _('About flusio') ?>
-    </a>
-</p>
-
-<form method="post" action="<?= url('change locale') ?>">
-    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-    <input type="hidden" name="back" value="home" />
-
-    <div class="form-group">
-        <label for="locale">
-            <?= _('Language') ?>
-        </label>
-
-        <select id="locale" name="locale">
-            <?php foreach ($available_locales as $locale_value => $locale_name): ?>
-                <option
-                    value="<?= $locale_value ?>"
-                    <?= $locale_value === $current_locale ? 'selected' : '' ?>
-                >
-                    <?= $locale_name ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-
-        <button type="submit"><?= _('Change') ?></button>
-    </div>
-</form>

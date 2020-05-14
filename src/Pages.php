@@ -19,9 +19,7 @@ class Pages
      */
     public function home()
     {
-        return Response::ok('pages/home.phtml', [
-            'available_locales' => utils\Locale::availableLocales(),
-        ]);
+        return Response::ok('pages/home.phtml');
     }
 
     /**

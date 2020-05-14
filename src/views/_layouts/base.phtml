@@ -14,6 +14,62 @@
     </head>
 
     <body>
-        <?= $this->safe('content') ?>
+        <div class="layout">
+            <header class="layout__header header">
+                <nav class="header__container">
+                    <a class="header__link header__link--home" href="<?= url('home') ?>">
+                        flusio
+                    </a>
+
+                    <div class="header__separator"></div>
+
+                    <form class="form--inline" method="post" action="<?= url('change locale') ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <input type="hidden" name="back" value="home" />
+
+                        <div class="form-group">
+                            <label for="locale">
+                                <?= _('Language') ?>
+                            </label>
+
+                            <select id="locale" name="locale">
+                                <?php foreach ($available_locales as $locale_value => $locale_name): ?>
+                                    <option
+                                        value="<?= $locale_value ?>"
+                                        <?= $locale_value === $current_locale ? 'selected' : '' ?>
+                                    >
+                                        <?= $locale_name ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+
+                            <button type="submit"><?= _('Change') ?></button>
+                        </div>
+                    </form>
+
+                    <?php if ($current_user): ?>
+                        <a href="<?= url('user deletion') ?>">
+                            <?= $current_user->username ?>
+                        </a>
+                    <?php else: ?>
+                        <a class="header__link" href="<?= url('registration') ?>">
+                            <?= _('Sign up') ?>
+                        </a>
+                    <?php endif; ?>
+                </nav>
+            </header>
+
+            <main class="layout__content">
+                <?= $this->safe('content') ?>
+            </main>
+
+            <footer class="layout__footer">
+                <p>
+                    <a href="<?= url('about') ?>">
+                        <?= _('About flusio') ?>
+                    </a>
+                </p>
+            </footer>
+        </div>
     </body>
 </html>

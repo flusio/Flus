@@ -1,0 +1,16 @@
+.header__container {
+    display: flex;
+    align-items: center;
+}
+
+.header__separator {
+    flex: 1;
+}
+
+.header__link {
+    padding: 1em 2em;
+}
+
+.header__link--home {
+    font-weight: bold;
+}
