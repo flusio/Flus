@@ -27,16 +27,26 @@ class CurrentUser
     public static function get()
     {
         if (!isset($_SESSION['current_user_id'])) {
+            // Not logged in, meh.
             return null;
         }
 
+        if (self::$instance !== null && $_SESSION['current_user_id'] !== self::$instance->id) {
+            // The session changed! We want to always return the correct user
+            // so we reset the instance.
+            self::$instance = null;
+        }
+
         if (self::$instance !== null) {
+            // Oh, it's you again?
             return self::$instance;
         }
 
+        // Let's load the user from the database
         $user_dao = new models\dao\User();
         $current_user_values = $user_dao->find($_SESSION['current_user_id']);
         if (!$current_user_values) {
+            // The user doesn't exist… what are you trying to do evil user?
             return null;
         }
 
