@@ -5,6 +5,8 @@
         <meta name="viewport" content="initial-scale=1.0" />
         <?php if(isset($canonical)): ?>
             <link rel="canonical" href="<?= $canonical ?>">
+        <?php elseif($current_action_pointer): ?>
+            <link rel="canonical" href="<?= url_full($current_action_pointer) ?>">
         <?php endif; ?>
 
         <link rel="stylesheet" href="<?= url_static('stylesheets/application.css') ?>" data-turbolinks-track="reload">
