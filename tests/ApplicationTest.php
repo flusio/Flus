@@ -2,17 +2,9 @@
 
 namespace flusio;
 
-use PHPUnit\Framework\TestCase;
-
-class ApplicationTest extends TestCase
+class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @after
-     */
-    public function resetSession()
-    {
-        session_unset();
-    }
+    use \Minz\Tests\InitializerHelper;
 
     public function testRunSetsTheDefaultLocale()
     {

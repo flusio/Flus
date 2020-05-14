@@ -2,9 +2,7 @@
 
 namespace flusio\utils;
 
-use PHPUnit\Framework\TestCase;
-
-class BeltTest extends TestCase
+class BeltTest extends \PHPUnit\Framework\TestCase
 {
     public function testStartsWith()
     {

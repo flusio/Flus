@@ -2,26 +2,22 @@
 
 namespace flusio\utils;
 
-use PHPUnit\Framework\TestCase;
-
-class CurrentUserTest extends TestCase
+class CurrentUserTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\InitializerHelper;
+
     /**
      * @before
      */
-    public function reset()
+    public function resetCurrentUser()
     {
         CurrentUser::reset();
-        \Minz\Database::reset();
-        $schema = @file_get_contents(\Minz\Configuration::$schema_path);
-        $database = \Minz\Database::get();
-        $database->exec($schema);
     }
 
     public function testSetSetsTheCurrentUserInSession()
     {
-        $user_factory = new \Minz\Tests\DatabaseFactory('users');
-        $user_id = $user_factory->create();
+        $user_id = $this->create('user');
 
         CurrentUser::set($user_id);
 
@@ -30,8 +26,7 @@ class CurrentUserTest extends TestCase
 
     public function testGetReturnsTheUser()
     {
-        $user_factory = new \Minz\Tests\DatabaseFactory('users');
-        $user_id = $user_factory->create();
+        $user_id = $this->create('user');
         CurrentUser::set($user_id);
 
         $user = CurrentUser::get();
@@ -41,9 +36,8 @@ class CurrentUserTest extends TestCase
 
     public function testGetStoresTheUserInstance()
     {
-        $user_factory = new \Minz\Tests\DatabaseFactory('users');
-        $user_id_1 = $user_factory->create();
-        $user_id_2 = $user_factory->create();
+        $user_id_1 = $this->create('user');
+        $user_id_2 = $this->create('user');
         CurrentUser::set($user_id_1);
 
         $user_first_call = CurrentUser::get();
@@ -72,9 +66,8 @@ class CurrentUserTest extends TestCase
 
     public function testGetReturnsTheCorrectUserAfterChangingTheCurrentUser()
     {
-        $user_factory = new \Minz\Tests\DatabaseFactory('users');
-        $user_id_1 = $user_factory->create();
-        $user_id_2 = $user_factory->create();
+        $user_id_1 = $this->create('user');
+        $user_id_2 = $this->create('user');
 
         CurrentUser::set($user_id_1);
         $user_1 = CurrentUser::get();

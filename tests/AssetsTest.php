@@ -2,35 +2,32 @@
 
 namespace flusio;
 
-use Minz\Tests\IntegrationTestCase;
-
-class AssetsTest extends IntegrationTestCase
+class AssetsTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\ResponseAsserts;
+
     public function testShowReturnsTheAsset()
     {
-        $request = new \Minz\Request('get', '/src/assets/javascripts/application.js');
+        $response = $this->appRun('get', '/src/assets/javascripts/application.js');
 
-        $response = self::$application->run($request);
-
-        $this->assertResponse($response, 200, null, [
+        $this->assertResponse($response, 200);
+        $this->assertHeaders($response, [
             'Content-Type' => 'text/javascript',
         ]);
     }
 
     public function testShowReturns404IfFileDoesntExist()
     {
-        $request = new \Minz\Request('get', '/src/assets/dont_exist.js');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('get', '/src/assets/dont_exist.js');
 
         $this->assertResponse($response, 404, 'This file doesn’t exist.');
     }
 
     public function testShowReturns404IfFileCannotBeAccessed()
     {
-        $request = new \Minz\Request('get', '/src/assets/../Application.php');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('get', '/src/assets/../Application.php');
 
         $this->assertResponse($response, 404, 'You’ll not get this file!');
     }

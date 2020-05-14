@@ -2,19 +2,24 @@
 
 namespace flusio\cli;
 
-use PHPUnit\Framework\TestCase;
-
-class DatabaseTest extends TestCase
+class DatabaseTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\ResponseAsserts;
+
+    /**
+     * @beforeClass
+     */
+    public static function loadApplication()
+    {
+        self::$application = new \flusio\cli\Application();
+    }
+
     public function testStatusCanConnectToTheDatabase()
     {
-        $request = new \Minz\Request('cli', '/database/status');
+        $response = $this->appRun('cli', '/database/status');
 
-        $application = new Application();
-        $response = $application->run($request);
-
-        $this->assertSame(200, $response->code());
-        $this->assertSame('Database status: OK', $response->render());
+        $this->assertResponse($response, 200, 'Database status: OK');
     }
 
     public function testStatusFailsWithWrongCredentials()
@@ -23,16 +28,9 @@ class DatabaseTest extends TestCase
         $initial_database_conf = \Minz\Configuration::$database;
         \Minz\Configuration::$database['username'] = 'not the username';
 
-        $request = new \Minz\Request('cli', '/database/status');
+        $response = $this->appRun('cli', '/database/status');
 
-        $application = new Application();
-        $response = $application->run($request);
-
-        $this->assertSame(500, $response->code());
-        $this->assertStringContainsString(
-            'Database status: An error occured during database initialization',
-            $response->render()
-        );
+        $this->assertResponse($response, 500, 'Database status: An error occured during database initialization');
 
         \Minz\Configuration::$database = $initial_database_conf;
     }

@@ -22,7 +22,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
 
 // Initialize the factories
 \Minz\Tests\DatabaseFactory::addFactory(
-    'users',
+    'user',
     '\flusio\models\dao\User',
     [
         'id' => function () {
@@ -44,7 +44,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
 );
 
 \Minz\Tests\DatabaseFactory::addFactory(
-    'tokens',
+    'token',
     '\flusio\models\dao\Token',
     [
         'created_at' => function () use ($faker) {

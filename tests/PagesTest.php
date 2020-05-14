@@ -2,29 +2,25 @@
 
 namespace flusio;
 
-use Minz\Tests\IntegrationTestCase;
-
-class PagesTest extends IntegrationTestCase
+class PagesTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\ResponseAsserts;
+
     public function testHomeRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/');
 
         $this->assertResponse($response, 200, 'Hello World!');
-        $pointer = $response->output()->pointer();
-        $this->assertSame('pages/home.phtml', $pointer);
+        $this->assertPointer($response, 'pages/home.phtml');
     }
 
     public function testAboutRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/about');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/about');
 
         $this->assertResponse($response, 200);
-        $pointer = $response->output()->pointer();
-        $this->assertSame('pages/about.phtml', $pointer);
+        $this->assertPointer($response, 'pages/about.phtml');
     }
 }

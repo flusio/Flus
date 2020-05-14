@@ -2,12 +2,21 @@
 
 namespace flusio\cli;
 
-use PHPUnit\Framework\TestCase;
-
-class SystemTest extends TestCase
+class SystemTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\ResponseAsserts;
+
     /**
-     * @after
+     * @beforeClass
+     */
+    public static function loadApplication()
+    {
+        self::$application = new \flusio\cli\Application();
+    }
+
+    /**
+     * @before
      */
     public function uninstall()
     {
@@ -19,27 +28,20 @@ class SystemTest extends TestCase
     public function testSetupWhenFirstTime()
     {
         $migration_file = \Minz\Configuration::$data_path . '/migrations_version.txt';
-        $request = new \Minz\Request('cli', '/system/setup');
 
         $this->assertFalse(file_exists($migration_file));
 
-        $application = new Application();
-        $response = $application->run($request);
+        $response = $this->appRun('cli', '/system/setup');
 
-        $this->assertSame(200, $response->code());
-        $this->assertSame('The system has been initialized.', $response->render());
+        $this->assertResponse($response, 200, 'The system has been initialized.');
         $this->assertTrue(file_exists($migration_file));
     }
 
     public function testSetupWhenCallingTwice()
     {
-        $request = new \Minz\Request('cli', '/system/setup');
+        $this->appRun('cli', '/system/setup');
+        $response = $this->appRun('cli', '/system/setup');
 
-        $application = new Application();
-        $application->run($request);
-        $response = $application->run($request);
-
-        $this->assertSame(200, $response->code());
-        $this->assertSame('Your system is already up to date.', $response->render());
+        $this->assertResponse($response, 200, 'Your system is already up to date.');
     }
 }
