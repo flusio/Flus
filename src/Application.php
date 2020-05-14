@@ -29,6 +29,9 @@ class Application
      */
     public function __construct()
     {
+        // This provides utility functions to be used in the Views
+        include_once('utils/view_helpers.php');
+
         // Initialize the routes
         $router = new \Minz\Router();
         $router->addRoute('get', '/', 'Pages#home', 'home');
