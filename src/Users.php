@@ -71,16 +71,15 @@ class Users
             ]);
         }
 
-        try {
-            $user = models\User::init($username, $email, $password);
-        } catch (\Minz\Errors\ModelPropertyError $e) {
+        $user = models\User::init($username, $email, $password);
+
+        $errors = $user->validate();
+        if ($errors) {
             return Response::badRequest('users/registration.phtml', [
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
-                'errors' => [
-                    $e->property() => $this->formatUserError($e),
-                ],
+                'errors' => $this->formatUserErrors($errors),
             ]);
         }
 
@@ -98,7 +97,7 @@ class Users
         $token = models\Token::init();
         $token_dao->save($token);
 
-        $user->setProperty('validation_token', $token->token);
+        $user->validation_token = $token->token;
         $user_id = $user_dao->save($user);
 
         utils\CurrentUser::set($user_id);
@@ -148,7 +147,7 @@ class Users
             return Response::redirect('home');
         }
 
-        $user->setProperty('validated_at', \Minz\Time::now());
+        $user->validated_at = \Minz\Time::now();
         $user_dao->save($user);
 
         return Response::ok('users/validation.phtml');
@@ -203,7 +202,7 @@ class Users
             // the token will expire soon, let's regenerate a new one
             $token = models\Token::init();
             $token_dao->save($token);
-            $user->setProperty('validation_token', $token->token);
+            $user->validation_token = $token->token;
             $user_dao->save($user);
         }
 
@@ -276,32 +275,35 @@ class Users
     }
 
     /**
-     * @param \Minz\Errors\ModelPropertyError $error
+     * @param array $errors
      *
-     * @throws \Minz\Errors\ModelPropertyError if the error is not supported
-     *
-     * @return string
+     * @return array
      */
-    private function formatUserError($error)
+    private function formatUserErrors($errors)
     {
-        $property = $error->property();
-        $code = $error->getCode();
-        if ($property === 'username') {
-            if ($code === \Minz\Errors\ModelPropertyError::PROPERTY_REQUIRED) {
-                return _('The username is required.');
+        $formatted_errors = [];
+        foreach ($errors as $property => $error) {
+            $code = $error['code'];
+            if ($property === 'username') {
+                if ($code === \Minz\Model::ERROR_REQUIRED) {
+                    $formatted_error = _('The username is required.');
+                } else {
+                    $formatted_error = _('The username must be less than 50 characters.');
+                }
+            } elseif ($property === 'email') {
+                if ($code === \Minz\Model::ERROR_REQUIRED) {
+                    $formatted_error = _('The address email is required.');
+                } else {
+                    $formatted_error = _('The address email is invalid.');
+                }
+            } elseif ($property === 'password_hash') {
+                $formatted_error = _('The password is required.');
             } else {
-                return _('The username must be less than 50 characters.');
+                $formatted_error = $error;
             }
-        } elseif ($property === 'email') {
-            if ($code === \Minz\Errors\ModelPropertyError::PROPERTY_REQUIRED) {
-                return _('The address email is required.');
-            } else {
-                return _('The address email is invalid.');
-            }
-        } elseif ($property === 'password_hash') {
-            return _('The password is required.');
-        } else {
-            throw $error; // @codeCoverageIgnore
+
+            $formatted_errors[$property] = $formatted_error;
         }
+        return $formatted_errors;
     }
 }
