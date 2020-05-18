@@ -64,7 +64,7 @@ class System
             $database = \Minz\Database::get();
             $result = $database->exec($schema);
             if ($result === false) {
-                return Response::text(500, 'The database schema couldn’t be loaded.');
+                return Response::text(500, 'The database schema couldn’t be loaded.'); // @codeCoverageIgnore
             }
         }
 
@@ -72,7 +72,7 @@ class System
         $version = $migrator->lastVersion();
         $saved = @file_put_contents($migrations_version_path, $version);
         if ($saved === false) {
-            return Response::text(500, 'Cannot create the migrations version file.');
+            return Response::text(500, 'Cannot create the migrations version file.'); // @codeCoverageIgnore
         }
 
         return Response::text(200, 'The system has been initialized.');
@@ -93,7 +93,7 @@ class System
 
         $migration_version = @file_get_contents($migrations_version_path);
         if ($migration_version === false) {
-            return Response::text(500, 'Cannot read the migrations version file.');
+            return Response::text(500, 'Cannot read the migrations version file.'); // @codeCoverageIgnore
         }
 
         $migrator = new \Minz\Migrator($migrations_path);
@@ -111,17 +111,18 @@ class System
         $new_version = $migrator->version();
         $saved = @file_put_contents($migrations_version_path, $new_version);
         if ($saved === false) {
-            return Response::text(500, "Cannot save the migrations version file (version: {$version}).");
+            $text = "Cannot save the migrations version file (version: {$version})."; // @codeCoverageIgnore
+            return Response::text(500, $text); // @codeCoverageIgnore
         }
 
         $code = 200;
         $text = '';
         foreach ($results as $migration => $result) {
-            if ($result === true) {
+            if ($result === false) {
+                $code = 500;               // @codeCoverageIgnore
+                $result = 'KO';            // @codeCoverageIgnore
+            } elseif ($result === true) {
                 $result = 'OK';
-            } elseif ($result === false) {
-                $code = 500;
-                $result = 'KO';
             }
             $text .= "\n" . $migration . ': ' . $result;
         }

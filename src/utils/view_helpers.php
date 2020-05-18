@@ -22,7 +22,8 @@ function localeToBCP47($locale)
 {
     $splitted_locale = explode('_', $locale, 2);
     if (!$splitted_locale) {
-        return $locale;
+        // This is line is virtually inaccessible
+        return $locale; // @codeCoverageIgnore
     }
 
     if (count($splitted_locale) === 1) {

@@ -305,7 +305,7 @@ class Users
             } elseif ($property === 'password_hash') {
                 $formatted_error = _('The password is required.');
             } else {
-                $formatted_error = $error;
+                $formatted_error = $error; // @codeCoverageIgnore
             }
 
             $formatted_errors[$property] = $formatted_error;
