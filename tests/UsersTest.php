@@ -495,7 +495,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponse($response, 302, '/?status=user_deleted');
         $this->assertNull($user_dao->find($user->id));
         $this->assertNull(utils\CurrentUser::get());
     }

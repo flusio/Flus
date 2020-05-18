@@ -271,7 +271,7 @@ class Users
         $user_dao = new models\dao\User();
         $user_dao->delete($current_user->id);
         utils\CurrentUser::reset();
-        return Response::redirect('home');
+        return Response::redirect('home', ['status' => 'user_deleted']);
     }
 
     /**

@@ -4,6 +4,12 @@
     ]);
 ?>
 
+<?php if ($status === 'user_deleted'): ?>
+    <p>
+        <?= _('Your account and your data are now deleted.') ?>
+    </p>
+<?php endif; ?>
+
 <?php if ($current_user && !$current_user->validated_at): ?>
     <p>
         <?= _('You must validate your registration: you should have received an email containing a link intended to this purpose.') ?>
