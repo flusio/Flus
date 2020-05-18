@@ -55,7 +55,7 @@
 
                     <?php if ($current_user): ?>
                         <a href="<?= url('user deletion') ?>">
-                            <?= $current_user->username ?>
+                            <?= $this->protect($current_user->username) ?>
                         </a>
                     <?php else: ?>
                         <a class="header__link" href="<?= url('registration') ?>">
