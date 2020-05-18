@@ -66,13 +66,25 @@
             <?= _('A strong password is at least 8 characters long.') ?>
         </p>
 
-        <input
-            id="password"
-            name="password"
-            type="password"
-            value="<?= $password ?>"
-            required
-        />
+        <div class="form-group__stack" data-controller="input-password">
+            <input
+                id="password"
+                name="password"
+                type="password"
+                value="<?= $password ?>"
+                required
+                data-target="input-password.input"
+            />
+
+            <button
+                type="button"
+                class="button-ghost js-only"
+                data-action="input-password#toggle"
+                aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
+            >
+                <?= _('Show') ?>
+            </button>
+        </div>
 
         <?php if (isset($errors['password_hash'])): ?>
             <p class="form-group__error">

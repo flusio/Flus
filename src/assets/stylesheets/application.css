@@ -7,3 +7,7 @@
 *::after {
     box-sizing: border-box;
 }
+
+.js-only {
+    display: none;
+}

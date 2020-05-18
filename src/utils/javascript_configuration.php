@@ -1,6 +1,8 @@
 <?php
 
 $translations = [
+    'Hide',
+    'Show',
 ];
 
 $l10n = [];

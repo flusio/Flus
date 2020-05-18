@@ -21,6 +21,11 @@ input {
     margin-bottom: 1em;
 }
 
+.form-group__stack {
+    display: flex;
+    align-items: baseline;
+}
+
 .form-group__caption {
     padding-left: 0.5em;
     padding-right: 0.5em;
