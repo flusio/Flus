@@ -40,6 +40,10 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'password_hash' => function () use ($faker) {
             return password_hash($faker->password, PASSWORD_BCRYPT);
         },
+        'locale' => function () use ($faker) {
+            $available_locales = \flusio\utils\Locale::availableLocales();
+            return $faker->randomElement($available_locales);
+        },
     ]
 );
 

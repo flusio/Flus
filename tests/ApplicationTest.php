@@ -4,6 +4,7 @@ namespace flusio;
 
 class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
 
     public function testRunSetsTheDefaultLocale()
@@ -21,6 +22,21 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
     public function testRunSetsTheLocaleFromSessionLocale()
     {
         $_SESSION['locale'] = 'fr_FR';
+        $request = new \Minz\Request('GET', '/');
+
+        $application = new Application();
+        $response = $application->run($request);
+
+        $variables = \Minz\Output\View::defaultVariables();
+        $this->assertSame('fr_FR', $variables['current_locale']);
+        $this->assertSame('fr_FR', utils\Locale::currentLocale());
+    }
+
+    public function testRunSetsTheLocaleFromConnectedUser()
+    {
+        $this->login([
+            'locale' => 'fr_FR',
+        ]);
         $request = new \Minz\Request('GET', '/');
 
         $application = new Application();

@@ -79,7 +79,9 @@ class Application
         $current_user = utils\CurrentUser::get();
 
         // Setup current localization
-        if (isset($_SESSION['locale'])) {
+        if ($current_user) {
+            $locale = $current_user->locale;
+        } elseif (isset($_SESSION['locale'])) {
             $locale = $_SESSION['locale'];
         } else {
             $locale = utils\Locale::DEFAULT_LOCALE;

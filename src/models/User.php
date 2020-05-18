@@ -38,6 +38,12 @@ class User extends \Minz\Model
             'type' => 'string',
             'required' => true,
         ],
+
+        'locale' => [
+            'type' => 'string',
+            'required' => true,
+            'validator' => '\flusio\models\User::validateLocale',
+        ],
     ];
 
     /**
@@ -54,6 +60,7 @@ class User extends \Minz\Model
             'username' => trim($username),
             'email' => strtolower(self::emailToPunycode(trim($email))),
             'password_hash' => $password ? password_hash($password, PASSWORD_BCRYPT) : '',
+            'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
         ]);
     }
 
@@ -122,5 +129,15 @@ class User extends \Minz\Model
     public static function validateUsername($username)
     {
         return strlen($username) <= 50;
+    }
+
+    /**
+     * @param string $locale
+     * @return boolean
+     */
+    public static function validateLocale($locale)
+    {
+        $available_locales = \flusio\utils\Locale::availableLocales();
+        return isset($available_locales[$locale]);
     }
 }

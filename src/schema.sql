@@ -11,6 +11,7 @@ CREATE TABLE users (
     email TEXT UNIQUE NOT NULL,
     username TEXT NOT NULL,
     password_hash TEXT NOT NULL,
+    locale TEXT NOT NULL DEFAULT 'en_GB',
     validated_at TIMESTAMPTZ,
     validation_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE
 );

@@ -36,6 +36,13 @@ class Sessions
         $available_locales = utils\Locale::availableLocales();
         if (isset($available_locales[$locale])) {
             $_SESSION['locale'] = $locale;
+
+            $current_user = utils\CurrentUser::get();
+            if ($current_user) {
+                $user_dao = new models\dao\User();
+                $current_user->locale = $locale;
+                $user_dao->save($current_user);
+            }
         } else {
             \Minz\Log::warning(
                 "[Sessions#changeLocale] Tried to set invalid `{$locale}` locale."
