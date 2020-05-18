@@ -15,11 +15,21 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/sessions/locale', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'locale' => 'fr_FR',
-            'back' => 'home',
         ]);
 
         $this->assertResponse($response, 302, '/');
         $this->assertSame('fr_FR', $_SESSION['locale']);
+    }
+
+    public function testChangeLocaleRedirectsToRedirectTo()
+    {
+        $response = $this->appRun('post', '/sessions/locale', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'locale' => 'fr_FR',
+            'redirect_to' => 'registration',
+        ]);
+
+        $this->assertResponse($response, 302, '/registration');
     }
 
     public function testChangeLocaleWithWrongCsrfDoesntSetsSessionLocale()
@@ -29,7 +39,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/sessions/locale', [
             'csrf' => 'not the token',
             'locale' => 'fr_FR',
-            'back' => 'home',
         ]);
 
         $this->assertResponse($response, 302, '/');
@@ -41,7 +50,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/sessions/locale', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'locale' => 'zu',
-            'back' => 'home',
         ]);
 
         $this->assertResponse($response, 302, '/');

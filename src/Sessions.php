@@ -17,9 +17,9 @@ class Sessions
      *
      * @request_param string csrf
      * @request_param string locale
-     * @request_param string back An action pointer to redirect to (optional, default is `home`)
+     * @request_param string redirect_to An action pointer to redirect to (optional, default is `home`)
      *
-     * @response 302 Always redirect to the `back` param, or `home` (default)
+     * @response 302 Redirect to the `redirect_to` param
      *
      * @param \Minz\Request $request
      *
@@ -29,7 +29,7 @@ class Sessions
     {
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::redirect($request->param('back', 'home'));
+            return Response::redirect($request->param('redirect_to', 'home'));
         }
 
         $locale = $request->param('locale');
@@ -42,6 +42,6 @@ class Sessions
             );
         }
 
-        return Response::redirect($request->param('back', 'home'));
+        return Response::redirect($request->param('redirect_to', 'home'));
     }
 }
