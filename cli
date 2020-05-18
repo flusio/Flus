@@ -25,7 +25,7 @@ $longopts = [
 $options = getopt($shortopts, $longopts);
 
 if (!isset($options['request']) || !$options['request']) {
-    die("--request is required and must be a valid URI path.\n");
+    $options['request'] = '/';
 }
 
 $parameters = [];
