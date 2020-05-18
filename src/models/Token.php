@@ -21,7 +21,6 @@ class Token extends \Minz\Model
         'token' => [
             'type' => 'string',
             'required' => true,
-            'validator' => '\flusio\models\Token::validateToken',
         ],
     ];
 
@@ -72,14 +71,5 @@ class Token extends \Minz\Model
     public function expiresIn($number, $unit)
     {
         return \Minz\Time::fromNow($number, $unit) >= $this->expired_at;
-    }
-
-    /**
-     * @param string $token
-     * @return boolean
-     */
-    public static function validateToken($token)
-    {
-        return strlen($token) >= 16;
     }
 }
