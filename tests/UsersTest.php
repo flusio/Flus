@@ -320,6 +320,21 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->validated_at);
     }
 
+    public function testValidationFailsIfTokenIsNotAssociatedToAUser()
+    {
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('get', '/registration/validation', [
+            't' => $token,
+        ]);
+
+        $this->assertResponse($response, 404, 'The token doesn’t exist');
+    }
+
     public function testValidationFailsIfTokenDoesNotExist()
     {
         $faker = \Faker\Factory::create();

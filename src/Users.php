@@ -116,7 +116,7 @@ class Users
      * @response 200 if the token is valid and the registration validated
      * @response 302 / if the token is valid and the registration already validated
      * @response 400 if the token has expired
-     * @response 404 if the token doesn't exist
+     * @response 404 if the token doesn't exist or not associated to a User
      *
      * @param \Minz\Request $request
      *
@@ -142,6 +142,12 @@ class Users
         }
 
         $raw_user = $user_dao->findBy(['validation_token' => $token->token]);
+        if (!$raw_user) {
+            return Response::notFound('users/validation.phtml', [
+                'error' => _('The token doesn’t exist.'),
+            ]);
+        }
+
         $user = new models\User($raw_user);
         if ($user->validated_at) {
             return Response::redirect('home');
