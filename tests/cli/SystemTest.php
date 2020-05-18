@@ -44,4 +44,15 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200, 'Your system is already up to date.');
     }
+
+    public function testSetupWithMigrations()
+    {
+        $migration_file = \Minz\Configuration::$data_path . '/migrations_version.txt';
+        touch($migration_file);
+        \Minz\Database::create();
+
+        $response = $this->appRun('cli', '/system/setup');
+
+        $this->assertResponse($response, 200, 'Migration202005111330CreateUser: OK');
+    }
 }
