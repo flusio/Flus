@@ -10,6 +10,10 @@
         <?php endif; ?>
 
         <link rel="stylesheet" href="<?= url_static('stylesheets/application.css') ?>" data-turbolinks-track="reload">
+
+        <script id="javascript-configuration" type="application/json">
+            <?= $this->safe('javascript_configuration') ?>
+        </script>
         <script src="<?= url_static('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
 
         <title><?= $title ?></title>

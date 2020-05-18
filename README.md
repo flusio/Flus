@@ -342,6 +342,21 @@ PHP is told where to find these files with the [`bindtextdomain()`](https://www.
 function and the language to use is set with [`setlocale()`](https://www.php.net/manual/function.setlocale.php).
 All this happens in the [`src/Application.php` file](./src/Application.php).
 
+Sometimes, I need to localize strings within the JavaScript code. In this case,
+the `_()` function is a bit different since it's not provided by PHP. It must
+be imported:
+
+```javascript
+import _ from 'js/l10n.js';
+
+console.log(_('Hello World!'));
+```
+
+The function will look into the `window.jsConfiguration.l10n` object to search
+for the string. To add a new translation to this object, you’ll have to add the
+string to the `$translations` array from the [`src/utils/javascript_configuration.php`
+file](src/utils/javascript_configuration.php)
+
 ## How are the assets bundled?
 
 I use [Parcel](https://parceljs.org/) to bundle the assets. Be aware I use the
