@@ -270,7 +270,9 @@ class Users
         $password = $request->param('password');
         if (!$current_user->verifyPassword($password)) {
             return Response::badRequest('users/deletion.phtml', [
-                'error' => _('The password is incorrect.'),
+                'errors' => [
+                    'password_hash' => _('The password is incorrect.'),
+                ],
             ]);
         }
 
