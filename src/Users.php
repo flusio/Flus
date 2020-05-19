@@ -211,7 +211,7 @@ class Users
         }
 
         $token = new models\Token($token_dao->find($user->validation_token));
-        if ($token->expiresIn(30, 'minutes')) {
+        if ($token->expiresIn(30, 'minutes') || $token->isInvalidated()) {
             // the token will expire soon, let's regenerate a new one
             $token = models\Token::init();
             $token_dao->save($token);
