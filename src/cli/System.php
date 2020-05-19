@@ -14,15 +14,13 @@ class System
 {
     public function usage()
     {
-        $usage = _('Usage: php ./cli --request REQUEST [-p KEY=VALUE]...');
-        $usage .= "\n\n";
-        $usage .= _('REQUEST can be one of the following:') . "\n";
+        $usage = 'Usage: php ./cli --request REQUEST [-p KEY=VALUE]...' . "\n\n";
+        $usage .= 'REQUEST can be one of the following:' . "\n";
         $usage .= '  /                 Show this help' . "\n";
         $usage .= '  /database/status  Return the status of the DB connection' . "\n";
-        $usage .= '  /system/setup     Initialize or update the system' . "\n";
-        $usage .= "\n";
-        $usage .= _('Parameters are passed with the -p flag.') . ' ';
-        $usage .= _('You must replace KEY by the parameter name and VALUE by the value that you want.');
+        $usage .= '  /system/setup     Initialize or update the system' . "\n\n";
+        $usage .= 'Parameters are passed with the -p flag. ';
+        $usage .= 'You must replace KEY by the parameter name and VALUE by the value that you want.';
 
         return Response::text(200, $usage);
     }

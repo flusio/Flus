@@ -194,7 +194,7 @@ class Users
 
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('bad_request.phtml', [
-                'error' => _('A security verification failed: you should try again.'),
+                'error' => _('A security verification failed: you should retry to submit the form.'),
                 'link_to' => $redirect_to,
             ]);
         }
@@ -264,7 +264,7 @@ class Users
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('users/deletion.phtml', [
-                'error' => _('A security verification failed: you should try again.'),
+                'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 

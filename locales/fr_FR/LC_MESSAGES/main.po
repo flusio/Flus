@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"POT-Creation-Date: 2020-05-08 16:37+0200\n"
-"PO-Revision-Date: 2020-05-08 16:37+0200\n"
+"Project-Id-Version: flusio\n"
+"POT-Creation-Date: 2020-05-19 10:27+0200\n"
+"PO-Revision-Date: 2020-05-19 10:28+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,26 +15,230 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
+#: Users.php:70 Users.php:197 Users.php:267
+msgid "A security verification failed: you should retry to submit the form."
+msgstr ""
+"Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
+"le formulaire."
+
+#: Users.php:93
+msgid "An account already exists with this email address."
+msgstr "Un compte existe déjà avec cette adresse courriel."
+
+#: Users.php:134 Users.php:148
+msgid "The token doesn’t exist."
+msgstr "Le token n’existe pas."
+
+#: Users.php:141
+msgid "The token has expired."
+msgstr "Le token a expiré."
+
+#: Users.php:275
+msgid "The password is incorrect."
+msgstr "Le mot de passe est incorrect."
+
+#: Users.php:298
+msgid "The username is required."
+msgstr "Le nom d’utilisateur·ice est obligatoire."
+
+#: Users.php:300
+msgid "The username must be less than 50 characters."
+msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
+
+#: Users.php:304
+msgid "The address email is required."
+msgstr "L’adresse courriel est obligatoire."
+
+#: Users.php:306
+msgid "The address email is invalid."
+msgstr "L’adresse courriel est invalide."
+
+#: Users.php:309
+msgid "The password is required."
+msgstr "Le mot de passe est obligatoire."
+
+#: assets/javascripts/controllers/input_password_controller.js:21
+msgid "Hide"
+msgstr "Cacher"
+
+#: assets/javascripts/controllers/input_password_controller.js:24
+#: views/users/deletion.phtml:44 views/users/registration.phtml:90
+msgid "Show"
+msgstr "Afficher"
+
+#: mailers/Users.php:9
+msgid "[flusio] Confirm your registration"
+msgstr "[flusio] Confirmer votre inscription"
+
+#: views/_layouts/base.phtml:38
+msgid "Language"
+msgstr "Langue"
+
+#: views/_layouts/base.phtml:52
+msgid "Change"
+msgstr "Changer"
+
+#: views/_layouts/base.phtml:62 views/users/registration.phtml:103
+msgid "Sign up"
+msgstr "S’inscrire"
+
+#: views/_layouts/base.phtml:75
+msgid "About flusio"
+msgstr "À propos de flusio"
+
+#: views/bad_request.phtml:3 views/unauthorized.phtml:3
+msgid "Unauthorized"
+msgstr "Non authorisé"
+
+#: views/bad_request.phtml:14 views/not_found.phtml:14
+#: views/unauthorized.phtml:14
+msgid "Back to the previous page"
+msgstr "Retour à la page précédente"
+
+#: views/bad_request.phtml:18 views/not_found.phtml:18
+#: views/unauthorized.phtml:18
+msgid "Back to the home page"
+msgstr "Retour à la page d’accueil"
+
+#: views/mailers/users/registration_validation_email.phtml:2
+#, php-format
+msgid "Welcome %s,"
+msgstr "Bienvenue %s,"
+
+#: views/mailers/users/registration_validation_email.phtml:6
+#, php-format
+msgid ""
+"Thank you for your inscription on %s. To finish, you’ll have to confirm your "
+"email address. You just have to click on the following link, and you should "
+"be all good then:"
+msgstr ""
+"Merci pour votre inscription sur %s. Pour terminer, vous devez confirmer "
+"votre adresse courriel. Vous avez seulement à cliquer sur le lien suivant, "
+"et tout devrait être bon ensuite :"
+
+#: views/mailers/users/registration_validation_email.phtml:13
+msgid "Have a nice day!"
+msgstr "Bonne journée !"
+
+#: views/not_found.phtml:3
+msgid "Page not found"
+msgstr "Page non trouvée"
+
+#: views/not_found.phtml:8
+msgid "This page doesn’t exist."
+msgstr "Cette page n’existe pas."
+
 #: views/pages/about.phtml:3
 msgid "About"
 msgstr "À propos"
 
-#: views/pages/about.phtml:10 views/pages/home.phtml:3
+#: views/pages/about.phtml:9 views/pages/home.phtml:3
 msgid "Home"
 msgstr "Accueil"
 
 #: views/pages/home.phtml:9
-msgid "Hello World!"
-msgstr "Bonjour le monde !"
+msgid "Your account and your data are now deleted."
+msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
 
-#: views/pages/home.phtml:14
-msgid "About flusio"
-msgstr "À propos de flusio"
+#: views/pages/home.phtml:15
+msgid ""
+"You must validate your registration: you should have received an email "
+"containing a link intended to this purpose."
+msgstr ""
+"Vous devez valider votre inscription : vous devriez avoir reçu un courriel "
+"contenant un lien permettant cela."
 
-#: views/pages/home.phtml:24
-msgid "Language"
-msgstr "Langue"
+#: views/pages/home.phtml:20
+msgid "We’ve just sent you an email!"
+msgstr "Nous vous avons envoyé un courriel !"
 
-#: views/pages/home.phtml:38
-msgid "Change"
-msgstr "Changer"
+#: views/pages/home.phtml:26
+msgid "Didn’t receive the email? Resend it"
+msgstr "Courriel non reçu ? Renvoyer"
+
+#: views/unauthorized.phtml:8
+msgid "You must be connected to perform this action."
+msgstr "Vous devez être connecté·e pour effectuer cette action."
+
+#: views/users/deletion.phtml:3
+msgid "Account deletion"
+msgstr "Suppression du compte"
+
+#: views/users/deletion.phtml:9
+msgid ""
+"You’re about to delete your account and your data will be lost. This can’t "
+"be canceled!"
+msgstr ""
+"Vous êtes sur le point de supprimer votre compte : vos données seront alors "
+"perdues. Cette action ne peut pas être annulée !"
+
+#: views/users/deletion.phtml:22
+msgid "Your password"
+msgstr "Votre mot de passe"
+
+#: views/users/deletion.phtml:26
+msgid "You must type your password so we can confirm your identity."
+msgstr ""
+"Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
+"identité."
+
+#: views/users/deletion.phtml:42 views/users/registration.phtml:88
+msgid ""
+"Show password as plain text. Note: this will visually expose your password."
+msgstr ""
+"Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
+"mot de passe visuellement."
+
+#: views/users/deletion.phtml:57
+msgid "Delete the account"
+msgstr "Supprimer le compte"
+
+#: views/users/registration.phtml:3
+msgid "Registration"
+msgstr "Inscription"
+
+#: views/users/registration.phtml:18
+msgid "How should we name you?"
+msgstr "Comment devons-nous vous appeler ?"
+
+#: views/users/registration.phtml:22
+msgid "Your username must not be longer than 50 characters."
+msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
+
+#: views/users/registration.phtml:43
+msgid "Your email address"
+msgstr "Votre adresse courriel"
+
+#: views/users/registration.phtml:47
+msgid "We’ll only use it to send you important emails."
+msgstr "Nous vous enverrons seulement des courriels importants."
+
+#: views/users/registration.phtml:67
+msgid "And a password"
+msgstr "Et un mot de passe"
+
+#: views/users/registration.phtml:71
+msgid "A strong password is at least 8 characters long."
+msgstr "Un mot de passe robuste fait au moins 8 caractères."
+
+#: views/users/validation.phtml:3
+msgid "Registration validation"
+msgstr "Validation de l’inscription"
+
+#: views/users/validation.phtml:9
+msgid "Your registration is now validated."
+msgstr "Votre inscription est maintenant validée."
+
+#: views/users/validation.phtml:14
+msgid "Back to home"
+msgstr "Retour à l’accueil"
+
+#: views/users/validation.phtml:26
+msgid "Send an email with a valid token"
+msgstr "Envoyer un courriel avec un token valide"
+
+#~ msgid "Sign Up"
+#~ msgstr "S’inscrire"
+
+#~ msgid "Hello World!"
+#~ msgstr "Bonjour le monde !"
