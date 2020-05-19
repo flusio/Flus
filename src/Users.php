@@ -136,9 +136,9 @@ class Users
         }
 
         $token = new models\Token($raw_token);
-        if ($token->hasExpired()) {
+        if (!$token->isValid()) {
             return Response::badRequest('users/validation.phtml', [
-                'error' => _('The token has expired.'),
+                'error' => _('The token has expired or has been invalidated.'),
             ]);
         }
 

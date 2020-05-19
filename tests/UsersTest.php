@@ -315,7 +315,32 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             't' => $token,
         ]);
 
-        $this->assertResponse($response, 400, 'The token has expired');
+        $this->assertResponse($response, 400, 'The token has expired or has been invalidated');
+        $user = new models\User($user_dao->find($user_id));
+        $this->assertNull($user->validated_at);
+    }
+
+    public function testValidationFailsIfTokenHasBeenInvalidated()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        $this->freeze($faker->dateTime());
+
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'invalidated_at' => $faker->iso8601,
+        ]);
+        $user_id = $this->create('user', [
+            'validated_at' => null,
+            'validation_token' => $token,
+        ]);
+
+        $response = $this->appRun('get', '/registration/validation', [
+            't' => $token,
+        ]);
+
+        $this->assertResponse($response, 400, 'The token has expired or has been invalidated');
         $user = new models\User($user_dao->find($user_id));
         $this->assertNull($user->validated_at);
     }

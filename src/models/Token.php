@@ -59,6 +59,26 @@ class Token extends \Minz\Model
     }
 
     /**
+     * Return whether the token has been invalidated.
+     *
+     * @return boolean
+     */
+    public function isInvalidated()
+    {
+        return $this->invalidated_at !== null;
+    }
+
+    /**
+     * Return whether the token is valid (i.e. not expired and not invalidated)
+     *
+     * @return boolean
+     */
+    public function isValid()
+    {
+        return !$this->hasExpired() && !$this->isInvalidated();
+    }
+
+    /**
      * Return wheter the token is going to expire in the next $number of $units.
      *
      * @see https://www.php.net/manual/datetime.formats.relative.php
