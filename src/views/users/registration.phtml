@@ -18,12 +18,17 @@
             <?= _('How should we name you?') ?>
         </label>
 
+        <p class="form-group__caption">
+            <?= _('Your username must not be longer than 50 characters.') ?>
+        </p>
+
         <input
             id="username"
             name="username"
             type="text"
             value="<?= $username ?>"
             required
+            maxlength="50"
         />
 
         <?php if (isset($errors['username'])): ?>
