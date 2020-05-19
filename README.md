@@ -23,6 +23,10 @@ For now, the software doesn’t exist yet.
 
 There’s no process to contribute yet, but feel free to [reach me by email](mailto://marien@flus.io).
 
+If you want to help to fund the development, you can either take a subscription
+to [Flus 1](https://rss.flus.fr) or contribute to [a common pot](https://flus.fr/cagnotte).
+These methods are intended for French people. You can [learn more here](https://flus.fr/financement).
+
 If you open a pull request anyway, please fill the pull request message
 properly. It’s intented to remind you (and me!) important things to check when
 code is changed. You’ll have to wait for the CI to run over your code then. If
