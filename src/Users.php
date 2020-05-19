@@ -150,6 +150,12 @@ class Users
         }
 
         $user = new models\User($raw_user);
+
+        // No need to keep the token in database, whether or not the user is
+        // already validated.
+        $token_dao->delete($token->token);
+        $user->validation_token = null;
+
         if ($user->validated_at) {
             return Response::redirect('home');
         }

@@ -296,6 +296,32 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/');
     }
 
+    public function testValidationDeletesToken()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        $token_dao = new models\dao\Token();
+        $this->freeze($faker->dateTime());
+
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token_id = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $user_id = $this->create('user', [
+            'validated_at' => null,
+            'validation_token' => $token_id,
+        ]);
+
+        $response = $this->appRun('get', '/registration/validation', [
+            't' => $token_id,
+        ]);
+
+        $token = $token_dao->find($token_id);
+        $user = new models\User($user_dao->find($user_id));
+        $this->assertNull($token);
+        $this->assertNull($user->validation_token);
+    }
+
     public function testValidationFailsIfTokenHasExpired()
     {
         $faker = \Faker\Factory::create();
