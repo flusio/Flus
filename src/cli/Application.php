@@ -23,6 +23,7 @@ class Application
         $router->addRoute('cli', '/', 'cli/System#usage');
         $router->addRoute('cli', '/system/setup', 'cli/System#setup');
         $router->addRoute('cli', '/database/status', 'cli/Database#status');
+        $router->addRoute('cli', '/users/clean', 'cli/Users#clean');
 
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);

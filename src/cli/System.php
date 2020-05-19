@@ -14,13 +14,13 @@ class System
 {
     public function usage()
     {
-        $usage = 'Usage: php ./cli --request REQUEST [-p KEY=VALUE]...' . "\n\n";
+        $usage = 'Usage: php ./cli --request REQUEST [-pKEY=VALUE]...' . "\n\n";
         $usage .= 'REQUEST can be one of the following:' . "\n";
         $usage .= '  /                 Show this help' . "\n";
         $usage .= '  /database/status  Return the status of the DB connection' . "\n";
-        $usage .= '  /system/setup     Initialize or update the system' . "\n\n";
-        $usage .= 'Parameters are passed with the -p flag. ';
-        $usage .= 'You must replace KEY by the parameter name and VALUE by the value that you want.';
+        $usage .= '  /system/setup     Initialize or update the system' . "\n";
+        $usage .= '  /users/clean      Clean not validated users created NUMBER months ago' . "\n";
+        $usage .= '      [-psince=NUMBER] where NUMBER is the number of months, greater than 0 (default is 1)';
 
         return Response::text(200, $usage);
     }

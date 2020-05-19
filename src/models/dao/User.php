@@ -39,4 +39,34 @@ class User extends \Minz\DatabaseModel
             return $this->create($values);
         }
     }
+
+    /**
+     * Return not validated users older than the given time.
+     *
+     * @see \Minz\Time::ago
+     *
+     * @param integer $number
+     * @param string $unit
+     *
+     * @throws \Minz\Errors\DatabaseModelError if an error occured during the execution
+     *
+     * @return array
+     */
+    public function listNotValidatedOlderThan($number, $unit)
+    {
+        $date = \Minz\Time::ago($number, $unit)->format(\Minz\Model::DATETIME_FORMAT);
+        $sql = "SELECT * FROM users WHERE validated_at IS NULL AND created_at <= ?";
+        $statement = $this->prepare($sql);
+        $result = $statement->execute([$date]);
+        if (!$result) {
+            throw self::sqlStatementError($statement); // @codeCoverageIgnore
+        }
+
+        $result = $statement->fetchAll();
+        if ($result !== false) {
+            return $result;
+        } else {
+            throw self::sqlStatementError($statement); // @codeCoverageIgnore
+        }
+    }
 }
