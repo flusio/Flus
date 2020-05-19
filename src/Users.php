@@ -72,6 +72,7 @@ class Users
         }
 
         $user = models\User::init($username, $email, $password);
+        $user->locale = utils\Locale::currentLocale();
 
         $errors = $user->validate();
         if ($errors) {
