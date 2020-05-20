@@ -2,7 +2,7 @@
 
 namespace flusio;
 
-class UsersTest extends \PHPUnit\Framework\TestCase
+class AccountsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
@@ -13,16 +13,16 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $response = $this->appRun('get', '/settings/deletion');
+        $response = $this->appRun('get', '/account/deletion');
 
         $this->assertResponse($response, 200);
     }
 
     public function testDeletionRedirectsToLoginIfUserNotConnected()
     {
-        $response = $this->appRun('get', '/settings/deletion');
+        $response = $this->appRun('get', '/account/deletion');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fsettings%2Fdeletion');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdeletion');
     }
 
     public function testDeleteRedirectsToTheHomePageAndDeletesTheUser()
@@ -35,7 +35,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/settings/deletion', [
+        $response = $this->appRun('post', '/account/deletion', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => $password,
         ]);
@@ -49,12 +49,12 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     {
         $faker = \Faker\Factory::create();
 
-        $response = $this->appRun('post', '/settings/deletion', [
+        $response = $this->appRun('post', '/account/deletion', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => $faker->password,
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fsettings%2Fdeletion');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdeletion');
     }
 
     public function testDeleteFailsIfPasswordIsIncorrect()
@@ -67,7 +67,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/settings/deletion', [
+        $response = $this->appRun('post', '/account/deletion', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => 'not the password',
         ]);
@@ -87,7 +87,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         ]);
         (new \Minz\CSRF())->generateToken();
 
-        $response = $this->appRun('post', '/settings/deletion', [
+        $response = $this->appRun('post', '/account/deletion', [
             'csrf' => 'not the token',
             'password' => $password,
         ]);

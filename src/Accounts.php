@@ -5,18 +5,18 @@ namespace flusio;
 use Minz\Response;
 
 /**
- * Handle the requests related to the users.
+ * Handle the requests related to the accounts.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Users
+class Accounts
 {
     /**
      * Show the deletion form.
      *
      * @response 200
-     * @response 302 /login?redirect_to=/settings/deletion if the user is not connected
+     * @response 302 /login?redirect_to=/account/deletion if the user is not connected
      *
      * @return \Minz\Response
      */
@@ -28,7 +28,7 @@ class Users
             ]);
         }
 
-        return Response::ok('users/deletion.phtml');
+        return Response::ok('accounts/deletion.phtml');
     }
 
     /**
@@ -38,7 +38,7 @@ class Users
      * @request_param string password
      *
      * @response 302 /
-     * @response 302 /login?redirect_to=/settings/deletion if the user is not connected
+     * @response 302 /login?redirect_to=/account/deletion if the user is not connected
      * @response 400 if CSRF token or password is wrong
      *
      * @param \Minz\Request $request
@@ -56,14 +56,14 @@ class Users
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('users/deletion.phtml', [
+            return Response::badRequest('accounts/deletion.phtml', [
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
         $password = $request->param('password');
         if (!$current_user->verifyPassword($password)) {
-            return Response::badRequest('users/deletion.phtml', [
+            return Response::badRequest('accounts/deletion.phtml', [
                 'errors' => [
                     'password_hash' => _('The password is incorrect.'),
                 ],
