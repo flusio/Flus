@@ -25,13 +25,21 @@ class Token extends \Minz\Model
     ];
 
     /**
-     * Initialize a token
+     * Initialize a token valid for a certain amount of time.
+     *
+     * @see \Minz\Time
+     *
+     * @param integer $number
+     * @param string $duration
+     * @param integer $complexity default is 32
+     *
+     * @return \flusio\models\Token
      */
-    public static function init()
+    public static function init($number, $duration, $complexity = 32)
     {
         return new self([
-            'expired_at' => \Minz\Time::fromNow(1, 'day'),
-            'token' => bin2hex(random_bytes(8)),
+            'expired_at' => \Minz\Time::fromNow($number, $duration),
+            'token' => bin2hex(random_bytes(32)),
         ]);
     }
 
