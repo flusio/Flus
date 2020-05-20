@@ -36,7 +36,6 @@ class Application
         $router = new \Minz\Router();
         $router->addRoute('get', '/', 'Pages#home', 'home');
         $router->addRoute('get', '/about', 'Pages#about', 'about');
-        $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
         // Registration
         $router->addRoute('get', '/registration', 'Registrations#new', 'registration');
@@ -49,8 +48,10 @@ class Application
             'resend validation email'
         );
 
-        // this is temporary while there's no login page
-        $router->addRoute('get', '/login', 'Pages#home', 'login');
+        // Sessions
+        $router->addRoute('get', '/login', 'Sessions#new', 'login');
+        $router->addRoute('post', '/login', 'Sessions#create', 'create session');
+        $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
         // Account
         $router->addRoute('get', '/account/deletion', 'Accounts#deletion', 'user deletion');
