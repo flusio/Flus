@@ -139,6 +139,15 @@ First, make sure you have PHP 7.3+, Node 14 and a running PostgreSQL 12 with a
 user being able to create and drop a database. You also must install [the PHP
 `composer` dependency manager](https://getcomposer.org/).
 
+You might want to configure [browscap](https://www.php.net/manual/fr/misc.configuration.php#ini.browscap).
+This allows to detect the browser and the platform of a user correctly in order
+to identify a session. Without browscap, all the sessions will be identified as
+“Unknown browser on unknown platform”.
+You’ll have to place the [`docker/lite_php_browscap.ini` file](./docker/lite_php_browscap.ini)
+somewhere on your filesystem and set the `browscap` path to this file in your
+`php.ini` file ([see an example](./docker/php-ext-browscap.ini)). If you need
+an up-to-date `browscap.ini` file, you can download one on [browscap.org](https://browscap.org/).
+
 Then, create and edit the `.env` file:
 
 ```console

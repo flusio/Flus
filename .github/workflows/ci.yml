@@ -46,6 +46,7 @@ jobs:
               php-version: ${{ matrix.php-versions }}
               coverage: xdebug
               extensions: intl, gettext, pdo, pdo_pgsql
+              ini-values: browscap=${{ github.workspace }}/docker/lite_php_browscap.ini
 
         - name: Setup locales
           run: |
