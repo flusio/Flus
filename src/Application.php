@@ -39,13 +39,13 @@ class Application
         $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
         // Registration
-        $router->addRoute('get', '/registration', 'Users#registration', 'registration');
-        $router->addRoute('post', '/registration', 'Users#create', 'create user');
-        $router->addRoute('get', '/registration/validation', 'Users#validation', 'registration validation');
+        $router->addRoute('get', '/registration', 'Registrations#new', 'registration');
+        $router->addRoute('post', '/registration', 'Registrations#create', 'create user');
+        $router->addRoute('get', '/registration/validation', 'Registrations#validation', 'registration validation');
         $router->addRoute(
             'post',
             '/registration/validation/email',
-            'Users#resendValidationEmail',
+            'Registrations#resendValidationEmail',
             'resend validation email'
         );
 
