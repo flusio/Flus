@@ -9,6 +9,8 @@ return [
 
     'secret_key' => $dotenv->pop('APP_SECRET_KEY'),
 
+    'session_lifetime' => 30,
+
     'url_options' => [
         'host' => $dotenv->pop('APP_HOST'),
         'port' => intval($dotenv->pop('APP_PORT')),

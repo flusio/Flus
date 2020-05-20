@@ -12,6 +12,8 @@ return [
 
     'secret_key' => $dotenv->pop('APP_SECRET_KEY'),
 
+    'session_lifetime' => 30,
+
     'url_options' => [
         'host' => 'test.flus.io',
         'protocol' => 'https',
