@@ -39,22 +39,22 @@ class Application
         $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
         // Registration
-        $router->addRoute('get', '/registration', 'Users#registration', 'registration');
-        $router->addRoute('post', '/registration', 'Users#create', 'create user');
-        $router->addRoute('get', '/registration/validation', 'Users#validation', 'registration validation');
+        $router->addRoute('get', '/registration', 'Registrations#new', 'registration');
+        $router->addRoute('post', '/registration', 'Registrations#create', 'create user');
+        $router->addRoute('get', '/registration/validation', 'Registrations#validation', 'registration validation');
         $router->addRoute(
             'post',
             '/registration/validation/email',
-            'Users#resendValidationEmail',
+            'Registrations#resendValidationEmail',
             'resend validation email'
         );
 
         // this is temporary while there's no login page
         $router->addRoute('get', '/login', 'Pages#home', 'login');
 
-        // Settings
-        $router->addRoute('get', '/settings/deletion', 'Users#deletion', 'user deletion');
-        $router->addRoute('post', '/settings/deletion', 'Users#delete', 'delete user');
+        // Account
+        $router->addRoute('get', '/account/deletion', 'Accounts#deletion', 'user deletion');
+        $router->addRoute('post', '/account/deletion', 'Accounts#delete', 'delete user');
 
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');

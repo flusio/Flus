@@ -5,12 +5,12 @@ namespace flusio;
 use Minz\Response;
 
 /**
- * Handle the requests related to the users.
+ * Handle the requests related to the registrations.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Users
+class Registrations
 {
     /**
      * Show the registration form.
@@ -19,13 +19,13 @@ class Users
      *
      * @return \Minz\Response
      */
-    public function registration()
+    public function new()
     {
         if (utils\CurrentUser::get()) {
             return Response::redirect('home');
         }
 
-        return Response::ok('users/registration.phtml', [
+        return Response::ok('registrations/new.phtml', [
             'username' => '',
             'email' => '',
             'password' => '',
@@ -63,7 +63,7 @@ class Users
         $csrf = new \Minz\CSRF();
 
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('users/registration.phtml', [
+            return Response::badRequest('registrations/new.phtml', [
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
@@ -76,7 +76,7 @@ class Users
 
         $errors = $user->validate();
         if ($errors) {
-            return Response::badRequest('users/registration.phtml', [
+            return Response::badRequest('registrations/new.phtml', [
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
@@ -85,7 +85,7 @@ class Users
         }
 
         if ($user_dao->findBy(['email' => $user->email])) {
-            return Response::badRequest('users/registration.phtml', [
+            return Response::badRequest('registrations/new.phtml', [
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
@@ -130,21 +130,21 @@ class Users
 
         $raw_token = $token_dao->find($request->param('t'));
         if (!$raw_token) {
-            return Response::notFound('users/validation.phtml', [
+            return Response::notFound('registrations/validation.phtml', [
                 'error' => _('The token doesn’t exist.'),
             ]);
         }
 
         $token = new models\Token($raw_token);
         if (!$token->isValid()) {
-            return Response::badRequest('users/validation.phtml', [
+            return Response::badRequest('registrations/validation.phtml', [
                 'error' => _('The token has expired or has been invalidated.'),
             ]);
         }
 
         $raw_user = $user_dao->findBy(['validation_token' => $token->token]);
         if (!$raw_user) {
-            return Response::notFound('users/validation.phtml', [
+            return Response::notFound('registrations/validation.phtml', [
                 'error' => _('The token doesn’t exist.'),
             ]);
         }
@@ -163,7 +163,7 @@ class Users
         $user->validated_at = \Minz\Time::now();
         $user_dao->save($user);
 
-        return Response::ok('users/validation.phtml');
+        return Response::ok('registrations/validation.phtml');
     }
 
     /**
@@ -223,70 +223,6 @@ class Users
         $users_mailer->sendRegistrationValidationEmail($user, $token);
 
         return Response::redirect($redirect_to, ['status' => 'validation_email_sent']);
-    }
-
-    /**
-     * Show the deletion form.
-     *
-     * @response 200
-     * @response 302 /login?redirect_to=/settings/deletion if the user is not connected
-     *
-     * @return \Minz\Response
-     */
-    public function deletion()
-    {
-        if (!utils\CurrentUser::get()) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('user deletion'),
-            ]);
-        }
-
-        return Response::ok('users/deletion.phtml');
-    }
-
-    /**
-     * Delete the current user.
-     *
-     * @request_param string csrf
-     * @request_param string password
-     *
-     * @response 302 /
-     * @response 302 /login?redirect_to=/settings/deletion if the user is not connected
-     * @response 400 if CSRF token or password is wrong
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function delete($request)
-    {
-        $current_user = utils\CurrentUser::get();
-        if (!$current_user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('user deletion'),
-            ]);
-        }
-
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('users/deletion.phtml', [
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
-
-        $password = $request->param('password');
-        if (!$current_user->verifyPassword($password)) {
-            return Response::badRequest('users/deletion.phtml', [
-                'errors' => [
-                    'password_hash' => _('The password is incorrect.'),
-                ],
-            ]);
-        }
-
-        $user_dao = new models\dao\User();
-        $user_dao->delete($current_user->id);
-        utils\CurrentUser::reset();
-        return Response::redirect('home', ['status' => 'user_deleted']);
     }
 
     /**

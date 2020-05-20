@@ -2,7 +2,7 @@
 
 namespace flusio;
 
-class UsersTest extends \PHPUnit\Framework\TestCase
+class RegistrationsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \Minz\Tests\FactoriesHelper;
@@ -12,14 +12,14 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
 
-    public function testRegistrationRendersCorrectly()
+    public function testNewRendersCorrectly()
     {
         $response = $this->appRun('get', '/registration');
 
         $this->assertResponse($response, 200);
     }
 
-    public function testRegistrationRedirectsToHomeIfConnected()
+    public function testNewRedirectsToHomeIfConnected()
     {
         $this->login();
 
@@ -555,92 +555,5 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 401, 'You must be connected to perform this action');
         $this->assertEmailsCount(0);
-    }
-
-    public function testDeletionRendersCorrectly()
-    {
-        $this->login();
-
-        $response = $this->appRun('get', '/settings/deletion');
-
-        $this->assertResponse($response, 200);
-    }
-
-    public function testDeletionRedirectsToLoginIfUserNotConnected()
-    {
-        $response = $this->appRun('get', '/settings/deletion');
-
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fsettings%2Fdeletion');
-    }
-
-    public function testDeleteRedirectsToTheHomePageAndDeletesTheUser()
-    {
-        $faker = \Faker\Factory::create();
-        $user_dao = new models\dao\User();
-
-        $password = $faker->password;
-        $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
-
-        $response = $this->appRun('post', '/settings/deletion', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-            'password' => $password,
-        ]);
-
-        $this->assertResponse($response, 302, '/?status=user_deleted');
-        $this->assertNull($user_dao->find($user->id));
-        $this->assertNull(utils\CurrentUser::get());
-    }
-
-    public function testDeleteRedirectsToLoginIfUserIsNotConnected()
-    {
-        $faker = \Faker\Factory::create();
-
-        $response = $this->appRun('post', '/settings/deletion', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-            'password' => $faker->password,
-        ]);
-
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fsettings%2Fdeletion');
-    }
-
-    public function testDeleteFailsIfPasswordIsIncorrect()
-    {
-        $faker = \Faker\Factory::create();
-        $user_dao = new models\dao\User();
-
-        $password = $faker->password;
-        $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
-
-        $response = $this->appRun('post', '/settings/deletion', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-            'password' => 'not the password',
-        ]);
-
-        $this->assertResponse($response, 400, 'The password is incorrect.');
-        $this->assertNotNull($user_dao->find($user->id));
-    }
-
-    public function testDeleteFailsIfCsrfIsInvalid()
-    {
-        $faker = \Faker\Factory::create();
-        $user_dao = new models\dao\User();
-
-        $password = $faker->password;
-        $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
-        (new \Minz\CSRF())->generateToken();
-
-        $response = $this->appRun('post', '/settings/deletion', [
-            'csrf' => 'not the token',
-            'password' => $password,
-        ]);
-
-        $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertNotNull($user_dao->find($user->id));
     }
 }
