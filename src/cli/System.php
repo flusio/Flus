@@ -113,17 +113,21 @@ class System
             return Response::text(500, $text); // @codeCoverageIgnore
         }
 
-        $code = 200;
+        $has_error = false;
         $text = '';
         foreach ($results as $migration => $result) {
             if ($result === false) {
-                $code = 500;               // @codeCoverageIgnore
-                $result = 'KO';            // @codeCoverageIgnore
+                $result = 'KO';
             } elseif ($result === true) {
                 $result = 'OK';
             }
+
+            if ($result !== 'OK') {
+                $has_error = true;
+            }
+
             $text .= "\n" . $migration . ': ' . $result;
         }
-        return Response::text($code, $text);
+        return Response::text($has_error ? 500 : 200, $text);
     }
 }
