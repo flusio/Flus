@@ -235,6 +235,48 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $session_dao->count());
     }
 
+    public function testDeleteDeletesCurrentSessionAndRedirectsToHome()
+    {
+        $session_dao = new models\dao\Session();
+        $this->login();
+
+        $this->assertSame(1, $session_dao->count());
+
+        $response = $this->appRun('post', '/logout', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertResponse($response, 302, '/');
+        $this->assertSame(0, $session_dao->count());
+        $this->assertNull(\flusio\utils\CurrentUser::get());
+    }
+
+    public function testDeleteRedirectsToHomeIfNotConnected()
+    {
+        $session_dao = new models\dao\Session();
+        $this->assertSame(0, $session_dao->count());
+
+        $response = $this->appRun('post', '/logout', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertResponse($response, 302, '/');
+    }
+
+    public function testDeleteFailsIfCsrfIsInvalid()
+    {
+        $session_dao = new models\dao\Session();
+        $this->login();
+
+        (new \Minz\CSRF())->generateToken();
+        $response = $this->appRun('post', '/logout', [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertSame(1, $session_dao->count());
+    }
+
     public function testChangeLocaleSetsSessionLocale()
     {
         $this->assertArrayNotHasKey('locale', $_SESSION);

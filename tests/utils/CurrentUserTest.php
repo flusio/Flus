@@ -188,4 +188,21 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $user = CurrentUser::get();
         $this->assertSame($user_id_1, $user->id);
     }
+
+    public function testGetSessionTokenReturnsCurrentSessionToken()
+    {
+        $token = $this->create('token');
+        CurrentUser::setSessionToken($token);
+
+        $result_token = CurrentUser::sessionToken();
+
+        $this->assertSame($token, $result_token);
+    }
+
+    public function testGetSessionTokenReturnsNullIfNotSet()
+    {
+        $token = CurrentUser::sessionToken();
+
+        $this->assertNull($token);
+    }
 }

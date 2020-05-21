@@ -51,6 +51,7 @@ class Application
         // Sessions
         $router->addRoute('get', '/login', 'Sessions#new', 'login');
         $router->addRoute('post', '/login', 'Sessions#create', 'create session');
+        $router->addRoute('post', '/logout', 'Sessions#delete', 'logout');
         $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
         // Account

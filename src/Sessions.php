@@ -161,4 +161,42 @@ class Sessions
 
         return Response::redirect($request->param('redirect_to', 'home'));
     }
+
+    /**
+     * Delete the current user session and logout the user.
+     *
+     * @request_param string csrf
+     *
+     * @response 302 / if logout succeeds
+     * @response 302 / if already disconnected
+     * @response 400 if CSRF token is invalid
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function delete($request)
+    {
+        $current_user = utils\CurrentUser::get();
+        if (!$current_user) {
+            return Response::redirect('home');
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('bad_request.phtml', [
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        $session_dao = new models\dao\Session();
+        $current_session_token = utils\CurrentUser::sessionToken();
+        $raw_session = $session_dao->findBy(['token' => $current_session_token]);
+        $session = new models\Session($raw_session);
+
+        $session_dao->delete($session->id);
+        utils\CurrentUser::reset();
+
+        return Response::redirect('home');
+    }
 }

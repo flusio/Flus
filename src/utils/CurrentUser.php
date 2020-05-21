@@ -67,4 +67,18 @@ class CurrentUser
         unset($_SESSION['current_session_token']);
         self::$instance = null;
     }
+
+    /**
+     * Return the current session token from $_SESSION.
+     *
+     * @return string|null
+     */
+    public static function sessionToken()
+    {
+        if (isset($_SESSION['current_session_token'])) {
+            return $_SESSION['current_session_token'];
+        } else {
+            return null;
+        }
+    }
 }
