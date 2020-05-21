@@ -63,11 +63,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $faker->password,
         ]);
 
-        $this->assertSame(1, $token_dao->count());
+        // it also creates a session token
+        $this->assertSame(2, $token_dao->count());
 
         $user = new Models\User($user_dao->listAll()[0]);
-        $token = new Models\Token($token_dao->listAll()[0]);
-        $this->assertSame($user->validation_token, $token->token);
+        $token = new Models\Token($token_dao->findBy(['token' => $user->validation_token]));
         $this->assertEquals(\Minz\Time::fromNow(1, 'day'), $token->expired_at);
     }
 
@@ -99,10 +99,12 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     {
         $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
+        $session_dao = new models\dao\Session();
         $email = $faker->email;
 
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
+        $this->assertSame(0, $session_dao->count());
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -113,6 +115,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $user = utils\CurrentUser::get();
         $this->assertSame($email, $user->email);
+        $this->assertSame(1, $session_dao->count());
     }
 
     public function testCreateRedirectsToHomeIfConnected()
