@@ -15,3 +15,5 @@ CREATE TABLE users (
     validated_at TIMESTAMPTZ,
     validation_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE
 );
+
+CREATE INDEX idx_users_email ON users(email);
