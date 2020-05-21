@@ -22,7 +22,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('get', '/account/deletion');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdeletion');
+        $this->assertResponse($response, 302, '/login?redirect_to=user+deletion');
     }
 
     public function testDeleteRedirectsToTheHomePageAndDeletesTheUser()
@@ -54,7 +54,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'password' => $faker->password,
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdeletion');
+        $this->assertResponse($response, 302, '/login?redirect_to=user+deletion');
     }
 
     public function testDeleteFailsIfPasswordIsIncorrect()
