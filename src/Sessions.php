@@ -117,7 +117,7 @@ class Sessions
         $session->token = $token->token;
         $session_dao->save($session);
 
-        utils\CurrentUser::set($user->id);
+        utils\CurrentUser::setSessionToken($token->token);
 
         return Response::redirect($redirect_to);
     }

@@ -112,7 +112,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $this->assertSame(0, $session_dao->count());
+        $number_tokens = $session_dao->count();
 
         $response = $this->appRun('post', '/login', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -120,7 +120,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertSame(0, $session_dao->count());
+        $this->assertSame($number_tokens, $session_dao->count());
         $this->assertResponse($response, 302, '/');
     }
 

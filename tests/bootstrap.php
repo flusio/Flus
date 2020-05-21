@@ -62,3 +62,30 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
     ]
 );
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'session',
+    '\flusio\models\dao\Session',
+    [
+        'id' => function () {
+            return bin2hex(random_bytes(16));
+        },
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'name' => function () use ($faker) {
+            return "{$faker->word} on {$faker->word}";
+        },
+        'ip' => function () use ($faker) {
+            return $faker->ipv6;
+        },
+        'user_id' => function () {
+            $user_factory = new \Minz\Tests\DatabaseFactory('user');
+            return $user_factory->create();
+        },
+        'token' => function () {
+            $token_factory = new \Minz\Tests\DatabaseFactory('token');
+            return $token_factory->create();
+        },
+    ]
+);

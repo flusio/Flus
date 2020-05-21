@@ -2,6 +2,8 @@
 
 namespace flusio\utils;
 
+use flusio\models;
+
 class CurrentUserTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\FactoriesHelper;
@@ -15,26 +17,35 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         CurrentUser::reset();
     }
 
-    public function testSetSetsTheCurrentUserInSession()
+    public function testSetSessionTokenSetsTheTokenInSession()
     {
-        $user_id = $this->create('user');
+        $token = $this->create('token');
 
-        CurrentUser::set($user_id);
+        CurrentUser::setSessionToken($token);
 
-        $this->assertSame($user_id, $_SESSION['current_user_id']);
+        $this->assertSame($token, $_SESSION['current_session_token']);
     }
 
     public function testGetReturnsTheUser()
     {
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id = $this->create('user');
-        CurrentUser::set($user_id);
+        $this->create('session', [
+            'user_id' => $user_id,
+            'token' => $token,
+        ]);
+        CurrentUser::setSessionToken($token);
 
         $user = CurrentUser::get();
 
         $this->assertSame($user_id, $user->id);
     }
 
-    public function testGetReturnsNullIfCurrentUserIdIsNotInSession()
+    public function testGetReturnsNullIfSessionTokenIsNotInSession()
     {
         $user = CurrentUser::get();
 
@@ -43,7 +54,51 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetReturnsNullIfTheUserDoesNotExist()
     {
-        CurrentUser::set(42);
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        CurrentUser::setSessionToken($token);
+
+        $user = CurrentUser::get();
+
+        $this->assertNull($user);
+    }
+
+    public function testGetReturnsNullIfTokenHasExpired()
+    {
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::ago($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $user_id = $this->create('user');
+        $this->create('session', [
+            'user_id' => $user_id,
+            'token' => $token,
+        ]);
+        CurrentUser::setSessionToken($token);
+
+        $user = CurrentUser::get();
+
+        $this->assertNull($user);
+    }
+
+    public function testGetReturnsNullIfTokenIsInvalidated()
+    {
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'invalidated_at' => $faker->iso8601,
+        ]);
+        $user_id = $this->create('user');
+        $this->create('session', [
+            'user_id' => $user_id,
+            'token' => $token,
+        ]);
+        CurrentUser::setSessionToken($token);
 
         $user = CurrentUser::get();
 
@@ -52,13 +107,30 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetReturnsTheCorrectUserAfterChangingTheCurrentUser()
     {
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+
+        $token_1 = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $token_2 = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id_1 = $this->create('user');
         $user_id_2 = $this->create('user');
+        $this->create('session', [
+            'user_id' => $user_id_1,
+            'token' => $token_1,
+        ]);
+        $this->create('session', [
+            'user_id' => $user_id_2,
+            'token' => $token_2,
+        ]);
 
-        CurrentUser::set($user_id_1);
+        CurrentUser::setSessionToken($token_1);
         $user_1 = CurrentUser::get();
 
-        CurrentUser::set($user_id_2);
+        CurrentUser::setSessionToken($token_2);
         $user_2 = CurrentUser::get();
 
         $this->assertNotSame($user_1->id, $user_2->id);
@@ -66,28 +138,54 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetReturnsNullEvenIfInstanceIsNotResetButSessionIs()
     {
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id = $this->create('user');
+        $this->create('session', [
+            'user_id' => $user_id,
+            'token' => $token,
+        ]);
 
-        CurrentUser::set($user_id);
+        CurrentUser::setSessionToken($token);
         $user = CurrentUser::get();
         $this->assertSame($user_id, $user->id);
 
-        unset($_SESSION['current_user_id']);
+        unset($_SESSION['current_session_token']);
         $user = CurrentUser::get();
         $this->assertNull($user);
     }
 
-    public function testGetResetsInstanceIfSessionChanges()
+    public function testGetDoesNotResetInstanceIfSessionChanges()
     {
+        $faker = \Faker\Factory::create();
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+
+        $token_1 = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $token_2 = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id_1 = $this->create('user');
         $user_id_2 = $this->create('user');
+        $this->create('session', [
+            'user_id' => $user_id_1,
+            'token' => $token_1,
+        ]);
+        $this->create('session', [
+            'user_id' => $user_id_2,
+            'token' => $token_2,
+        ]);
 
-        CurrentUser::set($user_id_1);
+        CurrentUser::setSessionToken($token_1);
         $user = CurrentUser::get();
         $this->assertSame($user_id_1, $user->id);
 
-        $_SESSION['current_user_id'] = $user_id_2;
+        $_SESSION['current_session_token'] = $token_2;
         $user = CurrentUser::get();
-        $this->assertSame($user_id_2, $user->id);
+        $this->assertSame($user_id_1, $user->id);
     }
 }

@@ -476,13 +476,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token,
         ]);
 
-        $this->assertSame(1, $token_dao->count());
+        $number_tokens = $token_dao->count();
 
         $response = $this->appRun('post', '/registration/validation/email', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertSame(2, $token_dao->count());
+        $this->assertSame($number_tokens + 1, $token_dao->count());
         $user = new models\User($user_dao->find($user->id)); // reload the user
         $this->assertNotSame($user->validation_token, $token);
     }
@@ -503,13 +503,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token,
         ]);
 
-        $this->assertSame(1, $token_dao->count());
+        $number_tokens = $token_dao->count();
 
         $response = $this->appRun('post', '/registration/validation/email', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertSame(2, $token_dao->count());
+        $this->assertSame($number_tokens + 1, $token_dao->count());
         $user = new models\User($user_dao->find($user->id)); // reload the user
         $this->assertNotSame($user->validation_token, $token);
     }

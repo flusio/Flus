@@ -113,7 +113,7 @@ class Registrations
         $session->token = $session_token->token;
         $session_dao->save($session);
 
-        utils\CurrentUser::set($user_id);
+        utils\CurrentUser::setSessionToken($session_token->token);
 
         $users_mailer = new mailers\Users();
         $users_mailer->sendRegistrationValidationEmail($user, $validation_token);
