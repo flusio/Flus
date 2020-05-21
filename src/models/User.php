@@ -2,6 +2,8 @@
 
 namespace flusio\models;
 
+use flusio\utils;
+
 /**
  * Represent a user of flusio.
  *
@@ -58,7 +60,7 @@ class User extends \Minz\Model
         return new self([
             'id' => bin2hex(random_bytes(16)),
             'username' => trim($username),
-            'email' => strtolower(self::emailToPunycode(trim($email))),
+            'email' => utils\Email::sanitize($email),
             'password_hash' => $password ? password_hash($password, PASSWORD_BCRYPT) : '',
             'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
         ]);
@@ -90,36 +92,12 @@ class User extends \Minz\Model
     }
 
     /**
-     * @see https://en.wikipedia.org/wiki/Punycode
-     *
-     * @param string $email
-     *
-     * @param string
-     */
-    public static function emailToPunycode($email)
-    {
-        $at_position = strrpos($email, '@');
-
-        if ($at_position === false || !function_exists('idn_to_ascii')) {
-            return $email;
-        }
-
-        $domain = substr($email, $at_position + 1);
-        $domain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
-        if ($domain !== false) {
-            $email = substr($email, 0, $at_position + 1) . $domain;
-        }
-
-        return $email;
-    }
-
-    /**
      * @param string $email
      * @return boolean
      */
     public static function validateEmail($email)
     {
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+        return utils\Email::validate($email);
     }
 
     /**
