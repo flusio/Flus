@@ -57,6 +57,27 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=user+deletion');
     }
 
+    public function testDeleteDeletesSessionsAssociatedToTheUser()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        $session_dao = new models\dao\Session();
+
+        $password = $faker->password;
+        $user = $this->login([
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+        ]);
+
+        $this->assertSame(1, $session_dao->count());
+
+        $response = $this->appRun('post', '/account/deletion', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'password' => $password,
+        ]);
+
+        $this->assertSame(0, $session_dao->count());
+    }
+
     public function testDeleteFailsIfPasswordIsIncorrect()
     {
         $faker = \Faker\Factory::create();

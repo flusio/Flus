@@ -60,6 +60,7 @@ class Registrations
         $password = $request->param('password');
         $user_dao = new models\dao\User();
         $token_dao = new models\dao\Token();
+        $session_dao = new models\dao\Session();
         $csrf = new \Minz\CSRF();
 
         if (!$csrf->validateToken($request->param('csrf'))) {
@@ -95,16 +96,27 @@ class Registrations
             ]);
         }
 
-        $token = models\Token::init(1, 'day', 8);
-        $token_dao->save($token);
+        $validation_token = models\Token::init(1, 'day', 8);
+        $token_dao->save($validation_token);
 
-        $user->validation_token = $token->token;
+        $user->validation_token = $validation_token->token;
         $user_id = $user_dao->save($user);
 
-        utils\CurrentUser::set($user_id);
+        // Initialize the current session
+        $session_token = models\Token::init(1, 'month');
+        $token_dao->save($session_token);
+
+        $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
+        $ip = $request->header('REMOTE_ADDR', 'unknown');
+        $session = models\Session::init($session_name, $ip);
+        $session->user_id = $user_id;
+        $session->token = $session_token->token;
+        $session_dao->save($session);
+
+        utils\CurrentUser::setSessionToken($session_token->token);
 
         $users_mailer = new mailers\Users();
-        $users_mailer->sendRegistrationValidationEmail($user, $token);
+        $users_mailer->sendRegistrationValidationEmail($user, $validation_token);
 
         return Response::redirect('home');
     }

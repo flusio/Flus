@@ -19,9 +19,21 @@ trait LoginHelper
      */
     public function login($user_values = [])
     {
-        $factory = new \Minz\Tests\DatabaseFactory('user');
-        $user_id = $factory->create($user_values);
-        \flusio\utils\CurrentUser::set($user_id);
+        $user_factory = new \Minz\Tests\DatabaseFactory('user');
+        $token_factory = new \Minz\Tests\DatabaseFactory('token');
+        $session_factory = new \Minz\Tests\DatabaseFactory('session');
+
+        $expired_at = \Minz\Time::fromNow(30, 'days');
+        $token = $token_factory->create([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $user_id = $user_factory->create($user_values);
+        $session_factory->create([
+            'user_id' => $user_id,
+            'token' => $token,
+        ]);
+
+        \flusio\utils\CurrentUser::setSessionToken($token);
         return \flusio\utils\CurrentUser::get();
     }
 

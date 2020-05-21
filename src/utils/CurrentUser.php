@@ -26,15 +26,9 @@ class CurrentUser
      */
     public static function get()
     {
-        if (!isset($_SESSION['current_user_id'])) {
+        if (!isset($_SESSION['current_session_token'])) {
             // Not logged in, meh.
             return null;
-        }
-
-        if (self::$instance !== null && $_SESSION['current_user_id'] !== self::$instance->id) {
-            // The session changed! We want to always return the correct user
-            // so we reset the instance.
-            self::$instance = null;
         }
 
         if (self::$instance !== null) {
@@ -44,7 +38,7 @@ class CurrentUser
 
         // Let's load the user from the database
         $user_dao = new models\dao\User();
-        $current_user_values = $user_dao->find($_SESSION['current_user_id']);
+        $current_user_values = $user_dao->findBySessionToken($_SESSION['current_session_token']);
         if (!$current_user_values) {
             // The user doesn't exist… what are you trying to do evil user?
             return null;
@@ -55,13 +49,13 @@ class CurrentUser
     }
 
     /**
-     * Save the given user id in session and reset the instance.
+     * Save the given session token in session and reset the instance.
      *
-     * @param string|null $user_id
+     * @param string $token
      */
-    public static function set($user_id)
+    public static function setSessionToken($token)
     {
-        $_SESSION['current_user_id'] = $user_id;
+        $_SESSION['current_session_token'] = $token;
         self::$instance = null;
     }
 
@@ -70,7 +64,21 @@ class CurrentUser
      */
     public static function reset()
     {
-        unset($_SESSION['current_user_id']);
+        unset($_SESSION['current_session_token']);
         self::$instance = null;
+    }
+
+    /**
+     * Return the current session token from $_SESSION.
+     *
+     * @return string|null
+     */
+    public static function sessionToken()
+    {
+        if (isset($_SESSION['current_session_token'])) {
+            return $_SESSION['current_session_token'];
+        } else {
+            return null;
+        }
     }
 }
