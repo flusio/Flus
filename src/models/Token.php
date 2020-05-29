@@ -44,19 +44,6 @@ class Token extends \Minz\Model
     }
 
     /**
-     * Initialize a User from values (usually from database).
-     *
-     * @param array $values
-     *
-     * @throws \Minz\Error\ModelPropertyError if one of the value is invalid
-     */
-    public function __construct($values)
-    {
-        parent::__construct(self::PROPERTIES);
-        $this->fromValues($values);
-    }
-
-    /**
      * Return whether the token has expired.
      *
      * @return boolean

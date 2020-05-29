@@ -53,15 +53,4 @@ class Session extends \Minz\Model
             'ip' => trim($ip),
         ]);
     }
-
-    /**
-     * Initialize a Session from values.
-     *
-     * @param array $values
-     */
-    public function __construct($values)
-    {
-        parent::__construct(self::PROPERTIES);
-        $this->fromValues($values);
-    }
 }

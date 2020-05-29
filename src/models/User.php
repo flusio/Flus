@@ -52,8 +52,6 @@ class User extends \Minz\Model
      * @param string $username
      * @param string $email
      * @param string $password
-     *
-     * @throws \Minz\Error\ModelPropertyError if one of the property is invalid
      */
     public static function init($username, $email, $password)
     {
@@ -64,19 +62,6 @@ class User extends \Minz\Model
             'password_hash' => $password ? password_hash($password, PASSWORD_BCRYPT) : '',
             'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
         ]);
-    }
-
-    /**
-     * Initialize a User from values (usually from database).
-     *
-     * @param array $values
-     *
-     * @throws \Minz\Error\ModelPropertyError if one of the value is invalid
-     */
-    public function __construct($values)
-    {
-        parent::__construct(self::PROPERTIES);
-        $this->fromValues($values);
     }
 
     /**
