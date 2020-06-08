@@ -80,7 +80,7 @@ own setup better than me.
 In both cases, you’ll need to download flusio with Git:
 
 ```console
-$ git clone https://github.com/flusio/flusio.git
+$ git clone --recurse-submodules https://github.com/flusio/flusio.git
 $ cd flusio
 ```
 
@@ -98,18 +98,7 @@ $ make install
 This command will run the `composer` and `npm` install commands to download the
 PHP and JS dependencies.
 
-Once this is done, you must setup the environment with:
-
-```console
-$ make setup
-```
-
-It will copy the `env.sample` file to `.env` and call the flusio CLI to
-configure the database. If you need to, you can change the environment
-variables in the `.env`. The `SMTP_` variables should be set to be used with an
-existing email account.
-
-The last step is to start the server:
+Once this is done, you should start the webserver and the database:
 
 ```console
 $ make start
@@ -119,8 +108,18 @@ This command calls `docker-compose` with the file under the `docker/` folder.
 The first time you call it, it will download the Docker images and build the
 `php` one with the information from the `docker/Dockerfile.php` file.
 
-Once the containers are running, you should be able to access flusio at
-[localhost:8000](http://localhost:8000).
+The last step is to setup the environment with:
+
+```console
+$ make setup
+```
+
+It will copy the `env.sample` file to `.env` and call the flusio CLI to
+configure the database. If you need to, you can change the environment
+variables in the `.env` file. The `SMTP_` variables should be set to be used
+with an existing email account.
+
+Now, you should be able to access flusio at [localhost:8000](http://localhost:8000).
 
 The containers can be stopped and cleaned with:
 
@@ -216,7 +215,7 @@ Then, you can pull the new code from GitHub:
 
 ```console
 $ git status # check that you didn't make any change in your working directory
-$ git pull
+$ git pull --recurse-submodules
 ```
 
 Apply the migrations:
