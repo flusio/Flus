@@ -31,4 +31,14 @@ class Pages
     {
         return Response::ok('pages/about.phtml');
     }
+
+    /**
+     * Show the design page.
+     *
+     * @return \Minz\Response
+     */
+    public function design()
+    {
+        return Response::ok('pages/design.phtml');
+    }
 }

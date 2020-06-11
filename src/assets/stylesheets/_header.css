@@ -1,7 +1,13 @@
 .header__container {
     display: flex;
+    margin-top: var(--space-smaller);
+    margin-bottom: var(--space-smaller);
 
     align-items: center;
+}
+
+.header__container > * + * {
+    margin-left: var(--space-small);
 }
 
 .header__separator {
@@ -9,9 +15,18 @@
 }
 
 .header__link {
-    padding: 1em 2em;
+    padding: var(--space-medium) var(--space-large);
 }
 
 .header__link--home {
     font-weight: bold;
+}
+
+.header__locale-form label {
+    display: inline;
+}
+
+.header__locale-form .form-group {
+    margin-top: 0;
+    margin-bottom: 0;
 }

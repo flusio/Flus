@@ -1,0 +1,48 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('flusio design system'),
+        'styles' => ['design'],
+    ]);
+?>
+
+<h1><?= _('flusio design system') ?></h1>
+
+<h2><?= _('Colors') ?></h2>
+
+<table>
+    <?php foreach (range(1, 9) as $number): ?>
+        <tr class="color">
+            <td>
+                <div class="color__block color__block--purple-<?= $number ?>"></div>
+            </td>
+
+            <td class="color__name">
+                --color-purple-<?= $number ?>
+            </td>
+
+            <td>
+                <div class="color__block color__block--turquoise-<?= $number ?>"></div>
+            </td>
+
+            <td class="color__name">
+                --color-turquoise-<?= $number ?>
+            </td>
+
+            <td>
+                <div class="color__block color__block--red-<?= $number ?>"></div>
+            </td>
+
+            <td class="color__name">
+                --color-red-<?= $number ?>
+            </td>
+
+            <td>
+                <div class="color__block color__block--grey-<?= $number ?>"></div>
+            </td>
+
+            <td class="color__name">
+                --color-grey-<?= $number ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>

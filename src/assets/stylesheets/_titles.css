@@ -1,0 +1,26 @@
+.title {
+    margin-bottom: var(--space-large);
+
+    font-family: var(--font-family-title);
+    letter-spacing: 0.01em;
+    text-align: center;
+    text-transform: lowercase;
+}
+
+h1 {
+    display: inline-block;
+}
+
+h1::after {
+    content: "";
+
+    display: block;
+    max-width: 75%;
+    height: 0.3rem;
+    margin-top: 0.5rem;
+    margin-right: auto;
+    margin-left: auto;
+
+    background: linear-gradient(to right, var(--color-turquoise-5), var(--color-turquoise-6));
+    border-radius: var(--border-radius);
+}

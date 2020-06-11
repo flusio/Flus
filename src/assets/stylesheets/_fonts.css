@@ -1,0 +1,63 @@
+@font-face {
+    font-family: 'Comfortaa';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+
+    src:
+        local('Comfortaa'),
+        url('../fonts/comfortaa-v28-latin-700.woff2') format('woff2'),
+        url('../fonts/comfortaa-v28-latin-700.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+
+    src:
+        local('Open Sans Regular'),
+        local('OpenSans-Regular'),
+        url('../fonts/open-sans-v17-latin-regular.woff2') format('woff2'),
+        url('../fonts/open-sans-v17-latin-regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+
+    src:
+        local('Open Sans Italic'),
+        local('OpenSans-Italic'),
+        url('../fonts/open-sans-v17-latin-italic.woff2') format('woff2'),
+        url('../fonts/open-sans-v17-latin-italic.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+
+    src:
+        local('Open Sans Bold'),
+        local('OpenSans-Bold'),
+        url('../fonts/open-sans-v17-latin-700.woff2') format('woff2'),
+        url('../fonts/open-sans-v17-latin-700.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+
+    src:
+        local('Open Sans Bold Italic'),
+        local('OpenSans-BoldItalic'),
+        url('../fonts/open-sans-v17-latin-700italic.woff2') format('woff2'),
+        url('../fonts/open-sans-v17-latin-700italic.woff') format('woff');
+}

@@ -1,8 +1,12 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('Home'),
+        'title' => _('Welcome on flusio!'),
     ]);
 ?>
+
+<div class="title">
+    <h1><?= _('Welcome on flusio!') ?></h1>
+</div>
 
 <?php if ($status === 'user_deleted'): ?>
     <p>

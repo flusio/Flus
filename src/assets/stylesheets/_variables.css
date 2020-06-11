@@ -1,0 +1,77 @@
+:root {
+    --color-white: #fdfcff;
+
+    --color-grey-1: #efeff1;
+    --color-grey-2: #cfced4;
+    --color-grey-3: #aeadb7;
+    --color-grey-4: #8e8c9a;
+    --color-grey-5: #7e7c8b;
+    --color-grey-6: #6e6d7a;
+    --color-grey-7: #4f4e57;
+    --color-grey-8: #2f2e34;
+    --color-grey-9: #100f11;
+
+    --color-purple-1: #eeebfb;
+    --color-purple-2: #ccc4f3;
+    --color-purple-3: #aa9deb;
+    --color-purple-4: #8876e3;
+    --color-purple-5: #7762df;
+    --color-purple-6: #6856c3;
+    --color-purple-7: #4a3d8b;
+    --color-purple-8: #2d2554;
+    --color-purple-9: #0f0c1c;
+
+    --color-turquoise-1: #dff9f5;
+    --color-turquoise-2: #9fede0;
+    --color-turquoise-3: #60e2cc;
+    --color-turquoise-4: #20d6b7;
+    --color-turquoise-5: #00d0ad;
+    --color-turquoise-6: #00b697;
+    --color-turquoise-7: #00826c;
+    --color-turquoise-8: #004e41;
+    --color-turquoise-9: #001a16;
+
+    --color-red-1: #f9dfe4;
+    --color-red-2: #ed9fad;
+    --color-red-3: #e26076;
+    --color-red-4: #d6203f;
+    --color-red-5: #d00023;
+    --color-red-6: #b6001f;
+    --color-red-7: #820016;
+    --color-red-8: #4e000d;
+    --color-red-9: #1a0004;
+
+    --color-text: var(--color-purple-9);
+    --color-text-secondary: var(--color-grey-6);
+    --color-text-error: var(--color-red-8);
+    --color-link: var(--color-purple-6);
+    --color-body: var(--color-white);
+
+    --size-base: calc(1.6em + 0.5vw);
+    --size-small: 0.8em;
+    --size-normal: 1em;
+    --size-large: 1.2em;
+
+    --space-base: 2rem;
+    --space-smaller: calc(var(--space-base) / 4);
+    --space-small: calc(var(--space-base) / 2);
+    --space-medium: var(--space-base);
+    --space-large: calc(var(--space-base) * 2);
+    --space-larger: calc(var(--space-base) * 4);
+
+    --border-width: 0.2rem;
+    --border-color: var(--color-grey-6);
+    --border-active-color: var(--color-turquoise-5);
+    --border-error-color: var(--color-red-5);
+    --border-radius: 0.75rem;
+    --border-button-radius: 3rem;
+
+    --font-family-text: "Open Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", "sans-serif";
+    --font-family-title: "Comfortaa", "cursive";
+}
+
+@media (min-width: 48em) {
+    :root {
+        --size-base: 2.2em;
+    }
+}

@@ -1,0 +1,21 @@
+.icon {
+    padding-left: 4.5rem;
+
+    background-repeat: no-repeat;
+    background-position: 1rem center;
+    background-size: 3rem;
+}
+
+/* Core */
+.icon--eye {
+    background-image: url("../icons/core/eye-line.svg");
+}
+
+.icon--eye-hide {
+    background-image: url("../icons/core/eye-hide-line.svg");
+}
+
+/* Text edit */
+.icon--language {
+    background-image: url("../icons/text-edit/language-line.svg");
+}

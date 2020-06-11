@@ -1,8 +1,12 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('Registration'),
+        'title' => _('Sign up on flusio'),
     ]);
 ?>
+
+<div class="title">
+    <h1><?= _('Sign up on flusio') ?></h1>
+</div>
 
 <form method="post" action="<?= url('create user') ?>">
     <?php if ($error): ?>
@@ -83,7 +87,7 @@
 
             <button
                 type="button"
-                class="button-ghost js-only"
+                class="button--ghost icon icon--eye js-only"
                 data-action="input-password#toggle"
                 aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
             >

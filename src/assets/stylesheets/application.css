@@ -1,11 +1,34 @@
-@import './_layout.css';
-@import './_header.css';
+@import './_buttons.css';
+@import './_fonts.css';
 @import './_forms.css';
+@import './_header.css';
+@import './_icons.css';
+@import './_layout.css';
+@import './_links.css';
+@import './_titles.css';
+@import './_variables.css';
 
 *,
 *::before,
 *::after {
     box-sizing: border-box;
+}
+
+html {
+    font-size: 10px;
+
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    color: var(--color-text);
+    font-family: var(--font-family-text);
+    font-size: var(--size-base);
+
+    background-color: var(--color-body);
 }
 
 .js-only {

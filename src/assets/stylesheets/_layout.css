@@ -1,13 +1,21 @@
 .layout {
-    max-width: 800px;
+    max-width: 1000px;
     margin-right: auto;
     margin-left: auto;
 }
 
+.layout__header {
+    margin-bottom: var(--space-large);
+}
+
 .layout__content {
-    min-height: 80vh;
+    min-height: 60vh;
+    padding: var(--space-small);
 }
 
 .layout__footer {
+    margin-top: var(--space-large);
+    padding: var(--space-medium);
+
     text-align: center;
 }

@@ -61,6 +61,8 @@ class Application
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');
 
+        $router->addRoute('get', '/design', 'Pages#design', 'design');
+
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
 
@@ -101,6 +103,7 @@ class Application
             'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,
             'current_user' => $current_user,
+            'styles' => [],
             'javascript_configuration' => json_encode(include_once('utils/javascript_configuration.php')),
         ]);
 

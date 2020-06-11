@@ -7,5 +7,5 @@
 /data/*
 !/data/.keep
 
-/public/static/javascripts
-/public/static/stylesheets
+/public/static/*
+!/public/static/.keep
