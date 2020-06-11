@@ -1,68 +1,74 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-05-20 09:38+0200\n"
-"PO-Revision-Date: 2020-05-20 09:38+0200\n"
+"POT-Creation-Date: 2020-06-11 17:38+0200\n"
+"PO-Revision-Date: 2020-06-11 17:42+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.3.1\n"
 "X-Poedit-Basepath: ../../../src\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Accounts.php:60 Registrations.php:70 Registrations.php:203
+#: Accounts.php:60 Registrations.php:71 Registrations.php:215 Sessions.php:74
+#: Sessions.php:188
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: Accounts.php:68
+#: Accounts.php:68 Sessions.php:103
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
-#: Registrations.php:93
+#: Registrations.php:94
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:134 Registrations.php:148
+#: Registrations.php:146 Registrations.php:160
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: Registrations.php:141
+#: Registrations.php:153
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: Registrations.php:240
+#: Registrations.php:252
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: Registrations.php:242
+#: Registrations.php:254
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: Registrations.php:246
+#: Registrations.php:258
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: Registrations.php:248
+#: Registrations.php:260
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: Registrations.php:251
+#: Registrations.php:263
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: assets/javascripts/controllers/input_password_controller.js:21
+#: Sessions.php:91
+msgid "We can’t find any account with this email address."
+msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
+
+#: assets/javascripts/controllers/input_password_controller.js:23
 msgid "Hide"
 msgstr "Cacher"
 
-#: assets/javascripts/controllers/input_password_controller.js:24
-#: views/accounts/deletion.phtml:44 views/registrations/new.phtml:90
+#: assets/javascripts/controllers/input_password_controller.js:28
+#: views/accounts/deletion.phtml:44 views/registrations/new.phtml:94
+#: views/sessions/new.phtml:62
 msgid "Show"
 msgstr "Afficher"
 
@@ -70,19 +76,40 @@ msgstr "Afficher"
 msgid "[flusio] Confirm your registration"
 msgstr "[flusio] Confirmer votre inscription"
 
-#: views/_layouts/base.phtml:38
-msgid "Language"
-msgstr "Langue"
+#: utils/Browser.php:36
+msgid "Unknown browser"
+msgstr "Navigateur inconnu"
 
-#: views/_layouts/base.phtml:52
-msgid "Change"
-msgstr "Changer"
+#: utils/Browser.php:39
+msgid "unknown platform"
+msgstr "plateforme inconnue"
 
-#: views/_layouts/base.phtml:62 views/registrations/new.phtml:103
+#: utils/Browser.php:42
+#, php-format
+msgid "%s on %s"
+msgstr "%s sur %s"
+
+#: views/_layouts/base.phtml:42
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#: views/_layouts/base.phtml:46 views/registrations/new.phtml:107
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/base.phtml:75
+#: views/_layouts/base.phtml:50 views/sessions/new.phtml:75
+msgid "Login"
+msgstr "Se connecter"
+
+#: views/_layouts/base.phtml:64
+msgid "Choose your language"
+msgstr "Choisissez votre langue"
+
+#: views/_layouts/base.phtml:81
+msgid "Change"
+msgstr "Changer"
+
+#: views/_layouts/base.phtml:94
 msgid "About flusio"
 msgstr "À propos de flusio"
 
@@ -108,7 +135,8 @@ msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/accounts/deletion.phtml:42 views/registrations/new.phtml:88
+#: views/accounts/deletion.phtml:42 views/registrations/new.phtml:92
+#: views/sessions/new.phtml:60
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
@@ -165,15 +193,27 @@ msgstr "Cette page n’existe pas."
 msgid "About"
 msgstr "À propos"
 
-#: views/pages/about.phtml:9 views/pages/home.phtml:3
+#: views/pages/about.phtml:9
 msgid "Home"
 msgstr "Accueil"
 
-#: views/pages/home.phtml:9
+#: views/pages/design.phtml:3 views/pages/design.phtml:8
+msgid "flusio design system"
+msgstr "système de design de flusio"
+
+#: views/pages/design.phtml:10
+msgid "Colors"
+msgstr "Couleurs"
+
+#: views/pages/home.phtml:3 views/pages/home.phtml:8
+msgid "Welcome on flusio!"
+msgstr "Bienvenue sur flusio!"
+
+#: views/pages/home.phtml:13
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
 
-#: views/pages/home.phtml:15
+#: views/pages/home.phtml:19
 msgid ""
 "You must validate your registration: you should have received an email "
 "containing a link intended to this purpose."
@@ -181,41 +221,45 @@ msgstr ""
 "Vous devez valider votre inscription : vous devriez avoir reçu un courriel "
 "contenant un lien permettant cela."
 
-#: views/pages/home.phtml:20
+#: views/pages/home.phtml:24
 msgid "We’ve just sent you an email!"
 msgstr "Nous vous avons envoyé un courriel !"
 
-#: views/pages/home.phtml:26
+#: views/pages/home.phtml:30
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
-#: views/registrations/new.phtml:3
-msgid "Registration"
-msgstr "Inscription"
+#: views/registrations/new.phtml:3 views/registrations/new.phtml:8
+msgid "Sign up on flusio"
+msgstr "S’inscrire sur flusio"
 
-#: views/registrations/new.phtml:18
+#: views/registrations/new.phtml:22
 msgid "How should we name you?"
 msgstr "Comment devons-nous vous appeler ?"
 
-#: views/registrations/new.phtml:22
+#: views/registrations/new.phtml:26
 msgid "Your username must not be longer than 50 characters."
 msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: views/registrations/new.phtml:43
+#: views/registrations/new.phtml:47
 msgid "Your email address"
 msgstr "Votre adresse courriel"
 
-#: views/registrations/new.phtml:47
+#: views/registrations/new.phtml:51
 msgid "We’ll only use it to send you important emails."
 msgstr "Nous vous enverrons seulement des courriels importants."
 
-#: views/registrations/new.phtml:67
+#: views/registrations/new.phtml:71
 msgid "And a password"
 msgstr "Et un mot de passe"
 
-#: views/registrations/new.phtml:71
+#: views/registrations/new.phtml:75
 msgid "A strong password is at least 8 characters long."
 msgstr "Un mot de passe robuste fait au moins 8 caractères."
+
+#: views/registrations/new.phtml:111
+msgid "Already an account? Sign in"
+msgstr "Déjà un compte ? Se connecter"
 
 #: views/registrations/validation.phtml:3
 msgid "Registration validation"
@@ -233,9 +277,31 @@ msgstr "Retour à l’accueil"
 msgid "Send an email with a valid token"
 msgstr "Envoyer un courriel avec un token valide"
 
+#: views/sessions/new.phtml:3 views/sessions/new.phtml:8
+msgid "Log in flusio"
+msgstr "Se connecter à flusio"
+
+#: views/sessions/new.phtml:23
+msgid "Email address"
+msgstr "Adresse courriel"
+
+#: views/sessions/new.phtml:43
+msgid "Password"
+msgstr "Mot de passe"
+
+#: views/sessions/new.phtml:79
+msgid "No account yet? Sign up"
+msgstr "Pas encore compte ? S’inscrire"
+
 #: views/unauthorized.phtml:8
 msgid "You must be connected to perform this action."
 msgstr "Vous devez être connecté·e pour effectuer cette action."
+
+#~ msgid "Language"
+#~ msgstr "Langue"
+
+#~ msgid "Registration"
+#~ msgstr "Inscription"
 
 #~ msgid "Sign Up"
 #~ msgstr "S’inscrire"
