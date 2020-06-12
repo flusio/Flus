@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
 "POT-Creation-Date: 2020-06-11 17:38+0200\n"
-"PO-Revision-Date: 2020-06-11 17:42+0200\n"
+"PO-Revision-Date: 2020-06-11 18:06+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -291,7 +291,7 @@ msgstr "Mot de passe"
 
 #: views/sessions/new.phtml:79
 msgid "No account yet? Sign up"
-msgstr "Pas encore compte ? S’inscrire"
+msgstr "Pas encore de compte ? S’inscrire"
 
 #: views/unauthorized.phtml:8
 msgid "You must be connected to perform this action."
