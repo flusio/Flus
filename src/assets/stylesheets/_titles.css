@@ -21,6 +21,6 @@ h1::after {
     margin-right: auto;
     margin-left: auto;
 
-    background: linear-gradient(to right, var(--color-turquoise-5), var(--color-turquoise-6));
+    background: linear-gradient(to right, var(--color-turquoise-4), var(--color-turquoise-6), var(--color-turquoise-4));
     border-radius: var(--border-radius);
 }
