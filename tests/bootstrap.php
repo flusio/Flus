@@ -89,3 +89,26 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
     ]
 );
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'collection',
+    '\flusio\models\dao\Collection',
+    [
+        'id' => function () {
+            return bin2hex(random_bytes(16));
+        },
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'name' => function () use ($faker) {
+            return $faker->words(3, true);
+        },
+        'type' => function () use ($faker) {
+            return $faker->randomElement(\flusio\models\Collection::VALID_TYPES);
+        },
+        'user_id' => function () use ($faker) {
+            $user_factory = new \Minz\Tests\DatabaseFactory('user');
+            return $user_factory->create();
+        },
+    ]
+);

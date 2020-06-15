@@ -32,3 +32,11 @@
         </form>
     <?php endif; ?>
 <?php endif; ?>
+
+<?php if ($current_user): ?>
+    <p>
+        <a href="<?= url('show bookmarked') ?>">
+            <?= _('Read Later') ?>
+        </a>
+    </p>
+<?php endif; ?>

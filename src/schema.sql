@@ -28,3 +28,13 @@ CREATE TABLE sessions (
 );
 
 CREATE INDEX idx_sessions_token ON sessions(token);
+
+CREATE TABLE collections (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX idx_collections_user_id ON collections(user_id);
