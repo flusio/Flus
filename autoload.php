@@ -16,6 +16,8 @@ spl_autoload_register(
 
         if (strpos($class_name, 'Minz') === 0) {
             include $lib_path . '/Minz/autoload.php';
+        } elseif (strpos($class_name, 'SpiderBits') === 0) {
+            include $lib_path . '/SpiderBits/autoload.php';
         } elseif (strpos($class_name, $app_namespace) === 0) {
             $class_name = substr($class_name, strlen($app_namespace) + 1);
             $class_path = str_replace('\\', '/', $class_name) . '.php';
