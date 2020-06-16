@@ -49,6 +49,11 @@ setup: .env ## Setup the application system
 .PHONY: update
 update: setup ## Update the application
 
+.PHONY: reset
+reset: ## Reset the database
+	rm data/migrations_version.txt
+	$(PHP) ./cli --request /system/setup
+
 .PHONY: test
 test: ## Run the test suite
 	$(PHP) ./vendor/bin/phpunit \

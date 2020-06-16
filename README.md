@@ -229,6 +229,16 @@ That’s all!
 Obviously, if you made changes in your own working directory, things might not
 go so easily. Please always check the current status of the Git repository.
 
+If at any time something goes wrong with the database, you can use the joker
+command:
+
+```console
+$ make reset
+```
+
+It will reset the database and reload the schema. Obviously, you should avoid
+this command in production or you will erase all the data.
+
 ## How to run the test suite?
 
 Obviously, you should make sure to have a running development environment
