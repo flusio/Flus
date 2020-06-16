@@ -1,12 +1,19 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Page not found'),
+        'current_action_pointer' => null,
     ]);
 ?>
 
-<p>
-    <?= _('This page doesn’t exist.') ?>
-</p>
+<?php if ($error): ?>
+    <p>
+        <?= $error ?>
+    </p>
+<?php else: ?>
+    <p>
+        <?= _('This page doesn’t exist.') ?>
+    </p>
+<?php endif; ?>
 
 <p>
     <?php if (isset($link_to)): ?>

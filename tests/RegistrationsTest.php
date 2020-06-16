@@ -559,7 +559,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 401, 'You must be connected to perform this action');
+        $this->assertResponse($response, 401, 'You must be connected to see this page.');
         $this->assertEmailsCount(0);
     }
 }
