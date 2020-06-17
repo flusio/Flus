@@ -32,18 +32,26 @@ class Collections
         }
 
         $collection_dao = new models\dao\Collection();
+        $link_dao = new models\dao\Link();
         $db_bookmarked_collection = $collection_dao->findBy([
             'user_id' => $current_user->id,
             'type' => 'bookmarked',
         ]);
+        $bookmarked_collection = null;
+        $links = [];
+
         if ($db_bookmarked_collection) {
             $bookmarked_collection = new models\Collection($db_bookmarked_collection);
-        } else {
-            $bookmarked_collection = null;
+
+            $db_links = $link_dao->listByCollectionId($bookmarked_collection->id);
+            foreach ($db_links as $db_link) {
+                $links[] = new models\Link($db_link);
+            }
         }
 
         return Response::ok('collections/show_bookmarked.phtml', [
             'bookmarked_collection' => $bookmarked_collection,
+            'links' => $links,
         ]);
     }
 
@@ -91,6 +99,7 @@ class Collections
 
         return Response::created('collections/show_bookmarked.phtml', [
             'bookmarked_collection' => $bookmarked_collection,
+            'links' => [],
         ]);
     }
 }

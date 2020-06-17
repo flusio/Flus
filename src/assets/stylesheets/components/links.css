@@ -1,0 +1,32 @@
+.links {
+    display: flex;
+    margin-right: calc(-1 * var(--space-medium));
+    margin-left: calc(-1 * var(--space-medium));
+
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.link {
+    margin: var(--space-medium);
+
+    flex-basis: 25%;
+    flex-grow: 1;
+
+    box-shadow: 0 3px 3px 3px var(--color-grey-1);
+    border-radius: var(--border-radius);
+}
+
+.link__body {
+    display: flex;
+    height: 100%;
+    padding: var(--space-small);
+
+    flex-direction: column;
+}
+
+.link__title {
+    flex-grow: 1;
+
+    font-size: var(--size-normal);
+}

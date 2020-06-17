@@ -1,0 +1,27 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => $link->title,
+        'canonical' => url_full('show link', ['id' => $link->id]),
+    ]);
+?>
+
+<p>
+    <a class="anchor--action anchor--icon icon icon--undo" href="<?= url('show bookmarked') ?>">
+        <?= _('Back') ?>
+    </a>
+</p>
+
+<div class="title">
+    <h1><?= $this->protect($link->title) ?></h1>
+</div>
+
+<p>
+    <a
+        class="anchor--action anchor--icon icon icon--link"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="<?= $link->url ?>"
+    >
+        <?= _('see') ?>
+    </a>
+</p>

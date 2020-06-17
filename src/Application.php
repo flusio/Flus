@@ -62,6 +62,10 @@ class Application
         $router->addRoute('get', '/bookmarked', 'Collections#showBookmarked', 'show bookmarked');
         $router->addRoute('post', '/bookmarked', 'Collections#createBookmarked', 'create bookmarked');
 
+        // Links
+        $router->addRoute('post', '/links', 'Links#add', 'add link');
+        $router->addRoute('get', '/links/:id', 'Links#show', 'show link');
+
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');
 
