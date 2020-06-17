@@ -1,0 +1,39 @@
+a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 0.1em;
+
+    transition: color 0.3s ease-in-out;
+}
+
+a:hover,
+a:focus {
+    color: var(--color-link);
+}
+
+a:focus {
+    outline-color: var(--color-purple-4);
+}
+
+.anchor--discreet {
+    text-decoration: none;
+}
+
+.anchor--action {
+    display: inline-block;
+    padding: var(--space-smaller) var(--space-medium);
+
+    text-decoration: none;
+
+    border: 0.1em solid var(--color-text);
+    border-radius: var(--border-button-radius);
+}
+
+.anchor--action.icon {
+    padding-left: 4.5rem;
+}
+
+.anchor--action:hover,
+.anchor--action:focus {
+    border-color: inherit;
+}
