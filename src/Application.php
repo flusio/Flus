@@ -92,12 +92,15 @@ class Application
         }
         utils\Locale::setCurrentLocale($locale);
 
+        $errors = utils\Flash::pop('errors', []);
+        $error = utils\Flash::pop('error');
+
         $response = $this->engine->run($request);
 
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
-            'errors' => [],
-            'error' => null,
+            'errors' => $errors,
+            'error' => $error,
             'status' => $request->param('status'),
             'current_action_pointer' => $request->param('_action_pointer'),
             'available_locales' => utils\Locale::availableLocales(),
