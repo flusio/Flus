@@ -74,8 +74,12 @@ select:focus {
     align-items: center;
 }
 
-.form-group__stack * + * {
+.form-group__stack > * + * {
     margin-left: var(--space-small);
+}
+
+.form-group__stack > button {
+    flex-shrink: 0;
 }
 
 .form-group__caption {
