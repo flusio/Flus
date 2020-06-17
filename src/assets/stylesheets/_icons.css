@@ -1,31 +1,45 @@
 .icon {
-    padding-left: 4.5rem;
+    position: relative;
+
+    padding-left: 2.5em;
+}
+
+.icon::before {
+    content: '';
+
+    position: absolute;
+    top: 50%;
+    left: 0.65em;
+
+    width: 1.5em;
+    height: 1.5em;
+    margin-top: -0.75em;
 
     background-repeat: no-repeat;
-    background-position: 1rem center;
-    background-size: 3rem;
+    background-position: center;
+    background-size: 1.5em;
 }
 
 /* Core */
-.icon--eye {
+.icon--eye::before {
     background-image: url("../icons/core/eye-line.svg");
 }
 
-.icon--eye-hide {
+.icon--eye-hide::before {
     background-image: url("../icons/core/eye-hide-line.svg");
 }
 
 /* Essential */
-.icon--undo {
+.icon--undo::before {
     background-image: url("../icons/essential/undo-line.svg");
 }
 
 /* Text edit */
-.icon--language {
+.icon--language::before {
     background-image: url("../icons/text-edit/language-line.svg");
 }
 
 /* Technology */
-.icon--link {
+.icon--link::before {
     background-image: url("../icons/technology/link-line.svg");
 }

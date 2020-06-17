@@ -3,7 +3,9 @@ a {
     text-decoration: underline;
     text-decoration-thickness: 0.1em;
 
-    transition: color 0.3s ease-in-out;
+    transition:
+        color 0.3s ease-in-out,
+        border-color 0.3s ease-in-out;
 }
 
 a:hover,
@@ -29,11 +31,25 @@ a:focus {
     border-radius: var(--border-button-radius);
 }
 
-.anchor--action.icon {
-    padding-left: 4.5rem;
-}
-
 .anchor--action:hover,
 .anchor--action:focus {
     border-color: inherit;
+}
+
+.anchor--icon {
+    padding-left: 2.5em;
+}
+
+.anchor--icon::before {
+    transition: filter 0.3s ease-in-out;
+}
+
+/*
+ * This is pretty hacky, but hey, it's also pretty cool! :)
+ * @see https://stackoverflow.com/a/53336754
+ * @see https://stackoverflow.com/a/43960991
+ */
+.anchor--icon:hover::before,
+.anchor--icon:focus::before {
+    filter: invert(36%) sepia(23%) saturate(4309%) hue-rotate(229deg) brightness(83%) contrast(80%);
 }
