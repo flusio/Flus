@@ -94,6 +94,7 @@ class Application
 
         $errors = utils\Flash::pop('errors', []);
         $error = utils\Flash::pop('error');
+        $status = utils\Flash::pop('status');
 
         $response = $this->engine->run($request);
 
@@ -101,7 +102,7 @@ class Application
             'environment' => \Minz\Configuration::$environment,
             'errors' => $errors,
             'error' => $error,
-            'status' => $request->param('status'),
+            'status' => $status,
             'current_action_pointer' => $request->param('_action_pointer'),
             'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,

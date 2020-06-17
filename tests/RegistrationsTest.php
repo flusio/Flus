@@ -5,6 +5,7 @@ namespace flusio;
 class RegistrationsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
+    use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\InitializerHelper;
@@ -433,7 +434,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 302, '/?status=validation_email_sent');
+        $this->assertResponse($response, 302, '/');
+        $this->assertFlash('status', 'validation_email_sent');
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertEmailSubject($email_sent, '[flusio] Confirm your registration');
@@ -455,10 +457,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/registration/validation/email', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'redirect_to' => 'about',
+            'redirect_to' => '/about',
         ]);
 
-        $this->assertResponse($response, 302, '/about?status=validation_email_sent');
+        $this->assertResponse($response, 302, '/about');
+        $this->assertFlash('status', 'validation_email_sent');
     }
 
     public function testResendValidationEmailCreatesANewTokenIfExpiresSoon()

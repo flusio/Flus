@@ -33,7 +33,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->login();
 
         $response = $this->appRun('get', '/login', [
-            'redirect_to' => 'about',
+            'redirect_to' => '/about',
         ]);
 
         $this->assertResponse($response, 302, '/about');
@@ -138,7 +138,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'email' => $email,
             'password' => $password,
-            'redirect_to' => 'about',
+            'redirect_to' => '/about',
         ]);
 
         $this->assertResponse($response, 302, '/about');
@@ -311,7 +311,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/sessions/locale', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'locale' => 'fr_FR',
-            'redirect_to' => 'registration',
+            'redirect_to' => '/registration',
         ]);
 
         $this->assertResponse($response, 302, '/registration');

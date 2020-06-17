@@ -15,7 +15,7 @@ class Sessions
     /**
      * Show the login form.
      *
-     * @request_param string redirect_to An action pointer to redirect to (optional, default is `home`)
+     * @request_param string redirect_to A URL to redirect to (optional, default is `/`)
      *
      * @response 200
      * @response 302 $redirect_to if already connected
@@ -26,9 +26,9 @@ class Sessions
      */
     public function new($request)
     {
-        $redirect_to = $request->param('redirect_to', 'home');
+        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
         if (utils\CurrentUser::get()) {
-            return Response::redirect($redirect_to);
+            return Response::found($redirect_to);
         }
 
         return Response::ok('sessions/new.phtml', [
@@ -44,7 +44,7 @@ class Sessions
      * @request_param string csrf
      * @request_param string email
      * @request_param string password
-     * @request_param string redirect_to An action pointer to redirect to (optional, default is `home`)
+     * @request_param string redirect_to A URL to redirect to (optional, default is `/`)
      *
      * @response 302 $redirect_to if logged in
      * @response 302 $redirect_to if already connected
@@ -57,9 +57,9 @@ class Sessions
      */
     public function create($request)
     {
-        $redirect_to = $request->param('redirect_to', 'home');
+        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
         if (utils\CurrentUser::get()) {
-            return Response::redirect($redirect_to);
+            return Response::found($redirect_to);
         }
 
         $email = $request->param('email');
@@ -119,7 +119,7 @@ class Sessions
 
         utils\CurrentUser::setSessionToken($token->token);
 
-        return Response::redirect($redirect_to);
+        return Response::found($redirect_to);
     }
 
     /**
@@ -127,7 +127,7 @@ class Sessions
      *
      * @request_param string csrf
      * @request_param string locale
-     * @request_param string redirect_to An action pointer to redirect to (optional, default is `home`)
+     * @request_param string redirect_to A URL to redirect to (optional, default is `/`)
      *
      * @response 302 $redirect_to
      *
@@ -138,8 +138,9 @@ class Sessions
     public function changeLocale($request)
     {
         $csrf = new \Minz\CSRF();
+        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::redirect($request->param('redirect_to', 'home'));
+            return Response::found($redirect_to);
         }
 
         $locale = $request->param('locale');
@@ -159,7 +160,7 @@ class Sessions
             );
         }
 
-        return Response::redirect($request->param('redirect_to', 'home'));
+        return Response::found($redirect_to);
     }
 
     /**

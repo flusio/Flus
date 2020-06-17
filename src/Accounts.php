@@ -16,7 +16,7 @@ class Accounts
      * Show the deletion form.
      *
      * @response 200
-     * @response 302 /login?redirect_to=user+deletion if the user is not connected
+     * @response 302 /login?redirect_to=/account/deletion if the user is not connected
      *
      * @return \Minz\Response
      */
@@ -24,7 +24,7 @@ class Accounts
     {
         if (!utils\CurrentUser::get()) {
             return Response::redirect('login', [
-                'redirect_to' => 'user deletion',
+                'redirect_to' => \Minz\Url::for('user deletion'),
             ]);
         }
 
@@ -38,7 +38,7 @@ class Accounts
      * @request_param string password
      *
      * @response 302 /
-     * @response 302 /login?redirect_to=user+deletion if the user is not connected
+     * @response 302 /login?redirect_to=/account/deletion if the user is not connected
      * @response 400 if CSRF token or password is wrong
      *
      * @param \Minz\Request $request
@@ -50,7 +50,7 @@ class Accounts
         $current_user = utils\CurrentUser::get();
         if (!$current_user) {
             return Response::redirect('login', [
-                'redirect_to' => 'user deletion',
+                'redirect_to' => \Minz\Url::for('user deletion'),
             ]);
         }
 
@@ -73,6 +73,7 @@ class Accounts
         $user_dao = new models\dao\User();
         $user_dao->delete($current_user->id);
         utils\CurrentUser::reset();
-        return Response::redirect('home', ['status' => 'user_deleted']);
+        utils\Flash::set('status', 'user_deleted');
+        return Response::redirect('home');
     }
 }

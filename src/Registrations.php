@@ -185,9 +185,9 @@ class Registrations
      * minutes).
      *
      * @request_param string csrf
-     * @request_param string redirect_to (default: home)
+     * @request_param string redirect_to (default: /)
      *
-     * @response 302 $redirect_to?status=validation_email_sent
+     * @response 302 $redirect_to
      * @response 302 $redirect_to if the user was already validated
      * @response 400 if CSRF token is wrong
      * @response 401 if the user is not connected
@@ -200,7 +200,7 @@ class Registrations
     {
         $user_dao = new models\dao\User();
         $token_dao = new models\dao\Token();
-        $redirect_to = $request->param('redirect_to', 'home');
+        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
         $csrf = new \Minz\CSRF();
         $user = utils\CurrentUser::get();
 
@@ -219,7 +219,7 @@ class Registrations
 
         if ($user->validated_at) {
             // nothing to do, the user is already validated
-            return Response::redirect($redirect_to);
+            return Response::found($redirect_to);
         }
 
         $token = new models\Token($token_dao->find($user->validation_token));
@@ -234,7 +234,8 @@ class Registrations
         $users_mailer = new mailers\Users();
         $users_mailer->sendRegistrationValidationEmail($user, $token);
 
-        return Response::redirect($redirect_to, ['status' => 'validation_email_sent']);
+        utils\Flash::set('status', 'validation_email_sent');
+        return Response::found($redirect_to);
     }
 
     /**
