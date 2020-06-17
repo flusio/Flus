@@ -15,7 +15,17 @@
     background-image: url("../icons/core/eye-hide-line.svg");
 }
 
+/* Essential */
+.icon--undo {
+    background-image: url("../icons/essential/undo-line.svg");
+}
+
 /* Text edit */
 .icon--language {
     background-image: url("../icons/text-edit/language-line.svg");
+}
+
+/* Technology */
+.icon--link {
+    background-image: url("../icons/technology/link-line.svg");
 }
