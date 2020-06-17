@@ -139,6 +139,28 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/');
     }
 
+    public function testCreateCreatesABookmarkedCollection()
+    {
+        $faker = \Faker\Factory::create();
+        $collection_dao = new models\dao\Collection();
+
+        $this->assertSame(0, $collection_dao->count());
+
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $faker->name,
+            'email' => $faker->email,
+            'password' => $faker->password,
+        ]);
+
+        $this->assertResponse($response, 302, '/');
+        $this->assertSame(1, $collection_dao->count());
+        $db_collection = $collection_dao->listAll()[0];
+        $user = utils\CurrentUser::get();
+        $this->assertSame('bookmarked', $db_collection['type']);
+        $this->assertSame($user->id, $db_collection['user_id']);
+    }
+
     public function testCreateFailsIfCsrfIsWrong()
     {
         $faker = \Faker\Factory::create();

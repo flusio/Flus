@@ -13,24 +13,24 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testShowBookmarkedRendersCorrectly()
     {
         $user = $this->login();
-        $this->create('collection', [
+        $faker = \Faker\Factory::create();
+        $link_title = $faker->words(3, true);
+        $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'bookmarked',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'title' => $link_title,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
         ]);
 
         $response = $this->appRun('get', '/bookmarked');
 
-        $this->assertResponse($response, 200, 'You have no links here yet.');
-        $this->assertPointer($response, 'collections/show_bookmarked.phtml');
-    }
-
-    public function testShowBookmarkedRendersCorrectlyIfCollectionDoesNotExist()
-    {
-        $this->login();
-
-        $response = $this->appRun('get', '/bookmarked');
-
-        $this->assertResponse($response, 200, 'You never used the “Read Later” collection.');
+        $this->assertResponse($response, 200, $link_title);
         $this->assertPointer($response, 'collections/show_bookmarked.phtml');
     }
 
@@ -41,69 +41,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarked');
     }
 
-    public function testCreateBookmarkedCreatesCollection()
+    public function testShowBookmarkedFailsIfCollectionDoesNotExist()
     {
-        $collection_dao = new models\dao\Collection();
+        $this->login();
 
-        $user = $this->login();
+        $response = $this->appRun('get', '/bookmarked');
 
-        $this->assertSame(0, $collection_dao->count());
-
-        $response = $this->appRun('post', '/bookmarked', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-        ]);
-
-        $this->assertResponse($response, 201);
-        $this->assertPointer($response, 'collections/show_bookmarked.phtml');
-        $this->assertSame(1, $collection_dao->count());
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertSame('bookmarked', $db_collection['type']);
-        $this->assertSame($user->id, $db_collection['user_id']);
-    }
-
-    public function testCreateBookmarkedRedirectsIfNotConnected()
-    {
-        $collection_dao = new models\dao\Collection();
-
-        $response = $this->appRun('post', '/bookmarked', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-        ]);
-
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarked');
-        $this->assertSame(0, $collection_dao->count());
-    }
-
-    public function testCreateBookmarkedRedirectsIfItAlreadyExists()
-    {
-        $collection_dao = new models\dao\Collection();
-
-        $user = $this->login();
-        $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarked',
-        ]);
-
-        $this->assertSame(1, $collection_dao->count());
-
-        $response = $this->appRun('post', '/bookmarked', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-        ]);
-
-        $this->assertResponse($response, 302, '/bookmarked');
-        $this->assertSame(1, $collection_dao->count());
-    }
-
-    public function testCreateBookmarkedFailsIfCsrfIsInvalid()
-    {
-        $collection_dao = new models\dao\Collection();
-
-        $user = $this->login();
-
-        $response = $this->appRun('post', '/bookmarked', [
-            'csrf' => 'not the token',
-        ]);
-
-        $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertSame(0, $collection_dao->count());
+        $this->assertResponse($response, 404, 'It looks like you have no “Read Later” collection');
     }
 }

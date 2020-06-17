@@ -8,74 +8,54 @@
     <h1><?= _('Read Later') ?></h1>
 </div>
 
-<?php if($bookmarked_collection): ?>
-    <form method="post" action="<?= url('add link') ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+<form method="post" action="<?= url('add link') ?>">
+    <?php if ($error): ?>
+        <p class="form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="collection_ids[]" value="<?= $bookmarked_collection->id ?>" />
-        <input type="hidden" name="from" value="<?= url('show bookmarked') ?>" />
+    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+    <input type="hidden" name="collection_ids[]" value="<?= $bookmarked_collection->id ?>" />
+    <input type="hidden" name="from" value="<?= url('show bookmarked') ?>" />
 
-        <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
-            <label for="url">
-                <?= _('New link') ?>
-            </label>
+    <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
+        <label for="url">
+            <?= _('New link') ?>
+        </label>
 
-            <div class="form-group__stack">
-                <input id="url" name="url" type="url" required />
+        <div class="form-group__stack">
+            <input id="url" name="url" type="url" required />
 
-                <button type="submit" class="button--primary">
-                    <?= _('Add') ?>
-                </button>
-            </div>
-
-            <?php if (isset($errors['url'])): ?>
-                <p class="form-group__error">
-                    <?= $errors['url'] ?>
-                </p>
-            <?php endif; ?>
+            <button type="submit" class="button--primary">
+                <?= _('Add') ?>
+            </button>
         </div>
-    </form>
 
-    <div class="links">
-        <?php foreach ($links as $link): ?>
-            <div class="link">
-                <div class="link__body">
-                    <h2 class="link__title">
-                        <a class="anchor--discreet" href="<?= url('show link', ['id' => $link->id]) ?>">
-                            <?= $this->protect($link->title) ?>
-                        </a>
-                    </h2>
-                </div>
-            </div>
-        <?php endforeach; ?>
-
-        <?php if (!$links): ?>
-            <p>
-                <?= _('You have no links here yet.') ?>
+        <?php if (isset($errors['url'])): ?>
+            <p class="form-group__error">
+                <?= $errors['url'] ?>
             </p>
         <?php endif; ?>
     </div>
-<?php else: ?>
-    <p>
-        <?= _('You never used the “Read Later” collection.') ?>
-    </p>
+</form>
 
-    <form method="post" action="<?= url('create bookmarked') ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+<div class="links">
+    <?php foreach ($links as $link): ?>
+        <div class="link">
+            <div class="link__body">
+                <h2 class="link__title">
+                    <a class="anchor--discreet" href="<?= url('show link', ['id' => $link->id]) ?>">
+                        <?= $this->protect($link->title) ?>
+                    </a>
+                </h2>
+            </div>
+        </div>
+    <?php endforeach; ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-        <button type="submit" class="button--primary">
-            <?= _('Start using it') ?>
-        </button>
-    </form>
-<?php endif; ?>
+    <?php if (!$links): ?>
+        <p>
+            <?= _('You have no links here yet.') ?>
+        </p>
+    <?php endif; ?>
+</div>
