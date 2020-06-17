@@ -28,3 +28,32 @@ CREATE TABLE sessions (
 );
 
 CREATE INDEX idx_sessions_token ON sessions(token);
+
+CREATE TABLE collections (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX idx_collections_user_id ON collections(user_id);
+
+CREATE TABLE links (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    title TEXT NOT NULL,
+    url TEXT NOT NULL,
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_links_user_id_url ON links(user_id, url);
+
+CREATE TABLE links_to_collections (
+    id SERIAL PRIMARY KEY,
+    link_id TEXT REFERENCES links ON DELETE CASCADE ON UPDATE CASCADE,
+    collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, collection_id);
+CREATE INDEX idx_links_to_collections_collection_id ON links_to_collections(collection_id);

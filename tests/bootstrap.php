@@ -89,3 +89,64 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
     ]
 );
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'collection',
+    '\flusio\models\dao\Collection',
+    [
+        'id' => function () {
+            return bin2hex(random_bytes(16));
+        },
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'name' => function () use ($faker) {
+            return $faker->words(3, true);
+        },
+        'type' => function () use ($faker) {
+            return $faker->randomElement(\flusio\models\Collection::VALID_TYPES);
+        },
+        'user_id' => function () use ($faker) {
+            $user_factory = new \Minz\Tests\DatabaseFactory('user');
+            return $user_factory->create();
+        },
+    ]
+);
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'link',
+    '\flusio\models\dao\Link',
+    [
+        'id' => function () {
+            return bin2hex(random_bytes(16));
+        },
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'title' => function () use ($faker) {
+            return $faker->words(3, true);
+        },
+        'url' => function () use ($faker) {
+            return $faker->url;
+        },
+        'user_id' => function () use ($faker) {
+            $user_factory = new \Minz\Tests\DatabaseFactory('user');
+            return $user_factory->create();
+        },
+    ]
+);
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'link_to_collection',
+    '\flusio\models\dao\LinksToCollections',
+    [
+        'link_id' => function () {
+            $link_factory = new \Minz\Tests\DatabaseFactory('link');
+            return $link_factory->create();
+        },
+        'collection_id' => function () {
+            $collection_factory = new \Minz\Tests\DatabaseFactory('collection');
+            return $collection_factory->create();
+        },
+    ]
+);

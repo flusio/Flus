@@ -59,6 +59,7 @@ class Registrations
         $email = $request->param('email');
         $password = $request->param('password');
         $user_dao = new models\dao\User();
+        $collection_dao = new models\dao\Collection();
         $token_dao = new models\dao\Token();
         $session_dao = new models\dao\Session();
         $csrf = new \Minz\CSRF();
@@ -101,6 +102,10 @@ class Registrations
 
         $user->validation_token = $validation_token->token;
         $user_id = $user_dao->save($user);
+
+        // Initialize the bookmarked collection
+        $bookmarked_collection = models\Collection::initBookmarked($user_id);
+        $collection_dao->save($bookmarked_collection);
 
         // Initialize the current session
         $session_token = models\Token::init(1, 'month');
