@@ -67,6 +67,10 @@ class UrlTest extends \PHPUnit\Framework\TestCase
             ["http://evil.com/foo#bar/baz", 'http://evil.com/foo#bar/baz'],
             ["http://evil.com/foo#bar%22baz", 'http://evil.com/foo#bar%22baz'],
             ["http://evil.com/foo#🐘", 'http://evil.com/foo#%F0%9F%90%98'],
+            ["?foo", 'http:///?foo'],
+            ["http:///example.com", ''],
+            ["http://:80", ''],
+            ["http://user@:80", ''],
         ];
     }
 }
