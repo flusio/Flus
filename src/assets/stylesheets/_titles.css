@@ -1,5 +1,9 @@
 .title {
+    display: flex;
     margin-bottom: var(--space-large);
+
+    align-items: center;
+    justify-content: center;
 
     font-family: var(--font-family-title);
     letter-spacing: 0.01em;

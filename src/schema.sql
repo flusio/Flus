@@ -44,6 +44,9 @@ CREATE TABLE links (
     created_at TIMESTAMPTZ NOT NULL,
     title TEXT NOT NULL,
     url TEXT NOT NULL,
+    fetched_at TIMESTAMPTZ,
+    fetched_code INTEGER NOT NULL DEFAULT 0,
+    fetched_error TEXT,
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 

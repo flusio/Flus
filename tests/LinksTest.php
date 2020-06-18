@@ -331,4 +331,123 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFlash('error', 'The link must be associated to a collection.');
         $this->assertSame(0, $link_dao->count());
     }
+
+    public function testFetchUpdatesLinkWithTheTitleAndRedirects()
+    {
+        $link_dao = new models\dao\Link();
+
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => 'https://github.com/flusio/flusio',
+            'title' => 'https://github.com/flusio/flusio',
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $db_link = $link_dao->find($link_id);
+        $expected_title = 'GitHub - flusio/flusio: The citizen social media';
+        $this->assertSame($expected_title, $db_link['title']);
+        $this->assertSame(200, $db_link['fetched_code']);
+    }
+
+    public function testFetchDoesNotChangeTitleIfUnreachable()
+    {
+        $link_dao = new models\dao\Link();
+
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => 'https://flus.fr/does_not_exist.html',
+            'title' => 'https://flus.fr/does_not_exist.html',
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $db_link = $link_dao->find($link_id);
+        $expected_title = 'https://flus.fr/does_not_exist.html';
+        $this->assertSame($expected_title, $db_link['title']);
+        $this->assertSame(404, $db_link['fetched_code']);
+    }
+
+    public function testFetchFailsIfCsrfIsInvalid()
+    {
+        $link_dao = new models\dao\Link();
+
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => 'https://github.com/flusio/flusio',
+            'title' => 'https://github.com/flusio/flusio',
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $db_link = $link_dao->find($link_id);
+        $expected_title = 'https://github.com/flusio/flusio';
+        $this->assertSame($expected_title, $db_link['title']);
+    }
+
+    public function testFetchFailsIfNotConnected()
+    {
+        $link_dao = new models\dao\Link();
+
+        $user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'url' => 'https://github.com/flusio/flusio',
+            'title' => 'https://github.com/flusio/flusio',
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertResponse($response, 401, 'You must be connected to see this page');
+        $db_link = $link_dao->find($link_id);
+        $expected_title = 'https://github.com/flusio/flusio';
+        $this->assertSame($expected_title, $db_link['title']);
+    }
+
+    public function testFetchFailsIfTheLinkDoesNotExist()
+    {
+        $user = $this->login();
+
+        $response = $this->appRun('post', "/links/do-not-exist/fetch", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertResponse($response, 404, 'This link doesn’t exist');
+    }
+
+    public function testFetchFailsIfUserDoesNotOwnTheLink()
+    {
+        $link_dao = new models\dao\Link();
+
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'url' => 'https://github.com/flusio/flusio',
+            'title' => 'https://github.com/flusio/flusio',
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertResponse($response, 404, 'This link doesn’t exist');
+        $db_link = $link_dao->find($link_id);
+        $expected_title = 'https://github.com/flusio/flusio';
+        $this->assertSame($expected_title, $db_link['title']);
+    }
 }

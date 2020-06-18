@@ -65,6 +65,7 @@ class Application
         // Links
         $router->addRoute('post', '/links', 'Links#add', 'add link');
         $router->addRoute('get', '/links/:id', 'Links#show', 'show link');
+        $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
 
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');

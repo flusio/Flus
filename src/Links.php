@@ -130,4 +130,70 @@ class Links
             'id' => $link->id,
         ]);
     }
+
+    /**
+     * Fetch information about a link.
+     *
+     * @request_param string csrf
+     * @request_param string id
+     *
+     * @response 302 /links/:id
+     * @response 400 if csrf token is invalid
+     * @response 401 if not connected
+     * @response 404 if the link doesn't exist or not associated to the current user
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function fetch($request)
+    {
+        $current_user = utils\CurrentUser::get();
+        if (!$current_user) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('bad_request.phtml', [
+                'error' => _('A security verification failed.'),
+            ]);
+        }
+
+        $link_dao = new models\dao\Link();
+        $db_link = $link_dao->findBy([
+            'id' => $request->param('id'),
+            'user_id' => $current_user->id,
+        ]);
+
+        if (!$db_link) {
+            return Response::notFound('not_found.phtml', [
+                'error' => _('This link doesn’t exist.'),
+            ]);
+        }
+
+        $link = new models\Link($db_link);
+
+        $http = new \SpiderBits\Http();
+        $http->user_agent = 'flusio/0.0.1 (' . PHP_OS . '; https://github.com/flusio/flusio)';
+        $http->timeout = 5;
+
+        $response = $http->get($link->url);
+        if ($response->success) {
+            $dom = \SpiderBits\Dom::fromText($response->data);
+            $title = $dom->select('//title');
+            if ($title) {
+                $link->title = $title->text();
+            }
+        } else {
+            $link->fetched_error = $response->data;
+        }
+
+        $link->fetched_code = $response->status;
+        $link->fetched_at = \Minz\Time::now();
+
+        $link_dao->save($link);
+
+        return Response::redirect('show link', ['id' => $link->id]);
+    }
 }

@@ -27,6 +27,18 @@ class Link extends \Minz\Model
             'validator' => '\flusio\models\Link::validateUrl',
         ],
 
+        'fetched_at' => [
+            'type' => 'datetime',
+        ],
+
+        'fetched_code' => [
+            'type' => 'integer',
+        ],
+
+        'fetched_error' => [
+            'type' => 'string',
+        ],
+
         'user_id' => [
             'type' => 'string',
             'required' => true,
