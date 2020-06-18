@@ -145,28 +145,28 @@ class Registrations
         $user_dao = new models\dao\User();
         $token_dao = new models\dao\Token();
 
-        $raw_token = $token_dao->find($request->param('t'));
-        if (!$raw_token) {
+        $db_token = $token_dao->find($request->param('t'));
+        if (!$db_token) {
             return Response::notFound('registrations/validation.phtml', [
                 'error' => _('The token doesn’t exist.'),
             ]);
         }
 
-        $token = new models\Token($raw_token);
+        $token = new models\Token($db_token);
         if (!$token->isValid()) {
             return Response::badRequest('registrations/validation.phtml', [
                 'error' => _('The token has expired or has been invalidated.'),
             ]);
         }
 
-        $raw_user = $user_dao->findBy(['validation_token' => $token->token]);
-        if (!$raw_user) {
+        $db_user = $user_dao->findBy(['validation_token' => $token->token]);
+        if (!$db_user) {
             return Response::notFound('registrations/validation.phtml', [
                 'error' => _('The token doesn’t exist.'),
             ]);
         }
 
-        $user = new models\User($raw_user);
+        $user = new models\User($db_user);
 
         // No need to keep the token in database, whether or not the user is
         // already validated.

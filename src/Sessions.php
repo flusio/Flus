@@ -79,10 +79,10 @@ class Sessions
         $token_dao = new models\dao\Token();
         $session_dao = new models\dao\Session();
 
-        $user_raw = $user_dao->findBy([
+        $db_user = $user_dao->findBy([
             'email' => utils\Email::sanitize($email),
         ]);
-        if (!$user_raw) {
+        if (!$db_user) {
             return Response::badRequest('sessions/new.phtml', [
                 'email' => $email,
                 'password' => $password,
@@ -93,7 +93,7 @@ class Sessions
             ]);
         }
 
-        $user = new models\User($user_raw);
+        $user = new models\User($db_user);
         if (!$user->verifyPassword($password)) {
             return Response::badRequest('sessions/new.phtml', [
                 'email' => $email,
@@ -192,8 +192,8 @@ class Sessions
 
         $session_dao = new models\dao\Session();
         $current_session_token = utils\CurrentUser::sessionToken();
-        $raw_session = $session_dao->findBy(['token' => $current_session_token]);
-        $session = new models\Session($raw_session);
+        $db_session = $session_dao->findBy(['token' => $current_session_token]);
+        $session = new models\Session($db_session);
 
         $session_dao->delete($session->id);
         utils\CurrentUser::reset();

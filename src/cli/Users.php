@@ -37,8 +37,8 @@ class Users
             return Response::text(400, 'The `since` parameter must be greater or equal to 1.');
         }
 
-        $raw_users = $user_dao->listNotValidatedOlderThan($since, 'month');
-        $users_ids = array_column($raw_users, 'id');
+        $db_users = $user_dao->listNotValidatedOlderThan($since, 'month');
+        $users_ids = array_column($db_users, 'id');
 
         $number_to_delete = count($users_ids);
         if ($number_to_delete > 0) {
