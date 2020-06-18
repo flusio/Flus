@@ -132,6 +132,40 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_id, $link->collectionIds());
     }
 
+    public function testAddCreatesLinkIfItExistsForAnotherUser()
+    {
+        $faker = \Faker\Factory::create();
+        $link_dao = new models\dao\Link();
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+
+        $user = $this->login();
+        $another_user_id = $this->create('user');
+        $url = $faker->url;
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+        ]);
+        $this->create('link', [
+            'user_id' => $another_user_id,
+            'url' => $url,
+        ]);
+
+        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(0, $links_to_collections_dao->count());
+
+        $response = $this->appRun('post', '/links', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => \Minz\Url::for('show bookmarked'),
+            'url' => $url,
+            'collection_ids' => [$collection_id],
+        ]);
+
+        $this->assertSame(2, $link_dao->count());
+        $this->assertSame(1, $links_to_collections_dao->count());
+
+        $link = new models\Link($link_dao->findBy(['user_id' => $user->id]));
+        $this->assertContains($collection_id, $link->collectionIds());
+    }
+
     public function testAddHandlesMultipleCollections()
     {
         $faker = \Faker\Factory::create();

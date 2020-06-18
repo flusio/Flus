@@ -110,7 +110,10 @@ class Links
             return Response::found($from);
         }
 
-        $existing_db_link = $link_dao->findBy(['url' => $link->url]);
+        $existing_db_link = $link_dao->findBy([
+            'url' => $link->url,
+            'user_id' => $current_user->id,
+        ]);
         if ($existing_db_link) {
             $link = new models\Link($existing_db_link);
         } else {
