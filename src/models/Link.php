@@ -116,7 +116,7 @@ class Link extends \Minz\Model
     {
         $validate = filter_var($url, FILTER_VALIDATE_URL) !== false;
         if (!$validate) {
-            return _('The link is invalid.');
+            return _('The link is invalid.'); // @codeCoverageIgnore
         }
 
         $parsed_url = parse_url($url);
@@ -125,7 +125,7 @@ class Link extends \Minz\Model
         }
 
         if (isset($parsed_url['pass'])) {
-            return _('The link must not include a password as it’s sensitive data.');
+            return _('The link must not include a password as it’s sensitive data.'); // @codeCoverageIgnore
         }
 
         return true;
