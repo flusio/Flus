@@ -57,7 +57,7 @@ reset: ## Reset the database
 .PHONY: test
 test: ## Run the test suite
 	$(PHP) ./vendor/bin/phpunit \
-		$(COVERAGE) --whitelist ./src \
+		$(COVERAGE) --whitelist ./src --whitelist ./lib/SpiderBits \
 		--bootstrap ./tests/bootstrap.php \
 		--testdox \
 		$(PHPUNIT_FILTER) \
@@ -65,19 +65,19 @@ test: ## Run the test suite
 
 .PHONY: lint
 lint: ## Run the linters on the PHP and JS files
-	$(PHP) ./vendor/bin/phpcs --extensions=php --standard=PSR12 ./src ./tests
+	$(PHP) ./vendor/bin/phpcs --extensions=php --standard=PSR12 ./src ./tests ./lib/SpiderBits
 	$(NPM) run lint-js
 	$(NPM) run lint-css
 
 .PHONY: lint-fix
 lint-fix: ## Fix the errors detected by the linters
-	$(PHP) ./vendor/bin/phpcbf --extensions=php --standard=PSR12 ./src ./tests
+	$(PHP) ./vendor/bin/phpcbf --extensions=php --standard=PSR12 ./src ./tests ./lib/SpiderBits
 	$(NPM) run lint-js-fix
 	$(NPM) run lint-css-fix
 
 .PHONY: tree
 tree:  ## Display the structure of the application
-	tree -I 'lib|vendor|node_modules|coverage' --dirsfirst -CA
+	tree -I 'Minz|vendor|node_modules|coverage' --dirsfirst -CA
 
 .PHONY: help
 help:
