@@ -268,7 +268,7 @@ class Registrations
             } elseif ($property === 'password_hash') {
                 $formatted_error = _('The password is required.');
             } else {
-                $formatted_error = $error; // @codeCoverageIgnore
+                $formatted_error = $error['description']; // @codeCoverageIgnore
             }
 
             $formatted_errors[$property] = $formatted_error;
