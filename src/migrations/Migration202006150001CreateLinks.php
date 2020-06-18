@@ -2,9 +2,6 @@
 
 namespace flusio\migrations;
 
-/**
- * @codeCoverageIgnore
- */
 class Migration202006150001CreateLinks
 {
     public function migrate()
@@ -32,13 +29,7 @@ class Migration202006150001CreateLinks
             CREATE INDEX idx_links_to_collections_collection_id ON links_to_collections(collection_id);
         SQL;
 
-        $result = $database->exec($sql);
-        if ($result === false) {
-            $error_info = $database->errorInfo();
-            throw new \Minz\Errors\DatabaseModelError(
-                "Error in SQL statement: {$error_info[2]} ({$error_info[0]})."
-            );
-        }
+        $database->exec($sql);
 
         return true;
     }

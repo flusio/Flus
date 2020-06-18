@@ -2,9 +2,6 @@
 
 namespace flusio\migrations;
 
-/**
- * @codeCoverageIgnore
- */
 class Migration202005201630CreateSession
 {
     public function migrate()
@@ -24,13 +21,7 @@ class Migration202005201630CreateSession
             CREATE INDEX idx_sessions_token ON sessions(token);
         SQL;
 
-        $result = $database->exec($sql);
-        if ($result === false) {
-            $error_info = $database->errorInfo();
-            throw new \Minz\Errors\DatabaseModelError(
-                "Error in SQL statement: {$error_info[2]} ({$error_info[0]})."
-            );
-        }
+        $database->exec($sql);
 
         return true;
     }

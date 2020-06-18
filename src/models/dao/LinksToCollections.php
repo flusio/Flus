@@ -25,8 +25,6 @@ class LinksToCollections extends \Minz\DatabaseModel
      * @param string $link_id
      * @param string[] $collection_ids
      *
-     * @throws \Minz\Errors\DatabaseModelError
-     *
      * @return boolean True on success
      */
     public function attachCollectionsToLink($link_id, $collection_ids)
@@ -46,11 +44,6 @@ class LinksToCollections extends \Minz\DatabaseModel
 
         $statement = $this->prepare($sql);
         $result = $statement->execute($values);
-
-        if ($result) {
-            return $this->lastInsertId();
-        } else {
-            throw self::sqlStatementError($statement);
-        }
+        return $this->lastInsertId();
     }
 }

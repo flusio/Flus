@@ -29,8 +29,6 @@ class User extends \Minz\DatabaseModel
      * @param integer $number
      * @param string $unit
      *
-     * @throws \Minz\Errors\DatabaseModelError if an error occured during the execution
-     *
      * @return array
      */
     public function listNotValidatedOlderThan($number, $unit)
@@ -38,17 +36,8 @@ class User extends \Minz\DatabaseModel
         $date = \Minz\Time::ago($number, $unit)->format(\Minz\Model::DATETIME_FORMAT);
         $sql = "SELECT * FROM users WHERE validated_at IS NULL AND created_at <= ?";
         $statement = $this->prepare($sql);
-        $result = $statement->execute([$date]);
-        if (!$result) {
-            throw self::sqlStatementError($statement); // @codeCoverageIgnore
-        }
-
-        $result = $statement->fetchAll();
-        if ($result !== false) {
-            return $result;
-        } else {
-            throw self::sqlStatementError($statement); // @codeCoverageIgnore
-        }
+        $statement->execute([$date]);
+        return $statement->fetchAll();
     }
 
     /**
@@ -60,8 +49,6 @@ class User extends \Minz\DatabaseModel
      * column must be unique in database.
      *
      * @param string $token
-     *
-     * @throws \Minz\Errors\DatabaseModelError if an error occured during the execution
      *
      * @return array|null
      */
@@ -81,18 +68,12 @@ class User extends \Minz\DatabaseModel
         $now = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
 
         $statement = $this->prepare($sql);
-        $result = $statement->execute([$token, $now]);
-        if (!$result) {
-            throw self::sqlStatementError($statement); // @codeCoverageIgnore
-        }
-
+        $statement->execute([$token, $now]);
         $result = $statement->fetchAll();
-        if ($result !== false && count($result) === 1) {
+        if (count($result) === 1) {
             return $result[0];
-        } elseif ($result !== false) {
-            return null;
         } else {
-            throw self::sqlStatementError($statement); // @codeCoverageIgnore
+            return null;
         }
     }
 }

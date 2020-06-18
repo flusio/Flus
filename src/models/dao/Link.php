@@ -39,16 +39,7 @@ class Link extends \Minz\DatabaseModel
         SQL;
 
         $statement = $this->prepare($sql);
-        $result = $statement->execute([$collection_id]);
-        if (!$result) {
-            throw self::sqlStatementError($statement); // @codeCoverageIgnore
-        }
-
-        $result = $statement->fetchAll();
-        if ($result !== false) {
-            return $result;
-        } else {
-            throw self::sqlStatementError($statement); // @codeCoverageIgnore
-        }
+        $statement->execute([$collection_id]);
+        return $statement->fetchAll();
     }
 }

@@ -2,9 +2,6 @@
 
 namespace flusio\migrations;
 
-/**
- * @codeCoverageIgnore
- */
 class Migration202005111150CreateToken
 {
     public function migrate()
@@ -20,13 +17,7 @@ class Migration202005111150CreateToken
             );
         SQL;
 
-        $result = $database->exec($sql);
-        if ($result === false) {
-            $error_info = $database->errorInfo();
-            throw new \Minz\Errors\DatabaseModelError(
-                "Error in SQL statement: {$error_info[2]} ({$error_info[0]})."
-            );
-        }
+        $database->exec($sql);
 
         return true;
     }
