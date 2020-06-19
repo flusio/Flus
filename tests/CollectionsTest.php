@@ -31,7 +31,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', '/bookmarked');
 
         $this->assertResponse($response, 200, $link_title);
-        $this->assertPointer($response, 'collections/show_bookmarked.phtml');
+        $this->assertPointer($response, 'collections/show.phtml');
     }
 
     public function testShowBookmarkedRedirectsIfNotConnected()

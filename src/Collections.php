@@ -51,8 +51,8 @@ class Collections
             $links[] = new models\Link($db_link);
         }
 
-        return Response::ok('collections/show_bookmarked.phtml', [
-            'bookmarked_collection' => $bookmarked_collection,
+        return Response::ok('collections/show.phtml', [
+            'collection' => $bookmarked_collection,
             'links' => $links,
         ]);
     }
