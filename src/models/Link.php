@@ -98,6 +98,8 @@ class Link extends \Minz\Model
 
             if ($property === 'url' && $code === 'required') {
                 $formatted_error = _('The link is required.');
+            } elseif ($property === 'title' && $code === 'required') {
+                $formatted_error = _('The title is required.');
             } else {
                 $formatted_error = $error['description'];
             }

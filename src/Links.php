@@ -139,6 +139,115 @@ class Links
     }
 
     /**
+     * Show the update link page.
+     *
+     * @request_param string id
+     *
+     * @response 200
+     * @response 302 /links/:id/fetch if the link is not fetched yet
+     * @response 401 if not connected
+     * @response 404 if the link doesn't exist or not associated to the current user
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function showUpdate($request)
+    {
+        $current_user = utils\CurrentUser::get();
+        if (!$current_user) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        $link_dao = new models\dao\Link();
+        $db_link = $link_dao->findBy([
+            'id' => $request->param('id'),
+            'user_id' => $current_user->id,
+        ]);
+
+        if (!$db_link) {
+            return Response::notFound('not_found.phtml', [
+                'error' => _('This link doesn’t exist.'),
+            ]);
+        }
+
+        $link = new models\Link($db_link);
+        if (!$link->fetched_at) {
+            return Response::redirect('show fetch link', [
+                'id' => $link->id,
+            ]);
+        }
+
+        return Response::ok('links/show_update.phtml', [
+            'link' => $link,
+            'title' => $link->title,
+        ]);
+    }
+
+    /**
+     * Update a link.
+     *
+     * @request_param string csrf
+     * @request_param string id
+     * @request_param string title
+     *
+     * @response 302 /links/:id
+     * @response 400 if csrf token or title are invalid
+     * @response 401 if not connected
+     * @response 404 if the link doesn't exist or not associated to the current user
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function update($request)
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        $link_id = $request->param('id');
+        $new_title = $request->param('title');
+        $link_dao = new models\dao\Link();
+
+        $db_link = $link_dao->findBy([
+            'id' => $link_id,
+            'user_id' => $user->id,
+        ]);
+        if (!$db_link) {
+            return Response::notFound('not_found.phtml', [
+                'error' => _('This link doesn’t exist.'),
+            ]);
+        }
+
+        $link = new models\Link($db_link);
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('links/show_update.phtml', [
+                'link' => $link,
+                'title' => $new_title,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        $link->title = trim($new_title);
+        $errors = $link->validate();
+        if ($errors) {
+            return Response::badRequest('links/show_update.phtml', [
+                'link' => $link,
+                'title' => $new_title,
+                'errors' => $errors,
+            ]);
+        }
+
+        $link_dao->save($link);
+
+        return Response::redirect('show link', ['id' => $link_id]);
+    }
+
+    /**
      * Show the fetch link page.
      *
      * @request_param string id

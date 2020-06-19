@@ -1,0 +1,51 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => $link->url,
+        'canonical' => url_full('show update link', ['id' => $link->id]),
+    ]);
+?>
+
+<div class="title">
+    <h1><?= $this->protect($link->url) ?></h1>
+</div>
+
+<form method="post" action="<?= url('update link', ['id' => $link->id]) ?>">
+    <?php if ($error): ?>
+        <p class="form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+
+    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+    <div class="form-group <?= isset($errors['title']) ? 'form-group--invalid' : '' ?>">
+        <label for="title">
+            <?= _('Title') ?>
+        </label>
+
+        <input
+            id="title"
+            name="title"
+            type="text"
+            value="<?= $title ?>"
+            required
+            autocomplete="off"
+        />
+
+        <?php if (isset($errors['title'])): ?>
+            <p class="form-group__error">
+                <?= $errors['title'] ?>
+            </p>
+        <?php endif; ?>
+    </div>
+
+    <div class="form__actions">
+        <button type="submit" class="button--primary">
+            <?= _('Update') ?>
+        </button>
+
+        <a href="<?= url('show link', ['id' => $link->id]) ?>">
+            <?= _('Cancel and go back to the link') ?>
+        </a>
+    </div>
+</form>

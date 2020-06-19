@@ -65,6 +65,8 @@ class Application
         // Links
         $router->addRoute('post', '/links', 'Links#add', 'add link');
         $router->addRoute('get', '/links/:id', 'Links#show', 'show link');
+        $router->addRoute('get', '/links/:id/edit', 'Links#showUpdate', 'show update link');
+        $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
         $router->addRoute('get', '/links/:id/fetch', 'Links#showFetch', 'show fetch link');
         $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
         $router->addRoute(

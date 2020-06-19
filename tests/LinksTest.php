@@ -348,6 +348,212 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
     }
 
+    public function testShowUpdateRendersCorrectly()
+    {
+        $faker = \Faker\Factory::create();
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => $faker->iso8601,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/edit");
+
+        $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'links/show_update.phtml');
+    }
+
+    public function testShowUpdateRedirectsIfNotFetched()
+    {
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => null,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/edit");
+
+        $this->assertResponse($response, 302, "/links/{$link_id}/fetch");
+    }
+
+    public function testShowUpdateFailsIfNotConnected()
+    {
+        $faker = \Faker\Factory::create();
+        $user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'fetched_at' => $faker->iso8601,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/edit");
+
+        $this->assertResponse($response, 401, 'You must be connected to see this page');
+    }
+
+    public function testShowUpdateFailsIfTheLinkDoesNotExist()
+    {
+        $faker = \Faker\Factory::create();
+        $user = $this->login();
+
+        $response = $this->appRun('get', '/links/not-a-valid-id/edit');
+
+        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+    }
+
+    public function testShowUpdateFailsIfUserDoesNotOwnTheLink()
+    {
+        $faker = \Faker\Factory::create();
+        $current_user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'fetched_at' => $faker->iso8601,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/edit");
+
+        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+    }
+
+    public function testUpdateChangesTheTitleAndRedirects()
+    {
+        $link_dao = new models\dao\Link();
+        $faker = \Faker\Factory::create();
+        $old_title = $faker->words(3, true);
+        $new_title = $faker->words(5, true);
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => $faker->iso8601,
+            'title' => $old_title,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'title' => $new_title,
+        ]);
+
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $db_link = $link_dao->find($link_id);
+        $this->assertSame($new_title, $db_link['title']);
+    }
+
+    public function testUpdateFailsIfCsrfIsInvalid()
+    {
+        $link_dao = new models\dao\Link();
+        $faker = \Faker\Factory::create();
+        $old_title = $faker->words(3, true);
+        $new_title = $faker->words(5, true);
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => $faker->iso8601,
+            'title' => $old_title,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+            'csrf' => 'not the token',
+            'title' => $new_title,
+        ]);
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $db_link = $link_dao->find($link_id);
+        $this->assertSame($old_title, $db_link['title']);
+    }
+
+    public function testUpdateFailsIfTitleIsInvalid()
+    {
+        $link_dao = new models\dao\Link();
+        $faker = \Faker\Factory::create();
+        $old_title = $faker->words(3, true);
+        $new_title = '';
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => $faker->iso8601,
+            'title' => $old_title,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'title' => $new_title,
+        ]);
+
+        $this->assertResponse($response, 400, 'The title is required');
+        $db_link = $link_dao->find($link_id);
+        $this->assertSame($old_title, $db_link['title']);
+    }
+
+    public function testUpdateFailsIfNotConnected()
+    {
+        $link_dao = new models\dao\Link();
+        $faker = \Faker\Factory::create();
+        $old_title = $faker->words(3, true);
+        $new_title = $faker->words(5, true);
+        $user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'fetched_at' => $faker->iso8601,
+            'title' => $old_title,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'title' => $new_title,
+        ]);
+
+        $this->assertResponse($response, 401, 'You must be connected to see this page');
+        $db_link = $link_dao->find($link_id);
+        $this->assertSame($old_title, $db_link['title']);
+    }
+
+    public function testUpdateFailsIfLinkDoesNotExist()
+    {
+        $link_dao = new models\dao\Link();
+        $faker = \Faker\Factory::create();
+        $old_title = $faker->words(3, true);
+        $new_title = $faker->words(5, true);
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => $faker->iso8601,
+            'title' => $old_title,
+        ]);
+
+        $response = $this->appRun('post', '/links/not-the-id/edit', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'title' => $new_title,
+        ]);
+
+        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $db_link = $link_dao->find($link_id);
+        $this->assertSame($old_title, $db_link['title']);
+    }
+
+    public function testUpdateFailsIfUserDoesNotOwnTheLink()
+    {
+        $link_dao = new models\dao\Link();
+        $faker = \Faker\Factory::create();
+        $old_title = $faker->words(3, true);
+        $new_title = $faker->words(5, true);
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'fetched_at' => $faker->iso8601,
+            'title' => $old_title,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'title' => $new_title,
+        ]);
+
+        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $db_link = $link_dao->find($link_id);
+        $this->assertSame($old_title, $db_link['title']);
+    }
+
     public function testShowFetchRendersCorrectly()
     {
         $user = $this->login();
