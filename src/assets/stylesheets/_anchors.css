@@ -36,20 +36,6 @@ a:focus {
     border-color: inherit;
 }
 
-.anchor--icon {
+.anchor--action.icon--anchor {
     padding-left: 2.5em;
-}
-
-.anchor--icon::before {
-    transition: filter 0.3s ease-in-out;
-}
-
-/*
- * This is pretty hacky, but hey, it's also pretty cool! :)
- * @see https://stackoverflow.com/a/53336754
- * @see https://stackoverflow.com/a/43960991
- */
-.anchor--icon:hover::before,
-.anchor--icon:focus::before {
-    filter: invert(36%) sepia(23%) saturate(4309%) hue-rotate(229deg) brightness(83%) contrast(80%);
 }

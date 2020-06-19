@@ -20,6 +20,37 @@
     background-size: 1.5em;
 }
 
+.icon--anchor::before {
+    transition: filter 0.3s ease-in-out;
+}
+
+/*
+ * This is pretty hacky, but hey, it's also pretty cool! :)
+ * @see https://stackoverflow.com/a/53336754
+ * @see https://stackoverflow.com/a/43960991
+ */
+.icon--anchor:hover::before,
+.icon--anchor:focus::before {
+    filter: invert(36%) sepia(23%) saturate(4309%) hue-rotate(229deg) brightness(83%) contrast(80%);
+}
+
+.icon--ghost::before {
+    filter: invert(29%) sepia(12%) saturate(383%) hue-rotate(207deg) brightness(95%) contrast(86%);
+}
+
+.icon--only {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.25em;
+    padding-left: 0;
+}
+
+.icon--only::before {
+    left: 0;
+
+    margin-top: -0.6em;
+}
+
 /* Core */
 .icon--eye::before {
     background-image: url("../icons/core/eye-line.svg");
@@ -30,6 +61,14 @@
 }
 
 /* Essential */
+.icon--library::before {
+    background-image: url("../icons/essential/library-line.svg");
+}
+
+.icon--library.icon--solid::before {
+    background-image: url("../icons/essential/library-solid.svg");
+}
+
 .icon--undo::before {
     background-image: url("../icons/essential/undo-line.svg");
 }
@@ -37,6 +76,15 @@
 /* Text edit */
 .icon--language::before {
     background-image: url("../icons/text-edit/language-line.svg");
+}
+
+/* Social */
+.icon--bookmark::before {
+    background-image: url("../icons/social/bookmark-line.svg");
+}
+
+.icon--bookmark.icon--solid::before {
+    background-image: url("../icons/social/bookmark-solid.svg");
 }
 
 /* Technology */

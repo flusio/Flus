@@ -49,3 +49,22 @@ button:active {
 .button--ghost:focus {
     background-color: var(--color-white);
 }
+
+.button--discreet {
+    padding: var(--space-smaller);
+
+    font-size: var(--size-small);
+
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.button--discreet:hover {
+    background-color: transparent;
+    border-color: var(--color-grey-2);
+}
+
+.button--discreet:focus {
+    background-color: transparent;
+    border-color: var(--border-active-color);
+}

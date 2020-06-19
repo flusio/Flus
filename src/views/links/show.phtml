@@ -7,7 +7,7 @@
 
 <?php if ($link->fetched_at): ?>
     <p>
-        <a class="anchor--action anchor--icon icon icon--undo" href="<?= url('show bookmarked') ?>">
+        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('show bookmarked') ?>">
             <?= _('Back') ?>
         </a>
     </p>
@@ -18,12 +18,12 @@
 
     <p>
         <a
-            class="anchor--action anchor--icon icon icon--link"
+            class="anchor--action icon icon--anchor icon--link"
             target="_blank"
             rel="noopener noreferrer"
             href="<?= $link->url ?>"
         >
-            <?= _('see') ?>
+            <?= _('open') ?>
         </a>
     </p>
 <?php else: ?>

@@ -45,10 +45,28 @@
         <div class="link">
             <div class="link__body">
                 <h2 class="link__title">
-                    <a class="anchor--discreet" href="<?= url('show link', ['id' => $link->id]) ?>">
-                        <?= $this->protect($link->title) ?>
-                    </a>
+                    <?= $this->protect($link->title) ?>
                 </h2>
+            </div>
+
+            <div class="link__footer">
+                <form method="post" action="<?= url('remove link collection', ['id' => $link->id]) ?>">
+                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                    <input type="hidden" name="collection_id" value="<?= $collection->id ?>" />
+                    <input type="hidden" name="from" value="<?= url($current_action_pointer) ?>" />
+
+                    <button
+                        class="button--discreet"
+                        title="<?= _('Remove from bookmarked') ?>"
+                        aria-label="<?= _('Remove from bookmarked') ?>"
+                    >
+                        <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
+                    </button>
+                </form>
+
+                <a class="anchor--action" href="<?= url('show link', ['id' => $link->id]) ?>">
+                    <?= _('see') ?>
+                </a>
             </div>
         </div>
     <?php endforeach; ?>

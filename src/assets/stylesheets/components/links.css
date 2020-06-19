@@ -8,25 +8,34 @@
 }
 
 .link {
+    display: flex;
+    max-width: 50%;
     margin: var(--space-medium);
 
     flex-basis: 25%;
+    flex-direction: column;
     flex-grow: 1;
 
-    box-shadow: 0 3px 3px 3px var(--color-grey-1);
-    border-radius: var(--border-radius);
+    box-shadow: 0 1px 4px 1px var(--color-grey-2);
 }
 
 .link__body {
-    display: flex;
-    height: 100%;
     padding: var(--space-small);
 
-    flex-direction: column;
+    flex-grow: 1;
 }
 
 .link__title {
-    flex-grow: 1;
+    margin-top: 0;
+    margin-bottom: 0;
 
     font-size: var(--size-normal);
+}
+
+.link__footer {
+    display: flex;
+    padding: var(--space-small);
+
+    align-items: center;
+    justify-content: space-between;
 }

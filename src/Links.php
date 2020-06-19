@@ -196,4 +196,57 @@ class Links
 
         return Response::redirect('show link', ['id' => $link->id]);
     }
+
+    /**
+     * Remove a link from a collection.
+     *
+     * @request_param string csrf
+     * @request_param string from (default is /bookmarked)
+     * @request_param string id
+     * @request_param string collection_id
+     *
+     * @response 302 :from on success
+     * @response 302 /login?redirect_to=:from if not connected
+     * @response 400 if CSRF is invalid
+     * @response 404 if the link or collection (or their relation) don't exist,
+     *               or are not associated to the current user
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function removeCollection($request)
+    {
+        $from = $request->param('from', \Minz\Url::for('show bookmarked'));
+        $user = utils\CurrentUser::get();
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('bad_request.phtml', [
+                'error' => _('A security verification failed.'),
+            ]);
+        }
+
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link_id = $request->param('id');
+        $collection_id = $request->param('collection_id');
+
+        $db_link_to_collection = $links_to_collections_dao->findRelation(
+            $user->id,
+            $link_id,
+            $collection_id
+        );
+        if (!$db_link_to_collection) {
+            return Response::notFound('not_found.phtml', [
+                'error' => _('This link-collection relation doesn’t exist.'),
+            ]);
+        }
+
+        $links_to_collections_dao->delete($db_link_to_collection['id']);
+
+        return Response::found($from);
+    }
 }

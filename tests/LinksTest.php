@@ -450,4 +450,210 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $expected_title = 'https://github.com/flusio/flusio';
         $this->assertSame($expected_title, $db_link['title']);
     }
+
+    public function testRemoveCollectionRemovesLinkFromCollection()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => \Minz\Url::for('show bookmarked'),
+            'collection_id' => $collection_id,
+        ]);
+
+
+        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertFalse($links_to_collections_dao->exists($link_to_collection_id));
+    }
+
+    public function testRemoveCollectionRedirectsToLoginIfNotConnected()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+
+        $user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user_id,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => \Minz\Url::for('show bookmarked'),
+            'collection_id' => $collection_id,
+        ]);
+
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarked');
+        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
+    }
+
+    public function testRemoveCollectionFailsIfCsrfIsInvalid()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+            'csrf' => 'not the token',
+            'from' => \Minz\Url::for('show bookmarked'),
+            'collection_id' => $collection_id,
+        ]);
+
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
+    }
+
+    public function testRemoveCollectionFailsIfLinkDoesNotExist()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/not-an-id/remove_collection", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => \Minz\Url::for('show bookmarked'),
+            'collection_id' => $collection_id,
+        ]);
+
+        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
+    }
+
+    public function testRemoveCollectionFailsIfCollectionDoesNotExist()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => \Minz\Url::for('show bookmarked'),
+            'collection_id' => 'not an id',
+        ]);
+
+        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
+    }
+
+    public function testRemoveCollectionFailsIfUserDoesNotOwnTheLink()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => \Minz\Url::for('show bookmarked'),
+            'collection_id' => $collection_id,
+        ]);
+
+        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
+    }
+
+    public function testRemoveCollectionFailsIfUserDoesNotOwnTheCollection()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => \Minz\Url::for('show bookmarked'),
+            'collection_id' => $collection_id,
+        ]);
+
+        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
+    }
+
+    public function testRemoveCollectionFailsIfThereIsNoRelationBetweenLinkAndCollection()
+    {
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => \Minz\Url::for('show bookmarked'),
+            'collection_id' => $collection_id,
+        ]);
+
+        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+    }
 }
