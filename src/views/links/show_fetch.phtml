@@ -1,0 +1,37 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => $link->url,
+        'canonical' => url_full('show fetch link', ['id' => $link->id]),
+    ]);
+?>
+
+<?php if ($link->fetched_at): ?>
+    <div class="title">
+        <h1><?= $this->protect($link->url) ?></h1>
+    </div>
+
+    <p>
+        <?= _f('The link title will be “<em>%s</em>”.', $this->protect($link->title)) ?>
+    </p>
+
+    <div>
+        <a class="anchor--action" href="<?= url('show link', ['id' => $link->id]) ?>">
+            <?= _('All is fine, go to the link') ?>
+        </a>
+    </div>
+<?php else: ?>
+    <p>
+        <?= _f('Please wait while we’re fetching information about %s.', $this->protect($link->url)) ?>
+    </p>
+
+    <form
+         method="post"
+         action="<?= url('fetch link', ['id' => $link->id]) ?>"
+         data-controller="link-fetcher"
+     >
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <button type="submit" class="button--primary">
+            <?= _('Fetch link information') ?>
+        </button>
+    </form>
+<?php endif; ?>

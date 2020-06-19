@@ -18,6 +18,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
+            'fetched_at' => $faker->iso8601,
             'title' => $title,
         ]);
 
@@ -27,12 +28,26 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'links/show.phtml');
     }
 
+    public function testShowRedirectsIfNotFetched()
+    {
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => null,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}");
+
+        $this->assertResponse($response, 302, "/links/{$link_id}/fetch");
+    }
+
     public function testShowFailsIfNotConnected()
     {
         $faker = \Faker\Factory::create();
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $user_id,
+            'fetched_at' => $faker->iso8601,
             'title' => $faker->words(3, true),
         ]);
 
@@ -58,6 +73,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
+            'fetched_at' => $faker->iso8601,
             'title' => $faker->words(3, true),
         ]);
 
@@ -332,6 +348,71 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
     }
 
+    public function testShowFetchRendersCorrectly()
+    {
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => null,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/fetch");
+
+        $this->assertResponse($response, 200, 'Please wait');
+        $this->assertPointer($response, 'links/show_fetch.phtml');
+    }
+
+    public function testShowFetchWithFetchedLinkRendersCorrectly()
+    {
+        $faker = \Faker\Factory::create();
+        $title = $faker->words(3, true);
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'title' => $title,
+            'fetched_at' => $faker->iso8601,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/fetch");
+
+        $this->assertResponse($response, 200, $title);
+    }
+
+    public function testShowFetchFailsIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'fetched_at' => null,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/fetch");
+
+        $this->assertResponse($response, 401, 'You must be connected to see this page');
+    }
+
+    public function testShowFetchFailsIfTheLinkDoesNotExist()
+    {
+        $user = $this->login();
+
+        $response = $this->appRun('get', '/links/not-a-valid-id/fetch');
+
+        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+    }
+
+    public function testShowFetchFailsIfUserDoesNotOwnTheLink()
+    {
+        $current_user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/fetch");
+
+        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+    }
+
     public function testFetchUpdatesLinkWithTheTitleAndRedirects()
     {
         $link_dao = new models\dao\Link();
@@ -347,9 +428,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 302, "/links/{$link_id}");
-        $db_link = $link_dao->find($link_id);
         $expected_title = 'GitHub - flusio/flusio: The citizen social media';
+        $this->assertResponse($response, 200, $expected_title);
+        $this->assertPointer($response, 'links/show_fetch.phtml');
+        $db_link = $link_dao->find($link_id);
         $this->assertSame($expected_title, $db_link['title']);
         $this->assertSame(200, $db_link['fetched_code']);
     }
@@ -369,9 +451,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 302, "/links/{$link_id}");
-        $db_link = $link_dao->find($link_id);
         $expected_title = 'https://flus.fr/does_not_exist.html';
+        $this->assertResponse($response, 200, $expected_title);
+        $this->assertPointer($response, 'links/show_fetch.phtml');
+        $db_link = $link_dao->find($link_id);
         $this->assertSame($expected_title, $db_link['title']);
         $this->assertSame(404, $db_link['fetched_code']);
     }
