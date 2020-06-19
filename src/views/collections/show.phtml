@@ -1,11 +1,21 @@
 <?php
-    $this->layout('base.phtml', [
-        'title' => $this->protect($collection->name),
-    ]);
+    if ($collection->type === 'bookmarked') {
+        $this->layout('base.phtml', [
+            'title' => _('Bookmarks'),
+        ]);
+    } else {
+        $this->layout('base.phtml', [
+            'title' => $this->protect($collection->name),
+        ]);
+    }
 ?>
 
 <div class="title">
-    <h1><?= $this->protect($collection->name) ?></h1>
+    <?php if ($collection->type === 'bookmarked'): ?>
+        <h1><?= _('Bookmarks') ?></h1>
+    <?php else: ?>
+        <h1><?= $this->protect($collection->name) ?></h1>
+    <?php endif; ?>
 </div>
 
 <form method="post" action="<?= url('add link') ?>">
@@ -55,13 +65,23 @@
                     <input type="hidden" name="collection_id" value="<?= $collection->id ?>" />
                     <input type="hidden" name="from" value="<?= url($current_action_pointer) ?>" />
 
-                    <button
-                        class="button--discreet"
-                        title="<?= _('Remove from bookmarked') ?>"
-                        aria-label="<?= _('Remove from bookmarked') ?>"
-                    >
-                        <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
-                    </button>
+                    <?php if ($collection->type === 'bookmarked'): ?>
+                        <button
+                            class="button--discreet"
+                            title="<?= _('Remove from bookmarks') ?>"
+                            aria-label="<?= _('Remove from bookmarks') ?>"
+                        >
+                            <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
+                        </button>
+                    <?php else: ?>
+                        <button
+                            class="button--discreet"
+                            title="<?= _f('Remove from %s', $collection->name) ?>"
+                            aria-label="<?= _f('Remove from %s', $collection->name) ?>"
+                        >
+                            <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
+                        </button>
+                    <?php endif; ?>
                 </form>
 
                 <a class="anchor--action" href="<?= url('show link', ['id' => $link->id]) ?>">

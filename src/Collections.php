@@ -39,7 +39,7 @@ class Collections
         ]);
         if (!$db_bookmarked_collection) {
             return Response::notFound('not_found.phtml', [
-                'error' => _('It looks like you have no “Bookmarked” collection, you should contact the support.'),
+                'error' => _('It looks like you have no “Bookmarks” collection, you should contact the support.'),
             ]);
         }
 
