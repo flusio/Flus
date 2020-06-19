@@ -8,6 +8,7 @@
         <?php elseif($current_action_pointer): ?>
             <link rel="canonical" href="<?= url_full($current_action_pointer) ?>">
         <?php endif; ?>
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
 
         <link rel="stylesheet" href="<?= url_static('stylesheets/application.css') ?>" data-turbolinks-track="reload">
         <?php foreach ($styles as $style_name): ?>

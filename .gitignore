@@ -9,3 +9,4 @@
 
 /public/static/*
 !/public/static/.keep
+!/public/static/favicon-32px.png
