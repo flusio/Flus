@@ -13,7 +13,7 @@ use Minz\Response;
 class Collections
 {
     /**
-     * Show the bookmarked / read later page
+     * Show the bookmarked page
      *
      * @response 200
      * @response 302 /login?redirect_to=/bookmarked if not connected
@@ -39,7 +39,7 @@ class Collections
         ]);
         if (!$db_bookmarked_collection) {
             return Response::notFound('not_found.phtml', [
-                'error' => _('It looks like you have no “Read Later” collection, you should contact the support.'),
+                'error' => _('It looks like you have no “Bookmarked” collection, you should contact the support.'),
             ]);
         }
 

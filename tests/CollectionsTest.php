@@ -47,6 +47,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/bookmarked');
 
-        $this->assertResponse($response, 404, 'It looks like you have no “Read Later” collection');
+        $this->assertResponse($response, 404, 'It looks like you have no “Bookmarked” collection');
     }
 }
