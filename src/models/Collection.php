@@ -46,7 +46,7 @@ class Collection extends \Minz\Model
     {
         return new self([
             'id' => bin2hex(random_bytes(16)),
-            'name' => _('Bookmarked'),
+            'name' => _('Bookmarks'),
             'type' => 'bookmarked',
             'user_id' => $user_id,
         ]);
