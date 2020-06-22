@@ -84,6 +84,15 @@ class Link extends \Minz\Model
     }
 
     /**
+     * @return string
+     */
+    public function host()
+    {
+        $parsed_url = parse_url($this->url);
+        return $parsed_url['host'];
+    }
+
+    /**
      * Return a list of errors (if any). The array keys indicated the concerned
      * property.
      *

@@ -57,6 +57,10 @@
                 <h2 class="link__title">
                     <?= $this->protect($link->title) ?>
                 </h2>
+
+                <p class="link__details">
+                    <?= $this->protect($link->host()) ?>
+                </p>
             </div>
 
             <div class="link__footer">

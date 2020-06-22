@@ -32,6 +32,11 @@
     font-size: var(--size-normal);
 }
 
+.link__details {
+    color: var(--color-grey-8);
+    font-size: var(--size-small);
+}
+
 .link__footer {
     display: flex;
     padding: var(--space-small);

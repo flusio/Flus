@@ -16,6 +16,10 @@
 </div>
 
 <p>
+    <?= $this->protect($link->host()) ?>
+</p>
+
+<p>
     <a href="<?= url('show update link', ['id' => $link->id]) ?>">
         <?= _('Edit the link') ?>
     </a>
