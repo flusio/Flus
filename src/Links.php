@@ -335,7 +335,7 @@ class Links
         $response = $http->get($link->url);
         if ($response->success) {
             $dom = \SpiderBits\Dom::fromText($response->data);
-            $title = $dom->select('//title');
+            $title = $dom->select('/html/head/title');
             if ($title) {
                 $link->title = $title->text();
             }
