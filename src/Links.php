@@ -335,10 +335,14 @@ class Links
         $response = $http->get($link->url);
         if ($response->success) {
             $dom = \SpiderBits\Dom::fromText($response->data);
-            $title = $dom->select('/html/head/title');
+            $title = \SpiderBits\DomExtractor::title($dom);
             if ($title) {
-                $link->title = $title->text();
+                $link->title = $title;
             }
+
+            $content = \SpiderBits\DomExtractor::content($dom);
+            $words = array_filter(explode(' ', $content));
+            $link->reading_time = intval(count($words) / 200);
         } else {
             $link->fetched_error = $response->data;
         }

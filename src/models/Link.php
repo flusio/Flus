@@ -27,6 +27,11 @@ class Link extends \Minz\Model
             'validator' => '\flusio\models\Link::validateUrl',
         ],
 
+        'reading_time' => [
+            'type' => 'integer',
+            'required' => true,
+        ],
+
         'fetched_at' => [
             'type' => 'datetime',
         ],
@@ -62,6 +67,7 @@ class Link extends \Minz\Model
             'title' => $url,
             'url' => $url,
             'user_id' => $user_id,
+            'reading_time' => 0,
         ]);
     }
 

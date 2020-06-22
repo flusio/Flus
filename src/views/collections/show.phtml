@@ -59,7 +59,7 @@
                 </h2>
 
                 <p class="link__details">
-                    <?= $this->protect($link->host()) ?>
+                    <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                 </p>
             </div>
 

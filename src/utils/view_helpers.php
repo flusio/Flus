@@ -32,3 +32,19 @@ function localeToBCP47($locale)
 
     return $splitted_locale[0] . '-' . strtoupper($splitted_locale[1]);
 }
+
+/**
+ * Return the given reading time as a human-readable string.
+ *
+ * @param integer $reading_time
+ *
+ * @return integer
+ */
+function format_reading_time($reading_time)
+{
+    if ($reading_time < 1) {
+        return _('< 1 min');
+    } else {
+        return _f('%d&nbsp;min', $reading_time);
+    }
+}
