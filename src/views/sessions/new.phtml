@@ -4,79 +4,81 @@
     ]);
 ?>
 
-<div class="title">
-    <h1><?= _('Log in') ?></h1>
-</div>
-
-<form method="post" action="<?= url('create session') ?>">
-    <?php if ($error): ?>
-        <p class="form__error">
-            <?= $error ?>
-        </p>
-    <?php endif; ?>
-
-    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-    <input type="hidden" name="redirect_to" value="<?= $redirect_to ?>" />
-
-    <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
-        <label for="email">
-            <?= _('Email address') ?>
-        </label>
-
-        <input
-            id="email"
-            name="email"
-            type="email"
-            value="<?= $email ?>"
-            required
-        />
-
-        <?php if (isset($errors['email'])): ?>
-            <p class="form-group__error">
-                <?= $errors['email'] ?>
-            </p>
-        <?php endif; ?>
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('Log in') ?></h1>
     </div>
 
-    <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
-        <label for="password">
-            <?= _('Password') ?>
-        </label>
+    <form method="post" action="<?= url('create session') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
 
-        <div class="form-group__stack" data-controller="input-password">
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="redirect_to" value="<?= $redirect_to ?>" />
+
+        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+            <label for="email">
+                <?= _('Email address') ?>
+            </label>
+
             <input
-                id="password"
-                name="password"
-                type="password"
-                value="<?= $password ?>"
+                id="email"
+                name="email"
+                type="email"
+                value="<?= $email ?>"
                 required
-                data-target="input-password.input"
             />
 
-            <button
-                type="button"
-                class="button--ghost icon icon--eye js-only"
-                data-action="input-password#toggle"
-                aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
-            >
-                <?= _('Show') ?>
-            </button>
+            <?php if (isset($errors['email'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['email'] ?>
+                </p>
+            <?php endif; ?>
         </div>
 
-        <?php if (isset($errors['password_hash'])): ?>
-            <p class="form-group__error">
-                <?= $errors['password_hash'] ?>
-            </p>
-        <?php endif; ?>
-    </div>
+        <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
+            <label for="password">
+                <?= _('Password') ?>
+            </label>
 
-    <div class="form__actions">
-        <button type="submit" class="button--primary">
-            <?= _('Login') ?>
-        </button>
+            <div class="form-group__stack" data-controller="input-password">
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    value="<?= $password ?>"
+                    required
+                    data-target="input-password.input"
+                />
 
-        <a href="<?= url('registration') ?>">
-            <?= _('No account yet? Sign up') ?>
-        </a>
-    </div>
-</form>
+                <button
+                    type="button"
+                    class="button--ghost icon icon--eye js-only"
+                    data-action="input-password#toggle"
+                    aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
+                >
+                    <?= _('Show') ?>
+                </button>
+            </div>
+
+            <?php if (isset($errors['password_hash'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['password_hash'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Login') ?>
+            </button>
+
+            <a href="<?= url('registration') ?>">
+                <?= _('No account yet? Sign up') ?>
+            </a>
+        </div>
+    </form>
+</div>

@@ -11,3 +11,12 @@
 .paragraph--secondary {
     color: var(--color-text-secondary);
 }
+
+.paragraph--placeholder {
+    max-width: 50ch;
+    margin: var(--space-large) auto;
+
+    color: var(--color-text-secondary);
+    font-style: italic;
+    text-align: center;
+}

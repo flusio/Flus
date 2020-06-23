@@ -1,54 +1,62 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => $link->url,
+        'title' => _('Link fetching'),
         'canonical' => url_full('show fetch link', ['id' => $link->id]),
     ]);
 ?>
 
-<?php if ($link->fetched_at): ?>
-    <div class="title">
-        <h1><?= $this->protect($link->url) ?></h1>
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('Link fetching') ?></h1>
     </div>
 
-    <p>
-        <?= _f('The link title will be “<em>%s</em>”.', $this->protect($link->title)) ?>
+    <p class="section__intro">
+        <?= $this->protect($link->url) ?>
     </p>
 
-    <div>
-        <a href="<?= url('show update link', ['id' => $link->id]) ?>">
-            <?= _('Let’s change this title') ?>
-        </a>
-
-        <a class="anchor--action" href="<?= url('show link', ['id' => $link->id]) ?>">
-            <?= _('All is fine, go to the link') ?>
-        </a>
-    </div>
-<?php else: ?>
-    <?php if ($error): ?>
-        <p class="form__error">
-            <?= $error ?>
+    <?php if ($link->fetched_at): ?>
+        <p class="paragraph--featured">
+            <?= _f('The link title will be “<em>%s</em>”.', $this->protect($link->title)) ?>
         </p>
 
-        <form method="post" action="<?= url('fetch link', ['id' => $link->id]) ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-            <button type="submit" class="button--primary">
-                <?= _('Fetch link information') ?>
-            </button>
-        </form>
+        <p class="paragraph--centered">
+            <a class="anchor--action" href="<?= url('show link', ['id' => $link->id]) ?>">
+                <?= _('All is fine, go to the link') ?>
+            </a>
+        </p>
+
+        <p class="paragraph--centered">
+            <a href="<?= url('show update link', ['id' => $link->id]) ?>">
+                <?= _('Let’s change this title') ?>
+            </a>
+        </p>
     <?php else: ?>
-        <p>
-            <?= _f('Please wait while we’re fetching information about %s.', $this->protect($link->url)) ?>
-        </p>
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
 
-        <form
-             method="post"
-             action="<?= url('fetch link', ['id' => $link->id]) ?>"
-             data-controller="link-fetcher"
-         >
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-            <button type="submit" class="button--primary">
-                <?= _('Fetch link information') ?>
-            </button>
-        </form>
+            <form method="post" action="<?= url('fetch link', ['id' => $link->id]) ?>">
+                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                <button type="submit" class="button--primary">
+                    <?= _('Fetch link information') ?>
+                </button>
+            </form>
+        <?php else: ?>
+            <p class="paragraph--featured">
+                <?= _('Please wait while we’re fetching link information.') ?>
+            </p>
+
+            <form
+                 method="post"
+                 action="<?= url('fetch link', ['id' => $link->id]) ?>"
+                 data-controller="link-fetcher"
+             >
+                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                <button type="submit" class="button--primary">
+                    <?= _('Fetch link information') ?>
+                </button>
+            </form>
+        <?php endif; ?>
     <?php endif; ?>
-<?php endif; ?>
+</div>

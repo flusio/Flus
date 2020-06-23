@@ -4,27 +4,35 @@
     ]);
 ?>
 
-<?php if (!$error): ?>
-    <p>
-        <?= _('Your registration is now validated.') ?>
-    </p>
+<div class="section">
+    <?php if (!$error): ?>
+        <p class="paragraph--featured">
+            <?= _('Your registration is now validated.') ?>
+        </p>
 
-    <p>
-        <a href="<?= url('home') ?>">
-            <?= _('Back to home') ?>
-        </a>
-    </p>
-<?php else: ?>
-    <p>
-        <?= $error ?>
-    </p>
+        <p class="paragraph--centered">
+            <a class="anchor--action" href="<?= url('home') ?>">
+                <?= _('Nice! Go to the home page') ?>
+            </a>
+        </p>
+    <?php else: ?>
+        <p class="form__error">
+            <?= $error ?>
+        </p>
 
-    <?php if ($current_user && !$current_user->validated_at): ?>
-        <form method="post" action="<?= url('resend validation email') ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-            <button type="submit">
-                <?= _('Send an email with a valid token') ?>
-            </button>
-        </form>
+        <?php if ($current_user && !$current_user->validated_at): ?>
+            <form method="post" action="<?= url('resend validation email') ?>">
+                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                <button type="submit">
+                    <?= _('Send an email with a valid token') ?>
+                </button>
+            </form>
+        <?php endif; ?>
+
+        <p class="paragraph--centered">
+            <a class="anchor--action" href="<?= url('home') ?>">
+                <?= _('Back to the home page') ?>
+            </a>
+        </p>
     <?php endif; ?>
-<?php endif; ?>
+</div>
