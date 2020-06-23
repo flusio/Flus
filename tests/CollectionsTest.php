@@ -10,7 +10,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowBookmarkedRendersCorrectly()
+    public function testShowBookmarksRendersCorrectly()
     {
         $user = $this->login();
         $faker = \Faker\Factory::create();
@@ -34,14 +34,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'collections/show.phtml');
     }
 
-    public function testShowBookmarkedRedirectsIfNotConnected()
+    public function testShowBookmarksRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/bookmarks');
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
     }
 
-    public function testShowBookmarkedFailsIfCollectionDoesNotExist()
+    public function testShowBookmarksFailsIfCollectionDoesNotExist()
     {
         $this->login();
 

@@ -105,7 +105,7 @@ class Registrations
         $user_id = $user_dao->save($user);
 
         // Initialize the bookmarks collection
-        $bookmarks_collection = models\Collection::initBookmarked($user_id);
+        $bookmarks_collection = models\Collection::initBookmarks($user_id);
         $collection_dao->save($bookmarks_collection);
 
         // Initialize the current session

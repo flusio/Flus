@@ -42,7 +42,7 @@ class Collection extends \Minz\Model
      *
      * @return \flusio\models\Collection
      */
-    public static function initBookmarked($user_id)
+    public static function initBookmarks($user_id)
     {
         return new self([
             'id' => bin2hex(random_bytes(16)),

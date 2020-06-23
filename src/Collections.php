@@ -23,7 +23,7 @@ class Collections
      *
      * @return \Minz\Response
      */
-    public function showBookmarked()
+    public function showBookmarks()
     {
         $current_user = utils\CurrentUser::get();
         if (!$current_user) {

@@ -139,7 +139,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/');
     }
 
-    public function testCreateCreatesABookmarkedCollection()
+    public function testCreateCreatesABookmarksCollection()
     {
         $faker = \Faker\Factory::create();
         $collection_dao = new models\dao\Collection();
