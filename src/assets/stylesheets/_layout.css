@@ -5,7 +5,7 @@
 }
 
 .layout__header {
-    margin-bottom: var(--space-large);
+    margin-bottom: var(--space-medium);
 }
 
 .layout__content {

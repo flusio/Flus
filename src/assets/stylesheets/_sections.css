@@ -3,11 +3,6 @@
     padding: var(--space-small);
 }
 
-.section__header {
-    margin-top: calc(-1 * var(--space-large));
-    margin-bottom: var(--space-large);
-}
-
 .section__title {
     display: flex;
     margin-top: var(--space-large);
