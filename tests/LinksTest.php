@@ -99,7 +99,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -136,7 +136,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -170,7 +170,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -210,7 +210,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id_1, $collection_id_2],
         ]);
@@ -235,7 +235,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'url' => $faker->url,
             'collection_ids' => [$collection_id],
         ]);
@@ -257,7 +257,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => 'not the token',
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'url' => $faker->url,
             'collection_ids' => [$collection_id],
         ]);
@@ -279,7 +279,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'url' => 'ftp://' . $faker->domainName,
             'collection_ids' => [$collection_id],
         ]);
@@ -301,7 +301,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_id],
         ]);
 
@@ -319,7 +319,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'url' => $faker->url,
             'collection_ids' => ['does not exist'],
         ]);
@@ -338,7 +338,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'url' => $faker->url,
             'collection_ids' => [],
         ]);
@@ -758,7 +758,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
@@ -785,7 +785,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
@@ -812,7 +812,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => 'not the token',
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
@@ -840,7 +840,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/not-an-id/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
@@ -867,7 +867,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => 'not an id',
         ]);
 
@@ -895,7 +895,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
@@ -923,7 +923,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
@@ -944,7 +944,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarks'),
+            'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
 

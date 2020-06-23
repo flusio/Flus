@@ -81,7 +81,7 @@ class Links
     public function add($request)
     {
         $current_user = utils\CurrentUser::get();
-        $from = $request->param('from', \Minz\Url::for('show bookmarks'));
+        $from = $request->param('from', \Minz\Url::for('bookmarks'));
 
         if (!$current_user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -392,7 +392,7 @@ class Links
      */
     public function removeCollection($request)
     {
-        $from = $request->param('from', \Minz\Url::for('show bookmarks'));
+        $from = $request->param('from', \Minz\Url::for('bookmarks'));
         $user = utils\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);

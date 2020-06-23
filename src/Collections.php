@@ -28,7 +28,7 @@ class Collections
         $current_user = utils\CurrentUser::get();
         if (!$current_user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show bookmarks'),
+                'redirect_to' => \Minz\Url::for('bookmarks'),
             ]);
         }
 
