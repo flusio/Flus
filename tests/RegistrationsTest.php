@@ -157,7 +157,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $collection_dao->count());
         $db_collection = $collection_dao->listAll()[0];
         $user = utils\CurrentUser::get();
-        $this->assertSame('bookmarked', $db_collection['type']);
+        $this->assertSame('bookmarks', $db_collection['type']);
         $this->assertSame($user->id, $db_collection['user_id']);
     }
 

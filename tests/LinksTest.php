@@ -99,7 +99,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -136,7 +136,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -170,7 +170,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -210,7 +210,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id_1, $collection_id_2],
         ]);
@@ -235,12 +235,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'url' => $faker->url,
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarked');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
         $this->assertSame(0, $link_dao->count());
     }
 
@@ -257,12 +257,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => 'not the token',
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'url' => $faker->url,
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $this->assertSame(0, $link_dao->count());
     }
@@ -279,12 +279,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'url' => 'ftp://' . $faker->domainName,
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('errors', ['url' => 'Link scheme must be either http or https.']);
         $this->assertSame(0, $link_dao->count());
     }
@@ -301,11 +301,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('errors', ['url' => 'The link is required.']);
         $this->assertSame(0, $link_dao->count());
     }
@@ -319,12 +319,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'url' => $faker->url,
             'collection_ids' => ['does not exist'],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, $link_dao->count());
     }
@@ -338,12 +338,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'url' => $faker->url,
             'collection_ids' => [],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'The link must be associated to a collection.');
         $this->assertSame(0, $link_dao->count());
     }
@@ -758,12 +758,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFalse($links_to_collections_dao->exists($link_to_collection_id));
     }
 
@@ -785,12 +785,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarked');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
@@ -812,12 +812,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => 'not the token',
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'A security verification failed.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
@@ -840,11 +840,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/not-an-id/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
@@ -867,11 +867,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'collection_id' => 'not an id',
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
@@ -895,11 +895,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
@@ -923,11 +923,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
@@ -944,11 +944,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('show bookmarked'),
+            'from' => \Minz\Url::for('show bookmarks'),
             'collection_id' => $collection_id,
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
     }
 }

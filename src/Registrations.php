@@ -104,9 +104,9 @@ class Registrations
         $user->validation_token = $validation_token->token;
         $user_id = $user_dao->save($user);
 
-        // Initialize the bookmarked collection
-        $bookmarked_collection = models\Collection::initBookmarked($user_id);
-        $collection_dao->save($bookmarked_collection);
+        // Initialize the bookmarks collection
+        $bookmarks_collection = models\Collection::initBookmarked($user_id);
+        $collection_dao->save($bookmarks_collection);
 
         // Initialize the current session
         $session_token = models\Token::init(1, 'month');

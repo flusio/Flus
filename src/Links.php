@@ -64,7 +64,7 @@ class Links
      * Add a link for the current user.
      *
      * @request_param string csrf
-     * @request_param string from default is /bookmarked
+     * @request_param string from default is /bookmarks
      * @request_param string url It must be a valid non-empty URL
      * @request_param string[] collection_ids It must contain at least one
      *                                        collection id
@@ -81,7 +81,7 @@ class Links
     public function add($request)
     {
         $current_user = utils\CurrentUser::get();
-        $from = $request->param('from', \Minz\Url::for('show bookmarked'));
+        $from = $request->param('from', \Minz\Url::for('show bookmarks'));
 
         if (!$current_user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -376,7 +376,7 @@ class Links
      * Remove a link from a collection.
      *
      * @request_param string csrf
-     * @request_param string from (default is /bookmarked)
+     * @request_param string from (default is /bookmarks)
      * @request_param string id
      * @request_param string collection_id
      *
@@ -392,7 +392,7 @@ class Links
      */
     public function removeCollection($request)
     {
-        $from = $request->param('from', \Minz\Url::for('show bookmarked'));
+        $from = $request->param('from', \Minz\Url::for('show bookmarks'));
         $user = utils\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);

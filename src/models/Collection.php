@@ -10,7 +10,7 @@ namespace flusio\models;
  */
 class Collection extends \Minz\Model
 {
-    public const VALID_TYPES = ['bookmarked'];
+    public const VALID_TYPES = ['bookmarks'];
 
     public const PROPERTIES = [
         'id' => [
@@ -47,7 +47,7 @@ class Collection extends \Minz\Model
         return new self([
             'id' => bin2hex(random_bytes(16)),
             'name' => _('Bookmarks'),
-            'type' => 'bookmarked',
+            'type' => 'bookmarks',
             'user_id' => $user_id,
         ]);
     }

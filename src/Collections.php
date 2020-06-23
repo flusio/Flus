@@ -13,9 +13,9 @@ use Minz\Response;
 class Collections
 {
     /**
-     * Show the bookmarked page
+     * Show the bookmarks page
      *
-     * @response 302 /login?redirect_to=/bookmarked if not connected
+     * @response 302 /login?redirect_to=/bookmarks if not connected
      * @response 404 if the collection doesn’t exist or user hasn't access
      * @response 200
      *
@@ -28,33 +28,33 @@ class Collections
         $current_user = utils\CurrentUser::get();
         if (!$current_user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show bookmarked'),
+                'redirect_to' => \Minz\Url::for('show bookmarks'),
             ]);
         }
 
         $collection_dao = new models\dao\Collection();
         $link_dao = new models\dao\Link();
-        $db_bookmarked_collection = $collection_dao->findBy([
+        $db_bookmarks_collection = $collection_dao->findBy([
             'user_id' => $current_user->id,
-            'type' => 'bookmarked',
+            'type' => 'bookmarks',
         ]);
-        if (!$db_bookmarked_collection) {
+        if (!$db_bookmarks_collection) {
             \Minz\Log::error("User {$current_user->id} has no Bookmarks collection.");
             return Response::notFound('not_found.phtml', [
                 'error' => _('It looks like you have no “Bookmarks” collection, you should contact the support.'),
             ]);
         }
 
-        $bookmarked_collection = new models\Collection($db_bookmarked_collection);
+        $bookmarks_collection = new models\Collection($db_bookmarks_collection);
 
         $links = [];
-        $db_links = $link_dao->listByCollectionId($bookmarked_collection->id);
+        $db_links = $link_dao->listByCollectionId($bookmarks_collection->id);
         foreach ($db_links as $db_link) {
             $links[] = new models\Link($db_link);
         }
 
         return Response::ok('collections/show.phtml', [
-            'collection' => $bookmarked_collection,
+            'collection' => $bookmarks_collection,
             'links' => $links,
         ]);
     }

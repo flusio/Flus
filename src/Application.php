@@ -59,8 +59,8 @@ class Application
         $router->addRoute('post', '/account/deletion', 'Accounts#delete', 'delete user');
 
         // Collections
-        $router->addRoute('get', '/bookmarked', 'Collections#showBookmarked', 'show bookmarked');
-        $router->addRoute('post', '/bookmarked', 'Collections#createBookmarked', 'create bookmarked');
+        $router->addRoute('get', '/bookmarks', 'Collections#showBookmarked', 'show bookmarks');
+        $router->addRoute('post', '/bookmarks', 'Collections#createBookmarked', 'create bookmarks');
 
         // Links
         $router->addRoute('post', '/links', 'Links#add', 'add link');

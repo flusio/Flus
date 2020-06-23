@@ -1,5 +1,5 @@
 <?php
-    if ($collection->type === 'bookmarked') {
+    if ($collection->type === 'bookmarks') {
         $this->layout('base.phtml', [
             'title' => _('Bookmarks'),
         ]);
@@ -11,7 +11,7 @@
 ?>
 
 <div class="title">
-    <?php if ($collection->type === 'bookmarked'): ?>
+    <?php if ($collection->type === 'bookmarks'): ?>
         <h1><?= _('Bookmarks') ?></h1>
     <?php else: ?>
         <h1><?= $this->protect($collection->name) ?></h1>
@@ -69,7 +69,7 @@
                     <input type="hidden" name="collection_id" value="<?= $collection->id ?>" />
                     <input type="hidden" name="from" value="<?= url($current_action_pointer) ?>" />
 
-                    <?php if ($collection->type === 'bookmarked'): ?>
+                    <?php if ($collection->type === 'bookmarks'): ?>
                         <button
                             class="button--discreet"
                             title="<?= _('Remove from bookmarks') ?>"
