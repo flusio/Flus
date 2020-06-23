@@ -97,13 +97,15 @@
                 <?= $this->safe('content') ?>
             </main>
 
-            <footer class="layout__footer">
-                <p>
-                    <a href="<?= url('about') ?>">
-                        <?= _('About flusio') ?>
-                    </a>
-                </p>
-            </footer>
+            <?php if (!$current_user): ?>
+                <footer class="layout__footer">
+                    <p>
+                        <a href="<?= url('about') ?>">
+                            <?= _('About flusio') ?>
+                        </a>
+                    </p>
+                </footer>
+            <?php endif; ?>
         </div>
     </body>
 </html>
