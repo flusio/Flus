@@ -19,9 +19,9 @@ class Assets
      *
      * @request_param string * The asset path relative to the src/assets/ folder.
      *
-     * @response 200 Return the asset file if it can be served
      * @response 404 If the file doesn't exist or cannot be served (i.e. not
      *               under the src/assets/ folder)
+     * @response 200 Return the asset file if it can be served
      *
      * @param \Minz\Request
      *

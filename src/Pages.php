@@ -15,6 +15,8 @@ class Pages
     /**
      * Show the home page.
      *
+     * @response 200
+     *
      * @return \Minz\Response
      */
     public function home()
@@ -25,6 +27,8 @@ class Pages
     /**
      * Show the about page.
      *
+     * @response 200
+     *
      * @return \Minz\Response
      */
     public function about()
@@ -34,6 +38,8 @@ class Pages
 
     /**
      * Show the design page.
+     *
+     * @response 200
      *
      * @return \Minz\Response
      */

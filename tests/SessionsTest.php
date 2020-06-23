@@ -5,6 +5,7 @@ namespace flusio;
 class SessionsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
+    use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\InitializerHelper;
@@ -273,7 +274,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponse($response, 302, '/');
+        $this->assertFlash('error', 'A security verification failed.');
         $this->assertSame(1, $session_dao->count());
     }
 

@@ -15,8 +15,8 @@ class Accounts
     /**
      * Show the deletion form.
      *
-     * @response 200
      * @response 302 /login?redirect_to=/account/deletion if the user is not connected
+     * @response 200
      *
      * @return \Minz\Response
      */
@@ -37,9 +37,9 @@ class Accounts
      * @request_param string csrf
      * @request_param string password
      *
-     * @response 302 /
      * @response 302 /login?redirect_to=/account/deletion if the user is not connected
      * @response 400 if CSRF token or password is wrong
+     * @response 302 /
      *
      * @param \Minz\Request $request
      *

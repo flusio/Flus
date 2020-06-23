@@ -17,10 +17,10 @@ class Links
      *
      * @request_param string id
      *
-     * @response 200
-     * @response 302 /links/:id/fetch if the link is not fetched yet
-     * @response 401 if not connected
+     * @response 302 /login?redirect_to=/links/:id if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
+     * @response 302 /links/:id/fetch if the link is not fetched yet
+     * @response 200
      *
      * @param \Minz\Request $request
      *
@@ -29,13 +29,16 @@ class Links
     public function show($request)
     {
         $current_user = utils\CurrentUser::get();
+        $id = $request->param('id');
         if (!$current_user) {
-            return Response::unauthorized('unauthorized.phtml');
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('show link', ['id' => $id]),
+            ]);
         }
 
         $link_dao = new models\dao\Link();
         $db_link = $link_dao->findBy([
-            'id' => $request->param('id'),
+            'id' => $id,
             'user_id' => $current_user->id,
         ]);
 
@@ -61,15 +64,15 @@ class Links
      * Add a link for the current user.
      *
      * @request_param string csrf
-     * @request_param string from
+     * @request_param string from default is /bookmarked
      * @request_param string url It must be a valid non-empty URL
      * @request_param string[] collection_ids It must contain at least one
      *                                        collection id
      *
+     * @response 302 /login?redirect_to=:from if not connected
+     * @response 302 :from if CSRF or the url is invalid, of if one collection id
+     *                     doesn't exist or parameter is missing/empty
      * @response 302 /links/:id on success
-     * @response 302 [from] if CSRF or the url is invalid, of if one collection id
-     *                      doesn't exist or parameter is missing/empty
-     * @response 302 /login?redirect_to=[from] if not connected
      *
      * @param \Minz\Request $request
      *
@@ -143,10 +146,10 @@ class Links
      *
      * @request_param string id
      *
-     * @response 200
-     * @response 302 /links/:id/fetch if the link is not fetched yet
-     * @response 401 if not connected
+     * @response 302 /login?redirect_to=/links/:id/edit if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
+     * @response 302 /links/:id/fetch if the link is not fetched yet
+     * @response 200
      *
      * @param \Minz\Request $request
      *
@@ -155,13 +158,16 @@ class Links
     public function showUpdate($request)
     {
         $current_user = utils\CurrentUser::get();
+        $id = $request->param('id');
         if (!$current_user) {
-            return Response::unauthorized('unauthorized.phtml');
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('show update link', ['id' => $id]),
+            ]);
         }
 
         $link_dao = new models\dao\Link();
         $db_link = $link_dao->findBy([
-            'id' => $request->param('id'),
+            'id' => $id,
             'user_id' => $current_user->id,
         ]);
 
@@ -191,10 +197,10 @@ class Links
      * @request_param string id
      * @request_param string title
      *
-     * @response 302 /links/:id
-     * @response 400 if csrf token or title are invalid
-     * @response 401 if not connected
+     * @response 302 /login?redirect_to=/links/:id/edit if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
+     * @response 400 if csrf token or title are invalid
+     * @response 302 /links/:id
      *
      * @param \Minz\Request $request
      *
@@ -203,11 +209,13 @@ class Links
     public function update($request)
     {
         $user = utils\CurrentUser::get();
+        $link_id = $request->param('id');
         if (!$user) {
-            return Response::unauthorized('unauthorized.phtml');
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('show update link', ['id' => $link_id]),
+            ]);
         }
 
-        $link_id = $request->param('id');
         $new_title = $request->param('title');
         $link_dao = new models\dao\Link();
 
@@ -252,9 +260,9 @@ class Links
      *
      * @request_param string id
      *
-     * @response 200
-     * @response 401 if not connected
+     * @response 302 /login?redirect_to=/links/:id/fetch
      * @response 404 if the link doesn't exist or not associated to the current user
+     * @response 200
      *
      * @param \Minz\Request $request
      *
@@ -263,13 +271,16 @@ class Links
     public function showFetch($request)
     {
         $current_user = utils\CurrentUser::get();
+        $id = $request->param('id');
         if (!$current_user) {
-            return Response::unauthorized('unauthorized.phtml');
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('show fetch link', ['id' => $id]),
+            ]);
         }
 
         $link_dao = new models\dao\Link();
         $db_link = $link_dao->findBy([
-            'id' => $request->param('id'),
+            'id' => $id,
             'user_id' => $current_user->id,
         ]);
 
@@ -291,10 +302,10 @@ class Links
      * @request_param string csrf
      * @request_param string id
      *
-     * @response 200
-     * @response 400 if csrf token is invalid
-     * @response 401 if not connected
+     * @response 302 /login?redirect_to=/links/:id/fetch
      * @response 404 if the link doesn't exist or not associated to the current user
+     * @response 400 if csrf token is invalid
+     * @response 200
      *
      * @param \Minz\Request $request
      *
@@ -303,20 +314,16 @@ class Links
     public function fetch($request)
     {
         $current_user = utils\CurrentUser::get();
+        $id = $request->param('id');
         if (!$current_user) {
-            return Response::unauthorized('unauthorized.phtml');
-        }
-
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('bad_request.phtml', [
-                'error' => _('A security verification failed.'),
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('show fetch link', ['id' => $id]),
             ]);
         }
 
         $link_dao = new models\dao\Link();
         $db_link = $link_dao->findBy([
-            'id' => $request->param('id'),
+            'id' => $id,
             'user_id' => $current_user->id,
         ]);
 
@@ -327,6 +334,14 @@ class Links
         }
 
         $link = new models\Link($db_link);
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('links/show_fetch.phtml', [
+                'link' => $link,
+                'error' => _('A security verification failed.'),
+            ]);
+        }
 
         $http = new \SpiderBits\Http();
         $http->user_agent = 'flusio/0.0.1 (' . PHP_OS . '; https://github.com/flusio/flusio)';
@@ -365,11 +380,11 @@ class Links
      * @request_param string id
      * @request_param string collection_id
      *
-     * @response 302 :from on success
      * @response 302 /login?redirect_to=:from if not connected
-     * @response 400 if CSRF is invalid
      * @response 404 if the link or collection (or their relation) don't exist,
      *               or are not associated to the current user
+     * @response 302 :from if CSRF is invalid
+     * @response 302 :from on success
      *
      * @param \Minz\Request $request
      *
@@ -383,13 +398,6 @@ class Links
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('bad_request.phtml', [
-                'error' => _('A security verification failed.'),
-            ]);
-        }
-
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $link_id = $request->param('id');
         $collection_id = $request->param('collection_id');
@@ -400,9 +408,14 @@ class Links
             $collection_id
         );
         if (!$db_link_to_collection) {
-            return Response::notFound('not_found.phtml', [
-                'error' => _('This link-collection relation doesn’t exist.'),
-            ]);
+            utils\Flash::set('error', _('This link-collection relation doesn’t exist.'));
+            return Response::found($from);
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
         }
 
         $links_to_collections_dao->delete($db_link_to_collection['id']);

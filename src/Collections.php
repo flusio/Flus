@@ -15,8 +15,9 @@ class Collections
     /**
      * Show the bookmarked page
      *
-     * @response 200
      * @response 302 /login?redirect_to=/bookmarked if not connected
+     * @response 404 if the collection doesn’t exist or user hasn't access
+     * @response 200
      *
      * @param \Minz\Request $request
      *
@@ -38,6 +39,7 @@ class Collections
             'type' => 'bookmarked',
         ]);
         if (!$db_bookmarked_collection) {
+            \Minz\Log::error("User {$current_user->id} has no Bookmarks collection.");
             return Response::notFound('not_found.phtml', [
                 'error' => _('It looks like you have no “Bookmarks” collection, you should contact the support.'),
             ]);

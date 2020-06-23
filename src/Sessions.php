@@ -17,8 +17,8 @@ class Sessions
      *
      * @request_param string redirect_to A URL to redirect to (optional, default is `/`)
      *
+     * @response 302 :redirect_to if already connected
      * @response 200
-     * @response 302 $redirect_to if already connected
      *
      * @param \Minz\Request $request
      *
@@ -46,10 +46,10 @@ class Sessions
      * @request_param string password
      * @request_param string redirect_to A URL to redirect to (optional, default is `/`)
      *
-     * @response 302 $redirect_to if logged in
-     * @response 302 $redirect_to if already connected
+     * @response 302 :redirect_to if already connected
      * @response 400 if CSRF is invalid, email doesn't match with a User or if
      *               password is wrong
+     * @response 302 :redirect_to if logged in
      *
      * @param \Minz\Request $request
      *
@@ -129,7 +129,7 @@ class Sessions
      * @request_param string locale
      * @request_param string redirect_to A URL to redirect to (optional, default is `/`)
      *
-     * @response 302 $redirect_to
+     * @response 302 :redirect_to
      *
      * @param \Minz\Request $request
      *
@@ -168,9 +168,7 @@ class Sessions
      *
      * @request_param string csrf
      *
-     * @response 302 / if logout succeeds
-     * @response 302 / if already disconnected
-     * @response 400 if CSRF token is invalid
+     * @response 302 /
      *
      * @param \Minz\Request $request
      *
@@ -185,9 +183,8 @@ class Sessions
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('bad_request.phtml', [
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::redirect('home');
         }
 
         $session_dao = new models\dao\Session();

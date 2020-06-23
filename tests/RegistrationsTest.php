@@ -479,7 +479,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/registration/validation/email', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'redirect_to' => '/about',
+            'from' => '/about',
         ]);
 
         $this->assertResponse($response, 302, '/about');
@@ -571,7 +571,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponse($response, 302, '/');
+        $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $this->assertEmailsCount(0);
     }
 
@@ -581,7 +582,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 401, 'You must be connected to see this page.');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2F');
         $this->assertEmailsCount(0);
     }
 }

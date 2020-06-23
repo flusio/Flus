@@ -15,6 +15,7 @@ class Registrations
     /**
      * Show the registration form.
      *
+     * @response 302 / if connected
      * @response 200
      *
      * @return \Minz\Response
@@ -40,10 +41,10 @@ class Registrations
      * @request_param string username
      * @request_param string password
      *
-     * @response 302 /
      * @response 400 if CSRF token is wrong
      * @response 400 if email, username or password is missing/invalid
      * @response 400 if email already exists
+     * @response 302 /
      *
      * @param \Minz\Request $request
      *
@@ -131,10 +132,11 @@ class Registrations
      *
      * @request_param string t The registration validation token
      *
-     * @response 200 if the token is valid and the registration validated
-     * @response 302 / if the token is valid and the registration already validated
+     * @response 404 if the token doesn't exist
      * @response 400 if the token has expired
-     * @response 404 if the token doesn't exist or not associated to a User
+     * @response 404 if the token is not associated to a User
+     * @response 302 / if the token is valid and the registration already validated
+     * @response 200
      *
      * @param \Minz\Request $request
      *
@@ -190,12 +192,10 @@ class Registrations
      * minutes).
      *
      * @request_param string csrf
-     * @request_param string redirect_to (default: /)
+     * @request_param string from default: /
      *
-     * @response 302 $redirect_to
-     * @response 302 $redirect_to if the user was already validated
-     * @response 400 if CSRF token is wrong
-     * @response 401 if the user is not connected
+     * @response 302 /login?redirect_to=:from if not connected
+     * @response 302 :from
      *
      * @param \Minz\Request $request
      *
@@ -205,26 +205,22 @@ class Registrations
     {
         $user_dao = new models\dao\User();
         $token_dao = new models\dao\Token();
-        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
+        $from = $request->param('from', \Minz\Url::for('home'));
         $csrf = new \Minz\CSRF();
         $user = utils\CurrentUser::get();
 
         if (!$user) {
-            return Response::unauthorized('unauthorized.phtml', [
-                'link_to' => $redirect_to,
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('bad_request.phtml', [
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-                'link_to' => $redirect_to,
-            ]);
+            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+            return Response::found($from);
         }
 
         if ($user->validated_at) {
             // nothing to do, the user is already validated
-            return Response::found($redirect_to);
+            return Response::found($from);
         }
 
         $token = new models\Token($token_dao->find($user->validation_token));
@@ -240,7 +236,7 @@ class Registrations
         $users_mailer->sendRegistrationValidationEmail($user, $token);
 
         utils\Flash::set('status', 'validation_email_sent');
-        return Response::found($redirect_to);
+        return Response::found($from);
     }
 
     /**

@@ -53,7 +53,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}");
 
-        $this->assertResponse($response, 401, 'You must be connected to see this page');
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
     }
 
     public function testShowFailsIfTheLinkDoesNotExist()
@@ -387,7 +387,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/edit");
 
-        $this->assertResponse($response, 401, 'You must be connected to see this page');
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
     }
 
     public function testShowUpdateFailsIfTheLinkDoesNotExist()
@@ -502,7 +502,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 401, 'You must be connected to see this page');
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
         $db_link = $link_dao->find($link_id);
         $this->assertSame($old_title, $db_link['title']);
     }
@@ -594,7 +594,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/fetch");
 
-        $this->assertResponse($response, 401, 'You must be connected to see this page');
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Ffetch");
     }
 
     public function testShowFetchFailsIfTheLinkDoesNotExist()
@@ -701,7 +701,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 401, 'You must be connected to see this page');
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Ffetch");
         $db_link = $link_dao->find($link_id);
         $expected_title = 'https://github.com/flusio/flusio';
         $this->assertSame($expected_title, $db_link['title']);
@@ -817,7 +817,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertFlash('error', 'A security verification failed.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
@@ -843,7 +844,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
 
-        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
@@ -869,7 +871,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => 'not an id',
         ]);
 
-        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
@@ -896,7 +899,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
 
-        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
@@ -923,7 +927,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
 
-        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
@@ -943,6 +948,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
 
-        $this->assertResponse($response, 404, 'This link-collection relation doesn’t exist.');
+        $this->assertResponse($response, 302, '/bookmarked');
+        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
     }
 }
