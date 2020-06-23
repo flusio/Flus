@@ -33,7 +33,7 @@
 }
 
 .link__details {
-    color: var(--color-grey-8);
+    color: var(--color-text-secondary);
     font-size: var(--size-small);
 }
 

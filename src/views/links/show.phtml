@@ -5,25 +5,29 @@
     ]);
 ?>
 
-<p>
-    <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('bookmarks') ?>">
-        <?= _('Bookmarks') ?>
-    </a>
-</p>
+<header class="page__header header">
+    <div class="header__container">
+        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('bookmarks') ?>">
+            <?= _('Bookmarks') ?>
+        </a>
+
+        <div class="header__separator"></div>
+
+        <a class="anchor--action" href="<?= url('show update link', ['id' => $link->id]) ?>">
+            <?= _('Edit') ?>
+        </a>
+    </div>
+</header>
 
 <div class="title">
     <h1><?= $this->protect($link->title) ?></h1>
 </div>
 
-<p class="link__details">
+<p class="link__details paragraph--centered">
     <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
 </p>
 
-<p>
-    <a href="<?= url('show update link', ['id' => $link->id]) ?>">
-        <?= _('Edit the link') ?>
-    </a>
-
+<p class="paragraph--centered">
     <a
         class="anchor--action icon icon--anchor icon--link"
         target="_blank"

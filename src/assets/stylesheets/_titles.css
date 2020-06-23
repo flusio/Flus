@@ -1,6 +1,7 @@
 .title {
     display: flex;
-    margin-bottom: var(--space-large);
+    margin-top: var(--space-medium);
+    margin-bottom: var(--space-medium);
 
     align-items: center;
     justify-content: center;
