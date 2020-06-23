@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-06-23 16:42+0200\n"
-"PO-Revision-Date: 2020-06-23 16:43+0200\n"
+"POT-Creation-Date: 2020-06-24 15:52+0200\n"
+"PO-Revision-Date: 2020-06-24 15:53+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,14 +15,14 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Accounts.php:60 Links.php:94 Links.php:239 Registrations.php:73
-#: Registrations.php:217 Sessions.php:74
+#: Accounts.php:69 Accounts.php:148 Links.php:92 Links.php:233
+#: Registrations.php:73 Registrations.php:237 Sessions.php:74
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: Accounts.php:68 Sessions.php:103
+#: Accounts.php:156 Sessions.php:103
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -34,23 +34,19 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: Links.php:47 Links.php:176 Links.php:228 Links.php:289 Links.php:332
-msgid "This link doesn’t exist."
-msgstr "Le lien n’existe pas."
-
-#: Links.php:114
+#: Links.php:112
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: Links.php:119
+#: Links.php:117
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: Links.php:342 Links.php:417 Sessions.php:186
+#: Links.php:332 Links.php:407 Sessions.php:179
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: Links.php:411
+#: Links.php:401
 msgid "This link-collection relation doesn’t exist."
 msgstr "La relation lien-collection n’existe pas."
 
@@ -58,11 +54,11 @@ msgstr "La relation lien-collection n’existe pas."
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:153 Registrations.php:167
+#: Registrations.php:171 Registrations.php:185
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: Registrations.php:160
+#: Registrations.php:178
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
@@ -75,8 +71,8 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:28
-#: views/accounts/deletion.phtml:44 views/registrations/new.phtml:94
-#: views/sessions/new.phtml:62
+#: views/accounts/deletion.phtml:49 views/registrations/new.phtml:95
+#: views/sessions/new.phtml:69
 msgid "Show"
 msgstr "Afficher"
 
@@ -84,9 +80,8 @@ msgstr "Afficher"
 msgid "[flusio] Confirm your registration"
 msgstr "[flusio] Confirmer votre inscription"
 
-#: models/Collection.php:49 views/collections/show.phtml:4
-#: views/collections/show.phtml:15 views/links/show.phtml:10
-#: views/pages/home.phtml:39
+#: models/Collection.php:49 views/_layouts/connected.phtml:40
+#: views/collections/show.phtml:4 views/collections/show.phtml:16
 msgid "Bookmarks"
 msgstr "Signets"
 
@@ -132,6 +127,14 @@ msgstr "L’adresse courriel est invalide."
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
+#: models/User.php:131
+msgid "The locale is required."
+msgstr "La langue est obligatoire."
+
+#: models/User.php:133
+msgid "The locale is invalid."
+msgstr "La langue est invalide."
+
 #: utils/Browser.php:36
 msgid "Unknown browser"
 msgstr "Navigateur inconnu"
@@ -154,36 +157,40 @@ msgstr "< 1 min"
 msgid "%d&nbsp;min"
 msgstr "%d&nbsp;min"
 
-#: views/_layouts/base.phtml:47
+#: views/_layouts/connected.phtml:31
+msgid "You must validate your registration&nbsp;→"
+msgstr "Vous devez valider votre inscription&nbsp;→"
+
+#: views/_layouts/connected.phtml:52
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/base.phtml:51 views/registrations/new.phtml:3
-#: views/registrations/new.phtml:8 views/registrations/new.phtml:107
+#: views/_layouts/error.phtml:19
+msgid "Oh no&nbsp;😟"
+msgstr "Oh non&nbsp;😟"
+
+#: views/_layouts/not_connected.phtml:37 views/registrations/new.phtml:3
+#: views/registrations/new.phtml:9 views/registrations/new.phtml:108
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/base.phtml:55 views/sessions/new.phtml:75
-msgid "Login"
-msgstr "Se connecter"
-
-#: views/_layouts/base.phtml:73
+#: views/_layouts/not_connected.phtml:54
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/base.phtml:90
+#: views/_layouts/not_connected.phtml:71
 msgid "Change"
 msgstr "Changer"
 
-#: views/_layouts/base.phtml:103
+#: views/_layouts/not_connected.phtml:84
 msgid "About flusio"
 msgstr "À propos de flusio"
 
-#: views/accounts/deletion.phtml:3
+#: views/accounts/deletion.phtml:3 views/accounts/deletion.phtml:9
 msgid "Account deletion"
 msgstr "Suppression du compte"
 
-#: views/accounts/deletion.phtml:9
+#: views/accounts/deletion.phtml:13
 msgid ""
 "You’re about to delete your account and your data will be lost. This can’t "
 "be canceled!"
@@ -191,106 +198,157 @@ msgstr ""
 "Vous êtes sur le point de supprimer votre compte : vos données seront alors "
 "perdues. Cette action ne peut pas être annulée !"
 
-#: views/accounts/deletion.phtml:22
+#: views/accounts/deletion.phtml:27
 msgid "Your password"
 msgstr "Votre mot de passe"
 
-#: views/accounts/deletion.phtml:26
+#: views/accounts/deletion.phtml:31
 msgid "You must type your password so we can confirm your identity."
 msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/accounts/deletion.phtml:42 views/registrations/new.phtml:92
-#: views/sessions/new.phtml:60
+#: views/accounts/deletion.phtml:47 views/registrations/new.phtml:93
+#: views/sessions/new.phtml:67
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
 "Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
 "mot de passe visuellement."
 
-#: views/accounts/deletion.phtml:57
+#: views/accounts/deletion.phtml:62
 msgid "Delete the account"
 msgstr "Supprimer le compte"
+
+#: views/accounts/deletion.phtml:66
+msgid "Cancel and go back to your account"
+msgstr "Annuler et retourner à votre compte"
+
+#: views/accounts/show.phtml:3 views/accounts/show.phtml:10
+msgid "Account"
+msgstr "Compte"
+
+#: views/accounts/show.phtml:24
+msgid "Your name"
+msgstr "Votre nom"
+
+#: views/accounts/show.phtml:28 views/registrations/new.phtml:27
+msgid "Your username must not be longer than 50 characters."
+msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
+
+#: views/accounts/show.phtml:48
+msgid "Your language"
+msgstr "Votre langue"
+
+#: views/accounts/show.phtml:70
+msgid "Save your changes"
+msgstr "Enregistrer vos modifications"
+
+#: views/accounts/show.phtml:80
+msgid "Do you want to delete your account?"
+msgstr "Vous voulez supprimer votre compte ?"
 
 #: views/bad_request.phtml:3
 msgid "Bad request"
 msgstr "Mauvaise requête"
 
-#: views/bad_request.phtml:15 views/not_found.phtml:21
-#: views/unauthorized.phtml:15
+#: views/bad_request.phtml:10
+msgid "The request is invalid."
+msgstr "La requête est invalide."
+
+#: views/bad_request.phtml:22 views/internal_server_error.phtml:22
+#: views/not_found.phtml:22 views/unauthorized.phtml:22
 msgid "Back to the previous page"
 msgstr "Retour à la page précédente"
 
-#: views/bad_request.phtml:19 views/not_found.phtml:25
-#: views/unauthorized.phtml:19
+#: views/bad_request.phtml:26 views/internal_server_error.phtml:26
+#: views/not_found.phtml:26 views/unauthorized.phtml:26
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
-#: views/collections/show.phtml:34
+#: views/collections/show.phtml:35
 msgid "New link"
 msgstr "Nouveau lien"
 
-#: views/collections/show.phtml:41
+#: views/collections/show.phtml:42
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/collections/show.phtml:75 views/collections/show.phtml:76
+#: views/collections/show.phtml:76 views/collections/show.phtml:77
 msgid "Remove from bookmarks"
 msgstr "Retirer des signets"
 
-#: views/collections/show.phtml:83 views/collections/show.phtml:84
+#: views/collections/show.phtml:84 views/collections/show.phtml:85
 #, php-format
 msgid "Remove from %s"
 msgstr "Retirer de %s"
 
-#: views/collections/show.phtml:92
+#: views/collections/show.phtml:93
 msgid "see"
 msgstr "voir"
 
-#: views/collections/show.phtml:100
-msgid "You have no links here yet."
-msgstr "Vous n’avez pas encore de lien ici."
+#: views/collections/show.phtml:102
+msgid ""
+"This collection is empty. The links will appear here once you start adding "
+"them."
+msgstr ""
+"Cette collection est vide. Les liens apparaîtront ici une fois que vous "
+"commencerai à en ajouter."
+
+#: views/internal_server_error.phtml:3
+msgid "Something bad happened"
+msgstr "Quelque chose s’est mal passé"
+
+#: views/internal_server_error.phtml:10
+msgid "An error occurred during the processing of your request."
+msgstr "Une erreur est survenue pendant le traitement de votre requête."
+
+#: views/links/show.phtml:14
+msgid "edit"
+msgstr "modifier"
 
 #: views/links/show.phtml:24
-msgid "Edit the link"
-msgstr "Modifier le lien"
-
-#: views/links/show.phtml:33
 msgid "open"
 msgstr "ouvrir"
 
-#: views/links/show_fetch.phtml:14
+#: views/links/show_fetch.phtml:3 views/links/show_fetch.phtml:10
+msgid "Link fetching"
+msgstr "Récupération d’un lien"
+
+#: views/links/show_fetch.phtml:19
 #, php-format
 msgid "The link title will be “<em>%s</em>”."
 msgstr "Le titre du lien sera “<em>%s</em>”."
 
-#: views/links/show_fetch.phtml:19
-msgid "Let’s change this title"
-msgstr "Changeons ce titre"
-
-#: views/links/show_fetch.phtml:23
+#: views/links/show_fetch.phtml:24
 msgid "All is fine, go to the link"
 msgstr "Tout est bon, voir le lien"
 
-#: views/links/show_fetch.phtml:35 views/links/show_fetch.phtml:50
+#: views/links/show_fetch.phtml:30
+msgid "Let’s change this title"
+msgstr "Changeons ce titre"
+
+#: views/links/show_fetch.phtml:42 views/links/show_fetch.phtml:57
 msgid "Fetch link information"
 msgstr "Récupérer les informations du lien"
 
-#: views/links/show_fetch.phtml:40
-#, php-format
-msgid "Please wait while we’re fetching information about %s."
-msgstr "Merci d’attendre pendant que nous récupérons les informations de %s."
+#: views/links/show_fetch.phtml:47
+msgid "Please wait while we’re fetching link information."
+msgstr "Merci d’attendre pendant que nous récupérons les informations du lien."
 
-#: views/links/show_update.phtml:23
+#: views/links/show_update.phtml:3 views/links/show_update.phtml:10
+msgid "Link edition"
+msgstr "Modification d’un lien"
+
+#: views/links/show_update.phtml:28
 msgid "Title"
 msgstr "Titre"
 
-#: views/links/show_update.phtml:44
+#: views/links/show_update.phtml:49
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: views/links/show_update.phtml:48
+#: views/links/show_update.phtml:53
 msgid "Cancel and go back to the link"
 msgstr "Annuler et retourner au lien"
 
@@ -318,118 +376,111 @@ msgstr "Bonne journée !"
 msgid "Page not found"
 msgstr "Page non trouvée"
 
-#: views/not_found.phtml:14
+#: views/not_found.phtml:10
 msgid "This page doesn’t exist."
 msgstr "Cette page n’existe pas."
 
-#: views/pages/about.phtml:3
+#: views/pages/about.phtml:3 views/pages/about.phtml:9
 msgid "About"
 msgstr "À propos"
 
-#: views/pages/about.phtml:9
-msgid "Home"
-msgstr "Accueil"
-
-#: views/pages/design.phtml:3 views/pages/design.phtml:9
+#: views/pages/design.phtml:3 views/pages/design.phtml:10
 msgid "flusio design system"
 msgstr "système de design de flusio"
 
-#: views/pages/design.phtml:12
+#: views/pages/design.phtml:13
 msgid "Colors"
 msgstr "Couleurs"
 
-#: views/pages/home.phtml:3
-msgid "Welcome"
-msgstr "Bienvenue"
-
-#: views/pages/home.phtml:8
-msgid "Welcome on flusio!"
-msgstr "Bienvenue sur flusio!"
-
-#: views/pages/home.phtml:13
-msgid "Your account and your data are now deleted."
-msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
-
-#: views/pages/home.phtml:19
-msgid ""
-"You must validate your registration: you should have received an email "
-"containing a link intended to this purpose."
-msgstr ""
-"Vous devez valider votre inscription : vous devriez avoir reçu un courriel "
-"contenant un lien permettant cela."
-
-#: views/pages/home.phtml:24
-msgid "We’ve just sent you an email!"
-msgstr "Nous vous avons envoyé un courriel !"
-
-#: views/pages/home.phtml:30
-msgid "Didn’t receive the email? Resend it"
-msgstr "Courriel non reçu ? Renvoyer"
-
-#: views/registrations/new.phtml:22
+#: views/registrations/new.phtml:23
 msgid "How should we name you?"
 msgstr "Comment devons-nous vous appeler ?"
 
-#: views/registrations/new.phtml:26
-msgid "Your username must not be longer than 50 characters."
-msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
-
-#: views/registrations/new.phtml:47
+#: views/registrations/new.phtml:48
 msgid "Your email address"
 msgstr "Votre adresse courriel"
 
-#: views/registrations/new.phtml:51
+#: views/registrations/new.phtml:52
 msgid "We’ll only use it to send you important emails."
 msgstr "Nous vous enverrons seulement des courriels importants."
 
-#: views/registrations/new.phtml:71
+#: views/registrations/new.phtml:72
 msgid "And a password"
 msgstr "Et un mot de passe"
 
-#: views/registrations/new.phtml:75
+#: views/registrations/new.phtml:76
 msgid "A strong password is at least 8 characters long."
 msgstr "Un mot de passe robuste fait au moins 8 caractères."
 
-#: views/registrations/new.phtml:111
+#: views/registrations/new.phtml:112
 msgid "Already an account? Sign in"
 msgstr "Déjà un compte ? Se connecter"
 
 #: views/registrations/validation.phtml:3
+#: views/registrations/validation.phtml:10
 msgid "Registration validation"
 msgstr "Validation de l’inscription"
 
-#: views/registrations/validation.phtml:9
+#: views/registrations/validation.phtml:15
 msgid "Your registration is now validated."
 msgstr "Votre inscription est maintenant validée."
 
-#: views/registrations/validation.phtml:14
-msgid "Back to home"
-msgstr "Retour à l’accueil"
+#: views/registrations/validation.phtml:20
+msgid "Nice! Go to the home page"
+msgstr "Chouette ! Retourner à la page d’accueil"
 
-#: views/registrations/validation.phtml:26
-msgid "Send an email with a valid token"
-msgstr "Envoyer un courriel avec un token valide"
+#: views/registrations/validation.phtml:25
+msgid ""
+"You must validate your registration so we can contact you in case of a "
+"change in our end-user license agreement or a problem concerning your "
+"account. <strong>You should have received an email containing a link "
+"intended to this purpose.</strong>"
+msgstr ""
+"Vous devez valider votre inscription afin que nous puissions vous contacter "
+"en cas de changement dans nos <abbr>CGU</abbr> ou si un problème survient "
+"avec votre compte. <strong>Vous devriez avoir reçu un courriel contenant un "
+"lien permettant cela.</strong>"
 
-#: views/sessions/new.phtml:3 views/sessions/new.phtml:8
+#: views/registrations/validation.phtml:30
+msgid "We’ve just sent you an email!"
+msgstr "Nous vous avons envoyé un courriel !"
+
+#: views/registrations/validation.phtml:34
+msgid "Still nothing? Did you check your spam?"
+msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
+
+#: views/registrations/validation.phtml:47
+msgid "Didn’t receive the email? Resend it"
+msgstr "Courriel non reçu ? Renvoyer"
+
+#: views/sessions/new.phtml:3 views/sessions/new.phtml:9
 msgid "Log in"
 msgstr "Se connecter"
 
-#: views/sessions/new.phtml:23
+#: views/sessions/new.phtml:14
+msgid "Your account and your data are now deleted."
+msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
+
+#: views/sessions/new.phtml:30
 msgid "Email address"
 msgstr "Adresse courriel"
 
-#: views/sessions/new.phtml:43
+#: views/sessions/new.phtml:50
 msgid "Password"
 msgstr "Mot de passe"
 
-#: views/sessions/new.phtml:79
+#: views/sessions/new.phtml:82
+msgid "Login"
+msgstr "Se connecter"
+
+#: views/sessions/new.phtml:86
 msgid "No account yet? Sign up"
 msgstr "Pas encore de compte ? S’inscrire"
 
 #: views/unauthorized.phtml:3
 msgid "Unauthorized"
-msgstr "Non authorisé"
+msgstr "Non autorisé"
 
-#: views/unauthorized.phtml:9
+#: views/unauthorized.phtml:10
 msgid "You must be connected to see this page."
 msgstr "Vous devez être connecté·e pour voir cette page."
