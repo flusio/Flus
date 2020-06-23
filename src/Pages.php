@@ -15,12 +15,17 @@ class Pages
     /**
      * Show the home page.
      *
+     * @response 302 /bookmarks if connected
      * @response 200
      *
      * @return \Minz\Response
      */
     public function home()
     {
+        if (utils\CurrentUser::get()) {
+            return Response::redirect('bookmarks');
+        }
+
         return Response::ok('pages/home.phtml');
     }
 
