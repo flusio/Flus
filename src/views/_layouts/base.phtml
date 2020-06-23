@@ -20,7 +20,11 @@
         </script>
         <script src="<?= url_static('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
 
-        <title><?= $title ?></title>
+        <?php if ($current_user): ?>
+            <title><?= $title ?></title>
+        <?php else: ?>
+            <title><?= $title ?> · flusio</title>
+        <?php endif; ?>
     </head>
 
     <body>
