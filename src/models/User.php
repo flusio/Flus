@@ -103,4 +103,37 @@ class User extends \Minz\Model
         $available_locales = \flusio\utils\Locale::availableLocales();
         return isset($available_locales[$locale]);
     }
+
+    /**
+     * Return a list of errors (if any). The array keys indicated the concerned
+     * property.
+     *
+     * @return string[]
+     */
+    public function validate()
+    {
+        $formatted_errors = [];
+
+        foreach (parent::validate() as $property => $error) {
+            $code = $error['code'];
+
+            if ($property === 'username' && $code === 'required') {
+                $formatted_error = _('The username is required.');
+            } elseif ($property === 'username') {
+                $formatted_error = _('The username must be less than 50 characters.');
+            } elseif ($property === 'email' && $code === 'required') {
+                $formatted_error = _('The address email is required.');
+            } elseif ($property === 'email') {
+                $formatted_error = _('The address email is invalid.');
+            } elseif ($property === 'password_hash') {
+                $formatted_error = _('The password is required.');
+            } else {
+                $formatted_error = $error['description']; // @codeCoverageIgnore
+            }
+
+            $formatted_errors[$property] = $formatted_error;
+        }
+
+        return $formatted_errors;
+    }
 }

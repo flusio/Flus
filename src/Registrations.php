@@ -83,7 +83,7 @@ class Registrations
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
-                'errors' => $this->formatUserErrors($errors),
+                'errors' => $errors,
             ]);
         }
 
@@ -237,38 +237,5 @@ class Registrations
 
         utils\Flash::set('status', 'validation_email_sent');
         return Response::found($from);
-    }
-
-    /**
-     * @param array $errors
-     *
-     * @return array
-     */
-    private function formatUserErrors($errors)
-    {
-        $formatted_errors = [];
-        foreach ($errors as $property => $error) {
-            $code = $error['code'];
-            if ($property === 'username') {
-                if ($code === \Minz\Model::ERROR_REQUIRED) {
-                    $formatted_error = _('The username is required.');
-                } else {
-                    $formatted_error = _('The username must be less than 50 characters.');
-                }
-            } elseif ($property === 'email') {
-                if ($code === \Minz\Model::ERROR_REQUIRED) {
-                    $formatted_error = _('The address email is required.');
-                } else {
-                    $formatted_error = _('The address email is invalid.');
-                }
-            } elseif ($property === 'password_hash') {
-                $formatted_error = _('The password is required.');
-            } else {
-                $formatted_error = $error['description']; // @codeCoverageIgnore
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-        return $formatted_errors;
     }
 }
