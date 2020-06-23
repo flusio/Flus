@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-06-19 20:17+0200\n"
-"PO-Revision-Date: 2020-06-19 20:18+0200\n"
+"POT-Creation-Date: 2020-06-23 16:42+0200\n"
+"PO-Revision-Date: 2020-06-23 16:43+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,8 +15,8 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Accounts.php:60 Links.php:91 Links.php:231 Registrations.php:72
-#: Registrations.php:220 Sessions.php:74 Sessions.php:189
+#: Accounts.php:60 Links.php:94 Links.php:239 Registrations.php:73
+#: Registrations.php:217 Sessions.php:74
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -26,7 +26,7 @@ msgstr ""
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
-#: Collections.php:42
+#: Collections.php:44
 msgid ""
 "It looks like you have no “Bookmarks” collection, you should contact the "
 "support."
@@ -34,57 +34,37 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: Links.php:44 Links.php:170 Links.php:220 Links.php:278 Links.php:325
+#: Links.php:47 Links.php:176 Links.php:228 Links.php:289 Links.php:332
 msgid "This link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
-#: Links.php:111
+#: Links.php:114
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: Links.php:116
+#: Links.php:119
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: Links.php:313 Links.php:385
+#: Links.php:342 Links.php:417 Sessions.php:186
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: Links.php:400
+#: Links.php:411
 msgid "This link-collection relation doesn’t exist."
 msgstr "La relation lien-collection n’existe pas."
 
-#: Registrations.php:95
+#: Registrations.php:96
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:151 Registrations.php:165
+#: Registrations.php:153 Registrations.php:167
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: Registrations.php:158
+#: Registrations.php:160
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
-
-#: Registrations.php:258
-msgid "The username is required."
-msgstr "Le nom d’utilisateur·ice est obligatoire."
-
-#: Registrations.php:260
-msgid "The username must be less than 50 characters."
-msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
-
-#: Registrations.php:264
-msgid "The address email is required."
-msgstr "L’adresse courriel est obligatoire."
-
-#: Registrations.php:266
-msgid "The address email is invalid."
-msgstr "L’adresse courriel est invalide."
-
-#: Registrations.php:269
-msgid "The password is required."
-msgstr "Le mot de passe est obligatoire."
 
 #: Sessions.php:91
 msgid "We can’t find any account with this email address."
@@ -104,32 +84,53 @@ msgstr "Afficher"
 msgid "[flusio] Confirm your registration"
 msgstr "[flusio] Confirmer votre inscription"
 
-#: models/Collection.php:49 views/collections/show.phtml:9
-#: views/links/show.phtml:10 views/pages/home.phtml:39
+#: models/Collection.php:49 views/collections/show.phtml:4
+#: views/collections/show.phtml:15 views/links/show.phtml:10
+#: views/pages/home.phtml:39
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Link.php:100
+#: models/Link.php:115
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:102
+#: models/Link.php:117
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:121
+#: models/Link.php:136
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:126
+#: models/Link.php:141
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:130
+#: models/Link.php:145
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
 "sensible."
+
+#: models/User.php:121
+msgid "The username is required."
+msgstr "Le nom d’utilisateur·ice est obligatoire."
+
+#: models/User.php:123
+msgid "The username must be less than 50 characters."
+msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
+
+#: models/User.php:125
+msgid "The address email is required."
+msgstr "L’adresse courriel est obligatoire."
+
+#: models/User.php:127
+msgid "The address email is invalid."
+msgstr "L’adresse courriel est invalide."
+
+#: models/User.php:129
+msgid "The password is required."
+msgstr "Le mot de passe est obligatoire."
 
 #: utils/Browser.php:36
 msgid "Unknown browser"
@@ -144,27 +145,37 @@ msgstr "plateforme inconnue"
 msgid "%s on %s"
 msgstr "%s sur %s"
 
-#: views/_layouts/base.phtml:43
+#: utils/view_helpers.php:46
+msgid "< 1 min"
+msgstr "< 1 min"
+
+#: utils/view_helpers.php:48
+#, php-format
+msgid "%d&nbsp;min"
+msgstr "%d&nbsp;min"
+
+#: views/_layouts/base.phtml:47
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/base.phtml:47 views/registrations/new.phtml:107
+#: views/_layouts/base.phtml:51 views/registrations/new.phtml:3
+#: views/registrations/new.phtml:8 views/registrations/new.phtml:107
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/base.phtml:51 views/sessions/new.phtml:75
+#: views/_layouts/base.phtml:55 views/sessions/new.phtml:75
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/_layouts/base.phtml:69
+#: views/_layouts/base.phtml:73
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/base.phtml:86
+#: views/_layouts/base.phtml:90
 msgid "Change"
 msgstr "Changer"
 
-#: views/_layouts/base.phtml:99
+#: views/_layouts/base.phtml:103
 msgid "About flusio"
 msgstr "À propos de flusio"
 
@@ -216,36 +227,36 @@ msgstr "Retour à la page précédente"
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
-#: views/collections/show.phtml:28
+#: views/collections/show.phtml:34
 msgid "New link"
 msgstr "Nouveau lien"
 
-#: views/collections/show.phtml:35
+#: views/collections/show.phtml:41
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/collections/show.phtml:65 views/collections/show.phtml:66
+#: views/collections/show.phtml:75 views/collections/show.phtml:76
 msgid "Remove from bookmarks"
 msgstr "Retirer des signets"
 
-#: views/collections/show.phtml:73 views/collections/show.phtml:74
+#: views/collections/show.phtml:83 views/collections/show.phtml:84
 #, php-format
 msgid "Remove from %s"
 msgstr "Retirer de %s"
 
-#: views/collections/show.phtml:82
+#: views/collections/show.phtml:92
 msgid "see"
 msgstr "voir"
 
-#: views/collections/show.phtml:90
+#: views/collections/show.phtml:100
 msgid "You have no links here yet."
 msgstr "Vous n’avez pas encore de lien ici."
 
-#: views/links/show.phtml:20
+#: views/links/show.phtml:24
 msgid "Edit the link"
 msgstr "Modifier le lien"
 
-#: views/links/show.phtml:29
+#: views/links/show.phtml:33
 msgid "open"
 msgstr "ouvrir"
 
@@ -262,14 +273,14 @@ msgstr "Changeons ce titre"
 msgid "All is fine, go to the link"
 msgstr "Tout est bon, voir le lien"
 
-#: views/links/show_fetch.phtml:28
+#: views/links/show_fetch.phtml:35 views/links/show_fetch.phtml:50
+msgid "Fetch link information"
+msgstr "Récupérer les informations du lien"
+
+#: views/links/show_fetch.phtml:40
 #, php-format
 msgid "Please wait while we’re fetching information about %s."
 msgstr "Merci d’attendre pendant que nous récupérons les informations de %s."
-
-#: views/links/show_fetch.phtml:38
-msgid "Fetch link information"
-msgstr "Récupérer les informations du lien"
 
 #: views/links/show_update.phtml:23
 msgid "Title"
@@ -327,7 +338,11 @@ msgstr "système de design de flusio"
 msgid "Colors"
 msgstr "Couleurs"
 
-#: views/pages/home.phtml:3 views/pages/home.phtml:8
+#: views/pages/home.phtml:3
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#: views/pages/home.phtml:8
 msgid "Welcome on flusio!"
 msgstr "Bienvenue sur flusio!"
 
@@ -350,10 +365,6 @@ msgstr "Nous vous avons envoyé un courriel !"
 #: views/pages/home.phtml:30
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
-
-#: views/registrations/new.phtml:3 views/registrations/new.phtml:8
-msgid "Sign up on flusio"
-msgstr "S’inscrire sur flusio"
 
 #: views/registrations/new.phtml:22
 msgid "How should we name you?"
@@ -400,8 +411,8 @@ msgid "Send an email with a valid token"
 msgstr "Envoyer un courriel avec un token valide"
 
 #: views/sessions/new.phtml:3 views/sessions/new.phtml:8
-msgid "Log in flusio"
-msgstr "Se connecter à flusio"
+msgid "Log in"
+msgstr "Se connecter"
 
 #: views/sessions/new.phtml:23
 msgid "Email address"
