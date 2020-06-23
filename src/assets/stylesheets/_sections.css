@@ -1,0 +1,18 @@
+.section {
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
+    padding: var(--space-small);
+}
+
+.section__header {
+    margin-top: calc(-1 * var(--space-large));
+    margin-bottom: var(--space-larger);
+}
+
+.section__intro {
+    max-width: 50ch;
+    margin: var(--space-larger) auto;
+
+    font-style: italic;
+    text-align: center;
+}

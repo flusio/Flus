@@ -38,14 +38,9 @@
                     <div class="header__separator"></div>
 
                     <?php if ($current_user): ?>
-                        <a href="<?= url('user deletion') ?>">
+                        <a href="<?= url('account') ?>">
                             <?= $this->protect($current_user->username) ?>
                         </a>
-
-                        <form method="post" action="<?= url('logout') ?>">
-                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                            <button class="button--ghost" type="submit"><?= _('Log out') ?></button>
-                        </form>
                     <?php else: ?>
                         <a class="header__link" href="<?= url('registration') ?>">
                             <?= _('Sign up') ?>
@@ -54,42 +49,42 @@
                         <a class="header__link" href="<?= url('login') ?>">
                             <?= _('Login') ?>
                         </a>
+
+                        <form
+                            class="header__locale-form"
+                            method="post"
+                            action="<?= url('change locale') ?>"
+                            data-controller="form-autosubmit"
+                        >
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                            <?php if(isset($canonical)): ?>
+                                <input type="hidden" name="redirect_to" value="<?= $canonical ?>" />
+                            <?php elseif($current_action_pointer): ?>
+                                <input type="hidden" name="redirect_to" value="<?= url($current_action_pointer) ?>" />
+                            <?php endif; ?>
+
+                            <div class="form-group">
+                                <label for="locale" class="icon icon--language" aria-label="<?= _('Choose your language') ?>">
+                                    <select
+                                        id="locale"
+                                        name="locale"
+                                        data-action="form-autosubmit#submit"
+                                    >
+                                        <?php foreach ($available_locales as $locale_value => $locale_name): ?>
+                                            <option
+                                                value="<?= $locale_value ?>"
+                                                <?= $locale_value === $current_locale ? 'selected' : '' ?>
+                                            >
+                                                <?= $locale_name ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </label>
+
+                                <button type="submit"><?= _('Change') ?></button>
+                            </div>
+                        </form>
                     <?php endif; ?>
-
-                    <form
-                        class="header__locale-form"
-                        method="post"
-                        action="<?= url('change locale') ?>"
-                        data-controller="form-autosubmit"
-                    >
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <?php if(isset($canonical)): ?>
-                            <input type="hidden" name="redirect_to" value="<?= $canonical ?>" />
-                        <?php elseif($current_action_pointer): ?>
-                            <input type="hidden" name="redirect_to" value="<?= url($current_action_pointer) ?>" />
-                        <?php endif; ?>
-
-                        <div class="form-group">
-                            <label for="locale" class="icon icon--language" aria-label="<?= _('Choose your language') ?>">
-                                <select
-                                    id="locale"
-                                    name="locale"
-                                    data-action="form-autosubmit#submit"
-                                >
-                                    <?php foreach ($available_locales as $locale_value => $locale_name): ?>
-                                        <option
-                                            value="<?= $locale_value ?>"
-                                            <?= $locale_value === $current_locale ? 'selected' : '' ?>
-                                        >
-                                            <?= $locale_name ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </label>
-
-                            <button type="submit"><?= _('Change') ?></button>
-                        </div>
-                    </form>
                 </nav>
             </header>
 

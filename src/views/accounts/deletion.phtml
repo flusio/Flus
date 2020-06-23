@@ -4,57 +4,67 @@
     ]);
 ?>
 
-<form method="post" action="<?= url('delete user') ?>">
-    <p>
+<div class="section">
+    <div class="title">
+        <h1><?= _('Account deletion') ?></h1>
+    </div>
+
+    <p class="section__intro">
         <?= _('You’re about to delete your account and your data will be lost. This can’t be canceled!') ?>
     </p>
 
-    <?php if ($error): ?>
-        <p>
-            <?= $error ?>
-        </p>
-    <?php endif; ?>
-
-    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-    <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
-        <label for="password">
-            <?= _('Your password') ?>
-        </label>
-
-        <p class="form-group__caption">
-            <?= _('You must type your password so we can confirm your identity.') ?>
-        </p>
-
-        <div class="form-group__stack" data-controller="input-password">
-            <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                data-target="input-password.input"
-            />
-
-            <button
-                type="button"
-                class="button--ghost icon icon--eye js-only"
-                data-action="input-password#toggle"
-                aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
-            >
-                <?= _('Show') ?>
-            </button>
-        </div>
-
-        <?php if (isset($errors['password_hash'])): ?>
-            <p class="form-group__error">
-                <?= $errors['password_hash'] ?>
+    <form method="post" action="<?= url('delete account') ?>">
+        <?php if ($error): ?>
+            <p>
+                <?= $error ?>
             </p>
         <?php endif; ?>
-    </div>
 
-    <div class="form__actions">
-        <button type="submit" class="button--primary">
-            <?= _('Delete the account') ?>
-        </button>
-    </div>
-</form>
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
+            <label for="password">
+                <?= _('Your password') ?>
+            </label>
+
+            <p class="form-group__caption">
+                <?= _('You must type your password so we can confirm your identity.') ?>
+            </p>
+
+            <div class="form-group__stack" data-controller="input-password">
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    data-target="input-password.input"
+                />
+
+                <button
+                    type="button"
+                    class="button--ghost icon icon--eye js-only"
+                    data-action="input-password#toggle"
+                    aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
+                >
+                    <?= _('Show') ?>
+                </button>
+            </div>
+
+            <?php if (isset($errors['password_hash'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['password_hash'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Delete the account') ?>
+            </button>
+
+            <a href="<?= url('account') ?>">
+                <?= _('Cancel and go back to your account') ?>
+            </a>
+        </div>
+    </form>
+</div>

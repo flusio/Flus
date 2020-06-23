@@ -30,6 +30,7 @@ input:focus {
 }
 
 select {
+    width: 50%;
     height: 2.5em;
     padding: var(--space-small);
     padding-right: 3.5rem;

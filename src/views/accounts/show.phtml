@@ -1,0 +1,62 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Account'),
+    ]);
+?>
+
+<div class="section">
+    <header class="section__header header">
+        <div class="header__container">
+            <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('bookmarks') ?>">
+                <?= _('Bookmarks') ?>
+            </a>
+
+            <div class="header__separator"></div>
+
+            <form method="post" action="<?= url('logout') ?>">
+                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                <button type="submit" class="button--ghost"><?= _('Log out') ?></button>
+            </form>
+        </div>
+    </header>
+
+    <div class="title">
+        <h1><?= _('Account') ?></h1>
+    </div>
+
+    <form method="post" action="<?= url('change locale') ?>">
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="redirect_to" value="<?= url('account') ?>" />
+
+        <div class="form-group">
+            <label for="locale" class="icon icon--language">
+                <?= _('Choose your language') ?>
+            </label>
+
+            <select id="locale" name="locale">
+                <?php foreach ($available_locales as $locale_value => $locale_name): ?>
+                    <option
+                        value="<?= $locale_value ?>"
+                        <?= $locale_value === $current_locale ? 'selected' : '' ?>
+                    >
+                        <?= $locale_name ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary"><?= _('Change') ?></button>
+        </div>
+    </form>
+</div>
+
+<hr />
+
+<div class="section">
+    <p class="paragraph--centered">
+        <a href="<?= url('account deletion') ?>">
+            <?= _('Do you want to delete your account?') ?>
+        </a>
+    </p>
+</div>
