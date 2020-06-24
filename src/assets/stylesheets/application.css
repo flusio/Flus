@@ -1,11 +1,12 @@
+@import './_anchors.css';
 @import './_buttons.css';
 @import './_fonts.css';
 @import './_forms.css';
 @import './_header.css';
 @import './_icons.css';
 @import './_layout.css';
-@import './_anchors.css';
-@import './_titles.css';
+@import './_paragraphs.css';
+@import './_sections.css';
 @import './_variables.css';
 @import './components/links.css';
 
@@ -34,4 +35,36 @@ body {
 
 .js-only {
     display: none;
+}
+
+hr {
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
+
+    border: none;
+}
+
+hr::before,
+hr::after {
+    content: "";
+
+    display: block;
+    height: 1.75rem;
+    margin-right: auto;
+    margin-left: auto;
+
+    border-radius: 2em;
+}
+
+hr::before {
+    width: 16rem;
+    margin-bottom: 1rem;
+
+    background-color: var(--color-turquoise-4);
+}
+
+hr::after {
+    width: 10rem;
+
+    background-color: var(--color-turquoise-5);
 }

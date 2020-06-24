@@ -1,13 +1,13 @@
 <?php
     $this->layout('error.phtml', [
-        'title' => _('Bad request'),
+        'title' => _('Something bad happened'),
         'error' => $error,
     ]);
 ?>
 
 <div class="section">
     <h1>
-        <?= _('The request is invalid.') ?>
+        <?= _('An error occurred during the processing of your request.') ?>
     </h1>
 
     <?php if (isset($details)): ?>

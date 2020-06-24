@@ -1,5 +1,11 @@
-.title {
+.section {
+    margin-bottom: var(--space-larger);
+    padding: var(--space-small);
+}
+
+.section__title {
     display: flex;
+    margin-top: var(--space-large);
     margin-bottom: var(--space-large);
 
     align-items: center;
@@ -11,11 +17,13 @@
     text-transform: lowercase;
 }
 
-h1 {
+.section__title h1 {
     display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
-h1::after {
+.section__title h1::after {
     content: "";
 
     display: block;
@@ -27,4 +35,12 @@ h1::after {
 
     background: linear-gradient(to right, var(--color-turquoise-4), var(--color-turquoise-6), var(--color-turquoise-4));
     border-radius: var(--border-radius);
+}
+
+.section__intro {
+    max-width: 50ch;
+    margin: var(--space-larger) auto;
+
+    font-style: italic;
+    text-align: center;
 }

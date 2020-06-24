@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="<?= localeToBCP47($current_locale) ?>">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <?php if($canonical): ?>
+            <link rel="canonical" href="<?= $canonical ?>">
+        <?php elseif($current_action_pointer): ?>
+            <link rel="canonical" href="<?= url_full($current_action_pointer) ?>">
+        <?php endif; ?>
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
+
+        <link rel="stylesheet" href="<?= url_static('stylesheets/application.css') ?>" data-turbolinks-track="reload">
+        <?php foreach ($styles as $style_name): ?>
+            <link rel="stylesheet" href="<?= url_static("stylesheets/{$style_name}.css") ?>" data-turbolinks-track="reload">
+        <?php endforeach; ?>
+
+        <script id="javascript-configuration" type="application/json">
+            <?= $this->safe('javascript_configuration') ?>
+        </script>
+        <script src="<?= url_static('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
+
+        <title><?= $title ?> · flusio</title>
+    </head>
+
+    <body>
+        <div class="layout">
+            <header class="layout__header header">
+                <nav class="header__container">
+                    <a class="header__link header__link--home" href="<?= url('home') ?>">
+                        flusio
+                    </a>
+
+                    <div class="header__separator"></div>
+
+                    <a class="header__link" href="<?= url('registration') ?>">
+                        <?= _('Sign up') ?>
+                    </a>
+
+                    <form
+                        class="header__locale-form"
+                        method="post"
+                        action="<?= url('change locale') ?>"
+                        data-controller="form-autosubmit"
+                    >
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <?php if(isset($canonical)): ?>
+                            <input type="hidden" name="redirect_to" value="<?= $canonical ?>" />
+                        <?php elseif($current_action_pointer): ?>
+                            <input type="hidden" name="redirect_to" value="<?= url($current_action_pointer) ?>" />
+                        <?php endif; ?>
+
+                        <div class="form-group">
+                            <label for="locale" class="icon icon--language" aria-label="<?= _('Choose your language') ?>">
+                                <select
+                                    id="locale"
+                                    name="locale"
+                                    data-action="form-autosubmit#submit"
+                                >
+                                    <?php foreach ($available_locales as $locale_value => $locale_name): ?>
+                                        <option
+                                            value="<?= $locale_value ?>"
+                                            <?= $locale_value === $current_locale ? 'selected' : '' ?>
+                                        >
+                                            <?= $locale_name ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </label>
+
+                            <button type="submit"><?= _('Change') ?></button>
+                        </div>
+                    </form>
+                </nav>
+            </header>
+
+            <main class="layout__content">
+                <?= $this->safe('content') ?>
+            </main>
+
+            <footer class="layout__footer">
+                <p>
+                    <a href="<?= url('about') ?>">
+                        <?= _('About flusio') ?>
+                    </a>
+                </p>
+            </footer>
+        </div>
+    </body>
+</html>

@@ -132,11 +132,15 @@ class Registrations
      *
      * @request_param string t The registration validation token
      *
+     * @response 302 /login?redirect_to=/registrations/validation if no token and current user is not connected
+     * @response 302 / if no token and current user is already validated
+     * @response 200 if no token
+     *
      * @response 404 if the token doesn't exist
      * @response 400 if the token has expired
      * @response 404 if the token is not associated to a User
      * @response 302 / if the token is valid and the registration already validated
-     * @response 200
+     * @response 200 if the registration has been validated
      *
      * @param \Minz\Request $request
      *
@@ -147,7 +151,21 @@ class Registrations
         $user_dao = new models\dao\User();
         $token_dao = new models\dao\Token();
 
-        $db_token = $token_dao->find($request->param('t'));
+        $token = $request->param('t');
+        $current_user = utils\CurrentUser::get();
+        if (!$token) {
+            if (!$current_user) {
+                return Response::redirect('login', [
+                    'redirect_to' => \Minz\Url::for('registration validation'),
+                ]);
+            } elseif ($current_user->validated_at) {
+                return Response::redirect('home');
+            } else {
+                return Response::ok('registrations/validation.phtml');
+            }
+        }
+
+        $db_token = $token_dao->find($token);
         if (!$db_token) {
             return Response::notFound('registrations/validation.phtml', [
                 'error' => _('The token doesn’t exist.'),
@@ -182,7 +200,9 @@ class Registrations
         $user->validated_at = \Minz\Time::now();
         $user_dao->save($user);
 
-        return Response::ok('registrations/validation.phtml');
+        return Response::ok('registrations/validation.phtml', [
+            'success' => true,
+        ]);
     }
 
     /**

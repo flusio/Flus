@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="<?= localeToBCP47($current_locale) ?>">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
+        <meta name="robots" content="noindex">
+
+        <link rel="stylesheet" href="<?= url_static('stylesheets/application.css') ?>" data-turbolinks-track="reload">
+
+        <title><?= $title ?> · flusio</title>
+    </head>
+
+    <body>
+        <div class="layout layout--error">
+            <header class="layout__header">
+                <nav>
+                    <a class="layout__link" href="<?= url('home') ?>">
+                        <?= _('Oh no&nbsp;😟') ?>
+                    </a>
+                </nav>
+            </header>
+
+            <main class="layout__content">
+                <?= $this->safe('content') ?>
+
+                <?php if ($environment !== 'production' && $error): ?>
+                    <pre class="layout--error__box"><?= (string)$error ?></pre>
+                <?php endif; ?>
+            </main>
+        </div>
+    </body>
+</html>

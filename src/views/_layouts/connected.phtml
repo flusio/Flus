@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="<?= localeToBCP47($current_locale) ?>">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <?php if($canonical): ?>
+            <link rel="canonical" href="<?= $canonical ?>">
+        <?php elseif($current_action_pointer): ?>
+            <link rel="canonical" href="<?= url_full($current_action_pointer) ?>">
+        <?php endif; ?>
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
+
+        <link rel="stylesheet" href="<?= url_static('stylesheets/application.css') ?>" data-turbolinks-track="reload">
+        <?php foreach ($styles as $style_name): ?>
+            <link rel="stylesheet" href="<?= url_static("stylesheets/{$style_name}.css") ?>" data-turbolinks-track="reload">
+        <?php endforeach; ?>
+
+        <script id="javascript-configuration" type="application/json">
+            <?= $this->safe('javascript_configuration') ?>
+        </script>
+        <script src="<?= url_static('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
+
+        <title><?= $title ?></title>
+    </head>
+
+    <body>
+        <div class="layout">
+            <?php if (!$current_user->validated_at && $banner): ?>
+                <div class="validation-banner">
+                    <a class="validation-banner__anchor anchor--discreet" href="<?= url('registration validation') ?>">
+                        <?= _('You must validate your registration&nbsp;→') ?>
+                    </a>
+                </div>
+            <?php endif; ?>
+
+            <header class="layout__header header">
+                <nav class="header__container">
+                    <?php if ($current_action_pointer !== 'Collections#showBookmarks'): ?>
+                        <a class="header__link anchor--action icon icon--anchor icon--undo" href="<?= url('bookmarks') ?>">
+                            <?= _('Bookmarks') ?>
+                        </a>
+                    <?php endif; ?>
+
+                    <div class="header__separator"></div>
+
+                    <a class="header__link" href="<?= url('account') ?>">
+                        <?= $this->protect($current_user->username) ?>
+                    </a>
+
+                    <form method="post" action="<?= url('logout') ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <button type="submit" class="button--ghost"><?= _('Log out') ?></button>
+                    </form>
+                </nav>
+            </header>
+
+            <main class="layout__content">
+                <?= $this->safe('content') ?>
+            </main>
+        </div>
+    </body>
+</html>

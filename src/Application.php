@@ -55,8 +55,9 @@ class Application
         $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
         // Account
-        $router->addRoute('get', '/account/deletion', 'Accounts#deletion', 'user deletion');
-        $router->addRoute('post', '/account/deletion', 'Accounts#delete', 'delete user');
+        $router->addRoute('get', '/account', 'Accounts#show', 'account');
+        $router->addRoute('get', '/account/deletion', 'Accounts#deletion', 'account deletion');
+        $router->addRoute('post', '/account/deletion', 'Accounts#delete', 'delete account');
 
         // Collections
         $router->addRoute('get', '/bookmarks', 'Collections#showBookmarks', 'bookmarks');
@@ -122,11 +123,13 @@ class Application
             'error' => $error,
             'status' => $status,
             'current_action_pointer' => $request->param('_action_pointer'),
+            'canonical' => null,
             'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,
             'current_user' => $current_user,
             'styles' => [],
             'javascript_configuration' => json_encode(include_once('utils/javascript_configuration.php')),
+            'banner' => true,
         ]);
 
         return $response;

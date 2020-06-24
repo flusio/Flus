@@ -41,7 +41,7 @@ class Collections
         if (!$db_bookmarks_collection) {
             \Minz\Log::error("User {$current_user->id} has no Bookmarks collection.");
             return Response::notFound('not_found.phtml', [
-                'error' => _('It looks like you have no “Bookmarks” collection, you should contact the support.'),
+                'details' => _('It looks like you have no “Bookmarks” collection, you should contact the support.'),
             ]);
         }
 

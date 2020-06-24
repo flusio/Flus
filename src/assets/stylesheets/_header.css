@@ -30,3 +30,7 @@
     margin-top: 0;
     margin-bottom: 0;
 }
+
+.header__locale-form select {
+    width: auto;
+}

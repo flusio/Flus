@@ -10,6 +10,23 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
+    public function testShowRendersCorrectly()
+    {
+        $this->login();
+
+        $response = $this->appRun('get', '/account');
+
+        $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'accounts/show.phtml');
+    }
+
+    public function testShowRedirectsToLoginIfUserNotConnected()
+    {
+        $response = $this->appRun('get', '/account');
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount');
+    }
+
     public function testDeletionRendersCorrectly()
     {
         $this->login();
@@ -17,6 +34,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', '/account/deletion');
 
         $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'accounts/deletion.phtml');
     }
 
     public function testDeletionRedirectsToLoginIfUserNotConnected()
@@ -26,7 +44,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdeletion');
     }
 
-    public function testDeleteRedirectsToTheHomePageAndDeletesTheUser()
+    public function testDeleteRedirectsToLoginAndDeletesTheUser()
     {
         $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
@@ -41,7 +59,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponse($response, 302, '/login');
         $this->assertFlash('status', 'user_deleted');
         $this->assertNull($user_dao->find($user->id));
         $this->assertNull(utils\CurrentUser::get());

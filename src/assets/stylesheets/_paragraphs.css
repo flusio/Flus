@@ -1,0 +1,22 @@
+.paragraph--featured {
+    font-size: var(--size-large);
+    font-weight: 600;
+    text-align: center;
+}
+
+.paragraph--centered {
+    text-align: center;
+}
+
+.paragraph--secondary {
+    color: var(--color-text-secondary);
+}
+
+.paragraph--placeholder {
+    max-width: 50ch;
+    margin: var(--space-large) auto;
+
+    color: var(--color-text-secondary);
+    font-style: italic;
+    text-align: center;
+}

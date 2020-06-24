@@ -5,31 +5,23 @@
     ]);
 ?>
 
-<p>
-    <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('bookmarks') ?>">
-        <?= _('Bookmarks') ?>
-    </a>
-</p>
+<div class="section">
+    <div class="section__title">
+        <h1><?= $this->protect($link->title) ?></h1>
+    </div>
 
-<div class="title">
-    <h1><?= $this->protect($link->title) ?></h1>
+    <p class="link__details paragraph--centered">
+        <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>&nbsp;·&nbsp;<a href="<?= url('show update link', ['id' => $link->id]) ?>"><?= _('edit') ?></a>
+    </p>
+
+    <p class="paragraph--centered">
+        <a
+            class="anchor--action icon icon--anchor icon--link"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="<?= $link->url ?>"
+        >
+            <?= _('open') ?>
+        </a>
+    </p>
 </div>
-
-<p class="link__details">
-    <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
-</p>
-
-<p>
-    <a href="<?= url('show update link', ['id' => $link->id]) ?>">
-        <?= _('Edit the link') ?>
-    </a>
-
-    <a
-        class="anchor--action icon icon--anchor icon--link"
-        target="_blank"
-        rel="noopener noreferrer"
-        href="<?= $link->url ?>"
-    >
-        <?= _('open') ?>
-    </a>
-</p>

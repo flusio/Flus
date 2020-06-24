@@ -276,7 +276,74 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 400, 'The password is required');
     }
 
-    public function testValidationRendersCorrectlyAndValidatesRegistration()
+    public function testValidationWithoutTokenAndConnectedRendersCorrectly()
+    {
+        $faker = \Faker\Factory::create();
+
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->login([
+            'validated_at' => null,
+            'validation_token' => $token,
+        ]);
+
+        $response = $this->appRun('get', '/registration/validation');
+
+        $this->assertResponse($response, 200, 'Didn’t receive the email? Resend it');
+    }
+
+    public function testValidationWithoutTokenAndNotConnectedRedirectsToLogin()
+    {
+        $faker = \Faker\Factory::create();
+
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('user', [
+            'validated_at' => null,
+            'validation_token' => $token,
+        ]);
+
+        $response = $this->appRun('get', '/registration/validation');
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fregistration%2Fvalidation');
+    }
+
+    public function testValidationWithValidationEmailSentStatusRendersCorrectly()
+    {
+        $faker = \Faker\Factory::create();
+
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->login([
+            'validated_at' => null,
+            'validation_token' => $token,
+        ]);
+        utils\Flash::set('status', 'validation_email_sent');
+
+        $response = $this->appRun('get', '/registration/validation');
+
+        $this->assertResponse($response, 200, 'We’ve just sent you an email!');
+    }
+
+    public function testValidationRedirectsIfUserConnectedAndRegistrationAlreadyValidated()
+    {
+        $faker = \Faker\Factory::create();
+        $this->login([
+            'validated_at' => $faker->iso8601,
+        ]);
+
+        $response = $this->appRun('get', '/registration/validation');
+
+        $this->assertResponse($response, 302, '/');
+    }
+
+    public function testValidationWithTokenRendersCorrectlyAndValidatesRegistration()
     {
         $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
@@ -300,7 +367,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(\Minz\Time::now(), $user->validated_at);
     }
 
-    public function testValidationRedirectsIfRegistrationAlreadyValidated()
+    public function testValidationWithTokenRedirectsIfRegistrationAlreadyValidated()
     {
         $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
@@ -322,7 +389,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/');
     }
 
-    public function testValidationDeletesToken()
+    public function testValidationWithTokenDeletesToken()
     {
         $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
@@ -348,7 +415,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->validation_token);
     }
 
-    public function testValidationFailsIfTokenHasExpired()
+    public function testValidationWithTokenFailsIfTokenHasExpired()
     {
         $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
@@ -372,7 +439,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->validated_at);
     }
 
-    public function testValidationFailsIfTokenHasBeenInvalidated()
+    public function testValidationWithTokenFailsIfTokenHasBeenInvalidated()
     {
         $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
@@ -412,7 +479,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404, 'The token doesn’t exist');
     }
 
-    public function testValidationFailsIfTokenDoesNotExist()
+    public function testValidationWithTokenFailsIfTokenDoesNotExist()
     {
         $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();

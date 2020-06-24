@@ -43,9 +43,7 @@ class Links
         ]);
 
         if (!$db_link) {
-            return Response::notFound('not_found.phtml', [
-                'error' => _('This link doesn’t exist.'),
-            ]);
+            return Response::notFound('not_found.phtml');
         }
 
         $link = new models\Link($db_link);
@@ -172,9 +170,7 @@ class Links
         ]);
 
         if (!$db_link) {
-            return Response::notFound('not_found.phtml', [
-                'error' => _('This link doesn’t exist.'),
-            ]);
+            return Response::notFound('not_found.phtml');
         }
 
         $link = new models\Link($db_link);
@@ -224,9 +220,7 @@ class Links
             'user_id' => $user->id,
         ]);
         if (!$db_link) {
-            return Response::notFound('not_found.phtml', [
-                'error' => _('This link doesn’t exist.'),
-            ]);
+            return Response::notFound('not_found.phtml');
         }
 
         $link = new models\Link($db_link);
@@ -285,9 +279,7 @@ class Links
         ]);
 
         if (!$db_link) {
-            return Response::notFound('not_found.phtml', [
-                'error' => _('This link doesn’t exist.'),
-            ]);
+            return Response::notFound('not_found.phtml');
         }
 
         $link = new models\Link($db_link);
@@ -328,9 +320,7 @@ class Links
         ]);
 
         if (!$db_link) {
-            return Response::notFound('not_found.phtml', [
-                'error' => _('This link doesn’t exist.'),
-            ]);
+            return Response::notFound('not_found.phtml');
         }
 
         $link = new models\Link($db_link);

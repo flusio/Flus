@@ -1,3 +1,7 @@
+.form--centered {
+    text-align: center;
+}
+
 label {
     display: block;
     margin-bottom: var(--space-medium);
@@ -30,6 +34,7 @@ input:focus {
 }
 
 select {
+    width: 50%;
     height: 2.5em;
     padding: var(--space-small);
     padding-right: 3.5rem;
