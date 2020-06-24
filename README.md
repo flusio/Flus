@@ -46,6 +46,7 @@ understand how flusio is developed.
 1. [How is the localization managed](/docs/localization.md)
 1. [How are the assets bundled](/docs/assets.md)
 1. [How to run the test suite](/docs/tests.md)
+1. [How to release a new version](/docs/release.md)
 
 ## License
 

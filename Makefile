@@ -75,6 +75,17 @@ lint-fix: ## Fix the errors detected by the linters
 	$(NPM) run lint-js-fix
 	$(NPM) run lint-css-fix
 
+.PHONY: release
+release: ## Release a new version (take a VERSION argument)
+ifndef VERSION
+	$(error You need to provide a "VERSION" argument)
+endif
+	$(NPM) run build
+	$(EDITOR) CHANGELOG.md
+	git add .
+	git commit -m "release: Publish version v$(VERSION)"
+	git tag -a v$(VERSION) -m "Release version v$(VERSION)"
+
 .PHONY: tree
 tree:  ## Display the structure of the application
 	tree -I 'Minz|vendor|node_modules|coverage' --dirsfirst -CA
