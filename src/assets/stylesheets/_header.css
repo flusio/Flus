@@ -18,6 +18,10 @@
     padding: var(--space-medium) var(--space-large);
 }
 
+.header__link--action {
+    padding: var(--space-smaller) var(--space-medium);
+}
+
 .header__link--home {
     font-weight: bold;
 }
