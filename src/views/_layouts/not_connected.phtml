@@ -25,6 +25,14 @@
 
     <body>
         <div class="layout">
+            <?php if ($demo): ?>
+                <div class="layout__banner">
+                    <div class="banner__container">
+                        <?= _('You’re using a demo version of flusio, the data are reseted each night.') ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <header class="layout__header header">
                 <nav class="header__container">
                     <a class="header__link header__link--home" href="<?= url('home') ?>">

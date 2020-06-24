@@ -25,9 +25,17 @@
 
     <body>
         <div class="layout">
+            <?php if ($demo): ?>
+                <div class="layout__banner">
+                    <div class="banner__container">
+                        <?= _('You’re using a demo version of flusio, the data are reseted each night.') ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <?php if (!$current_user->validated_at && $banner): ?>
-                <div class="validation-banner">
-                    <a class="validation-banner__anchor anchor--discreet" href="<?= url('registration validation') ?>">
+                <div class="layout__banner">
+                    <a class="banner__container banner__container--anchor" href="<?= url('registration validation') ?>">
                         <?= _('You must validate your registration&nbsp;→') ?>
                     </a>
                 </div>

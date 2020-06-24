@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-06-24 15:52+0200\n"
-"PO-Revision-Date: 2020-06-24 15:53+0200\n"
+"POT-Creation-Date: 2020-06-24 16:33+0200\n"
+"PO-Revision-Date: 2020-06-24 16:33+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -80,7 +80,7 @@ msgstr "Afficher"
 msgid "[flusio] Confirm your registration"
 msgstr "[flusio] Confirmer votre inscription"
 
-#: models/Collection.php:49 views/_layouts/connected.phtml:40
+#: models/Collection.php:49 views/_layouts/connected.phtml:48
 #: views/collections/show.phtml:4 views/collections/show.phtml:16
 msgid "Bookmarks"
 msgstr "Signets"
@@ -157,11 +157,17 @@ msgstr "< 1 min"
 msgid "%d&nbsp;min"
 msgstr "%d&nbsp;min"
 
-#: views/_layouts/connected.phtml:31
+#: views/_layouts/connected.phtml:31 views/_layouts/not_connected.phtml:31
+msgid "You’re using a demo version of flusio, the data are reseted each night."
+msgstr ""
+"Vous utilisez une version de démo de flusio, les données sont réinitialisées "
+"chaque nuit."
+
+#: views/_layouts/connected.phtml:39
 msgid "You must validate your registration&nbsp;→"
 msgstr "Vous devez valider votre inscription&nbsp;→"
 
-#: views/_layouts/connected.phtml:52
+#: views/_layouts/connected.phtml:60
 msgid "Log out"
 msgstr "Se déconnecter"
 
@@ -169,20 +175,20 @@ msgstr "Se déconnecter"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:37 views/registrations/new.phtml:3
+#: views/_layouts/not_connected.phtml:45 views/registrations/new.phtml:3
 #: views/registrations/new.phtml:9 views/registrations/new.phtml:108
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:54
+#: views/_layouts/not_connected.phtml:62
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:71
+#: views/_layouts/not_connected.phtml:79
 msgid "Change"
 msgstr "Changer"
 
-#: views/_layouts/not_connected.phtml:84
+#: views/_layouts/not_connected.phtml:92
 msgid "About flusio"
 msgstr "À propos de flusio"
 

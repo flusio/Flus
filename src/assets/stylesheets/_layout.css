@@ -20,21 +20,28 @@
     text-align: center;
 }
 
-.validation-banner__anchor {
+.banner__container {
     display: block;
     padding: var(--space-smaller);
 
     text-align: center;
 
     background-color: var(--color-purple-1);
+    border-bottom: var(--border-width) solid var(--color-purple-2);
 }
 
-.validation-banner__anchor:hover,
-.validation-banner__anchor:focus {
-    color: var(--color-purple-6);
+.banner__container--anchor {
+    transition: background-color 0.3s ease-in-out;
 }
 
-.validation-banner__anchor:focus {
+.banner__container--anchor:hover,
+.banner__container--anchor:focus {
+    color: initial;
+
+    background-color: var(--color-purple-2);
+}
+
+.banner__container--anchor:focus {
     outline-color: var(--color-purple-4);
 }
 

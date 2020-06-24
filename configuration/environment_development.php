@@ -16,6 +16,10 @@ return [
         'port' => intval($dotenv->pop('APP_PORT')),
     ],
 
+    'application' => [
+        'demo' => filter_var($dotenv->pop('APP_DEMO'), FILTER_VALIDATE_BOOLEAN),
+    ],
+
     'database' => [
         'dsn' => "pgsql:host={$db_host};port={$db_port};dbname={$db_name}",
         'username' => $dotenv->pop('DB_USERNAME'),
