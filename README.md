@@ -38,8 +38,9 @@ understand how flusio is developed.
 
 1. [Technical stack overview](/docs/technical_stack.md)
 1. [Setup the development environment](/docs/development.md)
-1. [Getting started](/docs/getting_started.md)
+1. [Deploy in production](/docs/production.md)
 1. [How to update flusio](/docs/update.md)
+1. [Getting started](/docs/getting_started.md)
 1. [Working with Docker](/docs/docker.md)
 1. [How are the users’ errors managed](/docs/errors.md)
 1. [How is the CLI working](/docs/cli.md)

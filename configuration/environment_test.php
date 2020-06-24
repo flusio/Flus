@@ -1,7 +1,7 @@
 <?php
 
 $db_host = $dotenv->pop('DB_HOST');
-$db_port = $dotenv->pop('DB_PORT');
+$db_port = intval($dotenv->pop('DB_PORT', '5432'));
 $db_name = 'flusio_test';
 
 $temporary_directory = sys_get_temp_dir() . '/flusio/' . bin2hex(random_bytes(6));

@@ -2,7 +2,7 @@
 
 $db_host = $dotenv->pop('DB_HOST');
 $db_port = intval($dotenv->pop('DB_PORT', '5432'));
-$db_name = 'flusio_development';
+$db_name = $dotenv->pop('DB_NAME', 'flusio_production');
 
 return [
     'app_name' => 'flusio',
@@ -12,9 +12,10 @@ return [
     'session_lifetime' => 30,
 
     'url_options' => [
+        'protocol' => 'https',
         'host' => $dotenv->pop('APP_HOST'),
         'path' => $dotenv->pop('APP_PATH', '/'),
-        'port' => intval($dotenv->pop('APP_PORT')),
+        'port' => intval($dotenv->pop('APP_PORT', '443')),
     ],
 
     'application' => [
