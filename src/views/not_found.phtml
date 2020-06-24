@@ -1,28 +1,30 @@
 <?php
-    $this->layout('base.phtml', [
+    $this->layout('error.phtml', [
         'title' => _('Page not found'),
-        'current_action_pointer' => null,
+        'error' => $error,
     ]);
 ?>
 
-<?php if ($error): ?>
-    <p>
-        <?= $error ?>
-    </p>
-<?php else: ?>
-    <p>
+<div class="section">
+    <h1>
         <?= _('This page doesn’t exist.') ?>
-    </p>
-<?php endif; ?>
+    </h1>
 
-<p>
-    <?php if (isset($link_to)): ?>
-        <a href="<?= $link_to ?>">
-            <?= _('Back to the previous page') ?>
-        </a>
-    <?php else: ?>
-        <a href="<?= url('home') ?>">
-            <?= _('Back to the home page') ?>
-        </a>
+    <?php if (isset($details)): ?>
+        <p class="section__intro">
+            <?= $details ?>
+        </p>
     <?php endif; ?>
-</p>
+
+    <p>
+        <?php if (isset($link_to)): ?>
+            <a href="<?= $link_to ?>">
+                <?= _('Back to the previous page') ?>
+            </a>
+        <?php else: ?>
+            <a href="<?= url('home') ?>">
+                <?= _('Back to the home page') ?>
+            </a>
+        <?php endif; ?>
+    </p>
+</div>

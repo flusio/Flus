@@ -61,9 +61,7 @@ it’s recommended to use the generic error view:
 
 ```php
 if (!$db_resource) {
-    return Response::notFound('not_found.phtml', [
-        'error' => _('This resource doesn’t exist.'),
-    ]);
+    return Response::notFound('not_found.phtml');
 }
 ```
 
@@ -179,7 +177,7 @@ instance:
 
 ```php
 return Response::badRequest('bad_request.phtml', [
-    'error' => _('This resource cannot be accessed for X reason.'),
+    'details' => _('This resource cannot be accessed for X reason.'),
 ]);
 ```
 

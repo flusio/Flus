@@ -37,3 +37,35 @@
 .validation-banner__anchor:focus {
     outline-color: var(--color-purple-4);
 }
+
+.layout--error {
+    text-align: center;
+}
+
+.layout--error .layout__header {
+    padding: var(--space-larger) var(--space-medium);
+}
+
+.layout--error .layout__link {
+    font-size: var(--size-large);
+    text-decoration: none;
+}
+
+.layout--error .layout__content {
+    max-width: 800px;
+}
+
+.layout--error__box {
+    position: absolute;
+    right: 0;
+    left: 0;
+
+    overflow: auto;
+
+    padding: var(--space-medium) var(--space-larger);
+
+    color: var(--color-body);
+    text-align: left;
+
+    background-color: var(--color-text);
+}

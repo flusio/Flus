@@ -63,7 +63,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/links/not-a-valid-id');
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
     public function testShowFailsIfUserDoesNotOwnTheLink()
@@ -79,7 +79,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}");
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
     public function testAddCreatesLinkAndRedirects()
@@ -397,7 +397,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/links/not-a-valid-id/edit');
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
     public function testShowUpdateFailsIfUserDoesNotOwnTheLink()
@@ -412,7 +412,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/edit");
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
     public function testUpdateChangesTheTitleAndRedirects()
@@ -525,7 +525,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $this->assertResponse($response, 404, 'This page doesn’t exist.');
         $db_link = $link_dao->find($link_id);
         $this->assertSame($old_title, $db_link['title']);
     }
@@ -549,7 +549,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $this->assertResponse($response, 404, 'This page doesn’t exist.');
         $db_link = $link_dao->find($link_id);
         $this->assertSame($old_title, $db_link['title']);
     }
@@ -603,7 +603,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/links/not-a-valid-id/fetch');
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
     public function testShowFetchFailsIfUserDoesNotOwnTheLink()
@@ -616,7 +616,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/fetch");
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist.');
+        $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
     public function testFetchUpdatesLinkWithTheTitleAndRedirects()
@@ -715,7 +715,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist');
+        $this->assertResponse($response, 404, 'This page doesn’t exist');
     }
 
     public function testFetchFailsIfUserDoesNotOwnTheLink()
@@ -734,7 +734,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 404, 'This link doesn’t exist');
+        $this->assertResponse($response, 404, 'This page doesn’t exist');
         $db_link = $link_dao->find($link_id);
         $expected_title = 'https://github.com/flusio/flusio';
         $this->assertSame($expected_title, $db_link['title']);
