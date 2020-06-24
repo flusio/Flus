@@ -56,6 +56,7 @@ class Application
 
         // Account
         $router->addRoute('get', '/account', 'Accounts#show', 'account');
+        $router->addRoute('post', '/account', 'Accounts#update', 'update account');
         $router->addRoute('get', '/account/deletion', 'Accounts#deletion', 'account deletion');
         $router->addRoute('post', '/account/deletion', 'Accounts#delete', 'delete account');
 

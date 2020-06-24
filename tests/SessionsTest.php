@@ -292,22 +292,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fr_FR', $_SESSION['locale']);
     }
 
-    public function testChangeLocaleSavesTheLocaleInUserIfConnected()
-    {
-        $user_dao = new models\dao\User();
-        $user = $this->login([
-            'locale' => 'en_GB',
-        ]);
-
-        $response = $this->appRun('post', '/sessions/locale', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-            'locale' => 'fr_FR',
-        ]);
-
-        $user = new models\User($user_dao->find($user->id)); // reload the user
-        $this->assertSame('fr_FR', $user->locale);
-    }
-
     public function testChangeLocaleRedirectsToRedirectTo()
     {
         $response = $this->appRun('post', '/sessions/locale', [

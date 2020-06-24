@@ -205,4 +205,29 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
         $this->assertNull($token);
     }
+
+    public function testReloadResetsInstanceAndGetUserFromDatabase()
+    {
+        $faker = \Faker\Factory::create();
+        $old_username = $faker->unique()->username;
+        $new_username = $faker->unique()->username;
+        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $user_id = $this->create('user', [
+            'username' => $old_username,
+        ]);
+        $this->create('session', [
+            'user_id' => $user_id,
+            'token' => $token,
+        ]);
+        CurrentUser::setSessionToken($token);
+
+        $user = CurrentUser::get();
+        $user->username = $new_username;
+
+        $user = CurrentUser::reload();
+        $this->assertSame($old_username, $user->username);
+    }
 }

@@ -1,6 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Account'),
+        'current_locale' => $current_locale,
     ]);
 ?>
 
@@ -9,29 +10,64 @@
         <h1><?= _('Account') ?></h1>
     </div>
 
-    <form method="post" action="<?= url('change locale') ?>">
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="redirect_to" value="<?= url('account') ?>" />
+    <form method="post" action="<?= url('update account') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
 
-        <div class="form-group">
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">
+            <label for="username">
+                <?= _('Your name') ?>
+            </label>
+
+            <p class="form-group__caption">
+                <?= _('Your username must not be longer than 50 characters.') ?>
+            </p>
+
+            <input
+                type="text"
+                name="username"
+                id="username"
+                value="<?= $username ?>"
+                required
+            />
+
+            <?php if (isset($errors['username'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['username'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form-group <?= isset($errors['locale']) ? 'form-group--invalid' : '' ?>">
             <label for="locale" class="icon icon--language">
-                <?= _('Choose your language') ?>
+                <?= _('Your language') ?>
             </label>
 
             <select id="locale" name="locale">
                 <?php foreach ($available_locales as $locale_value => $locale_name): ?>
                     <option
                         value="<?= $locale_value ?>"
-                        <?= $locale_value === $current_locale ? 'selected' : '' ?>
+                        <?= $locale_value === $locale ? 'selected' : '' ?>
                     >
                         <?= $locale_name ?>
                     </option>
                 <?php endforeach; ?>
             </select>
+
+            <?php if (isset($errors['locale'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['locale'] ?>
+                </p>
+            <?php endif; ?>
         </div>
 
         <div class="form__actions">
-            <button type="submit" class="button--primary"><?= _('Change') ?></button>
+            <button type="submit" class="button--primary"><?= _('Save your changes') ?></button>
         </div>
     </form>
 </div>

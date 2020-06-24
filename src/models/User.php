@@ -127,6 +127,10 @@ class User extends \Minz\Model
                 $formatted_error = _('The address email is invalid.');
             } elseif ($property === 'password_hash') {
                 $formatted_error = _('The password is required.');
+            } elseif ($property === 'locale' && $code === 'required') {
+                $formatted_error = _('The locale is required.');
+            } elseif ($property === 'locale') {
+                $formatted_error = _('The locale is invalid.');
             } else {
                 $formatted_error = $error['description']; // @codeCoverageIgnore
             }

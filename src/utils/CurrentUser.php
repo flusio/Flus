@@ -49,6 +49,17 @@ class CurrentUser
     }
 
     /**
+     * Reset the current instance of User and reaload it from the database
+     *
+     * @return \flusio\models\User
+     */
+    public static function reload()
+    {
+        self::$instance = null;
+        return self::get();
+    }
+
+    /**
      * Save the given session token in session and reset the instance.
      *
      * @param string $token
