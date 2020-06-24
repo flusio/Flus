@@ -1,15 +1,15 @@
-.layout {
-    max-width: 1000px;
+.layout__header {
+    max-width: var(--content-width);
     margin-right: auto;
+    margin-bottom: var(--space-medium);
     margin-left: auto;
 }
 
-.layout__header {
-    margin-bottom: var(--space-medium);
-}
-
 .layout__content {
+    max-width: var(--content-width);
     min-height: 60vh;
+    margin-right: auto;
+    margin-left: auto;
     padding: var(--space-small);
 }
 
@@ -18,4 +18,22 @@
     padding: var(--space-medium);
 
     text-align: center;
+}
+
+.validation-banner__anchor {
+    display: block;
+    padding: var(--space-smaller);
+
+    text-align: center;
+
+    background-color: var(--color-purple-1);
+}
+
+.validation-banner__anchor:hover,
+.validation-banner__anchor:focus {
+    color: var(--color-purple-6);
+}
+
+.validation-banner__anchor:focus {
+    outline-color: var(--color-purple-4);
 }

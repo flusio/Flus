@@ -128,6 +128,7 @@ class Application
             'current_user' => $current_user,
             'styles' => [],
             'javascript_configuration' => json_encode(include_once('utils/javascript_configuration.php')),
+            'banner' => true,
         ]);
 
         return $response;

@@ -68,6 +68,8 @@
 
     --font-family-text: "Open Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", "sans-serif";
     --font-family-title: "Comfortaa", "cursive";
+
+    --content-width: 1000px;
 }
 
 @media (min-width: 48em) {

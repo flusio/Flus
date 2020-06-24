@@ -29,6 +29,14 @@
 
     <body>
         <div class="layout">
+            <?php if ($current_user && !$current_user->validated_at && $banner): ?>
+                <div class="validation-banner">
+                    <a class="validation-banner__anchor anchor--discreet" href="<?= url('registration validation') ?>">
+                        <?= _('You must validate your registration&nbsp;→') ?>
+                    </a>
+                </div>
+            <?php endif; ?>
+
             <header class="layout__header header">
                 <nav class="header__container">
                     <?php if (!$current_user): ?>

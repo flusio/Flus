@@ -1,3 +1,7 @@
+.form--centered {
+    text-align: center;
+}
+
 label {
     display: block;
     margin-bottom: var(--space-medium);
