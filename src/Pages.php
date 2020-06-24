@@ -24,9 +24,9 @@ class Pages
     {
         if (utils\CurrentUser::get()) {
             return Response::redirect('bookmarks');
+        } else {
+            return Response::redirect('login');
         }
-
-        return Response::ok('pages/home.phtml');
     }
 
     /**

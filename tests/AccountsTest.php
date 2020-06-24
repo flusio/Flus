@@ -44,7 +44,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdeletion');
     }
 
-    public function testDeleteRedirectsToTheHomePageAndDeletesTheUser()
+    public function testDeleteRedirectsToLoginAndDeletesTheUser()
     {
         $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
@@ -59,7 +59,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponse($response, 302, '/login');
         $this->assertFlash('status', 'user_deleted');
         $this->assertNull($user_dao->find($user->id));
         $this->assertNull(utils\CurrentUser::get());

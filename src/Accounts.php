@@ -56,7 +56,7 @@ class Accounts
      *
      * @response 302 /login?redirect_to=/account/deletion if the user is not connected
      * @response 400 if CSRF token or password is wrong
-     * @response 302 /
+     * @response 302 /login
      *
      * @param \Minz\Request $request
      *
@@ -91,6 +91,6 @@ class Accounts
         $user_dao->delete($current_user->id);
         utils\CurrentUser::reset();
         utils\Flash::set('status', 'user_deleted');
-        return Response::redirect('home');
+        return Response::redirect('login');
     }
 }

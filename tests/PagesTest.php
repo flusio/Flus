@@ -9,12 +9,11 @@ class PagesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testHomeRendersCorrectly()
+    public function testHomeRedirectsToLoginIfNotConnected()
     {
         $response = $this->appRun('GET', '/');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'pages/home.phtml');
+        $this->assertResponse($response, 302, '/login');
     }
 
     public function testHomeRedirectsToBookmarksIfConnected()

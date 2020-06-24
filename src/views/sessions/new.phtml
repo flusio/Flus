@@ -9,6 +9,12 @@
         <h1><?= _('Log in') ?></h1>
     </div>
 
+    <?php if ($status === 'user_deleted'): ?>
+        <p class="paragraph--featured">
+            <?= _('Your account and your data are now deleted.') ?>
+        </p>
+    <?php endif; ?>
+
     <form method="post" action="<?= url('create session') ?>">
         <?php if ($error): ?>
             <p class="form__error">
