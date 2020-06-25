@@ -1,3 +1,5 @@
 # Changelog of flusio
 
-There’s nothing to see here, the first version didn't get released yet!
+## 2020-06-25 - v0.1
+
+First version
