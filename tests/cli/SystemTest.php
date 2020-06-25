@@ -25,6 +25,15 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         \Minz\Database::drop();
     }
 
+    public function testSecret()
+    {
+        $response = $this->appRun('cli', '/system/secret');
+
+        $this->assertResponse($response, 200);
+        $output = trim($response->render());
+        $this->assertTrue(strlen($output) >= 128);
+    }
+
     public function testSetupWhenFirstTime()
     {
         $migration_file = \Minz\Configuration::$data_path . '/migrations_version.txt';

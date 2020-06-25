@@ -18,11 +18,23 @@ class System
         $usage .= 'REQUEST can be one of the following:' . "\n";
         $usage .= '  /                 Show this help' . "\n";
         $usage .= '  /database/status  Return the status of the DB connection' . "\n";
+        $usage .= '  /system/secret    Generate a secure key to be used as APP_SECRET_KEY' . "\n";
         $usage .= '  /system/setup     Initialize or update the system' . "\n";
         $usage .= '  /users/clean      Clean not validated users created NUMBER months ago' . "\n";
         $usage .= '      [-psince=NUMBER] where NUMBER is the number of months, greater than 0 (default is 1)';
 
         return Response::text(200, $usage);
+    }
+
+    /**
+     * Output a secured key.
+     *
+     * @return \Minz\Response
+     */
+    public function secret()
+    {
+        $secret = bin2hex(random_bytes(64));
+        return Response::text(200, $secret);
     }
 
     /**

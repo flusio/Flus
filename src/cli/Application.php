@@ -21,6 +21,7 @@ class Application
         // Initialize the routes
         $router = new \Minz\Router();
         $router->addRoute('cli', '/', 'cli/System#usage');
+        $router->addRoute('cli', '/system/secret', 'cli/System#secret');
         $router->addRoute('cli', '/system/setup', 'cli/System#setup');
         $router->addRoute('cli', '/database/status', 'cli/Database#status');
         $router->addRoute('cli', '/users/clean', 'cli/Users#clean');
