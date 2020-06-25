@@ -3,7 +3,8 @@
   "license": "AGPL-3.0-or-later",
   "repository": "github:flusio/flusio",
   "scripts": {
-    "watch": "parcel watch --no-hmr --dist-dir public/static src/assets/*/application.* src/assets/stylesheets/design.css",
+    "watch": "parcel watch --no-hmr --dist-dir public/dev_assets src/assets/*/application.* src/assets/stylesheets/design.css",
+    "build": "parcel build --dist-dir public/assets src/assets/*/application.* src/assets/stylesheets/design.css",
     "lint-js": "eslint src/assets/javascripts/",
     "lint-js-fix": "eslint --fix src/assets/javascripts/",
     "lint-css": "stylelint src/assets/stylesheets/**/*.css",

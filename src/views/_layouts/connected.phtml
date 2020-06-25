@@ -10,15 +10,15 @@
         <?php endif; ?>
         <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
 
-        <link rel="stylesheet" href="<?= url_static('stylesheets/application.css') ?>" data-turbolinks-track="reload">
+        <link rel="stylesheet" href="<?= url_asset('stylesheets/application.css') ?>" data-turbolinks-track="reload">
         <?php foreach ($styles as $style_name): ?>
-            <link rel="stylesheet" href="<?= url_static("stylesheets/{$style_name}.css") ?>" data-turbolinks-track="reload">
+            <link rel="stylesheet" href="<?= url_asset("stylesheets/{$style_name}.css") ?>" data-turbolinks-track="reload">
         <?php endforeach; ?>
 
         <script id="javascript-configuration" type="application/json">
             <?= $this->safe('javascript_configuration') ?>
         </script>
-        <script src="<?= url_static('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
+        <script src="<?= url_asset('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
 
         <title><?= $title ?></title>
     </head>

@@ -7,6 +7,4 @@
 /data/*
 !/data/.keep
 
-/public/static/*
-!/public/static/.keep
-!/public/static/favicon-32px.png
+/public/dev_assets
