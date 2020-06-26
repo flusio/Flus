@@ -47,6 +47,8 @@
                 <?= _('Please wait while we’re fetching link information.') ?>
             </p>
 
+            <div class="spinner"></div>
+
             <form
                  method="post"
                  action="<?= url('fetch link', ['id' => $link->id]) ?>"
