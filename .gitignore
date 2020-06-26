@@ -4,6 +4,8 @@
 /.parcel-cache
 /coverage
 
+/cache/*
+!/cache/.keep
 /data/*
 !/data/.keep
 

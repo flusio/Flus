@@ -11,6 +11,17 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
+    /**
+     * @before
+     */
+    public function emptyCachePath()
+    {
+        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
+    }
+
     public function testShowRendersCorrectly()
     {
         $faker = \Faker\Factory::create();
@@ -640,6 +651,58 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $db_link = $link_dao->find($link_id);
         $this->assertSame($expected_title, $db_link['title']);
         $this->assertSame(200, $db_link['fetched_code']);
+    }
+
+    public function testFetchSavesResponseInCache()
+    {
+        $user = $this->login();
+        $url = 'https://github.com/flusio/flusio';
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+            'title' => $url,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $hash = \SpiderBits\Cache::hash($url);
+        $cache_filepath = \Minz\Configuration::$application['cache_path'] . '/' . $hash;
+        $this->assertTrue(file_exists($cache_filepath));
+    }
+
+    public function testFetchUsesCache()
+    {
+        $link_dao = new models\dao\Link();
+
+        $user = $this->login();
+        $url = 'https://github.com/flusio/flusio';
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+            'title' => $url,
+        ]);
+        $expected_title = 'The foo bar baz';
+        $hash = \SpiderBits\Cache::hash($url);
+        $raw_response = <<<TEXT
+        HTTP/2 200 OK
+
+        <html>
+            <head>
+                <title>{$expected_title}</title>
+            </head>
+        </html>
+        TEXT;
+        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $cache->save($hash, $raw_response);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $db_link = $link_dao->find($link_id);
+        $this->assertSame($expected_title, $db_link['title']);
     }
 
     public function testFetchDoesNotChangeTitleIfUnreachable()

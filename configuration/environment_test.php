@@ -5,7 +5,11 @@ $db_port = intval($dotenv->pop('DB_PORT', '5432'));
 $db_name = 'flusio_test';
 
 $temporary_directory = sys_get_temp_dir() . '/flusio/' . bin2hex(random_bytes(6));
+$data_directory = $temporary_directory . '/data';
+$cache_directory = $temporary_directory . '/cache';
 @mkdir($temporary_directory, 0777, true);
+@mkdir($data_directory, 0777, true);
+@mkdir($cache_directory, 0777, true);
 
 return [
     'app_name' => 'flusio',
@@ -19,6 +23,10 @@ return [
         'protocol' => 'https',
     ],
 
+    'application' => [
+        'cache_path' => $cache_directory,
+    ],
+
     'database' => [
         'dsn' => "pgsql:host={$db_host};port={$db_port};dbname={$db_name}",
         'username' => $dotenv->pop('DB_USERNAME'),
@@ -30,6 +38,6 @@ return [
         'from' => 'root@localhost',
     ],
 
-    'data_path' => $temporary_directory,
+    'data_path' => $data_directory,
     'no_syslog' => !getenv('APP_SYSLOG_ENABLED'),
 ];

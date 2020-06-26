@@ -333,11 +333,22 @@ class Links
             ]);
         }
 
-        $http = new \SpiderBits\Http();
-        $http->user_agent = 'flusio/0.0.1 (' . PHP_OS . '; https://github.com/flusio/flusio)';
-        $http->timeout = 5;
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
+        $url_hash = \SpiderBits\Cache::hash($link->url);
+        $cached_response = $cache->get($url_hash);
 
-        $response = $http->get($link->url);
+        if ($cached_response) {
+            $response = \SpiderBits\Response::fromText($cached_response);
+        } else {
+            $http = new \SpiderBits\Http();
+            $http->user_agent = 'flusio/0.0.1 (' . PHP_OS . '; https://github.com/flusio/flusio)';
+            $http->timeout = 5;
+            $response = $http->get($link->url);
+
+            $cache->save($url_hash, (string)$response);
+        }
+
         if ($response->success) {
             $dom = \SpiderBits\Dom::fromText($response->data);
             $title = \SpiderBits\DomExtractor::title($dom);
