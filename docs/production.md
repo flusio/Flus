@@ -63,8 +63,6 @@ don’t have an address to send emails, just set `APP_MAILER` to `mail` and
 `SMTP_FROM` with an address corresponding to your domain. The other lines can
 be commented or deleted. This is not recommended though.
 
-The final `SEED` variable can be deleted and is not used in production.
-
 ## Set files permissions
 
 You should set the owner of the files to the user that runs Nginx. This is
