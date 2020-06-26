@@ -17,6 +17,10 @@
     text-transform: lowercase;
 }
 
+.section__title--nolowercase {
+    text-transform: none;
+}
+
 .section__title h1 {
     display: inline-block;
     margin-top: 0;
