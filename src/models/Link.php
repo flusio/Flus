@@ -95,7 +95,7 @@ class Link extends \Minz\Model
     public function host()
     {
         $parsed_url = parse_url($this->url);
-        return $parsed_url['host'];
+        return idn_to_utf8($parsed_url['host'], IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
     }
 
     /**
