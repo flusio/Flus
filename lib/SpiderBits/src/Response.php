@@ -24,6 +24,34 @@ class Response
     public $success;
 
     /**
+     * Construct a Response from a raw string
+     *
+     * @param string $raw_response
+     *
+     * @return \SpiderBits\Response
+     */
+    public static function fromText($raw_response)
+    {
+        $result = preg_match('/^(?P<headers>.+?)\R\R(?P<body>.+)?$/sm', $raw_response, $matches);
+        if (!$result) {
+            $headers = $raw_response;
+            $body = '';
+        } else {
+            $headers = $matches['headers'];
+            $body = $matches['body'];
+        }
+
+        preg_match('/^HTTP\/\d+(\.\d+)?\s+(?P<status>\d{3}).*$/m', $headers, $matches);
+        if (isset($matches['status'])) {
+            $status = intval($matches['status']);
+        } else {
+            $status = 0;
+        }
+
+        return new self($status, $body, $headers);
+    }
+
+    /**
      * @param integer $status
      * @param string $data
      * @param string $raw_headers
@@ -32,9 +60,20 @@ class Response
     {
         $this->status = $status;
         $this->data = $data;
-        $this->raw_headers = $raw_headers;
-        $this->headers = $this->parseHeaders($raw_headers);
+        $this->raw_headers = trim($raw_headers);
+        $this->headers = self::parseHeaders($this->raw_headers);
         $this->success = $status >= 200 && $status < 300;
+    }
+
+    /**
+     * Return the Response as a string which can be parsed by the fromText()
+     * method.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->raw_headers . "\r\n\r\n" . $this->data;
     }
 
     /**
@@ -50,10 +89,10 @@ class Response
      *
      * @return string[]
      */
-    private function parseHeaders($raw_headers)
+    public static function parseHeaders($raw_headers)
     {
         $headers = [];
-        foreach (explode("\r\n", $raw_headers) as $raw_field) {
+        foreach (preg_split('/\R/', $raw_headers) as $raw_field) {
             $exploded_field = explode(':', $raw_field, 2);
             if (count($exploded_field) < 2) {
                 // this is most probably the status-line or an empty line
@@ -63,7 +102,7 @@ class Response
             $field_name = strtolower($exploded_field[0]);
             $field_content = trim($exploded_field[1]);
             if (isset($headers[$field_name])) {
-                $headers[$field_name] .= ',' . $field_content;
+                $headers[$field_name] .= ', ' . $field_content;
             } else {
                 $headers[$field_name] = $field_content;
             }
