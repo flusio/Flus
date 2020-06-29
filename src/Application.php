@@ -116,7 +116,10 @@ class Application
         $error = utils\Flash::pop('error');
         $status = utils\Flash::pop('status');
 
-        $response = $this->engine->run($request);
+        $response = $this->engine->run($request, [
+            'not_found_view_pointer' => 'not_found.phtml',
+            'internal_server_error_view_pointer' => 'internal_server_error.phtml',
+        ]);
 
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
