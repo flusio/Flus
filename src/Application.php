@@ -108,7 +108,8 @@ class Application
         } elseif (isset($_SESSION['locale'])) {
             $locale = $_SESSION['locale'];
         } else {
-            $locale = utils\Locale::DEFAULT_LOCALE;
+            $http_accept_language = $request->header('HTTP_ACCEPT_LANGUAGE');
+            $locale = utils\Locale::best($http_accept_language);
         }
         utils\Locale::setCurrentLocale($locale);
 

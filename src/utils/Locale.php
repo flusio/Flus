@@ -75,4 +75,73 @@ class Locale
         }
         return $locales;
     }
+
+    /**
+     * Return the most adequate locale based on the http Accept-Language header.
+     *
+     * @see https://tools.ietf.org/html/rfc7231#section-5.3.5
+     *
+     * @param string $http_accept_language an Accept-Language header value as
+     *                                     defined in RFC7231
+     *
+     * @return string
+     */
+    public static function best($http_accept_language)
+    {
+        // We start by parsing the HTTP Accept-Language header
+        $result = preg_match_all(
+            '/(?P<language>[\w-]+)(\s*;\s*[qQ]\s*=\s*(?P<weight>[01](\.\d{1,3})?))?/',
+            $http_accept_language,
+            $matches
+        );
+
+        if (!$result) {
+            // No results? Stop here and return the default locale
+            return self::DEFAULT_LOCALE;
+        }
+
+        // We now need to sort the accepted languages by their weight
+        $languages = $matches['language'];
+        $weights = array_map(function ($weight) {
+            if ($weight === '') {
+                return 1.0;
+            } else {
+                return floatval($weight);
+            }
+        }, $matches['weight']);
+        $matches = array_combine($languages, $weights);
+        arsort($matches);
+
+        // We create a lookup array to facilitate the following manipulations.
+        // This array is composed of available lowercased locales, and parts
+        // before the underscore (so for fr_FR, the array will contain fr_fr
+        // and fr).
+        $available_locales = self::availableLocales();
+        $lookup_locales = [];
+        foreach ($available_locales as $locale => $name) {
+            $lower_locale = strtolower($locale);
+            $lookup_locales[$lower_locale] = $locale;
+
+            $splitted_locale = explode('_', $lower_locale, 2);
+            if (count($splitted_locale) > 1) {
+                $lookup_locales[$splitted_locale[0]] = $locale;
+            }
+        }
+
+        // Finally, we try to find our sorted language in the lookup array
+        foreach ($matches as $language => $weight) {
+            $locale = strtolower(str_replace('-', '_', $language));
+            if (isset($lookup_locales[$locale])) {
+                return $lookup_locales[$locale];
+            }
+
+            $splitted_locale = explode('_', $locale, 2);
+            if (count($splitted_locale) > 1 && isset($lookup_locales[$splitted_locale[0]])) {
+                return $lookup_locales[$splitted_locale[0]];
+            }
+        }
+
+        // Still nothing? Return the default locale
+        return self::DEFAULT_LOCALE;
+    }
 }
