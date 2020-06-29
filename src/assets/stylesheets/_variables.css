@@ -43,6 +43,7 @@
 
     --color-text: var(--color-purple-9);
     --color-text-secondary: var(--color-grey-7);
+    --color-text-success: var(--color-turquoise-8);
     --color-text-error: var(--color-red-8);
     --color-link: var(--color-purple-6);
     --color-body: var(--color-white);

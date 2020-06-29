@@ -8,6 +8,16 @@
     text-align: center;
 }
 
+.paragraph--success {
+    margin-top: var(--space-larger);
+    margin-bottom: var(--space-larger);
+
+    color: var(--color-text-success);
+    font-size: var(--size-large);
+    font-weight: 600;
+    text-align: center;
+}
+
 .paragraph--secondary {
     color: var(--color-text-secondary);
 }
