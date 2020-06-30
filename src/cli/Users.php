@@ -14,6 +14,45 @@ use flusio\models;
 class Users
 {
     /**
+     * Create a user.
+     *
+     * @request_param username
+     * @request_param email
+     * @request_param password
+     *
+     * @response 400 if one of the param is invalid
+     * @response 200
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function create($request)
+    {
+        $user_dao = new models\dao\User();
+        $collection_dao = new models\dao\Collection();
+        $username = $request->param('username');
+        $email = $request->param('email');
+        $password = $request->param('password');
+
+        $user = models\User::init($username, $email, $password);
+        $user->validated_at = \Minz\Time::now();
+
+        $errors = $user->validate();
+        if ($errors) {
+            $errors = implode(' ', $errors);
+            return Response::text(400, "User creation failed: {$errors}");
+        }
+
+        $user_id = $user_dao->save($user);
+
+        $bookmarks_collection = models\Collection::initBookmarks($user_id);
+        $collection_dao->save($bookmarks_collection);
+
+        return Response::text(200, "User {$user->username} ({$user->email}) has been created.");
+    }
+
+    /**
      * Clean not validated users created some months ago.
      *
      * @request_param integer since Number of months since the creation, default is 1

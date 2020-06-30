@@ -20,6 +20,10 @@ class System
         $usage .= '  /database/status  Return the status of the DB connection' . "\n";
         $usage .= '  /system/secret    Generate a secure key to be used as APP_SECRET_KEY' . "\n";
         $usage .= '  /system/setup     Initialize or update the system' . "\n";
+        $usage .= '  /users/create     Create a user' . "\n";
+        $usage .= '      -pusername=USERNAME where USERNAME is a 50-chars max string' . "\n";
+        $usage .= '      -pemail=EMAIL' . "\n";
+        $usage .= '      -ppassword=PASSWORD' . "\n";
         $usage .= '  /users/clean      Clean not validated users created NUMBER months ago' . "\n";
         $usage .= '      [-psince=NUMBER] where NUMBER is the number of months, greater than 0 (default is 1)';
 
