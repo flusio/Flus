@@ -51,8 +51,14 @@ update: setup ## Update the application
 
 .PHONY: reset
 reset: ## Reset the database
-	rm data/migrations_version.txt
+	rm data/migrations_version.txt || true
 	$(PHP) ./cli --request /system/setup
+
+.PHONY: reset-demo
+reset-demo: ## Reset the database and create a demo user
+	rm data/migrations_version.txt || true
+	$(PHP) ./cli --request /system/setup
+	$(PHP) ./cli --request /users/create -pusername=Abby -pemail=demo@flus.io -ppassword=demo
 
 .PHONY: test
 test: ## Run the test suite

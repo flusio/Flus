@@ -40,6 +40,16 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/about');
     }
 
+    public function testNewShowsDemoCredentialsIfDemo()
+    {
+        \Minz\Configuration::$application['demo'] = true;
+
+        $response = $this->appRun('get', '/login');
+
+        \Minz\Configuration::$application['demo'] = false;
+        $this->assertResponse($response, 200, 'demo@flus.io');
+    }
+
     public function testCreateLogsTheUserInAndRedirectToHome()
     {
         $faker = \Faker\Factory::create();

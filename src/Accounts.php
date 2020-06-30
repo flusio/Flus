@@ -127,6 +127,7 @@ class Accounts
      *
      * @response 302 /login?redirect_to=/account/deletion if the user is not connected
      * @response 400 if CSRF token or password is wrong
+     * @response 400 if trying to delete the demo account if demo is enabled
      * @response 302 /login
      *
      * @param \Minz\Request $request
@@ -155,6 +156,13 @@ class Accounts
                 'errors' => [
                     'password_hash' => _('The password is incorrect.'),
                 ],
+            ]);
+        }
+
+        $demo = \Minz\Configuration::$application['demo'];
+        if ($demo && $current_user->email === 'demo@flus.io') {
+            return Response::badRequest('accounts/deletion.phtml', [
+                'error' => _('Sorry but you cannot delete the demo account 😉'),
             ]);
         }
 

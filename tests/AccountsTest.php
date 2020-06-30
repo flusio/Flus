@@ -306,4 +306,26 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 400, 'A security verification failed');
         $this->assertNotNull($user_dao->find($user->id));
     }
+
+    public function testDeleteFailsIfTryingToDeleteDemoAccount()
+    {
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+        \Minz\Configuration::$application['demo'] = true;
+
+        $password = $faker->password;
+        $user = $this->login([
+            'email' => 'demo@flus.io',
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+        ]);
+
+        $response = $this->appRun('post', '/account/deletion', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'password' => $password,
+        ]);
+
+        \Minz\Configuration::$application['demo'] = false;
+        $this->assertResponse($response, 400, 'Sorry but you cannot delete the demo account 😉');
+        $this->assertNotNull($user_dao->find($user->id));
+    }
 }

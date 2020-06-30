@@ -192,10 +192,11 @@ You can find more information on Browscap at [php.net/browscap](https://php.net/
 If you need to configure a demo server (this is probably NOT the case), you can
 simply set the `APP_DEMO` variable to `true` in the `.env` file. It will add a
 banner at the top of the screen to warn users that data are reset every night.
-The reset itself can be done with the following command:
+It will also consider the account with the `demo@flus.io` email as the demo
+account. The reset itself can be done with the following command:
 
 ```console
-flusio# rm data/migrations_version.txt && php ./cli --request /system/setup
-flusio# # OR via make
-flusio# NO_DOCKER=true make reset
+flusio# make reset-demo NO_DOCKER=true
 ```
+
+It can be configured via a cron job.

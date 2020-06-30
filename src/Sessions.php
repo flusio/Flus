@@ -31,9 +31,17 @@ class Sessions
             return Response::found($redirect_to);
         }
 
+        $email = '';
+        $password = '';
+
+        if (\Minz\Configuration::$application['demo']) {
+            $email = 'demo@flus.io';
+            $password = 'demo';
+        }
+
         return Response::ok('sessions/new.phtml', [
-            'email' => '',
-            'password' => '',
+            'email' => $email,
+            'password' => $password,
             'redirect_to' => $redirect_to,
         ]);
     }
