@@ -14,7 +14,7 @@ services:
             - ..:/var/www/html:z
             - composer:/tmp
         environment:
-            SEED: $SEED
+            - SEED
         user: $USER
         links:
             - database
