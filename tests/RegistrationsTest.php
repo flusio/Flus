@@ -29,6 +29,16 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/');
     }
 
+    public function testNewRedirectsToLoginIfRegistrationsAreClosed()
+    {
+        \Minz\Configuration::$application['registrations_opened'] = false;
+
+        $response = $this->appRun('get', '/registration');
+
+        \Minz\Configuration::$application['registrations_opened'] = true;
+        $this->assertResponse($response, 302, '/login');
+    }
+
     public function testCreateCreatesAUserAndRedirects()
     {
         $faker = \Faker\Factory::create();
@@ -159,6 +169,24 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $user = utils\CurrentUser::get();
         $this->assertSame('bookmarks', $db_collection['type']);
         $this->assertSame($user->id, $db_collection['user_id']);
+    }
+
+    public function testCreateRedirectsIfRegistrationsAreClosed()
+    {
+        \Minz\Configuration::$application['registrations_opened'] = false;
+        $faker = \Faker\Factory::create();
+        $user_dao = new models\dao\User();
+
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $faker->name,
+            'email' => $faker->email,
+            'password' => $faker->password,
+        ]);
+
+        \Minz\Configuration::$application['registrations_opened'] = true;
+        $this->assertResponse($response, 302, '/login');
+        $this->assertSame(0, $user_dao->count());
     }
 
     public function testCreateFailsIfCsrfIsWrong()

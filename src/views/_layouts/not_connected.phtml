@@ -41,9 +41,11 @@
 
                     <div class="header__separator"></div>
 
-                    <a class="header__link" href="<?= url('registration') ?>">
-                        <?= _('Sign up') ?>
-                    </a>
+                    <?php if ($registrations_opened): ?>
+                        <a class="header__link" href="<?= url('registration') ?>">
+                            <?= _('Sign up') ?>
+                        </a>
+                    <?php endif; ?>
 
                     <form
                         class="header__locale-form"

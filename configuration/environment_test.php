@@ -26,6 +26,7 @@ return [
     'application' => [
         'cache_path' => $cache_directory,
         'demo' => false,
+        'registrations_opened' => true,
     ],
 
     'database' => [

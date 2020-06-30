@@ -82,9 +82,11 @@
                 <?= _('Login') ?>
             </button>
 
-            <a href="<?= url('registration') ?>">
-                <?= _('No account yet? Sign up') ?>
-            </a>
+            <?php if ($registrations_opened): ?>
+                <a href="<?= url('registration') ?>">
+                    <?= _('No account yet? Sign up') ?>
+                </a>
+            <?php endif; ?>
         </div>
     </form>
 </div>

@@ -16,6 +16,7 @@ class Registrations
      * Show the registration form.
      *
      * @response 302 / if connected
+     * @response 302 /login if registrations are closed
      * @response 200
      *
      * @return \Minz\Response
@@ -24,6 +25,10 @@ class Registrations
     {
         if (utils\CurrentUser::get()) {
             return Response::redirect('home');
+        }
+
+        if (!\Minz\Configuration::$application['registrations_opened']) {
+            return Response::redirect('login');
         }
 
         return Response::ok('registrations/new.phtml', [
@@ -41,6 +46,8 @@ class Registrations
      * @request_param string username
      * @request_param string password
      *
+     * @response 302 / if already connected
+     * @response 302 /login if registrations are closed
      * @response 400 if CSRF token is wrong
      * @response 400 if email, username or password is missing/invalid
      * @response 400 if email already exists
@@ -54,6 +61,10 @@ class Registrations
     {
         if (utils\CurrentUser::get()) {
             return Response::redirect('home');
+        }
+
+        if (!\Minz\Configuration::$application['registrations_opened']) {
+            return Response::redirect('login');
         }
 
         $username = $request->param('username');

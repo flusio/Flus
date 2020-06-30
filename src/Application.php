@@ -136,6 +136,7 @@ class Application
             'javascript_configuration' => json_encode(include_once('utils/javascript_configuration.php')),
             'banner' => true,
             'demo' => \Minz\Configuration::$application['demo'],
+            'registrations_opened' => \Minz\Configuration::$application['registrations_opened'],
         ]);
 
         return $response;

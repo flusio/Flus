@@ -187,6 +187,18 @@ Don’t forget to restart PHP:
 
 You can find more information on Browscap at [php.net/browscap](https://php.net/browscap).
 
+## Bonus: Close the registrations
+
+You might want to setup a private instance of flusio. The registrations can be
+closed by setting the environment variable `APP_OPEN_REGISTRATIONS` to `false`.
+Thus, anonymous users will not be able to register. If you want to invite
+friends or family on your instance, you’ll have to create their account via the
+CLI:
+
+```console
+flusio# php ./cli --request /users/create -pusername=Abby -pemail=email@example.com -ppassword=secret
+```
+
 ## Bonus: Configure a demo server
 
 If you need to configure a demo server (this is probably NOT the case), you can
