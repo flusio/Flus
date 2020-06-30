@@ -100,6 +100,9 @@ class Application
      */
     public function run($request)
     {
+        if (!utils\CurrentUser::sessionToken()) {
+            utils\CurrentUser::setSessionToken($request->cookie('flusio_session_token'));
+        }
         $current_user = utils\CurrentUser::get();
 
         // Setup current localization

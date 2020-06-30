@@ -127,7 +127,11 @@ class Sessions
 
         utils\CurrentUser::setSessionToken($token->token);
 
-        return Response::found($redirect_to);
+        $response = Response::found($redirect_to);
+        $response->setCookie('flusio_session_token', $token->token, [
+            'expires' => $token->expired_at->getTimestamp(),
+        ]);
+        return $response;
     }
 
     /**
@@ -196,6 +200,8 @@ class Sessions
         $session_dao->delete($session->id);
         utils\CurrentUser::reset();
 
-        return Response::redirect('home');
+        $response = Response::redirect('home');
+        $response->removeCookie('flusio_session_token');
+        return $response;
     }
 }

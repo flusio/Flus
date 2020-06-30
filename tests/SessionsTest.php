@@ -74,6 +74,28 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user_id, $user->id);
     }
 
+    public function testCreateReturnsACookie()
+    {
+        $session_dao = new models\dao\Session();
+        $faker = \Faker\Factory::create();
+        $email = $faker->email;
+        $password = $faker->password;
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+        ]);
+
+        $response = $this->appRun('post', '/login', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'password' => $password,
+        ]);
+
+        $db_session = $session_dao->listAll()[0];
+        $cookie = $response->cookies()['flusio_session_token'];
+        $this->assertSame($db_session['token'], $cookie['value']);
+    }
+
     public function testCreateCreatesASessionValidForOneMonth()
     {
         $session_dao = new models\dao\Session();
@@ -260,6 +282,22 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/');
         $this->assertSame(0, $session_dao->count());
         $this->assertNull(\flusio\utils\CurrentUser::get());
+    }
+
+    public function testDeleteReturnsACookie()
+    {
+        $session_dao = new models\dao\Session();
+        $this->login();
+
+        $this->assertSame(1, $session_dao->count());
+
+        $response = $this->appRun('post', '/logout', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $cookie = $response->cookies()['flusio_session_token'];
+        $this->assertSame('', $cookie['value']);
+        $this->assertTrue($cookie['options']['expires'] < \Minz\Time::now()->getTimestamp());
     }
 
     public function testDeleteRedirectsToHomeIfNotConnected()

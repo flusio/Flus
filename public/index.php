@@ -18,8 +18,11 @@ $request_method = strtolower($_SERVER['REQUEST_METHOD']);
 $http_method = $request_method === 'head' ? 'get' : $request_method;
 $http_uri = $_SERVER['REQUEST_URI'];
 $http_parameters = array_merge($_GET, $_POST);
+$headers = array_merge($_SERVER, [
+    'COOKIE' => $_COOKIE,
+]);
 
-$request = new \Minz\Request($http_method, $http_uri, $http_parameters, $_SERVER);
+$request = new \Minz\Request($http_method, $http_uri, $http_parameters, $headers);
 
 // In development mode, all the requests are redirected to this file. However,
 // if the file exists, we want to serve it as-is, which is done by returning
@@ -40,8 +43,13 @@ $application = new \flusio\Application();
 $response = $application->run($request);
 $response->setHeader('Turbolinks-Location', $http_uri);
 
-// Generate the HTTP headers and output
+// Generate the HTTP headers, cookies and output
 http_response_code($response->code());
+
+foreach ($response->cookies() as $cookie) {
+    setcookie($cookie['name'], $cookie['value'], $cookie['options']);
+}
+
 foreach ($response->headers() as $header) {
     header($header);
 }
