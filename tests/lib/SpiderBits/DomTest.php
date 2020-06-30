@@ -15,6 +15,17 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Hello World!', $text);
     }
 
+    public function testTextWithMixOfHtmlEntitiesAndUtf8()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <title>Site d&#039;information français</title>
+        HTML);
+
+        $text = $dom->text();
+
+        $this->assertSame("Site d'information français", $text);
+    }
+
     public function testSelect()
     {
         $dom = Dom::fromText(<<<HTML

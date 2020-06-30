@@ -29,7 +29,7 @@ class Dom
     public static function fromText($html_as_string)
     {
         $dom = new \DOMDocument();
-        @$dom->loadHTML($html_as_string);
+        @$dom->loadHTML(mb_convert_encoding($html_as_string, 'HTML-ENTITIES', 'UTF-8'));
         return new self($dom);
     }
 
