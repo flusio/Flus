@@ -1,6 +1,5 @@
 .section {
     margin-bottom: var(--space-larger);
-    padding: var(--space-small);
 }
 
 .section__title {

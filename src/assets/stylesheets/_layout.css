@@ -1,7 +1,6 @@
 .layout__header {
     max-width: var(--content-width);
     margin-right: auto;
-    margin-bottom: var(--space-medium);
     margin-left: auto;
 }
 

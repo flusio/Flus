@@ -70,7 +70,7 @@ select:focus {
 }
 
 .form-group {
-    margin-bottom: var(--space-large);
+    margin-bottom: var(--space-medium);
 }
 
 .form-group__stack {
