@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-06-26 10:27+0200\n"
-"PO-Revision-Date: 2020-06-26 10:27+0200\n"
+"POT-Creation-Date: 2020-07-01 11:05+0200\n"
+"PO-Revision-Date: 2020-07-01 11:05+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,16 +15,20 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Accounts.php:69 Accounts.php:148 Links.php:92 Links.php:233
-#: Registrations.php:73 Registrations.php:237 Sessions.php:74
+#: Accounts.php:69 Accounts.php:149 Links.php:92 Links.php:233
+#: Registrations.php:84 Registrations.php:248 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: Accounts.php:156 Sessions.php:103
+#: Accounts.php:157 Sessions.php:111
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
+
+#: Accounts.php:165
+msgid "Sorry but you cannot delete the demo account 😉"
+msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
 #: Collections.php:44
 msgid ""
@@ -42,27 +46,27 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: Links.php:332 Links.php:407 Sessions.php:179
+#: Links.php:332 Links.php:418 Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: Links.php:401
+#: Links.php:412
 msgid "This link-collection relation doesn’t exist."
 msgstr "La relation lien-collection n’existe pas."
 
-#: Registrations.php:96
+#: Registrations.php:107
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:171 Registrations.php:185
+#: Registrations.php:182 Registrations.php:196
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: Registrations.php:178
+#: Registrations.php:189
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: Sessions.php:91
+#: Sessions.php:99
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
@@ -175,20 +179,20 @@ msgstr "Se déconnecter"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:45 views/registrations/new.phtml:3
+#: views/_layouts/not_connected.phtml:46 views/registrations/new.phtml:3
 #: views/registrations/new.phtml:9 views/registrations/new.phtml:108
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:62
+#: views/_layouts/not_connected.phtml:64
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:79
+#: views/_layouts/not_connected.phtml:81
 msgid "Change"
 msgstr "Changer"
 
-#: views/_layouts/not_connected.phtml:92
+#: views/_layouts/not_connected.phtml:94
 msgid "About flusio"
 msgstr "À propos de flusio"
 
@@ -334,13 +338,13 @@ msgstr "Tout est bon, voir le lien"
 msgid "Let’s change this title"
 msgstr "Changeons ce titre"
 
-#: views/links/show_fetch.phtml:42 views/links/show_fetch.phtml:57
+#: views/links/show_fetch.phtml:42 views/links/show_fetch.phtml:59
 msgid "Fetch link information"
 msgstr "Récupérer les informations du lien"
 
 #: views/links/show_fetch.phtml:47
-msgid "Please wait while we’re fetching link information."
-msgstr "Merci d’attendre pendant que nous récupérons les informations du lien."
+msgid "Please wait while we’re collecting information."
+msgstr "Merci de patienter pendant que nous recueillons les informations."
 
 #: views/links/show_update.phtml:3 views/links/show_update.phtml:10
 msgid "Link edition"
@@ -479,7 +483,7 @@ msgstr "Mot de passe"
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/sessions/new.phtml:86
+#: views/sessions/new.phtml:87
 msgid "No account yet? Sign up"
 msgstr "Pas encore de compte ? S’inscrire"
 
