@@ -1,0 +1,9 @@
+.illustration {
+    display: block;
+    margin: var(--space-larger) var(--space-large);
+}
+
+.illustration--centered {
+    margin-right: auto;
+    margin-left: auto;
+}

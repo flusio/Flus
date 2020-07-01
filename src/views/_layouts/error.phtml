@@ -24,6 +24,13 @@
             <main class="layout__content">
                 <?= $this->safe('content') ?>
 
+                <img
+                    class="illustration illustration--centered"
+                    alt=""
+                    src="<?= url_static('illustrations/not-found.svg') ?>"
+                    height="250"
+                />
+
                 <?php if ($environment !== 'production' && $error): ?>
                     <pre class="layout--error__box"><?= (string)$error ?></pre>
                 <?php endif; ?>
