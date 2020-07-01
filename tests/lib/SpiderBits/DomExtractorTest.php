@@ -131,4 +131,21 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('', $content);
     }
+
+    public function testContentStripsScripts()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <main>
+                This is main
+
+                <script>
+                    console.log('Hello!');
+                </script>
+            </main>
+        HTML);
+
+        $content = DomExtractor::content($dom);
+
+        $this->assertSame('This is main', $content);
+    }
 }

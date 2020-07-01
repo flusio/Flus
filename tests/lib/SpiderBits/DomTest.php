@@ -87,4 +87,53 @@ class DomTest extends \PHPUnit\Framework\TestCase
 
         $this->assertNull($selected);
     }
+
+    public function testRemove()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                    <p>Hello World!</p>
+                    <div>Hello You!</div>
+                </body>
+            </html>
+        HTML);
+
+        $dom->remove('//div');
+
+        $this->assertSame('Hello World!', $dom->text());
+    }
+
+    public function testRemoveRootNode()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                </body>
+            </html>
+        HTML);
+
+        $dom->remove('/html');
+
+        $this->assertSame('', $dom->text());
+    }
+
+    public function testRemoveDoesNotAlterInitialDomIfSelected()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                    <p>Hello World!</p>
+                    <div>Hello You!</div>
+                </body>
+            </html>
+        HTML);
+
+        $body = $dom->select('//body');
+        $body->remove('//div');
+
+        $this->assertStringContainsString('Hello World!', $dom->text());
+        $this->assertStringContainsString('Hello You!', $dom->text());
+        $this->assertSame('Hello World!', $body->text());
+    }
 }

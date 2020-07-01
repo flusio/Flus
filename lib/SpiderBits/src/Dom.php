@@ -45,18 +45,7 @@ class Dom
 
         $this->xpath_query = $xpath_query;
         if ($xpath_query) {
-            $dom_xpath = new \DomXPath($dom);
-            $nodes_selected = @$dom_xpath->query($xpath_query);
-
-            if ($nodes_selected === false) {
-                throw new \DomainException('XPath query is invalid');
-            }
-
-            if ($nodes_selected->length === 0) {
-                throw new \DomainException('XPath query matches no nodes');
-            }
-
-            $this->nodes_selected = $nodes_selected;
+            $this->nodes_selected = self::xpathQuery($this->dom, $this->xpath_query);
         }
     }
 
@@ -67,7 +56,7 @@ class Dom
      * Note the XPath query is relative to the current selection (i.e. it's
      * appended).
      *
-     * @param $string $xpath_query
+     * @param string $xpath_query
      *
      * @return \SpiderBits\Dom|null
      */
@@ -78,9 +67,33 @@ class Dom
         }
 
         try {
-            return new self($this->dom, $xpath_query);
+            $clone_dom = $this->dom->cloneNode(true);
+            return new self($clone_dom, $xpath_query);
         } catch (\DomainException $e) {
             return null;
+        }
+    }
+
+    /**
+     * Remove in the current Dom the nodes corresponding to the xpath query
+     *
+     * Note the XPath query is relative to the current selection (i.e. it's
+     * appended).
+     *
+     * @param string $xpath_query
+     */
+    public function remove($xpath_query)
+    {
+        if ($this->xpath_query) {
+            $xpath_query = $this->xpath_query . $xpath_query;
+        }
+
+        try {
+            $nodes_selected = self::xpathQuery($this->dom, $xpath_query);
+            foreach ($nodes_selected as $node) {
+                $node->parentNode->removeChild($node);
+            }
+        } catch (\DomainException $e) {
         }
     }
 
@@ -98,7 +111,33 @@ class Dom
             }
             return implode("\n", $texts);
         } else {
-            return $this->dom->textContent;
+            return trim($this->dom->textContent);
         }
+    }
+
+    /**
+     * Return a list of nodes corresponding to a xpath query
+     *
+     * @param \DOMDocument $dom
+     * @param string $xpath_query
+     *
+     * @throw \DomainException if the xpath is invalid or matches no nodes
+     *
+     * @return \DOMNodeList
+     */
+    private static function xpathQuery($dom, $xpath_query)
+    {
+        $dom_xpath = new \DomXPath($dom);
+        $nodes_selected = @$dom_xpath->query($xpath_query);
+
+        if ($nodes_selected === false) {
+            throw new \DomainException('XPath query is invalid');
+        }
+
+        if ($nodes_selected->length === 0) {
+            throw new \DomainException('XPath query matches no nodes');
+        }
+
+        return $nodes_selected;
     }
 }

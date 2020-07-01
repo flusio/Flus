@@ -37,19 +37,21 @@ class DomExtractor
     public static function content($dom)
     {
         $body = $dom->select('//body');
-        if ($body) {
-            $main = $body->select('//main');
-            if (!$main) {
-                $main = $body->select('//*[@id = "main"]');
-            }
-
-            if ($main) {
-                return $main->text();
-            } else {
-                return $body->text();
-            }
-        } else {
+        if (!$body) {
             return '';
         }
+
+        $main_node = $body->select('//main');
+        if (!$main_node) {
+            $main_node = $body->select('//*[@id = "main"]');
+        }
+
+        if (!$main_node) {
+            $main_node = $body;
+        }
+
+        $main_node->remove('//script');
+
+        return $main_node->text();
     }
 }
