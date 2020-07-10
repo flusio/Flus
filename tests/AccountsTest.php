@@ -5,6 +5,7 @@ namespace flusio;
 class AccountsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
+    use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
@@ -30,9 +31,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRendersCorrectlyAndSavesTheUser()
     {
-        $faker = \Faker\Factory::create();
-        $old_username = $faker->unique()->username;
-        $new_username = $faker->unique()->username;
+        $old_username = $this->fakeUnique('username');
+        $new_username = $this->fakeUnique('username');
         $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
@@ -53,14 +53,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateSetsTheCurrentLocale()
     {
-        $faker = \Faker\Factory::create();
         $this->login([
             'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/account', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->username,
+            'username' => $this->fake('username'),
             'locale' => 'fr_FR',
         ]);
 
@@ -69,10 +68,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsToLoginIfUserNotConnected()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
-        $old_username = $faker->unique()->username;
-        $new_username = $faker->unique()->username;
+        $old_username = $this->fakeUnique('username');
+        $new_username = $this->fakeUnique('username');
         $user_id = $this->create('user', [
             'username' => $old_username,
             'locale' => 'en_GB',
@@ -92,9 +90,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCsrfIsInvalid()
     {
-        $faker = \Faker\Factory::create();
-        $old_username = $faker->unique()->username;
-        $new_username = $faker->unique()->username;
+        $old_username = $this->fakeUnique('username');
+        $new_username = $this->fakeUnique('username');
         $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
@@ -114,9 +111,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfUsernameIsInvalid()
     {
-        $faker = \Faker\Factory::create();
-        $old_username = $faker->unique()->username;
-        $new_username = $faker->sentence(50, false);
+        $old_username = $this->fakeUnique('username');
+        $new_username = $this->fake('sentence', 50, false);
         $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
@@ -136,8 +132,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfUsernameIsMissing()
     {
-        $faker = \Faker\Factory::create();
-        $old_username = $faker->unique()->username;
+        $old_username = $this->fakeUnique('username');
         $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
@@ -156,9 +151,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfLocaleIsMissing()
     {
-        $faker = \Faker\Factory::create();
-        $old_username = $faker->unique()->username;
-        $new_username = $faker->unique()->username;
+        $old_username = $this->fakeUnique('username');
+        $new_username = $this->fakeUnique('username');
         $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
@@ -177,9 +171,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfLocaleIsInvalid()
     {
-        $faker = \Faker\Factory::create();
-        $old_username = $faker->unique()->username;
-        $new_username = $faker->unique()->username;
+        $old_username = $this->fakeUnique('username');
+        $new_username = $this->fakeUnique('username');
         $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
@@ -216,10 +209,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteRedirectsToLoginAndDeletesTheUser()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
-        $password = $faker->password;
+        $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
@@ -237,11 +229,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteRedirectsToLoginIfUserIsNotConnected()
     {
-        $faker = \Faker\Factory::create();
-
         $response = $this->appRun('post', '/account/deletion', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'password' => $faker->password,
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdeletion');
@@ -249,11 +239,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteDeletesSessionsAssociatedToTheUser()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
         $session_dao = new models\dao\Session();
 
-        $password = $faker->password;
+        $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
@@ -270,10 +259,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfPasswordIsIncorrect()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
-        $password = $faker->password;
+        $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
@@ -289,10 +277,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
-        $password = $faker->password;
+        $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
@@ -309,11 +296,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfTryingToDeleteDemoAccount()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
         \Minz\Configuration::$application['demo'] = true;
 
-        $password = $faker->password;
+        $password = $this->fake('password');
         $user = $this->login([
             'email' => 'demo@flus.io',
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),

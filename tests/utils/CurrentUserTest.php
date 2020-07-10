@@ -6,6 +6,7 @@ use flusio\models;
 
 class CurrentUserTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
 
@@ -28,8 +29,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetReturnsTheUser()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -54,8 +54,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetReturnsNullIfTheUserDoesNotExist()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -68,8 +67,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetReturnsNullIfTokenHasExpired()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::ago($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::ago($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -87,11 +85,10 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetReturnsNullIfTokenIsInvalidated()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'invalidated_at' => $faker->iso8601,
+            'invalidated_at' => $this->fake('iso8601'),
         ]);
         $user_id = $this->create('user');
         $this->create('session', [
@@ -107,8 +104,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetReturnsTheCorrectUserAfterChangingTheCurrentUser()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
 
         $token_1 = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -138,8 +134,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetReturnsNullEvenIfInstanceIsNotResetButSessionIs()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -160,8 +155,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDoesNotResetInstanceIfSessionChanges()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
 
         $token_1 = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -208,10 +202,9 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testReloadResetsInstanceAndGetUserFromDatabase()
     {
-        $faker = \Faker\Factory::create();
-        $old_username = $faker->unique()->username;
-        $new_username = $faker->unique()->username;
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $old_username = $this->fakeUnique('username');
+        $new_username = $this->fakeUnique('username');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);

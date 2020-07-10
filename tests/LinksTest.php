@@ -5,6 +5,7 @@ namespace flusio;
 class LinksTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
+    use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
@@ -24,12 +25,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectly()
     {
-        $faker = \Faker\Factory::create();
-        $title = $faker->words(3, true);
+        $title = $this->fake('words', 3, true);
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
             'title' => $title,
         ]);
 
@@ -54,12 +54,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfNotConnected()
     {
-        $faker = \Faker\Factory::create();
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $user_id,
-            'fetched_at' => $faker->iso8601,
-            'title' => $faker->words(3, true),
+            'fetched_at' => $this->fake('iso8601'),
+            'title' => $this->fake('words', 3, true),
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}");
@@ -69,7 +68,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfTheLinkDoesNotExist()
     {
-        $faker = \Faker\Factory::create();
         $user = $this->login();
 
         $response = $this->appRun('get', '/links/not-a-valid-id');
@@ -79,13 +77,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfUserDoesNotOwnTheLink()
     {
-        $faker = \Faker\Factory::create();
         $current_user = $this->login();
         $other_user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
-            'fetched_at' => $faker->iso8601,
-            'title' => $faker->words(3, true),
+            'fetched_at' => $this->fake('iso8601'),
+            'title' => $this->fake('words', 3, true),
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}");
@@ -95,7 +92,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddCreatesLinkAndRedirects()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
@@ -103,7 +99,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
-        $url = $faker->url;
+        $url = $this->fake('url');
 
         $this->assertSame(0, $link_dao->count());
         $this->assertSame(0, $links_to_collections_dao->count());
@@ -128,12 +124,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddDoesNotCreateLinkIfItExists()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
-        $url = $faker->url;
+        $url = $this->fake('url');
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
@@ -161,13 +156,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddCreatesLinkIfItExistsForAnotherUser()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
         $another_user_id = $this->create('user');
-        $url = $faker->url;
+        $url = $this->fake('url');
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
@@ -195,12 +189,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddHandlesMultipleCollections()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
-        $url = $faker->url;
+        $url = $this->fake('url');
         $collection_id_1 = $this->create('collection', [
             'user_id' => $user->id,
         ]);
@@ -236,7 +229,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFailsIfNotConnected()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
 
         $user_id = $this->create('user');
@@ -247,7 +239,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'from' => \Minz\Url::for('bookmarks'),
-            'url' => $faker->url,
+            'url' => $this->fake('url'),
             'collection_ids' => [$collection_id],
         ]);
 
@@ -257,7 +249,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFailsIfCsrfIsInvalid()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
@@ -269,7 +260,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/links', [
             'csrf' => 'not the token',
             'from' => \Minz\Url::for('bookmarks'),
-            'url' => $faker->url,
+            'url' => $this->fake('url'),
             'collection_ids' => [$collection_id],
         ]);
 
@@ -280,7 +271,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFailsIfUrlIsInvalid()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
 
         $user = $this->login();
@@ -291,7 +281,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'from' => \Minz\Url::for('bookmarks'),
-            'url' => 'ftp://' . $faker->domainName,
+            'url' => 'ftp://' . $this->fake('domainName'),
             'collection_ids' => [$collection_id],
         ]);
 
@@ -302,7 +292,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFailsIfUrlIsMissing()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
 
         $user = $this->login();
@@ -323,7 +312,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFailsIfCollectionDoesNotExist()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
 
         $user = $this->login();
@@ -331,7 +319,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'from' => \Minz\Url::for('bookmarks'),
-            'url' => $faker->url,
+            'url' => $this->fake('url'),
             'collection_ids' => ['does not exist'],
         ]);
 
@@ -342,7 +330,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFailsIfCollectionIsMissing()
     {
-        $faker = \Faker\Factory::create();
         $link_dao = new models\dao\Link();
 
         $user = $this->login();
@@ -350,7 +337,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/links', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'from' => \Minz\Url::for('bookmarks'),
-            'url' => $faker->url,
+            'url' => $this->fake('url'),
             'collection_ids' => [],
         ]);
 
@@ -361,11 +348,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowUpdateRendersCorrectly()
     {
-        $faker = \Faker\Factory::create();
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}/edit");
@@ -389,11 +375,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowUpdateFailsIfNotConnected()
     {
-        $faker = \Faker\Factory::create();
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $user_id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}/edit");
@@ -403,7 +388,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowUpdateFailsIfTheLinkDoesNotExist()
     {
-        $faker = \Faker\Factory::create();
         $user = $this->login();
 
         $response = $this->appRun('get', '/links/not-a-valid-id/edit');
@@ -413,12 +397,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowUpdateFailsIfUserDoesNotOwnTheLink()
     {
-        $faker = \Faker\Factory::create();
         $current_user = $this->login();
         $other_user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}/edit");
@@ -429,13 +412,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testUpdateChangesTheTitleAndRedirects()
     {
         $link_dao = new models\dao\Link();
-        $faker = \Faker\Factory::create();
-        $old_title = $faker->words(3, true);
-        $new_title = $faker->words(5, true);
+        $old_title = $this->fake('words', 3, true);
+        $new_title = $this->fake('words', 5, true);
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
         ]);
 
@@ -452,13 +434,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfCsrfIsInvalid()
     {
         $link_dao = new models\dao\Link();
-        $faker = \Faker\Factory::create();
-        $old_title = $faker->words(3, true);
-        $new_title = $faker->words(5, true);
+        $old_title = $this->fake('words', 3, true);
+        $new_title = $this->fake('words', 5, true);
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
         ]);
 
@@ -475,13 +456,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfTitleIsInvalid()
     {
         $link_dao = new models\dao\Link();
-        $faker = \Faker\Factory::create();
-        $old_title = $faker->words(3, true);
+        $old_title = $this->fake('words', 3, true);
         $new_title = '';
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
         ]);
 
@@ -498,13 +478,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfNotConnected()
     {
         $link_dao = new models\dao\Link();
-        $faker = \Faker\Factory::create();
-        $old_title = $faker->words(3, true);
-        $new_title = $faker->words(5, true);
+        $old_title = $this->fake('words', 3, true);
+        $new_title = $this->fake('words', 5, true);
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $user_id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
         ]);
 
@@ -521,13 +500,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfLinkDoesNotExist()
     {
         $link_dao = new models\dao\Link();
-        $faker = \Faker\Factory::create();
-        $old_title = $faker->words(3, true);
-        $new_title = $faker->words(5, true);
+        $old_title = $this->fake('words', 3, true);
+        $new_title = $this->fake('words', 5, true);
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
         ]);
 
@@ -544,14 +522,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfUserDoesNotOwnTheLink()
     {
         $link_dao = new models\dao\Link();
-        $faker = \Faker\Factory::create();
-        $old_title = $faker->words(3, true);
-        $new_title = $faker->words(5, true);
+        $old_title = $this->fake('words', 3, true);
+        $new_title = $this->fake('words', 5, true);
         $user = $this->login();
         $other_user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
         ]);
 
@@ -581,13 +558,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFetchWithFetchedLinkRendersCorrectly()
     {
-        $faker = \Faker\Factory::create();
-        $title = $faker->words(3, true);
+        $title = $this->fake('words', 3, true);
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'title' => $title,
-            'fetched_at' => $faker->iso8601,
+            'fetched_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}/fetch");

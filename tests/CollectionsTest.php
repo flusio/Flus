@@ -5,6 +5,7 @@ namespace flusio;
 class CollectionsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
+    use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
@@ -13,8 +14,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testShowBookmarksRendersCorrectly()
     {
         $user = $this->login();
-        $faker = \Faker\Factory::create();
-        $link_title = $faker->words(3, true);
+        $link_title = $this->fake('words', 3, true);
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'bookmarks',

@@ -6,6 +6,7 @@ use flusio\models;
 
 class UsersTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\InitializerHelper;
@@ -22,11 +23,10 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesAValidatedUser()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
-        $username = $faker->name;
-        $email = $faker->email;
-        $password = $faker->password;
+        $username = $this->fake('name');
+        $email = $this->fake('email');
+        $password = $this->fake('password');
 
         $this->assertSame(0, $user_dao->count());
 
@@ -46,16 +46,15 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesABookmarksCollection()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
         $collection_dao = new models\dao\Collection();
 
         $this->assertSame(0, $collection_dao->count());
 
         $response = $this->appRun('cli', '/users/create', [
-            'username' => $faker->name,
-            'email' => $faker->email,
-            'password' => $faker->password,
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertSame(1, $collection_dao->count());
@@ -67,10 +66,9 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfAnArgumentIsInvalid()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
-        $email = $faker->email;
-        $password = $faker->password;
+        $email = $this->fake('email');
+        $password = $this->fake('password');
 
         $response = $this->appRun('cli', '/users/create', [
             'email' => $email,
@@ -83,10 +81,8 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCleanDeletesNotValidatedUsersOlderThan1Month()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new \flusio\models\dao\User();
-
-        $this->freeze($faker->dateTime);
+        $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(1, 'month')->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => null,
@@ -101,13 +97,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCleanDontRemoveValidatedUsersOlderThan1Month()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new \flusio\models\dao\User();
-
-        $this->freeze($faker->dateTime);
+        $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(1, 'month')->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $faker->iso8601,
+            'validated_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('cli', '/users/clean');
@@ -119,10 +113,8 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCleanDontRemoveNotValidatedUsersYoungerThan1Month()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new \flusio\models\dao\User();
-
-        $this->freeze($faker->dateTime);
+        $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(21, 'days')->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => null,
@@ -137,11 +129,9 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCleanAcceptsASinceParameter()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new \flusio\models\dao\User();
-
-        $this->freeze($faker->dateTime);
-        $since = $faker->randomDigitNotNull;
+        $this->freeze($this->fake('dateTime'));
+        $since = $this->fake('randomDigitNotNull');
         $user_id_older = $this->create('user', [
             'created_at' => \Minz\Time::ago($since, 'month')->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => null,
@@ -164,10 +154,8 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCleanFailsIfSinceIsLessThan1()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new \flusio\models\dao\User();
-
-        $this->freeze($faker->dateTime);
+        $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(1, 'month')->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => null,
@@ -184,10 +172,8 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCleanFailsIfSinceIsNotAnInteger()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new \flusio\models\dao\User();
-
-        $this->freeze($faker->dateTime);
+        $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(1, 'month')->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => null,

@@ -5,6 +5,7 @@ namespace flusio;
 class RegistrationsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
+    use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
@@ -41,16 +42,15 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesAUserAndRedirects()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
         $this->assertSame(0, $user_dao->count());
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
-            'email' => $faker->email,
-            'password' => $faker->password,
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertSame(1, $user_dao->count());
@@ -59,8 +59,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesARegistrationValidationToken()
     {
-        $faker = \Faker\Factory::create();
-        $this->freeze($faker->dateTime);
+        $this->freeze($this->fake('dateTime'));
 
         $user_dao = new models\dao\User();
         $token_dao = new models\dao\Token();
@@ -69,9 +68,9 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
-            'email' => $faker->email,
-            'password' => $faker->password,
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
         ]);
 
         // it also creates a session token
@@ -84,17 +83,16 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateSendsAValidationEmail()
     {
-        $faker = \Faker\Factory::create();
         $token_dao = new models\dao\Token();
-        $email = $faker->email;
+        $email = $this->fake('email');
 
         $this->assertEmailsCount(0);
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
+            'username' => $this->fake('name'),
             'email' => $email,
-            'password' => $faker->password,
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertEmailsCount(1);
@@ -108,10 +106,9 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateLogsTheUserIn()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
         $session_dao = new models\dao\Session();
-        $email = $faker->email;
+        $email = $this->fake('email');
 
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
@@ -119,9 +116,9 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
+            'username' => $this->fake('name'),
             'email' => $email,
-            'password' => $faker->password,
+            'password' => $this->fake('password'),
         ]);
 
         $user = utils\CurrentUser::get();
@@ -133,16 +130,15 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
         $this->assertSame(1, $user_dao->count());
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
-            'email' => $faker->email,
-            'password' => $faker->password,
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertSame(1, $user_dao->count());
@@ -151,16 +147,15 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesABookmarksCollection()
     {
-        $faker = \Faker\Factory::create();
         $collection_dao = new models\dao\Collection();
 
         $this->assertSame(0, $collection_dao->count());
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
-            'email' => $faker->email,
-            'password' => $faker->password,
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertResponse($response, 302, '/');
@@ -174,14 +169,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateRedirectsIfRegistrationsAreClosed()
     {
         \Minz\Configuration::$application['registrations_opened'] = false;
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
-            'email' => $faker->email,
-            'password' => $faker->password,
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
         ]);
 
         \Minz\Configuration::$application['registrations_opened'] = true;
@@ -191,15 +185,14 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsWrong()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
         (new \Minz\CSRF())->generateToken();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => 'not the token',
-            'username' => $faker->name,
-            'email' => $faker->email,
-            'password' => $faker->password,
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertSame(0, $user_dao->count());
@@ -208,13 +201,12 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUsernameIsMissing()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'email' => $faker->email,
-            'password' => $faker->password,
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertSame(0, $user_dao->count());
@@ -223,14 +215,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUsernameIsTooLong()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->sentence(50, false),
-            'email' => $faker->email,
-            'password' => $faker->password,
+            'username' => $this->fake('sentence', 50, false),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertSame(0, $user_dao->count());
@@ -239,12 +230,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfEmailIsMissing()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
+            'username' => $this->fake('name'),
         ]);
 
         $this->assertSame(0, $user_dao->count());
@@ -253,14 +243,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfEmailIsInvalid()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
-            'email' => $faker->word,
-            'password' => $faker->password,
+            'username' => $this->fake('name'),
+            'email' => $this->fake('word'),
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertSame(0, $user_dao->count());
@@ -269,20 +258,19 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfEmailAlreadyExistsAndValidated()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
-        $email = $faker->email;
+        $email = $this->fake('email');
         $this->create('user', [
             'email' => $email,
-            'validated_at' => $faker->iso8601(),
+            'validated_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
+            'username' => $this->fake('name'),
             'email' => $email,
-            'password' => $faker->password,
+            'password' => $this->fake('password'),
         ]);
 
         $this->assertSame(1, $user_dao->count());
@@ -291,13 +279,12 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfPasswordIsMissing()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'username' => $faker->name,
-            'email' => $faker->email,
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
         ]);
 
         $this->assertSame(0, $user_dao->count());
@@ -306,9 +293,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithoutTokenAndConnectedRendersCorrectly()
     {
-        $faker = \Faker\Factory::create();
-
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -324,9 +309,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithoutTokenAndNotConnectedRedirectsToLogin()
     {
-        $faker = \Faker\Factory::create();
-
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -342,9 +325,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithValidationEmailSentStatusRendersCorrectly()
     {
-        $faker = \Faker\Factory::create();
-
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -361,9 +342,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationRedirectsIfUserConnectedAndRegistrationAlreadyValidated()
     {
-        $faker = \Faker\Factory::create();
         $this->login([
-            'validated_at' => $faker->iso8601,
+            'validated_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('get', '/registration/validation');
@@ -373,11 +353,10 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithTokenRendersCorrectlyAndValidatesRegistration()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
-        $this->freeze($faker->dateTime());
+        $this->freeze($this->fake('dateTime'));
 
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -397,16 +376,15 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithTokenRedirectsIfRegistrationAlreadyValidated()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
-        $this->freeze($faker->dateTime());
+        $this->freeze($this->fake('dateTime'));
 
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
         $user_id = $this->create('user', [
-            'validated_at' => $faker->iso8601,
+            'validated_at' => $this->fake('iso8601'),
             'validation_token' => $token,
         ]);
 
@@ -419,12 +397,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithTokenDeletesToken()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
         $token_dao = new models\dao\Token();
-        $this->freeze($faker->dateTime());
+        $this->freeze($this->fake('dateTime'));
 
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token_id = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -445,11 +422,10 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithTokenFailsIfTokenHasExpired()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
-        $this->freeze($faker->dateTime());
+        $this->freeze($this->fake('dateTime'));
 
-        $expired_at = \Minz\Time::ago($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::ago($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -469,14 +445,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithTokenFailsIfTokenHasBeenInvalidated()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
-        $this->freeze($faker->dateTime());
+        $this->freeze($this->fake('dateTime'));
 
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'invalidated_at' => $faker->iso8601,
+            'invalidated_at' => $this->fake('iso8601'),
         ]);
         $user_id = $this->create('user', [
             'validated_at' => null,
@@ -494,8 +469,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationFailsIfTokenIsNotAssociatedToAUser()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -509,11 +483,10 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithTokenFailsIfTokenDoesNotExist()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
-        $this->freeze($faker->dateTime());
+        $this->freeze($this->fake('dateTime'));
 
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -533,9 +506,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testResendValidationEmailSendsAnEmailAndRedirects()
     {
-        $faker = \Faker\Factory::create();
-        $email = $faker->email;
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $email = $this->fake('email');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -562,8 +534,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testResendValidationEmailRedirectsToRedictTo()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(31, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 31, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -583,11 +554,10 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testResendValidationEmailCreatesANewTokenIfExpiresSoon()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
         $token_dao = new models\dao\Token();
 
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(0, 30), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 30), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -609,14 +579,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testResendValidationEmailCreatesANewTokenIfInvalidated()
     {
-        $faker = \Faker\Factory::create();
         $user_dao = new models\dao\User();
         $token_dao = new models\dao\Token();
 
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(31, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 31, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'invalidated_at' => $faker->iso8601
+            'invalidated_at' => $this->fake('iso8601')
         ]);
         $user = $this->login([
             'validated_at' => null,
@@ -636,9 +605,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testResendValidationEmailRedirectsSilentlyIfAlreadyValidated()
     {
-        $faker = \Faker\Factory::create();
         $this->login([
-            'validated_at' => $faker->iso8601,
+            'validated_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('post', '/registration/validation/email', [
@@ -651,8 +619,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testResendValidationEmailFailsIfCsrfIsInvalid()
     {
-        $faker = \Faker\Factory::create();
-        $expired_at = \Minz\Time::fromNow($faker->numberBetween(1, 9000), 'minutes');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);

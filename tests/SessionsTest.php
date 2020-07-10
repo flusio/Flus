@@ -5,6 +5,7 @@ namespace flusio;
 class SessionsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
+    use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
@@ -52,9 +53,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateLogsTheUserInAndRedirectToHome()
     {
-        $faker = \Faker\Factory::create();
-        $email = $faker->email;
-        $password = $faker->password;
+        $email = $this->fake('email');
+        $password = $this->fake('password');
         $user_id = $this->create('user', [
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -77,9 +77,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testCreateReturnsACookie()
     {
         $session_dao = new models\dao\Session();
-        $faker = \Faker\Factory::create();
-        $email = $faker->email;
-        $password = $faker->password;
+        $email = $this->fake('email');
+        $password = $this->fake('password');
         $user_id = $this->create('user', [
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -100,13 +99,12 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     {
         $session_dao = new models\dao\Session();
         $token_dao = new models\dao\Token();
-        $faker = \Faker\Factory::create();
 
-        $this->freeze($faker->dateTime);
+        $this->freeze($this->fake('dateTime'));
 
-        $ip = $faker->ipv6;
-        $email = $faker->email;
-        $password = $faker->password;
+        $ip = $this->fake('ipv6');
+        $email = $this->fake('email');
+        $password = $this->fake('password');
         $user_id = $this->create('user', [
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -136,10 +134,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testCreateDoesNotCreateASessionIfConnected()
     {
         $session_dao = new models\dao\Session();
-        $faker = \Faker\Factory::create();
-
-        $email = $faker->email;
-        $password = $faker->password;
+        $email = $this->fake('email');
+        $password = $this->fake('password');
         $this->login([
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -159,9 +155,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsToRedirectTo()
     {
-        $faker = \Faker\Factory::create();
-        $email = $faker->email;
-        $password = $faker->password;
+        $email = $this->fake('email');
+        $password = $this->fake('password');
         $user_id = $this->create('user', [
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -179,9 +174,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateIsCaseInsensitive()
     {
-        $faker = \Faker\Factory::create();
-        $email = $faker->email;
-        $password = $faker->password;
+        $email = $this->fake('email');
+        $password = $this->fake('password');
         $user_id = $this->create('user', [
             'email' => strtolower($email),
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -204,10 +198,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCsrfIsInvalid()
     {
         $session_dao = new models\dao\Session();
-        $faker = \Faker\Factory::create();
-
-        $email = $faker->email;
-        $password = $faker->password;
+        $email = $this->fake('email');
+        $password = $this->fake('password');
         $user_id = $this->create('user', [
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -227,10 +219,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfEmailDoesNotMatchAUser()
     {
         $session_dao = new models\dao\Session();
-        $faker = \Faker\Factory::create();
-
-        $email = $faker->email;
-        $password = $faker->password;
+        $email = $this->fake('email');
+        $password = $this->fake('password');
         $user_id = $this->create('user', [
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -249,10 +239,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfPasswordDoesNotMatch()
     {
         $session_dao = new models\dao\Session();
-        $faker = \Faker\Factory::create();
-
-        $email = $faker->email;
-        $password = $faker->password;
+        $email = $this->fake('email');
+        $password = $this->fake('password');
         $user_id = $this->create('user', [
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
