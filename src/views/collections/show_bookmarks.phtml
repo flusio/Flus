@@ -9,6 +9,10 @@
         <h1><?= _('Bookmarks') ?></h1>
     </div>
 
+    <p class="section__intro">
+        <?= _('Place here the links you want to consult later on.') ?>
+    </p>
+
     <form method="post" action="<?= url('add link') ?>">
         <?php if ($error): ?>
             <p class="form__error">
