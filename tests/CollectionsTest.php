@@ -11,6 +11,38 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
+    public function testIndexRendersCorrectly()
+    {
+        $user = $this->login();
+        $collection_name_1 = $this->fake('words', 3, true);
+        $collection_name_2 = $this->fake('words', 3, true);
+        $this->create('collection', [
+            'user_id' => $user->id,
+            'name' => $collection_name_1,
+            'type' => 'collection',
+        ]);
+        $this->create('collection', [
+            'user_id' => $user->id,
+            'name' => $collection_name_2,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('get', '/collections');
+
+        $this->assertResponse($response, 200);
+        $response_output = $response->render();
+        $this->assertStringContainsString($collection_name_1, $response_output);
+        $this->assertStringContainsString($collection_name_2, $response_output);
+        $this->assertPointer($response, 'collections/index.phtml');
+    }
+
+    public function testIndexRedirectsIfNotConnected()
+    {
+        $response = $this->appRun('get', '/collections');
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fcollections');
+    }
+
     public function testNewRendersCorrectly()
     {
         $user = $this->login();

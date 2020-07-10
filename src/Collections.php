@@ -13,6 +13,43 @@ use Minz\Response;
 class Collections
 {
     /**
+     * Show the page listing all the collections of the current user
+     *
+     * @response 302 /login?redirect_to=/collections if not connected
+     * @response 200
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function index()
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('collections'),
+            ]);
+        }
+
+        $collection_dao = new models\dao\Collection();
+        $db_collections = $collection_dao->listWithNumberLinksForUser($user->id);
+
+        $collections = [];
+        foreach ($db_collections as $db_collection) {
+            $collections[] = new models\Collection($db_collection);
+        }
+
+        $collator = new \Collator($user->locale);
+        usort($collections, function ($collection1, $collection2) use ($collator) {
+            return $collator->compare($collection1->name, $collection2->name);
+        });
+
+        return Response::ok('collections/index.phtml', [
+            'collections' => $collections,
+        ]);
+    }
+
+    /**
      * Show the page to create a collection
      *
      * @response 302 /login?redirect_to=/collections/new if not connected

@@ -10,6 +10,7 @@
 @import './_paragraphs.css';
 @import './_sections.css';
 @import './_variables.css';
+@import './components/collections.css';
 @import './components/links.css';
 
 *,

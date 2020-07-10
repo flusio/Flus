@@ -61,6 +61,7 @@ class Application
         $router->addRoute('post', '/account/deletion', 'Accounts#delete', 'delete account');
 
         // Collections
+        $router->addRoute('get', '/collections', 'Collections#index', 'collections');
         $router->addRoute('get', '/collections/new', 'Collections#new', 'new collection');
         $router->addRoute('post', '/collections/new', 'Collections#create', 'create collection');
         $router->addRoute('get', '/collections/:id', 'Collections#show', 'collection');

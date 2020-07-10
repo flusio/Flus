@@ -40,6 +40,12 @@ class Collection extends \Minz\Model
             'type' => 'string',
             'required' => true,
         ],
+
+        // This property is dynamic and not directly saved in DB. It may
+        // generate errors if used inappropriately.
+        'number_links' => [
+            'type' => 'integer',
+        ],
     ];
 
     /**
