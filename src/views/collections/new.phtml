@@ -1,0 +1,72 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('New collection'),
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('New collection') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('Collections allows to group links by topics. They are handy for finding them later.') ?>
+    </p>
+
+    <form method="post" action="<?= url('create collection') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
+            <label for="name">
+                <?= _('What do you want to name this collection?') ?>
+            </label>
+
+            <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                value="<?= $name ?>"
+            />
+
+            <?php if (isset($errors['name'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['name'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form-group <?= isset($errors['description']) ? 'form-group--invalid' : '' ?>">
+            <label for="description">
+                <?= _('Tell us more about it') ?>
+                <span class="text--secondary">
+                    <?= _('(optional)') ?>
+                </span>
+            </label>
+
+            <textarea
+                id="description"
+                name="description"
+                value="<?= $description ?>"
+            ></textarea>
+
+            <?php if (isset($errors['description'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['description'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Create the collection') ?>
+            </button>
+        </div>
+    </form>
+</div>

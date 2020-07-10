@@ -9,7 +9,8 @@ label {
     padding-left: var(--space-small);
 }
 
-input {
+input,
+textarea {
     width: 100%;
     padding: var(--space-small);
 
@@ -25,11 +26,17 @@ input {
     transition: border-color 0.2s ease-in-out;
 }
 
-.form-group--invalid input {
+textarea {
+    min-height: 15rem;
+}
+
+.form-group--invalid input,
+.form-group--invalid textarea {
     border-color: var(--border-error-color);
 }
 
-input:focus {
+input:focus,
+textarea:focus {
     border-color: var(--border-active-color);
 }
 

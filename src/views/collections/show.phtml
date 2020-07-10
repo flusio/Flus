@@ -1,0 +1,90 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => $this->protect($collection->name),
+        'canonical' => url('collection', ['id' => $collection->id]),
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title section__title--nolowercase">
+        <h1><?= $this->protect($collection->name) ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= $this->protect($collection->description) ?>
+    </p>
+
+    <form method="post" action="<?= url('add link') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="collection_ids[]" value="<?= $collection->id ?>" />
+        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
+
+        <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
+            <label for="url">
+                <?= _('New link') ?>
+            </label>
+
+            <div class="form-group__stack">
+                <input id="url" name="url" type="url" required />
+
+                <button type="submit" class="button--primary">
+                    <?= _('Add') ?>
+                </button>
+            </div>
+
+            <?php if (isset($errors['url'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['url'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+    </form>
+
+    <div class="links">
+        <?php foreach ($links as $link): ?>
+            <div class="link">
+                <div class="link__body">
+                    <h2 class="link__title">
+                        <?= $this->protect($link->title) ?>
+                    </h2>
+
+                    <p class="link__details">
+                        <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                    </p>
+                </div>
+
+                <div class="link__footer">
+                    <form method="post" action="<?= url('remove link collection', ['id' => $link->id]) ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <input type="hidden" name="collection_id" value="<?= $collection->id ?>" />
+                        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
+
+                        <button
+                            class="button--discreet"
+                            title="<?= _f('Remove from %s', $collection->name) ?>"
+                            aria-label="<?= _f('Remove from %s', $collection->name) ?>"
+                        >
+                            <i class="icon icon--only icon--solid icon--ghost icon--collection"></i>
+                        </button>
+                    </form>
+
+                    <a class="anchor--action" href="<?= url('show link', ['id' => $link->id]) ?>">
+                        <?= _('see') ?>
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if (!$links): ?>
+        <p class="paragraph--placeholder">
+            <?= _('This collection is empty. The links will appear here once you start adding them.') ?>
+        </p>
+    <?php endif; ?>
+</div>

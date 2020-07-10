@@ -10,7 +10,7 @@ namespace flusio\models;
  */
 class Collection extends \Minz\Model
 {
-    public const VALID_TYPES = ['bookmarks'];
+    public const VALID_TYPES = ['bookmarks', 'collection'];
 
     public const PROPERTIES = [
         'id' => [
@@ -23,6 +23,11 @@ class Collection extends \Minz\Model
         'name' => [
             'type' => 'string',
             'required' => true,
+            'validator' => '\flusio\models\Collection::validateName',
+        ],
+
+        'description' => [
+            'type' => 'string',
         ],
 
         'type' => [
@@ -36,6 +41,24 @@ class Collection extends \Minz\Model
             'required' => true,
         ],
     ];
+
+    /**
+     * @param string $user_id
+     * @param string $name
+     * @param string $description
+     *
+     * @return \flusio\models\Collection
+     */
+    public static function init($user_id, $name, $description)
+    {
+        return new self([
+            'id' => bin2hex(random_bytes(16)),
+            'name' => trim($name),
+            'description' => trim($description),
+            'type' => 'collection',
+            'user_id' => $user_id,
+        ]);
+    }
 
     /**
      * @param string $user_id
@@ -59,5 +82,41 @@ class Collection extends \Minz\Model
     public static function validateType($type)
     {
         return in_array($type, self::VALID_TYPES);
+    }
+
+    /**
+     * @param string $name
+     * @return boolean
+     */
+    public static function validateName($name)
+    {
+        return strlen($name) <= 100;
+    }
+
+    /**
+     * Return a list of errors (if any). The array keys indicated the concerned
+     * property.
+     *
+     * @return string[]
+     */
+    public function validate()
+    {
+        $formatted_errors = [];
+
+        foreach (parent::validate() as $property => $error) {
+            $code = $error['code'];
+
+            if ($property === 'name' && $code === 'required') {
+                $formatted_error = _('The name is required.');
+            } elseif ($property === 'name') {
+                $formatted_error = _('The name must be less than 100 characters.');
+            } else {
+                $formatted_error = $error['description']; // @codeCoverageIgnore
+            }
+
+            $formatted_errors[$property] = $formatted_error;
+        }
+
+        return $formatted_errors;
     }
 }

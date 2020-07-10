@@ -18,7 +18,8 @@
     text-align: center;
 }
 
-.paragraph--secondary {
+.paragraph--secondary,
+.text--secondary {
     color: var(--color-text-secondary);
 }
 
