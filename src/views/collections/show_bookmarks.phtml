@@ -1,22 +1,12 @@
 <?php
-    if ($collection->type === 'bookmarks') {
-        $this->layout('base.phtml', [
-            'title' => _('Bookmarks'),
-        ]);
-    } else {
-        $this->layout('base.phtml', [
-            'title' => $this->protect($collection->name),
-        ]);
-    }
+    $this->layout('base.phtml', [
+        'title' => _('Bookmarks'),
+    ]);
 ?>
 
 <div class="section">
     <div class="section__title">
-        <?php if ($collection->type === 'bookmarks'): ?>
-            <h1><?= _('Bookmarks') ?></h1>
-        <?php else: ?>
-            <h1><?= $this->protect($collection->name) ?></h1>
-        <?php endif; ?>
+        <h1><?= _('Bookmarks') ?></h1>
     </div>
 
     <form method="post" action="<?= url('add link') ?>">
@@ -28,7 +18,7 @@
 
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
         <input type="hidden" name="collection_ids[]" value="<?= $collection->id ?>" />
-        <input type="hidden" name="from" value="<?= url($current_action_pointer) ?>" />
+        <input type="hidden" name="from" value="<?= url('bookmarks') ?>" />
 
         <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
             <label for="url">
@@ -68,25 +58,15 @@
                     <form method="post" action="<?= url('remove link collection', ['id' => $link->id]) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                         <input type="hidden" name="collection_id" value="<?= $collection->id ?>" />
-                        <input type="hidden" name="from" value="<?= url($current_action_pointer) ?>" />
+                        <input type="hidden" name="from" value="<?= url('bookmarks') ?>" />
 
-                        <?php if ($collection->type === 'bookmarks'): ?>
-                            <button
-                                class="button--discreet"
-                                title="<?= _('Remove from bookmarks') ?>"
-                                aria-label="<?= _('Remove from bookmarks') ?>"
-                            >
-                                <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
-                            </button>
-                        <?php else: ?>
-                            <button
-                                class="button--discreet"
-                                title="<?= _f('Remove from %s', $collection->name) ?>"
-                                aria-label="<?= _f('Remove from %s', $collection->name) ?>"
-                            >
-                                <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
-                            </button>
-                        <?php endif; ?>
+                        <button
+                            class="button--discreet"
+                            title="<?= _('Remove from bookmarks') ?>"
+                            aria-label="<?= _('Remove from bookmarks') ?>"
+                        >
+                            <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
+                        </button>
                     </form>
 
                     <a class="anchor--action" href="<?= url('show link', ['id' => $link->id]) ?>">

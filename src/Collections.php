@@ -53,7 +53,7 @@ class Collections
             $links[] = new models\Link($db_link);
         }
 
-        return Response::ok('collections/show.phtml', [
+        return Response::ok('collections/show_bookmarks.phtml', [
             'collection' => $bookmarks_collection,
             'links' => $links,
         ]);
