@@ -52,6 +52,10 @@
 }
 
 /* Core */
+.icon--avatar::before {
+    background-image: url("../icons/core/avatar-line.svg");
+}
+
 .icon--eye::before {
     background-image: url("../icons/core/eye-line.svg");
 }
@@ -61,12 +65,22 @@
 }
 
 /* Essential */
-.icon--library::before {
+.icon--library::before,
+.icon--collection::before {
     background-image: url("../icons/essential/library-line.svg");
 }
 
-.icon--library.icon--solid::before {
+.icon--library.icon--solid::before,
+.icon--collection.icon--solid::before {
     background-image: url("../icons/essential/library-solid.svg");
+}
+
+.icon--logout::before {
+    background-image: url("../icons/essential/logout-line.svg");
+}
+
+.icon--plus::before {
+    background-image: url("../icons/essential/plus-line.svg");
 }
 
 .icon--undo::before {
