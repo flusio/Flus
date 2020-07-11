@@ -1,7 +1,12 @@
+.header--turquoise {
+    background-color: var(--color-turquoise-3);
+}
+
 .header__container {
     display: flex;
-    margin-top: var(--space-smaller);
-    margin-bottom: var(--space-smaller);
+    max-width: var(--content-width);
+    margin-right: auto;
+    margin-left: auto;
 
     align-items: center;
 }
@@ -18,8 +23,23 @@
     padding: var(--space-medium) var(--space-large);
 }
 
-.header__link--action {
-    padding: var(--space-smaller) var(--space-medium);
+.header--turquoise .header__link {
+    padding: var(--space-small);
+
+    text-decoration: none;
+
+    border-top: 0.5rem solid transparent;
+    border-bottom: 0.5rem solid transparent;
+}
+
+.header--turquoise .header__link--icon {
+    padding-left: 2.5em;
+}
+
+.header--turquoise .header__link--active {
+    font-weight: bold;
+
+    border-bottom-color: var(--color-white);
 }
 
 .header__link--home {

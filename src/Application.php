@@ -139,6 +139,7 @@ class Application
             'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,
             'current_user' => $current_user,
+            'current_tab' => null,
             'styles' => [],
             'javascript_configuration' => json_encode(include_once('utils/javascript_configuration.php')),
             'banner' => true,

@@ -1,0 +1,75 @@
+.popup {
+    position: relative;
+}
+
+.popup__opener {
+    list-style: none;
+}
+
+.popup__container {
+    position: absolute;
+    z-index: 10;
+    right: var(--space-small);
+
+    width: 27rem;
+    margin-top: 1.5rem;
+    padding: var(--space-medium) var(--space-small);
+
+    font-size: var(--size-small);
+
+    background-color: var(--color-turquoise-2);
+    box-shadow: 0 0 2px 2px var(--color-turquoise-1);
+    border-radius: var(--border-radius);
+}
+
+.popup__title {
+    margin-bottom: var(--space-smaller);
+    padding-right: var(--space-small);
+    padding-left: var(--space-small);
+
+    font-weight: bold;
+}
+
+.popup__separator {
+    height: 1.5rem;
+}
+
+.popup__item--link {
+    text-decoration: none;
+}
+
+.popup__item--link:hover,
+.popup__item--link:focus {
+    color: initial;
+}
+
+.popup__item--button {
+    width: 100%;
+
+    text-align: left;
+
+    background-color: transparent;
+    border: none;
+
+    transition: none;
+
+    cursor: pointer;
+}
+
+.popup__item--button:focus {
+    background-color: transparent;
+    border: none;
+
+    outline: 1px dotted var(--color-purple-5);
+}
+
+.popup__item {
+    display: block;
+    padding: var(--space-small) var(--space-small) var(--space-small) 2.5em;
+
+    border-radius: var(--border-radius);
+}
+
+.popup__item:hover {
+    background-color: var(--color-turquoise-3);
+}
