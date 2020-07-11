@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-07-01 11:05+0200\n"
-"PO-Revision-Date: 2020-07-01 11:05+0200\n"
+"POT-Creation-Date: 2020-07-11 16:33+0200\n"
+"PO-Revision-Date: 2020-07-11 16:33+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,8 +15,8 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Accounts.php:69 Accounts.php:149 Links.php:92 Links.php:233
-#: Registrations.php:84 Registrations.php:248 Sessions.php:82
+#: Accounts.php:69 Accounts.php:149 Collections.php:108 Links.php:92
+#: Links.php:233 Registrations.php:84 Registrations.php:248 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -30,7 +30,7 @@ msgstr "Le mot de passe est incorrect."
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: Collections.php:44
+#: Collections.php:205
 msgid ""
 "It looks like you have no “Bookmarks” collection, you should contact the "
 "support."
@@ -84,10 +84,19 @@ msgstr "Afficher"
 msgid "[flusio] Confirm your registration"
 msgstr "[flusio] Confirmer votre inscription"
 
-#: models/Collection.php:49 views/_layouts/connected.phtml:48
-#: views/collections/show.phtml:4 views/collections/show.phtml:16
+#: models/Collection.php:78 views/_layouts/connected.phtml:52
+#: views/collections/show_bookmarks.phtml:3
+#: views/collections/show_bookmarks.phtml:10
 msgid "Bookmarks"
 msgstr "Signets"
+
+#: models/Collection.php:116
+msgid "The name is required."
+msgstr "Le nom est obligatoire."
+
+#: models/Collection.php:118
+msgid "The name must be less than 100 characters."
+msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
 #: models/Link.php:115
 msgid "The link is required."
@@ -171,7 +180,17 @@ msgstr ""
 msgid "You must validate your registration&nbsp;→"
 msgstr "Vous devez valider votre inscription&nbsp;→"
 
-#: views/_layouts/connected.phtml:60
+#: views/_layouts/connected.phtml:59 views/collections/index.phtml:3
+#: views/collections/index.phtml:10
+msgid "Collections"
+msgstr "Collections"
+
+#: views/_layouts/connected.phtml:73 views/accounts/show.phtml:3
+#: views/accounts/show.phtml:11
+msgid "Account"
+msgstr "Compte"
+
+#: views/_layouts/connected.phtml:81
 msgid "Log out"
 msgstr "Se déconnecter"
 
@@ -234,27 +253,23 @@ msgstr "Supprimer le compte"
 msgid "Cancel and go back to your account"
 msgstr "Annuler et retourner à votre compte"
 
-#: views/accounts/show.phtml:3 views/accounts/show.phtml:10
-msgid "Account"
-msgstr "Compte"
-
-#: views/accounts/show.phtml:24
+#: views/accounts/show.phtml:25
 msgid "Your name"
 msgstr "Votre nom"
 
-#: views/accounts/show.phtml:28 views/registrations/new.phtml:27
+#: views/accounts/show.phtml:29 views/registrations/new.phtml:27
 msgid "Your username must not be longer than 50 characters."
 msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: views/accounts/show.phtml:48
+#: views/accounts/show.phtml:49
 msgid "Your language"
 msgstr "Votre langue"
 
-#: views/accounts/show.phtml:70
+#: views/accounts/show.phtml:71
 msgid "Save your changes"
 msgstr "Enregistrer vos modifications"
 
-#: views/accounts/show.phtml:80
+#: views/accounts/show.phtml:81
 msgid "Do you want to delete your account?"
 msgstr "Vous voulez supprimer votre compte ?"
 
@@ -276,34 +291,94 @@ msgstr "Retour à la page précédente"
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
-#: views/collections/show.phtml:35
+#: views/collections/index.phtml:15
+msgid "Add a collection"
+msgstr "Ajouter une collection"
+
+#: views/collections/index.phtml:31
+msgid "no links"
+msgstr "aucun lien"
+
+#: views/collections/index.phtml:33
+#, php-format
+msgid "%d link"
+msgid_plural "%d links"
+msgstr[0] "%d lien"
+msgstr[1] "%d liens"
+
+#: views/collections/index.phtml:38 views/collections/show.phtml:79
+#: views/collections/show_bookmarks.phtml:78
+msgid "see"
+msgstr "voir"
+
+#: views/collections/index.phtml:47
+msgid ""
+"You have no collections yet. They’ll appear here once you start adding them."
+msgstr ""
+"Vous n’avez pas encore de collection. Elles apparaîtront ici une fois que "
+"vous commencerez à en ajouter."
+
+#: views/collections/new.phtml:3 views/collections/new.phtml:10
+msgid "New collection"
+msgstr "Nouvelle collection"
+
+#: views/collections/new.phtml:14
+msgid ""
+"Collections allows to group links by topics. They are handy for finding them "
+"later."
+msgstr ""
+"Les collections permettent de grouper les liens par thématiques. Elles sont "
+"utiles pour les retrouver plus tard."
+
+#: views/collections/new.phtml:28
+msgid "What do you want to name this collection?"
+msgstr "Comment voulez-vous nommer cette collection ?"
+
+#: views/collections/new.phtml:48
+msgid "Tell us more about it"
+msgstr "Dites-nous en plus"
+
+#: views/collections/new.phtml:50
+msgid "(optional)"
+msgstr "(optionnel)"
+
+#: views/collections/new.phtml:69
+msgid "Create the collection"
+msgstr "Créer une collection"
+
+#: views/collections/new.phtml:73
+msgid "Cancel and go back to collections"
+msgstr "Annuler et retourner aux collections"
+
+#: views/collections/show.phtml:31 views/collections/show_bookmarks.phtml:30
 msgid "New link"
 msgstr "Nouveau lien"
 
-#: views/collections/show.phtml:42
+#: views/collections/show.phtml:38 views/collections/show_bookmarks.phtml:37
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/collections/show.phtml:76 views/collections/show.phtml:77
-msgid "Remove from bookmarks"
-msgstr "Retirer des signets"
-
-#: views/collections/show.phtml:84 views/collections/show.phtml:85
+#: views/collections/show.phtml:71 views/collections/show.phtml:72
 #, php-format
 msgid "Remove from %s"
 msgstr "Retirer de %s"
 
-#: views/collections/show.phtml:93
-msgid "see"
-msgstr "voir"
-
-#: views/collections/show.phtml:102
+#: views/collections/show.phtml:88 views/collections/show_bookmarks.phtml:87
 msgid ""
 "This collection is empty. The links will appear here once you start adding "
 "them."
 msgstr ""
 "Cette collection est vide. Les liens apparaîtront ici une fois que vous "
 "commencerez à en ajouter."
+
+#: views/collections/show_bookmarks.phtml:14
+msgid "Place here the links you want to consult later on."
+msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
+
+#: views/collections/show_bookmarks.phtml:70
+#: views/collections/show_bookmarks.phtml:71
+msgid "Remove from bookmarks"
+msgstr "Retirer des signets"
 
 #: views/internal_server_error.phtml:3
 msgid "Something bad happened"

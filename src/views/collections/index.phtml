@@ -1,0 +1,50 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Collections'),
+        'current_tab' => 'collections',
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('Collections') ?></h1>
+    </div>
+
+    <p class="paragraph--centered">
+        <a class="anchor--action icon icon--anchor icon--plus" href="<?= url('new collection') ?>">
+            <?= _('Add a collection') ?>
+        </a>
+    </p>
+
+    <div class="collections">
+        <?php foreach ($collections as $collection): ?>
+            <div class="collection">
+                <div class="collection__body">
+                    <h2 class="collection__title icon icon--collection">
+                        <?= $this->protect($collection->name) ?>
+                    </h2>
+                </div>
+
+                <div class="collection__footer">
+                    <p class="collection__details">
+                        <?php if ($collection->number_links === 0): ?>
+                            <?= _('no links') ?>
+                        <?php else: ?>
+                            <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
+                        <?php endif; ?>
+                    </p>
+
+                    <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                        <?= _('see') ?>
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if (!$collections): ?>
+        <p class="paragraph--placeholder">
+            <?= _('You have no collections yet. They’ll appear here once you start adding them.') ?>
+        </p>
+    <?php endif; ?>
+</div>

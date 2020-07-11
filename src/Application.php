@@ -61,8 +61,12 @@ class Application
         $router->addRoute('post', '/account/deletion', 'Accounts#delete', 'delete account');
 
         // Collections
+        $router->addRoute('get', '/collections', 'Collections#index', 'collections');
+        $router->addRoute('get', '/collections/new', 'Collections#new', 'new collection');
+        $router->addRoute('post', '/collections/new', 'Collections#create', 'create collection');
+        $router->addRoute('get', '/collections/:id', 'Collections#show', 'collection');
+
         $router->addRoute('get', '/bookmarks', 'Collections#showBookmarks', 'bookmarks');
-        $router->addRoute('post', '/bookmarks', 'Collections#createBookmarks', 'create bookmarks');
 
         // Links
         $router->addRoute('post', '/links', 'Links#add', 'add link');
@@ -135,6 +139,7 @@ class Application
             'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,
             'current_user' => $current_user,
+            'current_tab' => null,
             'styles' => [],
             'javascript_configuration' => json_encode(include_once('utils/javascript_configuration.php')),
             'banner' => true,

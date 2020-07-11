@@ -1,17 +1,18 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('Bookmarks'),
-        'current_tab' => 'bookmarks',
+        'title' => $this->protect($collection->name),
+        'canonical' => url('collection', ['id' => $collection->id]),
+        'current_tab' => 'collections',
     ]);
 ?>
 
 <div class="section">
-    <div class="section__title">
-        <h1><?= _('Bookmarks') ?></h1>
+    <div class="section__title section__title--nolowercase">
+        <h1><?= $this->protect($collection->name) ?></h1>
     </div>
 
     <p class="section__intro">
-        <?= _('Place here the links you want to consult later on.') ?>
+        <?= $this->protect($collection->description) ?>
     </p>
 
     <form method="post" action="<?= url('add link') ?>">
@@ -23,7 +24,7 @@
 
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
         <input type="hidden" name="collection_ids[]" value="<?= $collection->id ?>" />
-        <input type="hidden" name="from" value="<?= url('bookmarks') ?>" />
+        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
 
         <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
             <label for="url">
@@ -63,14 +64,14 @@
                     <form method="post" action="<?= url('remove link collection', ['id' => $link->id]) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                         <input type="hidden" name="collection_id" value="<?= $collection->id ?>" />
-                        <input type="hidden" name="from" value="<?= url('bookmarks') ?>" />
+                        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
 
                         <button
                             class="button--discreet"
-                            title="<?= _('Remove from bookmarks') ?>"
-                            aria-label="<?= _('Remove from bookmarks') ?>"
+                            title="<?= _f('Remove from %s', $collection->name) ?>"
+                            aria-label="<?= _f('Remove from %s', $collection->name) ?>"
                         >
-                            <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
+                            <i class="icon icon--only icon--solid icon--ghost icon--collection"></i>
                         </button>
                     </form>
 

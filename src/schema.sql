@@ -33,6 +33,7 @@ CREATE TABLE collections (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     name TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
     type TEXT NOT NULL,
     user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
