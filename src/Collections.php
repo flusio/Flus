@@ -174,6 +174,112 @@ class Collections
     }
 
     /**
+     * Show the edition page of a collection
+     *
+     * @request_param string id
+     *
+     * @response 302 /login?redirect_to=/collection/:id/edit if not connected
+     * @response 404 if the collection doesn’t exist or user hasn't access
+     * @response 200
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function edit($request)
+    {
+        $user = utils\CurrentUser::get();
+        $id = $request->param('id');
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('edit collection', ['id' => $id]),
+            ]);
+        }
+
+        $collection_dao = new models\dao\Collection();
+        $db_collection = $collection_dao->findBy([
+            'id' => $id,
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        if (!$db_collection) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $collection = new models\Collection($db_collection);
+        return Response::ok('collections/edit.phtml', [
+            'collection' => $collection,
+            'name' => $collection->name,
+            'description' => $collection->description,
+        ]);
+    }
+
+    /**
+     * Update a collection
+     *
+     * @request_param string id
+     *
+     * @response 302 /login?redirect_to=/collection/:id/edit if not connected
+     * @response 404 if the collection doesn’t exist or user hasn't access
+     * @response 400 if csrf or name are invalid
+     * @response 302 /collections/:id
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function update($request)
+    {
+        $user = utils\CurrentUser::get();
+        $id = $request->param('id');
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('edit collection', ['id' => $id]),
+            ]);
+        }
+
+        $collection_dao = new models\dao\Collection();
+        $db_collection = $collection_dao->findBy([
+            'id' => $id,
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        if (!$db_collection) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $collection = new models\Collection($db_collection);
+        $name = $request->param('name', '');
+        $description = $request->param('description', '');
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('collections/edit.phtml', [
+                'collection' => $collection,
+                'name' => $name,
+                'description' => $description,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        $collection->name = trim($name);
+        $collection->description = trim($description);
+        $errors = $collection->validate();
+        if ($errors) {
+            return Response::badRequest('collections/edit.phtml', [
+                'collection' => $collection,
+                'name' => $name,
+                'description' => $description,
+                'errors' => $errors,
+            ]);
+        }
+
+        $collection_dao->save($collection);
+
+        return Response::redirect('collection', ['id' => $collection->id]);
+    }
+
+    /**
      * Show the bookmarks page
      *
      * @response 302 /login?redirect_to=/bookmarks if not connected

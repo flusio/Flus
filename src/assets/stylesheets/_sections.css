@@ -2,6 +2,20 @@
     margin-bottom: var(--space-larger);
 }
 
+.section__nav {
+    display: flex;
+    margin-top: var(--space-medium);
+    margin-bottom: var(--space-medium);
+    padding-top: var(--space-small);
+    padding-bottom: var(--space-small);
+
+    align-items: center;
+}
+
+.section__nav-separator {
+    flex-grow: 1;
+}
+
 .section__title {
     display: flex;
     margin-top: var(--space-large);

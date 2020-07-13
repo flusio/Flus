@@ -1,20 +1,17 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('New collection'),
+        'title' => _('Collection edition'),
         'current_tab' => 'collections',
+        'canonical' => url('edit collection', ['id' => $collection->id]),
     ]);
 ?>
 
 <div class="section">
     <div class="section__title">
-        <h1><?= _('New collection') ?></h1>
+        <h1><?= _('Collection edition') ?></h1>
     </div>
 
-    <p class="section__intro">
-        <?= _('Collections allows to group links by topics. They are handy for finding them later.') ?>
-    </p>
-
-    <form method="post" action="<?= url('create collection') ?>">
+    <form method="post" action="<?= url('update collection', ['id' => $collection->id]) ?>">
         <?php if ($error): ?>
             <p class="form__error">
                 <?= $error ?>
@@ -25,7 +22,7 @@
 
         <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
             <label for="name">
-                <?= _('What do you want to name this collection?') ?>
+                <?= _('Name') ?>
             </label>
 
             <input
@@ -45,7 +42,7 @@
 
         <div class="form-group <?= isset($errors['description']) ? 'form-group--invalid' : '' ?>">
             <label for="description">
-                <?= _('Tell us more about it') ?>
+                <?= _('Description') ?>
                 <span class="text--secondary">
                     <?= _('(optional)') ?>
                 </span>
@@ -65,11 +62,11 @@
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                <?= _('Create the collection') ?>
+                <?= _('Update') ?>
             </button>
 
-            <a href="<?= url('collections') ?>">
-                <?= _('Cancel and go back to collections') ?>
+            <a href="<?= url('collection', ['id' => $collection->id]) ?>">
+                <?= _('Cancel and go back to the collection') ?>
             </a>
         </div>
     </form>

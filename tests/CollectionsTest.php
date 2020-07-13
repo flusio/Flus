@@ -219,6 +219,275 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404);
     }
 
+    public function testEditRendersCorrectly()
+    {
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/edit");
+
+        $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'collections/edit.phtml');
+    }
+
+    public function testEditRedirectsIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/edit");
+
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}%2Fedit");
+    }
+
+    public function testEditFailsIfCollectionDoesNotExist()
+    {
+        $this->login();
+
+        $response = $this->appRun('get', '/collections/unknown/edit');
+
+        $this->assertResponse($response, 404);
+    }
+
+    public function testEditFailsIfCollectionIsNotOwnedByCurrentUser()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/edit");
+
+        $this->assertResponse($response, 404);
+    }
+
+    public function testEditFailsIfCollectionIsNotOfCorrectType()
+    {
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/edit");
+
+        $this->assertResponse($response, 404);
+    }
+
+    public function testUpdateUpdatesCollectionAndRedirects()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $old_name = $this->fakeUnique('words', 3, true);
+        $new_name = $this->fakeUnique('words', 3, true);
+        $old_description = $this->fakeUnique('sentence');
+        $new_description = $this->fakeUnique('sentence');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+            'name' => $old_name,
+            'description' => $old_description,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'name' => $new_name,
+            'description' => $new_description,
+        ]);
+
+        $this->assertResponse($response, 302, "/collections/{$collection_id}");
+        $db_collection = $collection_dao->listAll()[0];
+        $this->assertSame($new_name, $db_collection['name']);
+        $this->assertSame($new_description, $db_collection['description']);
+    }
+
+    public function testUpdateRedirectsIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $collection_dao = new models\dao\Collection();
+        $old_name = $this->fakeUnique('words', 3, true);
+        $new_name = $this->fakeUnique('words', 3, true);
+        $old_description = $this->fakeUnique('sentence');
+        $new_description = $this->fakeUnique('sentence');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'collection',
+            'name' => $old_name,
+            'description' => $old_description,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'name' => $new_name,
+            'description' => $new_description,
+        ]);
+
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}%2Fedit");
+        $db_collection = $collection_dao->listAll()[0];
+        $this->assertSame($old_name, $db_collection['name']);
+        $this->assertSame($old_description, $db_collection['description']);
+    }
+
+    public function testUpdateFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $old_name = $this->fakeUnique('words', 3, true);
+        $new_name = $this->fakeUnique('words', 3, true);
+        $old_description = $this->fakeUnique('sentence');
+        $new_description = $this->fakeUnique('sentence');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+            'name' => $old_name,
+            'description' => $old_description,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => 'not the token',
+            'name' => $new_name,
+            'description' => $new_description,
+        ]);
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $db_collection = $collection_dao->listAll()[0];
+        $this->assertSame($old_name, $db_collection['name']);
+        $this->assertSame($old_description, $db_collection['description']);
+    }
+
+    public function testUpdateFailsIfNameIsInvalid()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $old_name = $this->fakeUnique('words', 3, true);
+        $new_name = $this->fakeUnique('words', 100, true);
+        $old_description = $this->fakeUnique('sentence');
+        $new_description = $this->fakeUnique('sentence');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+            'name' => $old_name,
+            'description' => $old_description,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'name' => $new_name,
+            'description' => $new_description,
+        ]);
+
+        $this->assertResponse($response, 400, 'The name must be less than 100 characters');
+        $db_collection = $collection_dao->listAll()[0];
+        $this->assertSame($old_name, $db_collection['name']);
+        $this->assertSame($old_description, $db_collection['description']);
+    }
+
+    public function testUpdateFailsIfNameIsMissing()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $old_name = $this->fakeUnique('words', 3, true);
+        $new_name = '';
+        $old_description = $this->fakeUnique('sentence');
+        $new_description = $this->fakeUnique('sentence');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+            'name' => $old_name,
+            'description' => $old_description,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'name' => $new_name,
+            'description' => $new_description,
+        ]);
+
+        $this->assertResponse($response, 400, 'The name is required');
+        $db_collection = $collection_dao->listAll()[0];
+        $this->assertSame($old_name, $db_collection['name']);
+        $this->assertSame($old_description, $db_collection['description']);
+    }
+
+    public function testUpdateFailsIfCollectionDoesNotExist()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $new_name = $this->fakeUnique('words', 3, true);
+        $new_description = $this->fakeUnique('sentence');
+
+        $response = $this->appRun('post', '/collections/unknown/edit', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'name' => $new_name,
+            'description' => $new_description,
+        ]);
+
+        $this->assertResponse($response, 404);
+    }
+
+    public function testUpdateFailsIfCollectionIsNotOwnedByCurrentUser()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_dao = new models\dao\Collection();
+        $old_name = $this->fakeUnique('words', 3, true);
+        $new_name = $this->fakeUnique('words', 3, true);
+        $old_description = $this->fakeUnique('sentence');
+        $new_description = $this->fakeUnique('sentence');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'name' => $old_name,
+            'description' => $old_description,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'name' => $new_name,
+            'description' => $new_description,
+        ]);
+
+        $this->assertResponse($response, 404);
+        $db_collection = $collection_dao->listAll()[0];
+        $this->assertSame($old_name, $db_collection['name']);
+        $this->assertSame($old_description, $db_collection['description']);
+    }
+
+    public function testUpdateFailsIfCollectionIsNotOfCorrectType()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $old_name = $this->fakeUnique('words', 3, true);
+        $new_name = $this->fakeUnique('words', 3, true);
+        $old_description = $this->fakeUnique('sentence');
+        $new_description = $this->fakeUnique('sentence');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+            'name' => $old_name,
+            'description' => $old_description,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'name' => $new_name,
+            'description' => $new_description,
+        ]);
+
+        $this->assertResponse($response, 404);
+        $db_collection = $collection_dao->listAll()[0];
+        $this->assertSame($old_name, $db_collection['name']);
+        $this->assertSame($old_description, $db_collection['description']);
+    }
+
     public function testShowBookmarksRendersCorrectly()
     {
         $user = $this->login();
