@@ -6,6 +6,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
+    use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
@@ -486,6 +487,119 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $db_collection = $collection_dao->listAll()[0];
         $this->assertSame($old_name, $db_collection['name']);
         $this->assertSame($old_description, $db_collection['description']);
+    }
+
+    public function testDeleteDeletesCollectionAndRedirects()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => "/collections/{$collection_id}/edit",
+        ]);
+
+        $this->assertResponse($response, 302, '/collections');
+        $this->assertFalse($collection_dao->exists($collection_id));
+    }
+
+    public function testDeleteRedirectsIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $collection_dao = new models\dao\Collection();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => "/collections/{$collection_id}/edit",
+        ]);
+
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}%2Fedit");
+        $this->assertTrue($collection_dao->exists($collection_id));
+    }
+
+    public function testDeleteFailsIfCollectionDoesNotExist()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('post', '/collections/unknown/delete', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => "/collections/{$collection_id}/edit",
+        ]);
+
+        $this->assertResponse($response, 302, "/collections/{$collection_id}/edit");
+        $this->assertTrue($collection_dao->exists($collection_id));
+        $this->assertFlash('error', 'This collection doesn’t exist.');
+    }
+
+    public function testDeleteFailsIfCollectionIsNotOwnedByCurrentUser()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_dao = new models\dao\Collection();
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => "/collections/{$collection_id}/edit",
+        ]);
+
+        $this->assertResponse($response, 302, "/collections/{$collection_id}/edit");
+        $this->assertTrue($collection_dao->exists($collection_id));
+        $this->assertFlash('error', 'This collection doesn’t exist.');
+    }
+
+    public function testDeleteFailsIfCollectionIsNotOfCorrectType()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => "/collections/{$collection_id}/edit",
+        ]);
+
+        $this->assertResponse($response, 302, "/collections/{$collection_id}/edit");
+        $this->assertTrue($collection_dao->exists($collection_id));
+        $this->assertFlash('error', 'This collection doesn’t exist.');
+    }
+
+    public function testDeleteFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+            'csrf' => 'not the token',
+            'from' => "/collections/{$collection_id}/edit",
+        ]);
+
+        $this->assertResponse($response, 302, "/collections/{$collection_id}/edit");
+        $this->assertTrue($collection_dao->exists($collection_id));
+        $this->assertFlash('error', 'A security verification failed.');
     }
 
     public function testShowBookmarksRendersCorrectly()

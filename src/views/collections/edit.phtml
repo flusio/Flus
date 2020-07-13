@@ -71,3 +71,24 @@
         </div>
     </form>
 </div>
+
+<hr />
+
+<div class="section">
+    <form
+        method="post"
+        action="<?= url('delete collection', ['id' => $collection->id]) ?>"
+        data-controller="confirmation"
+        data-action="confirmation#confirm"
+        data-message="<?= _('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.') ?>"
+    >
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="from" value="<?= url('edit collection', ['id' => $collection->id]) ?>" />
+
+        <div class="form__actions form__actions--centered">
+            <button type="submit">
+                <?= _('Delete the collection') ?>
+            </button>
+        </div>
+    </form>
+</div>

@@ -280,6 +280,54 @@ class Collections
     }
 
     /**
+     * Delete a collection
+     *
+     * @request_param string id
+     * @request_param string from default is /collections/:id/edit
+     *
+     * @response 302 /login?redirect_to=:from if not connected
+     * @response 302 :from if the collection doesn’t exist or user hasn't access
+     * @response 302 :from if csrf is invalid
+     * @response 302 /collections
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function delete($request)
+    {
+        $id = $request->param('id');
+        $from = $request->param('from', \Minz\Url::for('edit collection', ['id' => $id]));
+        $user = utils\CurrentUser::get();
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => $from,
+            ]);
+        }
+
+        $collection_dao = new models\dao\Collection();
+        $db_collection = $collection_dao->findBy([
+            'id' => $id,
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        if (!$db_collection) {
+            utils\Flash::set('error', _('This collection doesn’t exist.'));
+            return Response::found($from);
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $collection_dao->delete($id);
+
+        return Response::redirect('collections');
+    }
+
+    /**
      * Show the bookmarks page
      *
      * @response 302 /login?redirect_to=/bookmarks if not connected

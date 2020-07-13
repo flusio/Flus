@@ -67,6 +67,7 @@ class Application
         $router->addRoute('get', '/collections/:id', 'Collections#show', 'collection');
         $router->addRoute('get', '/collections/:id/edit', 'Collections#edit', 'edit collection');
         $router->addRoute('post', '/collections/:id/edit', 'Collections#update', 'update collection');
+        $router->addRoute('post', '/collections/:id/delete', 'Collections#delete', 'delete collection');
 
         $router->addRoute('get', '/bookmarks', 'Collections#showBookmarks', 'bookmarks');
 

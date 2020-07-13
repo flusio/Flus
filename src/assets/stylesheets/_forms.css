@@ -123,6 +123,10 @@ select:focus {
     justify-content: space-between;
 }
 
+.form__actions--centered {
+    justify-content: center;
+}
+
 .form__error {
     margin-top: var(--space-small);
     margin-bottom: var(--space-large);
