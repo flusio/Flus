@@ -36,4 +36,18 @@
             <?= _('open') ?>
         </a>
     </p>
+
+    <section class="subsection">
+        <header class="subsection__header">
+            <h2 class="subsection__title"><?= _('Collections') ?></h2>
+        </header>
+
+        <ul class="list list--no-style">
+            <?php foreach ($collections as $collection): ?>
+                <li class="list__item icon <?= $collection->type === 'bookmarks' ? 'icon--bookmark' : 'icon--collection' ?>">
+                    <?= $this->protect($collection->name) ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </section>
 </div>

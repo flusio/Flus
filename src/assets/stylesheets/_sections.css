@@ -61,3 +61,12 @@
     font-style: italic;
     text-align: center;
 }
+
+.subsection {
+    margin-top: var(--space-larger);
+}
+
+.subsection__title {
+    font-family: var(--font-family-title);
+    letter-spacing: 0.01em;
+}

@@ -38,7 +38,6 @@ class Links
         }
 
         $link = $user->link($link_id);
-
         if (!$link) {
             return Response::notFound('not_found.phtml');
         }
@@ -49,8 +48,23 @@ class Links
             ]);
         }
 
+        $collections = $link->collections();
+        $collator = new \Collator($user->locale);
+        usort($collections, function ($collection1, $collection2) use ($collator) {
+            if ($collection1->type === 'bookmarks') {
+                return -1;
+            }
+
+            if ($collection2->type === 'bookmarks') {
+                return 1;
+            }
+
+            return $collator->compare($collection1->name, $collection2->name);
+        });
+
         return Response::ok('links/show.phtml', [
             'link' => $link,
+            'collections' => $collections,
         ]);
     }
 
