@@ -1,0 +1,42 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Link collections'),
+        'canonical' => url_full('link collections', ['id' => $link->id]),
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title section__title--nolowercase">
+        <h1><?= _('Link collections') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= $this->protect($link->url) ?>
+    </p>
+
+    <form method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
+        <div class="form-group">
+            <?php foreach ($collections as $collection): ?>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="collections[]"
+                        value="<?= $collection->id ?>"
+                        <?= $collection->attachedToLink ? 'checked' : '' ?>
+                    />
+                    <?= $this->protect($collection->name) ?>
+                </label>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Update') ?>
+            </button>
+
+            <a href="<?= url('link', ['id' => $link->id]) ?>">
+                <?= _('Cancel and go back to the link') ?>
+            </a>
+        </div>
+    </form>
+</div>

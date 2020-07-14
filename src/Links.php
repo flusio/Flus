@@ -49,18 +49,7 @@ class Links
         }
 
         $collections = $link->collections();
-        $collator = new \Collator($user->locale);
-        usort($collections, function ($collection1, $collection2) use ($collator) {
-            if ($collection1->type === 'bookmarks') {
-                return -1;
-            }
-
-            if ($collection2->type === 'bookmarks') {
-                return 1;
-            }
-
-            return $collator->compare($collection1->name, $collection2->name);
-        });
+        models\Collection::sort($collections, $user->locale);
 
         return Response::ok('links/show.phtml', [
             'link' => $link,
@@ -141,7 +130,7 @@ class Links
         $existing_collection_ids = array_column($existing_collections, 'id');
         $collection_ids = array_diff($collection_ids, $existing_collection_ids);
         if ($collection_ids) {
-            $links_to_collections_dao->attachCollectionsToLink($link->id, $collection_ids);
+            $links_to_collections_dao->attach($link->id, $collection_ids);
         }
 
         return Response::redirect('link', [
@@ -354,6 +343,102 @@ class Links
         return Response::ok('links/show_fetch.phtml', [
             'link' => $link,
         ]);
+    }
+
+    /**
+     * Show the page to update the link collections
+     *
+     * @request_param string id
+     *
+     * @response 302 /login?redirect_to=/links/:id/collections
+     * @response 404 if the link is not found
+     * @response 200
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function collections($request)
+    {
+        $user = utils\CurrentUser::get();
+        $link_id = $request->param('id');
+
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('link collections', ['id' => $link_id]),
+            ]);
+        }
+
+        $link = $user->link($link_id);
+        if (!$link) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $collections = $user->collections();
+        $link_collection_ids = array_column($link->collections(), 'id');
+        foreach ($collections as $collection) {
+            if (in_array($collection->id, $link_collection_ids)) {
+                $collection->attachedToLink = true;
+            } else {
+                $collection->attachedToLink = false;
+            }
+        }
+
+        models\Collection::sort($collections, $user->locale);
+
+        return Response::ok('links/collections.phtml', [
+            'link' => $link,
+            'collections' => $collections,
+        ]);
+    }
+
+    /**
+     * Update the link collections list
+     *
+     * @request_param string csrf
+     * @request_param string id
+     * @request_param string[] collections
+     *
+     * @response 302 /login?redirect_to=/links/:id/collections
+     * @response 404 if the link is not found
+     * @response 400 if csrf token is invalid
+     * @response 302 /links/:id
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function updateCollections($request)
+    {
+        $user = utils\CurrentUser::get();
+        $link_id = $request->param('id');
+        $new_collection_ids = $request->param('collections', []);
+
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('link collections', ['id' => $link_id]),
+            ]);
+        }
+
+        $link = $user->link($link_id);
+        if (!$link) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $old_collection_ids = array_column($link->collections(), 'id');
+
+        $ids_to_attach = array_diff($new_collection_ids, $old_collection_ids);
+        if ($ids_to_attach) {
+            $links_to_collections_dao->attach($link->id, $ids_to_attach);
+        }
+
+        $ids_to_detach = array_diff($old_collection_ids, $new_collection_ids);
+        if ($ids_to_detach) {
+            $links_to_collections_dao->detach($link->id, $ids_to_detach);
+        }
+
+        return Response::redirect('link', ['id' => $link->id]);
     }
 
     /**

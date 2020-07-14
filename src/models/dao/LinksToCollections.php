@@ -27,7 +27,7 @@ class LinksToCollections extends \Minz\DatabaseModel
      *
      * @return boolean True on success
      */
-    public function attachCollectionsToLink($link_id, $collection_ids)
+    public function attach($link_id, $collection_ids)
     {
         $values_as_question_marks = [];
         $values = [];
@@ -45,6 +45,33 @@ class LinksToCollections extends \Minz\DatabaseModel
         $statement = $this->prepare($sql);
         $result = $statement->execute($values);
         return $this->lastInsertId();
+    }
+
+    /**
+     * Detach the collections from the given link.
+     *
+     * @param string $link_id
+     * @param string[] $collection_ids
+     *
+     * @return boolean True on success
+     */
+    public function detach($link_id, $collection_ids)
+    {
+        $values_as_question_marks = [];
+        $values = [];
+        foreach ($collection_ids as $collection_id) {
+            $values_as_question_marks[] = '(link_id = ? AND collection_id = ?)';
+            $values = array_merge($values, [$link_id, $collection_id]);
+        }
+        $values_placeholder = implode(' OR ', $values_as_question_marks);
+
+        $sql = <<<SQL
+            DELETE FROM links_to_collections
+            WHERE {$values_placeholder};
+        SQL;
+
+        $statement = $this->prepare($sql);
+        return $statement->execute($values);
     }
 
     /**

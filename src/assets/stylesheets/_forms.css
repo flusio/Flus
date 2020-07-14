@@ -30,6 +30,11 @@ textarea {
     min-height: 15rem;
 }
 
+input[type="checkbox"],
+input[type="radio"] {
+    width: auto;
+}
+
 .form-group--invalid input,
 .form-group--invalid textarea {
     border-color: var(--border-error-color);

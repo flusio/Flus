@@ -78,6 +78,8 @@ class Application
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
         $router->addRoute('get', '/links/:id/fetch', 'Links#showFetch', 'show fetch link');
         $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
+        $router->addRoute('get', '/links/:id/collections', 'Links#collections', 'link collections');
+        $router->addRoute('post', '/links/:id/collections', 'Links#updateCollections', 'update link collections');
         $router->addRoute(
             'post',
             '/links/:id/remove_collection',

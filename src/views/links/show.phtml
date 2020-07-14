@@ -38,8 +38,16 @@
     </p>
 
     <section class="subsection">
-        <header class="subsection__header">
-            <h2 class="subsection__title"><?= _('Collections') ?></h2>
+        <header class="subsection__header header">
+            <div class="header__container">
+                <h2 class="subsection__title"><?= _('Collections') ?></h2>
+
+                <div class="header__separator"></div>
+
+                <a class="anchor--action" href="<?= url('link collections', ['id' => $link->id]) ?>">
+                    <?= _('Manage') ?>
+                </a>
+            </div>
         </header>
 
         <ul class="list list--no-style">

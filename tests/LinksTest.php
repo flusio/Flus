@@ -766,6 +766,187 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_title, $db_link['title']);
     }
 
+    public function testCollectionsRendersCorrectly()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('words', 3, true);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $collection_id_1 = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $collection_id_2 = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $collection_id_3 = $this->create('collection', [
+            'user_id' => $user->id,
+            'name' => $collection_name,
+            'type' => 'collection',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_1,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/collections");
+
+        $this->assertResponse($response, 200, $collection_name);
+        $this->assertPointer($response, 'links/collections.phtml');
+    }
+
+    public function testCollectionsRedirectsIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $collection_name = $this->fake('words', 3, true);
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+        ]);
+        $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'bookmarks',
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/collections");
+
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fcollections");
+    }
+
+    public function testCollectionsFailsIfLinkIsNotFound()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_name = $this->fake('words', 3, true);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'bookmarks',
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/collections");
+
+        $this->assertResponse($response, 404);
+    }
+
+    public function testUpdateCollectionsChangesCollectionsAndRedirects()
+    {
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $collection_id_1 = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $collection_id_2 = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_1,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'collections' => [$collection_id_2],
+        ]);
+
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link_to_collection_1 = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_1,
+        ]);
+        $link_to_collection_2 = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_2,
+        ]);
+        $this->assertNull($link_to_collection_1);
+        $this->assertNotNull($link_to_collection_2);
+    }
+
+    public function testUpdateCollectionsRedirectsIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+        ]);
+        $collection_id_1 = $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'bookmarks',
+        ]);
+        $collection_id_2 = $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'collection',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_1,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'collections' => [$collection_id_2],
+        ]);
+
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fcollections");
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link_to_collection_1 = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_1,
+        ]);
+        $link_to_collection_2 = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_2,
+        ]);
+        $this->assertNotNull($link_to_collection_1);
+        $this->assertNull($link_to_collection_2);
+    }
+
+    public function testUpdateCollectionsFailsIfLinkIsNotFound()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+        ]);
+        $collection_id_1 = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'bookmarks',
+        ]);
+        $collection_id_2 = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_1,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'collections' => [$collection_id_2],
+        ]);
+
+        $this->assertResponse($response, 404);
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link_to_collection_1 = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_1,
+        ]);
+        $link_to_collection_2 = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_2,
+        ]);
+        $this->assertNotNull($link_to_collection_1);
+        $this->assertNull($link_to_collection_2);
+    }
+
     public function testRemoveCollectionRemovesLinkFromCollection()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
