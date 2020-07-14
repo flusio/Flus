@@ -90,7 +90,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
-    public function testAddCreatesLinkAndRedirects()
+    public function testCreateCreatesLinkAndRedirects()
     {
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
@@ -122,7 +122,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_id, $link->collectionIds());
     }
 
-    public function testAddDoesNotCreateLinkIfItExists()
+    public function testCreateDoesNotCreateLinkIfItExists()
     {
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
@@ -154,7 +154,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_id, $link->collectionIds());
     }
 
-    public function testAddCreatesLinkIfItExistsForAnotherUser()
+    public function testCreateCreatesLinkIfItExistsForAnotherUser()
     {
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
@@ -187,7 +187,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_id, $link->collectionIds());
     }
 
-    public function testAddHandlesMultipleCollections()
+    public function testCreateHandlesMultipleCollections()
     {
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
@@ -227,7 +227,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_id_2, $link->collectionIds());
     }
 
-    public function testAddFailsIfNotConnected()
+    public function testCreateFailsIfNotConnected()
     {
         $link_dao = new models\dao\Link();
 
@@ -247,7 +247,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
     }
 
-    public function testAddFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid()
     {
         $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
@@ -269,7 +269,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
     }
 
-    public function testAddFailsIfUrlIsInvalid()
+    public function testCreateFailsIfUrlIsInvalid()
     {
         $link_dao = new models\dao\Link();
 
@@ -290,7 +290,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
     }
 
-    public function testAddFailsIfUrlIsMissing()
+    public function testCreateFailsIfUrlIsMissing()
     {
         $link_dao = new models\dao\Link();
 
@@ -310,7 +310,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
     }
 
-    public function testAddFailsIfCollectionDoesNotExist()
+    public function testCreateFailsIfCollectionDoesNotExist()
     {
         $link_dao = new models\dao\Link();
 
@@ -328,7 +328,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
     }
 
-    public function testAddFailsIfCollectionIsMissing()
+    public function testCreateFailsIfCollectionIsMissing()
     {
         $link_dao = new models\dao\Link();
 
@@ -346,7 +346,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
     }
 
-    public function testShowUpdateRendersCorrectly()
+    public function testEditRendersCorrectly()
     {
         $user = $this->login();
         $link_id = $this->create('link', [
@@ -357,10 +357,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', "/links/{$link_id}/edit");
 
         $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'links/show_update.phtml');
+        $this->assertPointer($response, 'links/edit.phtml');
     }
 
-    public function testShowUpdateRedirectsIfNotFetched()
+    public function testEditRedirectsIfNotFetched()
     {
         $user = $this->login();
         $link_id = $this->create('link', [
@@ -373,7 +373,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, "/links/{$link_id}/fetch");
     }
 
-    public function testShowUpdateFailsIfNotConnected()
+    public function testEditFailsIfNotConnected()
     {
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
@@ -386,7 +386,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
     }
 
-    public function testShowUpdateFailsIfTheLinkDoesNotExist()
+    public function testEditFailsIfTheLinkDoesNotExist()
     {
         $user = $this->login();
 
@@ -395,7 +395,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
-    public function testShowUpdateFailsIfUserDoesNotOwnTheLink()
+    public function testEditFailsIfUserDoesNotOwnTheLink()
     {
         $current_user = $this->login();
         $other_user_id = $this->create('user');

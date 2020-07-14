@@ -32,7 +32,7 @@ class Links
         $id = $request->param('id');
         if (!$current_user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show link', ['id' => $id]),
+                'redirect_to' => \Minz\Url::for('link', ['id' => $id]),
             ]);
         }
 
@@ -59,7 +59,7 @@ class Links
     }
 
     /**
-     * Add a link for the current user.
+     * Create a link for the current user.
      *
      * @request_param string csrf
      * @request_param string from default is /bookmarks
@@ -76,7 +76,7 @@ class Links
      *
      * @return \Minz\Response
      */
-    public function add($request)
+    public function create($request)
     {
         $current_user = utils\CurrentUser::get();
         $from = $request->param('from', \Minz\Url::for('bookmarks'));
@@ -134,7 +134,7 @@ class Links
             $links_to_collections_dao->attachCollectionsToLink($link->id, $collection_ids);
         }
 
-        return Response::redirect('show link', [
+        return Response::redirect('link', [
             'id' => $link->id,
         ]);
     }
@@ -153,13 +153,13 @@ class Links
      *
      * @return \Minz\Response
      */
-    public function showUpdate($request)
+    public function edit($request)
     {
         $current_user = utils\CurrentUser::get();
         $id = $request->param('id');
         if (!$current_user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show update link', ['id' => $id]),
+                'redirect_to' => \Minz\Url::for('edit link', ['id' => $id]),
             ]);
         }
 
@@ -180,7 +180,7 @@ class Links
             ]);
         }
 
-        return Response::ok('links/show_update.phtml', [
+        return Response::ok('links/edit.phtml', [
             'link' => $link,
             'title' => $link->title,
         ]);
@@ -208,7 +208,7 @@ class Links
         $link_id = $request->param('id');
         if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show update link', ['id' => $link_id]),
+                'redirect_to' => \Minz\Url::for('edit link', ['id' => $link_id]),
             ]);
         }
 
@@ -227,7 +227,7 @@ class Links
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('links/show_update.phtml', [
+            return Response::badRequest('links/edit.phtml', [
                 'link' => $link,
                 'title' => $new_title,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -237,7 +237,7 @@ class Links
         $link->title = trim($new_title);
         $errors = $link->validate();
         if ($errors) {
-            return Response::badRequest('links/show_update.phtml', [
+            return Response::badRequest('links/edit.phtml', [
                 'link' => $link,
                 'title' => $new_title,
                 'errors' => $errors,
@@ -246,7 +246,7 @@ class Links
 
         $link_dao->save($link);
 
-        return Response::redirect('show link', ['id' => $link_id]);
+        return Response::redirect('link', ['id' => $link_id]);
     }
 
     /**

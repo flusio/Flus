@@ -1,7 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => $link->title,
-        'canonical' => url_full('show link', ['id' => $link->id]),
+        'canonical' => url_full('link', ['id' => $link->id]),
     ]);
 ?>
 
@@ -11,7 +11,7 @@
     </div>
 
     <p class="link__details paragraph--centered">
-        <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>&nbsp;·&nbsp;<a href="<?= url('show update link', ['id' => $link->id]) ?>"><?= _('edit') ?></a>
+        <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>&nbsp;·&nbsp;<a href="<?= url('edit link', ['id' => $link->id]) ?>"><?= _('edit') ?></a>
     </p>
 
     <p class="paragraph--centered">

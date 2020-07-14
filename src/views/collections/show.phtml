@@ -31,7 +31,7 @@
         <?= $this->protect($collection->description) ?>
     </p>
 
-    <form method="post" action="<?= url('add link') ?>">
+    <form method="post" action="<?= url('create link') ?>">
         <?php if ($error): ?>
             <p class="form__error">
                 <?= $error ?>
@@ -91,7 +91,7 @@
                         </button>
                     </form>
 
-                    <a class="anchor--action" href="<?= url('show link', ['id' => $link->id]) ?>">
+                    <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
                         <?= _('see') ?>
                     </a>
                 </div>

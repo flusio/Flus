@@ -57,8 +57,8 @@ class Application
         // Account
         $router->addRoute('get', '/account', 'Accounts#show', 'account');
         $router->addRoute('post', '/account', 'Accounts#update', 'update account');
-        $router->addRoute('get', '/account/deletion', 'Accounts#deletion', 'account deletion');
-        $router->addRoute('post', '/account/deletion', 'Accounts#delete', 'delete account');
+        $router->addRoute('get', '/account/delete', 'Accounts#showDelete', 'show delete account');
+        $router->addRoute('post', '/account/delete', 'Accounts#delete', 'delete account');
 
         // Collections
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');
@@ -72,9 +72,9 @@ class Application
         $router->addRoute('get', '/bookmarks', 'Collections#showBookmarks', 'bookmarks');
 
         // Links
-        $router->addRoute('post', '/links', 'Links#add', 'add link');
-        $router->addRoute('get', '/links/:id', 'Links#show', 'show link');
-        $router->addRoute('get', '/links/:id/edit', 'Links#showUpdate', 'show update link');
+        $router->addRoute('post', '/links', 'Links#create', 'create link');
+        $router->addRoute('get', '/links/:id', 'Links#show', 'link');
+        $router->addRoute('get', '/links/:id/edit', 'Links#edit', 'edit link');
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
         $router->addRoute('get', '/links/:id/fetch', 'Links#showFetch', 'show fetch link');
         $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');

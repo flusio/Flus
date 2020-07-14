@@ -190,21 +190,21 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en_GB', $user->locale);
     }
 
-    public function testDeletionRendersCorrectly()
+    public function testShowDeleteRendersCorrectly()
     {
         $this->login();
 
-        $response = $this->appRun('get', '/account/deletion');
+        $response = $this->appRun('get', '/account/delete');
 
         $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'accounts/deletion.phtml');
+        $this->assertPointer($response, 'accounts/delete.phtml');
     }
 
-    public function testDeletionRedirectsToLoginIfUserNotConnected()
+    public function testShowDeleteRedirectsToLoginIfUserNotConnected()
     {
-        $response = $this->appRun('get', '/account/deletion');
+        $response = $this->appRun('get', '/account/delete');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdeletion');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdelete');
     }
 
     public function testDeleteRedirectsToLoginAndDeletesTheUser()
@@ -216,7 +216,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/account/deletion', [
+        $response = $this->appRun('post', '/account/delete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => $password,
         ]);
@@ -229,12 +229,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteRedirectsToLoginIfUserIsNotConnected()
     {
-        $response = $this->appRun('post', '/account/deletion', [
+        $response = $this->appRun('post', '/account/delete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdeletion');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdelete');
     }
 
     public function testDeleteDeletesSessionsAssociatedToTheUser()
@@ -249,7 +249,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, $session_dao->count());
 
-        $response = $this->appRun('post', '/account/deletion', [
+        $response = $this->appRun('post', '/account/delete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => $password,
         ]);
@@ -266,7 +266,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/account/deletion', [
+        $response = $this->appRun('post', '/account/delete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => 'not the password',
         ]);
@@ -285,7 +285,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
         (new \Minz\CSRF())->generateToken();
 
-        $response = $this->appRun('post', '/account/deletion', [
+        $response = $this->appRun('post', '/account/delete', [
             'csrf' => 'not the token',
             'password' => $password,
         ]);
@@ -305,7 +305,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/account/deletion', [
+        $response = $this->appRun('post', '/account/delete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => $password,
         ]);

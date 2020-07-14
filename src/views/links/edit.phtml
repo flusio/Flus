@@ -1,7 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Link edition'),
-        'canonical' => url_full('show update link', ['id' => $link->id]),
+        'canonical' => url_full('edit link', ['id' => $link->id]),
     ]);
 ?>
 
@@ -49,7 +49,7 @@
                 <?= _('Update') ?>
             </button>
 
-            <a href="<?= url('show link', ['id' => $link->id]) ?>">
+            <a href="<?= url('link', ['id' => $link->id]) ?>">
                 <?= _('Cancel and go back to the link') ?>
             </a>
         </div>

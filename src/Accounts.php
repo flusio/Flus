@@ -101,22 +101,22 @@ class Accounts
     }
 
     /**
-     * Show the deletion form.
+     * Show the delete form.
      *
-     * @response 302 /login?redirect_to=/account/deletion if the user is not connected
+     * @response 302 /login?redirect_to=/account/delete if the user is not connected
      * @response 200
      *
      * @return \Minz\Response
      */
-    public function deletion()
+    public function showDelete()
     {
         if (!utils\CurrentUser::get()) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('account deletion'),
+                'redirect_to' => \Minz\Url::for('show delete account'),
             ]);
         }
 
-        return Response::ok('accounts/deletion.phtml');
+        return Response::ok('accounts/delete.phtml');
     }
 
     /**
@@ -125,7 +125,7 @@ class Accounts
      * @request_param string csrf
      * @request_param string password
      *
-     * @response 302 /login?redirect_to=/account/deletion if the user is not connected
+     * @response 302 /login?redirect_to=/account/delete if the user is not connected
      * @response 400 if CSRF token or password is wrong
      * @response 400 if trying to delete the demo account if demo is enabled
      * @response 302 /login
@@ -139,20 +139,20 @@ class Accounts
         $current_user = utils\CurrentUser::get();
         if (!$current_user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('account deletion'),
+                'redirect_to' => \Minz\Url::for('show delete account'),
             ]);
         }
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('accounts/deletion.phtml', [
+            return Response::badRequest('accounts/delete.phtml', [
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
         $password = $request->param('password');
         if (!$current_user->verifyPassword($password)) {
-            return Response::badRequest('accounts/deletion.phtml', [
+            return Response::badRequest('accounts/delete.phtml', [
                 'errors' => [
                     'password_hash' => _('The password is incorrect.'),
                 ],
@@ -161,7 +161,7 @@ class Accounts
 
         $demo = \Minz\Configuration::$application['demo'];
         if ($demo && $current_user->email === 'demo@flus.io') {
-            return Response::badRequest('accounts/deletion.phtml', [
+            return Response::badRequest('accounts/delete.phtml', [
                 'error' => _('Sorry but you cannot delete the demo account 😉'),
             ]);
         }
