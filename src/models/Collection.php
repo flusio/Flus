@@ -82,6 +82,22 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return the list of links attached to this collection
+     *
+     * @return \flusio\models\Link[]
+     */
+    public function links()
+    {
+        $link_dao = new dao\Link();
+        $db_links = $link_dao->listByCollectionId($this->id);
+        $links = [];
+        foreach ($db_links as $db_link) {
+            $links[] = new Link($db_link);
+        }
+        return $links;
+    }
+
+    /**
      * @param string $type
      * @return boolean
      */

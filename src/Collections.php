@@ -31,14 +31,7 @@ class Collections
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
-        $db_collections = $collection_dao->listWithNumberLinksForUser($user->id);
-
-        $collections = [];
-        foreach ($db_collections as $db_collection) {
-            $collections[] = new models\Collection($db_collection);
-        }
-
+        $collections = $user->collectionsWithNumberLinks();
         $collator = new \Collator($user->locale);
         usort($collections, function ($collection1, $collection2) use ($collator) {
             return $collator->compare($collection1->name, $collection2->name);
@@ -140,37 +133,24 @@ class Collections
      */
     public function show($request)
     {
-        $current_user = utils\CurrentUser::get();
-        $id = $request->param('id');
-        if (!$current_user) {
+        $user = utils\CurrentUser::get();
+        $collection_id = $request->param('id');
+
+        if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('collection', ['id' => $id]),
+                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
-        $link_dao = new models\dao\Link();
-        $db_collection = $collection_dao->findBy([
-            'id' => $id,
-            'user_id' => $current_user->id,
-            'type' => 'collection',
-        ]);
-        if (!$db_collection) {
+        $collection = $user->collection($collection_id);
+        if ($collection) {
+            return Response::ok('collections/show.phtml', [
+                'collection' => $collection,
+                'links' => $collection->links(),
+            ]);
+        } else {
             return Response::notFound('not_found.phtml');
         }
-
-        $collection = new models\Collection($db_collection);
-
-        $links = [];
-        $db_links = $link_dao->listByCollectionId($collection->id);
-        foreach ($db_links as $db_link) {
-            $links[] = new models\Link($db_link);
-        }
-
-        return Response::ok('collections/show.phtml', [
-            'collection' => $collection,
-            'links' => $links,
-        ]);
     }
 
     /**
@@ -189,29 +169,24 @@ class Collections
     public function edit($request)
     {
         $user = utils\CurrentUser::get();
-        $id = $request->param('id');
+        $collection_id = $request->param('id');
+
         if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('edit collection', ['id' => $id]),
+                'redirect_to' => \Minz\Url::for('edit collection', ['id' => $collection_id]),
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
-        $db_collection = $collection_dao->findBy([
-            'id' => $id,
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
-        if (!$db_collection) {
+        $collection = $user->collection($collection_id);
+        if ($collection) {
+            return Response::ok('collections/edit.phtml', [
+                'collection' => $collection,
+                'name' => $collection->name,
+                'description' => $collection->description,
+            ]);
+        } else {
             return Response::notFound('not_found.phtml');
         }
-
-        $collection = new models\Collection($db_collection);
-        return Response::ok('collections/edit.phtml', [
-            'collection' => $collection,
-            'name' => $collection->name,
-            'description' => $collection->description,
-        ]);
     }
 
     /**
@@ -231,24 +206,19 @@ class Collections
     public function update($request)
     {
         $user = utils\CurrentUser::get();
-        $id = $request->param('id');
+        $collection_id = $request->param('id');
+
         if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('edit collection', ['id' => $id]),
+                'redirect_to' => \Minz\Url::for('edit collection', ['id' => $collection_id]),
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
-        $db_collection = $collection_dao->findBy([
-            'id' => $id,
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
-        if (!$db_collection) {
+        $collection = $user->collection($collection_id);
+        if (!$collection) {
             return Response::notFound('not_found.phtml');
         }
 
-        $collection = new models\Collection($db_collection);
         $name = $request->param('name', '');
         $description = $request->param('description', '');
 
@@ -274,6 +244,7 @@ class Collections
             ]);
         }
 
+        $collection_dao = new models\dao\Collection();
         $collection_dao->save($collection);
 
         return Response::redirect('collection', ['id' => $collection->id]);
@@ -296,22 +267,18 @@ class Collections
      */
     public function delete($request)
     {
-        $id = $request->param('id');
-        $from = $request->param('from', \Minz\Url::for('edit collection', ['id' => $id]));
         $user = utils\CurrentUser::get();
+        $collection_id = $request->param('id');
+        $from = $request->param('from', \Minz\Url::for('edit collection', ['id' => $collection_id]));
+
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
-        $db_collection = $collection_dao->findBy([
-            'id' => $id,
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
-        if (!$db_collection) {
+        $collection = $user->collection($collection_id);
+        if (!$collection) {
             utils\Flash::set('error', _('This collection doesn’t exist.'));
             return Response::found($from);
         }
@@ -322,7 +289,8 @@ class Collections
             return Response::found($from);
         }
 
-        $collection_dao->delete($id);
+        $collection_dao = new models\dao\Collection();
+        $collection_dao->delete($collection->id);
 
         return Response::redirect('collections');
     }
@@ -340,37 +308,24 @@ class Collections
      */
     public function showBookmarks()
     {
-        $current_user = utils\CurrentUser::get();
-        if (!$current_user) {
+        $user = utils\CurrentUser::get();
+        if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('bookmarks'),
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
-        $link_dao = new models\dao\Link();
-        $db_bookmarks_collection = $collection_dao->findBy([
-            'user_id' => $current_user->id,
-            'type' => 'bookmarks',
-        ]);
-        if (!$db_bookmarks_collection) {
-            \Minz\Log::error("User {$current_user->id} has no Bookmarks collection.");
+        $bookmarks = $user->bookmarks();
+        if (!$bookmarks) {
+            \Minz\Log::error("User {$user->id} has no Bookmarks collection.");
             return Response::notFound('not_found.phtml', [
                 'details' => _('It looks like you have no “Bookmarks” collection, you should contact the support.'),
             ]);
         }
 
-        $bookmarks_collection = new models\Collection($db_bookmarks_collection);
-
-        $links = [];
-        $db_links = $link_dao->listByCollectionId($bookmarks_collection->id);
-        foreach ($db_links as $db_link) {
-            $links[] = new models\Link($db_link);
-        }
-
         return Response::ok('collections/show_bookmarks.phtml', [
-            'collection' => $bookmarks_collection,
-            'links' => $links,
+            'collection' => $bookmarks,
+            'links' => $bookmarks->links(),
         ]);
     }
 }

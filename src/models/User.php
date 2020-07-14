@@ -65,6 +65,80 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the given link if attached to the current user
+     *
+     * @return \flusio\models\Link|null
+     */
+    public function link($link_id)
+    {
+        $link_dao = new dao\Link();
+        $db_link = $link_dao->findBy([
+            'id' => $link_id,
+            'user_id' => $this->id,
+        ]);
+        if ($db_link) {
+            return new Link($db_link);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Return the user' bookmarks collection
+     *
+     * @return \flusio\models\Collection|null
+     */
+    public function bookmarks()
+    {
+        $collection_dao = new dao\Collection();
+        $db_collection = $collection_dao->findBy([
+            'user_id' => $this->id,
+            'type' => 'bookmarks',
+        ]);
+        if ($db_collection) {
+            return new Collection($db_collection);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Return the given collection if attached to the current user
+     *
+     * @return \flusio\models\Collection|null
+     */
+    public function collection($collection_id)
+    {
+        $collection_dao = new dao\Collection();
+        $db_collection = $collection_dao->findBy([
+            'id' => $collection_id,
+            'user_id' => $this->id,
+            'type' => 'collection',
+        ]);
+        if ($db_collection) {
+            return new Collection($db_collection);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Return the list of collections created by the user
+     *
+     * @return \flusio\models\Collection[]
+     */
+    public function collectionsWithNumberLinks()
+    {
+        $collection_dao = new dao\Collection();
+        $db_collections = $collection_dao->listWithNumberLinksForUser($this->id);
+        $collections = [];
+        foreach ($db_collections as $db_collection) {
+            $collections[] = new Collection($db_collection);
+        }
+        return $collections;
+    }
+
+    /**
      * Compare a password to the stored hash.
      *
      * @param string $password

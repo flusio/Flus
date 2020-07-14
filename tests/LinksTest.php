@@ -360,19 +360,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'links/edit.phtml');
     }
 
-    public function testEditRedirectsIfNotFetched()
-    {
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'fetched_at' => null,
-        ]);
-
-        $response = $this->appRun('get', "/links/{$link_id}/edit");
-
-        $this->assertResponse($response, 302, "/links/{$link_id}/fetch");
-    }
-
     public function testEditFailsIfNotConnected()
     {
         $user_id = $this->create('user');

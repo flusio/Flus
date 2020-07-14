@@ -28,25 +28,21 @@ class Links
      */
     public function show($request)
     {
-        $current_user = utils\CurrentUser::get();
-        $id = $request->param('id');
-        if (!$current_user) {
+        $user = utils\CurrentUser::get();
+        $link_id = $request->param('id');
+
+        if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('link', ['id' => $id]),
+                'redirect_to' => \Minz\Url::for('link', ['id' => $link_id]),
             ]);
         }
 
-        $link_dao = new models\dao\Link();
-        $db_link = $link_dao->findBy([
-            'id' => $id,
-            'user_id' => $current_user->id,
-        ]);
+        $link = $user->link($link_id);
 
-        if (!$db_link) {
+        if (!$link) {
             return Response::notFound('not_found.phtml');
         }
 
-        $link = new models\Link($db_link);
         if (!$link->fetched_at) {
             return Response::redirect('show fetch link', [
                 'id' => $link->id,
@@ -78,10 +74,12 @@ class Links
      */
     public function create($request)
     {
-        $current_user = utils\CurrentUser::get();
+        $user = utils\CurrentUser::get();
         $from = $request->param('from', \Minz\Url::for('bookmarks'));
+        $url = $request->param('url');
+        $collection_ids = $request->param('collection_ids', []);
 
-        if (!$current_user) {
+        if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
@@ -97,11 +95,8 @@ class Links
         $link_dao = new models\dao\Link();
         $collection_dao = new models\dao\Collection();
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $url = $request->param('url');
-        $collection_ids = $request->param('collection_ids', []);
 
-        $link = models\Link::init($url, $current_user->id);
-
+        $link = models\Link::init($url, $user->id);
         $errors = $link->validate();
         if ($errors) {
             utils\Flash::set('errors', ['url' => $errors['url']]);
@@ -120,7 +115,7 @@ class Links
 
         $existing_db_link = $link_dao->findBy([
             'url' => $link->url,
-            'user_id' => $current_user->id,
+            'user_id' => $user->id,
         ]);
         if ($existing_db_link) {
             $link = new models\Link($existing_db_link);
@@ -146,7 +141,6 @@ class Links
      *
      * @response 302 /login?redirect_to=/links/:id/edit if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
-     * @response 302 /links/:id/fetch if the link is not fetched yet
      * @response 200
      *
      * @param \Minz\Request $request
@@ -155,35 +149,24 @@ class Links
      */
     public function edit($request)
     {
-        $current_user = utils\CurrentUser::get();
-        $id = $request->param('id');
-        if (!$current_user) {
+        $user = utils\CurrentUser::get();
+        $link_id = $request->param('id');
+
+        if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('edit link', ['id' => $id]),
+                'redirect_to' => \Minz\Url::for('edit link', ['id' => $link_id]),
             ]);
         }
 
-        $link_dao = new models\dao\Link();
-        $db_link = $link_dao->findBy([
-            'id' => $id,
-            'user_id' => $current_user->id,
-        ]);
-
-        if (!$db_link) {
+        $link = $user->link($link_id);
+        if ($link) {
+            return Response::ok('links/edit.phtml', [
+                'link' => $link,
+                'title' => $link->title,
+            ]);
+        } else {
             return Response::notFound('not_found.phtml');
         }
-
-        $link = new models\Link($db_link);
-        if (!$link->fetched_at) {
-            return Response::redirect('show fetch link', [
-                'id' => $link->id,
-            ]);
-        }
-
-        return Response::ok('links/edit.phtml', [
-            'link' => $link,
-            'title' => $link->title,
-        ]);
     }
 
     /**
@@ -206,24 +189,18 @@ class Links
     {
         $user = utils\CurrentUser::get();
         $link_id = $request->param('id');
+        $new_title = $request->param('title');
+
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('edit link', ['id' => $link_id]),
             ]);
         }
 
-        $new_title = $request->param('title');
-        $link_dao = new models\dao\Link();
-
-        $db_link = $link_dao->findBy([
-            'id' => $link_id,
-            'user_id' => $user->id,
-        ]);
-        if (!$db_link) {
+        $link = $user->link($link_id);
+        if (!$link) {
             return Response::notFound('not_found.phtml');
         }
-
-        $link = new models\Link($db_link);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
@@ -244,9 +221,10 @@ class Links
             ]);
         }
 
+        $link_dao = new models\dao\Link();
         $link_dao->save($link);
 
-        return Response::redirect('link', ['id' => $link_id]);
+        return Response::redirect('link', ['id' => $link->id]);
     }
 
     /**
@@ -264,28 +242,23 @@ class Links
      */
     public function showFetch($request)
     {
-        $current_user = utils\CurrentUser::get();
-        $id = $request->param('id');
-        if (!$current_user) {
+        $user = utils\CurrentUser::get();
+        $link_id = $request->param('id');
+
+        if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show fetch link', ['id' => $id]),
+                'redirect_to' => \Minz\Url::for('show fetch link', ['id' => $link_id]),
             ]);
         }
 
-        $link_dao = new models\dao\Link();
-        $db_link = $link_dao->findBy([
-            'id' => $id,
-            'user_id' => $current_user->id,
-        ]);
-
-        if (!$db_link) {
+        $link = $user->link($link_id);
+        if ($link) {
+            return Response::ok('links/show_fetch.phtml', [
+                'link' => $link,
+            ]);
+        } else {
             return Response::notFound('not_found.phtml');
         }
-
-        $link = new models\Link($db_link);
-        return Response::ok('links/show_fetch.phtml', [
-            'link' => $link,
-        ]);
     }
 
     /**
@@ -305,25 +278,19 @@ class Links
      */
     public function fetch($request)
     {
-        $current_user = utils\CurrentUser::get();
-        $id = $request->param('id');
-        if (!$current_user) {
+        $user = utils\CurrentUser::get();
+        $link_id = $request->param('id');
+
+        if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show fetch link', ['id' => $id]),
+                'redirect_to' => \Minz\Url::for('show fetch link', ['id' => $link_id]),
             ]);
         }
 
-        $link_dao = new models\dao\Link();
-        $db_link = $link_dao->findBy([
-            'id' => $id,
-            'user_id' => $current_user->id,
-        ]);
-
-        if (!$db_link) {
+        $link = $user->link($link_id);
+        if (!$link) {
             return Response::notFound('not_found.phtml');
         }
-
-        $link = new models\Link($db_link);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
@@ -366,6 +333,7 @@ class Links
         $link->fetched_code = $response->status;
         $link->fetched_at = \Minz\Time::now();
 
+        $link_dao = new models\dao\Link();
         $link_dao->save($link);
 
         return Response::ok('links/show_fetch.phtml', [
@@ -393,16 +361,16 @@ class Links
      */
     public function removeCollection($request)
     {
-        $from = $request->param('from', \Minz\Url::for('bookmarks'));
         $user = utils\CurrentUser::get();
+        $from = $request->param('from', \Minz\Url::for('bookmarks'));
+        $link_id = $request->param('id');
+        $collection_id = $request->param('collection_id');
+
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $link_id = $request->param('id');
-        $collection_id = $request->param('collection_id');
-
         $db_link_to_collection = $links_to_collections_dao->findRelation(
             $user->id,
             $link_id,
