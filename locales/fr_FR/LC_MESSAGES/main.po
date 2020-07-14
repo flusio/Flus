@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-07-13 16:37+0200\n"
-"PO-Revision-Date: 2020-07-13 16:38+0200\n"
+"POT-Creation-Date: 2020-07-14 17:43+0200\n"
+"PO-Revision-Date: 2020-07-14 17:43+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,8 +15,8 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Accounts.php:69 Accounts.php:149 Collections.php:108 Collections.php:261
-#: Links.php:92 Links.php:233 Registrations.php:84 Registrations.php:248
+#: Accounts.php:69 Accounts.php:149 Collections.php:101 Collections.php:231
+#: Links.php:93 Links.php:214 Registrations.php:84 Registrations.php:248
 #: Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -31,15 +31,15 @@ msgstr "Le mot de passe est incorrect."
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: Collections.php:315
+#: Collections.php:282
 msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
-#: Collections.php:321 Links.php:332 Links.php:418 Sessions.php:191
+#: Collections.php:288 Links.php:303 Links.php:486 Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: Collections.php:359
+#: Collections.php:322
 msgid ""
 "It looks like you have no “Bookmarks” collection, you should contact the "
 "support."
@@ -47,15 +47,15 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: Links.php:112
+#: Links.php:110
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: Links.php:117
+#: Links.php:115
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: Links.php:412
+#: Links.php:480
 msgid "This link-collection relation doesn’t exist."
 msgstr "La relation lien-collection n’existe pas."
 
@@ -80,7 +80,7 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:28
-#: views/accounts/deletion.phtml:49 views/registrations/new.phtml:95
+#: views/accounts/delete.phtml:49 views/registrations/new.phtml:95
 #: views/sessions/new.phtml:69
 msgid "Show"
 msgstr "Afficher"
@@ -95,61 +95,61 @@ msgstr "[flusio] Confirmer votre inscription"
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:116
+#: models/Collection.php:154
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:118
+#: models/Collection.php:156
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:115
+#: models/Link.php:110
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:117
+#: models/Link.php:112
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:136
+#: models/Link.php:131
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:141
+#: models/Link.php:136
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:145
+#: models/Link.php:140
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
 "sensible."
 
-#: models/User.php:121
+#: models/User.php:213
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:123
+#: models/User.php:215
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:125
+#: models/User.php:217
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:127
+#: models/User.php:219
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:129
+#: models/User.php:221
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:131
+#: models/User.php:223
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:133
+#: models/User.php:225
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -187,6 +187,7 @@ msgstr "Vous devez valider votre inscription&nbsp;→"
 
 #: views/_layouts/connected.phtml:59 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/collections/show.phtml:12
+#: views/links/show.phtml:43
 msgid "Collections"
 msgstr "Collections"
 
@@ -220,11 +221,11 @@ msgstr "Changer"
 msgid "About flusio"
 msgstr "À propos de flusio"
 
-#: views/accounts/deletion.phtml:3 views/accounts/deletion.phtml:9
+#: views/accounts/delete.phtml:3 views/accounts/delete.phtml:9
 msgid "Account deletion"
 msgstr "Suppression du compte"
 
-#: views/accounts/deletion.phtml:13
+#: views/accounts/delete.phtml:13
 msgid ""
 "You’re about to delete your account and your data will be lost. This can’t "
 "be canceled!"
@@ -232,17 +233,17 @@ msgstr ""
 "Vous êtes sur le point de supprimer votre compte : vos données seront alors "
 "perdues. Cette action ne peut pas être annulée !"
 
-#: views/accounts/deletion.phtml:27
+#: views/accounts/delete.phtml:27
 msgid "Your password"
 msgstr "Votre mot de passe"
 
-#: views/accounts/deletion.phtml:31
+#: views/accounts/delete.phtml:31
 msgid "You must type your password so we can confirm your identity."
 msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/accounts/deletion.phtml:47 views/registrations/new.phtml:93
+#: views/accounts/delete.phtml:47 views/registrations/new.phtml:93
 #: views/sessions/new.phtml:67
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
@@ -250,11 +251,11 @@ msgstr ""
 "Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
 "mot de passe visuellement."
 
-#: views/accounts/deletion.phtml:62
+#: views/accounts/delete.phtml:62
 msgid "Delete the account"
 msgstr "Supprimer le compte"
 
-#: views/accounts/deletion.phtml:66
+#: views/accounts/delete.phtml:66
 msgid "Cancel and go back to your account"
 msgstr "Annuler et retourner à votre compte"
 
@@ -312,15 +313,16 @@ msgstr "Description"
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/edit.phtml:66 views/links/show_update.phtml:49
+#: views/collections/edit.phtml:65 views/links/collections.phtml:34
+#: views/links/edit.phtml:49
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: views/collections/edit.phtml:70
+#: views/collections/edit.phtml:69
 msgid "Cancel and go back to the collection"
 msgstr "Annuler et retourner à la collection"
 
-#: views/collections/edit.phtml:84
+#: views/collections/edit.phtml:83
 msgid ""
 "Are you sure that you want to delete this collection? You may lose the links "
 "that are attached only to this collection."
@@ -328,7 +330,7 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/edit.phtml:91
+#: views/collections/edit.phtml:90
 msgid "Delete the collection"
 msgstr "Supprimer la collection"
 
@@ -379,15 +381,16 @@ msgstr "Comment voulez-vous nommer cette collection ?"
 msgid "Tell us more about it"
 msgstr "Dites-nous en plus"
 
-#: views/collections/new.phtml:69
+#: views/collections/new.phtml:68
 msgid "Create the collection"
 msgstr "Créer une collection"
 
-#: views/collections/new.phtml:73
+#: views/collections/new.phtml:72
 msgid "Cancel and go back to collections"
 msgstr "Annuler et retourner aux collections"
 
 #: views/collections/show.phtml:19 views/collections/show.phtml:20
+#: views/links/show.phtml:14 views/links/show.phtml:15
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -429,13 +432,29 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/links/show.phtml:14
-msgid "edit"
-msgstr "modifier"
+#: views/links/collections.phtml:3 views/links/collections.phtml:10
+msgid "Link collections"
+msgstr "Collections du lien"
 
-#: views/links/show.phtml:24
+#: views/links/collections.phtml:38 views/links/edit.phtml:53
+msgid "Cancel and go back to the link"
+msgstr "Annuler et retourner au lien"
+
+#: views/links/edit.phtml:3 views/links/edit.phtml:10
+msgid "Link edition"
+msgstr "Modification d’un lien"
+
+#: views/links/edit.phtml:28
+msgid "Title"
+msgstr "Titre"
+
+#: views/links/show.phtml:36
 msgid "open"
 msgstr "ouvrir"
+
+#: views/links/show.phtml:48
+msgid "Manage"
+msgstr "Gérer"
 
 #: views/links/show_fetch.phtml:3 views/links/show_fetch.phtml:10
 msgid "Link fetching"
@@ -461,18 +480,6 @@ msgstr "Récupérer les informations du lien"
 #: views/links/show_fetch.phtml:47
 msgid "Please wait while we’re collecting information."
 msgstr "Merci de patienter pendant que nous recueillons les informations."
-
-#: views/links/show_update.phtml:3 views/links/show_update.phtml:10
-msgid "Link edition"
-msgstr "Modification d’un lien"
-
-#: views/links/show_update.phtml:28
-msgid "Title"
-msgstr "Titre"
-
-#: views/links/show_update.phtml:53
-msgid "Cancel and go back to the link"
-msgstr "Annuler et retourner au lien"
 
 #: views/mailers/users/registration_validation_email.phtml:2
 #, php-format

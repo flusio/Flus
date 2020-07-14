@@ -127,6 +127,24 @@ class User extends \Minz\Model
      *
      * @return \flusio\models\Collection[]
      */
+    public function collections()
+    {
+        $collection_dao = new dao\Collection();
+        $db_collections = $collection_dao->listBy([
+            'user_id' => $this->id,
+        ]);
+        $collections = [];
+        foreach ($db_collections as $db_collection) {
+            $collections[] = new Collection($db_collection);
+        }
+        return $collections;
+    }
+
+    /**
+     * Return the list of collections created by the user
+     *
+     * @return \flusio\models\Collection[]
+     */
     public function collectionsWithNumberLinks()
     {
         $collection_dao = new dao\Collection();

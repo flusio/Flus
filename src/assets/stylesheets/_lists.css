@@ -1,0 +1,9 @@
+.list--no-style {
+    padding-left: 0;
+
+    list-style: none;
+}
+
+.list__item + .list__item {
+    margin-top: var(--space-small);
+}
