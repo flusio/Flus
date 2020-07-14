@@ -123,7 +123,8 @@ class Links
             $link_dao->save($link);
         }
 
-        $existing_collection_ids = $link->collectionIds();
+        $existing_collections = $link->collections();
+        $existing_collection_ids = array_column($existing_collections, 'id');
         $collection_ids = array_diff($collection_ids, $existing_collection_ids);
         if ($collection_ids) {
             $links_to_collections_dao->attachCollectionsToLink($link->id, $collection_ids);

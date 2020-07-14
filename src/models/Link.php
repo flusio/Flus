@@ -50,9 +50,6 @@ class Link extends \Minz\Model
         ],
     ];
 
-    /** @var string[] */
-    private $collection_ids;
-
     /**
      * @param string $url
      * @param string $user_id
@@ -72,21 +69,19 @@ class Link extends \Minz\Model
     }
 
     /**
-     * Return the ids of the current link collections
+     * Return the collections attached to the current link
      *
-     * @return string[]
+     * @return \flusio\models\Collection[]
      */
-    public function collectionIds()
+    public function collections()
     {
-        if (!$this->collection_ids) {
-            $links_to_collections_dao = new dao\LinksToCollections();
-            $db_links_to_collections = $links_to_collections_dao->listBy([
-                'link_id' => $this->id,
-            ]);
-
-            $this->collection_ids = array_column($db_links_to_collections, 'collection_id');
+        $collection_dao = new dao\Collection();
+        $collections = [];
+        $db_collections = $collection_dao->listByLinkId($this->id);
+        foreach ($db_collections as $db_collection) {
+            $collections[] = new Collection($db_collection);
         }
-        return $this->collection_ids;
+        return $collections;
     }
 
     /**

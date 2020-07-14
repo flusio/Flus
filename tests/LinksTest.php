@@ -119,7 +119,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, "/links/{$link->id}");
         $this->assertSame($url, $link->url);
         $this->assertSame($user->id, $link->user_id);
-        $this->assertContains($collection_id, $link->collectionIds());
+        $this->assertContains($collection_id, array_column($link->collections(), 'id'));
     }
 
     public function testCreateDoesNotCreateLinkIfItExists()
@@ -151,7 +151,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $links_to_collections_dao->count());
 
         $link = new models\Link($link_dao->find($link_id));
-        $this->assertContains($collection_id, $link->collectionIds());
+        $this->assertContains($collection_id, array_column($link->collections(), 'id'));
     }
 
     public function testCreateCreatesLinkIfItExistsForAnotherUser()
@@ -184,7 +184,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $links_to_collections_dao->count());
 
         $link = new models\Link($link_dao->findBy(['user_id' => $user->id]));
-        $this->assertContains($collection_id, $link->collectionIds());
+        $this->assertContains($collection_id, array_column($link->collections(), 'id'));
     }
 
     public function testCreateHandlesMultipleCollections()
@@ -223,8 +223,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, $links_to_collections_dao->count());
 
         $link = new models\Link($link_dao->find($link_id));
-        $this->assertContains($collection_id_1, $link->collectionIds());
-        $this->assertContains($collection_id_2, $link->collectionIds());
+        $this->assertContains($collection_id_1, array_column($link->collections(), 'id'));
+        $this->assertContains($collection_id_2, array_column($link->collections(), 'id'));
     }
 
     public function testCreateFailsIfNotConnected()

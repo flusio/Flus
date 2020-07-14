@@ -22,6 +22,28 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
+     * Returns the list of collections attached to the given link
+     *
+     * @param string $link_id
+     *
+     * @return array
+     */
+    public function listByLinkId($link_id)
+    {
+        $sql = <<<'SQL'
+            SELECT * FROM collections
+            WHERE id IN (
+                SELECT collection_id FROM links_to_collections
+                WHERE link_id = ?
+            )
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([$link_id]);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Returns the list of collections for the given user id. The number of
      * links of each collection is added. Bookmarks collection is not returned.
      *
