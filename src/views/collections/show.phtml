@@ -68,8 +68,14 @@
     </div>
 
     <?php if (!$links): ?>
-        <p class="paragraph--placeholder">
-            <?= _('This collection is empty. The links will appear here once you start adding them.') ?>
-        </p>
+        <div class="paragraph--placeholder">
+            <p>
+                <?= _('This collection is empty. The links will appear here once you start adding them.') ?>
+            </p>
+
+            <a class="anchor--action icon icon--ghost icon--anchor icon--plus-circle" href="<?= url('new link', ['collection' => $collection->id]) ?>">
+                <?= _('Add a link') ?>
+            </a>
+        </div>
     <?php endif; ?>
 </div>

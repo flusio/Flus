@@ -61,6 +61,7 @@ class Links
      * Show the page to add a link.
      *
      * @request_param string url The URL to prefill the URL input (default is '')
+     * @request_param string[] collection_ids Collection to check (default contains bookmarks id)
      *
      * @response 302 /login?redirect_to=/links/new if not connected
      * @response 200
@@ -84,13 +85,20 @@ class Links
             return Response::redirect('login', ['redirect_to' => $redirect_to]);
         }
 
-        $bookmarks_collection = $user->bookmarks();
         $collections = $user->collections();
         models\Collection::sort($collections, $user->locale);
 
+        $default_collection_id = $request->param('collection');
+        if ($default_collection_id) {
+            $default_collection_ids = [$default_collection_id];
+        } else {
+            $bookmarks_collection = $user->bookmarks();
+            $default_collection_ids = [$bookmarks_collection->id];
+        }
+
         return Response::ok('links/new.phtml', [
             'url' => $default_url,
-            'collection_ids' => [$bookmarks_collection->id],
+            'collection_ids' => $default_collection_ids,
             'collections' => $collections,
         ]);
     }

@@ -93,7 +93,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testNewRendersCorrectly()
     {
         $user = $this->login();
-        $this->create('collection', [
+        $bookmarks_collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
@@ -102,6 +102,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200, 'New link');
         $this->assertPointer($response, 'links/new.phtml');
+        $variables = $response->output()->variables();
+        $this->assertContains($bookmarks_collection_id, $variables['collection_ids']);
     }
 
     public function testNewPrefillsUrl()
@@ -118,6 +120,26 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 200, $url);
+    }
+
+    public function testNewPrefillsCollection()
+    {
+        $user = $this->login();
+        $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('get', '/links/new', [
+            'collection' => $collection_id,
+        ]);
+
+        $variables = $response->output()->variables();
+        $this->assertContains($collection_id, $variables['collection_ids']);
     }
 
     public function testNewRedirectsIfNotConnected()

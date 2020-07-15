@@ -27,13 +27,8 @@ a:focus {
 
     text-decoration: none;
 
-    border: 0.1em solid var(--color-text);
+    border: 0.1em solid currentColor;
     border-radius: var(--border-button-radius);
-}
-
-.anchor--action:hover,
-.anchor--action:focus {
-    border-color: inherit;
 }
 
 .anchor--action.icon--anchor {
