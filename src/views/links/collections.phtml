@@ -15,19 +15,33 @@
     </p>
 
     <form method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
-        <div class="form-group">
-            <?php foreach ($collections as $collection): ?>
-                <label>
-                    <input
-                        type="checkbox"
-                        name="collections[]"
-                        value="<?= $collection->id ?>"
-                        <?= $collection->attachedToLink ? 'checked' : '' ?>
-                    />
-                    <?= $this->protect($collection->name) ?>
-                </label>
-            <?php endforeach; ?>
-        </div>
+        <fieldset>
+            <legend><?= _('Collections') ?></legend>
+
+            <p class="fieldset__caption">
+                <?= _('You must place your link in at least one collection.') ?>
+            </p>
+
+            <?php if (isset($errors['collection_ids'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['collection_ids'] ?>
+                </p>
+            <?php endif; ?>
+
+            <div class="form-group">
+                <?php foreach ($collections as $collection): ?>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="collection_ids[]"
+                            value="<?= $collection->id ?>"
+                            <?= $collection->attachedToLink ? 'checked' : '' ?>
+                        />
+                        <?= $this->protect($collection->name) ?>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+        </fieldset>
 
         <div class="form__actions">
             <button type="submit" class="button--primary">

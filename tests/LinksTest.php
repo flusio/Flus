@@ -894,7 +894,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/collections", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'collections' => [$collection_id_2],
+            'collection_ids' => [$collection_id_2],
         ]);
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
@@ -932,7 +932,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/collections", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'collections' => [$collection_id_2],
+            'collection_ids' => [$collection_id_2],
         ]);
 
         $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fcollections");
@@ -971,7 +971,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/links/{$link_id}/collections", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'collections' => [$collection_id_2],
+            'collection_ids' => [$collection_id_2],
         ]);
 
         $this->assertResponse($response, 404);

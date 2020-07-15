@@ -472,7 +472,7 @@ class Links
     {
         $user = utils\CurrentUser::get();
         $link_id = $request->param('id');
-        $new_collection_ids = $request->param('collections', []);
+        $new_collection_ids = $request->param('collection_ids', []);
 
         if (!$user) {
             return Response::redirect('login', [
