@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-07-14 17:43+0200\n"
-"PO-Revision-Date: 2020-07-14 17:43+0200\n"
+"POT-Creation-Date: 2020-07-15 17:19+0200\n"
+"PO-Revision-Date: 2020-07-15 17:20+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Accounts.php:69 Accounts.php:149 Collections.php:101 Collections.php:231
-#: Links.php:93 Links.php:214 Registrations.php:84 Registrations.php:248
+#: Links.php:144 Links.php:280 Registrations.php:84 Registrations.php:249
 #: Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -35,7 +35,7 @@ msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
-#: Collections.php:288 Links.php:303 Links.php:486 Sessions.php:191
+#: Collections.php:288 Links.php:369 Links.php:554 Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -47,27 +47,27 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: Links.php:110
+#: Links.php:169
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: Links.php:115
+#: Links.php:180
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: Links.php:480
+#: Links.php:548
 msgid "This link-collection relation doesn’t exist."
 msgstr "La relation lien-collection n’existe pas."
 
-#: Registrations.php:107
+#: Registrations.php:108
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:182 Registrations.php:196
+#: Registrations.php:183 Registrations.php:197
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: Registrations.php:189
+#: Registrations.php:190
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
@@ -89,7 +89,7 @@ msgstr "Afficher"
 msgid "[flusio] Confirm your registration"
 msgstr "[flusio] Confirmer votre inscription"
 
-#: models/Collection.php:78 views/_layouts/connected.phtml:52
+#: models/Collection.php:78 views/_layouts/connected.phtml:54
 #: views/collections/show_bookmarks.phtml:3
 #: views/collections/show_bookmarks.phtml:10
 msgid "Bookmarks"
@@ -125,31 +125,31 @@ msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
 "sensible."
 
-#: models/User.php:213
+#: models/User.php:218
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:215
+#: models/User.php:220
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:217
+#: models/User.php:222
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:219
+#: models/User.php:224
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:221
+#: models/User.php:226
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:223
+#: models/User.php:228
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:225
+#: models/User.php:230
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -185,20 +185,26 @@ msgstr ""
 msgid "You must validate your registration&nbsp;→"
 msgstr "Vous devez valider votre inscription&nbsp;→"
 
-#: views/_layouts/connected.phtml:59 views/collections/index.phtml:3
+#: views/_layouts/connected.phtml:64 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/collections/show.phtml:12
+#: views/links/collections.phtml:19 views/links/new.phtml:48
 #: views/links/show.phtml:43
 msgid "Collections"
 msgstr "Collections"
 
-#: views/_layouts/connected.phtml:73 views/accounts/show.phtml:3
+#: views/_layouts/connected.phtml:80 views/accounts/show.phtml:3
 #: views/accounts/show.phtml:11
 msgid "Account"
 msgstr "Compte"
 
-#: views/_layouts/connected.phtml:81
+#: views/_layouts/connected.phtml:88
 msgid "Log out"
 msgstr "Se déconnecter"
+
+#: views/_layouts/connected.phtml:97 views/_layouts/connected.phtml:98
+#: views/collections/show.phtml:77 views/collections/show_bookmarks.phtml:60
+msgid "Add a link"
+msgstr "Ajouter un lien"
 
 #: views/_layouts/error.phtml:19
 msgid "Oh no&nbsp;😟"
@@ -313,7 +319,7 @@ msgstr "Description"
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/edit.phtml:65 views/links/collections.phtml:34
+#: views/collections/edit.phtml:65 views/links/collections.phtml:48
 #: views/links/edit.phtml:49
 msgid "Update"
 msgstr "Mettre à jour"
@@ -349,8 +355,8 @@ msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:38 views/collections/show.phtml:95
-#: views/collections/show_bookmarks.phtml:78
+#: views/collections/index.phtml:38 views/collections/show.phtml:63
+#: views/collections/show_bookmarks.phtml:46
 msgid "see"
 msgstr "voir"
 
@@ -394,20 +400,12 @@ msgstr "Annuler et retourner aux collections"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: views/collections/show.phtml:47 views/collections/show_bookmarks.phtml:30
-msgid "New link"
-msgstr "Nouveau lien"
-
-#: views/collections/show.phtml:54 views/collections/show_bookmarks.phtml:37
-msgid "Add"
-msgstr "Ajouter"
-
-#: views/collections/show.phtml:87 views/collections/show.phtml:88
+#: views/collections/show.phtml:55 views/collections/show.phtml:56
 #, php-format
 msgid "Remove from %s"
 msgstr "Retirer de %s"
 
-#: views/collections/show.phtml:104 views/collections/show_bookmarks.phtml:87
+#: views/collections/show.phtml:73 views/collections/show_bookmarks.phtml:56
 msgid ""
 "This collection is empty. The links will appear here once you start adding "
 "them."
@@ -419,8 +417,8 @@ msgstr ""
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/collections/show_bookmarks.phtml:70
-#: views/collections/show_bookmarks.phtml:71
+#: views/collections/show_bookmarks.phtml:38
+#: views/collections/show_bookmarks.phtml:39
 msgid "Remove from bookmarks"
 msgstr "Retirer des signets"
 
@@ -436,7 +434,11 @@ msgstr "Une erreur est survenue pendant le traitement de votre requête."
 msgid "Link collections"
 msgstr "Collections du lien"
 
-#: views/links/collections.phtml:38 views/links/edit.phtml:53
+#: views/links/collections.phtml:22 views/links/new.phtml:51
+msgid "You must place your link in at least one collection."
+msgstr "Vous devez placer votre lien dans au moins une collection."
+
+#: views/links/collections.phtml:52 views/links/edit.phtml:53
 msgid "Cancel and go back to the link"
 msgstr "Annuler et retourner au lien"
 
@@ -447,6 +449,26 @@ msgstr "Modification d’un lien"
 #: views/links/edit.phtml:28
 msgid "Title"
 msgstr "Titre"
+
+#: views/links/new.phtml:3 views/links/new.phtml:10
+msgid "New link"
+msgstr "Nouveau lien"
+
+#: views/links/new.phtml:24
+msgid "What’s the <abbr>URL</abbr> of the link?"
+msgstr "Quel est l’<abbr>URL</abbr> du lien ?"
+
+#: views/links/new.phtml:28
+msgid ""
+"It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
+"browser."
+msgstr ""
+"Il peut être copié-collé depuis la barre <abbr>URL</abbr>, en haut de votre "
+"navigateur."
+
+#: views/links/new.phtml:77
+msgid "Add the link"
+msgstr "Ajouter le lien"
 
 #: views/links/show.phtml:36
 msgid "open"
