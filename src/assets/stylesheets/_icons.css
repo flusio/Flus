@@ -56,6 +56,10 @@
     background-image: url("../icons/core/avatar-line.svg");
 }
 
+.icon--bars::before {
+    background-image: url("../icons/core/bars-line.svg");
+}
+
 .icon--cog::before {
     background-image: url("../icons/core/cog-line.svg");
 }

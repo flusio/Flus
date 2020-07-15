@@ -1,22 +1,27 @@
 .collections {
     display: flex;
-    margin-right: calc(-1 * var(--space-medium));
-    margin-left: calc(-1 * var(--space-medium));
 
-    flex: 1;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .collection {
-    display: flex;
-    max-width: 50%;
-    margin: var(--space-medium);
+    overflow: hidden;
 
-    flex-basis: 25%;
+    display: flex;
+    margin: var(--space-small);
+
+    flex-basis: 100%;
     flex-direction: column;
     flex-grow: 1;
 
     box-shadow: 0 1px 4px 1px var(--color-grey-2);
+}
+
+@media (min-width: 800px) {
+    .collection {
+        flex-basis: 30%;
+    }
 }
 
 .collection__body {

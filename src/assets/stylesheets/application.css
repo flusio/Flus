@@ -42,6 +42,18 @@ body {
     display: none;
 }
 
+@media (max-width: 800px) {
+    .no-mobile {
+        display: none;
+    }
+}
+
+@media (min-width: 800px) {
+    .only-mobile {
+        display: none;
+    }
+}
+
 hr {
     margin-top: var(--space-large);
     margin-bottom: var(--space-large);
