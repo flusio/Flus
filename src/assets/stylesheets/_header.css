@@ -19,6 +19,13 @@
     flex: 1;
 }
 
+.header__image {
+    max-height: 3rem;
+    margin-top: -0.5rem;
+
+    vertical-align: middle;
+}
+
 .header__link {
     padding: var(--space-medium) var(--space-large);
 }

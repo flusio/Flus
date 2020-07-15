@@ -1,7 +1,7 @@
 .icon {
     position: relative;
 
-    padding-left: 2.5em;
+    padding-left: 2.4em;
 }
 
 .icon::before {
@@ -9,7 +9,7 @@
 
     position: absolute;
     top: 50%;
-    left: 0.65em;
+    left: 0.5em;
 
     width: 1.5em;
     height: 1.5em;

@@ -9,10 +9,10 @@
 .popup__container {
     position: absolute;
     z-index: 10;
-    right: var(--space-small);
+    right: 0;
 
     width: 27rem;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     padding: var(--space-medium) var(--space-small);
 
     font-size: var(--size-small);
