@@ -73,3 +73,12 @@ hr::after {
 
     background-color: var(--color-turquoise-5);
 }
+
+.turbolinks-progress-bar {
+    position: fixed;
+    top: 0;
+
+    height: 0.5rem;
+
+    background-color: var(--color-purple-5);
+}
