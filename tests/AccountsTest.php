@@ -33,13 +33,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $old_username = $this->fakeUnique('username');
         $new_username = $this->fakeUnique('username');
-        $this->login([
+        $user = $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/account', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'fr_FR',
         ]);
@@ -53,12 +53,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateSetsTheCurrentLocale()
     {
-        $this->login([
+        $user = $this->login([
             'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/account', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'username' => $this->fake('username'),
             'locale' => 'fr_FR',
         ]);
@@ -92,7 +92,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $old_username = $this->fakeUnique('username');
         $new_username = $this->fakeUnique('username');
-        $this->login([
+        $user = $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
         ]);
@@ -113,13 +113,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $old_username = $this->fakeUnique('username');
         $new_username = $this->fake('sentence', 50, false);
-        $this->login([
+        $user = $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/account', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'fr_FR',
         ]);
@@ -133,13 +133,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfUsernameIsMissing()
     {
         $old_username = $this->fakeUnique('username');
-        $this->login([
+        $user = $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/account', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'locale' => 'fr_FR',
         ]);
 
@@ -153,13 +153,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $old_username = $this->fakeUnique('username');
         $new_username = $this->fakeUnique('username');
-        $this->login([
+        $user = $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/account', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'username' => $new_username,
         ]);
 
@@ -173,13 +173,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $old_username = $this->fakeUnique('username');
         $new_username = $this->fakeUnique('username');
-        $this->login([
+        $user = $this->login([
             'username' => $old_username,
             'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/account', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'not a locale',
         ]);
@@ -217,7 +217,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/account/delete', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'password' => $password,
         ]);
 
@@ -250,7 +250,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $session_dao->count());
 
         $response = $this->appRun('post', '/account/delete', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'password' => $password,
         ]);
 
@@ -267,7 +267,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/account/delete', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'password' => 'not the password',
         ]);
 
@@ -283,7 +283,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
-        (new \Minz\CSRF())->generateToken();
 
         $response = $this->appRun('post', '/account/delete', [
             'csrf' => 'not the token',
@@ -306,7 +305,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/account/delete', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'password' => $password,
         ]);
 

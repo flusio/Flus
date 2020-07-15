@@ -126,6 +126,12 @@ class Application
         }
         utils\Locale::setCurrentLocale($locale);
 
+        // Force CSRF token to avoid weird issues when user did nothing for a while
+        if ($current_user) {
+            $csrf = new \Minz\CSRF();
+            $csrf->setToken($current_user->csrf);
+        }
+
         $errors = utils\Flash::pop('errors', []);
         $error = utils\Flash::pop('error');
         $status = utils\Flash::pop('status');

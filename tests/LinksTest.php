@@ -179,7 +179,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $links_to_collections_dao->count());
 
         $response = $this->appRun('post', '/links/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -214,7 +214,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $links_to_collections_dao->count());
 
         $response = $this->appRun('post', '/links/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -246,7 +246,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $links_to_collections_dao->count());
 
         $response = $this->appRun('post', '/links/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -284,7 +284,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $links_to_collections_dao->count());
 
         $response = $this->appRun('post', '/links/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'url' => $url,
             'collection_ids' => [$collection_id_1, $collection_id_2],
         ]);
@@ -350,7 +350,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/links/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'url' => 'ftp://' . $this->fake('domainName'),
             'collection_ids' => [$collection_id],
         ]);
@@ -369,7 +369,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/links/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'collection_ids' => [$collection_id],
         ]);
 
@@ -384,7 +384,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
 
         $response = $this->appRun('post', '/links/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'url' => $this->fake('url'),
             'collection_ids' => ['does not exist'],
         ]);
@@ -400,7 +400,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
 
         $response = $this->appRun('post', '/links/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'url' => $this->fake('url'),
             'collection_ids' => [],
         ]);
@@ -472,7 +472,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'title' => $new_title,
         ]);
 
@@ -516,7 +516,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'title' => $new_title,
         ]);
 
@@ -560,7 +560,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/links/not-the-id/edit', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'title' => $new_title,
         ]);
 
@@ -583,7 +583,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'title' => $new_title,
         ]);
 
@@ -668,7 +668,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/fetch", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $expected_title = 'GitHub - flusio/flusio: The citizen social media';
@@ -690,7 +690,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/fetch", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $hash = \SpiderBits\Cache::hash($url);
@@ -724,7 +724,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $cache->save($hash, $raw_response);
 
         $response = $this->appRun('post', "/links/{$link_id}/fetch", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $db_link = $link_dao->find($link_id);
@@ -743,7 +743,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/fetch", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $expected_title = 'https://flus.fr/does_not_exist.html';
@@ -801,7 +801,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
 
         $response = $this->appRun('post', "/links/do-not-exist/fetch", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $this->assertResponse($response, 404, 'This page doesn’t exist');
@@ -820,7 +820,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/fetch", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $this->assertResponse($response, 404, 'This page doesn’t exist');
@@ -915,7 +915,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/collections", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'collection_ids' => [$collection_id_2],
         ]);
 
@@ -992,7 +992,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/collections", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'collection_ids' => [$collection_id_2],
         ]);
 
@@ -1027,7 +1027,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
@@ -1109,7 +1109,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/not-an-id/remove_collection", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
@@ -1136,7 +1136,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => 'not an id',
         ]);
@@ -1164,7 +1164,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
@@ -1192,7 +1192,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);
@@ -1213,7 +1213,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
             'collection_id' => $collection_id,
         ]);

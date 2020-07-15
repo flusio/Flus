@@ -511,7 +511,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
-        $this->login([
+        $user = $this->login([
             'email' => $email,
             'validated_at' => null,
             'validation_token' => $token,
@@ -520,7 +520,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
 
         $response = $this->appRun('post', '/registration/validation/email', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $this->assertResponse($response, 302, '/');
@@ -538,13 +538,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
-        $this->login([
+        $user = $this->login([
             'validated_at' => null,
             'validation_token' => $token,
         ]);
 
         $response = $this->appRun('post', '/registration/validation/email', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => '/about',
         ]);
 
@@ -569,7 +569,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $number_tokens = $token_dao->count();
 
         $response = $this->appRun('post', '/registration/validation/email', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $this->assertSame($number_tokens + 1, $token_dao->count());
@@ -595,7 +595,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $number_tokens = $token_dao->count();
 
         $response = $this->appRun('post', '/registration/validation/email', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $this->assertSame($number_tokens + 1, $token_dao->count());
@@ -605,12 +605,12 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testResendValidationEmailRedirectsSilentlyIfAlreadyValidated()
     {
-        $this->login([
+        $user = $this->login([
             'validated_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('post', '/registration/validation/email', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $this->assertResponse($response, 302, '/');
@@ -627,7 +627,6 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => null,
             'validation_token' => $token,
         ]);
-        (new \Minz\CSRF())->generateToken();
 
         $response = $this->appRun('post', '/registration/validation/email', [
             'csrf' => 'not the token',

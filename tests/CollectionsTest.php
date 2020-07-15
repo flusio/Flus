@@ -71,7 +71,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $collection_dao->count());
 
         $response = $this->appRun('post', '/collections/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'name' => $name,
             'description' => $description,
         ]);
@@ -124,7 +124,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $description = $this->fake('sentence');
 
         $response = $this->appRun('post', '/collections/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'name' => $name,
             'description' => $description,
         ]);
@@ -140,7 +140,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $description = $this->fake('sentence');
 
         $response = $this->appRun('post', '/collections/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'description' => $description,
         ]);
 
@@ -299,7 +299,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
         ]);
@@ -380,7 +380,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
         ]);
@@ -407,7 +407,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
         ]);
@@ -426,7 +426,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_description = $this->fakeUnique('sentence');
 
         $response = $this->appRun('post', '/collections/unknown/edit', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
         ]);
@@ -451,7 +451,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
         ]);
@@ -478,7 +478,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
         ]);
@@ -499,7 +499,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
@@ -535,7 +535,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/collections/unknown/delete', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
@@ -555,7 +555,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
@@ -574,7 +574,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'from' => "/collections/{$collection_id}/edit",
         ]);
 

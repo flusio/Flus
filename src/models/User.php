@@ -46,6 +46,11 @@ class User extends \Minz\Model
             'required' => true,
             'validator' => '\flusio\models\User::validateLocale',
         ],
+
+        'csrf' => [
+            'type' => 'string',
+            'required' => true,
+        ],
     ];
 
     /**
@@ -55,12 +60,14 @@ class User extends \Minz\Model
      */
     public static function init($username, $email, $password)
     {
+        $csrf = new \Minz\CSRF();
         return new self([
             'id' => bin2hex(random_bytes(16)),
             'username' => trim($username),
             'email' => utils\Email::sanitize($email),
             'password_hash' => $password ? password_hash($password, PASSWORD_BCRYPT) : '',
             'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
+            'csrf' => $csrf->resetToken(),
         ]);
     }
 

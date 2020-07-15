@@ -136,7 +136,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $session_dao = new models\dao\Session();
         $email = $this->fake('email');
         $password = $this->fake('password');
-        $this->login([
+        $user = $this->login([
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
@@ -144,7 +144,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $number_tokens = $session_dao->count();
 
         $response = $this->appRun('post', '/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
             'email' => $email,
             'password' => $password,
         ]);
@@ -259,12 +259,12 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testDeleteDeletesCurrentSessionAndRedirectsToHome()
     {
         $session_dao = new models\dao\Session();
-        $this->login();
+        $user = $this->login();
 
         $this->assertSame(1, $session_dao->count());
 
         $response = $this->appRun('post', '/logout', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $this->assertResponse($response, 302, '/');
@@ -275,12 +275,12 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testDeleteReturnsACookie()
     {
         $session_dao = new models\dao\Session();
-        $this->login();
+        $user = $this->login();
 
         $this->assertSame(1, $session_dao->count());
 
         $response = $this->appRun('post', '/logout', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => $user->csrf,
         ]);
 
         $cookie = $response->cookies()['flusio_session_token'];
@@ -305,7 +305,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $session_dao = new models\dao\Session();
         $this->login();
 
-        (new \Minz\CSRF())->generateToken();
         $response = $this->appRun('post', '/logout', [
             'csrf' => 'not the token',
         ]);
@@ -341,8 +340,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testChangeLocaleWithWrongCsrfDoesntSetsSessionLocale()
     {
-        (new \Minz\CSRF())->generateToken();
-
         $response = $this->appRun('post', '/sessions/locale', [
             'csrf' => 'not the token',
             'locale' => 'fr_FR',

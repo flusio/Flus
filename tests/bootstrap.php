@@ -44,6 +44,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
             $available_locales = \flusio\utils\Locale::availableLocales();
             return $faker->randomElement($available_locales);
         },
+        'csrf' => function () {
+            return \bin2hex(\random_bytes(32));
+        },
     ]
 );
 
