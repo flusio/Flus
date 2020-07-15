@@ -55,35 +55,13 @@ body {
 }
 
 hr {
-    margin-top: var(--space-large);
-    margin-bottom: var(--space-large);
+    width: 50%;
+    height: 0.3rem;
+    margin: var(--space-larger) auto;
 
+    background: linear-gradient(to right, var(--color-turquoise-2), var(--color-turquoise-4), var(--color-turquoise-2));
     border: none;
-}
-
-hr::before,
-hr::after {
-    content: "";
-
-    display: block;
-    height: 1.75rem;
-    margin-right: auto;
-    margin-left: auto;
-
     border-radius: 2em;
-}
-
-hr::before {
-    width: 16rem;
-    margin-bottom: 1rem;
-
-    background-color: var(--color-turquoise-4);
-}
-
-hr::after {
-    width: 10rem;
-
-    background-color: var(--color-turquoise-5);
 }
 
 .turbolinks-progress-bar {
