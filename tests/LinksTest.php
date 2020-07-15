@@ -90,6 +90,58 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
+    public function testNewRendersCorrectly()
+    {
+        $user = $this->login();
+        $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+
+        $response = $this->appRun('get', '/links/new');
+
+        $this->assertResponse($response, 200, 'New link');
+        $this->assertPointer($response, 'links/new.phtml');
+    }
+
+    public function testNewPrefillsUrl()
+    {
+        $user = $this->login();
+        $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $url = $this->fake('url');
+
+        $response = $this->appRun('get', '/links/new', [
+            'url' => $url,
+        ]);
+
+        $this->assertResponse($response, 200, $url);
+    }
+
+    public function testNewRedirectsIfNotConnected()
+    {
+        $response = $this->appRun('get', '/links/new');
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Flinks%2Fnew');
+    }
+
+    public function testNewRedirectsIfNotConnectedAndKeepsUrl()
+    {
+        $url = $this->fake('url');
+
+        $response = $this->appRun('get', '/links/new', [
+            'url' => $url
+        ]);
+
+        $this->assertResponse(
+            $response,
+            302,
+            '/login?redirect_to=%2Flinks%2Fnew%3Furl%3D' . urlencode(urlencode($url))
+        );
+    }
+
     public function testCreateCreatesLinkAndRedirects()
     {
         $link_dao = new models\dao\Link();
@@ -104,9 +156,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
         $this->assertSame(0, $links_to_collections_dao->count());
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -140,9 +191,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $link_dao->count());
         $this->assertSame(0, $links_to_collections_dao->count());
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -173,9 +223,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $link_dao->count());
         $this->assertSame(0, $links_to_collections_dao->count());
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
@@ -212,9 +261,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $link_dao->count());
         $this->assertSame(1, $links_to_collections_dao->count());
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('bookmarks'),
             'url' => $url,
             'collection_ids' => [$collection_id_1, $collection_id_2],
         ]);
@@ -227,23 +275,26 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_id_2, array_column($link->collections(), 'id'));
     }
 
-    public function testCreateFailsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected()
     {
         $link_dao = new models\dao\Link();
-
         $user_id = $this->create('user');
         $collection_id = $this->create('collection', [
             'user_id' => $user_id,
         ]);
+        $url = $this->fake('url');
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('bookmarks'),
-            'url' => $this->fake('url'),
+            'url' => $url,
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponse(
+            $response,
+            302,
+            '/login?redirect_to=%2Flinks%2Fnew%3Furl%3D' . urlencode(urlencode($url))
+        );
         $this->assertSame(0, $link_dao->count());
     }
 
@@ -257,15 +308,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => 'not the token',
-            'from' => \Minz\Url::for('bookmarks'),
             'url' => $this->fake('url'),
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
+        $this->assertResponse($response, 400, 'A security verification failed');
         $this->assertSame(0, $link_dao->count());
     }
 
@@ -278,15 +327,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('bookmarks'),
             'url' => 'ftp://' . $this->fake('domainName'),
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('errors', ['url' => 'Link scheme must be either http or https.']);
+        $this->assertResponse($response, 400, 'Link scheme must be either http or https.');
         $this->assertSame(0, $link_dao->count());
     }
 
@@ -299,14 +346,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('errors', ['url' => 'The link is required.']);
+        $this->assertResponse($response, 400, 'The link is required.');
         $this->assertSame(0, $link_dao->count());
     }
 
@@ -316,15 +361,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $user = $this->login();
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('bookmarks'),
             'url' => $this->fake('url'),
             'collection_ids' => ['does not exist'],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('error', 'One of the associated collection doesn’t exist.');
+        $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, $link_dao->count());
     }
 
@@ -334,15 +377,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $user = $this->login();
 
-        $response = $this->appRun('post', '/links', [
+        $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'from' => \Minz\Url::for('bookmarks'),
             'url' => $this->fake('url'),
             'collection_ids' => [],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('error', 'The link must be associated to a collection.');
+        $this->assertResponse($response, 400, 'The link must be associated to a collection.');
         $this->assertSame(0, $link_dao->count());
     }
 

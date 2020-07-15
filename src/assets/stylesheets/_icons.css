@@ -87,6 +87,10 @@
     background-image: url("../icons/essential/plus-line.svg");
 }
 
+.icon--plus-circle::before {
+    background-image: url("../icons/essential/plus-circle-line.svg");
+}
+
 .icon--undo::before {
     background-image: url("../icons/essential/undo-line.svg");
 }

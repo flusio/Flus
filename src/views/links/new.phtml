@@ -1,0 +1,81 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('New link'),
+        'current_tab' => 'new link',
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('New link') ?></h1>
+    </div>
+
+    <form method="post" action="<?= url('create link') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
+            <label for="url">
+                <?= _('What’s the <abbr>URL</abbr> of the link?') ?>
+            </label>
+
+            <p class="form-group__caption">
+                <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
+            </p>
+
+            <input
+                id="url"
+                name="url"
+                type="url"
+                required
+                value="<?= $url ?>"
+                autocomplete="off"
+            />
+
+            <?php if (isset($errors['url'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['url'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <fieldset>
+            <legend><?= _('Collections') ?></legend>
+
+            <p class="fieldset__caption">
+                <?= _('You must place your link in at least one collection.') ?>
+            </p>
+
+            <?php if (isset($errors['collection_ids'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['collection_ids'] ?>
+                </p>
+            <?php endif; ?>
+
+            <div class="form-group">
+                <?php foreach ($collections as $collection): ?>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="collection_ids[]"
+                            value="<?= $collection->id ?>"
+                            <?= in_array($collection->id, $collection_ids) ? 'checked' : '' ?>
+                        />
+                        <?= $this->protect($collection->name) ?>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+        </fieldset>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Add the link') ?>
+            </button>
+        </div>
+    </form>
+</div>

@@ -49,6 +49,21 @@
     border-bottom-color: var(--color-white);
 }
 
+.header--turquoise .header__link--featured {
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+    justify-content: center;
+
+    background-color: var(--color-turquoise-4);
+    border-top: none;
+    border-right: var(--border-width) solid var(--color-white);
+    border-bottom: none;
+    border-left: var(--border-width) solid var(--color-white);
+}
+
 .header__link--home {
     font-weight: bold;
 }

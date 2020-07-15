@@ -72,7 +72,8 @@ class Application
         $router->addRoute('get', '/bookmarks', 'Collections#showBookmarks', 'bookmarks');
 
         // Links
-        $router->addRoute('post', '/links', 'Links#create', 'create link');
+        $router->addRoute('get', '/links/new', 'Links#new', 'new link');
+        $router->addRoute('post', '/links/new', 'Links#create', 'create link');
         $router->addRoute('get', '/links/:id', 'Links#show', 'link');
         $router->addRoute('get', '/links/:id/edit', 'Links#edit', 'edit link');
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');

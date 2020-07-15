@@ -58,17 +58,54 @@ class Links
     }
 
     /**
+     * Show the page to add a link.
+     *
+     * @request_param string url The URL to prefill the URL input (default is '')
+     *
+     * @response 302 /login?redirect_to=/links/new if not connected
+     * @response 200
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function new($request)
+    {
+        $user = utils\CurrentUser::get();
+        $default_url = $request->param('url', '');
+
+        if (!$user) {
+            if ($default_url) {
+                $redirect_to = \Minz\Url::for('new link', ['url' => $default_url]);
+            } else {
+                $redirect_to = \Minz\Url::for('new link');
+            }
+
+            return Response::redirect('login', ['redirect_to' => $redirect_to]);
+        }
+
+        $bookmarks_collection = $user->bookmarks();
+        $collections = $user->collections();
+        models\Collection::sort($collections, $user->locale);
+
+        return Response::ok('links/new.phtml', [
+            'url' => $default_url,
+            'collection_ids' => [$bookmarks_collection->id],
+            'collections' => $collections,
+        ]);
+    }
+
+    /**
      * Create a link for the current user.
      *
      * @request_param string csrf
-     * @request_param string from default is /bookmarks
      * @request_param string url It must be a valid non-empty URL
      * @request_param string[] collection_ids It must contain at least one
      *                                        collection id
      *
-     * @response 302 /login?redirect_to=:from if not connected
-     * @response 302 :from if CSRF or the url is invalid, of if one collection id
-     *                     doesn't exist or parameter is missing/empty
+     * @response 302 /login?redirect_to=/links/new if not connected
+     * @response 400 if CSRF or the url is invalid, of if one collection id
+     *               doesn't exist or parameter is missing/empty
      * @response 302 /links/:id on success
      *
      * @param \Minz\Request $request
@@ -78,21 +115,26 @@ class Links
     public function create($request)
     {
         $user = utils\CurrentUser::get();
-        $from = $request->param('from', \Minz\Url::for('bookmarks'));
-        $url = $request->param('url');
+        $url = $request->param('url', '');
         $collection_ids = $request->param('collection_ids', []);
 
         if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('new link', ['url' => $url]),
+            ]);
         }
+
+        $collections = $user->collections();
+        models\Collection::sort($collections, $user->locale);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            utils\Flash::set(
-                'error',
-                _('A security verification failed: you should retry to submit the form.')
-            );
-            return Response::found($from);
+            return Response::badRequest('links/new.phtml', [
+                'url' => $url,
+                'collection_ids' => $collection_ids,
+                'collections' => $collections,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
         }
 
         $link_dao = new models\dao\Link();
@@ -102,18 +144,34 @@ class Links
         $link = models\Link::init($url, $user->id);
         $errors = $link->validate();
         if ($errors) {
-            utils\Flash::set('errors', ['url' => $errors['url']]);
-            return Response::found($from);
+            return Response::badRequest('links/new.phtml', [
+                'url' => $url,
+                'collection_ids' => $collection_ids,
+                'collections' => $collections,
+                'errors' => $errors,
+            ]);
         }
 
         if (empty($collection_ids)) {
-            utils\Flash::set('error', _('The link must be associated to a collection.'));
-            return Response::found($from);
+            return Response::badRequest('links/new.phtml', [
+                'url' => $url,
+                'collection_ids' => $collection_ids,
+                'collections' => $collections,
+                'errors' => [
+                    'collection_ids' => _('The link must be associated to a collection.'),
+                ],
+            ]);
         }
 
         if (!$collection_dao->exists($collection_ids)) {
-            utils\Flash::set('error', _('One of the associated collection doesn’t exist.'));
-            return Response::found($from);
+            return Response::badRequest('links/new.phtml', [
+                'url' => $url,
+                'collection_ids' => $collection_ids,
+                'collections' => $collections,
+                'errors' => [
+                    'collection_ids' => _('One of the associated collection doesn’t exist.'),
+                ],
+            ]);
         }
 
         $existing_db_link = $link_dao->findBy([

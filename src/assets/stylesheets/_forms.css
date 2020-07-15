@@ -81,6 +81,28 @@ select:focus {
     border-color: var(--border-active-color);
 }
 
+fieldset {
+    margin-top: var(--space-medium);
+    margin-bottom: var(--space-medium);
+    padding: var(--space-smaller) var(--space-medium);
+
+    border: var(--border-width) solid var(--color-grey-3);
+    border-radius: var(--border-radius);
+}
+
+legend {
+    padding-right: var(--space-small);
+    padding-left: var(--space-small);
+}
+
+.fieldset__caption {
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+
+    color: var(--color-text-secondary);
+    font-size: var(--size-small);
+}
+
 .form-group {
     margin-bottom: var(--space-medium);
 }
