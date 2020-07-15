@@ -18,6 +18,7 @@ return [
     ],
 
     'application' => [
+        'version' => trim(@file_get_contents($app_path . '/VERSION.txt')),
         'cache_path' => $dotenv->pop('APP_CACHE_PATH', $app_path . '/cache'),
         'demo' => filter_var($dotenv->pop('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN),
         'registrations_opened' => filter_var($dotenv->pop('APP_OPEN_REGISTRATIONS', true), FILTER_VALIDATE_BOOLEAN),

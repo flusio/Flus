@@ -313,7 +313,9 @@ class Links
             $response = \SpiderBits\Response::fromText($cached_response);
         } else {
             $http = new \SpiderBits\Http();
-            $http->user_agent = 'flusio/0.0.1 (' . PHP_OS . '; https://github.com/flusio/flusio)';
+            $php_os = PHP_OS;
+            $flusio_version = \Minz\Configuration::$application['version'];
+            $http->user_agent = "flusio/{$flusio_version} ({$php_os}; https://github.com/flusio/flusio)";
             $http->timeout = 5;
             $response = $http->get($link->url);
 

@@ -20,7 +20,8 @@ A `make` target is provided to release a new version:
 $ make release VERSION=0.1
 ```
 
-It bundles and minifies the assets under the `public/assets/` folder (via the
-[`npm run build` command](/package.json)), opens the [changelog](/CHANGELOG.md)
-in your editor so you can document the changes (at least to set the release
-date) and commits these changes.
+It writes the new version in the [`VERSION.txt` file](/VERSION.txt), it bundles
+and minifies the assets under the `public/assets/` folder (via the [`npm run
+build` command](/package.json)), opens the [changelog](/CHANGELOG.md) in your
+editor so you can document the changes (at least to set the release date) and
+commits these changes.

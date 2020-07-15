@@ -24,6 +24,7 @@ return [
     ],
 
     'application' => [
+        'version' => trim(@file_get_contents($app_path . '/VERSION.txt')),
         'cache_path' => $cache_directory,
         'demo' => false,
         'registrations_opened' => true,
