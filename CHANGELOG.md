@@ -1,5 +1,33 @@
 # Changelog of flusio
 
+## 2020-07-16 - v0.4
+
+### New
+
+- Allow creation/edition/deletion of collections
+- Provide a dedicated page to add links
+- Manage collections from the link page
+- Add support for mobiles
+
+### Improvements
+
+- Rework header bar
+- Change style of hr tag
+- Set Turbolinks progress bar style
+- Move "edit/settings" anchor on link show page
+
+### Bug fixes
+
+- Set correct version in SpiderBits user agent
+
+### Misc
+
+- Update French locales
+- Update icons
+- Force CSRF token for connected users
+- Homogeneize routes and controller actions names
+- Provide a FakerHelper class for tests
+
 ## 2020-07-01 - v0.3
 
 ### Migration notes
