@@ -37,7 +37,7 @@
                             value="<?= $collection->id ?>"
                             <?= $collection->attachedToLink ? 'checked' : '' ?>
                         />
-                        <?= $this->protect($collection->name) ?>
+                        <?= $this->protect($collection->name()) ?>
                     </label>
                 <?php endforeach; ?>
             </div>

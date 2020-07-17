@@ -82,6 +82,21 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return the name of the collection.
+     *
+     * If the collection is of "bookmarks" type, the localized version is
+     * returned.
+     */
+    public function name()
+    {
+        if ($this->type === 'bookmarks') {
+            return _('Bookmarks');
+        } else {
+            return $this->name;
+        }
+    }
+
+    /**
      * Return the list of links attached to this collection
      *
      * @return \flusio\models\Link[]

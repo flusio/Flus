@@ -53,7 +53,7 @@
         <ul class="list list--no-style">
             <?php foreach ($collections as $collection): ?>
                 <li class="list__item icon <?= $collection->type === 'bookmarks' ? 'icon--bookmark' : 'icon--collection' ?>">
-                    <?= $this->protect($collection->name) ?>
+                    <?= $this->protect($collection->name()) ?>
                 </li>
             <?php endforeach; ?>
         </ul>
