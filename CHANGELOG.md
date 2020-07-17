@@ -1,5 +1,26 @@
 # Changelog of flusio
 
+## 2020-07-17 - v0.5
+
+### Improvements
+
+- Always show anchor to add links to collection
+- Rename new collection description label
+- Reduce time before fetching link
+- Hide "www." from the links hosts
+- Change "about" link to flus.fr
+
+### Bug fixes
+
+- Fix header UI details
+- Fix bookmarks name localization
+- Fix title scrapping for Youtube
+
+### Misc
+
+- Parse title only for HTML pages
+- Update French locales
+
 ## 2020-07-16 - v0.4
 
 ### New
