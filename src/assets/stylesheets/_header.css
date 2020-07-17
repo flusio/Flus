@@ -22,10 +22,26 @@
     margin-top: -0.5rem;
 
     vertical-align: middle;
+
+    transition: filter 0.3s ease-in-out;
+}
+
+.header__image:hover {
+    filter: invert(36%) sepia(23%) saturate(4309%) hue-rotate(229deg) brightness(83%) contrast(80%);
 }
 
 .header__link {
     padding: var(--space-medium) var(--space-large);
+
+    cursor: pointer;
+}
+
+.header__link--icon {
+    padding-left: 2.4em;
+}
+
+.header__link--icon.icon::before {
+    left: 0.65em;
 }
 
 .header__link--secondary {

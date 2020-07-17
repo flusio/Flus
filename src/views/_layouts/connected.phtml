@@ -46,20 +46,18 @@
                     <div class="header__separator"></div>
 
                     <a
-                        class="header__link <?= $current_tab === 'bookmarks' ? 'header__link--active' : '' ?>"
+                        class="header__link header__link--icon icon icon--anchor icon--bookmark <?= $current_tab === 'bookmarks' ? 'header__link--active' : '' ?>"
                         href="<?= url('bookmarks') ?>"
                     >
-                        <i class="icon icon--anchor icon--bookmark"></i>
                         <span class="no-mobile">
                             <?= _('Bookmarks') ?>
                         </span>
                     </a>
 
                     <a
-                        class="header__link <?= $current_tab === 'collections' ? 'header__link--active' : '' ?>"
+                        class="header__link header__link--icon icon icon--anchor icon--collection <?= $current_tab === 'collections' ? 'header__link--active' : '' ?>"
                         href="<?= url('collections') ?>"
                     >
-                        <i class="icon icon--anchor icon--collection"></i>
                         <span class="no-mobile">
                             <?= _('Collections') ?>
                         </span>
@@ -67,10 +65,18 @@
 
                     <div class="header__separator no-mobile"></div>
 
-                    <details class="header__link header__link--secondary popup" data-controller="popup" data-action="click@window->popup#close">
-                        <summary class="popup__opener">
-                            <i class="icon icon--bars only-mobile"></i>
+                    <details
+                        class="header__link header__link--secondary popup"
+                        data-controller="popup"
+                        data-action="click@window->popup#close"
+                    >
+                        <summary class="popup__opener" title="<?= _('Open the menu') ?>">
+                            <i class="icon icon--anchor icon--bars only-mobile"></i>
                             <img class="header__image no-mobile" src="<?= url_static('default-avatar.svg') ?>" alt="" />
+
+                            <span class="sr-only">
+                                <?= _('Open the menu') ?>
+                            </span>
                         </summary>
 
                         <nav class="popup__container">
@@ -92,12 +98,13 @@
                     </details>
 
                     <a
-                        class="header__link header__link--featured"
+                        class="header__link header__link--featured header__link--icon icon icon--anchor icon--plus-circle"
                         href="<?= url('new link') ?>"
                         title="<?= _('Add a link') ?>"
-                        aria-label="<?= _('Add a link') ?>"
                     >
-                        <i class="icon icon--plus-circle icon--anchor"></i>
+                        <span class="sr-only">
+                            <?= _('Add a link') ?>
+                        </span>
                     </a>
                 </nav>
             </header>

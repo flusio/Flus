@@ -38,6 +38,16 @@ body {
     background-color: var(--color-body);
 }
 
+.sr-only {
+    position: absolute;
+
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+
+    width: 1px;
+    height: 1px;
+}
+
 .js-only {
     display: none;
 }

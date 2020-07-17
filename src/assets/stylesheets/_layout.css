@@ -6,11 +6,14 @@
     width: 100%;
 
     background-color: var(--color-turquoise-3);
+    box-shadow: 0 -2px 2px -1px var(--color-grey-2);
 }
 
 @media (min-width: 800px) {
     .layout__header--connected {
         position: static;
+
+        box-shadow: none;
     }
 }
 
@@ -21,6 +24,10 @@
 
     border-top: 0.5rem solid transparent;
     border-bottom: 0.5rem solid transparent;
+}
+
+.layout__header--connected .header__link--icon {
+    padding-left: 2.4em;
 }
 
 .layout__header--connected .header__link--active {
