@@ -7,7 +7,7 @@ export default class extends Controller {
             form.style.display = 'none';
             window.setTimeout(() => {
                 form.submit();
-            }, 2000);
+            }, 500);
         }
     }
 };
