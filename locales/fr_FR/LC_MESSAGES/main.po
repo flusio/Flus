@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-07-15 17:19+0200\n"
-"PO-Revision-Date: 2020-07-15 17:20+0200\n"
+"POT-Creation-Date: 2020-07-17 12:23+0200\n"
+"PO-Revision-Date: 2020-07-17 12:23+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Accounts.php:69 Accounts.php:149 Collections.php:101 Collections.php:231
-#: Links.php:144 Links.php:280 Registrations.php:84 Registrations.php:249
+#: Links.php:144 Links.php:280 Registrations.php:84 Registrations.php:248
 #: Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -35,7 +35,7 @@ msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
-#: Collections.php:288 Links.php:369 Links.php:554 Sessions.php:191
+#: Collections.php:288 Links.php:369 Links.php:557 Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -55,19 +55,19 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: Links.php:548
+#: Links.php:551
 msgid "This link-collection relation doesn’t exist."
 msgstr "La relation lien-collection n’existe pas."
 
-#: Registrations.php:108
+#: Registrations.php:107
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:183 Registrations.php:197
+#: Registrations.php:182 Registrations.php:196
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: Registrations.php:190
+#: Registrations.php:189
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
@@ -89,67 +89,66 @@ msgstr "Afficher"
 msgid "[flusio] Confirm your registration"
 msgstr "[flusio] Confirmer votre inscription"
 
-#: models/Collection.php:78 views/_layouts/connected.phtml:54
-#: views/collections/show_bookmarks.phtml:3
-#: views/collections/show_bookmarks.phtml:10
+#: models/Collection.php:78 models/Collection.php:93
+#: views/_layouts/connected.phtml:53 views/collections/show_bookmarks.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:154
+#: models/Collection.php:169
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:156
+#: models/Collection.php:171
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:110
+#: models/Link.php:115
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:112
+#: models/Link.php:117
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:131
+#: models/Link.php:136
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:136
+#: models/Link.php:141
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:140
+#: models/Link.php:145
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
 "sensible."
 
-#: models/User.php:218
+#: models/User.php:220
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:220
+#: models/User.php:222
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:222
+#: models/User.php:224
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:224
+#: models/User.php:226
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:226
+#: models/User.php:228
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:228
+#: models/User.php:230
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:230
+#: models/User.php:232
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -185,24 +184,28 @@ msgstr ""
 msgid "You must validate your registration&nbsp;→"
 msgstr "Vous devez valider votre inscription&nbsp;→"
 
-#: views/_layouts/connected.phtml:64 views/collections/index.phtml:3
+#: views/_layouts/connected.phtml:62 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/collections/show.phtml:12
 #: views/links/collections.phtml:19 views/links/new.phtml:48
 #: views/links/show.phtml:43
 msgid "Collections"
 msgstr "Collections"
 
-#: views/_layouts/connected.phtml:80 views/accounts/show.phtml:3
+#: views/_layouts/connected.phtml:73 views/_layouts/connected.phtml:78
+msgid "Open the menu"
+msgstr "Ouvrir le menu"
+
+#: views/_layouts/connected.phtml:86 views/accounts/show.phtml:3
 #: views/accounts/show.phtml:11
 msgid "Account"
 msgstr "Compte"
 
-#: views/_layouts/connected.phtml:88
+#: views/_layouts/connected.phtml:94
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:97 views/_layouts/connected.phtml:98
-#: views/collections/show.phtml:77 views/collections/show_bookmarks.phtml:60
+#: views/_layouts/connected.phtml:103 views/_layouts/connected.phtml:106
+#: views/collections/show.phtml:39 views/collections/show_bookmarks.phtml:22
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -355,8 +358,8 @@ msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:38 views/collections/show.phtml:63
-#: views/collections/show_bookmarks.phtml:46
+#: views/collections/index.phtml:38 views/collections/show.phtml:72
+#: views/collections/show_bookmarks.phtml:55
 msgid "see"
 msgstr "voir"
 
@@ -384,8 +387,8 @@ msgid "What do you want to name this collection?"
 msgstr "Comment voulez-vous nommer cette collection ?"
 
 #: views/collections/new.phtml:48
-msgid "Tell us more about it"
-msgstr "Dites-nous en plus"
+msgid "What’s the purpose of this collection?"
+msgstr "Quelle est la raison d’être de cette collection ?"
 
 #: views/collections/new.phtml:68
 msgid "Create the collection"
@@ -400,12 +403,12 @@ msgstr "Annuler et retourner aux collections"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: views/collections/show.phtml:55 views/collections/show.phtml:56
+#: views/collections/show.phtml:64 views/collections/show.phtml:65
 #, php-format
 msgid "Remove from %s"
 msgstr "Retirer de %s"
 
-#: views/collections/show.phtml:73 views/collections/show_bookmarks.phtml:56
+#: views/collections/show.phtml:81 views/collections/show_bookmarks.phtml:64
 msgid ""
 "This collection is empty. The links will appear here once you start adding "
 "them."
@@ -417,8 +420,8 @@ msgstr ""
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/collections/show_bookmarks.phtml:38
-#: views/collections/show_bookmarks.phtml:39
+#: views/collections/show_bookmarks.phtml:47
+#: views/collections/show_bookmarks.phtml:48
 msgid "Remove from bookmarks"
 msgstr "Retirer des signets"
 
@@ -530,10 +533,6 @@ msgstr "Page non trouvée"
 #: views/not_found.phtml:10
 msgid "This page doesn’t exist."
 msgstr "Cette page n’existe pas."
-
-#: views/pages/about.phtml:3 views/pages/about.phtml:9
-msgid "About"
-msgstr "À propos"
 
 #: views/pages/design.phtml:3 views/pages/design.phtml:10
 msgid "flusio design system"
