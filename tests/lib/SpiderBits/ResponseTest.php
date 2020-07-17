@@ -118,4 +118,48 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('fr; q=1.0, en; q=0.5', $response->headers['accept-language']);
     }
+
+    public function testHeader()
+    {
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/plain\r
+        \r
+        Hello World!
+        TEXT;
+        $response = Response::fromText($text);
+
+        $header = $response->header('Content-Type');
+
+        $this->assertSame('text/plain', $header);
+    }
+
+    public function testHeaderIsCaseInsensitive()
+    {
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/plain\r
+        \r
+        Hello World!
+        TEXT;
+        $response = Response::fromText($text);
+
+        $header = $response->header('CoNtEnT-TyPe');
+
+        $this->assertSame('text/plain', $header);
+    }
+
+    public function testHeaderReturnsDefaultValueIfMissing()
+    {
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        \r
+        Hello World!
+        TEXT;
+        $response = Response::fromText($text);
+
+        $header = $response->header('content-type', 'text/html');
+
+        $this->assertSame('text/html', $header);
+    }
 }

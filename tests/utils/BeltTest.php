@@ -103,4 +103,84 @@ class BeltTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($result);
     }
+
+    public function testContains()
+    {
+        $string = 'foobar';
+        $substring = 'ooba';
+
+        $result = Belt::contains($string, $substring);
+
+        $this->assertTrue($result);
+    }
+
+    public function testContainsWhenStringIsAtTheStart()
+    {
+        $string = 'foobar';
+        $substring = 'foo';
+
+        $result = Belt::contains($string, $substring);
+
+        $this->assertTrue($result);
+    }
+
+    public function testContainsWhenStringIsAtTheEnd()
+    {
+        $string = 'foobar';
+        $substring = 'bar';
+
+        $result = Belt::contains($string, $substring);
+
+        $this->assertTrue($result);
+    }
+
+    public function testContainsWhenStringsAreTheSame()
+    {
+        $string = 'foobar';
+        $substring = 'foobar';
+
+        $result = Belt::contains($string, $substring);
+
+        $this->assertTrue($result);
+    }
+
+    public function testContainsWhenSubstringIsEmpty()
+    {
+        $string = 'foobar';
+        $substring = '';
+
+        $result = Belt::contains($string, $substring);
+
+        $this->assertTrue($result);
+    }
+
+    public function testContainsWhenBothAreEmpty()
+    {
+        $string = '';
+        $substring = '';
+
+        $result = Belt::contains($string, $substring);
+
+        $this->assertTrue($result);
+    }
+
+    public function testContainsReturnsFalseIfDoesntContainsSubstring()
+    {
+        $string = 'foobar';
+        $substring = 'spam';
+
+        $result = Belt::contains($string, $substring);
+
+        $this->assertFalse($result);
+    }
+
+    public function testContainsReturnsFalseIfSubstringIsLonger()
+    {
+        $string = 'foobar';
+        $substring = 'foobarfoo';
+
+        $result = Belt::contains($string, $substring);
+
+        $this->assertFalse($result);
+    }
 }

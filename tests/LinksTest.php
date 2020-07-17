@@ -713,6 +713,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $hash = \SpiderBits\Cache::hash($url);
         $raw_response = <<<TEXT
         HTTP/2 200 OK
+        Content-Type: text/html
 
         <html>
             <head>

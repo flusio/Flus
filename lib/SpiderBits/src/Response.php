@@ -77,6 +77,24 @@ class Response
     }
 
     /**
+     * Return a header value
+     *
+     * @param string $name The name of the parameter to get (case insensitive)
+     * @param mixed $default A default value to return if the parameter doesn't exist
+     *
+     * @return mixed
+     */
+    public function header($name, $default = null)
+    {
+        $name = strtolower($name);
+        if (isset($this->headers[$name])) {
+            return $this->headers[$name];
+        } else {
+            return $default;
+        }
+    }
+
+    /**
      * Parse the raw headers (i.e. as a string) and return corresponding array
      * where keys are fields names and values are fields contents.
      *

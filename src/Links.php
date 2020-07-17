@@ -389,15 +389,18 @@ class Links
         }
 
         if ($response->success) {
-            $dom = \SpiderBits\Dom::fromText($response->data);
-            $title = \SpiderBits\DomExtractor::title($dom);
-            if ($title) {
-                $link->title = $title;
-            }
+            $content_type = $response->header('content-type');
+            if (utils\Belt::contains($content_type, 'text/html')) {
+                $dom = \SpiderBits\Dom::fromText($response->data);
+                $title = \SpiderBits\DomExtractor::title($dom);
+                if ($title) {
+                    $link->title = $title;
+                }
 
-            $content = \SpiderBits\DomExtractor::content($dom);
-            $words = array_filter(explode(' ', $content));
-            $link->reading_time = intval(count($words) / 200);
+                $content = \SpiderBits\DomExtractor::content($dom);
+                $words = array_filter(explode(' ', $content));
+                $link->reading_time = intval(count($words) / 200);
+            }
         } else {
             $link->fetched_error = $response->data;
         }
