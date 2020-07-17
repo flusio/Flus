@@ -19,7 +19,15 @@ class DomExtractor
      */
     public static function title($dom)
     {
-        $title = $dom->select('/html/head/title');
+        // Be strict first
+        $title = $dom->select('/html/head/title[1]');
+        if (!$title) {
+            // Then, if we don't find it for some reasons, be more tolerant.
+            // This is particularly useful for Youtube!
+            // We must be sure to not consider svg title tags though!
+            $title = $dom->select('//title[not(ancestor::svg)][1]');
+        }
+
         if ($title) {
             return $title->text();
         } else {

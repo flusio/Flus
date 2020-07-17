@@ -19,12 +19,32 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is title', $title);
     }
 
-    public function testTitleReturnsEmptyStringIfNotInHtmlHead()
+    public function testTitleTakesFirstTitleIfNotInHtmlHead()
     {
         $dom = Dom::fromText(<<<HTML
             <html>
                 <body>
-                    <title>This is title</title>
+                    <title>This is title 1</title>
+                    <title>This is title 2</title>
+                </body>
+            </html>
+        HTML);
+
+        $title = DomExtractor::title($dom);
+
+        $this->assertSame('This is title 1', $title);
+    }
+
+    public function testTitleDoesNotConsiderSvgTitle()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                    <svg viewBox="0 0 20 10" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="5" cy="5" r="4">
+                            <title>I'm a circle</title>
+                        </circle>
+                    </svg>
                 </body>
             </html>
         HTML);
