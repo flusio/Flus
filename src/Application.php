@@ -35,7 +35,6 @@ class Application
         // Initialize the routes
         $router = new \Minz\Router();
         $router->addRoute('get', '/', 'Pages#home', 'home');
-        $router->addRoute('get', '/about', 'Pages#about', 'about');
 
         // Registration
         $router->addRoute('get', '/registration', 'Registrations#new', 'registration');

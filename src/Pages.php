@@ -30,18 +30,6 @@ class Pages
     }
 
     /**
-     * Show the about page.
-     *
-     * @response 200
-     *
-     * @return \Minz\Response
-     */
-    public function about()
-    {
-        return Response::ok('pages/about.phtml');
-    }
-
-    /**
      * Show the design page.
      *
      * @response 200

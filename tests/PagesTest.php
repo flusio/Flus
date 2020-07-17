@@ -25,14 +25,6 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/bookmarks');
     }
 
-    public function testAboutRendersCorrectly()
-    {
-        $response = $this->appRun('GET', '/about');
-
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'pages/about.phtml');
-    }
-
     public function testDesignRendersCorrectly()
     {
         $response = $this->appRun('GET', '/design');
