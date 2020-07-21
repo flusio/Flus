@@ -80,12 +80,8 @@ class Application
         $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
         $router->addRoute('get', '/links/:id/collections', 'Links#collections', 'link collections');
         $router->addRoute('post', '/links/:id/collections', 'Links#updateCollections', 'update link collections');
-        $router->addRoute(
-            'post',
-            '/links/:id/remove_collection',
-            'Links#removeCollection',
-            'remove link collection'
-        );
+        $router->addRoute('post', '/links/:id/bookmark', 'Links#bookmark', 'bookmark link');
+        $router->addRoute('post', '/links/:id/unbookmark', 'Links#unbookmark', 'unbookmark link');
 
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-07-17 12:23+0200\n"
-"PO-Revision-Date: 2020-07-17 12:23+0200\n"
+"POT-Creation-Date: 2020-07-21 15:45+0200\n"
+"PO-Revision-Date: 2020-07-21 15:58+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -35,7 +35,8 @@ msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
-#: Collections.php:288 Links.php:369 Links.php:557 Sessions.php:191
+#: Collections.php:288 Links.php:369 Links.php:550 Links.php:596
+#: Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -55,9 +56,9 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: Links.php:551
-msgid "This link-collection relation doesn’t exist."
-msgstr "La relation lien-collection n’existe pas."
+#: Links.php:544 Links.php:590
+msgid "The link doesn’t exist."
+msgstr "Le lien n’existe pas."
 
 #: Registrations.php:107
 msgid "An account already exists with this email address."
@@ -84,6 +85,18 @@ msgstr "Cacher"
 #: views/sessions/new.phtml:69
 msgid "Show"
 msgstr "Afficher"
+
+#: assets/javascripts/controllers/link_card_controller.js:35
+#: assets/javascripts/controllers/link_card_controller.js:36
+#: views/collections/show_bookmarks.phtml:56
+#: views/collections/show_bookmarks.phtml:57
+msgid "Remove from bookmarks"
+msgstr "Retirer des signets"
+
+#: assets/javascripts/controllers/link_card_controller.js:52
+#: assets/javascripts/controllers/link_card_controller.js:53
+msgid "Add to bookmarks"
+msgstr "Ajouter aux signets"
 
 #: mailers/Users.php:9
 msgid "[flusio] Confirm your registration"
@@ -358,8 +371,8 @@ msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:38 views/collections/show.phtml:72
-#: views/collections/show_bookmarks.phtml:55
+#: views/collections/index.phtml:38 views/collections/show.phtml:59
+#: views/collections/show_bookmarks.phtml:64
 msgid "see"
 msgstr "voir"
 
@@ -403,12 +416,7 @@ msgstr "Annuler et retourner aux collections"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: views/collections/show.phtml:64 views/collections/show.phtml:65
-#, php-format
-msgid "Remove from %s"
-msgstr "Retirer de %s"
-
-#: views/collections/show.phtml:81 views/collections/show_bookmarks.phtml:64
+#: views/collections/show.phtml:68 views/collections/show_bookmarks.phtml:73
 msgid ""
 "This collection is empty. The links will appear here once you start adding "
 "them."
@@ -419,11 +427,6 @@ msgstr ""
 #: views/collections/show_bookmarks.phtml:14
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
-
-#: views/collections/show_bookmarks.phtml:47
-#: views/collections/show_bookmarks.phtml:48
-msgid "Remove from bookmarks"
-msgstr "Retirer des signets"
 
 #: views/internal_server_error.phtml:3
 msgid "Something bad happened"

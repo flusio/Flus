@@ -25,7 +25,13 @@
 
     <div class="links">
         <?php foreach ($links as $link): ?>
-            <div class="link">
+            <div
+                class="link"
+                data-controller="link-card"
+                data-link-card-bookmarked="true"
+                data-link-card-bookmark-action="<?= url('bookmark link', ['id' => $link->id]) ?>"
+                data-link-card-unbookmark-action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
+            >
                 <div class="link__body">
                     <h2 class="link__title">
                         <?= $this->protect($link->title) ?>
@@ -37,10 +43,13 @@
                 </div>
 
                 <div class="link__footer">
-                    <form method="post" action="<?= url('remove link collection', ['id' => $link->id]) ?>">
+                    <form
+                        method="post"
+                        action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
+                        data-action="link-card#toggleBookmarked"
+                        data-target="link-card.bookmarkForm"
+                    >
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <input type="hidden" name="collection_id" value="<?= $collection->id ?>" />
-                        <input type="hidden" name="from" value="<?= url('bookmarks') ?>" />
 
                         <button
                             class="button--discreet"

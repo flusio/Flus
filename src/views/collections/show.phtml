@@ -54,19 +54,7 @@
                 </div>
 
                 <div class="link__footer">
-                    <form method="post" action="<?= url('remove link collection', ['id' => $link->id]) ?>">
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <input type="hidden" name="collection_id" value="<?= $collection->id ?>" />
-                        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
-
-                        <button
-                            class="button--discreet"
-                            title="<?= _f('Remove from %s', $collection->name) ?>"
-                            aria-label="<?= _f('Remove from %s', $collection->name) ?>"
-                        >
-                            <i class="icon icon--only icon--solid icon--ghost icon--collection"></i>
-                        </button>
-                    </form>
+                    <div></div>
 
                     <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
                         <?= _('see') ?>
