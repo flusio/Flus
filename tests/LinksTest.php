@@ -1011,13 +1011,134 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_collection_2);
     }
 
-    public function testRemoveCollectionRemovesLinkFromCollection()
+    public function testBookmarkAddsLinkToBookmarks()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/bookmark", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponse($response, 302, '/bookmarks');
+        $db_link_to_collection = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->assertNotNull($db_link_to_collection);
+    }
+
+    public function testBookmarkRedirectsToLoginIfNotConnected()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'bookmarks',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/bookmark", [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $db_link_to_collection = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->assertNull($db_link_to_collection);
+    }
+
+    public function testBookmarkFailsIfCsrfIsInvalid()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/bookmark", [
+            'csrf' => 'not the token',
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertFlash('error', 'A security verification failed.');
+        $db_link_to_collection = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->assertNull($db_link_to_collection);
+    }
+
+    public function testBookmarkFailsIfLinkDoesNotExist()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+
+        $response = $this->appRun('post', "/links/not-an-id/bookmark", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertFlash('error', 'The link doesn’t exist.');
+    }
+
+    public function testBookmarkFailsIfUserDoesNotOwnTheLink()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/bookmark", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertFlash('error', 'The link doesn’t exist.');
+        $db_link_to_collection = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->assertNull($db_link_to_collection);
+    }
+
+    public function testBookmarkFailsIfThereIsRelationBetweenLinkAndCollection()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
         ]);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -1027,24 +1148,48 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+        $response = $this->appRun('post', "/links/{$link_id}/bookmark", [
             'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertFlash('error', 'This link is already bookmarked.');
+        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
+    }
+
+    public function testUnbookmarkRemovesLinkFromBookmarks()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
             'collection_id' => $collection_id,
         ]);
 
+        $response = $this->appRun('post', "/links/{$link_id}/unbookmark", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
 
         $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFalse($links_to_collections_dao->exists($link_to_collection_id));
     }
 
-    public function testRemoveCollectionRedirectsToLoginIfNotConnected()
+    public function testUnbookmarkRedirectsToLoginIfNotConnected()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user_id = $this->create('user');
         $collection_id = $this->create('collection', [
             'user_id' => $user_id,
+            'type' => 'bookmarks',
         ]);
         $link_id = $this->create('link', [
             'user_id' => $user_id,
@@ -1054,24 +1199,22 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+        $response = $this->appRun('post', "/links/{$link_id}/unbookmark", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'from' => \Minz\Url::for('bookmarks'),
-            'collection_id' => $collection_id,
         ]);
-
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
-    public function testRemoveCollectionFailsIfCsrfIsInvalid()
+    public function testUnbookmarkFailsIfCsrfIsInvalid()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
+            'type' => 'bookmarks',
         ]);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -1081,25 +1224,23 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+        $response = $this->appRun('post', "/links/{$link_id}/unbookmark", [
             'csrf' => 'not the token',
             'from' => \Minz\Url::for('bookmarks'),
-            'collection_id' => $collection_id,
         ]);
-
 
         $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'A security verification failed.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
-    public function testRemoveCollectionFailsIfLinkDoesNotExist()
+    public function testUnbookmarkFailsIfLinkDoesNotExist()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
+            'type' => 'bookmarks',
         ]);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -1109,52 +1250,24 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
 
-        $response = $this->appRun('post', "/links/not-an-id/remove_collection", [
+        $response = $this->appRun('post', "/links/not-an-id/unbookmark", [
             'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
-            'collection_id' => $collection_id,
         ]);
 
         $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
+        $this->assertFlash('error', 'The link doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
-    public function testRemoveCollectionFailsIfCollectionDoesNotExist()
+    public function testUnbookmarkFailsIfUserDoesNotOwnTheLink()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
-        $user = $this->login();
-        $collection_id = $this->create('collection', [
-            'user_id' => $user->id,
-        ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-        ]);
-        $link_to_collection_id = $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
-        ]);
-
-        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
-            'csrf' => $user->csrf,
-            'from' => \Minz\Url::for('bookmarks'),
-            'collection_id' => 'not an id',
-        ]);
-
-        $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
-        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
-    }
-
-    public function testRemoveCollectionFailsIfUserDoesNotOwnTheLink()
-    {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user = $this->login();
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
+            'type' => 'bookmarks',
         ]);
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
@@ -1164,62 +1277,39 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
+        $response = $this->appRun('post', "/links/{$link_id}/unbookmark", [
             'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
-            'collection_id' => $collection_id,
         ]);
 
         $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
+        $this->assertFlash('error', 'The link doesn’t exist.');
         $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
     }
 
-    public function testRemoveCollectionFailsIfUserDoesNotOwnTheCollection()
+    public function testUnbookmarkFailsIfThereIsNoRelationBetweenLinkAndCollection()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user = $this->login();
-        $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
         ]);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
         ]);
-        $link_to_collection_id = $this->create('link_to_collection', [
+
+        $response = $this->appRun('post', "/links/{$link_id}/unbookmark", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertFlash('error', 'This link is not bookmarked.');
+        $db_link_to_collection = $links_to_collections_dao->findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id,
         ]);
-
-        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
-            'csrf' => $user->csrf,
-            'from' => \Minz\Url::for('bookmarks'),
-            'collection_id' => $collection_id,
-        ]);
-
-        $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
-        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
-    }
-
-    public function testRemoveCollectionFailsIfThereIsNoRelationBetweenLinkAndCollection()
-    {
-        $user = $this->login();
-        $collection_id = $this->create('collection', [
-            'user_id' => $user->id,
-        ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-        ]);
-
-        $response = $this->appRun('post', "/links/{$link_id}/remove_collection", [
-            'csrf' => $user->csrf,
-            'from' => \Minz\Url::for('bookmarks'),
-            'collection_id' => $collection_id,
-        ]);
-
-        $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFlash('error', 'This link-collection relation doesn’t exist.');
+        $this->assertNull($db_link_to_collection);
     }
 }

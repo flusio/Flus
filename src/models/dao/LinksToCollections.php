@@ -73,36 +73,4 @@ class LinksToCollections extends \Minz\DatabaseModel
         $statement = $this->prepare($sql);
         return $statement->execute($values);
     }
-
-    /**
-     * Find a relation between a link and a collection for the given user.
-     *
-     * @param string $user_id
-     * @param string $link_id
-     * @param string $collection_id
-     *
-     * return array|null
-     */
-    public function findRelation($user_id, $link_id, $collection_id)
-    {
-        $sql = <<<'SQL'
-            SELECT * FROM links_to_collections
-            WHERE link_id = (
-                SELECT id FROM links
-                WHERE id = ? AND user_id = ?
-            ) AND collection_id = (
-                SELECT id FROM collections
-                WHERE id = ? AND user_id = ?
-            );
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([$link_id, $user_id, $collection_id, $user_id]);
-        $result = $statement->fetch();
-        if ($result) {
-            return $result;
-        } else {
-            return null;
-        }
-    }
 }

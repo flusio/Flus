@@ -16,12 +16,18 @@
     flex-grow: 1;
 
     box-shadow: 0 1px 4px 1px var(--color-grey-2);
+
+    transition: opacity 0.2s ease-in-out;
 }
 
 @media (min-width: 800px) {
     .link {
         flex-basis: 30%;
     }
+}
+
+.link--transparent {
+    opacity: 0.5;
 }
 
 .link__body {

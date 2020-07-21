@@ -513,16 +513,15 @@ class Links
     }
 
     /**
-     * Remove a link from a collection.
+     * Add a link to the bookmarks
      *
      * @request_param string csrf
      * @request_param string from (default is /bookmarks)
      * @request_param string id
-     * @request_param string collection_id
      *
      * @response 302 /login?redirect_to=:from if not connected
-     * @response 404 if the link or collection (or their relation) don't exist,
-     *               or are not associated to the current user
+     * @response 404 if the link doesn't exist, or is not associated to the
+     *               current user
      * @response 302 :from if CSRF is invalid
      * @response 302 :from on success
      *
@@ -530,25 +529,26 @@ class Links
      *
      * @return \Minz\Response
      */
-    public function removeCollection($request)
+    public function bookmark($request)
     {
         $user = utils\CurrentUser::get();
         $from = $request->param('from', \Minz\Url::for('bookmarks'));
         $link_id = $request->param('id');
-        $collection_id = $request->param('collection_id');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $db_link_to_collection = $links_to_collections_dao->findRelation(
-            $user->id,
-            $link_id,
-            $collection_id
-        );
-        if (!$db_link_to_collection) {
-            utils\Flash::set('error', _('This link-collection relation doesn’t exist.'));
+        $link = $user->link($link_id);
+        if (!$link) {
+            utils\Flash::set('error', _('The link doesn’t exist.'));
+            return Response::found($from);
+        }
+
+        $bookmarks = $user->bookmarks();
+        $actual_collection_ids = array_column($link->collections(), 'id');
+        if (in_array($bookmarks->id, $actual_collection_ids)) {
+            utils\Flash::set('error', _('This link is already bookmarked.'));
             return Response::found($from);
         }
 
@@ -558,7 +558,60 @@ class Links
             return Response::found($from);
         }
 
-        $links_to_collections_dao->delete($db_link_to_collection['id']);
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
+
+        return Response::found($from);
+    }
+
+    /**
+     * Remove a link from bookmarks
+     *
+     * @request_param string csrf
+     * @request_param string from (default is /bookmarks)
+     * @request_param string id
+     *
+     * @response 302 /login?redirect_to=:from if not connected
+     * @response 302 :from if the link doesn't exist, or is not associated to the
+     *                     current user, or not in the bookmarks
+     * @response 302 :from if CSRF is invalid
+     * @response 302 :from on success
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function unbookmark($request)
+    {
+        $user = utils\CurrentUser::get();
+        $from = $request->param('from', \Minz\Url::for('bookmarks'));
+        $link_id = $request->param('id');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        $link = $user->link($link_id);
+        if (!$link) {
+            utils\Flash::set('error', _('The link doesn’t exist.'));
+            return Response::found($from);
+        }
+
+        $bookmarks = $user->bookmarks();
+        $actual_collection_ids = array_column($link->collections(), 'id');
+        if (!in_array($bookmarks->id, $actual_collection_ids)) {
+            utils\Flash::set('error', _('This link is not bookmarked.'));
+            return Response::found($from);
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
 
         return Response::found($from);
     }

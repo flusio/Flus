@@ -1,7 +1,9 @@
 <?php
 
 $translations = [
+    'Add to bookmarks',
     'Hide',
+    'Remove from bookmarks',
     'Show',
 ];
 
