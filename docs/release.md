@@ -14,14 +14,29 @@ concerning this version numbers for now:
 
 If it becomes necessary, more complex rules could apply in the future.
 
-A `make` target is provided to release a new version:
+A `make` target is provided to release a new version. It writes the new version
+in the [`VERSION.txt` file](/VERSION.txt), it bundles and minifies the assets
+under the `public/assets/` folder (via the [`npm run build` command](/package.json)),
+opens the [changelog](/CHANGELOG.md) in your editor so you can document the
+changes (at least to set the release date) and commits these changes.
+
+You must run this command in a new branch, and push it on GitHub to create a
+new pull request:
 
 ```console
-$ make release VERSION=0.1
+flusio$ git checkout -b release/0.1
+flusio$ make release VERSION=0.1
+flusio$ git push -u origin release/0.1
 ```
 
-It writes the new version in the [`VERSION.txt` file](/VERSION.txt), it bundles
-and minifies the assets under the `public/assets/` folder (via the [`npm run
-build` command](/package.json)), opens the [changelog](/CHANGELOG.md) in your
-editor so you can document the changes (at least to set the release date) and
-commits these changes.
+Once you’ve reviewed and merged your pull request, you must make sure to push
+the new tag on the server:
+
+```console
+flusio$ git push --tags
+```
+
+You must now [create a release](https://github.com/flusio/flusio/releases/new)
+on GitHub. Use the tag just created (e.g. v0.1) for the release title.
+Copy-paste the content of the changelog in the description field (don't forget
+to adapt titles levels). Finally, publish the new release and celebrate!

@@ -9,27 +9,46 @@ performing an update.
 Then, you can pull the new code from GitHub:
 
 ```console
-$ git status # check that you didn't make any change in your working directory
-$ git pull --recurse-submodules
+flusio$ git status # check that you didn't make any change in your working directory
+flusio$ git fetch --recurse-submodules
+flusio$ git checkout TAG # to update to a specific version
+flusio$ # OR, in development
+flusio$ git pull
 ```
 
-Apply the migrations:
+**In production,** you should change the owner of the files:
 
 ```console
-$ make update
+flusio# chown -R www-data:www-data .
 ```
+
+Then, apply the migrations:
+
+```console
+flusio$ make update NO_DOCKER=true
+```
+
+Finally, you might need to restart PHP so it detects localization changes:
+
+```console
+flusio$ sudo systemctl restart php
+```
+
+In development, just stop and restart the `make start` command.
 
 That’s all!
 
 Obviously, if you made changes in your own working directory, things might not
 go so easily. Please always check the current status of the Git repository.
 
+---
+
 If at any time something goes wrong with the database, you can use the joker
 command:
 
 ```console
-$ make reset
+flusio$ make reset NO_DOCKER=true
 ```
 
-It will reset the database and reload the schema. Obviously, you should avoid
-this command in production or you will erase all the data.
+It will reset the database and reload the schema. **Obviously, you should avoid
+this command in production or you will erase all the data.**
