@@ -41,10 +41,9 @@ class Collection extends \Minz\Model
             'required' => true,
         ],
 
-        // This property is dynamic and not directly saved in DB. It may
-        // generate errors if used inappropriately.
         'number_links' => [
             'type' => 'integer',
+            'computed' => true,
         ],
     ];
 
@@ -76,6 +75,7 @@ class Collection extends \Minz\Model
         return new self([
             'id' => bin2hex(random_bytes(16)),
             'name' => _('Bookmarks'),
+            'description' => '',
             'type' => 'bookmarks',
             'user_id' => $user_id,
         ]);

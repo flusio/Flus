@@ -65,6 +65,7 @@ class Link extends \Minz\Model
             'url' => $url,
             'user_id' => $user_id,
             'reading_time' => 0,
+            'fetched_code' => 0,
         ]);
     }
 
