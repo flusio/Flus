@@ -63,3 +63,13 @@ CREATE TABLE links_to_collections (
 
 CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, collection_id);
 CREATE INDEX idx_links_to_collections_collection_id ON links_to_collections(collection_id);
+
+CREATE TABLE messages (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    content TEXT NOT NULL,
+    link_id TEXT REFERENCES links ON DELETE CASCADE ON UPDATE CASCADE,
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX idx_messages_link_id ON messages(link_id);

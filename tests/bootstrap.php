@@ -153,3 +153,27 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
     ]
 );
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'message',
+    '\flusio\models\dao\Message',
+    [
+        'id' => function () {
+            return bin2hex(random_bytes(16));
+        },
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'content' => function () use ($faker) {
+            return $faker->paragraphs(3, true);
+        },
+        'link_id' => function () use ($faker) {
+            $link_factory = new \Minz\Tests\DatabaseFactory('link');
+            return $link_factory->create();
+        },
+        'user_id' => function () use ($faker) {
+            $user_factory = new \Minz\Tests\DatabaseFactory('user');
+            return $user_factory->create();
+        },
+    ]
+);
