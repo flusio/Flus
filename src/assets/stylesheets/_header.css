@@ -7,6 +7,14 @@
     align-items: stretch;
 }
 
+.header__container--centered {
+    align-items: center;
+}
+
+.header__container > * + * {
+    margin-left: var(--space-smaller);
+}
+
 @media (min-width: 800px) {
     .header__container > * + * {
         margin-left: var(--space-small);

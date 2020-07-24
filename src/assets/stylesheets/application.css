@@ -14,6 +14,7 @@
 @import './_variables.css';
 @import './components/collections.css';
 @import './components/links.css';
+@import './components/messages.css';
 
 *,
 *::before,

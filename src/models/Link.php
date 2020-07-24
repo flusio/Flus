@@ -86,6 +86,24 @@ class Link extends \Minz\Model
     }
 
     /**
+     * Return the messages attached to the current link
+     *
+     * @return \flusio\models\Message[]
+     */
+    public function messages()
+    {
+        $message_dao = new dao\Message();
+        $messages = [];
+        $db_messages = $message_dao->listBy([
+            'link_id' => $this->id,
+        ]);
+        foreach ($db_messages as $db_message) {
+            $messages[] = new Message($db_message);
+        }
+        return $messages;
+    }
+
+    /**
      * @return string
      */
     public function host()
