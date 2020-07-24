@@ -54,6 +54,8 @@ class Links
         return Response::ok('links/show.phtml', [
             'link' => $link,
             'collections' => $collections,
+            'messages' => $link->messages(),
+            'comment' => '',
         ]);
     }
 

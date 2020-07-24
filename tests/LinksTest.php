@@ -39,6 +39,24 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'links/show.phtml');
     }
 
+    public function testShowDisplaysMessages()
+    {
+        $content = $this->fake('paragraphs', 3, true);
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => $this->fake('iso8601'),
+        ]);
+        $this->create('message', [
+            'link_id' => $link_id,
+            'content' => $content,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}");
+
+        $this->assertResponse($response, 200, nl2br($content));
+    }
+
     public function testShowRedirectsIfNotFetched()
     {
         $user = $this->login();

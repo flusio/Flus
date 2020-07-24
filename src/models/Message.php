@@ -78,7 +78,7 @@ class Message extends \Minz\Model
             if ($property === 'content' && $code === 'required') {
                 $formatted_error = _('The message is required.');
             } else {
-                $formatted_error = $error['description'];
+                $formatted_error = $error['description']; // @codeCoverageIgnore
             }
 
             $formatted_errors[$property] = $formatted_error;

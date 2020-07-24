@@ -56,4 +56,70 @@
             <?php endforeach; ?>
         </ul>
     </section>
+
+    <hr />
+
+    <section class="subsection subsection--small" id="messages">
+        <?php foreach ($messages as $message): ?>
+            <article class="message">
+                <header class="message__header header">
+                    <div class="header__container header__container--centered">
+                        <img class="message__avatar" src="<?= url_static('default-avatar.svg') ?>" alt="" />
+
+                        <div class="message__author">
+                            <?= $this->protect($message->user()->username) ?>
+                        </div>
+
+                        <div class="header__separator"></div>
+
+                        <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
+                            <?= format_date($message->created_at) ?>
+                        </time>
+                    </div>
+                </header>
+
+                <div class="message__content">
+                    <?= nl2br($this->protect($message->content)) ?>
+                </div>
+            </article>
+        <?php endforeach; ?>
+
+        <form method="post" action="<?= url('links/create message', ['link_id' => $link->id]) ?>">
+            <?php if ($error): ?>
+                <p class="form__error">
+                    <?= $error ?>
+                </p>
+            <?php endif; ?>
+
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+            <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
+                <label for="content">
+                    <?php if (count($messages) === 0): ?>
+                        <?= _('What do you think?') ?>
+                    <?php else: ?>
+                        <?= _('Anything else to add?') ?>
+                    <?php endif; ?>
+                </label>
+
+                <textarea
+                    id="content"
+                    name="content"
+                    required
+                ><?= $comment ?></textarea>
+
+                <?php if (isset($errors['content'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['content'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Comment') ?>
+                </button>
+            </div>
+        </form>
+    </section>
 </div>

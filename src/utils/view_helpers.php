@@ -9,6 +9,23 @@
  */
 
 /**
+ * Format DateTime according to current day
+ *
+ * @param \DateTime $date
+ *
+ * @return string
+ */
+function format_date($date)
+{
+    $today = new \DateTime('today');
+    if ($date >= $today) {
+        return strftime('%H:%M', $date->getTimestamp());
+    } else {
+        return strftime('%d %b %H:%M', $date->getTimestamp());
+    }
+}
+
+/**
  * Transform a locale to BCP47 format
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang

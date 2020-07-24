@@ -1,0 +1,33 @@
+.message {
+    margin-bottom: var(--space-large);
+}
+
+.message__header {
+    font-size: var(--size-small);
+}
+
+.message__author {
+    font-weight: bold;
+}
+
+.message__avatar {
+    width: 5rem;
+
+    border: 2px solid var(--color-turquoise-4);
+    border-radius: 50%;
+}
+
+.message__date {
+    color: var(--color-text-secondary);
+}
+
+.message__content {
+    margin-left: 5rem;
+    padding: var(--space-smaller);
+}
+
+@media (min-width: 800px) {
+    .message__content {
+        padding: var(--space-small);
+    }
+}
