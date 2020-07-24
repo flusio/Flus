@@ -73,6 +73,12 @@
     margin-top: var(--space-larger);
 }
 
+.subsection--small {
+    max-width: 55ch;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 .subsection__title {
     margin-top: 0;
     margin-bottom: 0;
