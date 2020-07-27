@@ -45,7 +45,9 @@
             <div class="link">
                 <div class="link__body">
                     <h2 class="link__title">
-                        <?= $this->protect($link->title) ?>
+                        <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                            <?= $this->protect($link->title) ?>
+                        </a>
                     </h2>
 
                     <p class="link__details">

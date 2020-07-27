@@ -21,6 +21,15 @@ a:focus {
     text-decoration: none;
 }
 
+.anchor--hidden {
+    text-decoration: none;
+}
+
+.anchor--hidden:hover,
+.anchor--hidden:focus {
+    color: initial;
+}
+
 .anchor--action {
     display: inline-block;
     padding: var(--space-smaller) var(--space-medium);

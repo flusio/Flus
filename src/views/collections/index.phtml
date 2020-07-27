@@ -21,7 +21,9 @@
             <div class="collection">
                 <div class="collection__body">
                     <h2 class="collection__title icon icon--collection">
-                        <?= $this->protect($collection->name) ?>
+                        <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
+                            <?= $this->protect($collection->name) ?>
+                        </a>
                     </h2>
                 </div>
 
