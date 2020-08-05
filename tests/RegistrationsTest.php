@@ -126,6 +126,23 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $session_dao->count());
     }
 
+    public function testCreateReturnsACookie()
+    {
+        $user_dao = new models\dao\User();
+        $session_dao = new models\dao\Session();
+
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
+        ]);
+
+        $db_session = $session_dao->listAll()[0];
+        $cookie = $response->cookies()['flusio_session_token'];
+        $this->assertSame($db_session['token'], $cookie['value']);
+    }
+
     public function testCreateRedirectsToHomeIfConnected()
     {
         $this->login();

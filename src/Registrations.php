@@ -135,7 +135,11 @@ class Registrations
         $users_mailer = new mailers\Users();
         $users_mailer->sendRegistrationValidationEmail($user, $validation_token);
 
-        return Response::redirect('home');
+        $response = Response::redirect('home');
+        $response->setCookie('flusio_session_token', $session_token->token, [
+            'expires' => $session_token->expired_at->getTimestamp(),
+        ]);
+        return $response;
     }
 
     /**
