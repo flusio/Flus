@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-07-24 18:25+0200\n"
-"PO-Revision-Date: 2020-07-24 18:27+0200\n"
+"POT-Creation-Date: 2020-08-06 11:43+0200\n"
+"PO-Revision-Date: 2020-08-06 11:48+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Accounts.php:69 Accounts.php:149 Collections.php:101 Collections.php:231
-#: LinkMessages.php:69 Links.php:145 Links.php:281 Registrations.php:84
-#: Registrations.php:248 Sessions.php:82
+#: LinkMessages.php:70 Links.php:146 Links.php:282 Registrations.php:84
+#: Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -35,8 +35,8 @@ msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
-#: Collections.php:288 Links.php:370 Links.php:558 Links.php:610
-#: Sessions.php:191
+#: Collections.php:288 LinkCollections.php:153 LinkCollections.php:205
+#: Links.php:371 Links.php:474 Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -48,41 +48,50 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: Links.php:170
-msgid "The link must be associated to a collection."
-msgstr "Le lien doit être associé à une collection."
-
-#: Links.php:181
-msgid "One of the associated collection doesn’t exist."
-msgstr "L’une des collections associées n’existe pas."
-
-#: Links.php:545 Links.php:597
+#: LinkCollections.php:140 LinkCollections.php:192
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
-#: Links.php:552
+#: LinkCollections.php:147
 msgid "This link is already bookmarked."
 msgstr "Le lien est déjà dans les signets."
 
-#: Links.php:604
+#: LinkCollections.php:199
 msgid "This link is not bookmarked."
 msgstr "Le lien n’est pas dans les signets."
+
+#: Links.php:171
+msgid "The link must be associated to a collection."
+msgstr "Le lien doit être associé à une collection."
+
+#: Links.php:182
+msgid "One of the associated collection doesn’t exist."
+msgstr "L’une des collections associées n’existe pas."
 
 #: Registrations.php:107
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:182 Registrations.php:196
+#: Registrations.php:186 Registrations.php:200
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: Registrations.php:189
+#: Registrations.php:193
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
 #: Sessions.php:99
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
+
+#: assets/javascripts/controllers/copy_to_clipboard_controller.js:14
+msgid "copied"
+msgstr "copié"
+
+#: assets/javascripts/controllers/copy_to_clipboard_controller.js:18
+#: views/links/sharing.phtml:43
+msgid "copy"
+msgstr "copier"
 
 #: assets/javascripts/controllers/input_password_controller.js:23
 msgid "Hide"
@@ -96,8 +105,8 @@ msgstr "Afficher"
 
 #: assets/javascripts/controllers/link_card_controller.js:37
 #: assets/javascripts/controllers/link_card_controller.js:38
-#: views/collections/show_bookmarks.phtml:56
-#: views/collections/show_bookmarks.phtml:57
+#: views/collections/show_bookmarks.phtml:58
+#: views/collections/show_bookmarks.phtml:59
 msgid "Remove from bookmarks"
 msgstr "Retirer des signets"
 
@@ -123,23 +132,23 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:134
+#: models/Link.php:140
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:136
+#: models/Link.php:142
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:155
+#: models/Link.php:161
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:160
+#: models/Link.php:166
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:164
+#: models/Link.php:170
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -211,8 +220,8 @@ msgstr "Vous devez valider votre inscription&nbsp;→"
 
 #: views/_layouts/connected.phtml:62 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/collections/show.phtml:12
-#: views/links/collections.phtml:19 views/links/new.phtml:48
-#: views/links/show.phtml:43
+#: views/link_collections/index.phtml:19 views/links/new.phtml:48
+#: views/links/show.phtml:53
 msgid "Collections"
 msgstr "Collections"
 
@@ -347,7 +356,7 @@ msgstr "Description"
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/edit.phtml:65 views/links/collections.phtml:48
+#: views/collections/edit.phtml:65 views/link_collections/index.phtml:48
 #: views/links/edit.phtml:49
 msgid "Update"
 msgstr "Mettre à jour"
@@ -372,23 +381,23 @@ msgstr "Supprimer la collection"
 msgid "Add a collection"
 msgstr "Ajouter une collection"
 
-#: views/collections/index.phtml:31
+#: views/collections/index.phtml:33
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/index.phtml:33
+#: views/collections/index.phtml:35
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:38 views/collections/show.phtml:60
-#: views/collections/show_bookmarks.phtml:64
+#: views/collections/index.phtml:40 views/collections/show.phtml:62
+#: views/collections/show_bookmarks.phtml:66
 msgid "see"
 msgstr "voir"
 
-#: views/collections/index.phtml:47
+#: views/collections/index.phtml:49
 msgid ""
 "You have no collections yet. They’ll appear here once you start adding them."
 msgstr ""
@@ -428,7 +437,7 @@ msgstr "Annuler et retourner aux collections"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: views/collections/show.phtml:69 views/collections/show_bookmarks.phtml:73
+#: views/collections/show.phtml:71 views/collections/show_bookmarks.phtml:75
 msgid ""
 "This collection is empty. The links will appear here once you start adding "
 "them."
@@ -448,15 +457,15 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/links/collections.phtml:3 views/links/collections.phtml:10
+#: views/link_collections/index.phtml:3 views/link_collections/index.phtml:10
 msgid "Link collections"
 msgstr "Collections du lien"
 
-#: views/links/collections.phtml:22 views/links/new.phtml:51
+#: views/link_collections/index.phtml:22 views/links/new.phtml:51
 msgid "You must place your link in at least one collection."
 msgstr "Vous devez placer votre lien dans au moins une collection."
 
-#: views/links/collections.phtml:52 views/links/edit.phtml:53
+#: views/link_collections/index.phtml:52 views/links/edit.phtml:53
 msgid "Cancel and go back to the link"
 msgstr "Annuler et retourner au lien"
 
@@ -488,23 +497,63 @@ msgstr ""
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
-#: views/links/show.phtml:36
+#: views/links/sharing.phtml:3 views/links/sharing.phtml:21
+msgid "Link sharing"
+msgstr "Partage d’un lien"
+
+#: views/links/sharing.phtml:14
+msgid "Link"
+msgstr "Lien"
+
+#: views/links/sharing.phtml:31
+msgid ""
+"You can copy the following link to share your comments with people on other "
+"social media:"
+msgstr ""
+"Vous pouvez copier le lien suivant pour partager vos commentaires sur "
+"d’autres réseaux sociaux :"
+
+#: views/links/sharing.phtml:65
+msgid "Heads up! This could break existing links."
+msgstr "Attention ! Cela pourrait casser des liens existants."
+
+#: views/links/sharing.phtml:69
+msgid "Make it private"
+msgstr "Rendre privé"
+
+#: views/links/sharing.phtml:80
+msgid ""
+"This link is actually private. To share the link and its associated "
+"comments, you have to make it public."
+msgstr ""
+"Ce lien est actuellement privé. Pour le partager ainsi que les commentaires "
+"associés, vous devez le rendre public."
+
+#: views/links/sharing.phtml:94
+msgid "Make it public"
+msgstr "Rendre public"
+
+#: views/links/show.phtml:33
+msgid "share"
+msgstr "partager"
+
+#: views/links/show.phtml:44
 msgid "open"
 msgstr "ouvrir"
 
-#: views/links/show.phtml:46
+#: views/links/show.phtml:56
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:99
+#: views/links/show.phtml:109
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
-#: views/links/show.phtml:101
+#: views/links/show.phtml:111
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:120
+#: views/links/show.phtml:130
 msgid "Comment"
 msgstr "Commenter"
 
