@@ -1,0 +1,99 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Link sharing'),
+        'canonical' => url_full('sharing link', ['id' => $link->id]),
+    ]);
+?>
+
+<div class="section">
+    <nav class="section__nav">
+        <a
+            class="anchor--action icon icon--anchor icon--undo"
+            href="<?= url('link', ['id' => $link->id]) ?>"
+        >
+            <?= _('Link') ?>
+        </a>
+
+        <div class="section__nav-separator"></div>
+    </nav>
+
+    <div class="section__title">
+        <h1><?= _('Link sharing') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= $this->protect($link->title) ?><br />
+        <?= $this->protect($link->url) ?>
+    </p>
+
+    <?php if ($link->is_public): ?>
+        <p>
+            <?= _('You can copy the following link to share your comments with people on other social media:') ?>
+        </p>
+
+        <div class="share" data-controller="copy-to-clipboard">
+            <span class="share__text" data-target="copy-to-clipboard.copyable"><?= url_full('link', ['id' => $link->id]) ?></span>
+
+            <button
+                type="button"
+                class="share__button icon icon--copy-to-clipboard"
+                data-action="copy-to-clipboard#copy"
+                data-target="copy-to-clipboard.feedback"
+            >
+                <?= _('copy') ?>
+            </button>
+        </div>
+
+        <hr />
+
+        <form
+            method="post"
+            action="<?= url('update link visibility', ['id' => $link->id]) ?>"
+            class="form--centered"
+        >
+            <?php if ($error): ?>
+                <p class="form__error">
+                    <?= $error ?>
+                </p>
+            <?php endif; ?>
+
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="visibility" value="private" />
+
+            <div class="form-group">
+                <p class="form-group__caption">
+                    <?= _('Heads up! This could break existing links.') ?>
+                </p>
+
+                <button type="submit">
+                    <?= _('Make it private') ?>
+                </button>
+            </div>
+        </form>
+    <?php else: ?>
+        <form
+            method="post"
+            action="<?= url('update link visibility', ['id' => $link->id]) ?>"
+            class="form--centered"
+        >
+            <p>
+                <?= _('This link is actually private. To share the link and its associated comments, you have to make it public.') ?>
+            </p>
+
+            <?php if ($error): ?>
+                <p class="form__error">
+                    <?= $error ?>
+                </p>
+            <?php endif; ?>
+
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="visibility" value="public" />
+
+            <div class="form-group">
+                <button type="submit" class="button--primary">
+                    <?= _('Make it public') ?>
+                </button>
+            </div>
+        </form>
+    <?php endif; ?>
+</div>
