@@ -1,5 +1,30 @@
 # Changelog of flusio
 
+## 2020-08-06 - v0.6
+
+### New
+
+- Allow to comment links
+- Allow to share public links
+
+### Improvements
+
+- Improve the (un)bookmark button
+- Add the logo to the "not connected" header
+- Improve look of buttons
+- Set session cookie on registration
+- Add anchors on cards titles
+- Add a title on "manage" link collections
+
+### Misc
+
+- Update French locales
+- Update the PR template
+- Complete doc about release and update
+- Split Links controller file
+- Bump elliptic from 6.5.2 to 6.5.3
+- Bump lodash from 4.17.15 to 4.17.19
+
 ## 2020-07-17 - v0.5
 
 ### Improvements
