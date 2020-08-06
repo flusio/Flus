@@ -38,5 +38,5 @@
 }
 
 .copy--success .share__button::before {
-    background-image: url("../icons/core/check-line.svg");
+    background-image: url("../../icons/core/check-line.svg");
 }
