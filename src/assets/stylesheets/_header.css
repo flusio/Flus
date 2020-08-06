@@ -63,7 +63,12 @@
 }
 
 .header__link--home {
-    font-weight: bold;
+    display: flex;
+    padding: var(--space-smaller);
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .header__locale-form {
