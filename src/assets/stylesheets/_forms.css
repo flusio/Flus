@@ -163,6 +163,10 @@ legend {
     .form__actions--centered {
         justify-content: center;
     }
+
+    .form__actions > * + * {
+        margin-top: 0;
+    }
 }
 
 .form__error {
