@@ -4,8 +4,8 @@ button {
     color: var(--color-text);
     font-size: var(--size-normal);
 
-    background-color: var(--color-grey-2);
-    border: var(--border-width) solid var(--color-grey-5);
+    background-color: var(--color-grey-1);
+    border: var(--border-width) solid var(--color-grey-3);
     border-radius: var(--border-button-radius);
 
     transition:
@@ -15,7 +15,7 @@ button {
 
 button:hover,
 button:focus {
-    background-color: var(--color-grey-1);
+    background-color: var(--color-white);
 }
 
 button:focus,
@@ -39,32 +39,18 @@ button:active {
 }
 
 .button--ghost {
-    font-size: var(--size-small);
-
-    background-color: var(--color-grey-1);
-    border-color: var(--color-grey-3);
-}
-
-.button--ghost:hover,
-.button--ghost:focus {
-    background-color: var(--color-white);
-}
-
-.button--discreet {
     padding: var(--space-smaller);
-
-    font-size: var(--size-small);
 
     background-color: transparent;
     border-color: transparent;
 }
 
-.button--discreet:hover {
+.button--ghost:hover {
     background-color: transparent;
     border-color: var(--color-grey-2);
 }
 
-.button--discreet:focus {
+.button--ghost:focus {
     background-color: transparent;
     border-color: var(--border-active-color);
 }
