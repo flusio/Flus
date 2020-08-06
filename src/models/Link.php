@@ -27,6 +27,11 @@ class Link extends \Minz\Model
             'validator' => '\flusio\models\Link::validateUrl',
         ],
 
+        'is_public' => [
+            'type' => 'boolean',
+            'required' => true,
+        ],
+
         'reading_time' => [
             'type' => 'integer',
             'required' => true,
@@ -63,6 +68,7 @@ class Link extends \Minz\Model
             'id' => bin2hex(random_bytes(16)),
             'title' => $url,
             'url' => $url,
+            'is_public' => false,
             'user_id' => $user_id,
             'reading_time' => 0,
             'fetched_code' => 0,

@@ -22,20 +22,30 @@
         <h1><?= $this->protect($link->title) ?></h1>
     </div>
 
-    <p class="link__details paragraph--centered">
-        <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
-    </p>
+    <section class="link__meta">
+        <p class="link__details">
+            <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+        </p>
 
-    <p class="paragraph--centered">
-        <a
-            class="anchor--action icon icon--anchor icon--link"
-            target="_blank"
-            rel="noopener noreferrer"
-            href="<?= $link->url ?>"
-        >
-            <?= _('open') ?>
-        </a>
-    </p>
+        <ul class="link__actions">
+            <li class="link__action">
+                <a href="<?= url('sharing link', ['id' => $link->id]) ?>">
+                    <?= _('share') ?>
+                </a>
+            </li>
+
+            <li class="link__action">
+                <a
+                    class="anchor--action icon icon--anchor icon--link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="<?= $link->url ?>"
+                >
+                    <?= _('open') ?>
+                </a>
+            </li>
+        </ul>
+    </section>
 
     <section class="subsection subsection--small">
         <header class="subsection__header header">

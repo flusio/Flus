@@ -60,6 +60,10 @@
     background-image: url("../icons/core/bars-line.svg");
 }
 
+.icon--check::before {
+    background-image: url("../icons/core/check-line.svg");
+}
+
 .icon--cog::before {
     background-image: url("../icons/core/cog-line.svg");
 }
@@ -73,6 +77,10 @@
 }
 
 /* Essential */
+.icon--copy-to-clipboard::before {
+    background-image: url("../icons/essential/copy-to-clipboard-line.svg");
+}
+
 .icon--library::before,
 .icon--collection::before {
     background-image: url("../icons/essential/library-line.svg");

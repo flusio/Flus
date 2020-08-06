@@ -15,6 +15,7 @@
 @import './components/collections.css';
 @import './components/links.css';
 @import './components/messages.css';
+@import './components/share.css';
 
 *,
 *::before,

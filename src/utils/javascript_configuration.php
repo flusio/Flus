@@ -2,6 +2,8 @@
 
 $translations = [
     'Add to bookmarks',
+    'copied',
+    'copy',
     'Hide',
     'Remove from bookmarks',
     'Show',

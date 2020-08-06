@@ -1,0 +1,57 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => $link->title,
+        'canonical' => url_full('link', ['id' => $link->id]),
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title section__title--nolowercase">
+        <h1><?= $this->protect($link->title) ?></h1>
+    </div>
+
+    <section class="link__meta">
+        <p class="link__details">
+            <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+        </p>
+
+        <ul class="link__actions">
+            <li class="link__action">
+                <a
+                    class="anchor--action icon icon--anchor icon--link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="<?= $link->url ?>"
+                >
+                    <?= _('open') ?>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <section class="subsection subsection--small" id="messages">
+        <?php foreach ($messages as $message): ?>
+            <article class="message">
+                <header class="message__header header">
+                    <div class="header__container header__container--centered">
+                        <img class="message__avatar" src="<?= url_static('default-avatar.svg') ?>" alt="" />
+
+                        <div class="message__author">
+                            <?= $this->protect($message->user()->username) ?>
+                        </div>
+
+                        <div class="header__separator"></div>
+
+                        <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
+                            <?= format_date($message->created_at) ?>
+                        </time>
+                    </div>
+                </header>
+
+                <div class="message__content">
+                    <?= nl2br($this->protect($message->content)) ?>
+                </div>
+            </article>
+        <?php endforeach; ?>
+    </section>
+</div>

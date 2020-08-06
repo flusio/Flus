@@ -43,9 +43,39 @@
     font-size: var(--size-normal);
 }
 
+.link__meta {
+    display: flex;
+    max-width: 55ch;
+    margin-right: auto;
+    margin-left: auto;
+
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (min-width: 800px) {
+    .link__meta {
+        flex-direction: row;
+    }
+}
+
 .link__details {
+    flex-grow: 1;
+
     color: var(--color-text-secondary);
     font-size: var(--size-small);
+}
+
+.link__actions {
+    padding-left: 0;
+}
+
+.link__action {
+    display: inline-block;
+}
+
+.link__action + .link__action {
+    margin-left: var(--space-medium);
 }
 
 .link__footer {
