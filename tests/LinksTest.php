@@ -57,6 +57,39 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, nl2br($content));
     }
 
+    public function testShowRendersCorrectlyIfPublicAndNotConnected()
+    {
+        $title = $this->fake('words', 3, true);
+        $link_id = $this->create('link', [
+            'fetched_at' => $this->fake('iso8601'),
+            'title' => $title,
+            'is_public' => true,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}");
+
+        $this->assertResponse($response, 200, $title);
+        $this->assertPointer($response, 'links/show_public.phtml');
+    }
+
+    public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink()
+    {
+        $this->login();
+        $title = $this->fake('words', 3, true);
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'fetched_at' => $this->fake('iso8601'),
+            'title' => $title,
+            'is_public' => 1,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}");
+
+        $this->assertResponse($response, 200, $title);
+        $this->assertPointer($response, 'links/show_public.phtml');
+    }
+
     public function testShowRedirectsIfNotFetched()
     {
         $user = $this->login();
@@ -70,13 +103,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, "/links/{$link_id}/fetch");
     }
 
-    public function testShowFailsIfNotConnected()
+    public function testShowRedirectsIfPrivateAndNotConnected()
     {
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $user_id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $this->fake('words', 3, true),
+            'is_public' => 0,
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}");
@@ -93,7 +127,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404, 'This page doesn’t exist.');
     }
 
-    public function testShowFailsIfUserDoesNotOwnTheLink()
+    public function testShowFailsIfUserDoesNotOwnThePrivateLink()
     {
         $current_user = $this->login();
         $other_user_id = $this->create('user');
@@ -101,6 +135,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user_id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $this->fake('words', 3, true),
+            'is_public' => 0,
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}");
