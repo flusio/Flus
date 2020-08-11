@@ -40,6 +40,17 @@
             <?php endif; ?>
         </div>
 
+        <div class="form-group">
+            <label>
+                <input
+                    type="checkbox"
+                    name="is_public"
+                    <?= $is_public ? 'checked' : '' ?>
+                />
+                <?= _('Public collection') ?>
+            </label>
+        </div>
+
         <div class="form-group <?= isset($errors['description']) ? 'form-group--invalid' : '' ?>">
             <label for="description">
                 <?= _('Description') ?>

@@ -7,37 +7,18 @@
 ?>
 
 <div class="section">
-    <nav class="section__nav">
-        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('collections') ?>">
-            <?= _('Collections') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-
-        <a
-            href="<?= url('edit collection', ['id' => $collection->id]) ?>"
-            title="<?= _('Settings') ?>"
-            aria-label="<?= _('Settings') ?>"
-        >
-            <i class="icon icon--anchor icon--only icon--cog"></i>
-        </a>
-    </nav>
-
     <div class="section__title section__title--nolowercase">
         <h1><?= $this->protect($collection->name) ?></h1>
     </div>
 
+    <div class="collection__meta">
+        <span class="icon icon--collection">
+            <?= _f('Collection created by %s', $this->protect($collection->owner()->username)) ?>
+        </span>
+    </div>
+
     <p class="collection__description">
         <?= nl2br($this->protect($collection->description)) ?>
-    </p>
-
-    <p class="paragraph--centered">
-        <a
-            class="anchor--action icon icon--anchor icon--plus-circle"
-            href="<?= url('new link', ['collection' => $collection->id]) ?>"
-        >
-            <?= _('Add a link') ?>
-        </a>
     </p>
 
     <div class="links">
@@ -68,7 +49,7 @@
 
     <?php if (!$links): ?>
         <p class="paragraph--placeholder">
-            <?= _('This collection is empty. The links will appear here once you start adding them.') ?>
+            <?= _('This collection is empty.') ?>
         </p>
     <?php endif; ?>
 </div>

@@ -36,6 +36,7 @@ CREATE TABLE collections (
     name TEXT NOT NULL,
     description TEXT NOT NULL DEFAULT '',
     type TEXT NOT NULL,
+    is_public BOOLEAN NOT NULL DEFAULT false,
     user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 

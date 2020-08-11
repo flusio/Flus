@@ -63,6 +63,7 @@ class Collections
         return Response::ok('collections/new.phtml', [
             'name' => '',
             'description' => '',
+            'is_public' => false,
         ]);
     }
 
@@ -72,6 +73,7 @@ class Collections
      * @request_param string csrf
      * @request_param string name
      * @request_param string description
+     * @request_param boolean is_public
      *
      * @response 302 /login?redirect_to=/collections/new if not connected
      * @response 400 if csrf or name are invalid
@@ -92,22 +94,25 @@ class Collections
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');
+        $is_public = $request->param('is_public', false);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
+                'is_public' => $is_public,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $collection = models\Collection::init($user->id, $name, $description);
+        $collection = models\Collection::init($user->id, $name, $description, $is_public);
         $errors = $collection->validate();
         if ($errors) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
+                'is_public' => $is_public,
                 'errors' => $errors,
             ]);
         }
@@ -123,8 +128,10 @@ class Collections
      *
      * @request_param string id
      *
-     * @response 302 /login?redirect_to=/collection/:id if not connected
-     * @response 404 if the collection doesn’t exist or user hasn't access
+     * @response 302 /login?redirect_to=/collection/:id
+     *     if user is not connected and the collection is not public
+     * @response 404
+     *     if the collection doesn’t exist or is inaccessible to the current user
      * @response 200
      *
      * @param \Minz\Request $request
@@ -135,21 +142,35 @@ class Collections
     {
         $user = utils\CurrentUser::get();
         $collection_id = $request->param('id');
+        $collection_dao = new models\dao\Collection();
+        $db_collection = $collection_dao->find($collection_id);
 
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
-            ]);
-        }
+        $is_connected = $user !== null;
+        $is_owned = $is_connected && $db_collection && $user->id === $db_collection['user_id'];
+        $is_public = $db_collection && $db_collection['is_public'];
 
-        $collection = $user->collection($collection_id);
-        if ($collection) {
+        if ($is_connected && $is_owned) {
+            $collection = new models\Collection($db_collection);
             return Response::ok('collections/show.phtml', [
                 'collection' => $collection,
                 'links' => $collection->links(),
             ]);
-        } else {
+        }
+
+        if ($is_public) {
+            $collection = new models\Collection($db_collection);
+            return Response::ok('collections/show_public.phtml', [
+                'collection' => $collection,
+                'links' => $collection->publicLinks(),
+            ]);
+        }
+
+        if ($is_connected) {
             return Response::notFound('not_found.phtml');
+        } else {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
+            ]);
         }
     }
 
@@ -183,6 +204,7 @@ class Collections
                 'collection' => $collection,
                 'name' => $collection->name,
                 'description' => $collection->description,
+                'is_public' => $collection->is_public,
             ]);
         } else {
             return Response::notFound('not_found.phtml');
@@ -193,6 +215,10 @@ class Collections
      * Update a collection
      *
      * @request_param string id
+     * @request_param string csrf
+     * @request_param string name
+     * @request_param string description
+     * @request_param boolean is_public
      *
      * @response 302 /login?redirect_to=/collection/:id/edit if not connected
      * @response 404 if the collection doesn’t exist or user hasn't access
@@ -221,6 +247,7 @@ class Collections
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');
+        $is_public = $request->param('is_public', false);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
@@ -228,18 +255,21 @@ class Collections
                 'collection' => $collection,
                 'name' => $name,
                 'description' => $description,
+                'is_public' => $is_public,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
         $collection->name = trim($name);
         $collection->description = trim($description);
+        $collection->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
         $errors = $collection->validate();
         if ($errors) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
                 'name' => $name,
                 'description' => $description,
+                'is_public' => $is_public,
                 'errors' => $errors,
             ]);
         }

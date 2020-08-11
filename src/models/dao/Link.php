@@ -44,6 +44,28 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return public (only) links within the given collection
+     *
+     * @param string $collection_id
+     *
+     * @return array
+     */
+    public function listPublicByCollectionId($collection_id)
+    {
+        $sql = <<<'SQL'
+            SELECT * FROM links WHERE id IN (
+                SELECT link_id FROM links_to_collections
+                WHERE collection_id = ? AND is_public = '1'
+            )
+            ORDER BY created_at DESC
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([$collection_id]);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Return random links listed in bookmarks of the given user.
      *
      * @param string $user_id

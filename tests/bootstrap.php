@@ -109,6 +109,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'type' => function () use ($faker) {
             return $faker->randomElement(\flusio\models\Collection::VALID_TYPES);
         },
+        'is_public' => function () use ($faker) {
+            return (int)$faker->boolean;
+        },
         'user_id' => function () use ($faker) {
             $user_factory = new \Minz\Tests\DatabaseFactory('user');
             return $user_factory->create();

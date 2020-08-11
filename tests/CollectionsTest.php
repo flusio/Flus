@@ -81,6 +81,25 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, "/collections/{$db_collection['id']}");
         $this->assertSame($name, $db_collection['name']);
         $this->assertSame($description, $db_collection['description']);
+        $this->assertFalse($db_collection['is_public']);
+    }
+
+    public function testCreateAllowsToCreatePublicCollections()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $name = $this->fake('words', 3, true);
+        $description = $this->fake('sentence');
+
+        $response = $this->appRun('post', '/collections/new', [
+            'csrf' => $user->csrf,
+            'name' => $name,
+            'description' => $description,
+            'is_public' => true,
+        ]);
+
+        $db_collection = $collection_dao->listAll()[0];
+        $this->assertTrue($db_collection['is_public']);
     }
 
     public function testCreateRedirectsIfNotConnected()
@@ -155,6 +174,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'collection',
+            'is_public' => 0,
         ]);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -171,12 +191,88 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'collections/show.phtml');
     }
 
-    public function testShowRedirectsIfNotConnected()
+    public function testShowRendersCorrectlyIfPublicAndNotConnected()
+    {
+        $user_id = $this->create('user');
+        $link_title = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'title' => $link_title,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}");
+
+        $this->assertResponse($response, 200, $link_title);
+        $this->assertPointer($response, 'collections/show_public.phtml');
+    }
+
+    public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink()
+    {
+        $user = $this->login();
+        $owner_id = $this->create('user');
+        $link_title = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $owner_id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $owner_id,
+            'title' => $link_title,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}");
+
+        $this->assertResponse($response, 200, $link_title);
+        $this->assertPointer($response, 'collections/show_public.phtml');
+    }
+
+    public function testShowHidesPrivateLinksInPublicCollections()
+    {
+        $user_id = $this->create('user');
+        $link_title = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'title' => $link_title,
+            'is_public' => 0,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}");
+
+        $this->assertStringNotContainsString($link_title, $response->render());
+    }
+
+    public function testShowRedirectsIfPrivateAndNotConnected()
     {
         $user_id = $this->create('user');
         $collection_id = $this->create('collection', [
             'user_id' => $user_id,
             'type' => 'collection',
+            'is_public' => 0,
         ]);
 
         $response = $this->appRun('get', "/collections/{$collection_id}");
@@ -189,33 +285,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->login();
 
         $response = $this->appRun('get', '/collections/unknown');
-
-        $this->assertResponse($response, 404);
-    }
-
-    public function testShowFailsIfCollectionIsNotOwnedByCurrentUser()
-    {
-        $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'type' => 'collection',
-        ]);
-
-        $response = $this->appRun('get', "/collections/{$collection_id}");
-
-        $this->assertResponse($response, 404);
-    }
-
-    public function testShowFailsIfCollectionIsNotOfCorrectType()
-    {
-        $user = $this->login();
-        $collection_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-
-        $response = $this->appRun('get', "/collections/{$collection_id}");
 
         $this->assertResponse($response, 404);
     }
@@ -291,23 +360,28 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
         $new_description = $this->fakeUnique('sentence');
+        $old_public = 0;
+        $new_public = 1;
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
+            'is_public' => $old_public,
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
             'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
+            'is_public' => $new_public,
         ]);
 
         $this->assertResponse($response, 302, "/collections/{$collection_id}");
         $db_collection = $collection_dao->listAll()[0];
         $this->assertSame($new_name, $db_collection['name']);
         $this->assertSame($new_description, $db_collection['description']);
+        $this->assertTrue($db_collection['is_public']);
     }
 
     public function testUpdateRedirectsIfNotConnected()

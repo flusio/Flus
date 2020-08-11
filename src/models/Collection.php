@@ -36,6 +36,11 @@ class Collection extends \Minz\Model
             'validator' => '\flusio\models\Collection::validateType',
         ],
 
+        'is_public' => [
+            'type' => 'boolean',
+            'required' => true,
+        ],
+
         'user_id' => [
             'type' => 'string',
             'required' => true,
@@ -51,16 +56,18 @@ class Collection extends \Minz\Model
      * @param string $user_id
      * @param string $name
      * @param string $description
+     * @param boolean|string $is_public
      *
      * @return \flusio\models\Collection
      */
-    public static function init($user_id, $name, $description)
+    public static function init($user_id, $name, $description, $is_public)
     {
         return new self([
             'id' => bin2hex(random_bytes(16)),
             'name' => trim($name),
             'description' => trim($description),
             'type' => 'collection',
+            'is_public' => filter_var($is_public, FILTER_VALIDATE_BOOLEAN),
             'user_id' => $user_id,
         ]);
     }
@@ -77,6 +84,7 @@ class Collection extends \Minz\Model
             'name' => _('Bookmarks'),
             'description' => '',
             'type' => 'bookmarks',
+            'is_public' => 0,
             'user_id' => $user_id,
         ]);
     }
@@ -86,6 +94,8 @@ class Collection extends \Minz\Model
      *
      * If the collection is of "bookmarks" type, the localized version is
      * returned.
+     *
+     * @return string
      */
     public function name()
     {
@@ -97,6 +107,18 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return the owner of the collection.
+     *
+     * @return \flusio\models\User
+     */
+    public function owner()
+    {
+        $user_dao = new dao\User();
+        $db_user = $user_dao->find($this->user_id);
+        return new User($db_user);
+    }
+
+    /**
      * Return the list of links attached to this collection
      *
      * @return \flusio\models\Link[]
@@ -105,6 +127,22 @@ class Collection extends \Minz\Model
     {
         $link_dao = new dao\Link();
         $db_links = $link_dao->listByCollectionId($this->id);
+        $links = [];
+        foreach ($db_links as $db_link) {
+            $links[] = new Link($db_link);
+        }
+        return $links;
+    }
+
+    /**
+     * Return the list of public (only) links attached to this collection
+     *
+     * @return \flusio\models\Link[]
+     */
+    public function publicLinks()
+    {
+        $link_dao = new dao\Link();
+        $db_links = $link_dao->listPublicByCollectionId($this->id);
         $links = [];
         foreach ($db_links as $db_link) {
             $links[] = new Link($db_link);
