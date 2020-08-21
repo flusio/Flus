@@ -1,0 +1,84 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('News'),
+        'current_tab' => 'news',
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('News') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('Get about 1 hour of reading suggestions from your bookmarks.') ?>
+    </p>
+
+    <?php if ($links): ?>
+        <div class="links links--in-column">
+            <?php foreach ($links as $link): ?>
+                <div class="link">
+                    <div class="link__body">
+                        <h2 class="link__title">
+                            <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                                <?= $this->protect($link->title) ?>
+                            </a>
+                        </h2>
+
+                        <p class="link__details">
+                            <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                        </p>
+                    </div>
+
+                    <div class="link__footer">
+                        <form method="post" action="<?= url('read link later', ['id' => $link->id]) ?>">
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                            <button
+                                class="button--ghost button--smaller"
+                                title="<?= _('Remove from the news page') ?>"
+                                aria-label="<?= _('Remove from the news page') ?>"
+                            >
+                                <i class="icon icon--only icon--times"></i>
+                            </button>
+                        </form>
+
+                        <div class="link__footer-group">
+                            <form method="post" action="<?= url('read link', ['id' => $link->id]) ?>">
+                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                                <button
+                                    class="button--small"
+                                    title="<?= _('Remove from the news page and bookmarks') ?>"
+                                    aria-label="<?= _('Remove from the news page and bookmarks') ?>"
+                                >
+                                    <?= _('Mark as read') ?>
+                                </button>
+                            </form>
+
+                            <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
+                                <?= _('see') ?>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <form class="form--centered" method="post" action="<?= url('fill news') ?>">
+            <?php if ($error): ?>
+                <p class="form__error">
+                    <?= $error ?>
+                </p>
+            <?php endif; ?>
+
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+            <div class="form__actions form__actions--centered">
+                <button type="submit" class="button--primary">
+                    <?= _('Get new suggestions') ?>
+                </button>
+            </div>
+        </form>
+    <?php endif; ?>
+</div>

@@ -46,6 +46,15 @@
                     <div class="header__separator"></div>
 
                     <a
+                        class="header__link header__link--icon icon icon--anchor icon--world <?= $current_tab === 'news' ? 'header__link--active' : '' ?>"
+                        href="<?= url('news') ?>"
+                    >
+                        <span class="no-mobile">
+                            <?= _('News') ?>
+                        </span>
+                    </a>
+
+                    <a
                         class="header__link header__link--icon icon icon--anchor icon--bookmark <?= $current_tab === 'bookmarks' ? 'header__link--active' : '' ?>"
                         href="<?= url('bookmarks') ?>"
                     >

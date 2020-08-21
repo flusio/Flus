@@ -42,4 +42,29 @@ class Link extends \Minz\DatabaseModel
         $statement->execute([$collection_id]);
         return $statement->fetchAll();
     }
+
+    /**
+     * Return random links listed in bookmarks of the given user.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listBookmarksRandomlyByUserId($user_id)
+    {
+        $sql = <<<'SQL'
+            SELECT * FROM links WHERE id IN (
+                SELECT link_id FROM links_to_collections
+                WHERE collection_id = (
+                    SELECT id FROM collections
+                    WHERE type = 'bookmarks' AND user_id = ?
+                )
+            )
+            ORDER BY random()
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([$user_id]);
+        return $statement->fetchAll();
+    }
 }

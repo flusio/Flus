@@ -91,6 +91,25 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the user' news links
+     *
+     * @return \flusio\models\Link[]
+     */
+    public function newsLinks()
+    {
+        $link_dao = new dao\Link();
+        $db_links = $link_dao->listBy([
+            'user_id' => $this->id,
+            'in_news' => 1,
+        ]);
+        $links = [];
+        foreach ($db_links as $db_link) {
+            $links[] = new Link($db_link);
+        }
+        return $links;
+    }
+
+    /**
      * Return the user' bookmarks collection
      *
      * @return \flusio\models\Collection|null
