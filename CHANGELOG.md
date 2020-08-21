@@ -1,5 +1,21 @@
 # Changelog of flusio
 
+## 2020-08-21 - v0.7
+
+### New
+
+- Provide a basic system to read the "News"
+- Provide a back anchor on link page
+
+### Improvements
+
+- Show link title on edit and collections
+- Make a bunch of small design adjustments
+
+### Misc
+
+- Return l10n key if value doesn't exist (JS)
+
 ## 2020-08-06 - v0.6
 
 ### New
