@@ -16,13 +16,13 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login');
     }
 
-    public function testHomeRedirectsToBookmarksIfConnected()
+    public function testHomeRedirectsToNewsIfConnected()
     {
         $this->login();
 
         $response = $this->appRun('GET', '/');
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponse($response, 302, '/news');
     }
 
     public function testDesignRendersCorrectly()

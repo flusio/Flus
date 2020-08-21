@@ -15,15 +15,15 @@ class Pages
     /**
      * Show the home page.
      *
-     * @response 302 /bookmarks if connected
-     * @response 200
+     * @response 302 /news if connected
+     * @response 302 /login else
      *
      * @return \Minz\Response
      */
     public function home()
     {
         if (utils\CurrentUser::get()) {
-            return Response::redirect('bookmarks');
+            return Response::redirect('news');
         } else {
             return Response::redirect('login');
         }
