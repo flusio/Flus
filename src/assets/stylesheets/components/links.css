@@ -5,6 +5,10 @@
     justify-content: center;
 }
 
+.links--in-column {
+    flex-direction: column;
+}
+
 .link {
     overflow: hidden;
 
@@ -84,4 +88,14 @@
 
     align-items: center;
     justify-content: space-between;
+}
+
+.link__footer-group {
+    display: flex;
+
+    align-items: center;
+}
+
+.link__footer-group > * + * {
+    margin-left: var(--space-small);
 }

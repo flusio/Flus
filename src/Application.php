@@ -59,6 +59,10 @@ class Application
         $router->addRoute('get', '/account/delete', 'Accounts#showDelete', 'show delete account');
         $router->addRoute('post', '/account/delete', 'Accounts#delete', 'delete account');
 
+        // News page
+        $router->addRoute('get', '/news', 'News#index', 'news');
+        $router->addRoute('post', '/news', 'News#fill', 'fill news');
+
         // Collections
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');
         $router->addRoute('get', '/collections/new', 'Collections#new', 'new collection');
