@@ -1,7 +1,7 @@
 .icon {
     position: relative;
 
-    padding-left: 2.4em;
+    padding-left: 2.3em;
 }
 
 .icon::before {
@@ -76,6 +76,10 @@
     background-image: url("../icons/core/eye-hide-line.svg");
 }
 
+.icon--times::before {
+    background-image: url("../icons/core/times-line.svg");
+}
+
 /* Essential */
 .icon--copy-to-clipboard::before {
     background-image: url("../icons/essential/copy-to-clipboard-line.svg");
@@ -105,6 +109,10 @@
 
 .icon--undo::before {
     background-image: url("../icons/essential/undo-line.svg");
+}
+
+.icon--world::before {
+    background-image: url("../icons/essential/world-line.svg");
 }
 
 /* Text edit */

@@ -34,12 +34,13 @@ a:focus {
     display: inline-block;
     padding: var(--space-smaller) var(--space-medium);
 
+    line-height: 1.5;
     text-decoration: none;
 
     border: 0.1em solid currentColor;
     border-radius: var(--border-button-radius);
 }
 
-.anchor--action.icon--anchor {
-    padding-left: 2.5em;
+.anchor--action.icon {
+    padding-left: 2.3em;
 }

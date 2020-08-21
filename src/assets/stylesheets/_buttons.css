@@ -3,6 +3,7 @@ button {
 
     color: var(--color-text);
     font-size: var(--size-normal);
+    line-height: 1.5;
 
     background-color: var(--color-grey-1);
     border: var(--border-width) solid var(--color-grey-3);
@@ -24,11 +25,6 @@ button:active {
 }
 
 .button--primary {
-    padding-right: var(--space-large);
-    padding-left: var(--space-large);
-
-    font-size: var(--size-large);
-
     background-color: var(--color-turquoise-3);
     border-color: var(--color-text);
 }
@@ -39,8 +35,6 @@ button:active {
 }
 
 .button--ghost {
-    padding: var(--space-smaller);
-
     background-color: transparent;
     border-color: transparent;
 }
@@ -53,4 +47,21 @@ button:active {
 .button--ghost:focus {
     background-color: transparent;
     border-color: var(--border-active-color);
+}
+
+.button--large {
+    padding-right: var(--space-large);
+    padding-left: var(--space-large);
+
+    font-size: var(--size-large);
+}
+
+.button--small {
+    padding: var(--space-smaller) var(--space-medium);
+}
+
+.button--smaller {
+    padding: var(--space-smaller);
+
+    line-height: 1.3;
 }

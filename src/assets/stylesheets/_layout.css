@@ -60,7 +60,7 @@
     margin-right: auto;
     margin-bottom: var(--space-large);
     margin-left: auto;
-    padding: var(--space-small);
+    padding: var(--space-smaller);
 }
 
 @media (min-width: 800px) {
