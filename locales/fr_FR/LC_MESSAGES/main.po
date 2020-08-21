@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-08-21 15:38+0200\n"
-"PO-Revision-Date: 2020-08-21 15:38+0200\n"
+"POT-Creation-Date: 2020-08-21 17:20+0200\n"
+"PO-Revision-Date: 2020-08-21 17:20+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -225,8 +225,8 @@ msgstr "Journal"
 
 #: views/_layouts/connected.phtml:71 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/collections/show.phtml:12
-#: views/link_collections/index.phtml:19 views/links/new.phtml:48
-#: views/links/show.phtml:53
+#: views/link_collections/index.phtml:20 views/links/new.phtml:48
+#: views/links/show.phtml:61
 msgid "Collections"
 msgstr "Collections"
 
@@ -361,8 +361,8 @@ msgstr "Description"
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/edit.phtml:65 views/link_collections/index.phtml:48
-#: views/links/edit.phtml:49
+#: views/collections/edit.phtml:65 views/link_collections/index.phtml:49
+#: views/links/edit.phtml:50
 msgid "Update"
 msgstr "Mettre à jour"
 
@@ -438,7 +438,7 @@ msgid "Cancel and go back to collections"
 msgstr "Annuler et retourner aux collections"
 
 #: views/collections/show.phtml:19 views/collections/show.phtml:20
-#: views/links/show.phtml:14 views/links/show.phtml:15
+#: views/links/show.phtml:22 views/links/show.phtml:23
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -466,11 +466,11 @@ msgstr "Une erreur est survenue pendant le traitement de votre requête."
 msgid "Link collections"
 msgstr "Collections du lien"
 
-#: views/link_collections/index.phtml:22 views/links/new.phtml:51
+#: views/link_collections/index.phtml:23 views/links/new.phtml:51
 msgid "You must place your link in at least one collection."
 msgstr "Vous devez placer votre lien dans au moins une collection."
 
-#: views/link_collections/index.phtml:52 views/links/edit.phtml:53
+#: views/link_collections/index.phtml:53 views/links/edit.phtml:54
 msgid "Cancel and go back to the link"
 msgstr "Annuler et retourner au lien"
 
@@ -478,7 +478,7 @@ msgstr "Annuler et retourner au lien"
 msgid "Link edition"
 msgstr "Modification d’un lien"
 
-#: views/links/edit.phtml:28
+#: views/links/edit.phtml:29
 msgid "Title"
 msgstr "Titre"
 
@@ -538,27 +538,31 @@ msgstr ""
 msgid "Make it public"
 msgstr "Rendre public"
 
-#: views/links/show.phtml:33
+#: views/links/show.phtml:15
+msgid "Back"
+msgstr "Retour"
+
+#: views/links/show.phtml:41
 msgid "share"
 msgstr "partager"
 
-#: views/links/show.phtml:44 views/links/show_public.phtml:26
+#: views/links/show.phtml:52 views/links/show_public.phtml:26
 msgid "open"
 msgstr "ouvrir"
 
-#: views/links/show.phtml:57 views/links/show.phtml:58
+#: views/links/show.phtml:65 views/links/show.phtml:66
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:113
+#: views/links/show.phtml:121
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
-#: views/links/show.phtml:115
+#: views/links/show.phtml:123
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:134
+#: views/links/show.phtml:142
 msgid "Comment"
 msgstr "Commenter"
 
