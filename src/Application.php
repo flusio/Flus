@@ -80,6 +80,8 @@ class Application
         $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
         $router->addRoute('get', '/links/:id/share', 'Links#sharing', 'sharing link');
         $router->addRoute('post', '/links/:id/visibility', 'Links#updateVisibility', 'update link visibility');
+        $router->addRoute('post', '/links/:id/read', 'Links#read', 'read link');
+        $router->addRoute('post', '/links/:id/read-later', 'Links#readLater', 'read link later');
 
         // Link collections
         $router->addRoute('get', '/links/:id/collections', 'LinkCollections#index', 'link collections');

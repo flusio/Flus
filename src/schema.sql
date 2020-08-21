@@ -47,6 +47,7 @@ CREATE TABLE links (
     title TEXT NOT NULL,
     url TEXT NOT NULL,
     is_public BOOLEAN NOT NULL DEFAULT false,
+    in_news BOOLEAN NOT NULL DEFAULT false,
     reading_time INTEGER NOT NULL DEFAULT 0,
     fetched_at TIMESTAMPTZ,
     fetched_code INTEGER NOT NULL DEFAULT 0,

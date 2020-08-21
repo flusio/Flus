@@ -135,6 +135,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'is_public' => function () use ($faker) {
             return (int)$faker->boolean;
         },
+        'in_news' => function () use ($faker) {
+            return (int)$faker->boolean;
+        },
         'user_id' => function () use ($faker) {
             $user_factory = new \Minz\Tests\DatabaseFactory('user');
             return $user_factory->create();

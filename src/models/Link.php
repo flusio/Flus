@@ -32,6 +32,11 @@ class Link extends \Minz\Model
             'required' => true,
         ],
 
+        'in_news' => [
+            'type' => 'boolean',
+            'required' => true,
+        ],
+
         'reading_time' => [
             'type' => 'integer',
             'required' => true,
@@ -69,6 +74,7 @@ class Link extends \Minz\Model
             'title' => $url,
             'url' => $url,
             'is_public' => false,
+            'in_news' => false,
             'user_id' => $user_id,
             'reading_time' => 0,
             'fetched_code' => 0,
