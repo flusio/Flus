@@ -232,6 +232,60 @@ class User extends \Minz\Model
     }
 
     /**
+     * @param string $collection_id
+     *
+     * @return boolean
+     *     Return true if the current user is following the given collection.
+     */
+    public function isFollowing($collection_id)
+    {
+        $followed_collection_dao = new dao\FollowedCollection();
+        $followed_collection = $followed_collection_dao->findBy([
+            'user_id' => $this->id,
+            'collection_id' => $collection_id,
+        ]);
+        return $followed_collection !== null;
+    }
+
+    /**
+     * Make the current user following the given collection.
+     *
+     * Be careful to check isFollowing() is returning false before calling this
+     * method.
+     *
+     * @param string $collection_id
+     *
+     * @param integer The id of the create FollowedCollection object in db
+     */
+    public function follow($collection_id)
+    {
+        $followed_collection_dao = new dao\FollowedCollection();
+        return $followed_collection_dao->create([
+            'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $this->id,
+            'collection_id' => $collection_id,
+        ]);
+    }
+
+    /**
+     * Make the current user unfollowing the given collection.
+     *
+     * Be careful to check isFollowing() is returning true before calling this
+     * method.
+     *
+     * @param string $collection_id
+     */
+    public function unfollow($collection_id)
+    {
+        $followed_collection_dao = new dao\FollowedCollection();
+        $followed_collection = $followed_collection_dao->findBy([
+            'user_id' => $this->id,
+            'collection_id' => $collection_id,
+        ]);
+        $followed_collection_dao->delete($followed_collection['id']);
+    }
+
+    /**
      * Compare a password to the stored hash.
      *
      * @param string $password

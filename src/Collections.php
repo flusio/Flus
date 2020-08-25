@@ -358,4 +358,110 @@ class Collections
             'links' => $bookmarks->links(),
         ]);
     }
+
+    /**
+     * Make the current user following the given collection
+     *
+     * @request_param string id
+     *
+     * @response 302 /login?redirect_to=/collections/:id
+     *     if not connected
+     * @response 404
+     *     if the collection doesn’t exist or user hasn't access
+     * @response 302 /collections/:id
+     *     if CSRF is invalid
+     * @response 302 /collections/:id
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function follow($request)
+    {
+        $user = utils\CurrentUser::get();
+        $collection_id = $request->param('id');
+        $collection_dao = new models\dao\Collection();
+
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
+            ]);
+        }
+
+        $db_collection = $collection_dao->find($collection_id);
+        if (!$db_collection) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $collection = new models\Collection($db_collection);
+        if (!$collection->is_public) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+            return Response::redirect('collection', ['id' => $collection->id]);
+        }
+
+        $is_following = $user->isFollowing($collection->id);
+        if (!$is_following) {
+            $user->follow($collection->id);
+        }
+
+        return Response::redirect('collection', ['id' => $collection->id]);
+    }
+
+    /**
+     * Make the current user following the given collection
+     *
+     * @request_param string id
+     *
+     * @response 302 /login?redirect_to=/collections/:id
+     *     if not connected
+     * @response 404
+     *     if the collection doesn’t exist or user hasn't access
+     * @response 302 /collections/:id
+     *     if CSRF is invalid
+     * @response 302 /collections/:id
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function unfollow($request)
+    {
+        $user = utils\CurrentUser::get();
+        $collection_id = $request->param('id');
+        $collection_dao = new models\dao\Collection();
+
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
+            ]);
+        }
+
+        $db_collection = $collection_dao->find($collection_id);
+        if (!$db_collection) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $collection = new models\Collection($db_collection);
+        if (!$collection->is_public) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+            return Response::redirect('collection', ['id' => $collection->id]);
+        }
+
+        $is_following = $user->isFollowing($collection->id);
+        if ($is_following) {
+            $user->unfollow($collection->id);
+        }
+
+        return Response::redirect('collection', ['id' => $collection->id]);
+    }
 }

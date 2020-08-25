@@ -21,10 +21,38 @@
         <h1><?= $this->protect($collection->name) ?></h1>
     </div>
 
+    <?php if ($error): ?>
+        <p class="form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+
     <div class="collection__meta">
-        <span class="icon icon--collection">
-            <?= _f('Collection created by %s', $this->protect($collection->owner()->username)) ?>
-        </span>
+        <p class="collection__details">
+            <span class="icon icon--collection">
+                <?= _f('Collection created by %s', $this->protect($collection->owner()->username)) ?>
+            </span>
+        </p>
+
+        <div class="collection__actions">
+            <?php if ($current_user): ?>
+                <?php if ($current_user->isFollowing($collection->id)): ?>
+                    <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <button>
+                            <?= _('Unfollow') ?>
+                        </button>
+                    </form>
+                <?php else: ?>
+                    <form method="post" action="<?= url('follow collection', ['id' => $collection->id]) ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <button>
+                            <?= _('Follow') ?>
+                        </button>
+                    </form>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
     </div>
 
     <p class="collection__description">
