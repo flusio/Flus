@@ -15,22 +15,22 @@
     </p>
 
     <?php if ($links): ?>
-        <div class="links links--in-column">
+        <div class="cards cards--in-column">
             <?php foreach ($links as $link): ?>
-                <div class="link">
-                    <div class="link__body">
-                        <h2 class="link__title">
+                <div class="card">
+                    <div class="card__body">
+                        <h2 class="card__title">
                             <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
                                 <?= $this->protect($link->title) ?>
                             </a>
                         </h2>
 
-                        <p class="link__details">
+                        <p class="card__details">
                             <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                         </p>
                     </div>
 
-                    <div class="link__footer">
+                    <div class="card__footer">
                         <form method="post" action="<?= url('read link later', ['id' => $link->id]) ?>">
                             <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
@@ -43,7 +43,7 @@
                             </button>
                         </form>
 
-                        <div class="link__footer-group">
+                        <div class="card__footer-group">
                             <form method="post" action="<?= url('read link', ['id' => $link->id]) ?>">
                                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 

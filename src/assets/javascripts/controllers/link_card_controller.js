@@ -32,7 +32,7 @@ export default class extends Controller {
             this.data.set('bookmarked', 'true');
         });
 
-        card.classList.remove('link--transparent');
+        card.classList.remove('card--transparent');
         icon.classList.add('icon--solid');
         button.title = _('Remove from bookmarks');
         button.setAttribute('aria-label', _('Remove from bookmarks'));
@@ -52,7 +52,7 @@ export default class extends Controller {
             this.data.set('bookmarked', 'false');
         });
 
-        card.classList.add('link--transparent');
+        card.classList.add('card--transparent');
         icon.classList.remove('icon--solid');
         button.title = _('Add to bookmarks');
         button.setAttribute('aria-label', _('Add to bookmarks'));
