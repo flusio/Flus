@@ -2,7 +2,7 @@
 
 namespace flusio;
 
-class NewsTest extends \PHPUnit\Framework\TestCase
+class NewsLinksTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;

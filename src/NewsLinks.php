@@ -10,7 +10,7 @@ use Minz\Response;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class News
+class NewsLinks
 {
     /**
      * Show the news page.
@@ -34,7 +34,7 @@ class News
 
         $links = $user->newsLinks();
 
-        return Response::ok('news/index.phtml', [
+        return Response::ok('news_links/index.phtml', [
             'links' => $links,
         ]);
     }
@@ -65,7 +65,7 @@ class News
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('news/index.phtml', [
+            return Response::badRequest('news_links/index.phtml', [
                 'links' => [],
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
