@@ -6,6 +6,10 @@
     list-style: none;
 }
 
+.popup__opener::-webkit-details-marker {
+    display: none;
+}
+
 .popup__container {
     position: fixed;
     z-index: 10;
