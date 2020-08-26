@@ -43,33 +43,6 @@
                 <?= _('copy') ?>
             </button>
         </div>
-
-        <hr />
-
-        <form
-            method="post"
-            action="<?= url('update link visibility', ['id' => $link->id]) ?>"
-            class="form--centered"
-        >
-            <?php if ($error): ?>
-                <p class="form__error">
-                    <?= $error ?>
-                </p>
-            <?php endif; ?>
-
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-            <input type="hidden" name="visibility" value="private" />
-
-            <div class="form-group">
-                <p class="form-group__caption">
-                    <?= _('Heads up! This could break existing links.') ?>
-                </p>
-
-                <button type="submit">
-                    <?= _('Make it private') ?>
-                </button>
-            </div>
-        </form>
     <?php else: ?>
         <form
             method="post"

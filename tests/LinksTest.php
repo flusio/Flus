@@ -246,6 +246,26 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($url, $link->url);
         $this->assertSame($user->id, $link->user_id);
         $this->assertContains($collection_id, array_column($link->collections(), 'id'));
+        $this->assertFalse($link->is_public);
+    }
+
+    public function testCreateAllowsToCreatePublicLinks()
+    {
+        $link_dao = new models\dao\Link();
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', '/links/new', [
+            'csrf' => $user->csrf,
+            'url' => $this->fake('url'),
+            'collection_ids' => [$collection_id],
+            'is_public' => true,
+        ]);
+
+        $link = new models\Link($link_dao->listAll()[0]);
+        $this->assertTrue($link->is_public);
     }
 
     public function testCreateDoesNotCreateLinkIfItExists()
@@ -517,21 +537,26 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link_dao = new models\dao\Link();
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
+        $old_public = 0;
+        $new_public = 1;
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
+            'is_public' => $old_public,
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
+            'is_public' => $new_public,
         ]);
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
         $db_link = $link_dao->find($link_id);
         $this->assertSame($new_title, $db_link['title']);
+        $this->assertTrue($db_link['is_public']);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid()
@@ -907,7 +932,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/share");
 
-        $this->assertResponse($response, 200, 'Make it private');
+        $this->assertResponse($response, 200, 'You can copy the following link to share');
         $this->assertPointer($response, 'links/sharing.phtml');
     }
 

@@ -63,17 +63,18 @@ class Link extends \Minz\Model
     /**
      * @param string $url
      * @param string $user_id
+     * @param boolean|string $is_public
      *
      * @return \flusio\models\Link
      */
-    public static function init($url, $user_id)
+    public static function init($url, $user_id, $is_public)
     {
         $url = \SpiderBits\Url::sanitize($url);
         return new self([
             'id' => bin2hex(random_bytes(16)),
             'title' => $url,
             'url' => $url,
-            'is_public' => false,
+            'is_public' => filter_var($is_public, FILTER_VALIDATE_BOOLEAN),
             'in_news' => false,
             'user_id' => $user_id,
             'reading_time' => 0,

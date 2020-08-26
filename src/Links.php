@@ -129,6 +129,7 @@ class Links
 
         return Response::ok('links/new.phtml', [
             'url' => $default_url,
+            'is_public' => false,
             'collection_ids' => $default_collection_ids,
             'collections' => $collections,
         ]);
@@ -139,6 +140,7 @@ class Links
      *
      * @request_param string csrf
      * @request_param string url It must be a valid non-empty URL
+     * @request_param boolean is_public
      * @request_param string[] collection_ids It must contain at least one
      *                                        collection id
      *
@@ -155,6 +157,7 @@ class Links
     {
         $user = utils\CurrentUser::get();
         $url = $request->param('url', '');
+        $is_public = $request->param('is_public', false);
         $collection_ids = $request->param('collection_ids', []);
 
         if (!$user) {
@@ -170,6 +173,7 @@ class Links
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
+                'is_public' => $is_public,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -180,11 +184,12 @@ class Links
         $collection_dao = new models\dao\Collection();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
-        $link = models\Link::init($url, $user->id);
+        $link = models\Link::init($url, $user->id, $is_public);
         $errors = $link->validate();
         if ($errors) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
+                'is_public' => $is_public,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'errors' => $errors,
@@ -194,6 +199,7 @@ class Links
         if (empty($collection_ids)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
+                'is_public' => $is_public,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'errors' => [
@@ -205,6 +211,7 @@ class Links
         if (!$collection_dao->exists($collection_ids)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
+                'is_public' => $is_public,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'errors' => [
@@ -264,6 +271,7 @@ class Links
             return Response::ok('links/edit.phtml', [
                 'link' => $link,
                 'title' => $link->title,
+                'is_public' => $link->is_public,
             ]);
         } else {
             return Response::notFound('not_found.phtml');
@@ -276,6 +284,7 @@ class Links
      * @request_param string csrf
      * @request_param string id
      * @request_param string title
+     * @request_param boolean is_public
      *
      * @response 302 /login?redirect_to=/links/:id/edit if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
@@ -291,6 +300,7 @@ class Links
         $user = utils\CurrentUser::get();
         $link_id = $request->param('id');
         $new_title = $request->param('title');
+        $is_public = $request->param('is_public', false);
 
         if (!$user) {
             return Response::redirect('login', [
@@ -308,16 +318,19 @@ class Links
             return Response::badRequest('links/edit.phtml', [
                 'link' => $link,
                 'title' => $new_title,
+                'is_public' => $is_public,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
         $link->title = trim($new_title);
+        $link->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
         $errors = $link->validate();
         if ($errors) {
             return Response::badRequest('links/edit.phtml', [
                 'link' => $link,
                 'title' => $new_title,
+                'is_public' => $is_public,
                 'errors' => $errors,
             ]);
         }
