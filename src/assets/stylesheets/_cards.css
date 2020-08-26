@@ -56,11 +56,6 @@
 }
 
 .card__details {
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-right: var(--space-smaller);
-    padding-left: var(--space-smaller);
-
     color: var(--color-text-secondary);
     font-size: var(--size-small);
 }
@@ -71,6 +66,13 @@
 
     align-items: center;
     justify-content: space-between;
+}
+
+.card__footer .card__details {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-right: var(--space-smaller);
+    padding-left: var(--space-smaller);
 }
 
 .card__footer-group {
