@@ -61,12 +61,14 @@
         </div>
 
         <div class="form-group">
-            <label>
-                <input
-                    type="checkbox"
-                    name="is_public"
-                    <?= $is_public ? 'checked' : '' ?>
-                />
+            <input
+                type="checkbox"
+                id="is_public"
+                name="is_public"
+                <?= $is_public ? 'checked' : '' ?>
+            />
+
+            <label class="label--checkbox" for="is_public">
                 <?= _('Public collection') ?>
             </label>
         </div>

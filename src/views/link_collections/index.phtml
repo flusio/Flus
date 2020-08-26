@@ -29,19 +29,20 @@
                 </p>
             <?php endif; ?>
 
-            <div class="form-group">
-                <?php foreach ($collections as $collection): ?>
-                    <label>
-                        <input
-                            type="checkbox"
-                            name="collection_ids[]"
-                            value="<?= $collection->id ?>"
-                            <?= $collection->attachedToLink ? 'checked' : '' ?>
-                        />
+            <?php foreach ($collections as $collection): ?>
+                <div class="form-group">
+                    <input
+                        type="checkbox"
+                        id="collection-<?= $collection->id ?>"
+                        name="collection_ids[]"
+                        value="<?= $collection->id ?>"
+                        <?= $collection->attachedToLink ? 'checked' : '' ?>
+                    />
+                    <label class="label--checkbox" for="collection-<?= $collection->id ?>">
                         <?= $this->protect($collection->name()) ?>
                     </label>
-                <?php endforeach; ?>
-            </div>
+                </div>
+            <?php endforeach; ?>
         </fieldset>
 
         <div class="form__actions">

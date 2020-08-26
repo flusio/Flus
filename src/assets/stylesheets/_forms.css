@@ -9,6 +9,10 @@ label {
     padding-left: var(--space-small);
 }
 
+.label--checkbox {
+    margin-bottom: 0;
+}
+
 input,
 textarea {
     width: 100%;
@@ -31,9 +35,78 @@ textarea {
     min-height: 15rem;
 }
 
-input[type="checkbox"],
-input[type="radio"] {
-    width: auto;
+/**
+ * Custom checkboxes to improve contrast and size
+ *
+ * @see https://www.a11ywithlindsey.com/blog/create-custom-keyboard-accesible-checkboxes
+ */
+input[type='checkbox'] {
+    position: absolute;
+
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+
+    width: 1px;
+    height: 1px;
+}
+
+input[type="checkbox"] + label {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+}
+
+input[type="checkbox"] + label::before {
+    content: ' ';
+
+    position: relative;
+
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-right: var(--space-small);
+
+    vertical-align: middle;
+
+    background-color: var(--color-white);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: 0.5rem;
+
+    transition:
+        border-color 0.2s ease-in-out,
+        background-color 0.2s ease-in-out;
+}
+
+input[type='checkbox']:hover + label::before,
+input[type='checkbox']:focus + label::before {
+    background-color: var(--color-turquoise-1);
+    border-color: var(--color-turquoise-6);
+}
+
+input[type='checkbox']:focus + label::before {
+    box-shadow: 0 0 0 1px var(--color-purple-5);
+}
+
+input[type="checkbox"]:checked + label::before {
+    background-color: var(--color-turquoise-3);
+    border-color: var(--color-turquoise-8);
+}
+
+input[type="checkbox"]:checked + label::after {
+    content: '';
+
+    position: absolute;
+    left: 1.5rem;
+
+    width: 1.5rem;
+    height: 0.75rem;
+    margin-top: -0.3rem;
+
+    border-bottom: var(--border-width) solid var(--color-text);
+    border-left: var(--border-width) solid var(--color-text);
+
+    transform: rotate(-45deg);
 }
 
 .form-group--invalid input,
