@@ -66,6 +66,8 @@
 
     align-items: center;
     justify-content: space-between;
+
+    background-color: var(--color-grey-1);
 }
 
 .card__footer .card__details {
