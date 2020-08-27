@@ -14,24 +14,58 @@
         <?= _('Get about 1 hour of reading suggestions from your bookmarks.') ?>
     </p>
 
-    <?php if ($links): ?>
+    <?php if ($news_links): ?>
         <div class="cards cards--in-column">
-            <?php foreach ($links as $link): ?>
+            <?php foreach ($news_links as $news_link): ?>
                 <div class="card">
                     <div class="card__body">
                         <h2 class="card__title">
-                            <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
-                                <?= $this->protect($link->title) ?>
-                            </a>
+                            <?= $this->protect($news_link->title) ?>
                         </h2>
 
                         <p class="card__details">
-                            <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                            <?= $this->protect($news_link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
                         </p>
+
+                        <?php if ($news_link->url_in_bookmarks): ?>
+                            <p>
+                                <?= _('In your bookmarks') ?>
+
+                                <?php if ($news_link->url_collections_count > 0): ?>
+                                    <?= _nf(
+                                        ' and %d collection',
+                                        ' and %d collections',
+                                        $news_link->url_collections_count,
+                                        $news_link->url_collections_count
+                                    ) ?>
+                                <?php endif; ?>
+
+                                –
+
+                                <a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>">
+                                    <?= _('see') ?>
+                                </a>
+                            </p>
+                        <?php elseif ($news_link->url_collections_count > 0): ?>
+                            <p>
+                                <?= _nf(
+                                    'In %d collection',
+                                    'In %d collections',
+                                    $news_link->url_collections_count,
+                                    $news_link->url_collections_count
+                                ) ?>
+
+                                –
+
+                                <a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>">
+                                    <?= _('see') ?>
+                                </a>
+                            </p>
+                        <?php endif; ?>
                     </div>
 
                     <div class="card__footer">
-                        <form method="post" action="<?= url('read link later', ['id' => $link->id]) ?>">
+                        <form method="post" action="<?= url('read news later', ['id' => $news_link->id]) ?>">
                             <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                             <button
@@ -44,7 +78,16 @@
                         </form>
 
                         <div class="card__footer-group">
-                            <form method="post" action="<?= url('read link', ['id' => $link->id]) ?>">
+                            <a
+                                class="anchor--action icon icon--anchor icon--link"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href="<?= $news_link->url ?>"
+                            >
+                                <?= _('open') ?>
+                            </a>
+
+                            <form method="post" action="<?= url('read news', ['id' => $news_link->id]) ?>">
                                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                                 <button
@@ -55,10 +98,6 @@
                                     <?= _('Mark as read') ?>
                                 </button>
                             </form>
-
-                            <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
-                                <?= _('see') ?>
-                            </a>
                         </div>
                     </div>
                 </div>

@@ -58,4 +58,23 @@ class Belt
 
         return strpos($haystack, $needle) !== false;
     }
+
+    /**
+     * Extract the host from a URL. If the host starts with "www.", they are
+     * removed from the host.
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    public static function host($url)
+    {
+        $parsed_url = parse_url($url);
+        $host = idn_to_utf8($parsed_url['host'], IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+        if (self::startsWith($host, 'www.')) {
+            return substr($host, 4);
+        } else {
+            return $host;
+        }
+    }
 }

@@ -74,6 +74,8 @@ class User extends \Minz\Model
     /**
      * Return the given link if attached to the current user
      *
+     * @param string $id
+     *
      * @return \flusio\models\Link|null
      */
     public function link($link_id)
@@ -91,22 +93,59 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the given link if attached to the current user
+     *
+     * @param string $url
+     *
+     * @return \flusio\models\Link|null
+     */
+    public function linkByUrl($link_url)
+    {
+        $link_dao = new dao\Link();
+        $db_link = $link_dao->findBy([
+            'user_id' => $this->id,
+            'url' => $link_url,
+        ]);
+        if ($db_link) {
+            return new Link($db_link);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Return the given news link if attached to the current user
+     *
+     * @return \flusio\models\NewsLink|null
+     */
+    public function newsLink($news_link_id)
+    {
+        $news_link_dao = new dao\NewsLink();
+        $db_news_link = $news_link_dao->findBy([
+            'id' => $news_link_id,
+            'user_id' => $this->id,
+        ]);
+        if ($db_news_link) {
+            return new NewsLink($db_news_link);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Return the user' news links
      *
-     * @return \flusio\models\Link[]
+     * @return \flusio\models\NewsLink[]
      */
     public function newsLinks()
     {
-        $link_dao = new dao\Link();
-        $db_links = $link_dao->listBy([
-            'user_id' => $this->id,
-            'in_news' => 1,
-        ]);
-        $links = [];
-        foreach ($db_links as $db_link) {
-            $links[] = new Link($db_link);
+        $news_link_dao = new dao\NewsLink();
+        $db_news_links = $news_link_dao->listComputedByUserId($this->id);
+        $news_links = [];
+        foreach ($db_news_links as $db_news_link) {
+            $news_links[] = new NewsLink($db_news_link);
         }
-        return $links;
+        return $news_links;
     }
 
     /**

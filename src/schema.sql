@@ -48,7 +48,6 @@ CREATE TABLE links (
     title TEXT NOT NULL,
     url TEXT NOT NULL,
     is_public BOOLEAN NOT NULL DEFAULT false,
-    in_news BOOLEAN NOT NULL DEFAULT false,
     reading_time INTEGER NOT NULL DEFAULT 0,
     fetched_at TIMESTAMPTZ,
     fetched_code INTEGER NOT NULL DEFAULT 0,
@@ -66,6 +65,16 @@ CREATE TABLE links_to_collections (
 
 CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, collection_id);
 CREATE INDEX idx_links_to_collections_collection_id ON links_to_collections(collection_id);
+
+CREATE TABLE news_links (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    title TEXT NOT NULL,
+    url TEXT NOT NULL,
+    reading_time INTEGER NOT NULL DEFAULT 0,
+    is_hidden BOOLEAN NOT NULL DEFAULT false,
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 CREATE TABLE messages (
     id TEXT PRIMARY KEY,

@@ -32,11 +32,6 @@ class Link extends \Minz\Model
             'required' => true,
         ],
 
-        'in_news' => [
-            'type' => 'boolean',
-            'required' => true,
-        ],
-
         'reading_time' => [
             'type' => 'integer',
             'required' => true,
@@ -75,10 +70,29 @@ class Link extends \Minz\Model
             'title' => $url,
             'url' => $url,
             'is_public' => filter_var($is_public, FILTER_VALIDATE_BOOLEAN),
-            'in_news' => false,
             'user_id' => $user_id,
             'reading_time' => 0,
             'fetched_code' => 0,
+        ]);
+    }
+
+    /**
+     * @param \flusio\models\NewsLink $news_link
+     * @param string $user_id
+     *
+     * @return \flusio\models\Link
+     */
+    public static function initFromNews($news_link, $user_id)
+    {
+        return new self([
+            'id' => bin2hex(random_bytes(16)),
+            'title' => $news_link->title,
+            'url' => $news_link->url,
+            'is_public' => false,
+            'reading_time' => $news_link->reading_time,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 200,
+            'user_id' => $user_id,
         ]);
     }
 
@@ -121,13 +135,7 @@ class Link extends \Minz\Model
      */
     public function host()
     {
-        $parsed_url = parse_url($this->url);
-        $host = idn_to_utf8($parsed_url['host'], IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
-        if (\flusio\utils\Belt::startsWith($host, 'www.')) {
-            return substr($host, 4);
-        } else {
-            return $host;
-        }
+        return \flusio\utils\Belt::host($this->url);
     }
 
     /**
