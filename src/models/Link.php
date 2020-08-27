@@ -32,11 +32,6 @@ class Link extends \Minz\Model
             'required' => true,
         ],
 
-        'in_news' => [
-            'type' => 'boolean',
-            'required' => true,
-        ],
-
         'reading_time' => [
             'type' => 'integer',
             'required' => true,
@@ -75,7 +70,6 @@ class Link extends \Minz\Model
             'title' => $url,
             'url' => $url,
             'is_public' => filter_var($is_public, FILTER_VALIDATE_BOOLEAN),
-            'in_news' => false,
             'user_id' => $user_id,
             'reading_time' => 0,
             'fetched_code' => 0,
@@ -95,7 +89,6 @@ class Link extends \Minz\Model
             'title' => $news_link->title,
             'url' => $news_link->url,
             'is_public' => false,
-            'in_news' => false,
             'reading_time' => $news_link->reading_time,
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 200,
