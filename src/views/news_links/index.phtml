@@ -14,22 +14,22 @@
         <?= _('Get about 1 hour of reading suggestions from your bookmarks.') ?>
     </p>
 
-    <?php if ($links): ?>
+    <?php if ($news_links): ?>
         <div class="cards cards--in-column">
-            <?php foreach ($links as $link): ?>
+            <?php foreach ($news_links as $news_link): ?>
                 <div class="card">
                     <div class="card__body">
                         <h2 class="card__title">
-                            <?= $this->protect($link->title) ?>
+                            <?= $this->protect($news_link->title) ?>
                         </h2>
 
                         <p class="card__details">
-                            <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                            <?= $this->protect($news_link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
                         </p>
                     </div>
 
                     <div class="card__footer">
-                        <form method="post" action="<?= url('read link later', ['id' => $link->id]) ?>">
+                        <form method="post" action="<?= url('read news later', ['id' => $news_link->id]) ?>">
                             <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                             <button
@@ -46,12 +46,12 @@
                                 class="anchor--action icon icon--anchor icon--link"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href="<?= $link->url ?>"
+                                href="<?= $news_link->url ?>"
                             >
                                 <?= _('open') ?>
                             </a>
 
-                            <form method="post" action="<?= url('read link', ['id' => $link->id]) ?>">
+                            <form method="post" action="<?= url('read news', ['id' => $news_link->id]) ?>">
                                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                                 <button

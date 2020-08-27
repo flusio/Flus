@@ -83,6 +83,27 @@ class Link extends \Minz\Model
     }
 
     /**
+     * @param \flusio\models\NewsLink $news_link
+     * @param string $user_id
+     *
+     * @return \flusio\models\Link
+     */
+    public static function initFromNews($news_link, $user_id)
+    {
+        return new self([
+            'id' => bin2hex(random_bytes(16)),
+            'title' => $news_link->title,
+            'url' => $news_link->url,
+            'is_public' => false,
+            'in_news' => false,
+            'reading_time' => $news_link->reading_time,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 200,
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
      * Return the collections attached to the current link
      *
      * @return \flusio\models\Collection[]

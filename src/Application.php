@@ -62,6 +62,8 @@ class Application
         // News page
         $router->addRoute('get', '/news', 'NewsLinks#index', 'news');
         $router->addRoute('post', '/news', 'NewsLinks#fill', 'fill news');
+        $router->addRoute('post', '/news/:id/read', 'NewsLinks#read', 'read news');
+        $router->addRoute('post', '/news/:id/read-later', 'NewsLinks#readLater', 'read news later');
 
         // Collections
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');
@@ -84,8 +86,6 @@ class Application
         $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
         $router->addRoute('get', '/links/:id/share', 'Links#sharing', 'sharing link');
         $router->addRoute('post', '/links/:id/visibility', 'Links#updateVisibility', 'update link visibility');
-        $router->addRoute('post', '/links/:id/read', 'Links#read', 'read link');
-        $router->addRoute('post', '/links/:id/read-later', 'Links#readLater', 'read link later');
 
         // Link collections
         $router->addRoute('get', '/links/:id/collections', 'LinkCollections#index', 'link collections');
