@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-08-26 16:05+0200\n"
-"PO-Revision-Date: 2020-08-26 16:05+0200\n"
+"POT-Creation-Date: 2020-08-27 14:49+0200\n"
+"PO-Revision-Date: 2020-08-27 14:50+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Accounts.php:69 Accounts.php:149 Collections.php:105 Collections.php:259
-#: LinkMessages.php:70 Links.php:179 Links.php:322 News.php:70
+#: LinkMessages.php:70 Links.php:179 Links.php:322 NewsLinks.php:70
 #: Registrations.php:84 Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -36,7 +36,8 @@ msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
 #: Collections.php:318 LinkCollections.php:153 LinkCollections.php:205
-#: Links.php:413 Links.php:537 Links.php:590 Links.php:643 Sessions.php:191
+#: Links.php:413 Links.php:537 NewsLinks.php:139 NewsLinks.php:197
+#: Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -48,7 +49,8 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: LinkCollections.php:140 LinkCollections.php:192 Links.php:584 Links.php:637
+#: LinkCollections.php:140 LinkCollections.php:192 NewsLinks.php:133
+#: NewsLinks.php:191
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -132,23 +134,23 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:147
+#: models/Link.php:168
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:149
+#: models/Link.php:170
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:168
+#: models/Link.php:189
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:173
+#: models/Link.php:194
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:177
+#: models/Link.php:198
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -158,31 +160,31 @@ msgstr ""
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: models/User.php:239
+#: models/User.php:299
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:241
+#: models/User.php:301
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:243
+#: models/User.php:303
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:245
+#: models/User.php:305
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:247
+#: models/User.php:307
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:249
+#: models/User.php:309
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:251
+#: models/User.php:311
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -218,8 +220,8 @@ msgstr ""
 msgid "You must validate your registration&nbsp;→"
 msgstr "Vous devez valider votre inscription&nbsp;→"
 
-#: views/_layouts/connected.phtml:53 views/news/index.phtml:3
-#: views/news/index.phtml:10
+#: views/_layouts/connected.phtml:53 views/news_links/index.phtml:3
+#: views/news_links/index.phtml:10
 msgid "News"
 msgstr "Journal"
 
@@ -403,7 +405,8 @@ msgstr[1] "%d liens"
 
 #: views/collections/index.phtml:40 views/collections/show.phtml:62
 #: views/collections/show_bookmarks.phtml:66
-#: views/collections/show_public.phtml:43 views/news/index.phtml:60
+#: views/collections/show_public.phtml:43 views/news_links/index.phtml:41
+#: views/news_links/index.phtml:51
 msgid "see"
 msgstr "voir"
 
@@ -557,6 +560,7 @@ msgid "share"
 msgstr "partager"
 
 #: views/links/show.phtml:52 views/links/show_public.phtml:26
+#: views/news_links/index.phtml:77
 msgid "open"
 msgstr "ouvrir"
 
@@ -621,23 +625,41 @@ msgstr ""
 msgid "Have a nice day!"
 msgstr "Bonne journée !"
 
-#: views/news/index.phtml:14
+#: views/news_links/index.phtml:14
 msgid "Get about 1 hour of reading suggestions from your bookmarks."
 msgstr "Obtenez environ 1h de suggestions de lecture depuis vos signets."
 
-#: views/news/index.phtml:39 views/news/index.phtml:40
+#: views/news_links/index.phtml:32
+msgid "In your bookmarks"
+msgstr "Dans vos signets"
+
+#: views/news_links/index.phtml:35
+#, php-format
+msgid " and %d collection"
+msgid_plural " and %d collections"
+msgstr[0] " et %d collection"
+msgstr[1] " et %d collections"
+
+#: views/news_links/index.phtml:46
+#, php-format
+msgid "In %d collection"
+msgid_plural "In %d collections"
+msgstr[0] "Dans %d collection"
+msgstr[1] "Dans %d collections"
+
+#: views/news_links/index.phtml:63 views/news_links/index.phtml:64
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/news/index.phtml:52 views/news/index.phtml:53
+#: views/news_links/index.phtml:85 views/news_links/index.phtml:86
 msgid "Remove from the news page and bookmarks"
 msgstr "Retirer du journal et des signets"
 
-#: views/news/index.phtml:55
+#: views/news_links/index.phtml:88
 msgid "Mark as read"
 msgstr "Noter comme lu"
 
-#: views/news/index.phtml:79
+#: views/news_links/index.phtml:108
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 

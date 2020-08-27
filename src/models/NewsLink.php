@@ -42,6 +42,16 @@ class NewsLink extends \Minz\Model
             'type' => 'string',
             'required' => true,
         ],
+
+        'url_in_bookmarks' => [
+            'type' => 'boolean',
+            'computed' => true,
+        ],
+
+        'url_collections_count' => [
+            'type' => 'integer',
+            'computed' => true,
+        ],
     ];
 
     /**
@@ -62,16 +72,29 @@ class NewsLink extends \Minz\Model
     }
 
     /**
+     * Return a Link matching news URL and user_id, if any.
+     *
+     * @return \flusio\models\Link|null
+     */
+    public function matchingLink()
+    {
+        $link_dao = new dao\Link();
+        $db_link = $link_dao->findBy([
+            'url' => $this->url,
+            'user_id' => $this->user_id,
+        ]);
+        if ($db_link) {
+            return new Link($db_link);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @return string
      */
     public function host()
     {
-        $parsed_url = parse_url($this->url);
-        $host = idn_to_utf8($parsed_url['host'], IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
-        if (\flusio\utils\Belt::startsWith($host, 'www.')) {
-            return substr($host, 4);
-        } else {
-            return $host;
-        }
+        return \flusio\utils\Belt::host($this->url);
     }
 }

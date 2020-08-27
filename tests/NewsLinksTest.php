@@ -36,6 +36,71 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString($title_not_news, $response_output);
     }
 
+    public function testIndexShowsNumberOfCollections()
+    {
+        $user = $this->login();
+        $url = $this->fake('url');
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $url,
+            'is_hidden' => 0,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', '/news');
+
+        $response_output = $response->render();
+        $this->assertStringContainsString('In 1 collection', $response_output);
+    }
+
+    public function testIndexShowsIfInBookmarks()
+    {
+        $user = $this->login();
+        $url = $this->fake('url');
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $url,
+            'is_hidden' => 0,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $collection_id_1 = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $collection_id_2 = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_1,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_2,
+        ]);
+
+        $response = $this->appRun('get', '/news');
+
+        $response_output = $response->render();
+        $this->assertStringContainsString('In your bookmarks', $response_output);
+        $this->assertStringContainsString('and 1 collection', $response_output);
+    }
+
     public function testIndexRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/news');

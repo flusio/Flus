@@ -26,6 +26,42 @@
                         <p class="card__details">
                             <?= $this->protect($news_link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
                         </p>
+
+                        <?php if ($news_link->url_in_bookmarks): ?>
+                            <p>
+                                <?= _('In your bookmarks') ?>
+
+                                <?php if ($news_link->url_collections_count > 0): ?>
+                                    <?= _nf(
+                                        ' and %d collection',
+                                        ' and %d collections',
+                                        $news_link->url_collections_count,
+                                        $news_link->url_collections_count
+                                    ) ?>
+                                <?php endif; ?>
+
+                                –
+
+                                <a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>">
+                                    <?= _('see') ?>
+                                </a>
+                            </p>
+                        <?php elseif ($news_link->url_collections_count > 0): ?>
+                            <p>
+                                <?= _nf(
+                                    'In %d collection',
+                                    'In %d collections',
+                                    $news_link->url_collections_count,
+                                    $news_link->url_collections_count
+                                ) ?>
+
+                                –
+
+                                <a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>">
+                                    <?= _('see') ?>
+                                </a>
+                            </p>
+                        <?php endif; ?>
                     </div>
 
                     <div class="card__footer">

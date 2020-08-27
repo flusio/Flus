@@ -142,13 +142,7 @@ class Link extends \Minz\Model
      */
     public function host()
     {
-        $parsed_url = parse_url($this->url);
-        $host = idn_to_utf8($parsed_url['host'], IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
-        if (\flusio\utils\Belt::startsWith($host, 'www.')) {
-            return substr($host, 4);
-        } else {
-            return $host;
-        }
+        return \flusio\utils\Belt::host($this->url);
     }
 
     /**

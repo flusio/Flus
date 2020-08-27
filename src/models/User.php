@@ -140,10 +140,7 @@ class User extends \Minz\Model
     public function newsLinks()
     {
         $news_link_dao = new dao\NewsLink();
-        $db_news_links = $news_link_dao->listBy([
-            'user_id' => $this->id,
-            'is_hidden' => 0,
-        ]);
+        $db_news_links = $news_link_dao->listComputedByUserId($this->id);
         $news_links = [];
         foreach ($db_news_links as $db_news_link) {
             $news_links[] = new NewsLink($db_news_link);
