@@ -277,64 +277,6 @@ class NewsLinks
     }
 
     /**
-     * Remove a link from news and bookmarks.
-     *
-     * @request_param string csrf
-     * @request_param string id
-     *
-     * @response 302 /login?redirect_to=/news
-     *     if not connected
-     * @response 302 /news
-     *     if the link doesn't exist, or is not associated to the current user
-     * @response 302 /news
-     *     if CSRF is invalid
-     * @response 302 /news
-     *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function read($request)
-    {
-        $user = utils\CurrentUser::get();
-        $from = \Minz\Url::for('news');
-        $news_link_id = $request->param('id');
-
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
-
-        $news_link = $user->newsLink($news_link_id);
-        if (!$news_link) {
-            utils\Flash::set('error', _('The link doesn’t exist.'));
-            return Response::found($from);
-        }
-
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
-            utils\Flash::set('error', _('A security verification failed.'));
-            return Response::found($from);
-        }
-
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
-
-        // If the link is in the bookmarks, let's unbookmark it.
-        $link = $user->linkByUrl($news_link->url);
-        if ($link) {
-            $bookmarks = $user->bookmarks();
-            $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
-        }
-
-        // Then, hide the news so it will no longer be suggested to the user.
-        $news_link->is_hidden = true;
-        $news_link_dao->save($news_link);
-
-        return Response::found($from);
-    }
-
-    /**
      * Remove a link from news only.
      *
      * @request_param string csrf
