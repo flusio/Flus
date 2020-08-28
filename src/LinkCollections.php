@@ -42,19 +42,11 @@ class LinkCollections
         }
 
         $collections = $user->collections();
-        $link_collection_ids = array_column($link->collections(), 'id');
-        foreach ($collections as $collection) {
-            if (in_array($collection->id, $link_collection_ids)) {
-                $collection->attachedToLink = true;
-            } else {
-                $collection->attachedToLink = false;
-            }
-        }
-
         models\Collection::sort($collections, $user->locale);
 
         return Response::ok('link_collections/index.phtml', [
             'link' => $link,
+            'collection_ids' => array_column($link->collections(), 'id'),
             'collections' => $collections,
         ]);
     }
@@ -92,18 +84,22 @@ class LinkCollections
             return Response::notFound('not_found.phtml');
         }
 
+        $collection_dao = new models\dao\Collection();
+        if (!$collection_dao->existForUser($user->id, $new_collection_ids)) {
+            $collections = $user->collections();
+            models\Collection::sort($collections, $user->locale);
+            return Response::badRequest('link_collections/index.phtml', [
+                'link' => $link,
+                'collection_ids' => $new_collection_ids,
+                'collections' => $collections,
+                'errors' => [
+                    'collection_ids' => _('One of the associated collection doesn’t exist.'),
+                ],
+            ]);
+        }
+
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $old_collection_ids = array_column($link->collections(), 'id');
-
-        $ids_to_attach = array_diff($new_collection_ids, $old_collection_ids);
-        if ($ids_to_attach) {
-            $links_to_collections_dao->attach($link->id, $ids_to_attach);
-        }
-
-        $ids_to_detach = array_diff($old_collection_ids, $new_collection_ids);
-        if ($ids_to_detach) {
-            $links_to_collections_dao->detach($link->id, $ids_to_detach);
-        }
+        $links_to_collections_dao->set($link->id, $new_collection_ids);
 
         return Response::redirect('link', ['id' => $link->id]);
     }

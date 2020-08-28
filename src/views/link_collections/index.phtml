@@ -36,7 +36,7 @@
                         id="collection-<?= $collection->id ?>"
                         name="collection_ids[]"
                         value="<?= $collection->id ?>"
-                        <?= $collection->attachedToLink ? 'checked' : '' ?>
+                        <?= in_array($collection->id, $collection_ids) ? 'checked' : '' ?>
                     />
                     <label class="label--checkbox" for="collection-<?= $collection->id ?>">
                         <?= $this->protect($collection->name()) ?>

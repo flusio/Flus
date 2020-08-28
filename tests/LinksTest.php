@@ -450,16 +450,19 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link_dao->count());
     }
 
-    public function testCreateFailsIfCollectionDoesNotExist()
+    public function testCreateFailsIfCollectionIdsContainsNotOwnedId()
     {
         $link_dao = new models\dao\Link();
-
         $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+        ]);
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $this->fake('url'),
-            'collection_ids' => ['does not exist'],
+            'collection_ids' => [$collection_id],
         ]);
 
         $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');

@@ -73,4 +73,32 @@ class LinksToCollections extends \Minz\DatabaseModel
         $statement = $this->prepare($sql);
         return $statement->execute($values);
     }
+
+    /**
+     * Attach the collections to the given link and remove old ones if any.
+     *
+     * @param string $link_id
+     * @param string[] $collection_ids
+     *
+     * @return boolean True on success
+     */
+    public function set($link_id, $collection_ids)
+    {
+        $previous_attachments = $this->listBy(['link_id' => $link_id]);
+        $previous_collection_ids = array_column($previous_attachments, 'collection_id');
+        $ids_to_attach = array_diff($collection_ids, $previous_collection_ids);
+        $ids_to_detach = array_diff($previous_collection_ids, $collection_ids);
+
+        $this->beginTransaction();
+
+        if ($ids_to_attach) {
+            $this->attach($link_id, $ids_to_attach);
+        }
+
+        if ($ids_to_detach) {
+            $this->detach($link_id, $ids_to_detach);
+        }
+
+        return $this->commit();
+    }
 }

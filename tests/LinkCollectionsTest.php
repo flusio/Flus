@@ -193,6 +193,28 @@ class LinkCollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_collection_2);
     }
 
+    public function testUpdateFailsIfCollectionIdsContainsNotOwnedId()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => $user->csrf,
+            'collection_ids' => [$collection_id],
+        ]);
+
+        $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
+        $this->assertSame(0, $links_to_collections_dao->count());
+    }
+
     public function testBookmarkAddsLinkToBookmarks()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();

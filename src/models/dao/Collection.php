@@ -66,4 +66,25 @@ class Collection extends \Minz\DatabaseModel
         $statement->execute([$user_id]);
         return $statement->fetchAll();
     }
+
+    /**
+     * Return if collection ids exist for the given user.
+     *
+     * @param string $user_id
+     * @param string[] $collection_ids
+     *
+     * @return boolean True if all the ids exist
+     */
+    public function existForUser($user_id, $collection_ids)
+    {
+        if (empty($collection_ids)) {
+            return true;
+        }
+
+        $matching_rows = $this->listBy([
+            'id' => $collection_ids,
+            'user_id' => $user_id,
+        ]);
+        return count($matching_rows) === count($collection_ids);
+    }
 }

@@ -208,7 +208,7 @@ class Links
             ]);
         }
 
-        if (!$collection_dao->exists($collection_ids)) {
+        if (!$collection_dao->existForUser($user->id, $collection_ids)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_public' => $is_public,
