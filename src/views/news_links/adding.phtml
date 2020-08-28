@@ -1,0 +1,107 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Add to your collections'),
+        'current_tab' => 'news',
+        'canonical' => url('adding news', ['id' => $news_link->id]),
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('Add to your collections') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= $this->protect($news_link->title) ?>
+    </p>
+
+    <form method="post" action="<?= url('add news', ['id' => $news_link->id]) ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group">
+            <input
+                type="checkbox"
+                id="is_public"
+                name="is_public"
+                <?= $is_public ? 'checked' : '' ?>
+            />
+
+            <label class="label--checkbox" for="is_public">
+                <?= _('Show the link publicly') ?>
+            </label>
+        </div>
+
+        <fieldset>
+            <legend><?= _('Collections') ?></legend>
+
+            <p class="fieldset__caption">
+                <?= _('You must place your link in at least one collection.') ?>
+            </p>
+
+            <?php if (isset($errors['collection_ids'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['collection_ids'] ?>
+                </p>
+            <?php endif; ?>
+
+            <?php foreach ($collections as $collection): ?>
+                <div class="form-group">
+                    <input
+                        type="checkbox"
+                        id="collection-<?= $collection->id ?>"
+                        name="collection_ids[]"
+                        value="<?= $collection->id ?>"
+                        <?= in_array($collection->id, $collection_ids) ? 'checked' : '' ?>
+                    />
+                    <label class="label--checkbox" for="collection-<?= $collection->id ?>">
+                        <?= $this->protect($collection->name()) ?>
+                    </label>
+                </div>
+            <?php endforeach; ?>
+        </fieldset>
+
+        <div class="form-group">
+            <label for="comment">
+                <?= _('What do you think?') ?>
+                <span class="text--secondary">
+                    <?= _('(optional)') ?>
+                </span>
+            </label>
+
+            <textarea
+                id="comment"
+                name="comment"
+            ><?= $comment ?></textarea>
+        </div>
+
+        <div class="form__actions">
+            <?php if ($exists_already): ?>
+                <button type="submit" class="button--primary">
+                    <?= _('Save and mark as read') ?>
+                </button>
+            <?php else: ?>
+                <button type="submit" class="button--primary">
+                    <?= _('Add and mark as read') ?>
+                </button>
+            <?php endif; ?>
+
+            <a href="<?= url('news') ?>">
+                <?= _('Cancel and go back to the news') ?>
+            </a>
+        </div>
+
+        <?php if ($exists_already): ?>
+            <p class="paragraph--secondary">
+                <em>
+                    <?= _('Note: this link is already part of your collections.') ?>
+                </em>
+            </p>
+        <?php endif; ?>
+    </form>
+</div>

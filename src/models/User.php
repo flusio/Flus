@@ -190,14 +190,24 @@ class User extends \Minz\Model
     /**
      * Return the list of collections created by the user
      *
+     * @param boolean $exclude_bookmarks Default is false.
+     *
      * @return \flusio\models\Collection[]
      */
-    public function collections()
+    public function collections($exclude_bookmarks = false)
     {
         $collection_dao = new dao\Collection();
-        $db_collections = $collection_dao->listBy([
-            'user_id' => $this->id,
-        ]);
+        if ($exclude_bookmarks) {
+            $db_collections = $collection_dao->listBy([
+                'user_id' => $this->id,
+                'type' => 'collection',
+            ]);
+        } else {
+            $db_collections = $collection_dao->listBy([
+                'user_id' => $this->id,
+            ]);
+        }
+
         $collections = [];
         foreach ($db_collections as $db_collection) {
             $collections[] = new Collection($db_collection);

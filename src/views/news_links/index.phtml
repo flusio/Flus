@@ -87,17 +87,9 @@
                                 <?= _('open') ?>
                             </a>
 
-                            <form method="post" action="<?= url('read news', ['id' => $news_link->id]) ?>">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                                <button
-                                    class="button--small"
-                                    title="<?= _('Remove from the news page and bookmarks') ?>"
-                                    aria-label="<?= _('Remove from the news page and bookmarks') ?>"
-                                >
-                                    <?= _('Mark as read') ?>
-                                </button>
-                            </form>
+                            <a class="anchor--action" href="<?= url('add news', ['id' => $news_link->id]) ?>">
+                                <?= _('Add to collections') ?>
+                            </a>
                         </div>
                     </div>
                 </div>
