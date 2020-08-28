@@ -24,7 +24,7 @@
     </head>
 
     <body>
-        <div class="layout">
+        <div class="layout" id="layout">
             <?php if ($demo): ?>
                 <div class="layout__banner">
                     <div class="banner__container">
@@ -121,6 +121,40 @@
             <main class="layout__content">
                 <?= $this->safe('content') ?>
             </main>
+        </div>
+
+        <div
+            id="modal"
+            class="modal modal--opened"
+            role="dialog"
+            data-controller="modal"
+            data-action="click->modal#closeOnMask"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+            aria-modal="true"
+            aria-hidden="true"
+            tabindex="-1"
+        >
+            <section
+                class="modal__box"
+                data-target="modal.box"
+                role="document"
+            >
+                <header class="modal__header">
+                    <button
+                        type="button"
+                        class="button--ghost button--smaller"
+                        data-action="modal#close"
+                        aria-label="<?= _('Close') ?>"
+                        title="<?= _('Close this window') ?>"
+                    >
+                        <i class="icon icon--only icon--times"></i>
+                    </button>
+                </header>
+
+                <div data-target="modal.body" class="modal__body">
+                </div>
+            </section>
         </div>
     </body>
 </html>

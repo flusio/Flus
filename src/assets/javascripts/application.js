@@ -8,6 +8,8 @@ import FormAutosubmitController from 'js/controllers/form_autosubmit_controller.
 import LinkBackPageController from 'js/controllers/link_back_page_controller.js';
 import LinkCardController from 'js/controllers/link_card_controller.js';
 import LinkFetcherController from 'js/controllers/link_fetcher_controller.js';
+import ModalController from 'js/controllers/modal_controller.js';
+import ModalOpenerController from 'js/controllers/modal_opener_controller.js';
 import PopupController from 'js/controllers/popup_controller.js';
 
 window.jsConfiguration = JSON.parse(document.getElementById('javascript-configuration').innerHTML);
@@ -22,6 +24,8 @@ application.register('form-autosubmit', FormAutosubmitController);
 application.register('link-back-page', LinkBackPageController);
 application.register('link-card', LinkCardController);
 application.register('link-fetcher', LinkFetcherController);
+application.register('modal', ModalController);
+application.register('modal-opener', ModalOpenerController);
 application.register('popup', PopupController);
 
 document.addEventListener('turbolinks:click', (event) => {

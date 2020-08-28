@@ -1,0 +1,90 @@
+.modal {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    visibility: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    opacity: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    transform: scaleX(1.1) scaleY(1.1);
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.modal[aria-hidden="false"] {
+    visibility: visible;
+
+    opacity: 1;
+
+    transform: scaleX(1) scaleY(1);
+    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.modal__box {
+    max-width: var(--content-width);
+    margin: var(--space-medium) auto;
+
+    background-color: var(--color-grey-1);
+    box-shadow: 0 0 10px var(--color-grey-7);
+}
+
+@media (min-width: 800px) {
+    .modal__box {
+        margin-top: var(--space-larger);
+        margin-bottom: var(--space-larger);
+    }
+}
+
+@media (min-width: 1000px) {
+    .modal__box {
+        border-radius: var(--border-radius);
+    }
+}
+
+.modal__header {
+    padding: var(--space-smaller);
+
+    text-align: right;
+}
+
+.modal__body {
+    overflow: hidden;
+
+    min-height: 15rem;
+    max-height: 15rem;
+    padding-right: var(--space-small);
+    padding-bottom: var(--space-small);
+    padding-left: var(--space-small);
+
+    transition: max-height 1.5s linear;
+}
+
+@media (min-width: 800px) {
+    .modal__body {
+        padding-right: var(--space-medium);
+        padding-left: var(--space-medium);
+    }
+}
+
+.modal__body--has-content {
+    /* dirty trick to apply transition on height, berk */
+    max-height: 10000px;
+}
+
+.modal__body .section__title {
+    margin-top: 0;
+}
+
+.modal .no-modal {
+    display: none;
+}
+
+body.modal-opened {
+    overflow: hidden;
+}
