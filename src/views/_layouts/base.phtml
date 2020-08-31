@@ -6,7 +6,9 @@
     }
 
     $this->layout($layout_name, [
-        'title' => $title,
+        // The title can be considered as safe since it's already sanitized in
+        // the calling view.
+        'title' => $this->safe('title'),
         'current_action_pointer' => $current_action_pointer,
         'current_locale' => $current_locale,
         'current_tab' => $current_tab,
