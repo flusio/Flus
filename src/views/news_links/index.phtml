@@ -87,17 +87,16 @@
                                 <?= _('open') ?>
                             </a>
 
-                            <form method="post" action="<?= url('read news', ['id' => $news_link->id]) ?>">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                                <button
-                                    class="button--small"
-                                    title="<?= _('Remove from the news page and bookmarks') ?>"
-                                    aria-label="<?= _('Remove from the news page and bookmarks') ?>"
-                                >
-                                    <?= _('Mark as read') ?>
-                                </button>
-                            </form>
+                            <button
+                                class="button--small"
+                                data-controller="modal-opener"
+                                data-action="modal-opener#fetch"
+                                data-modal-opener-href="<?= url('add news', ['id' => $news_link->id]) ?>"
+                                aria-haspopup="dialog"
+                                aria-controls="modal"
+                            >
+                                <?= _('Add to collections') ?>
+                            </a>
                         </div>
                     </div>
                 </div>

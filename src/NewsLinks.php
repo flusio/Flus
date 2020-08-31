@@ -40,6 +40,183 @@ class NewsLinks
     }
 
     /**
+     * Allow to add a link from a news_link (which is mark as read). If a link
+     * already exists with the same URL, it is offered to update it.
+     *
+     * @request_param string id
+     *
+     * @response 302 /login?redirect_to=/news/:id/add
+     *     if not connected
+     * @response 404
+     *     if the link doesn't exist, or is not associated to the current user
+     * @response 200
+     *     on success
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function adding($request)
+    {
+        $user = utils\CurrentUser::get();
+        $news_link_id = $request->param('id');
+
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('add news', ['id' => $news_link_id]),
+            ]);
+        }
+
+        $news_link = $user->newsLink($news_link_id);
+        if (!$news_link) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $collections = $user->collections(true);
+        models\Collection::sort($collections, $user->locale);
+
+        $existing_link = $user->linkByUrl($news_link->url);
+        if ($existing_link) {
+            $is_public = $existing_link->is_public;
+            $existing_collections = $existing_link->collections();
+            $collection_ids = array_column($existing_collections, 'id');
+        } else {
+            $is_public = false;
+            $collection_ids = [];
+        }
+
+        return Response::ok('news_links/adding.phtml', [
+            'news_link' => $news_link,
+            'is_public' => $is_public,
+            'collection_ids' => $collection_ids,
+            'collections' => $collections,
+            'comment' => '',
+            'exists_already' => $existing_link !== null,
+        ]);
+    }
+
+    /**
+     * Mark a news_link as read and add it as a link to the user's collections.
+     *
+     * @request_param string id
+     * @request_param string csrf
+     * @request_param boolean is_public
+     * @request_param string[] collection_ids
+     * @request_param string comment
+     *
+     * @response 302 /login?redirect_to=/news/:id/add
+     *     if not connected
+     * @response 404
+     *     if the link doesn't exist, or is not associated to the current user
+     * @response 400
+     *     if CSRF is invalid, if collection_ids is empty or contains inexisting ids
+     * @response 302 /news
+     *     on success
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function add($request)
+    {
+        $user = utils\CurrentUser::get();
+        $news_link_id = $request->param('id');
+
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('add news', ['id' => $news_link_id]),
+            ]);
+        }
+
+        $news_link = $user->newsLink($news_link_id);
+        if (!$news_link) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $link_dao = new models\dao\Link();
+        $news_link_dao = new models\dao\NewsLink();
+        $collection_dao = new models\dao\Collection();
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $message_dao = new models\dao\Message();
+
+        $collections = $user->collections(true);
+        models\Collection::sort($collections, $user->locale);
+
+        $existing_link = $user->linkByUrl($news_link->url);
+
+        $is_public = $request->param('is_public', false);
+        $collection_ids = $request->param('collection_ids', []);
+        $comment = $request->param('comment', '');
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('news_links/adding.phtml', [
+                'news_link' => $news_link,
+                'is_public' => $is_public,
+                'collection_ids' => $collection_ids,
+                'collections' => $collections,
+                'comment' => $comment,
+                'exists_already' => $existing_link !== null,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        if (empty($collection_ids)) {
+            return Response::badRequest('news_links/adding.phtml', [
+                'news_link' => $news_link,
+                'is_public' => $is_public,
+                'collection_ids' => $collection_ids,
+                'collections' => $collections,
+                'comment' => $comment,
+                'exists_already' => $existing_link !== null,
+                'errors' => [
+                    'collection_ids' => _('The link must be associated to a collection.'),
+                ],
+            ]);
+        }
+
+        if (!$collection_dao->existForUser($user->id, $collection_ids)) {
+            return Response::badRequest('news_links/adding.phtml', [
+                'news_link' => $news_link,
+                'is_public' => $is_public,
+                'collection_ids' => $collection_ids,
+                'collections' => $collections,
+                'comment' => $comment,
+                'exists_already' => $existing_link !== null,
+                'errors' => [
+                    'collection_ids' => _('One of the associated collection doesn’t exist.'),
+                ],
+            ]);
+        }
+
+        // First, save the link (if a Link with matching URL exists, just get
+        // this link and optionally change its is_public status)
+        if ($existing_link) {
+            $link = $existing_link;
+        } else {
+            $link = models\Link::initFromNews($news_link, $user->id);
+        }
+        $link->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
+        $link_dao->save($link);
+
+        // Attach the link to the given collections (and potentially forget the
+        // old ones)
+        $links_to_collections_dao->set($link->id, $collection_ids);
+
+        // Then, if a comment has been passed, save it.
+        if (trim($comment)) {
+            $message = models\Message::init($user->id, $link->id, $comment);
+            $message_dao->save($message);
+        }
+
+        // Finally, hide the news_link from the news page.
+        $news_link->is_hidden = true;
+        $news_link_dao->save($news_link);
+
+        return Response::redirect('news');
+    }
+
+    /**
      * Fill the news page with links to read (from bookmarks)
      *
      * @request_param string csrf
@@ -97,64 +274,6 @@ class NewsLinks
         }
 
         return Response::redirect('news');
-    }
-
-    /**
-     * Remove a link from news and bookmarks.
-     *
-     * @request_param string csrf
-     * @request_param string id
-     *
-     * @response 302 /login?redirect_to=/news
-     *     if not connected
-     * @response 302 /news
-     *     if the link doesn't exist, or is not associated to the current user
-     * @response 302 /news
-     *     if CSRF is invalid
-     * @response 302 /news
-     *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function read($request)
-    {
-        $user = utils\CurrentUser::get();
-        $from = \Minz\Url::for('news');
-        $news_link_id = $request->param('id');
-
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
-
-        $news_link = $user->newsLink($news_link_id);
-        if (!$news_link) {
-            utils\Flash::set('error', _('The link doesn’t exist.'));
-            return Response::found($from);
-        }
-
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
-            utils\Flash::set('error', _('A security verification failed.'));
-            return Response::found($from);
-        }
-
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
-
-        // If the link is in the bookmarks, let's unbookmark it.
-        $link = $user->linkByUrl($news_link->url);
-        if ($link) {
-            $bookmarks = $user->bookmarks();
-            $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
-        }
-
-        // Then, hide the news so it will no longer be suggested to the user.
-        $news_link->is_hidden = true;
-        $news_link_dao->save($news_link);
-
-        return Response::found($from);
     }
 
     /**
