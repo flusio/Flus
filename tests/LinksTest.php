@@ -752,10 +752,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $expected_title = 'GitHub - flusio/flusio: The citizen social media';
-        $this->assertResponse($response, 200, $expected_title);
-        $this->assertPointer($response, 'links/show_fetch.phtml');
+        $this->assertResponse($response, 302, "/links/{$link_id}");
         $db_link = $link_dao->find($link_id);
+        $expected_title = 'GitHub - flusio/flusio: The citizen social media';
         $this->assertSame($expected_title, $db_link['title']);
         $this->assertSame(200, $db_link['fetched_code']);
     }
@@ -828,10 +827,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $expected_title = 'https://flus.fr/does_not_exist.html';
-        $this->assertResponse($response, 200, $expected_title);
-        $this->assertPointer($response, 'links/show_fetch.phtml');
         $db_link = $link_dao->find($link_id);
+        $expected_title = 'https://flus.fr/does_not_exist.html';
         $this->assertSame($expected_title, $db_link['title']);
         $this->assertSame(404, $db_link['fetched_code']);
     }

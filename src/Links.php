@@ -384,7 +384,7 @@ class Links
      * @response 302 /login?redirect_to=/links/:id/fetch
      * @response 404 if the link doesn't exist or not associated to the current user
      * @response 400 if csrf token is invalid
-     * @response 200
+     * @response 302 /links/:id
      *
      * @param \Minz\Request $request
      *
@@ -455,9 +455,7 @@ class Links
         $link_dao = new models\dao\Link();
         $link_dao->save($link);
 
-        return Response::ok('links/show_fetch.phtml', [
-            'link' => $link,
-        ]);
+        return Response::redirect('link', ['id' => $link->id]);
     }
 
     /**
