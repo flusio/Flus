@@ -6,12 +6,12 @@
     ]);
 ?>
 
-<div class="section">
+<div class="section" id="modal-content">
     <div class="section__title">
-        <h1><?= _('Add to your collections') ?></h1>
+        <h1 id="modal-title"><?= _('Add to your collections') ?></h1>
     </div>
 
-    <p class="section__intro">
+    <p id="modal-description" class="section__intro">
         <?= $this->protect($news_link->title) ?>
     </p>
 
@@ -91,7 +91,7 @@
                 </button>
             <?php endif; ?>
 
-            <a href="<?= url('news') ?>">
+            <a href="<?= url('news') ?>" data-action="modal#close">
                 <?= _('Cancel and go back to the news') ?>
             </a>
         </div>

@@ -87,7 +87,14 @@
                                 <?= _('open') ?>
                             </a>
 
-                            <a class="anchor--action" href="<?= url('add news', ['id' => $news_link->id]) ?>">
+                            <button
+                                class="button--small"
+                                data-controller="modal-opener"
+                                data-action="modal-opener#fetch"
+                                data-modal-opener-href="<?= url('add news', ['id' => $news_link->id]) ?>"
+                                aria-haspopup="dialog"
+                                aria-controls="modal"
+                            >
                                 <?= _('Add to collections') ?>
                             </a>
                         </div>
