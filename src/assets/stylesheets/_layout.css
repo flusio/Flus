@@ -69,6 +69,10 @@
     }
 }
 
+.layout__content:focus {
+    outline: none;
+}
+
 .layout__footer {
     margin-top: var(--space-large);
     padding: var(--space-medium);

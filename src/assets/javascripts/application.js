@@ -11,6 +11,7 @@ import LinkFetcherController from 'js/controllers/link_fetcher_controller.js';
 import ModalController from 'js/controllers/modal_controller.js';
 import ModalOpenerController from 'js/controllers/modal_opener_controller.js';
 import PopupController from 'js/controllers/popup_controller.js';
+import SkipNavController from 'js/controllers/skip_nav_controller.js';
 
 window.jsConfiguration = JSON.parse(document.getElementById('javascript-configuration').innerHTML);
 
@@ -27,6 +28,7 @@ application.register('link-fetcher', LinkFetcherController);
 application.register('modal', ModalController);
 application.register('modal-opener', ModalOpenerController);
 application.register('popup', PopupController);
+application.register('skip-nav', SkipNavController);
 
 document.addEventListener('turbolinks:click', (event) => {
     // This is used for the "back" button on link main page. This allows to go

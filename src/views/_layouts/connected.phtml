@@ -24,6 +24,17 @@
     </head>
 
     <body>
+        <a
+            class="no-mobile accessibility-nav anchor--action"
+            href="#main-content"
+            tabindex="0"
+            data-turbolinks="false"
+            data-controller="skip-nav"
+            data-action="skip-nav#skip"
+        >
+            <?= _('Skip to main content') ?>
+        </a>
+
         <div class="layout" id="layout">
             <?php if ($demo): ?>
                 <div class="layout__banner">
@@ -118,7 +129,7 @@
                 </nav>
             </header>
 
-            <main class="layout__content">
+            <main id="main-content" class="layout__content" tabindex="-1">
                 <?= $this->safe('content') ?>
             </main>
         </div>
