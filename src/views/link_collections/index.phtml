@@ -5,14 +5,13 @@
     ]);
 ?>
 
-<div class="section">
+<div class="section" id="modal-content">
     <div class="section__title section__title--nolowercase">
-        <h1><?= _('Link collections') ?></h1>
+        <h1 id="modal-title"><?= _('Link collections') ?></h1>
     </div>
 
     <p class="section__intro">
-        <?= $this->protect($link->title) ?><br />
-        <?= $this->protect($link->url) ?>
+        <?= $this->protect($link->title) ?>
     </p>
 
     <form method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
@@ -60,7 +59,7 @@
                 <?= _('Update') ?>
             </button>
 
-            <a href="<?= url('link', ['id' => $link->id]) ?>">
+            <a href="<?= url('link', ['id' => $link->id]) ?>" data-action="modal#close">
                 <?= _('Cancel and go back to the link') ?>
             </a>
         </div>

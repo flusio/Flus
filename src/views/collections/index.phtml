@@ -10,10 +10,21 @@
         <h1><?= _('Collections') ?></h1>
     </div>
 
+    <p class="section__intro">
+        <?= _('Collections allows to group links by topics. They are handy for finding them later.') ?>
+    </p>
+
     <p class="paragraph--centered">
-        <a class="anchor--action icon icon--anchor icon--plus" href="<?= url('new collection') ?>">
+        <button
+            class="icon icon--plus"
+            data-controller="modal-opener"
+            data-action="modal-opener#fetch"
+            data-modal-opener-href="<?= url('new collection') ?>"
+            aria-haspopup="dialog"
+            aria-controls="modal"
+        >
             <?= _('Add a collection') ?>
-        </a>
+        </button>
     </p>
 
     <div class="cards">

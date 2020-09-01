@@ -5,9 +5,9 @@
     ]);
 ?>
 
-<div class="section">
+<div class="section" id="modal-content">
     <div class="section__title">
-        <h1><?= _('New link') ?></h1>
+        <h1 id="modal-title"><?= _('New link') ?></h1>
     </div>
 
     <form method="post" action="<?= url('create link') ?>">
@@ -58,7 +58,7 @@
             </label>
         </div>
 
-        <fieldset>
+        <fieldset class="no-modal">
             <legend><?= _('Collections') ?></legend>
 
             <?php if (isset($errors['collection_ids'])): ?>
@@ -102,8 +102,12 @@
                 <?= _('Add the link') ?>
             </button>
 
-            <a href="<?= url('news') ?>" data-controller="link-back-page">
+            <a class="no-modal" href="<?= url('news') ?>" data-controller="link-back-page">
                 <?= _('Cancel and go back') ?>
+            </a>
+
+            <a class="only-modal" href="<?= url('news') ?>" data-action="modal#close">
+                <?= _('Cancel and close this window') ?>
             </a>
         </div>
     </form>

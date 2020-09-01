@@ -15,12 +15,16 @@
     </p>
 
     <p class="paragraph--centered">
-        <a
-            class="anchor--action icon icon--anchor icon--plus-circle"
-            href="<?= url('new link', ['collection' => $collection->id]) ?>"
+        <button
+            class="icon icon--plus-circle"
+            data-controller="modal-opener"
+            data-action="modal-opener#fetch"
+            data-modal-opener-href="<?= url('new link', ['collection' => $collection->id]) ?>"
+            aria-haspopup="dialog"
+            aria-controls="modal"
         >
             <?= _('Add a link') ?>
-        </a>
+        </button>
     </p>
 
     <div class="cards">

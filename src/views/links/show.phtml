@@ -17,13 +17,18 @@
 
         <div class="section__nav-separator"></div>
 
-        <a
-            href="<?= url('edit link', ['id' => $link->id]) ?>"
+        <button
+            class="button--ghost button--smaller"
+            data-controller="modal-opener"
+            data-action="modal-opener#fetch"
+            data-modal-opener-href="<?= url('edit link', ['id' => $link->id]) ?>"
             title="<?= _('Settings') ?>"
             aria-label="<?= _('Settings') ?>"
+            aria-haspopup="dialog"
+            aria-controls="modal"
         >
-            <i class="icon icon--anchor icon--only icon--cog"></i>
-        </a>
+            <i class="icon icon--only icon--cog"></i>
+        </button>
     </nav>
 
     <div class="section__title section__title--nolowercase">
@@ -57,16 +62,21 @@
 
     <section class="subsection subsection--small">
         <header class="subsection__header header">
-            <div class="header__container">
+            <div class="header__container header__container--centered">
                 <h2 class="subsection__title"><?= _('Collections') ?></h2>
 
-                <a
-                    href="<?= url('link collections', ['id' => $link->id]) ?>"
+                <button
+                    class="button--ghost button--smaller"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href="<?= url('link collections', ['id' => $link->id]) ?>"
                     title="<?= _('Manage') ?>"
                     aria-label="<?= _('Manage') ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
                 >
-                    <i class="icon icon--anchor icon--only icon--cog"></i>
-                </a>
+                    <i class="icon icon--only icon--cog"></i>
+                </button>
             </div>
         </header>
 

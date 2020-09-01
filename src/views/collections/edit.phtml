@@ -6,9 +6,9 @@
     ]);
 ?>
 
-<div class="section">
+<div class="section" id="modal-content">
     <div class="section__title">
-        <h1><?= _('Collection edition') ?></h1>
+        <h1 id="modal-title"><?= _('Collection edition') ?></h1>
     </div>
 
     <form method="post" action="<?= url('update collection', ['id' => $collection->id]) ?>">
@@ -79,16 +79,14 @@
                 <?= _('Update') ?>
             </button>
 
-            <a href="<?= url('collection', ['id' => $collection->id]) ?>">
+            <a href="<?= url('collection', ['id' => $collection->id]) ?>" data-action="modal#close">
                 <?= _('Cancel and go back to the collection') ?>
             </a>
         </div>
     </form>
-</div>
 
-<hr />
+    <hr />
 
-<div class="section">
     <form
         method="post"
         action="<?= url('delete collection', ['id' => $collection->id]) ?>"
