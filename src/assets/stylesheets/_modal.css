@@ -13,8 +13,8 @@
     opacity: 0;
     background-color: rgba(0, 0, 0, 0.5);
 
-    transform: scaleX(1.1) scaleY(1.1);
-    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+    transform: scaleX(1.02) scaleY(1.02);
+    transition: visibility 0s linear 0.2s, opacity 0.2s 0s, transform 0.2s;
 }
 
 .modal[aria-hidden="false"] {
@@ -23,7 +23,7 @@
     opacity: 1;
 
     transform: scaleX(1) scaleY(1);
-    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+    transition: visibility 0s linear 0s, opacity 0.2s 0s, transform 0.2s;
 }
 
 .modal__box {
