@@ -1,6 +1,7 @@
 import Turbolinks from 'turbolinks';
 import { Application } from 'stimulus';
 
+import CollectionsSelectorController from 'js/controllers/collections_selector_controller.js';
 import ConfirmationController from 'js/controllers/confirmation_controller.js';
 import CopyToClipboardController from 'js/controllers/copy_to_clipboard_controller.js';
 import InputPasswordController from 'js/controllers/input_password_controller.js';
@@ -18,6 +19,7 @@ window.jsConfiguration = JSON.parse(document.getElementById('javascript-configur
 Turbolinks.start();
 
 const application = Application.start();
+application.register('collections-selector', CollectionsSelectorController);
 application.register('confirmation', ConfirmationController);
 application.register('copy-to-clipboard', CopyToClipboardController);
 application.register('input-password', InputPasswordController);

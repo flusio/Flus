@@ -120,25 +120,29 @@ textarea:focus {
 }
 
 select {
-    width: 50%;
+    min-width: 50%;
     padding: var(--space-small);
-    padding-right: 3.5rem;
 
     color: inherit;
     font-family: inherit;
     font-size: var(--size-normal);
 
     background-color: var(--color-grey-1);
-    background-image: url("../icons/core/angle-down-line.svg");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem top 58%;
-    background-size: 2.5rem;
     border: var(--border-width) solid var(--border-color);
     border-radius: var(--border-radius);
 
     transition:
         background-color 0.2s ease-in-out,
         border-color 0.2s ease-in-out;
+}
+
+select:not([multiple]) {
+    padding-right: 3.5rem;
+
+    background-image: url("../icons/core/angle-down-line.svg");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem top 58%;
+    background-size: 2.5rem;
 
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -157,10 +161,16 @@ select:focus {
 fieldset {
     margin-top: var(--space-medium);
     margin-bottom: var(--space-medium);
-    padding: var(--space-smaller) var(--space-medium);
+    padding: var(--space-small);
 
     border: var(--border-width) solid var(--color-grey-3);
     border-radius: var(--border-radius);
+}
+
+@media (min-width: 1100px) {
+    fieldset {
+        padding: var(--space-medium);
+    }
 }
 
 legend {

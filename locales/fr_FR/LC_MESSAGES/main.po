@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-08-31 18:39+0200\n"
-"PO-Revision-Date: 2020-08-31 18:40+0200\n"
+"POT-Creation-Date: 2020-09-01 16:06+0200\n"
+"PO-Revision-Date: 2020-09-01 16:06+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -83,6 +83,14 @@ msgstr "Le token a expiré ou a été invalidé."
 #: Sessions.php:99
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
+
+#: assets/javascripts/controllers/collections_selector_controller.js:98
+msgid "Unselect this collection"
+msgstr "Désélectionner la collection"
+
+#: assets/javascripts/controllers/collections_selector_controller.js:99
+msgid "Unselect"
+msgstr "Désélectionner"
 
 #: assets/javascripts/controllers/copy_to_clipboard_controller.js:14
 msgid "copied"
@@ -370,7 +378,7 @@ msgid "Description"
 msgstr "Description"
 
 #: views/collections/edit.phtml:48 views/collections/new.phtml:51
-#: views/news_links/adding.phtml:73
+#: views/news_links/adding.phtml:83
 msgid "(optional)"
 msgstr "(optionnel)"
 
@@ -378,7 +386,7 @@ msgstr "(optionnel)"
 msgid "Public collection"
 msgstr "Collection publique"
 
-#: views/collections/edit.phtml:79 views/link_collections/index.phtml:50
+#: views/collections/edit.phtml:79 views/link_collections/index.phtml:60
 #: views/links/edit.phtml:64
 msgid "Update"
 msgstr "Mettre à jour"
@@ -494,12 +502,13 @@ msgstr "Une erreur est survenue pendant le traitement de votre requête."
 msgid "Link collections"
 msgstr "Collections du lien"
 
-#: views/link_collections/index.phtml:23 views/links/new.phtml:65
-#: views/news_links/adding.phtml:44
-msgid "You must place your link in at least one collection."
-msgstr "Vous devez placer votre lien dans au moins une collection."
+#: views/link_collections/index.phtml:49 views/link_collections/index.phtml:52
+#: views/links/new.phtml:91 views/links/new.phtml:94
+#: views/news_links/adding.phtml:70 views/news_links/adding.phtml:73
+msgid "Add to a collection"
+msgstr "Ajouter à une collection"
 
-#: views/link_collections/index.phtml:54 views/links/edit.phtml:68
+#: views/link_collections/index.phtml:64 views/links/edit.phtml:68
 msgid "Cancel and go back to the link"
 msgstr "Annuler et retourner au lien"
 
@@ -532,7 +541,7 @@ msgstr ""
 "Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
 "votre navigateur."
 
-#: views/links/new.phtml:92
+#: views/links/new.phtml:102
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
@@ -581,7 +590,7 @@ msgstr "ouvrir"
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:121 views/news_links/adding.phtml:71
+#: views/links/show.phtml:121 views/news_links/adding.phtml:81
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -642,19 +651,19 @@ msgstr "Bonne journée !"
 msgid "Add to your collections"
 msgstr "Ajouter à vos collections"
 
-#: views/news_links/adding.phtml:86
+#: views/news_links/adding.phtml:96
 msgid "Save and mark as read"
 msgstr "Enregister et marquer comme lu"
 
-#: views/news_links/adding.phtml:90
+#: views/news_links/adding.phtml:100
 msgid "Add and mark as read"
 msgstr "Ajouter et marquer comme lu"
 
-#: views/news_links/adding.phtml:95
+#: views/news_links/adding.phtml:105
 msgid "Cancel and go back to the news"
 msgstr "Annuler et retourner au journal"
 
-#: views/news_links/adding.phtml:102
+#: views/news_links/adding.phtml:112
 msgid "Note: this link is already part of your collections."
 msgstr "Note : Ce lien fait déjà partie de vos collections."
 
