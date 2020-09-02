@@ -310,7 +310,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'news_links/adding.phtml');
     }
 
-    public function testAddingWarnsIfTheLinkIsAlreadyPartOfCollections()
+    public function testAddingAdaptsSubmitButtonIfTheLinkIsAlreadyPartOfCollections()
     {
         $user = $this->login();
         $url = $this->fake('url');
@@ -325,7 +325,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/news/{$news_link_id}/add");
 
-        $this->assertResponse($response, 200, 'this link is already part of your collections');
+        $this->assertResponse($response, 200, 'Save and mark as read');
     }
 
     public function testAddingRedirectsIfNotConnected()
