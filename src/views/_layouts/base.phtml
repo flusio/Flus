@@ -1,21 +1,23 @@
 <?php
-    if ($current_user) {
-        $layout_name = 'connected.phtml';
-    } else {
-        $layout_name = 'not_connected.phtml';
-    }
+    if (!$no_layout) {
+        if ($current_user) {
+            $layout_name = 'connected.phtml';
+        } else {
+            $layout_name = 'not_connected.phtml';
+        }
 
-    $this->layout($layout_name, [
-        // The title can be considered as safe since it's already sanitized in
-        // the calling view.
-        'title' => $this->safe('title'),
-        'current_action_pointer' => $current_action_pointer,
-        'current_locale' => $current_locale,
-        'current_tab' => $current_tab,
-        'canonical' => $canonical,
-        'styles' => $styles,
-        'banner' => $banner,
-    ]);
+        $this->layout($layout_name, [
+            // The title can be considered as safe since it's already sanitized in
+            // the calling view.
+            'title' => $this->safe('title'),
+            'current_action_pointer' => $current_action_pointer,
+            'current_locale' => $current_locale,
+            'current_tab' => $current_tab,
+            'canonical' => $canonical,
+            'styles' => $styles,
+            'banner' => $banner,
+        ]);
+    }
 
     echo $this->safe('content');
 ?>

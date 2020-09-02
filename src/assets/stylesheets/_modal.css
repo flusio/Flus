@@ -69,6 +69,10 @@
     }
 }
 
+.modal__body > .section:last-child {
+    margin-bottom: 0;
+}
+
 .modal__body .section__title {
     margin-top: 0;
 }

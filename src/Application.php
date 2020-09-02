@@ -164,6 +164,7 @@ class Application
             'current_tab' => null,
             'styles' => [],
             'javascript_configuration' => json_encode(include_once('utils/javascript_configuration.php')),
+            'no_layout' => $request->header('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest',
             'banner' => true,
             'demo' => \Minz\Configuration::$application['demo'],
             'registrations_opened' => \Minz\Configuration::$application['registrations_opened'],
