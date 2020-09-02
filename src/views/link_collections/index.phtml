@@ -32,6 +32,7 @@
                     data-target="collections-selector.data"
                     multiple
                     required
+                    tabindex="-1"
                 >
                     <?php foreach ($collections as $collection): ?>
                         <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
