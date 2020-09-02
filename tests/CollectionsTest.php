@@ -37,6 +37,52 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'collections/index.phtml');
     }
 
+    public function testIndexRendersFollowedCollections()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_name = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', '/collections');
+
+        $response_output = $response->render();
+        $this->assertStringContainsString($collection_name, $response_output);
+    }
+
+    public function testIndexDoesNotRenderFollowedCollectionsIfNotPublic()
+    {
+        // This can happen if a user switch the visibility of its collection
+        // back to "private"
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_name = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+            'type' => 'collection',
+            'is_public' => 0,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', '/collections');
+
+        $response_output = $response->render();
+        $this->assertStringNotContainsString($collection_name, $response_output);
+    }
+
     public function testIndexRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/collections');

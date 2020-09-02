@@ -32,13 +32,13 @@ class Collections
         }
 
         $collections = $user->collectionsWithNumberLinks();
-        $collator = new \Collator($user->locale);
-        usort($collections, function ($collection1, $collection2) use ($collator) {
-            return $collator->compare($collection1->name, $collection2->name);
-        });
+        $followed_collections = $user->followedCollectionsWithNumberLinks();
+        models\Collection::sort($collections, $user->locale);
+        models\Collection::sort($followed_collections, $user->locale);
 
         return Response::ok('collections/index.phtml', [
             'collections' => $collections,
+            'followed_collections' => $followed_collections,
         ]);
     }
 

@@ -60,4 +60,38 @@
             <?= _('You have no collections yet. They’ll appear here once you start adding them.') ?>
         </p>
     <?php endif; ?>
+
+    <?php if ($followed_collections): ?>
+        <div class="section__title">
+            <h2><?= _('Followed collections') ?></h2>
+        </div>
+
+        <div class="cards">
+            <?php foreach ($followed_collections as $collection): ?>
+                <div class="card">
+                    <div class="card__body">
+                        <h2 class="card__title icon icon--collection">
+                            <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
+                                <?= $this->protect($collection->name) ?>
+                            </a>
+                        </h2>
+                    </div>
+
+                    <div class="card__footer">
+                        <p class="card__details">
+                            <?php if ($collection->number_links === 0): ?>
+                                <?= _('no links') ?>
+                            <?php else: ?>
+                                <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
+                            <?php endif; ?>
+                        </p>
+
+                        <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                            <?= _('see') ?>
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </div>

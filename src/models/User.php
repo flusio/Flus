@@ -232,6 +232,22 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the list of collections followed by the user
+     *
+     * @return \flusio\models\Collection[]
+     */
+    public function followedCollectionsWithNumberLinks()
+    {
+        $collection_dao = new dao\Collection();
+        $db_collections = $collection_dao->listFollowedWithNumberLinksForUser($this->id);
+        $collections = [];
+        foreach ($db_collections as $db_collection) {
+            $collections[] = new Collection($db_collection);
+        }
+        return $collections;
+    }
+
+    /**
      * @param string $collection_id
      *
      * @return boolean
