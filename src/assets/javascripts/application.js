@@ -32,7 +32,7 @@ application.register('modal-opener', ModalOpenerController);
 application.register('popup', PopupController);
 application.register('skip-nav', SkipNavController);
 
-document.addEventListener('turbolinks:click', (event) => {
+document.addEventListener('turbolinks:visit', (event) => {
     // This is used for the "back" button on link main page. This allows to go
     // to the page that brought the user on the page.
     // See link-back-page controller to see how it is used.
