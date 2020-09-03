@@ -68,6 +68,34 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
+     * Returns the list of followed collections for the given user id. The
+     * number of links of each collection is added.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listFollowedWithNumberLinksForUser($user_id)
+    {
+        $sql = <<<'SQL'
+            SELECT c.*, (
+                SELECT COUNT(l.id) FROM links l, links_to_collections lc
+                WHERE lc.collection_id = c.id
+                AND lc.link_id = l.id
+                AND l.is_public = true
+            ) AS number_links
+            FROM collections c, followed_collections fc
+            WHERE fc.user_id = ?
+            AND fc.collection_id = c.id
+            AND c.is_public = true
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([$user_id]);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Return if collection ids exist for the given user.
      *
      * @param string $user_id

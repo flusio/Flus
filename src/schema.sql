@@ -66,6 +66,15 @@ CREATE TABLE links_to_collections (
 CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, collection_id);
 CREATE INDEX idx_links_to_collections_collection_id ON links_to_collections(collection_id);
 
+CREATE TABLE followed_collections (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_followed_collections ON followed_collections(user_id, collection_id);
+
 CREATE TABLE news_links (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,

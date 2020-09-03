@@ -217,7 +217,8 @@ class NewsLinks
     }
 
     /**
-     * Fill the news page with links to read (from bookmarks)
+     * Fill the news page with links to read (from bookmarks and followed
+     * collections)
      *
      * @request_param string csrf
      *
@@ -248,17 +249,12 @@ class NewsLinks
             ]);
         }
 
-        $link_dao = new models\dao\Link();
         $news_link_dao = new models\dao\NewsLink();
-        $db_links = $link_dao->listBookmarksRandomlyByUserId($user->id);
-        $links = [];
-        $total_reading_time = 0;
+        $news_picker = new services\NewsPicker($user);
+        $db_links = $news_picker->pick();
+
         foreach ($db_links as $db_link) {
             $link = new models\Link($db_link);
-            if ($total_reading_time + $link->reading_time >= 75) {
-                continue;
-            }
-
             $news_link = models\NewsLink::initFromLink($link, $user->id);
             $values = $news_link->toValues();
             $values['created_at'] = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
@@ -266,11 +262,6 @@ class NewsLinks
             // its value is null.
             unset($values['id']);
             $news_link_dao->create($values);
-
-            $total_reading_time = $total_reading_time + $link->reading_time;
-            if ($total_reading_time >= 50) {
-                break;
-            }
         }
 
         return Response::redirect('news');

@@ -66,27 +66,75 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return random links listed in bookmarks of the given user.
+     * Return links listed in bookmarks of the given user, ordered randomly.
      *
      * @param string $user_id
      *
      * @return array
      */
-    public function listBookmarksRandomlyByUserId($user_id)
+    public function listFromBookmarksForNews($user_id)
     {
         $sql = <<<'SQL'
-            SELECT * FROM links WHERE id IN (
-                SELECT link_id FROM links_to_collections
-                WHERE collection_id = (
-                    SELECT id FROM collections
-                    WHERE type = 'bookmarks' AND user_id = ?
-                )
-            )
+            SELECT l.* FROM links l, collections c, links_to_collections lc
+
+            WHERE lc.link_id = l.id
+            AND lc.collection_id = c.id
+
+            AND c.user_id = :user_id
+            AND l.user_id = :user_id
+
+            AND c.type = 'bookmarks'
+
+            GROUP BY l.id
+
             ORDER BY random()
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$user_id]);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
+        return $statement->fetchAll();
+    }
+
+    /**
+     * Return public links listed in followed collections of the given user,
+     * ordered randomly. Links with a matching url in news_links are not
+     * returned.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listFromFollowedCollectionsForNews($user_id)
+    {
+        $sql = <<<SQL
+             SELECT l.* FROM links l, collections c, links_to_collections lc, followed_collections fc
+
+             WHERE fc.user_id = :user_id
+             AND fc.collection_id = lc.collection_id
+
+             AND lc.link_id = l.id
+             AND lc.collection_id = c.id
+
+             AND l.is_public = true
+             AND c.is_public = true
+
+             AND l.url NOT IN (
+                 SELECT nl.url FROM news_links nl
+                 WHERE nl.user_id = :user_id
+             )
+
+             GROUP BY l.id
+
+             ORDER BY random()
+             LIMIT 500
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
         return $statement->fetchAll();
     }
 }

@@ -161,6 +161,24 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
 );
 
 \Minz\Tests\DatabaseFactory::addFactory(
+    'followed_collection',
+    '\flusio\models\dao\FollowedCollection',
+    [
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'user_id' => function () {
+            $user_factory = new \Minz\Tests\DatabaseFactory('user');
+            return $user_factory->create();
+        },
+        'collection_id' => function () {
+            $collection_factory = new \Minz\Tests\DatabaseFactory('collection');
+            return $collection_factory->create();
+        },
+    ]
+);
+
+\Minz\Tests\DatabaseFactory::addFactory(
     'news_link',
     '\flusio\models\dao\NewsLink',
     [

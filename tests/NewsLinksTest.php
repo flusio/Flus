@@ -108,7 +108,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
     }
 
-    public function testFillSelectsLinksForNewsAndRedirects()
+    public function testFillSelectsLinksFromBookmarksAndRedirects()
     {
         $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
@@ -134,6 +134,42 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/news');
         $news_link = $news_link_dao->findBy(['url' => $link_url]);
         $this->assertNotNull($news_link);
+    }
+
+    public function testFillSelectsLinksFromFollowedCollections()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'url' => $link_url,
+            'reading_time' => 10,
+            'is_public' => 1,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', '/news', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $news_link = $news_link_dao->findBy(['url' => $link_url]);
+        $this->assertNotNull($news_link);
+        $this->assertSame($user->id, $news_link['user_id']);
     }
 
     public function testFillSelectsLinksUpToAbout1Hour()
