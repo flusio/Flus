@@ -53,6 +53,11 @@ class Link extends \Minz\Model
             'type' => 'string',
             'required' => true,
         ],
+
+        'news_value' => [
+            'type' => 'integer',
+            'computed' => true,
+        ],
     ];
 
     /**
