@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-01 17:14+0200\n"
-"PO-Revision-Date: 2020-09-01 17:14+0200\n"
+"POT-Creation-Date: 2020-09-03 17:04+0200\n"
+"PO-Revision-Date: 2020-09-03 17:09+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,8 +16,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Accounts.php:69 Accounts.php:149 Collections.php:105 Collections.php:259
-#: LinkMessages.php:70 Links.php:179 Links.php:322 NewsLinks.php:160
-#: NewsLinks.php:247 Registrations.php:84 Registrations.php:252 Sessions.php:82
+#: Collections.php:403 Collections.php:456 LinkMessages.php:70 Links.php:179
+#: Links.php:322 NewsLinks.php:160 NewsLinks.php:248 Registrations.php:84
+#: Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -36,7 +37,7 @@ msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
 #: Collections.php:318 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:413 Links.php:535 NewsLinks.php:316 Sessions.php:191
+#: Links.php:413 Links.php:535 NewsLinks.php:307 Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -52,7 +53,7 @@ msgstr ""
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:310
+#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:301
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -140,23 +141,23 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:155
+#: models/Link.php:160
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:157
+#: models/Link.php:162
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:176
+#: models/Link.php:181
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:181
+#: models/Link.php:186
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:185
+#: models/Link.php:190
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -166,31 +167,31 @@ msgstr ""
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: models/User.php:288
+#: models/User.php:358
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:290
+#: models/User.php:360
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:292
+#: models/User.php:362
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:294
+#: models/User.php:364
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:296
+#: models/User.php:366
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:298
+#: models/User.php:368
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:300
+#: models/User.php:370
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -237,8 +238,9 @@ msgstr "Journal"
 
 #: views/_layouts/connected.phtml:82 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/collections/show.phtml:12
-#: views/link_collections/index.phtml:19 views/links/new.phtml:62
-#: views/links/show.phtml:66 views/news_links/adding.phtml:41
+#: views/collections/show_public.phtml:13 views/link_collections/index.phtml:19
+#: views/links/new.phtml:62 views/links/show.phtml:66
+#: views/news_links/adding.phtml:41
 msgid "Collections"
 msgstr "Collections"
 
@@ -378,7 +380,7 @@ msgid "Description"
 msgstr "Description"
 
 #: views/collections/edit.phtml:48 views/collections/new.phtml:47
-#: views/news_links/adding.phtml:83
+#: views/news_links/adding.phtml:84
 msgid "(optional)"
 msgstr "(optionnel)"
 
@@ -386,7 +388,7 @@ msgstr "(optionnel)"
 msgid "Public collection"
 msgstr "Collection publique"
 
-#: views/collections/edit.phtml:79 views/link_collections/index.phtml:59
+#: views/collections/edit.phtml:79 views/link_collections/index.phtml:60
 #: views/links/edit.phtml:63
 msgid "Update"
 msgstr "Mettre à jour"
@@ -419,20 +421,20 @@ msgstr ""
 msgid "Add a collection"
 msgstr "Ajouter une collection"
 
-#: views/collections/index.phtml:44
+#: views/collections/index.phtml:44 views/collections/index.phtml:83
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/index.phtml:46
+#: views/collections/index.phtml:46 views/collections/index.phtml:85
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:51 views/collections/show.phtml:71
-#: views/collections/show_bookmarks.phtml:70
-#: views/collections/show_public.phtml:43 views/news_links/index.phtml:46
+#: views/collections/index.phtml:51 views/collections/index.phtml:90
+#: views/collections/show.phtml:71 views/collections/show_bookmarks.phtml:70
+#: views/collections/show_public.phtml:81 views/news_links/index.phtml:46
 #: views/news_links/index.phtml:61
 msgid "see"
 msgstr "voir"
@@ -443,6 +445,10 @@ msgid ""
 msgstr ""
 "Vous n’avez pas encore de collection. Elles apparaîtront ici une fois que "
 "vous commencerez à en ajouter."
+
+#: views/collections/index.phtml:66
+msgid "Followed collections"
+msgstr "Collections suivies"
 
 #: views/collections/new.phtml:3 views/collections/new.phtml:10
 msgid "New collection"
@@ -481,12 +487,20 @@ msgstr ""
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/collections/show_public.phtml:16
+#: views/collections/show_public.phtml:33
 #, php-format
 msgid "Collection created by %s"
 msgstr "Collection créée par %s"
 
-#: views/collections/show_public.phtml:52
+#: views/collections/show_public.phtml:43
+msgid "Unfollow"
+msgstr "Ne plus suivre"
+
+#: views/collections/show_public.phtml:50
+msgid "Follow"
+msgstr "Suivre"
+
+#: views/collections/show_public.phtml:90
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -502,13 +516,13 @@ msgstr "Une erreur est survenue pendant le traitement de votre requête."
 msgid "Link collections"
 msgstr "Collections du lien"
 
-#: views/link_collections/index.phtml:48 views/link_collections/index.phtml:51
-#: views/links/new.phtml:91 views/links/new.phtml:94
-#: views/news_links/adding.phtml:70 views/news_links/adding.phtml:73
+#: views/link_collections/index.phtml:49 views/link_collections/index.phtml:52
+#: views/links/new.phtml:92 views/links/new.phtml:95
+#: views/news_links/adding.phtml:71 views/news_links/adding.phtml:74
 msgid "Add to a collection"
 msgstr "Ajouter à une collection"
 
-#: views/link_collections/index.phtml:63 views/links/edit.phtml:67
+#: views/link_collections/index.phtml:64 views/links/edit.phtml:67
 msgid "Cancel and go back to the link"
 msgstr "Annuler et retourner au lien"
 
@@ -541,15 +555,15 @@ msgstr ""
 "Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
 "votre navigateur."
 
-#: views/links/new.phtml:102
+#: views/links/new.phtml:103
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
-#: views/links/new.phtml:106
+#: views/links/new.phtml:107
 msgid "Cancel and go back"
 msgstr "Annuler et revenir à la page précédente"
 
-#: views/links/new.phtml:110
+#: views/links/new.phtml:111
 msgid "Cancel and close this window"
 msgstr "Annuler et fermer cette fenêtre"
 
@@ -581,7 +595,7 @@ msgstr ""
 msgid "Make it public"
 msgstr "Rendre public"
 
-#: views/links/show.phtml:15
+#: views/links/show.phtml:15 views/links/show_public.phtml:15
 msgid "Back"
 msgstr "Retour"
 
@@ -589,7 +603,7 @@ msgstr "Retour"
 msgid "share"
 msgstr "partager"
 
-#: views/links/show.phtml:57 views/links/show_public.phtml:26
+#: views/links/show.phtml:57 views/links/show_public.phtml:38
 #: views/news_links/index.phtml:87
 msgid "open"
 msgstr "ouvrir"
@@ -598,7 +612,7 @@ msgstr "ouvrir"
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:131 views/news_links/adding.phtml:81
+#: views/links/show.phtml:131 views/news_links/adding.phtml:82
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -659,25 +673,23 @@ msgstr "Bonne journée !"
 msgid "Add to your collections"
 msgstr "Ajouter à vos collections"
 
-#: views/news_links/adding.phtml:96
+#: views/news_links/adding.phtml:97
 msgid "Save and mark as read"
 msgstr "Enregister et marquer comme lu"
 
-#: views/news_links/adding.phtml:100
+#: views/news_links/adding.phtml:101
 msgid "Add and mark as read"
 msgstr "Ajouter et marquer comme lu"
 
-#: views/news_links/adding.phtml:105
+#: views/news_links/adding.phtml:106
 msgid "Cancel and go back to the news"
 msgstr "Annuler et retourner au journal"
 
-#: views/news_links/adding.phtml:112
-msgid "Note: this link is already part of your collections."
-msgstr "Note : Ce lien fait déjà partie de vos collections."
-
 #: views/news_links/index.phtml:14
-msgid "Get about 1 hour of reading suggestions from your bookmarks."
-msgstr "Obtenez environ 1h de suggestions de lecture depuis vos signets."
+msgid ""
+"Get about 1 hour of reading from your bookmarks and followed collections."
+msgstr ""
+"Obtenez environ 1h de lecture depuis vos signets et collections suivies."
 
 #: views/news_links/index.phtml:32
 msgid "In your bookmarks"
