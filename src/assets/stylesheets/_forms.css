@@ -240,7 +240,7 @@ legend {
 
 @media (min-width: 800px) {
     .form__actions {
-        flex-direction: row;
+        flex-direction: row-reverse;
     }
 
     .form__actions--centered {
