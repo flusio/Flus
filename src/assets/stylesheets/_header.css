@@ -49,7 +49,13 @@
 }
 
 .header__link--icon.icon::before {
-    left: 0.65em;
+    left: 0.75em;
+}
+
+@media (min-width: 800px) {
+    .header__link--icon.icon::before {
+        left: 0.65em;
+    }
 }
 
 .header__link--secondary {

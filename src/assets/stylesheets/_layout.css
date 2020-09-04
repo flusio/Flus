@@ -6,7 +6,7 @@
     width: 100%;
 
     background-color: var(--color-turquoise-3);
-    box-shadow: 0 -2px 2px -1px var(--color-grey-2);
+    box-shadow: 0 0 5px var(--color-grey-4);
 }
 
 @media (min-width: 800px) {
