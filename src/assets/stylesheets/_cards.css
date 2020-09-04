@@ -1,5 +1,6 @@
 .cards {
     display: flex;
+    padding: var(--space-smaller);
 
     flex-wrap: wrap;
     justify-content: center;
@@ -13,7 +14,8 @@
     overflow: hidden;
 
     display: flex;
-    margin: var(--space-small);
+    max-width: 100%;
+    margin-bottom: var(--space-medium);
 
     flex-basis: 100%;
     flex-direction: column;
@@ -26,6 +28,9 @@
 
 @media (min-width: 800px) {
     .card {
+        margin-right: var(--space-small);
+        margin-left: var(--space-small);
+
         flex-basis: 30%;
     }
 }
@@ -41,10 +46,13 @@
 }
 
 .card__title {
+    overflow: hidden;
+
     margin-top: 0;
     margin-bottom: 0;
 
     font-size: var(--size-normal);
+    text-overflow: ellipsis;
 }
 
 .card__title.icon {
