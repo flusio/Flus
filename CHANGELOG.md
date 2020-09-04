@@ -1,5 +1,57 @@
 # Changelog of flusio
 
+## 2020-09-04 - v0.8
+
+### Security
+
+- Forbid access to not owned collections
+
+### New
+
+- Allow to create public collections
+- Allow to follow collections
+- Provide tips if there are no news to suggest
+- Allow to permanently hide a news
+
+### Improvements
+
+- Allow to set link public during creation/edit
+- Improve the process to add news to collections
+- Move a bunch of actions in modals
+- Improve the collections selector
+- Improve the look of checkboxes
+- Move public checkboxes at the end of forms
+- Add a link to skip to the main content
+- Add an anchor to go back from links add page
+- Redirect directly to link page after fetch
+- Add autofocus on a bunch of inputs
+- Improve the look of navbar on mobile
+- Change the news icon
+- Put primary buttons on the right
+- Add back anchor on public pages
+- Add a light background to cards footers
+- Fix links "collections" button padding
+- Add few illustrations
+- Improve and homogeneize wording
+
+### Bug fixes
+
+- Fix sanitization of HTML `<title>`
+- Fix cards overflow
+- Fix scrolling to top on Firefox
+- Save backForLink on turbolinks:visit
+- Fix margins of `.card__details`
+- Hide marker of `.popup__opener` on Chrome
+
+### Misc
+
+- Extract a CSS card component
+- Provide a modal mechanism
+- Migrate the news system to a dedicated model
+- Update French locales
+- Change `include_once` by `include` for JS configuration
+- Bump bl from 4.0.2 to 4.0.3
+
 ## 2020-08-21 - v0.7
 
 ### New
