@@ -1,5 +1,6 @@
 .illustration {
     display: block;
+    max-width: 100%;
     margin: var(--space-larger) var(--space-large);
 }
 
