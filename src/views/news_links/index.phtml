@@ -48,11 +48,7 @@
                                     ) ?>
                                 <?php endif; ?>
 
-                                –
-
-                                <a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>">
-                                    <?= _('see') ?>
-                                </a>
+                                (<a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>"><?= _('see') ?></a>)
                             </p>
                         <?php elseif ($news_link->url_collections_count > 0): ?>
                             <p>
@@ -63,11 +59,33 @@
                                     $news_link->url_collections_count
                                 ) ?>
 
-                                –
+                                (<a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>"><?= _('see') ?></a>)
+                            </p>
+                        <?php endif; ?>
 
-                                <a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>">
-                                    <?= _('see') ?>
-                                </a>
+                        <?php $matching_followed_links = $news_link->matchingFollowedLinks(); ?>
+                        <?php $count_followed_links = count($matching_followed_links); ?>
+                        <?php if ($matching_followed_links): ?>
+                            <p>
+                                <?php
+                                    // We use one big loop to avoid spaces before the commas.
+                                    foreach ($matching_followed_links as $key => $link):
+                                        $linking_word = '';
+                                        if ($key > 0 && $key === $count_followed_links - 1):
+                                            $linking_word = _(' and ');
+                                        elseif ($key > 0):
+                                            $linking_word = ', ';
+                                        endif;
+
+                                        echo $linking_word . $this->protect($link->owner()->username);
+                                    endforeach;
+                                ?>
+
+                                <?php if ($news_link->url_in_bookmarks || $news_link->url_collections_count > 0): ?>
+                                    <?= _n('also added this link.', 'also added this link.', $count_followed_links) ?>
+                                <?php else: ?>
+                                    <?= _n('added this link.', 'added this link.', $count_followed_links) ?>
+                                <?php endif; ?>
                             </p>
                         <?php endif; ?>
                     </div>

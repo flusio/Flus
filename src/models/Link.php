@@ -102,6 +102,18 @@ class Link extends \Minz\Model
     }
 
     /**
+     * Return the owner of the link.
+     *
+     * @return \flusio\models\User
+     */
+    public function owner()
+    {
+        $user_dao = new dao\User();
+        $db_user = $user_dao->find($this->user_id);
+        return new User($db_user);
+    }
+
+    /**
      * Return the collections attached to the current link
      *
      * @return \flusio\models\Collection[]

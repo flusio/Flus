@@ -91,6 +91,22 @@ class NewsLink extends \Minz\Model
     }
 
     /**
+     * Return the links matching news URL in current user's followed collections.
+     *
+     * @return \flusio\models\Link[]
+     */
+    public function matchingFollowedLinks()
+    {
+        $link_dao = new dao\Link();
+        $db_links = $link_dao->listFromFollowedByUrl($this->user_id, $this->url);
+        $links = [];
+        foreach ($db_links as $db_link) {
+            $links[] = new Link($db_link);
+        }
+        return $links;
+    }
+
+    /**
      * @return string
      */
     public function host()

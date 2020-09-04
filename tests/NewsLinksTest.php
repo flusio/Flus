@@ -101,6 +101,43 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('and 1 collection', $response_output);
     }
 
+    public function testIndexRendersIfInFollowedCollections()
+    {
+        $user = $this->login();
+        $url = $this->fake('url');
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'is_hidden' => 0,
+            'url' => $url,
+        ]);
+
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'url' => $url,
+            'is_public' => 1,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $this->create('followed_collection', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', '/news');
+
+        $this->assertResponse($response, 200);
+        $response_output = $response->render();
+        $this->assertStringContainsString('added this link', $response_output);
+    }
+
     public function testIndexRendersTipsIfNoNewsFlash()
     {
         $user = $this->login();

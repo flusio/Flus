@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-04 12:12+0200\n"
-"PO-Revision-Date: 2020-09-04 12:12+0200\n"
+"POT-Creation-Date: 2020-09-04 15:15+0200\n"
+"PO-Revision-Date: 2020-09-04 15:16+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: Accounts.php:69 Accounts.php:149 Collections.php:105 Collections.php:259
 #: Collections.php:403 Collections.php:456 LinkMessages.php:70 Links.php:179
-#: Links.php:322 NewsLinks.php:167 NewsLinks.php:255 Registrations.php:84
+#: Links.php:322 NewsLinks.php:167 NewsLinks.php:256 Registrations.php:84
 #: Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -37,7 +37,7 @@ msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
 #: Collections.php:318 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:413 Links.php:535 NewsLinks.php:318 NewsLinks.php:386
+#: Links.php:413 Links.php:535 NewsLinks.php:319 NewsLinks.php:387
 #: Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
@@ -54,8 +54,8 @@ msgstr ""
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:312
-#: NewsLinks.php:380
+#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:313
+#: NewsLinks.php:381
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -167,23 +167,23 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:160
+#: models/Link.php:172
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:162
+#: models/Link.php:174
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:181
+#: models/Link.php:193
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:186
+#: models/Link.php:198
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:190
+#: models/Link.php:202
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -630,7 +630,7 @@ msgid "share"
 msgstr "partager"
 
 #: views/links/show.phtml:57 views/links/show_public.phtml:38
-#: views/news_links/index.phtml:116
+#: views/news_links/index.phtml:141
 msgid "open"
 msgstr "ouvrir"
 
@@ -735,35 +735,51 @@ msgid_plural "In %d collections"
 msgstr[0] "Dans %d collection"
 msgstr[1] "Dans %d collections"
 
-#: views/news_links/index.phtml:81 views/news_links/index.phtml:85
+#: views/news_links/index.phtml:82
+msgid " and "
+msgstr " et "
+
+#: views/news_links/index.phtml:92
+msgid "also added this link."
+msgid_plural "also added this link."
+msgstr[0] "a aussi ajouté ce lien."
+msgstr[1] "ont aussi ajouté ce lien."
+
+#: views/news_links/index.phtml:94
+msgid "added this link."
+msgid_plural "added this link."
+msgstr[0] "a ajouté ce lien."
+msgstr[1] "ont ajouté ce lien."
+
+#: views/news_links/index.phtml:106 views/news_links/index.phtml:110
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/news_links/index.phtml:95
+#: views/news_links/index.phtml:120
 msgid "I’ll read it later"
 msgstr "Je lirai ça plus tard"
 
-#: views/news_links/index.phtml:103
+#: views/news_links/index.phtml:128
 msgid "I’m not interested"
 msgstr "Je ne suis pas intéressé"
 
-#: views/news_links/index.phtml:127
+#: views/news_links/index.phtml:152
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/news_links/index.phtml:147 views/news_links/index.phtml:151
+#: views/news_links/index.phtml:172 views/news_links/index.phtml:176
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 
-#: views/news_links/index.phtml:159
+#: views/news_links/index.phtml:184
 msgid "Sorry, we found no relevant news for you 🙁"
 msgstr "Désolé, nous n’avons rien trouvé d’intéressant pour vous 🙁"
 
-#: views/news_links/index.phtml:163
+#: views/news_links/index.phtml:188
 msgid "So, what can you do?"
 msgstr "Que pouvez-vous faire ?"
 
-#: views/news_links/index.phtml:169
+#: views/news_links/index.phtml:194
 msgid "Ok, fine"
 msgstr "Ok, c’est noté"
 

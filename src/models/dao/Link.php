@@ -66,6 +66,42 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return public links with same URL, listed in followed collections of the
+     * given user.
+     *
+     * @param string $user_id
+     * @param string $url
+     *
+     * @return array
+     */
+    public function listFromFollowedByUrl($user_id, $url)
+    {
+        $sql = <<<SQL
+             SELECT l.* FROM links l, collections c, links_to_collections lc, followed_collections fc
+
+             WHERE fc.user_id = :user_id
+             AND fc.collection_id = lc.collection_id
+
+             AND lc.link_id = l.id
+             AND lc.collection_id = c.id
+
+             AND l.is_public = true
+             AND c.is_public = true
+
+             AND l.url = :url
+
+             GROUP BY l.id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':url' => $url,
+        ]);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Return links listed in bookmarks of the given user, ordered randomly.
      *
      * @param string $user_id
