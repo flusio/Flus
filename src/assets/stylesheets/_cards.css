@@ -78,6 +78,10 @@
     background-color: var(--color-grey-1);
 }
 
+.card__footer--align-end {
+    align-items: flex-end;
+}
+
 .card__footer .card__details {
     margin-top: 0;
     margin-bottom: 0;
@@ -88,9 +92,22 @@
 .card__footer-group {
     display: flex;
 
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 .card__footer-group > * + * {
-    margin-left: var(--space-small);
+    margin-top: var(--space-small);
+}
+
+@media (min-width: 800px) {
+    .card__footer-group {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .card__footer-group > * + * {
+        margin-top: 0;
+        margin-left: var(--space-small);
+    }
 }

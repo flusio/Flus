@@ -64,7 +64,7 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="card__footer">
+                    <div class="card__footer card__footer--align-end">
                         <form method="post" action="<?= url('read news later', ['id' => $news_link->id]) ?>">
                             <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
