@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-04 15:15+0200\n"
-"PO-Revision-Date: 2020-09-04 15:16+0200\n"
+"POT-Creation-Date: 2020-09-04 15:45+0200\n"
+"PO-Revision-Date: 2020-09-04 15:47+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -398,12 +398,12 @@ msgid "Collection edition"
 msgstr "Modification d'une collection"
 
 #: views/collections/edit.phtml:25
-msgid "Name"
-msgstr "Nom"
+msgid "The name of your collection"
+msgstr "Le nom de votre collection"
 
 #: views/collections/edit.phtml:46
-msgid "Description"
-msgstr "Description"
+msgid "Its description"
+msgstr "Sa description"
 
 #: views/collections/edit.phtml:48 views/collections/new.phtml:47
 #: views/news_links/adding.phtml:84
@@ -411,8 +411,8 @@ msgid "(optional)"
 msgstr "(optionnel)"
 
 #: views/collections/edit.phtml:73 views/collections/new.phtml:72
-msgid "Public collection"
-msgstr "Collection publique"
+msgid "Show the collection publicly"
+msgstr "Afficher la collection publiquement"
 
 #: views/collections/edit.phtml:79 views/link_collections/index.phtml:60
 #: views/links/edit.phtml:63
@@ -437,31 +437,32 @@ msgstr "Supprimer la collection"
 
 #: views/collections/index.phtml:14
 msgid ""
-"Collections allows to group links by topics. They are handy for finding them "
-"later."
+"Collections allow to group links by topics. They are handy for finding them "
+"later and sharing with other users."
 msgstr ""
 "Les collections permettent de grouper les liens par thématiques. Elles sont "
-"utiles pour les retrouver plus tard."
+"utiles pour les retrouver plus tard et les partager avec les autres "
+"utilisateur‧ices."
 
 #: views/collections/index.phtml:26
 msgid "Add a collection"
 msgstr "Ajouter une collection"
 
-#: views/collections/index.phtml:44 views/collections/index.phtml:83
+#: views/collections/index.phtml:44 views/collections/index.phtml:90
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/index.phtml:46 views/collections/index.phtml:85
+#: views/collections/index.phtml:46 views/collections/index.phtml:92
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:51 views/collections/index.phtml:90
+#: views/collections/index.phtml:51 views/collections/index.phtml:97
 #: views/collections/show.phtml:71 views/collections/show_bookmarks.phtml:70
-#: views/collections/show_public.phtml:81 views/news_links/index.phtml:54
-#: views/news_links/index.phtml:69
+#: views/collections/show_public.phtml:81 views/news_links/index.phtml:51
+#: views/news_links/index.phtml:62
 msgid "see"
 msgstr "voir"
 
@@ -472,7 +473,7 @@ msgstr ""
 "Vous n’avez pas encore de collection. Elles apparaîtront ici une fois que "
 "vous commencerez à en ajouter."
 
-#: views/collections/index.phtml:66
+#: views/collections/index.phtml:73
 msgid "Followed collections"
 msgstr "Collections suivies"
 
@@ -557,8 +558,8 @@ msgid "Link edition"
 msgstr "Modification d’un lien"
 
 #: views/links/edit.phtml:28
-msgid "Title"
-msgstr "Titre"
+msgid "The title of your link"
+msgstr "Le titre de votre lien"
 
 #: views/links/edit.phtml:57 views/links/new.phtml:57
 #: views/news_links/adding.phtml:36
@@ -630,7 +631,7 @@ msgid "share"
 msgstr "partager"
 
 #: views/links/show.phtml:57 views/links/show_public.phtml:38
-#: views/news_links/index.phtml:141
+#: views/news_links/index.phtml:134
 msgid "open"
 msgstr "ouvrir"
 
@@ -728,58 +729,58 @@ msgid_plural " and %d collections"
 msgstr[0] " et %d collection"
 msgstr[1] " et %d collections"
 
-#: views/news_links/index.phtml:60
+#: views/news_links/index.phtml:56
 #, php-format
 msgid "In %d collection"
 msgid_plural "In %d collections"
 msgstr[0] "Dans %d collection"
 msgstr[1] "Dans %d collections"
 
-#: views/news_links/index.phtml:82
+#: views/news_links/index.phtml:75
 msgid " and "
 msgstr " et "
 
-#: views/news_links/index.phtml:92
+#: views/news_links/index.phtml:85
 msgid "also added this link."
 msgid_plural "also added this link."
 msgstr[0] "a aussi ajouté ce lien."
 msgstr[1] "ont aussi ajouté ce lien."
 
-#: views/news_links/index.phtml:94
+#: views/news_links/index.phtml:87
 msgid "added this link."
 msgid_plural "added this link."
 msgstr[0] "a ajouté ce lien."
 msgstr[1] "ont ajouté ce lien."
 
-#: views/news_links/index.phtml:106 views/news_links/index.phtml:110
+#: views/news_links/index.phtml:99 views/news_links/index.phtml:103
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/news_links/index.phtml:120
+#: views/news_links/index.phtml:113
 msgid "I’ll read it later"
 msgstr "Je lirai ça plus tard"
 
-#: views/news_links/index.phtml:128
+#: views/news_links/index.phtml:121
 msgid "I’m not interested"
 msgstr "Je ne suis pas intéressé"
 
-#: views/news_links/index.phtml:152
+#: views/news_links/index.phtml:145
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/news_links/index.phtml:172 views/news_links/index.phtml:176
+#: views/news_links/index.phtml:165 views/news_links/index.phtml:169
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 
-#: views/news_links/index.phtml:184
+#: views/news_links/index.phtml:177
 msgid "Sorry, we found no relevant news for you 🙁"
 msgstr "Désolé, nous n’avons rien trouvé d’intéressant pour vous 🙁"
 
-#: views/news_links/index.phtml:188
+#: views/news_links/index.phtml:181
 msgid "So, what can you do?"
 msgstr "Que pouvez-vous faire ?"
 
-#: views/news_links/index.phtml:194
+#: views/news_links/index.phtml:187
 msgid "Ok, fine"
 msgstr "Ok, c’est noté"
 

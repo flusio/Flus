@@ -22,7 +22,7 @@
 
         <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
             <label for="name">
-                <?= _('Name') ?>
+                <?= _('The name of your collection') ?>
             </label>
 
             <input
@@ -43,7 +43,7 @@
 
         <div class="form-group <?= isset($errors['description']) ? 'form-group--invalid' : '' ?>">
             <label for="description">
-                <?= _('Description') ?>
+                <?= _('Its description') ?>
                 <span class="text--secondary">
                     <?= _('(optional)') ?>
                 </span>
@@ -70,7 +70,7 @@
             />
 
             <label class="label--checkbox" for="is_public">
-                <?= _('Public collection') ?>
+                <?= _('Show the collection publicly') ?>
             </label>
         </div>
 
