@@ -107,12 +107,12 @@
     background-image: url("../icons/essential/plus-circle-line.svg");
 }
 
-.icon--undo::before {
-    background-image: url("../icons/essential/undo-line.svg");
+.icon--tree::before {
+    background-image: url("../icons/essential/tree-line.svg");
 }
 
-.icon--world::before {
-    background-image: url("../icons/essential/world-line.svg");
+.icon--undo::before {
+    background-image: url("../icons/essential/undo-line.svg");
 }
 
 /* Text edit */
