@@ -33,9 +33,16 @@ class NewsLinks
         }
 
         $news_links = $user->newsLinks();
+        $tip_no_news = [
+            _('As you’re navigating on the Internet, bookmark the links you would like to read later.'),
+            _('Find public collections created by other users, and follow them if you like them.'),
+            _('Ask the developer to implement the suggestions based on public links (it will come!)'),
+        ];
 
         return Response::ok('news_links/index.phtml', [
             'news_links' => $news_links,
+            'no_news' => utils\Flash::pop('no_news'),
+            'tip_no_news' => $tip_no_news[array_rand($tip_no_news)],
         ]);
     }
 
@@ -245,6 +252,7 @@ class NewsLinks
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('news_links/index.phtml', [
                 'news_links' => [],
+                'no_news' => false,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
@@ -262,6 +270,10 @@ class NewsLinks
             // its value is null.
             unset($values['id']);
             $news_link_dao->create($values);
+        }
+
+        if (!$db_links) {
+            utils\Flash::set('no_news', true);
         }
 
         return Response::redirect('news');

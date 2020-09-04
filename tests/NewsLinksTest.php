@@ -101,6 +101,17 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('and 1 collection', $response_output);
     }
 
+    public function testIndexRendersTipsIfNoNewsFlash()
+    {
+        $user = $this->login();
+        utils\Flash::set('no_news', true);
+
+        $response = $this->appRun('get', '/news');
+
+        $response_output = $response->render();
+        $this->assertStringContainsString('So, what can you do?', $response_output);
+    }
+
     public function testIndexRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/news');
@@ -271,6 +282,17 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
         $news_link = $news_link_dao->findBy(['url' => $link_url]);
         $this->assertNull($news_link);
+    }
+
+    public function testFillSetsFlashNoNewsIfNoSuggestions()
+    {
+        $user = $this->login();
+
+        $response = $this->appRun('post', '/news', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertFlash('no_news', true);
     }
 
     public function testFillRedirectsIfNotConnected()

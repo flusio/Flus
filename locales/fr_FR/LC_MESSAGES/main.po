@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-04 11:12+0200\n"
-"PO-Revision-Date: 2020-09-04 11:12+0200\n"
+"POT-Creation-Date: 2020-09-04 12:12+0200\n"
+"PO-Revision-Date: 2020-09-04 12:12+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: Accounts.php:69 Accounts.php:149 Collections.php:105 Collections.php:259
 #: Collections.php:403 Collections.php:456 LinkMessages.php:70 Links.php:179
-#: Links.php:322 NewsLinks.php:160 NewsLinks.php:248 Registrations.php:84
+#: Links.php:322 NewsLinks.php:167 NewsLinks.php:255 Registrations.php:84
 #: Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -37,7 +37,7 @@ msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
 #: Collections.php:318 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:413 Links.php:535 NewsLinks.php:307 NewsLinks.php:375
+#: Links.php:413 Links.php:535 NewsLinks.php:318 NewsLinks.php:386
 #: Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
@@ -50,12 +50,12 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: LinkCollections.php:96 Links.php:218 NewsLinks.php:187
+#: LinkCollections.php:96 Links.php:218 NewsLinks.php:194
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:301
-#: NewsLinks.php:369
+#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:312
+#: NewsLinks.php:380
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -67,9 +67,33 @@ msgstr "Le lien est déjà dans les signets."
 msgid "This link is not bookmarked."
 msgstr "Le lien n’est pas dans les signets."
 
-#: Links.php:206 NewsLinks.php:173
+#: Links.php:206 NewsLinks.php:180
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
+
+#: NewsLinks.php:37
+msgid ""
+"As you’re navigating on the Internet, bookmark the links you would like to "
+"read later."
+msgstr ""
+"Lorsque vous naviguez sur Internet, placez les liens que vous aimeriez lire "
+"plus tard dans vos signets."
+
+#: NewsLinks.php:38
+msgid ""
+"Find public collections created by other users, and follow them if you like "
+"them."
+msgstr ""
+"Trouvez des collections publiques créées par d'autres utilisateur‧ices, et "
+"suivez-les si vous en appréciez le contenu."
+
+#: NewsLinks.php:39
+msgid ""
+"Ask the developer to implement the suggestions based on public links (it "
+"will come!)"
+msgstr ""
+"Demandez au développeur d'ajouter les suggestions basées sur les liens "
+"publics (ça va arriver !)"
 
 #: Registrations.php:107
 msgid "An account already exists with this email address."
@@ -436,8 +460,8 @@ msgstr[1] "%d liens"
 
 #: views/collections/index.phtml:51 views/collections/index.phtml:90
 #: views/collections/show.phtml:71 views/collections/show_bookmarks.phtml:70
-#: views/collections/show_public.phtml:81 views/news_links/index.phtml:46
-#: views/news_links/index.phtml:61
+#: views/collections/show_public.phtml:81 views/news_links/index.phtml:54
+#: views/news_links/index.phtml:69
 msgid "see"
 msgstr "voir"
 
@@ -606,7 +630,7 @@ msgid "share"
 msgstr "partager"
 
 #: views/links/show.phtml:57 views/links/show_public.phtml:38
-#: views/news_links/index.phtml:108
+#: views/news_links/index.phtml:116
 msgid "open"
 msgstr "ouvrir"
 
@@ -693,43 +717,55 @@ msgid ""
 msgstr ""
 "Obtenez environ 1h de lecture depuis vos signets et collections suivies."
 
-#: views/news_links/index.phtml:32
+#: views/news_links/index.phtml:40
 msgid "In your bookmarks"
 msgstr "Dans vos signets"
 
-#: views/news_links/index.phtml:36
+#: views/news_links/index.phtml:44
 #, php-format
 msgid " and %d collection"
 msgid_plural " and %d collections"
 msgstr[0] " et %d collection"
 msgstr[1] " et %d collections"
 
-#: views/news_links/index.phtml:52
+#: views/news_links/index.phtml:60
 #, php-format
 msgid "In %d collection"
 msgid_plural "In %d collections"
 msgstr[0] "Dans %d collection"
 msgstr[1] "Dans %d collections"
 
-#: views/news_links/index.phtml:73 views/news_links/index.phtml:77
+#: views/news_links/index.phtml:81 views/news_links/index.phtml:85
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/news_links/index.phtml:87
+#: views/news_links/index.phtml:95
 msgid "I’ll read it later"
 msgstr "Je lirai ça plus tard"
 
-#: views/news_links/index.phtml:95
+#: views/news_links/index.phtml:103
 msgid "I’m not interested"
 msgstr "Je ne suis pas intéressé"
 
-#: views/news_links/index.phtml:119
+#: views/news_links/index.phtml:127
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/news_links/index.phtml:138
+#: views/news_links/index.phtml:147 views/news_links/index.phtml:151
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
+
+#: views/news_links/index.phtml:159
+msgid "Sorry, we found no relevant news for you 🙁"
+msgstr "Désolé, nous n’avons rien trouvé d’intéressant pour vous 🙁"
+
+#: views/news_links/index.phtml:163
+msgid "So, what can you do?"
+msgstr "Que pouvez-vous faire ?"
+
+#: views/news_links/index.phtml:169
+msgid "Ok, fine"
+msgstr "Ok, c’est noté"
 
 #: views/not_found.phtml:3
 msgid "Page not found"

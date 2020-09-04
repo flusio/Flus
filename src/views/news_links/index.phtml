@@ -142,10 +142,33 @@
             <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
             <div class="form__actions form__actions--centered">
-                <button type="submit" class="button--primary">
-                    <?= _('Get new suggestions') ?>
-                </button>
+                <?php if ($no_news): ?>
+                    <button type="submit">
+                        <?= _('Get new suggestions') ?>
+                    </button>
+                <?php else: ?>
+                    <button type="submit" class="button--primary">
+                        <?= _('Get new suggestions') ?>
+                    </button>
+                <?php endif; ?>
             </div>
         </form>
+
+        <?php if ($no_news): ?>
+            <p class="paragraph--featured">
+                <?= _('Sorry, we found no relevant news for you 🙁') ?>
+            </p>
+
+            <p class="paragraph--centered">
+                <em><?= _('So, what can you do?') ?></em><br />
+                <?= $tip_no_news ?>
+            </p>
+
+            <p class="paragraph--centered">
+                <a href="<?= url('news') ?>">
+                    <?= _('Ok, fine') ?>
+                </a>
+            </p>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
