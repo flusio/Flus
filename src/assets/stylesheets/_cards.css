@@ -11,8 +11,6 @@
 }
 
 .card {
-    overflow: hidden;
-
     display: flex;
     max-width: 100%;
     margin-bottom: var(--space-medium);

@@ -814,4 +814,118 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($exists, 'The news should still exist.');
         $this->assertNull($db_link, 'The link should not exist.');
     }
+
+    public function testHideHidesLinkFromNewsAndRedirects()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $this->fake('url'),
+            'is_hidden' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $this->assertTrue($news_link->is_hidden, 'The news link should be hidden.');
+    }
+
+    public function testHideRemovesFromBookmarksIfCorrespondingUrlInLinks()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $news_link_dao = new models\dao\NewsLink();
+        $link_dao = new models\dao\Link();
+        $user = $this->login();
+        $link_url = $this->fake('url');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $link_url,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $link_url,
+            'is_hidden' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_collection_id);
+        $this->assertFalse($exists_in_bookmarks, 'The link should no longer be in bookmarks.');
+    }
+
+    public function testHideRedirectsToLoginIfNotConnected()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user_id = $this->create('user', [
+            'csrf' => 'a token',
+        ]);
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $user_id,
+            'url' => $this->fake('url'),
+            'is_hidden' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+            'csrf' => 'a token',
+        ]);
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
+        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $this->assertFalse($news_link->is_hidden, 'The news link should not be hidden.');
+    }
+
+    public function testHideFailsIfCsrfIsInvalid()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $this->fake('url'),
+            'is_hidden' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $this->assertFlash('error', 'A security verification failed.');
+        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $this->assertFalse($news_link->is_hidden, 'The news link should not be hidden.');
+    }
+
+    public function testHideFailsIfUserDoesNotOwnTheLink()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $other_user_id,
+            'url' => $this->fake('url'),
+            'is_hidden' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $this->assertFlash('error', 'The link doesn’t exist.');
+        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $this->assertFalse($news_link->is_hidden, 'The news link should not be hidden.');
+    }
 }

@@ -129,6 +129,10 @@
     background-image: url("../icons/social/bookmark-solid.svg");
 }
 
+.icon--thumbs-down::before {
+    background-image: url("../icons/social/thumbs-down-line.svg");
+}
+
 /* Technology */
 .icon--link::before {
     background-image: url("../icons/technology/link-line.svg");

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-03 17:04+0200\n"
-"PO-Revision-Date: 2020-09-03 17:09+0200\n"
+"POT-Creation-Date: 2020-09-04 11:12+0200\n"
+"PO-Revision-Date: 2020-09-04 11:12+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -37,7 +37,8 @@ msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
 #: Collections.php:318 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:413 Links.php:535 NewsLinks.php:307 Sessions.php:191
+#: Links.php:413 Links.php:535 NewsLinks.php:307 NewsLinks.php:375
+#: Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -54,6 +55,7 @@ msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
 #: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:301
+#: NewsLinks.php:369
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -604,7 +606,7 @@ msgid "share"
 msgstr "partager"
 
 #: views/links/show.phtml:57 views/links/show_public.phtml:38
-#: views/news_links/index.phtml:87
+#: views/news_links/index.phtml:108
 msgid "open"
 msgstr "ouvrir"
 
@@ -709,15 +711,23 @@ msgid_plural "In %d collections"
 msgstr[0] "Dans %d collection"
 msgstr[1] "Dans %d collections"
 
-#: views/news_links/index.phtml:73 views/news_links/index.phtml:74
+#: views/news_links/index.phtml:73 views/news_links/index.phtml:77
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/news_links/index.phtml:98
+#: views/news_links/index.phtml:87
+msgid "I’ll read it later"
+msgstr "Je lirai ça plus tard"
+
+#: views/news_links/index.phtml:95
+msgid "I’m not interested"
+msgstr "Je ne suis pas intéressé"
+
+#: views/news_links/index.phtml:119
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/news_links/index.phtml:117
+#: views/news_links/index.phtml:138
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 

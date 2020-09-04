@@ -268,7 +268,7 @@ class NewsLinks
     }
 
     /**
-     * Remove a link from news only.
+     * Remove a link from news and add it to bookmarks.
      *
      * @request_param string csrf
      * @request_param string id
@@ -331,6 +331,68 @@ class NewsLinks
         // Then, remove the news (we don't hide it since it would no longer be
         // suggested to the user).
         $news_link_dao->delete($news_link->id);
+
+        return Response::found($from);
+    }
+
+    /**
+     * Hide a link from news and remove it from bookmarks.
+     *
+     * @request_param string csrf
+     * @request_param string id
+     *
+     * @response 302 /login?redirect_to=/news
+     *     if not connected
+     * @response 302 /news
+     *     if the link doesn't exist, or is not associated to the current user
+     * @response 302 /news
+     *     if CSRF is invalid
+     * @response 302 /news
+     *     on success
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function hide($request)
+    {
+        $user = utils\CurrentUser::get();
+        $from = \Minz\Url::for('news');
+        $news_link_id = $request->param('id');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        $news_link = $user->newsLink($news_link_id);
+        if (!$news_link) {
+            utils\Flash::set('error', _('The link doesn’t exist.'));
+            return Response::found($from);
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $news_link_dao = new models\dao\NewsLink();
+
+        // First, hide the link from the news.
+        $news_link->is_hidden = true;
+        $news_link_dao->save($news_link);
+
+        // Then, we try to find a link with corresponding URL in order to
+        // remove it from bookmarks.
+        $link = $user->linkByUrl($news_link->url);
+        if ($link) {
+            $bookmarks = $user->bookmarks();
+            $actual_collection_ids = array_column($link->collections(), 'id');
+            if (in_array($bookmarks->id, $actual_collection_ids)) {
+                $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
+            }
+        }
 
         return Response::found($from);
     }

@@ -65,6 +65,7 @@ class Application
         $router->addRoute('get', '/news/:id/add', 'NewsLinks#adding', 'adding news');
         $router->addRoute('post', '/news/:id/add', 'NewsLinks#add', 'add news');
         $router->addRoute('post', '/news/:id/read-later', 'NewsLinks#readLater', 'read news later');
+        $router->addRoute('post', '/news/:id/hide', 'NewsLinks#hide', 'hide news');
 
         // Collections
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');

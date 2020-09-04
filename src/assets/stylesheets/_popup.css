@@ -26,15 +26,25 @@
     .popup__container {
         position: absolute;
         bottom: auto;
-        left: auto;
 
         width: 27rem;
-        margin-top: 2rem;
 
         font-size: var(--size-small);
 
-        box-shadow: 0 0 2px 2px var(--color-turquoise-1);
+        box-shadow: 0 0 2px 0 var(--color-turquoise-6);
         border-radius: var(--border-radius);
+    }
+
+    .popup__container--left {
+        right: 0;
+        left: auto;
+
+        margin-top: 0.5rem;
+    }
+
+    .popup__container--over {
+        margin-top: -6.5rem;
+        margin-left: -1rem;
     }
 }
 
