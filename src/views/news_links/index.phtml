@@ -20,7 +20,15 @@
                 <div class="card">
                     <div class="card__body">
                         <h2 class="card__title">
-                            <?= $this->protect($news_link->title) ?>
+                            <a
+                                class="anchor--hidden"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                tabindex="-1"
+                                href="<?= $news_link->url ?>"
+                            >
+                                <?= $this->protect($news_link->title) ?>
+                            </a>
                         </h2>
 
                         <p class="card__details">
