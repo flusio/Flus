@@ -25,6 +25,13 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         \Minz\Database::drop();
     }
 
+    public function testUsageRendersCorrectly()
+    {
+        $response = $this->appRun('cli', '/');
+
+        $this->assertResponse($response, 200, 'Usage: php ./cli --request REQUEST [-pKEY=VALUE]...');
+    }
+
     public function testSecret()
     {
         $response = $this->appRun('cli', '/system/secret');
