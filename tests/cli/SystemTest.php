@@ -122,4 +122,54 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 500, 'TheFailingMigrationWithMessage: this test fails :(');
     }
+
+    public function testAllMigrationsCanBeRollback()
+    {
+        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
+        $migrations_version_path = \Minz\Configuration::$data_path . '/migrations_version.txt';
+        $number_migrations = count(scandir($migrations_path)) - 2;
+        \Minz\Database::create();
+        $migrator = new \Minz\Migrator($migrations_path);
+        $migrator->migrate();
+        @file_put_contents($migrations_version_path, $migrator->version());
+
+        $response = $this->appRun('cli', '/system/rollback', [
+            'steps' => $number_migrations,
+        ]);
+
+        $this->assertResponse($response, 200);
+    }
+
+    public function testRollbackWithAFailingRollback()
+    {
+        $migration_file = \Minz\Configuration::$data_path . '/migrations_version.txt';
+        touch($migration_file);
+        $failing_migration_path = \Minz\Configuration::$app_path . '/src/migrations/TheFailingRollbackWithFalse.php';
+        $failing_migration_content = <<<'PHP'
+            <?php
+
+            namespace flusio\migrations;
+
+            class TheFailingRollbackWithFalse
+            {
+                public function migrate()
+                {
+                    return true;
+                }
+
+                public function rollback()
+                {
+                    return false;
+                }
+            }
+            PHP;
+        file_put_contents($failing_migration_path, $failing_migration_content);
+        file_put_contents($migration_file, 'TheFailingRollbackWithFalse');
+
+        $response = $this->appRun('cli', '/system/rollback');
+
+        @unlink($failing_migration_path);
+
+        $this->assertResponse($response, 500, 'TheFailingRollbackWithFalse: KO');
+    }
 }

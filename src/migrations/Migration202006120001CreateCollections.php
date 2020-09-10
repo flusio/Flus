@@ -24,4 +24,18 @@ class Migration202006120001CreateCollections
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $sql = <<<'SQL'
+            DROP INDEX idx_collections_user_id;
+            DROP TABLE collections;
+        SQL;
+
+        $database->exec($sql);
+
+        return true;
+    }
 }

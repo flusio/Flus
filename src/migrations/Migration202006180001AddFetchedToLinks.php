@@ -19,4 +19,20 @@ class Migration202006180001AddFetchedToLinks
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $sql = <<<'SQL'
+            ALTER TABLE links
+            DROP COLUMN fetched_at,
+            DROP COLUMN fetched_code,
+            DROP COLUMN fetched_error;
+        SQL;
+
+        $database->exec($sql);
+
+        return true;
+    }
 }

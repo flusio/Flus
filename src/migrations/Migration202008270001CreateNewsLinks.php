@@ -22,4 +22,15 @@ class Migration202008270001CreateNewsLinks
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            DROP TABLE news_links;
+        SQL);
+
+        return true;
+    }
 }

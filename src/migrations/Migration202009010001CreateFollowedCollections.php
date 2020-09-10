@@ -21,4 +21,16 @@ class Migration202009010001CreateFollowedCollections
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            DROP INDEX idx_followed_collections;
+            DROP TABLE followed_collections;
+        SQL);
+
+        return true;
+    }
 }

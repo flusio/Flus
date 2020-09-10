@@ -33,4 +33,22 @@ class Migration202006150001CreateLinks
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $sql = <<<'SQL'
+            DROP INDEX idx_links_to_collections_collection_id;
+            DROP INDEX idx_links_to_collections;
+            DROP TABLE links_to_collections;
+
+            DROP INDEX idx_links_user_id_url;
+            DROP TABLE links;
+        SQL;
+
+        $database->exec($sql);
+
+        return true;
+    }
 }

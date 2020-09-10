@@ -43,8 +43,21 @@ go so easily. Please always check the current status of the Git repository.
 
 ---
 
-If at any time something goes wrong with the database, you can use the joker
-command:
+If at any time something goes wrong and you need to reset the application to
+its previous state, you should start by reverse the migrations with:
+
+```console
+flusio$ make rollback STEP=1 NO_DOCKER=true
+```
+
+You can increase `STEP` to rollback more migrations (its default value is `1`
+so its optional). Then, you can checkout to a previous version with:
+
+```console
+flusio$ git checkout PREVIOUS_TAG
+```
+
+If something goes really wrong with the database, you can use the joker command:
 
 ```console
 flusio$ make reset NO_DOCKER=true

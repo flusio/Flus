@@ -25,4 +25,18 @@ class Migration202005201630CreateSession
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $sql = <<<'SQL'
+            DROP INDEX idx_sessions_token;
+            DROP TABLE sessions;
+        SQL;
+
+        $database->exec($sql);
+
+        return true;
+    }
 }

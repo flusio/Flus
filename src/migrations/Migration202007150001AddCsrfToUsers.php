@@ -23,4 +23,16 @@ class Migration202007150001AddCsrfToUsers
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            ALTER TABLE users
+            DROP COLUMN csrf;
+        SQL);
+
+        return true;
+    }
 }

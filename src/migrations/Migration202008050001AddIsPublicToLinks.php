@@ -15,4 +15,16 @@ class Migration202008050001AddIsPublicToLinks
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            ALTER TABLE links
+            DROP COLUMN is_public;
+        SQL);
+
+        return true;
+    }
 }

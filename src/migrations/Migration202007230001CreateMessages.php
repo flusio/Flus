@@ -22,4 +22,16 @@ class Migration202007230001CreateMessages
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            DROP INDEX idx_messages_link_id;
+            DROP TABLE messages;
+        SQL);
+
+        return true;
+    }
 }

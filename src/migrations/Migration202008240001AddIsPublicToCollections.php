@@ -15,4 +15,16 @@ class Migration202008240001AddIsPublicToCollections
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            ALTER TABLE collections
+            DROP COLUMN is_public;
+        SQL);
+
+        return true;
+    }
 }

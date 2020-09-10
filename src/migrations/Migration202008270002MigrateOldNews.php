@@ -17,4 +17,21 @@ class Migration202008270002MigrateOldNews
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            ALTER TABLE links
+            ADD COLUMN in_news BOOLEAN NOT NULL DEFAULT false;
+
+            UPDATE links SET in_news = true
+            FROM news_links
+            WHERE links.url = news_links.url
+            AND links.user_id = news_links.user_id;
+        SQL);
+
+        return true;
+    }
 }

@@ -19,6 +19,8 @@ class System
         $usage .= '  /                 Show this help' . "\n";
         $usage .= '  /database/status  Return the status of the DB connection' . "\n";
         $usage .= '  /system/secret    Generate a secure key to be used as APP_SECRET_KEY' . "\n";
+        $usage .= '  /system/rollback  Reverse the last migration' . "\n";
+        $usage .= '      [-psteps=NUMBER] where NUMBER is the number of rollbacks to apply (default is 1)' . "\n";
         $usage .= '  /system/setup     Initialize or update the system' . "\n";
         $usage .= '  /users/create     Create a user' . "\n";
         $usage .= '      -pusername=USERNAME where USERNAME is a 50-chars max string' . "\n";
@@ -121,6 +123,61 @@ class System
         }
 
         $results = $migrator->migrate();
+
+        $new_version = $migrator->version();
+        $saved = @file_put_contents($migrations_version_path, $new_version);
+        if ($saved === false) {
+            $text = "Cannot save the migrations version file (version: {$version})."; // @codeCoverageIgnore
+            return Response::text(500, $text); // @codeCoverageIgnore
+        }
+
+        $has_error = false;
+        $text = '';
+        foreach ($results as $migration => $result) {
+            if ($result === false) {
+                $result = 'KO';
+            } elseif ($result === true) {
+                $result = 'OK';
+            }
+
+            if ($result !== 'OK') {
+                $has_error = true;
+            }
+
+            $text .= "\n" . $migration . ': ' . $result;
+        }
+        return Response::text($has_error ? 500 : 200, $text);
+    }
+
+    /**
+     * Execute the rollback of the latest migrations.
+     *
+     * @request_param integer steps (default is 1)
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function rollback($request)
+    {
+        $app_path = \Minz\Configuration::$app_path;
+        $data_path = \Minz\Configuration::$data_path;
+        $migrations_path = $app_path . '/src/migrations';
+        $migrations_version_path = $data_path . '/migrations_version.txt';
+
+        $migration_version = @file_get_contents($migrations_version_path);
+        if ($migration_version === false) {
+            return Response::text(500, 'Cannot read the migrations version file.'); // @codeCoverageIgnore
+        }
+
+        $migrator = new \Minz\Migrator($migrations_path);
+        $migration_version = trim($migration_version);
+        if ($migration_version) {
+            $migrator->setVersion($migration_version);
+        }
+
+        $steps = intval($request->param('steps', 1));
+        $results = $migrator->rollback($steps);
 
         $new_version = $migrator->version();
         $saved = @file_put_contents($migrations_version_path, $new_version);

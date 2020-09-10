@@ -17,4 +17,18 @@ class Migration202006220001AddReadingTimeToLinks
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $sql = <<<'SQL'
+            ALTER TABLE links
+            DROP COLUMN reading_time;
+        SQL;
+
+        $database->exec($sql);
+
+        return true;
+    }
 }

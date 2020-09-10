@@ -17,4 +17,17 @@ class Migration202005181700AddLocaleToUser
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $sql = <<<'SQL'
+            ALTER TABLE users DROP COLUMN locale;
+        SQL;
+
+        $database->exec($sql);
+
+        return true;
+    }
 }

@@ -15,4 +15,16 @@ class Migration202008200001AddInNewsToLinks
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            ALTER TABLE links
+            DROP COLUMN in_news;
+        SQL);
+
+        return true;
+    }
 }

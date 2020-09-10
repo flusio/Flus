@@ -17,4 +17,18 @@ class Migration202007100001AddDescriptionToCollections
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $sql = <<<'SQL'
+            ALTER TABLE collections
+            DROP COLUMN description;
+        SQL;
+
+        $database->exec($sql);
+
+        return true;
+    }
 }

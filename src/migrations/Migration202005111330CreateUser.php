@@ -24,4 +24,17 @@ class Migration202005111330CreateUser
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $sql = <<<'SQL'
+            DROP TABLE users;
+        SQL;
+
+        $database->exec($sql);
+
+        return true;
+    }
 }

@@ -21,4 +21,17 @@ class Migration202005111150CreateToken
 
         return true;
     }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $sql = <<<'SQL'
+            DROP TABLE tokens;
+        SQL;
+
+        $database->exec($sql);
+
+        return true;
+    }
 }

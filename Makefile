@@ -49,6 +49,14 @@ setup: .env ## Setup the application system
 .PHONY: update
 update: setup ## Update the application
 
+.PHONY: rollback
+rollback: ## Reverse the last migration
+ifdef STEPS
+	$(PHP) ./cli --request /system/rollback -psteps=$(STEPS)
+else
+	$(PHP) ./cli --request /system/rollback
+endif
+
 .PHONY: reset
 reset: ## Reset the database
 	rm data/migrations_version.txt || true
