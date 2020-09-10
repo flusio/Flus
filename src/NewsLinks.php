@@ -264,12 +264,7 @@ class NewsLinks
         foreach ($db_links as $db_link) {
             $link = new models\Link($db_link);
             $news_link = models\NewsLink::initFromLink($link, $user->id);
-            $values = $news_link->toValues();
-            $values['created_at'] = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
-            // The id should be set by the DB. Here, PostgreSQL fails because
-            // its value is null.
-            unset($values['id']);
-            $news_link_dao->create($values);
+            $news_link_dao->save($news_link);
         }
 
         if (!$db_links) {

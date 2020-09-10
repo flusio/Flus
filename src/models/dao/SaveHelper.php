@@ -27,13 +27,22 @@ trait SaveHelper
      */
     public function save($model)
     {
+        $primary_key_name = $this->primary_key_name;
         $values = $model->toValues();
         if ($model->created_at) {
-            $primary_key_name = $this->primary_key_name;
             $this->update($model->$primary_key_name, $values);
             return $model->$primary_key_name;
         } else {
             $values['created_at'] = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
+
+            // If the value is null, it most probably means the id is a serial
+            // type (i.e. it will be set by the DB). However, if we pass the
+            // null value, postgresql will try to create an entry with
+            // id=null, which will fail. So we need to remove null values.
+            if ($values[$primary_key_name] === null) {
+                unset($values[$primary_key_name]);
+            }
+
             return $this->create($values);
         }
     }
