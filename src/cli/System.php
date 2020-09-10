@@ -22,6 +22,11 @@ class System
         $usage .= '  /system/rollback  Reverse the last migration' . "\n";
         $usage .= '      [-psteps=NUMBER] where NUMBER is the number of rollbacks to apply (default is 1)' . "\n";
         $usage .= '  /system/setup     Initialize or update the system' . "\n";
+        $usage .= '  /topics           List the topics' . "\n";
+        $usage .= '  /topics/create    Create a topic' . "\n";
+        $usage .= '      -plabel=TEXT  where TEXT is a 21-chars max string' . "\n";
+        $usage .= '  /topics/delete    Delete a topic' . "\n";
+        $usage .= '      -pid=ID       where ID is the id of the topic to delete' . "\n";
         $usage .= '  /users/create     Create a user' . "\n";
         $usage .= '      -pusername=USERNAME where USERNAME is a 50-chars max string' . "\n";
         $usage .= '      -pemail=EMAIL' . "\n";
