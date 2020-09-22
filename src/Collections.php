@@ -185,16 +185,22 @@ class Collections
 
         if ($is_connected && $is_owned) {
             $collection = new models\Collection($db_collection);
+            $topics = $collection->topics();
+            models\Topic::sort($topics, $user->locale);
             return Response::ok('collections/show.phtml', [
                 'collection' => $collection,
+                'topics' => $topics,
                 'links' => $collection->links(),
             ]);
         }
 
         if ($is_public) {
             $collection = new models\Collection($db_collection);
+            $topics = $collection->topics();
+            models\Topic::sort($topics, utils\Locale::currentLocale());
             return Response::ok('collections/show_public.phtml', [
                 'collection' => $collection,
+                'topics' => $topics,
                 'links' => $collection->publicLinks(),
             ]);
         }

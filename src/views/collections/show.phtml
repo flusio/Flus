@@ -32,6 +32,20 @@
         <h1><?= $this->protect($collection->name) ?></h1>
     </div>
 
+    <div class="collection__meta">
+        <div class="collection__details">
+            <p class="collection__owner">
+                <?= _f('Collection created by yourself') ?>
+            </p>
+
+            <?php if ($topics): ?>
+                <p class="collection__topics">
+                    <?= implode('&nbsp;·&nbsp;', array_column($topics, 'label')) ?>
+                </p>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <p class="collection__description">
         <?= nl2br($this->protect($collection->description)) ?>
     </p>

@@ -11,16 +11,41 @@
 @media (min-width: 800px) {
     .collection__meta {
         flex-direction: row;
+        align-items: flex-start;
     }
 }
 
 .collection__details {
     flex-grow: 1;
+
+    text-align: center;
+}
+
+@media (min-width: 800px) {
+    .collection__details {
+        text-align: left;
+    }
+}
+
+.collection__topics {
+    font-style: italic;
+}
+
+.collection__actions {
+    padding-top: var(--space-small);
+    padding-bottom: var(--space-small);
 }
 
 .collection__description {
     max-width: 55ch;
-    margin-right: auto;
-    margin-left: auto;
-    padding: var(--space-medium) var(--space-small);
+    margin: var(--space-medium) auto var(--space-large);
+    padding-right: var(--space-smaller);
+    padding-left: var(--space-smaller);
+}
+
+@media (min-width: 800px) {
+    .collection__description {
+        padding-right: 0;
+        padding-left: 0;
+    }
 }
