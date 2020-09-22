@@ -14,8 +14,9 @@ class NewsPicker
     public const MIN_DURATION = 60 * 0.9;
     public const MAX_DURATION = 60 * 1.2;
 
-    public const BOOKMARKS_BASE_VALUE = 2;
-    public const FOLLOWED_BASE_VALUE = 1;
+    public const BOOKMARKS_BASE_VALUE = 3;
+    public const FOLLOWED_BASE_VALUE = 2;
+    public const TOPICS_BASE_VALUE = 1;
 
     /** @var \flusio\models\User */
     private $user;
@@ -39,6 +40,7 @@ class NewsPicker
 
         $bookmarks_db_links = $link_dao->listFromBookmarksForNews($this->user->id);
         $followed_db_links = $link_dao->listFromFollowedCollectionsForNews($this->user->id);
+        $topics_db_links = $link_dao->listFromTopicsForNews($this->user->id);
 
         $bookmarks_db_links = $this->assignNewsValue(
             $bookmarks_db_links,
@@ -48,8 +50,12 @@ class NewsPicker
             $followed_db_links,
             self::FOLLOWED_BASE_VALUE
         );
+        $topics_db_links = $this->assignNewsValue(
+            $topics_db_links,
+            self::TOPICS_BASE_VALUE
+        );
 
-        $db_links = array_merge($bookmarks_db_links, $followed_db_links);
+        $db_links = array_merge($bookmarks_db_links, $followed_db_links, $topics_db_links);
         $db_links = $this->mergeByUrl($db_links);
 
         return $this->greedyCollect($db_links);

@@ -36,7 +36,6 @@ class NewsLinks
         $tip_no_news = [
             _('As you’re navigating on the Internet, bookmark the links you would like to read later.'),
             _('Find public collections created by other users, and follow them if you like them.'),
-            _('Ask the developer to implement the suggestions based on public links (it will come!)'),
         ];
 
         return Response::ok('news_links/index.phtml', [

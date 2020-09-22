@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-22 17:33+0200\n"
-"PO-Revision-Date: 2020-09-22 17:33+0200\n"
+"POT-Creation-Date: 2020-09-22 18:11+0200\n"
+"PO-Revision-Date: 2020-09-22 18:14+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
 #: Collections.php:475 Collections.php:528 LinkMessages.php:70 Links.php:179
-#: Links.php:322 NewsLinks.php:167 NewsLinks.php:256 Registrations.php:84
+#: Links.php:322 NewsLinks.php:166 NewsLinks.php:255 Registrations.php:84
 #: Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -41,7 +41,7 @@ msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
 #: Collections.php:390 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:413 Links.php:535 NewsLinks.php:314 NewsLinks.php:382
+#: Links.php:413 Links.php:535 NewsLinks.php:313 NewsLinks.php:381
 #: Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
@@ -54,12 +54,12 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: LinkCollections.php:96 Links.php:218 NewsLinks.php:194
+#: LinkCollections.php:96 Links.php:218 NewsLinks.php:193
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:308
-#: NewsLinks.php:376
+#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:307
+#: NewsLinks.php:375
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -71,7 +71,7 @@ msgstr "Le lien est déjà dans les signets."
 msgid "This link is not bookmarked."
 msgstr "Le lien n’est pas dans les signets."
 
-#: Links.php:206 NewsLinks.php:180
+#: Links.php:206 NewsLinks.php:179
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
@@ -90,14 +90,6 @@ msgid ""
 msgstr ""
 "Trouvez des collections publiques créées par d'autres utilisateur‧ices, et "
 "suivez-les si vous en appréciez le contenu."
-
-#: NewsLinks.php:39
-msgid ""
-"Ask the developer to implement the suggestions based on public links (it "
-"will come!)"
-msgstr ""
-"Demandez au développeur d'ajouter les suggestions basées sur les liens "
-"publics (ça va arriver !)"
 
 #: Registrations.php:107
 msgid "An account already exists with this email address."
@@ -743,9 +735,11 @@ msgstr "Annuler et retourner au journal"
 
 #: views/news_links/index.phtml:14
 msgid ""
-"Get about 1 hour of reading from your bookmarks and followed collections."
+"Get about 1 hour of reading from your bookmarks, followed collections and "
+"points of interest."
 msgstr ""
-"Obtenez environ 1h de lecture depuis vos signets et collections suivies."
+"Obtenez environ 1h de lecture depuis vos signets, collections suivies et vos "
+"centres d’intérêt."
 
 #: views/news_links/index.phtml:40
 msgid "In your bookmarks"

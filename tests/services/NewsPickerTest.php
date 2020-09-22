@@ -77,6 +77,63 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($db_links));
     }
 
+    public function testPickSelectsFromTopics()
+    {
+        $news_picker = new NewsPicker($this->user);
+        $topic_id1 = $this->create('topic');
+        $topic_id2 = $this->create('topic');
+        // make the user interested by topic1
+        $this->create('user_to_topic', [
+            'user_id' => $this->user->id,
+            'topic_id' => $topic_id1,
+        ]);
+        // create a link to a collection associated to topic1
+        $link_id1 = $this->create('link', [
+            'user_id' => $this->other_user->id,
+            'reading_time' => 10,
+            'is_public' => 1,
+        ]);
+        $collection_id1 = $this->create('collection', [
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id1,
+            'link_id' => $link_id1,
+        ]);
+        $this->create('collection_to_topic', [
+            'collection_id' => $collection_id1,
+            'topic_id' => $topic_id1,
+        ]);
+        // create another link to a collection associated to topic2
+        $link_id2 = $this->create('link', [
+            'user_id' => $this->other_user->id,
+            'reading_time' => 10,
+            'is_public' => 1,
+        ]);
+        $collection_id2 = $this->create('collection', [
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id2,
+            'link_id' => $link_id2,
+        ]);
+        $this->create('collection_to_topic', [
+            'collection_id' => $collection_id2,
+            'topic_id' => $topic_id2,
+        ]);
+
+        $db_links = $news_picker->pick();
+
+        // because the user is only interested by topic1, we get the link
+        // associated to topic1
+        $this->assertSame(1, count($db_links));
+        $this->assertSame($link_id1, $db_links[0]['id']);
+    }
+
     public function testPickSelectsForAtLeastMinimumDurationOfReading()
     {
         $news_picker = new NewsPicker($this->user);
