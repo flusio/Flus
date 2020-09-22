@@ -1,5 +1,16 @@
 # Changelog of flusio
 
+## 2020-xx-yy - v0.9
+
+### Migration notes
+
+(optional) You can now create topics. Topics are attached to collections in
+order to categorize them. Topics are created by the administrator with the CLI:
+
+```console
+flusio# php ./cli --request /topics/create -plabel=LABEL
+```
+
 ## 2020-09-04 - v0.8
 
 ### Security

@@ -19,6 +19,7 @@
 @import './components/links.css';
 @import './components/messages.css';
 @import './components/share.css';
+@import './components/topics-selector.css';
 
 *,
 *::before,

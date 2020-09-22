@@ -28,11 +28,17 @@
     <?php endif; ?>
 
     <div class="collection__meta">
-        <p class="collection__details">
-            <span class="icon icon--collection">
+        <div class="collection__details">
+            <p class="collection__owner">
                 <?= _f('Collection created by %s', $this->protect($collection->owner()->username)) ?>
-            </span>
-        </p>
+            </p>
+
+            <?php if ($topics): ?>
+                <p class="collection__topics">
+                    <?= implode('&nbsp;·&nbsp;', array_column($topics, 'label')) ?>
+                </p>
+            <?php endif; ?>
+        </div>
 
         <div class="collection__actions">
             <?php if ($current_user): ?>

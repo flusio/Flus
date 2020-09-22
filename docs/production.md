@@ -159,6 +159,29 @@ with `systemctl reload nginx`.
 If you’ve done everything right, you should now be able to access flusio at the
 address you’ve configured, congratulations!
 
+## Bonus: Create topics
+
+Topics are used to categorize collections. They only can be created by the
+administrator with the CLI for now:
+
+```console
+flusio# php ./cli --request /topics/create -plabel=LABEL
+```
+
+You must change `LABEL` by the name of your topic (e.g. economics, politics,
+health). If you’ve made a mistake, you can delete a topic with:
+
+```console
+flusio# php ./cli --request /topics/delete -pid=ID
+```
+
+You must change `ID` by the id of an existing topic. You can find topic ids by
+listing them:
+
+```console
+flusio# php ./cli --request /topics
+```
+
 ## Bonus: Configure Browscap
 
 We use Browscap to identify the users’ sessions via their user agent. flusio

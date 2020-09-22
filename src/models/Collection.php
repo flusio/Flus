@@ -151,6 +151,22 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return the topics attached to the current collection
+     *
+     * @return \flusio\models\Topic[]
+     */
+    public function topics()
+    {
+        $topic_dao = new dao\Topic();
+        $topics = [];
+        $db_topics = $topic_dao->listByCollectionId($this->id);
+        foreach ($db_topics as $db_topic) {
+            $topics[] = new Topic($db_topic);
+        }
+        return $topics;
+    }
+
+    /**
      * Sort collections based on given locale
      *
      * @param \flusio\models\Collection[] $collections
