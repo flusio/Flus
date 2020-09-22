@@ -78,9 +78,12 @@
                 <?= _('Create the collection') ?>
             </button>
 
-            <a href="<?= url('collections') ?>" data-action="modal#close">
+            <a href="<?= url('collections') ?>" class="no-modal">
                 <?= _('Cancel and go back to collections') ?>
             </a>
+            <button type="button" class="only-modal" data-action="modal#close">
+                <?= _('Cancel and go back to collections') ?>
+            </button>
         </div>
     </form>
 </div>

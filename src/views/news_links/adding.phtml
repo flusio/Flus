@@ -102,9 +102,12 @@
                 </button>
             <?php endif; ?>
 
-            <a href="<?= url('news') ?>" data-action="modal#close">
+            <a href="<?= url('news') ?>" class="no-modal">
                 <?= _('Cancel and go back to the news') ?>
             </a>
+            <button type="button" class="only-modal" data-action="modal#close">
+                <?= _('Cancel and go back to the news') ?>
+            </button>
         </div>
     </form>
 </div>

@@ -60,9 +60,12 @@
                 <?= _('Update') ?>
             </button>
 
-            <a href="<?= url('link', ['id' => $link->id]) ?>" data-action="modal#close">
+            <a href="<?= url('link', ['id' => $link->id]) ?>" class="no-modal">
                 <?= _('Cancel and go back to the link') ?>
             </a>
+            <button type="button" class="only-modal" data-action="modal#close">
+                <?= _('Cancel and go back to the link') ?>
+            </button>
         </div>
     </form>
 </div>

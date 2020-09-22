@@ -79,9 +79,12 @@
                 <?= _('Update') ?>
             </button>
 
-            <a href="<?= url('collection', ['id' => $collection->id]) ?>" data-action="modal#close">
+            <a href="<?= url('collection', ['id' => $collection->id]) ?>" class="no-modal">
                 <?= _('Cancel and go back to the collection') ?>
             </a>
+            <button type="button" class="only-modal" data-action="modal#close">
+                <?= _('Cancel and go back to the collection') ?>
+            </button>
         </div>
     </form>
 
