@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-04 15:45+0200\n"
-"PO-Revision-Date: 2020-09-04 15:47+0200\n"
+"POT-Creation-Date: 2020-09-22 11:59+0200\n"
+"PO-Revision-Date: 2020-09-22 12:00+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,8 +15,8 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Accounts.php:69 Accounts.php:149 Collections.php:105 Collections.php:259
-#: Collections.php:403 Collections.php:456 LinkMessages.php:70 Links.php:179
+#: Accounts.php:69 Accounts.php:149 Collections.php:122 Collections.php:315
+#: Collections.php:475 Collections.php:528 LinkMessages.php:70 Links.php:179
 #: Links.php:322 NewsLinks.php:167 NewsLinks.php:256 Registrations.php:84
 #: Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
@@ -32,17 +32,21 @@ msgstr "Le mot de passe est incorrect."
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: Collections.php:312
+#: Collections.php:134 Collections.php:328
+msgid "One of the associated topic doesn’t exist."
+msgstr "L’une des thématiques associées n’existe pas."
+
+#: Collections.php:384
 msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
-#: Collections.php:318 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:413 Links.php:535 NewsLinks.php:319 NewsLinks.php:387
+#: Collections.php:390 LinkCollections.php:149 LinkCollections.php:201
+#: Links.php:413 Links.php:535 NewsLinks.php:314 NewsLinks.php:382
 #: Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: Collections.php:352
+#: Collections.php:424
 msgid ""
 "It looks like you have no “Bookmarks” collection, you should contact the "
 "support."
@@ -54,8 +58,8 @@ msgstr ""
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:313
-#: NewsLinks.php:381
+#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:308
+#: NewsLinks.php:376
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -159,11 +163,11 @@ msgstr "[flusio] Confirmer votre inscription"
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:207
+#: models/Collection.php:223
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:209
+#: models/Collection.php:225
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
@@ -192,6 +196,14 @@ msgstr ""
 #: models/Message.php:79
 msgid "The message is required."
 msgstr "Le message est obligatoire."
+
+#: models/Topic.php:87
+msgid "The label is required."
+msgstr "Le nom est obligatoire."
+
+#: models/Topic.php:89
+msgid "The label must be less than 21 characters."
+msgstr "Le nom doit faire moins de 21 caractères."
 
 #: models/User.php:358
 msgid "The username is required."
@@ -284,7 +296,7 @@ msgid "Log out"
 msgstr "Se déconnecter"
 
 #: views/_layouts/connected.phtml:123 views/_layouts/connected.phtml:126
-#: views/collections/show.phtml:48 views/collections/show_bookmarks.phtml:26
+#: views/collections/show.phtml:62 views/collections/show_bookmarks.phtml:26
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -410,20 +422,24 @@ msgstr "Sa description"
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/edit.phtml:73 views/collections/new.phtml:72
+#: views/collections/edit.phtml:66
+msgid "Its topics"
+msgstr "Ses thématiques"
+
+#: views/collections/edit.phtml:105 views/collections/new.phtml:103
 msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
-#: views/collections/edit.phtml:79 views/link_collections/index.phtml:60
+#: views/collections/edit.phtml:111 views/link_collections/index.phtml:60
 #: views/links/edit.phtml:63
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: views/collections/edit.phtml:83
+#: views/collections/edit.phtml:115
 msgid "Cancel and go back to the collection"
 msgstr "Annuler et retourner à la collection"
 
-#: views/collections/edit.phtml:95
+#: views/collections/edit.phtml:127
 msgid ""
 "Are you sure that you want to delete this collection? You may lose the links "
 "that are attached only to this collection."
@@ -431,7 +447,7 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/edit.phtml:102
+#: views/collections/edit.phtml:134
 msgid "Delete the collection"
 msgstr "Supprimer la collection"
 
@@ -460,8 +476,8 @@ msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
 #: views/collections/index.phtml:51 views/collections/index.phtml:97
-#: views/collections/show.phtml:71 views/collections/show_bookmarks.phtml:70
-#: views/collections/show_public.phtml:81 views/news_links/index.phtml:51
+#: views/collections/show.phtml:85 views/collections/show_bookmarks.phtml:70
+#: views/collections/show_public.phtml:87 views/news_links/index.phtml:51
 #: views/news_links/index.phtml:62
 msgid "see"
 msgstr "voir"
@@ -489,11 +505,15 @@ msgstr "Comment voulez-vous nommer cette collection ?"
 msgid "What’s the purpose of this collection?"
 msgstr "Quelle est la raison d’être de cette collection ?"
 
-#: views/collections/new.phtml:78
+#: views/collections/new.phtml:65
+msgid "What topics will be covered?"
+msgstr "Quelles thématiques seront abordées ?"
+
+#: views/collections/new.phtml:109
 msgid "Create the collection"
 msgstr "Créer une collection"
 
-#: views/collections/new.phtml:82
+#: views/collections/new.phtml:113
 msgid "Cancel and go back to collections"
 msgstr "Annuler et retourner aux collections"
 
@@ -502,7 +522,11 @@ msgstr "Annuler et retourner aux collections"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: views/collections/show.phtml:80 views/collections/show_bookmarks.phtml:79
+#: views/collections/show.phtml:38
+msgid "Collection created by yourself"
+msgstr "Collection créée par vous-même"
+
+#: views/collections/show.phtml:94 views/collections/show_bookmarks.phtml:79
 msgid ""
 "This collection is empty. The links will appear here once you start adding "
 "them."
@@ -519,15 +543,15 @@ msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 msgid "Collection created by %s"
 msgstr "Collection créée par %s"
 
-#: views/collections/show_public.phtml:43
+#: views/collections/show_public.phtml:49
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:50
+#: views/collections/show_public.phtml:56
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:90
+#: views/collections/show_public.phtml:96
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
