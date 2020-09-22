@@ -1,8 +1,8 @@
 # How are the assets bundled
 
 I use [Parcel](https://parceljs.org/) to bundle the assets. Be aware I use the
-version 2 which is still [in alpha version](https://github.com/parcel-bundler/parcel/issues/3377).
-I really like Parcel, but unfortunately version 1 is buggy with the setup I want…
+version 2 which is still in beta version. I really like Parcel, but
+unfortunately version 1 is buggy with the setup I want…
 
 Either if you started Parcel via docker-compose or NPM, it will look at two
 files: [`src/assets/stylesheets/application.css`](/src/assets/stylesheets/application.css)
