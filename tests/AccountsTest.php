@@ -66,6 +66,28 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
     }
 
+    public function testUpdateChangesTopics()
+    {
+        $user = $this->login();
+        $old_topic_id = $this->create('topic');
+        $new_topic_id = $this->create('topic');
+        $this->create('user_to_topic', [
+            'user_id' => $user->id,
+            'topic_id' => $old_topic_id,
+        ]);
+
+        $response = $this->appRun('post', '/account', [
+            'csrf' => $user->csrf,
+            'username' => $this->fake('username'),
+            'locale' => 'fr_FR',
+            'topic_ids' => [$new_topic_id],
+        ]);
+
+        $user = utils\CurrentUser::reload();
+        $topic_ids = array_column($user->topics(), 'id');
+        $this->assertSame([$new_topic_id], $topic_ids);
+    }
+
     public function testUpdateRedirectsToLoginIfUserNotConnected()
     {
         $user_dao = new models\dao\User();
@@ -188,6 +210,28 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = utils\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);
+    }
+
+    public function testUpdateFailsIfTopicIdsIsInvalid()
+    {
+        $user = $this->login();
+        $old_topic_id = $this->create('topic');
+        $this->create('user_to_topic', [
+            'user_id' => $user->id,
+            'topic_id' => $old_topic_id,
+        ]);
+
+        $response = $this->appRun('post', '/account', [
+            'csrf' => $user->csrf,
+            'username' => $this->fake('username'),
+            'locale' => 'fr_FR',
+            'topic_ids' => ['not an id'],
+        ]);
+
+        $this->assertResponse($response, 400, 'One of the associated topic doesn’t exist.');
+        $user = utils\CurrentUser::reload();
+        $topic_ids = array_column($user->topics(), 'id');
+        $this->assertSame([$old_topic_id], $topic_ids);
     }
 
     public function testShowDeleteRendersCorrectly()

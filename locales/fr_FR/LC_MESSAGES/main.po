@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-22 11:59+0200\n"
-"PO-Revision-Date: 2020-09-22 12:00+0200\n"
+"POT-Creation-Date: 2020-09-22 17:33+0200\n"
+"PO-Revision-Date: 2020-09-22 17:33+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Accounts.php:69 Accounts.php:149 Collections.php:122 Collections.php:315
+#: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
 #: Collections.php:475 Collections.php:528 LinkMessages.php:70 Links.php:179
 #: Links.php:322 NewsLinks.php:167 NewsLinks.php:256 Registrations.php:84
 #: Registrations.php:252 Sessions.php:82
@@ -24,17 +24,17 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: Accounts.php:157 Sessions.php:111
+#: Accounts.php:94 Collections.php:134 Collections.php:328
+msgid "One of the associated topic doesn’t exist."
+msgstr "L’une des thématiques associées n’existe pas."
+
+#: Accounts.php:188 Sessions.php:111
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
-#: Accounts.php:165
+#: Accounts.php:196
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
-
-#: Collections.php:134 Collections.php:328
-msgid "One of the associated topic doesn’t exist."
-msgstr "L’une des thématiques associées n’existe pas."
 
 #: Collections.php:384
 msgid "This collection doesn’t exist."
@@ -197,39 +197,39 @@ msgstr ""
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: models/Topic.php:87
+#: models/Topic.php:89
 msgid "The label is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Topic.php:89
+#: models/Topic.php:91
 msgid "The label must be less than 21 characters."
 msgstr "Le nom doit faire moins de 21 caractères."
 
-#: models/User.php:358
+#: models/User.php:374
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:360
+#: models/User.php:376
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:362
+#: models/User.php:378
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:364
+#: models/User.php:380
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:366
+#: models/User.php:382
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:368
+#: models/User.php:384
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:370
+#: models/User.php:386
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -376,14 +376,18 @@ msgid "Your username must not be longer than 50 characters."
 msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
 #: views/accounts/show.phtml:50
+msgid "Your points of interest"
+msgstr "Vos centres d’intérêt"
+
+#: views/accounts/show.phtml:81
 msgid "Your language"
 msgstr "Votre langue"
 
-#: views/accounts/show.phtml:72
+#: views/accounts/show.phtml:103
 msgid "Save your changes"
 msgstr "Enregistrer vos modifications"
 
-#: views/accounts/show.phtml:82
+#: views/accounts/show.phtml:113
 msgid "Do you want to delete your account?"
 msgstr "Vous voulez supprimer votre compte ?"
 
@@ -435,11 +439,11 @@ msgstr "Afficher la collection publiquement"
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: views/collections/edit.phtml:115
+#: views/collections/edit.phtml:115 views/collections/edit.phtml:118
 msgid "Cancel and go back to the collection"
 msgstr "Annuler et retourner à la collection"
 
-#: views/collections/edit.phtml:127
+#: views/collections/edit.phtml:130
 msgid ""
 "Are you sure that you want to delete this collection? You may lose the links "
 "that are attached only to this collection."
@@ -447,7 +451,7 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/edit.phtml:134
+#: views/collections/edit.phtml:137
 msgid "Delete the collection"
 msgstr "Supprimer la collection"
 
@@ -513,7 +517,7 @@ msgstr "Quelles thématiques seront abordées ?"
 msgid "Create the collection"
 msgstr "Créer une collection"
 
-#: views/collections/new.phtml:113
+#: views/collections/new.phtml:113 views/collections/new.phtml:116
 msgid "Cancel and go back to collections"
 msgstr "Annuler et retourner aux collections"
 
@@ -573,7 +577,8 @@ msgstr "Collections du lien"
 msgid "Add to a collection"
 msgstr "Ajouter à une collection"
 
-#: views/link_collections/index.phtml:64 views/links/edit.phtml:67
+#: views/link_collections/index.phtml:64 views/link_collections/index.phtml:67
+#: views/links/edit.phtml:67 views/links/edit.phtml:70
 msgid "Cancel and go back to the link"
 msgstr "Annuler et retourner au lien"
 
@@ -614,7 +619,7 @@ msgstr "Ajouter le lien"
 msgid "Cancel and go back"
 msgstr "Annuler et revenir à la page précédente"
 
-#: views/links/new.phtml:111
+#: views/links/new.phtml:110
 msgid "Cancel and close this window"
 msgstr "Annuler et fermer cette fenêtre"
 
@@ -732,7 +737,7 @@ msgstr "Enregister et marquer comme lu"
 msgid "Add and mark as read"
 msgstr "Ajouter et marquer comme lu"
 
-#: views/news_links/adding.phtml:106
+#: views/news_links/adding.phtml:106 views/news_links/adding.phtml:109
 msgid "Cancel and go back to the news"
 msgstr "Annuler et retourner au journal"
 

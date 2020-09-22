@@ -258,3 +258,18 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
     ]
 );
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'user_to_topic',
+    '\flusio\models\dao\UsersToTopics',
+    [
+        'user_id' => function () {
+            $user_factory = new \Minz\Tests\DatabaseFactory('user');
+            return $user_factory->create();
+        },
+        'topic_id' => function () {
+            $topic_factory = new \Minz\Tests\DatabaseFactory('topic');
+            return $topic_factory->create();
+        },
+    ]
+);

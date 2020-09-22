@@ -45,6 +45,37 @@
             <?php endif; ?>
         </div>
 
+        <?php if ($topics): ?>
+            <fieldset>
+                <legend><?= _('Your points of interest') ?></legend>
+
+                <?php if (isset($errors['topic_ids'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['topic_ids'] ?>
+                    </p>
+                <?php endif; ?>
+
+                <div class="topics-selector">
+                    <?php foreach ($topics as $topic): ?>
+                        <div class="topics-selector__item">
+                            <input
+                                type="checkbox"
+                                id="topic-<?= $topic->id ?>"
+                                class="topics-selector__checkbox"
+                                name="topic_ids[]"
+                                value="<?= $topic->id ?>"
+                                <?= in_array($topic->id, $topic_ids) ? 'checked' : '' ?>
+                            />
+
+                            <label class="topics-selector__label" for="topic-<?= $topic->id ?>">
+                                <?= $this->protect($topic->label) ?>
+                            </label>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </fieldset>
+        <?php endif; ?>
+
         <div class="form-group <?= isset($errors['locale']) ? 'form-group--invalid' : '' ?>">
             <label for="locale" class="icon icon--language">
                 <?= _('Your language') ?>

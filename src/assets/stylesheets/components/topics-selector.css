@@ -4,8 +4,7 @@
 
 .topics-selector__item {
     display: inline-block;
-    margin-right: var(--space-smaller);
-    margin-left: var(--space-smaller);
+    margin: var(--space-smaller);
 }
 
 .topics-selector__label {

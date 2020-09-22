@@ -72,6 +72,22 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the topics attached to the current user
+     *
+     * @return \flusio\models\Topic[]
+     */
+    public function topics()
+    {
+        $topic_dao = new dao\Topic();
+        $topics = [];
+        $db_topics = $topic_dao->listByUserId($this->id);
+        foreach ($db_topics as $db_topic) {
+            $topics[] = new Topic($db_topic);
+        }
+        return $topics;
+    }
+
+    /**
      * Return the given link if attached to the current user
      *
      * @param string $id

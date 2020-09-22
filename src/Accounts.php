@@ -27,9 +27,14 @@ class Accounts
             ]);
         }
 
+        $topics = models\Topic::listAll();
+        models\Topic::sort($topics, $user->locale);
+
         return Response::ok('accounts/show.phtml', [
             'username' => $user->username,
             'locale' => $user->locale,
+            'topics' => $topics,
+            'topic_ids' => array_column($user->topics(), 'id'),
         ]);
     }
 
@@ -39,9 +44,10 @@ class Accounts
      * @request_param string csrf
      * @request_param string username
      * @request_param string locale
+     * @request_param string[] topic_ids
      *
      * @response 302 /login?redirect_to=/account if the user is not connected
-     * @response 400 if the CSRF, username or locale are invalid
+     * @response 400 if the CSRF, username, topic_ids or locale are invalid
      * @response 200
      *
      * @param \Minz\Request $request
@@ -51,8 +57,11 @@ class Accounts
     public function update($request)
     {
         $user_dao = new models\dao\User();
+        $topic_dao = new models\dao\Topic();
+        $users_to_topics_dao = new models\dao\UsersToTopics();
         $username = $request->param('username');
         $locale = $request->param('locale');
+        $topic_ids = $request->param('topic_ids', []);
 
         $user = utils\CurrentUser::get();
         if (!$user) {
@@ -61,12 +70,29 @@ class Accounts
             ]);
         }
 
+        $topics = models\Topic::listAll();
+        models\Topic::sort($topics, $user->locale);
+
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('accounts/show.phtml', [
                 'username' => $username,
                 'locale' => $locale,
+                'topics' => $topics,
+                'topic_ids' => $topic_ids,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        if ($topic_ids && !$topic_dao->exists($topic_ids)) {
+            return Response::badRequest('accounts/show.phtml', [
+                'username' => $username,
+                'locale' => $locale,
+                'topics' => $topics,
+                'topic_ids' => $topic_ids,
+                'errors' => [
+                    'topic_ids' => _('One of the associated topic doesn’t exist.'),
+                ],
             ]);
         }
 
@@ -75,8 +101,8 @@ class Accounts
 
         $user->username = trim($username);
         $user->locale = trim($locale);
-        $errors = $user->validate();
 
+        $errors = $user->validate();
         if ($errors) {
             // by keeping the new values, an invalid username could be
             // displayed in the header since the `$user` objects are the same
@@ -86,17 +112,22 @@ class Accounts
             return Response::badRequest('accounts/show.phtml', [
                 'username' => $username,
                 'locale' => $locale,
+                'topics' => $topics,
+                'topic_ids' => $topic_ids,
                 'errors' => $errors,
             ]);
         }
 
         $user_dao->save($user);
         utils\Locale::setCurrentLocale($locale);
+        $users_to_topics_dao->set($user->id, $topic_ids);
 
         return Response::ok('accounts/show.phtml', [
             'username' => $username,
             'locale' => $locale,
             'current_locale' => $locale,
+            'topics' => $topics,
+            'topic_ids' => $topic_ids,
         ]);
     }
 
