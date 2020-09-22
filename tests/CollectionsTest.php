@@ -100,6 +100,19 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'collections/new.phtml');
     }
 
+    public function testNewRendersTopics()
+    {
+        $user = $this->login();
+        $label = $this->fake('word');
+        $this->create('topic', [
+            'label' => $label,
+        ]);
+
+        $response = $this->appRun('get', '/collections/new');
+
+        $this->assertResponse($response, 200, $label);
+    }
+
     public function testNewRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/collections/new');
@@ -146,6 +159,25 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $db_collection = $collection_dao->listAll()[0];
         $this->assertTrue($db_collection['is_public']);
+    }
+
+    public function testCreateAllowsToAttachTopics()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $name = $this->fake('words', 3, true);
+        $description = $this->fake('sentence');
+        $topic_id = $this->create('topic');
+
+        $response = $this->appRun('post', '/collections/new', [
+            'csrf' => $user->csrf,
+            'name' => $name,
+            'description' => $description,
+            'topic_ids' => [$topic_id],
+        ]);
+
+        $collection = new models\Collection($collection_dao->listAll()[0]);
+        $this->assertContains($topic_id, array_column($collection->topics(), 'id'));
     }
 
     public function testCreateRedirectsIfNotConnected()
@@ -210,6 +242,25 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The name is required');
+        $this->assertSame(0, $collection_dao->count());
+    }
+
+    public function testCreateFailsIfTopicIdsIsInvalid()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $name = $this->fake('words', 3, true);
+        $description = $this->fake('sentence');
+        $topic_id = $this->create('topic');
+
+        $response = $this->appRun('post', '/collections/new', [
+            'csrf' => $user->csrf,
+            'name' => $name,
+            'description' => $description,
+            'topic_ids' => ['not an id'],
+        ]);
+
+        $this->assertResponse($response, 400, 'One of the associated topic doesn’t exist.');
         $this->assertSame(0, $collection_dao->count());
     }
 
@@ -430,6 +481,37 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($db_collection['is_public']);
     }
 
+    public function testUpdateChangesTopics()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $new_name = $this->fakeUnique('words', 3, true);
+        $new_description = $this->fakeUnique('sentence');
+        $new_public = 1;
+        $old_topic_id = $this->create('topic');
+        $new_topic_id = $this->create('topic');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $this->create('collection_to_topic', [
+            'collection_id' => $collection_id,
+            'topic_id' => $old_topic_id,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => $user->csrf,
+            'name' => $new_name,
+            'description' => $new_description,
+            'is_public' => $new_public,
+            'topic_ids' => [$new_topic_id],
+        ]);
+
+        $collection = new models\Collection($collection_dao->find($collection_id));
+        $topic_ids = array_column($collection->topics(), 'id');
+        $this->assertSame([$new_topic_id], $topic_ids);
+    }
+
     public function testUpdateRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -536,6 +618,37 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $db_collection = $collection_dao->listAll()[0];
         $this->assertSame($old_name, $db_collection['name']);
         $this->assertSame($old_description, $db_collection['description']);
+    }
+
+    public function testUpdateFailsIfTopicIdsIsInvalid()
+    {
+        $user = $this->login();
+        $collection_dao = new models\dao\Collection();
+        $new_name = $this->fakeUnique('words', 3, true);
+        $new_description = $this->fakeUnique('sentence');
+        $new_public = 1;
+        $old_topic_id = $this->create('topic');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $this->create('collection_to_topic', [
+            'collection_id' => $collection_id,
+            'topic_id' => $old_topic_id,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => $user->csrf,
+            'name' => $new_name,
+            'description' => $new_description,
+            'is_public' => $new_public,
+            'topic_ids' => ['not an id'],
+        ]);
+
+        $this->assertResponse($response, 400, 'One of the associated topic doesn’t exist.');
+        $collection = new models\Collection($collection_dao->find($collection_id));
+        $topic_ids = array_column($collection->topics(), 'id');
+        $this->assertSame([$old_topic_id], $topic_ids);
     }
 
     public function testUpdateFailsIfCollectionDoesNotExist()

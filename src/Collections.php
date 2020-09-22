@@ -54,16 +54,22 @@ class Collections
      */
     public function new()
     {
-        if (!utils\CurrentUser::get()) {
+        $user = utils\CurrentUser::get();
+        if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('new collection'),
             ]);
         }
 
+        $topics = models\Topic::listAll();
+        models\Topic::sort($topics, $user->locale);
+
         return Response::ok('collections/new.phtml', [
             'name' => '',
             'description' => '',
             'is_public' => false,
+            'topics' => $topics,
+            'topic_ids' => [],
         ]);
     }
 
@@ -73,10 +79,11 @@ class Collections
      * @request_param string csrf
      * @request_param string name
      * @request_param string description
+     * @request_param string[] topic_ids
      * @request_param boolean is_public
      *
      * @response 302 /login?redirect_to=/collections/new if not connected
-     * @response 400 if csrf or name are invalid
+     * @response 400 if csrf, name or topic_ids are invalid
      * @response 302 /collections/:new
      *
      * @param \Minz\Request $request
@@ -92,17 +99,40 @@ class Collections
             ]);
         }
 
+        $collection_dao = new models\dao\Collection();
+        $collections_to_topics_dao = new models\dao\CollectionsToTopics();
+        $topic_dao = new models\dao\Topic();
+
         $name = $request->param('name', '');
         $description = $request->param('description', '');
+        $topic_ids = $request->param('topic_ids', []);
         $is_public = $request->param('is_public', false);
+
+        $topics = models\Topic::listAll();
+        models\Topic::sort($topics, $user->locale);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
+                'topic_ids' => $topic_ids,
                 'is_public' => $is_public,
+                'topics' => $topics,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        if ($topic_ids && !$topic_dao->exists($topic_ids)) {
+            return Response::badRequest('collections/new.phtml', [
+                'name' => $name,
+                'description' => $description,
+                'topic_ids' => $topic_ids,
+                'is_public' => $is_public,
+                'topics' => $topics,
+                'errors' => [
+                    'topic_ids' => _('One of the associated topic doesn’t exist.'),
+                ],
             ]);
         }
 
@@ -112,13 +142,17 @@ class Collections
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
+                'topic_ids' => $topic_ids,
                 'is_public' => $is_public,
+                'topics' => $topics,
                 'errors' => $errors,
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
         $collection_id = $collection_dao->save($collection);
+        if ($topic_ids) {
+            $collections_to_topics_dao->attach($collection_id, $topic_ids);
+        }
 
         return Response::redirect('collection', ['id' => $collection_id]);
     }
@@ -200,11 +234,16 @@ class Collections
 
         $collection = $user->collection($collection_id);
         if ($collection) {
+            $topics = models\Topic::listAll();
+            models\Topic::sort($topics, $user->locale);
+
             return Response::ok('collections/edit.phtml', [
                 'collection' => $collection,
+                'topics' => $topics,
                 'name' => $collection->name,
                 'description' => $collection->description,
                 'is_public' => $collection->is_public,
+                'topic_ids' => array_column($collection->topics(), 'id'),
             ]);
         } else {
             return Response::notFound('not_found.phtml');
@@ -218,11 +257,12 @@ class Collections
      * @request_param string csrf
      * @request_param string name
      * @request_param string description
+     * @request_param string[] topic_ids
      * @request_param boolean is_public
      *
      * @response 302 /login?redirect_to=/collection/:id/edit if not connected
      * @response 404 if the collection doesn’t exist or user hasn't access
-     * @response 400 if csrf or name are invalid
+     * @response 400 if csrf, name or topic_ids are invalid
      * @response 302 /collections/:id
      *
      * @param \Minz\Request $request
@@ -245,18 +285,42 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
+        $topic_dao = new models\dao\Topic();
+        $collection_dao = new models\dao\Collection();
+        $collections_to_topics_dao = new models\dao\CollectionsToTopics();
+
+        $topics = models\Topic::listAll();
+        models\Topic::sort($topics, $user->locale);
+
         $name = $request->param('name', '');
         $description = $request->param('description', '');
         $is_public = $request->param('is_public', false);
+        $topic_ids = $request->param('topic_ids', []);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
+                'topics' => $topics,
                 'name' => $name,
                 'description' => $description,
                 'is_public' => $is_public,
+                'topic_ids' => $topic_ids,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        if ($topic_ids && !$topic_dao->exists($topic_ids)) {
+            return Response::badRequest('collections/edit.phtml', [
+                'collection' => $collection,
+                'topics' => $topics,
+                'name' => $name,
+                'description' => $description,
+                'is_public' => $is_public,
+                'topic_ids' => $topic_ids,
+                'errors' => [
+                    'topic_ids' => _('One of the associated topic doesn’t exist.'),
+                ],
             ]);
         }
 
@@ -267,15 +331,17 @@ class Collections
         if ($errors) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
+                'topics' => $topics,
                 'name' => $name,
                 'description' => $description,
                 'is_public' => $is_public,
+                'topic_ids' => $topic_ids,
                 'errors' => $errors,
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
         $collection_dao->save($collection);
+        $collections_to_topics_dao->set($collection_id, $topic_ids);
 
         return Response::redirect('collection', ['id' => $collection->id]);
     }
