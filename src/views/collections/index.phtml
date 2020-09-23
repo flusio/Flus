@@ -88,6 +88,10 @@
                                 <?= $this->protect($collection->name) ?>
                             </a>
                         </h2>
+
+                        <p>
+                            <?= _f('Created by %s', $this->protect($collection->owner()->username)) ?>
+                        </p>
                     </div>
 
                     <div class="card__footer">
