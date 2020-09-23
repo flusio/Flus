@@ -76,7 +76,7 @@
                     </h2>
 
                     <p class="card__details">
-                        <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                        <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                     </p>
                 </div>
 

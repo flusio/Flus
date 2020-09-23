@@ -17,7 +17,7 @@
     <?php if ($news_links): ?>
         <div class="cards cards--in-column">
             <?php foreach ($news_links as $news_link): ?>
-                <div class="card">
+                <div class="card card--fluid">
                     <div class="card__body">
                         <h2 class="card__title">
                             <a
@@ -32,7 +32,7 @@
                         </h2>
 
                         <p class="card__details">
-                            <?= $this->protect($news_link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
+                            <span class="card__ellipsis"><?= $this->protect($news_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
                         </p>
 
                         <?php if ($news_link->url_in_bookmarks): ?>

@@ -3,7 +3,6 @@
     padding: var(--space-smaller);
 
     flex-wrap: wrap;
-    justify-content: center;
 }
 
 .cards--in-column {
@@ -12,10 +11,10 @@
 
 .card {
     display: flex;
+    width: 100%;
     max-width: 100%;
     margin-bottom: var(--space-medium);
 
-    flex-basis: 100%;
     flex-direction: column;
     flex-grow: 1;
 
@@ -28,8 +27,10 @@
     .card {
         margin-right: var(--space-small);
         margin-left: var(--space-small);
+    }
 
-        flex-basis: 30%;
+    .card:not(.card--fluid) {
+        max-width: 31%;
     }
 }
 
@@ -62,8 +63,16 @@
 }
 
 .card__details {
+    display: flex;
+
     color: var(--color-text-secondary);
     font-size: var(--size-small);
+}
+
+.card__ellipsis {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
 .card__footer {
