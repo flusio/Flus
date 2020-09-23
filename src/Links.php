@@ -342,6 +342,48 @@ class Links
     }
 
     /**
+     * Delete a link
+     *
+     * @request_param string id
+     * @request_param string from default is /links/:id
+     *
+     * @response 302 /login?redirect_to=:from if not connected
+     * @response 404 if the link doesn’t exist or user hasn't access
+     * @response 302 :from if csrf is invalid
+     * @response 302 /
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function delete($request)
+    {
+        $user = utils\CurrentUser::get();
+        $link_id = $request->param('id');
+        $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        $link = $user->link($link_id);
+        if (!$link) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $link_dao = new models\dao\Link();
+        $link_dao->delete($link->id);
+
+        return Response::redirect('home');
+    }
+
+    /**
      * Show the fetch link page.
      *
      * @request_param string id

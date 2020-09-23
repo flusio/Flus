@@ -42,6 +42,21 @@
                 >
                     <?= _('Edit the link') ?>
                 </button>
+
+                <form
+                    method="post"
+                    action="<?= url('delete link', ['id' => $link->id]) ?>"
+                    data-controller="confirmation"
+                    data-action="confirmation#confirm"
+                    data-message="<?= _('Are you sure that you want to remove this link?') ?>"
+                >
+                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                    <input type="hidden" name="from" value="<?= url('link', ['id' => $link->id]) ?>" />
+
+                    <button type="submit" class="popup__item popup__item--button icon icon--times">
+                        <?= _('Remove the link') ?>
+                    </button>
+                </form>
             </nav>
         </details>
     </nav>

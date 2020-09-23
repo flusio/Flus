@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-23 16:16+0200\n"
-"PO-Revision-Date: 2020-09-23 16:16+0200\n"
+"POT-Creation-Date: 2020-09-23 16:23+0200\n"
+"PO-Revision-Date: 2020-09-23 16:23+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -41,8 +41,8 @@ msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
 #: Collections.php:390 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:413 Links.php:535 NewsLinks.php:308 NewsLinks.php:376
-#: Sessions.php:191
+#: Links.php:377 Links.php:456 Links.php:578 NewsLinks.php:308
+#: NewsLinks.php:376 Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -58,8 +58,8 @@ msgstr ""
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:302
-#: NewsLinks.php:370
+#: LinkCollections.php:136 LinkCollections.php:188 Links.php:371
+#: NewsLinks.php:302 NewsLinks.php:370
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -253,7 +253,7 @@ msgstr "Journal"
 #: views/_layouts/connected.phtml:82 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/collections/show.phtml:12
 #: views/link_collections/index.phtml:19 views/links/new.phtml:62
-#: views/links/show.phtml:81 views/news_links/adding.phtml:41
+#: views/links/show.phtml:96 views/news_links/adding.phtml:41
 msgid "Collections"
 msgstr "Collections"
 
@@ -686,28 +686,36 @@ msgstr "Retour"
 msgid "Edit the link"
 msgstr "Modifier le lien"
 
-#: views/links/show.phtml:61
+#: views/links/show.phtml:51
+msgid "Are you sure that you want to remove this link?"
+msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
+
+#: views/links/show.phtml:57
+msgid "Remove the link"
+msgstr "Retirer le lien"
+
+#: views/links/show.phtml:76
 msgid "share"
 msgstr "partager"
 
-#: views/links/show.phtml:72 views/links/show_public.phtml:38
+#: views/links/show.phtml:87 views/links/show_public.phtml:38
 #: views/news_links/index.phtml:134
 msgid "open"
 msgstr "ouvrir"
 
-#: views/links/show.phtml:88 views/links/show.phtml:89
+#: views/links/show.phtml:103 views/links/show.phtml:104
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:146 views/news_links/adding.phtml:82
+#: views/links/show.phtml:161 views/news_links/adding.phtml:82
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
-#: views/links/show.phtml:148
+#: views/links/show.phtml:163
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:167
+#: views/links/show.phtml:182
 msgid "Comment"
 msgstr "Commenter"
 

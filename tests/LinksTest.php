@@ -673,6 +673,78 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_title, $db_link['title']);
     }
 
+    public function testDeleteDeletesLinkAndRedirects()
+    {
+        $user = $this->login();
+        $link_dao = new models\dao\Link();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => "/links/{$link_id}",
+        ]);
+
+        $this->assertResponse($response, 302, '/');
+        $this->assertFalse($link_dao->exists($link_id));
+    }
+
+    public function testDeleteRedirectsIfNotConnected()
+    {
+        $user_id = $this->create('user', [
+            'csrf' => 'a token',
+        ]);
+        $link_dao = new models\dao\Link();
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+            'csrf' => 'a token',
+            'from' => "/links/{$link_id}",
+        ]);
+
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
+        $this->assertTrue($link_dao->exists($link_id));
+    }
+
+    public function testDeleteFailsIfLinkIsNotOwned()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_dao = new models\dao\Link();
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => "/links/{$link_id}",
+        ]);
+
+        $this->assertResponse($response, 404);
+        $this->assertTrue($link_dao->exists($link_id));
+    }
+
+    public function testDeleteFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $link_dao = new models\dao\Link();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+            'csrf' => 'not the token',
+            'from' => "/links/{$link_id}",
+        ]);
+
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertTrue($link_dao->exists($link_id));
+        $this->assertFlash('error', 'A security verification failed.');
+    }
+
     public function testShowFetchRendersCorrectly()
     {
         $user = $this->login();
