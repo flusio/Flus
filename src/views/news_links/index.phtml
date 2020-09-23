@@ -174,13 +174,29 @@
 
         <?php if ($no_news): ?>
             <p class="paragraph--featured">
-                <?= _('Sorry, we found no relevant news for you 🙁') ?>
+                <?= _('We found no relevant news for you…') ?>
             </p>
 
             <p class="paragraph--centered">
-                <em><?= _('So, what can you do?') ?></em><br />
-                <?= $tip_no_news ?>
+                <em><?= _('What can you do?') ?></em><br />
             </p>
+
+            <?php $tip_number = random_int(0, 1); ?>
+            <?php if ($tip_number === 0): ?>
+                <p class="paragraph--centered">
+                    <?= _('As you’re navigating on the Internet, bookmark the links you would like to read later.') ?>
+                </p>
+            <?php else: ?>
+                <p class="paragraph--centered">
+                    <?= _('Discover collections created by the community and follow the ones you are interested in.') ?>
+                </p>
+
+                <p class="paragraph--centered">
+                    <a class="anchor--action" href="<?= url('discover collections') ?>">
+                        <?= _('Start discovering') ?>
+                    </a>
+                </p>
+            <?php endif; ?>
 
             <p class="paragraph--centered">
                 <a href="<?= url('news') ?>">

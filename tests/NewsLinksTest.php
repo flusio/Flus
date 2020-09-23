@@ -146,7 +146,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', '/news');
 
         $response_output = $response->render();
-        $this->assertStringContainsString('So, what can you do?', $response_output);
+        $this->assertStringContainsString('What can you do?', $response_output);
     }
 
     public function testIndexRedirectsIfNotConnected()

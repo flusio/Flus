@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-23 12:13+0200\n"
-"PO-Revision-Date: 2020-09-23 12:16+0200\n"
+"POT-Creation-Date: 2020-09-23 12:30+0200\n"
+"PO-Revision-Date: 2020-09-23 12:39+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
 #: Collections.php:507 Collections.php:560 LinkMessages.php:70 Links.php:179
-#: Links.php:322 NewsLinks.php:166 NewsLinks.php:255 Registrations.php:84
+#: Links.php:322 NewsLinks.php:161 NewsLinks.php:250 Registrations.php:84
 #: Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -41,7 +41,7 @@ msgid "This collection doesn’t exist."
 msgstr "Cette collection n’existe pas."
 
 #: Collections.php:390 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:413 Links.php:535 NewsLinks.php:313 NewsLinks.php:381
+#: Links.php:413 Links.php:535 NewsLinks.php:308 NewsLinks.php:376
 #: Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
@@ -54,12 +54,12 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: LinkCollections.php:96 Links.php:218 NewsLinks.php:193
+#: LinkCollections.php:96 Links.php:218 NewsLinks.php:188
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:307
-#: NewsLinks.php:375
+#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:302
+#: NewsLinks.php:370
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -71,25 +71,9 @@ msgstr "Le lien est déjà dans les signets."
 msgid "This link is not bookmarked."
 msgstr "Le lien n’est pas dans les signets."
 
-#: Links.php:206 NewsLinks.php:179
+#: Links.php:206 NewsLinks.php:174
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
-
-#: NewsLinks.php:37
-msgid ""
-"As you’re navigating on the Internet, bookmark the links you would like to "
-"read later."
-msgstr ""
-"Lorsque vous naviguez sur Internet, placez les liens que vous aimeriez lire "
-"plus tard dans vos signets."
-
-#: NewsLinks.php:38
-msgid ""
-"Find public collections created by other users, and follow them if you like "
-"them."
-msgstr ""
-"Trouvez des collections publiques créées par d'autres utilisateur‧ices, et "
-"suivez-les si vous en appréciez le contenu."
 
 #: Registrations.php:107
 msgid "An account already exists with this email address."
@@ -409,7 +393,7 @@ msgstr "Découvrir les collections"
 msgid "Your collections"
 msgstr "Vos collections"
 
-#: views/collections/discover.phtml:22
+#: views/collections/discover.phtml:22 views/news_links/index.phtml:191
 msgid ""
 "Discover collections created by the community and follow the ones you are "
 "interested in."
@@ -535,7 +519,7 @@ msgstr ""
 "Vous ne suivez aucune collection. Commencez par découvrir les collections "
 "créées par la communauté."
 
-#: views/collections/index.phtml:116
+#: views/collections/index.phtml:116 views/news_links/index.phtml:196
 msgid "Start discovering"
 msgstr "Commencez la découverte"
 
@@ -846,14 +830,22 @@ msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 
 #: views/news_links/index.phtml:177
-msgid "Sorry, we found no relevant news for you 🙁"
-msgstr "Désolé, nous n’avons rien trouvé d’intéressant pour vous 🙁"
+msgid "We found no relevant news for you…"
+msgstr "Nous n’avons rien trouvé d’intéressant pour vous…"
 
 #: views/news_links/index.phtml:181
-msgid "So, what can you do?"
+msgid "What can you do?"
 msgstr "Que pouvez-vous faire ?"
 
 #: views/news_links/index.phtml:187
+msgid ""
+"As you’re navigating on the Internet, bookmark the links you would like to "
+"read later."
+msgstr ""
+"Lorsque vous naviguez sur Internet, placez les liens que vous aimeriez lire "
+"plus tard dans vos signets."
+
+#: views/news_links/index.phtml:203
 msgid "Ok, fine"
 msgstr "Ok, c’est noté"
 

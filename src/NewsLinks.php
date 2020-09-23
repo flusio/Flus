@@ -33,15 +33,10 @@ class NewsLinks
         }
 
         $news_links = $user->newsLinks();
-        $tip_no_news = [
-            _('As you’re navigating on the Internet, bookmark the links you would like to read later.'),
-            _('Find public collections created by other users, and follow them if you like them.'),
-        ];
 
         return Response::ok('news_links/index.phtml', [
             'news_links' => $news_links,
             'no_news' => utils\Flash::pop('no_news'),
-            'tip_no_news' => $tip_no_news[array_rand($tip_no_news)],
         ]);
     }
 
