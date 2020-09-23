@@ -115,4 +115,38 @@ class Collection extends \Minz\DatabaseModel
         ]);
         return count($matching_rows) === count($collection_ids);
     }
+
+    /**
+     * Return public collections randomly.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listForDiscovering($user_id)
+    {
+        $sql = <<<SQL
+            SELECT c.*, COUNT(l.id) AS number_links
+            FROM collections c, links l, links_to_collections lc
+
+            WHERE lc.collection_id = c.id
+            AND lc.link_id = l.id
+
+            AND l.is_public = true
+            AND c.is_public = true
+
+            AND c.user_id != :user_id
+
+            GROUP BY c.id
+
+            ORDER BY random()
+            LIMIT 25
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
+        return $statement->fetchAll();
+    }
 }

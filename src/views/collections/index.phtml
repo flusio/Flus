@@ -68,10 +68,16 @@
         />
     <?php endif; ?>
 
+    <div class="section__title">
+        <h2><?= _('Followed collections') ?></h2>
+    </div>
+
     <?php if ($followed_collections): ?>
-        <div class="section__title">
-            <h2><?= _('Followed collections') ?></h2>
-        </div>
+        <p class="paragraph--centered">
+            <a href="<?= url('discover collections') ?>">
+                <?= _('Discover more collections') ?>
+            </a>
+        </p>
 
         <div class="cards">
             <?php foreach ($followed_collections as $collection): ?>
@@ -100,5 +106,15 @@
                 </div>
             <?php endforeach; ?>
         </div>
+    <?php else: ?>
+        <p class="paragraph--placeholder">
+            <?= _('You don’t follow any collection. Start by discovering collections created by the community.') ?>
+        </p>
+
+        <p class="paragraph--centered">
+            <a class="anchor--action" href="<?= url('discover collections') ?>">
+                <?= _('Start discovering') ?>
+            </a>
+        </p>
     <?php endif; ?>
 </div>

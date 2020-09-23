@@ -432,6 +432,38 @@ class Collections
     }
 
     /**
+     * Show the discovering page
+     *
+     * @response 302 /login?redirect_to=/collections/discover if not connected
+     * @response 200
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function discover()
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('discover collections'),
+            ]);
+        }
+
+        $collection_dao = new models\dao\Collection();
+        $db_collections = $collection_dao->listForDiscovering($user->id);
+        $collections = [];
+        foreach ($db_collections as $db_collection) {
+            $collections[] = new models\Collection($db_collection);
+        }
+        models\Collection::sort($collections, $user->locale);
+
+        return Response::ok('collections/discover.phtml', [
+            'collections' => $collections,
+        ]);
+    }
+
+    /**
      * Make the current user following the given collection
      *
      * @request_param string id

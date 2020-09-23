@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-22 18:11+0200\n"
-"PO-Revision-Date: 2020-09-22 18:14+0200\n"
+"POT-Creation-Date: 2020-09-23 12:13+0200\n"
+"PO-Revision-Date: 2020-09-23 12:16+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
-#: Collections.php:475 Collections.php:528 LinkMessages.php:70 Links.php:179
+#: Collections.php:507 Collections.php:560 LinkMessages.php:70 Links.php:179
 #: Links.php:322 NewsLinks.php:166 NewsLinks.php:255 Registrations.php:84
 #: Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
@@ -268,9 +268,8 @@ msgstr "Journal"
 
 #: views/_layouts/connected.phtml:82 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/collections/show.phtml:12
-#: views/collections/show_public.phtml:13 views/link_collections/index.phtml:19
-#: views/links/new.phtml:62 views/links/show.phtml:66
-#: views/news_links/adding.phtml:41
+#: views/link_collections/index.phtml:19 views/links/new.phtml:62
+#: views/links/show.phtml:66 views/news_links/adding.phtml:41
 msgid "Collections"
 msgstr "Collections"
 
@@ -401,6 +400,59 @@ msgstr "Retour à la page précédente"
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
+#: views/collections/discover.phtml:3 views/collections/discover.phtml:18
+#: views/collections/show_public.phtml:13
+msgid "Discover collections"
+msgstr "Découvrir les collections"
+
+#: views/collections/discover.phtml:11
+msgid "Your collections"
+msgstr "Vos collections"
+
+#: views/collections/discover.phtml:22
+msgid ""
+"Discover collections created by the community and follow the ones you are "
+"interested in."
+msgstr ""
+"Découvrez les collections créées par la communauté et suivez celles qui vous "
+"intéressent."
+
+#: views/collections/discover.phtml:36
+#, php-format
+msgid "Created by %s"
+msgstr "Créée par %s"
+
+#: views/collections/discover.phtml:43 views/collections/index.phtml:44
+#: views/collections/index.phtml:96
+msgid "no links"
+msgstr "aucun lien"
+
+#: views/collections/discover.phtml:45 views/collections/index.phtml:46
+#: views/collections/index.phtml:98
+#, php-format
+msgid "%d link"
+msgid_plural "%d links"
+msgstr[0] "%d lien"
+msgstr[1] "%d liens"
+
+#: views/collections/discover.phtml:49
+msgid "followed"
+msgstr "suivie"
+
+#: views/collections/discover.phtml:54 views/collections/index.phtml:51
+#: views/collections/index.phtml:103 views/collections/show.phtml:85
+#: views/collections/show_bookmarks.phtml:70
+#: views/collections/show_public.phtml:87 views/news_links/index.phtml:51
+#: views/news_links/index.phtml:62
+msgid "see"
+msgstr "voir"
+
+#: views/collections/discover.phtml:63
+msgid "The community didn’t publish any collection yet. Will you be the first?"
+msgstr ""
+"La communauté n’a pas encore publié de collection. Serez-vous le ou la "
+"première ?"
+
 #: views/collections/edit.phtml:3 views/collections/edit.phtml:11
 msgid "Collection edition"
 msgstr "Modification d'une collection"
@@ -460,24 +512,6 @@ msgstr ""
 msgid "Add a collection"
 msgstr "Ajouter une collection"
 
-#: views/collections/index.phtml:44 views/collections/index.phtml:90
-msgid "no links"
-msgstr "aucun lien"
-
-#: views/collections/index.phtml:46 views/collections/index.phtml:92
-#, php-format
-msgid "%d link"
-msgid_plural "%d links"
-msgstr[0] "%d lien"
-msgstr[1] "%d liens"
-
-#: views/collections/index.phtml:51 views/collections/index.phtml:97
-#: views/collections/show.phtml:85 views/collections/show_bookmarks.phtml:70
-#: views/collections/show_public.phtml:87 views/news_links/index.phtml:51
-#: views/news_links/index.phtml:62
-msgid "see"
-msgstr "voir"
-
 #: views/collections/index.phtml:60
 msgid ""
 "You have no collections yet. They’ll appear here once you start adding them."
@@ -485,9 +519,25 @@ msgstr ""
 "Vous n’avez pas encore de collection. Elles apparaîtront ici une fois que "
 "vous commencerez à en ajouter."
 
-#: views/collections/index.phtml:73
+#: views/collections/index.phtml:72
 msgid "Followed collections"
 msgstr "Collections suivies"
+
+#: views/collections/index.phtml:78
+msgid "Discover more collections"
+msgstr "Découvrir plus de collections"
+
+#: views/collections/index.phtml:111
+msgid ""
+"You don’t follow any collection. Start by discovering collections created by "
+"the community."
+msgstr ""
+"Vous ne suivez aucune collection. Commencez par découvrir les collections "
+"créées par la communauté."
+
+#: views/collections/index.phtml:116
+msgid "Start discovering"
+msgstr "Commencez la découverte"
 
 #: views/collections/new.phtml:3 views/collections/new.phtml:10
 msgid "New collection"

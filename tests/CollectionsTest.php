@@ -874,6 +874,154 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404, 'It looks like you have no “Bookmarks” collection');
     }
 
+    public function testDiscoverRendersCorrectly()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('sentence');
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+            'is_public' => 1,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+
+        $response = $this->appRun('get', '/collections/discover');
+
+        $this->assertResponse($response, 200, $collection_name);
+        $this->assertPointer($response, 'collections/discover.phtml');
+    }
+
+    public function testDiscoverDoesNotListOwnedCollections()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('sentence');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'name' => $collection_name,
+            'is_public' => 1,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+
+        $response = $this->appRun('get', '/collections/discover');
+
+        $output = $response->render();
+        $this->assertStringNotContainsString($collection_name, $output);
+    }
+
+    public function testDiscoverDoesNotListEmptyCollections()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('sentence');
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+            'is_public' => 1,
+        ]);
+
+        $response = $this->appRun('get', '/collections/discover');
+
+        $output = $response->render();
+        $this->assertStringNotContainsString($collection_name, $output);
+    }
+
+    public function testDiscoverDoesNotListPrivateCollections()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('sentence');
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+            'is_public' => 0,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+
+        $response = $this->appRun('get', '/collections/discover');
+
+        $output = $response->render();
+        $this->assertStringNotContainsString($collection_name, $output);
+    }
+
+    public function testDiscoverDoesNotCountPrivateLinks()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('sentence');
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+            'is_public' => 1,
+        ]);
+        $link_id1 = $this->create('link', [
+            'user_id' => $other_user_id,
+            'is_public' => 1,
+        ]);
+        $link_id2 = $this->create('link', [
+            'user_id' => $other_user_id,
+            'is_public' => 0,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id2,
+        ]);
+
+        $response = $this->appRun('get', '/collections/discover');
+
+        $output = $response->render();
+        $this->assertStringContainsString('1 link', $output);
+        $this->assertStringNotContainsString('2 links', $output);
+    }
+
+    public function testDiscoverRedirectsIfNotConnected()
+    {
+        $collection_name = $this->fake('sentence');
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+            'is_public' => 1,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+
+        $response = $this->appRun('get', '/collections/discover');
+
+        $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2Fdiscover");
+    }
+
     public function testFollowMakesUserFollowingAndRedirects()
     {
         $user = $this->login();
