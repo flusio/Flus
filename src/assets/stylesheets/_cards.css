@@ -23,6 +23,10 @@
     transition: opacity 0.2s ease-in-out;
 }
 
+.card:focus-within {
+    box-shadow: 0 1px 4px 1px var(--color-purple-2);
+}
+
 @media (min-width: 800px) {
     .card {
         margin-right: var(--space-small);
