@@ -7,15 +7,18 @@
 ?>
 
 <div class="section" data-controller="back-storage" data-back-storage-type="link">
-    <?php if ($current_user): ?>
-        <nav class="section__nav">
-            <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('discover collections') ?>">
-                <?= _('Discover collections') ?>
-            </a>
+    <nav class="section__nav">
+        <a
+            class="anchor--action icon icon--anchor icon--undo"
+            href="<?= url('home') ?>"
+            data-controller="back-anchor"
+            data-back-anchor-type="collection"
+        >
+            <?= _('Back') ?>
+        </a>
 
-            <div class="section__nav-separator"></div>
-        </nav>
-    <?php endif; ?>
+        <div class="section__nav-separator"></div>
+    </nav>
 
     <div class="section__title section__title--nolowercase">
         <h1><?= $this->protect($collection->name) ?></h1>
