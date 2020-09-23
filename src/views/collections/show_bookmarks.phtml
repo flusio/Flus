@@ -27,54 +27,58 @@
         </button>
     </p>
 
-    <div class="cards">
-        <?php foreach ($links as $link): ?>
-            <div
-                class="card"
-                data-controller="link-card"
-                data-link-card-bookmarked="true"
-                data-link-card-bookmark-action="<?= url('bookmark link', ['id' => $link->id]) ?>"
-                data-link-card-unbookmark-action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
-            >
-                <div class="card__body">
-                    <h2 class="card__title">
-                        <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
-                            <?= $this->protect($link->title) ?>
-                        </a>
-                    </h2>
+    <?php if ($links): ?>
+        <div class="cards">
+            <?php foreach ($links as $link): ?>
+                <div
+                    class="card"
+                    data-controller="link-card"
+                    data-link-card-bookmarked="true"
+                    data-link-card-bookmark-action="<?= url('bookmark link', ['id' => $link->id]) ?>"
+                    data-link-card-unbookmark-action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
+                >
+                    <div class="card__body">
+                        <h2 class="card__title">
+                            <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                                <?= $this->protect($link->title) ?>
+                            </a>
+                        </h2>
 
-                    <p class="card__details">
-                        <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
-                    </p>
-                </div>
+                        <p class="card__details">
+                            <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                        </p>
+                    </div>
 
-                <div class="card__footer">
-                    <form
-                        method="post"
-                        action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
-                        data-action="link-card#toggleBookmarked"
-                        data-target="link-card.bookmarkForm"
-                    >
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                        <button
-                            class="button--ghost button--smaller"
-                            title="<?= _('Remove from bookmarks') ?>"
-                            aria-label="<?= _('Remove from bookmarks') ?>"
+                    <div class="card__footer">
+                        <form
+                            method="post"
+                            action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
+                            data-action="link-card#toggleBookmarked"
+                            data-target="link-card.bookmarkForm"
                         >
-                            <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
-                        </button>
-                    </form>
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
-                    <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
-                        <?= _('see') ?>
-                    </a>
+                            <button
+                                class="button--ghost button--smaller"
+                                title="<?= _('Remove from bookmarks') ?>"
+                                aria-label="<?= _('Remove from bookmarks') ?>"
+                            >
+                                <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
+                            </button>
+                        </form>
+
+                        <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
+                            <?= _('see') ?>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
+            <?php endforeach; ?>
 
-    <?php if (!$links): ?>
+            <?php for ($i = 0; $i < (3 - (count($links) % 3)); $i++): ?>
+                <div class="card card--shadow"></div>
+            <?php endfor; ?>
+        </div>
+    <?php else: ?>
         <p class="paragraph--placeholder">
             <?= _('This collection is empty. The links will appear here once you start adding them.') ?><br />
         </p>

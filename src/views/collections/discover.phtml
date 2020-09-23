@@ -22,43 +22,47 @@
         <?= _('Discover collections created by the community and follow the ones you are interested in.') ?>
     </p>
 
-    <div class="cards">
-        <?php foreach ($collections as $collection): ?>
-            <div class="card">
-                <div class="card__body">
-                    <h2 class="card__title icon icon--collection">
-                        <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                            <?= $this->protect($collection->name) ?>
+    <?php if ($collections): ?>
+        <div class="cards">
+            <?php foreach ($collections as $collection): ?>
+                <div class="card">
+                    <div class="card__body">
+                        <h2 class="card__title icon icon--collection">
+                            <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
+                                <?= $this->protect($collection->name) ?>
+                            </a>
+                        </h2>
+
+                        <p class="card__ellipsis">
+                            <?= _f('Created by %s', $this->protect($collection->owner()->username)) ?>
+                        </p>
+                    </div>
+
+                    <div class="card__footer">
+                        <p class="card__details">
+                            <?php if ($collection->number_links === 0): ?>
+                                <?= _('no links') ?>
+                            <?php else: ?>
+                                <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
+                            <?php endif; ?>
+
+                            <?php if ($current_user->isFollowing($collection->id)): ?>
+                                · <?= _('followed') ?>
+                            <?php endif; ?>
+                        </p>
+
+                        <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                            <?= _('see') ?>
                         </a>
-                    </h2>
-
-                    <p class="card__ellipsis">
-                        <?= _f('Created by %s', $this->protect($collection->owner()->username)) ?>
-                    </p>
+                    </div>
                 </div>
+            <?php endforeach; ?>
 
-                <div class="card__footer">
-                    <p class="card__details">
-                        <?php if ($collection->number_links === 0): ?>
-                            <?= _('no links') ?>
-                        <?php else: ?>
-                            <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
-                        <?php endif; ?>
-
-                        <?php if ($current_user->isFollowing($collection->id)): ?>
-                            · <?= _('followed') ?>
-                        <?php endif; ?>
-                    </p>
-
-                    <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                        <?= _('see') ?>
-                    </a>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-
-    <?php if (!$collections): ?>
+            <?php for ($i = 0; $i < (3 - (count($collections) % 3)); $i++): ?>
+                <div class="card card--shadow"></div>
+            <?php endfor; ?>
+        </div>
+    <?php else: ?>
         <p class="paragraph--placeholder">
             <?= _('The community didn’t publish any collection yet. Will you be the first?') ?>
         </p>
