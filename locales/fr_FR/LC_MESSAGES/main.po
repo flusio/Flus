@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-23 16:23+0200\n"
-"PO-Revision-Date: 2020-09-23 16:23+0200\n"
+"POT-Creation-Date: 2020-09-23 18:14+0200\n"
+"PO-Revision-Date: 2020-09-23 18:15+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
-#: Collections.php:507 Collections.php:560 LinkMessages.php:70 Links.php:179
+#: Collections.php:506 Collections.php:559 LinkMessages.php:70 Links.php:179
 #: Links.php:322 NewsLinks.php:161 NewsLinks.php:250 Registrations.php:84
 #: Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
@@ -36,17 +36,13 @@ msgstr "Le mot de passe est incorrect."
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: Collections.php:384
-msgid "This collection doesn’t exist."
-msgstr "Cette collection n’existe pas."
-
-#: Collections.php:390 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:377 Links.php:456 Links.php:578 NewsLinks.php:308
+#: Collections.php:389 LinkCollections.php:149 LinkCollections.php:201
+#: Links.php:376 Links.php:455 Links.php:577 NewsLinks.php:308
 #: NewsLinks.php:376 Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: Collections.php:424
+#: Collections.php:423
 msgid ""
 "It looks like you have no “Bookmarks” collection, you should contact the "
 "support."
@@ -58,8 +54,8 @@ msgstr ""
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 Links.php:371
-#: NewsLinks.php:302 NewsLinks.php:370
+#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:302
+#: NewsLinks.php:370
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -120,8 +116,8 @@ msgstr "Afficher"
 
 #: assets/javascripts/controllers/link_card_controller.js:37
 #: assets/javascripts/controllers/link_card_controller.js:38
-#: views/collections/show_bookmarks.phtml:62
 #: views/collections/show_bookmarks.phtml:63
+#: views/collections/show_bookmarks.phtml:64
 msgid "Remove from bookmarks"
 msgstr "Retirer des signets"
 
@@ -251,15 +247,15 @@ msgid "News"
 msgstr "Journal"
 
 #: views/_layouts/connected.phtml:82 views/collections/index.phtml:3
-#: views/collections/index.phtml:10 views/collections/show.phtml:12
-#: views/link_collections/index.phtml:19 views/links/new.phtml:62
-#: views/links/show.phtml:96 views/news_links/adding.phtml:41
+#: views/collections/index.phtml:10 views/link_collections/index.phtml:19
+#: views/links/new.phtml:62 views/links/show.phtml:97
+#: views/news_links/adding.phtml:41
 msgid "Collections"
 msgstr "Collections"
 
 #: views/_layouts/connected.phtml:93 views/_layouts/connected.phtml:98
 #: views/collections/show.phtml:22 views/collections/show.phtml:26
-#: views/links/show.phtml:25 views/links/show.phtml:29
+#: views/links/show.phtml:26 views/links/show.phtml:30
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
@@ -387,11 +383,10 @@ msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
 #: views/collections/discover.phtml:3 views/collections/discover.phtml:18
-#: views/collections/show_public.phtml:13
 msgid "Discover collections"
 msgstr "Découvrir les collections"
 
-#: views/collections/discover.phtml:11
+#: views/collections/discover.phtml:11 views/collections/show.phtml:12
 msgid "Your collections"
 msgstr "Vos collections"
 
@@ -403,37 +398,37 @@ msgstr ""
 "Découvrez les collections créées par la communauté et suivez celles qui vous "
 "intéressent."
 
-#: views/collections/discover.phtml:36 views/collections/index.phtml:93
+#: views/collections/discover.phtml:37 views/collections/index.phtml:97
 #, php-format
 msgid "Created by %s"
 msgstr "Créée par %s"
 
-#: views/collections/discover.phtml:43 views/collections/index.phtml:44
-#: views/collections/index.phtml:100
+#: views/collections/discover.phtml:44 views/collections/index.phtml:45
+#: views/collections/index.phtml:104
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/discover.phtml:45 views/collections/index.phtml:46
-#: views/collections/index.phtml:102
+#: views/collections/discover.phtml:46 views/collections/index.phtml:47
+#: views/collections/index.phtml:106
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/discover.phtml:49
+#: views/collections/discover.phtml:50
 msgid "followed"
 msgstr "suivie"
 
-#: views/collections/discover.phtml:54 views/collections/index.phtml:51
-#: views/collections/index.phtml:107 views/collections/show.phtml:115
-#: views/collections/show_bookmarks.phtml:70
-#: views/collections/show_public.phtml:87 views/news_links/index.phtml:51
+#: views/collections/discover.phtml:55 views/collections/index.phtml:52
+#: views/collections/index.phtml:111 views/collections/show.phtml:116
+#: views/collections/show_bookmarks.phtml:71
+#: views/collections/show_public.phtml:91 views/news_links/index.phtml:51
 #: views/news_links/index.phtml:62
 msgid "see"
 msgstr "voir"
 
-#: views/collections/discover.phtml:63
+#: views/collections/discover.phtml:67
 msgid "The community didn’t publish any collection yet. Will you be the first?"
 msgstr ""
 "La communauté n’a pas encore publié de collection. Serez-vous le ou la "
@@ -486,22 +481,22 @@ msgstr ""
 msgid "Add a collection"
 msgstr "Ajouter une collection"
 
-#: views/collections/index.phtml:60
+#: views/collections/index.phtml:64
 msgid ""
 "You have no collections yet. They’ll appear here once you start adding them."
 msgstr ""
 "Vous n’avez pas encore de collection. Elles apparaîtront ici une fois que "
 "vous commencerez à en ajouter."
 
-#: views/collections/index.phtml:72
+#: views/collections/index.phtml:76
 msgid "Followed collections"
 msgstr "Collections suivies"
 
-#: views/collections/index.phtml:78
+#: views/collections/index.phtml:82
 msgid "Discover more collections"
 msgstr "Découvrir plus de collections"
 
-#: views/collections/index.phtml:115
+#: views/collections/index.phtml:123
 msgid ""
 "You don’t follow any collection. Start by discovering collections created by "
 "the community."
@@ -509,7 +504,7 @@ msgstr ""
 "Vous ne suivez aucune collection. Commencez par découvrir les collections "
 "créées par la communauté."
 
-#: views/collections/index.phtml:120 views/news_links/index.phtml:196
+#: views/collections/index.phtml:128 views/news_links/index.phtml:196
 msgid "Start discovering"
 msgstr "Commencez la découverte"
 
@@ -557,7 +552,7 @@ msgstr "Supprimer la collection"
 msgid "Collection created by yourself"
 msgstr "Collection créée par vous-même"
 
-#: views/collections/show.phtml:124 views/collections/show_bookmarks.phtml:79
+#: views/collections/show.phtml:128 views/collections/show_bookmarks.phtml:83
 msgid ""
 "This collection is empty. The links will appear here once you start adding "
 "them."
@@ -569,20 +564,25 @@ msgstr ""
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/collections/show_public.phtml:33
+#: views/collections/show_public.phtml:17 views/links/show.phtml:16
+#: views/links/show_public.phtml:16
+msgid "Back"
+msgstr "Retour"
+
+#: views/collections/show_public.phtml:36
 #, php-format
 msgid "Collection created by %s"
 msgstr "Collection créée par %s"
 
-#: views/collections/show_public.phtml:49
+#: views/collections/show_public.phtml:52
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:56
+#: views/collections/show_public.phtml:59
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:96
+#: views/collections/show_public.phtml:103
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -642,11 +642,11 @@ msgstr ""
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
-#: views/links/new.phtml:107
+#: views/links/new.phtml:112
 msgid "Cancel and go back"
 msgstr "Annuler et revenir à la page précédente"
 
-#: views/links/new.phtml:110
+#: views/links/new.phtml:115
 msgid "Cancel and close this window"
 msgstr "Annuler et fermer cette fenêtre"
 
@@ -678,44 +678,40 @@ msgstr ""
 msgid "Make it public"
 msgstr "Rendre public"
 
-#: views/links/show.phtml:15 views/links/show_public.phtml:15
-msgid "Back"
-msgstr "Retour"
-
-#: views/links/show.phtml:43
+#: views/links/show.phtml:44
 msgid "Edit the link"
 msgstr "Modifier le lien"
 
-#: views/links/show.phtml:51
+#: views/links/show.phtml:52
 msgid "Are you sure that you want to remove this link?"
 msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
 
-#: views/links/show.phtml:57
+#: views/links/show.phtml:58
 msgid "Remove the link"
 msgstr "Retirer le lien"
 
-#: views/links/show.phtml:76
+#: views/links/show.phtml:77
 msgid "share"
 msgstr "partager"
 
-#: views/links/show.phtml:87 views/links/show_public.phtml:38
+#: views/links/show.phtml:88 views/links/show_public.phtml:39
 #: views/news_links/index.phtml:134
 msgid "open"
 msgstr "ouvrir"
 
-#: views/links/show.phtml:103 views/links/show.phtml:104
+#: views/links/show.phtml:104 views/links/show.phtml:105
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:161 views/news_links/adding.phtml:82
+#: views/links/show.phtml:162 views/news_links/adding.phtml:82
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
-#: views/links/show.phtml:163
+#: views/links/show.phtml:164
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:182
+#: views/links/show.phtml:183
 msgid "Comment"
 msgstr "Commenter"
 
@@ -743,6 +739,11 @@ msgstr "Récupérer les informations du lien"
 #: views/links/show_fetch.phtml:47
 msgid "Please wait while we’re collecting information."
 msgstr "Merci de patienter pendant que nous recueillons les informations."
+
+#: views/links/show_public.phtml:73
+#, php-format
+msgid "%s didn’t comment on this link."
+msgstr "%s n’a pas commenté ce lien."
 
 #: views/mailers/users/registration_validation_email.phtml:2
 #, php-format

@@ -42,29 +42,35 @@
         </ul>
     </section>
 
-    <section class="subsection subsection--small" id="messages">
-        <?php foreach ($messages as $message): ?>
-            <article class="message">
-                <header class="message__header header">
-                    <div class="header__container header__container--centered">
-                        <img class="message__avatar" src="<?= url_static('default-avatar.svg') ?>" alt="" />
+    <?php if ($messages): ?>
+        <section class="subsection subsection--small" id="messages">
+            <?php foreach ($messages as $message): ?>
+                <article class="message">
+                    <header class="message__header header">
+                        <div class="header__container header__container--centered">
+                            <img class="message__avatar" src="<?= url_static('default-avatar.svg') ?>" alt="" />
 
-                        <div class="message__author">
-                            <?= $this->protect($message->user()->username) ?>
+                            <div class="message__author">
+                                <?= $this->protect($message->user()->username) ?>
+                            </div>
+
+                            <div class="header__separator"></div>
+
+                            <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
+                                <?= format_date($message->created_at) ?>
+                            </time>
                         </div>
+                    </header>
 
-                        <div class="header__separator"></div>
-
-                        <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
-                            <?= format_date($message->created_at) ?>
-                        </time>
+                    <div class="message__content">
+                        <?= nl2br($this->protect($message->content)) ?>
                     </div>
-                </header>
-
-                <div class="message__content">
-                    <?= nl2br($this->protect($message->content)) ?>
-                </div>
-            </article>
-        <?php endforeach; ?>
-    </section>
+                </article>
+            <?php endforeach; ?>
+        </section>
+    <?php else: ?>
+        <p class="paragraph--placeholder">
+            <?= _f('%s didn’t comment on this link.', $this->protect($link->owner()->username)) ?>
+        </p>
+    <?php endif; ?>
 </div>
