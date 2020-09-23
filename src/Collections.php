@@ -359,7 +359,7 @@ class Collections
      * @request_param string from default is /collections/:id/edit
      *
      * @response 302 /login?redirect_to=:from if not connected
-     * @response 302 :from if the collection doesn’t exist or user hasn't access
+     * @response 404 if the collection doesn’t exist or user hasn't access
      * @response 302 :from if csrf is invalid
      * @response 302 /collections
      *
@@ -381,8 +381,7 @@ class Collections
 
         $collection = $user->collection($collection_id);
         if (!$collection) {
-            utils\Flash::set('error', _('This collection doesn’t exist.'));
-            return Response::found($from);
+            return Response::notFound('not_found.phtml');
         }
 
         $csrf = new \Minz\CSRF();

@@ -772,9 +772,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponse($response, 302, "/collections/{$collection_id}/edit");
+        $this->assertResponse($response, 404);
         $this->assertTrue($collection_dao->exists($collection_id));
-        $this->assertFlash('error', 'This collection doesn’t exist.');
     }
 
     public function testDeleteFailsIfCollectionIsNotOwnedByCurrentUser()
@@ -792,9 +791,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponse($response, 302, "/collections/{$collection_id}/edit");
+        $this->assertResponse($response, 404);
         $this->assertTrue($collection_dao->exists($collection_id));
-        $this->assertFlash('error', 'This collection doesn’t exist.');
     }
 
     public function testDeleteFailsIfCollectionIsNotOfCorrectType()
@@ -811,9 +809,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponse($response, 302, "/collections/{$collection_id}/edit");
+        $this->assertResponse($response, 404);
         $this->assertTrue($collection_dao->exists($collection_id));
-        $this->assertFlash('error', 'This collection doesn’t exist.');
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
