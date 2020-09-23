@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-23 15:54+0200\n"
-"PO-Revision-Date: 2020-09-23 15:54+0200\n"
+"POT-Creation-Date: 2020-09-23 16:16+0200\n"
+"PO-Revision-Date: 2020-09-23 16:16+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -253,12 +253,13 @@ msgstr "Journal"
 #: views/_layouts/connected.phtml:82 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/collections/show.phtml:12
 #: views/link_collections/index.phtml:19 views/links/new.phtml:62
-#: views/links/show.phtml:66 views/news_links/adding.phtml:41
+#: views/links/show.phtml:81 views/news_links/adding.phtml:41
 msgid "Collections"
 msgstr "Collections"
 
 #: views/_layouts/connected.phtml:93 views/_layouts/connected.phtml:98
 #: views/collections/show.phtml:22 views/collections/show.phtml:26
+#: views/links/show.phtml:25 views/links/show.phtml:29
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
@@ -681,32 +682,32 @@ msgstr "Rendre public"
 msgid "Back"
 msgstr "Retour"
 
-#: views/links/show.phtml:25 views/links/show.phtml:26
-msgid "Settings"
-msgstr "Paramètres"
+#: views/links/show.phtml:43
+msgid "Edit the link"
+msgstr "Modifier le lien"
 
-#: views/links/show.phtml:46
+#: views/links/show.phtml:61
 msgid "share"
 msgstr "partager"
 
-#: views/links/show.phtml:57 views/links/show_public.phtml:38
+#: views/links/show.phtml:72 views/links/show_public.phtml:38
 #: views/news_links/index.phtml:134
 msgid "open"
 msgstr "ouvrir"
 
-#: views/links/show.phtml:73 views/links/show.phtml:74
+#: views/links/show.phtml:88 views/links/show.phtml:89
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:131 views/news_links/adding.phtml:82
+#: views/links/show.phtml:146 views/news_links/adding.phtml:82
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
-#: views/links/show.phtml:133
+#: views/links/show.phtml:148
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:152
+#: views/links/show.phtml:167
 msgid "Comment"
 msgstr "Commenter"
 

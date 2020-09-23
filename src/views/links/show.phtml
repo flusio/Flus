@@ -17,18 +17,33 @@
 
         <div class="section__nav-separator"></div>
 
-        <button
-            class="button--ghost button--smaller"
-            data-controller="modal-opener"
-            data-action="modal-opener#fetch"
-            data-modal-opener-href="<?= url('edit link', ['id' => $link->id]) ?>"
-            title="<?= _('Settings') ?>"
-            aria-label="<?= _('Settings') ?>"
-            aria-haspopup="dialog"
-            aria-controls="modal"
+        <details
+            class="popup"
+            data-controller="popup"
+            data-action="click@window->popup#close"
         >
-            <i class="icon icon--only icon--cog"></i>
-        </button>
+            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
+                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
+                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
+                    <span class="sr-only">
+                        <?= _('Open the menu') ?>
+                    </span>
+                </button>
+            </summary>
+
+            <nav class="popup__container popup__container--left">
+                <button
+                    class="popup__item popup__item--button icon icon--cog"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href="<?= url('edit link', ['id' => $link->id]) ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    <?= _('Edit the link') ?>
+                </button>
+            </nav>
+        </details>
     </nav>
 
     <div class="section__title section__title--nolowercase">
