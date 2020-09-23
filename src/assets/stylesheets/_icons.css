@@ -68,6 +68,10 @@
     background-image: url("../icons/core/cog-line.svg");
 }
 
+.icon--ellipsis-horizontal::before {
+    background-image: url("../icons/core/ellipsis-horizontal-line.svg");
+}
+
 .icon--eye::before {
     background-image: url("../icons/core/eye-line.svg");
 }

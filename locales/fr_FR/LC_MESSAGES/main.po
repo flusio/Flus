@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-23 12:30+0200\n"
-"PO-Revision-Date: 2020-09-23 12:39+0200\n"
+"POT-Creation-Date: 2020-09-23 15:54+0200\n"
+"PO-Revision-Date: 2020-09-23 15:54+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -258,6 +258,7 @@ msgid "Collections"
 msgstr "Collections"
 
 #: views/_layouts/connected.phtml:93 views/_layouts/connected.phtml:98
+#: views/collections/show.phtml:22 views/collections/show.phtml:26
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
@@ -271,7 +272,7 @@ msgid "Log out"
 msgstr "Se déconnecter"
 
 #: views/_layouts/connected.phtml:123 views/_layouts/connected.phtml:126
-#: views/collections/show.phtml:62 views/collections/show_bookmarks.phtml:26
+#: views/collections/show.phtml:92 views/collections/show_bookmarks.phtml:26
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -401,18 +402,18 @@ msgstr ""
 "Découvrez les collections créées par la communauté et suivez celles qui vous "
 "intéressent."
 
-#: views/collections/discover.phtml:36
+#: views/collections/discover.phtml:36 views/collections/index.phtml:93
 #, php-format
 msgid "Created by %s"
 msgstr "Créée par %s"
 
 #: views/collections/discover.phtml:43 views/collections/index.phtml:44
-#: views/collections/index.phtml:96
+#: views/collections/index.phtml:100
 msgid "no links"
 msgstr "aucun lien"
 
 #: views/collections/discover.phtml:45 views/collections/index.phtml:46
-#: views/collections/index.phtml:98
+#: views/collections/index.phtml:102
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
@@ -424,7 +425,7 @@ msgid "followed"
 msgstr "suivie"
 
 #: views/collections/discover.phtml:54 views/collections/index.phtml:51
-#: views/collections/index.phtml:103 views/collections/show.phtml:85
+#: views/collections/index.phtml:107 views/collections/show.phtml:115
 #: views/collections/show_bookmarks.phtml:70
 #: views/collections/show_public.phtml:87 views/news_links/index.phtml:51
 #: views/news_links/index.phtml:62
@@ -471,18 +472,6 @@ msgstr "Mettre à jour"
 msgid "Cancel and go back to the collection"
 msgstr "Annuler et retourner à la collection"
 
-#: views/collections/edit.phtml:130
-msgid ""
-"Are you sure that you want to delete this collection? You may lose the links "
-"that are attached only to this collection."
-msgstr ""
-"Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
-"les liens qui lui sont attachés."
-
-#: views/collections/edit.phtml:137
-msgid "Delete the collection"
-msgstr "Supprimer la collection"
-
 #: views/collections/index.phtml:14
 msgid ""
 "Collections allow to group links by topics. They are handy for finding them "
@@ -511,7 +500,7 @@ msgstr "Collections suivies"
 msgid "Discover more collections"
 msgstr "Découvrir plus de collections"
 
-#: views/collections/index.phtml:111
+#: views/collections/index.phtml:115
 msgid ""
 "You don’t follow any collection. Start by discovering collections created by "
 "the community."
@@ -519,7 +508,7 @@ msgstr ""
 "Vous ne suivez aucune collection. Commencez par découvrir les collections "
 "créées par la communauté."
 
-#: views/collections/index.phtml:116 views/news_links/index.phtml:196
+#: views/collections/index.phtml:120 views/news_links/index.phtml:196
 msgid "Start discovering"
 msgstr "Commencez la découverte"
 
@@ -547,16 +536,27 @@ msgstr "Créer une collection"
 msgid "Cancel and go back to collections"
 msgstr "Annuler et retourner aux collections"
 
-#: views/collections/show.phtml:22 views/collections/show.phtml:23
-#: views/links/show.phtml:25 views/links/show.phtml:26
-msgid "Settings"
-msgstr "Paramètres"
+#: views/collections/show.phtml:40
+msgid "Edit the collection"
+msgstr "Modifier la collection"
 
-#: views/collections/show.phtml:38
+#: views/collections/show.phtml:48
+msgid ""
+"Are you sure that you want to delete this collection? You may lose the links "
+"that are attached only to this collection."
+msgstr ""
+"Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
+"les liens qui lui sont attachés."
+
+#: views/collections/show.phtml:54
+msgid "Delete the collection"
+msgstr "Supprimer la collection"
+
+#: views/collections/show.phtml:68
 msgid "Collection created by yourself"
 msgstr "Collection créée par vous-même"
 
-#: views/collections/show.phtml:94 views/collections/show_bookmarks.phtml:79
+#: views/collections/show.phtml:124 views/collections/show_bookmarks.phtml:79
 msgid ""
 "This collection is empty. The links will appear here once you start adding "
 "them."
@@ -680,6 +680,10 @@ msgstr "Rendre public"
 #: views/links/show.phtml:15 views/links/show_public.phtml:15
 msgid "Back"
 msgstr "Retour"
+
+#: views/links/show.phtml:25 views/links/show.phtml:26
+msgid "Settings"
+msgstr "Paramètres"
 
 #: views/links/show.phtml:46
 msgid "share"
