@@ -103,7 +103,12 @@
                 <?= _('Add the link') ?>
             </button>
 
-            <a class="no-modal" href="<?= url('news') ?>" data-controller="link-back-page">
+            <a
+                class="no-modal"
+                href="<?= url('news') ?>"
+                data-controller="back-anchor"
+                data-back-anchor-type="link"
+            >
                 <?= _('Cancel and go back') ?>
             </a>
             <button type="button" class="only-modal" data-action="modal#close">
