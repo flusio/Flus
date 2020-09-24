@@ -1,6 +1,6 @@
 # Changelog of flusio
 
-## 2020-xx-yy - v0.9
+## 2020-09-24 - v0.9
 
 ### Migration notes
 
@@ -10,6 +10,44 @@ order to categorize them. Topics are created by the administrator with the CLI:
 ```console
 flusio# php ./cli --request /topics/create -plabel=LABEL
 ```
+
+### New
+
+- Provide topics for collections
+- Allow users to set their points of interest
+- Get news suggestions from points of interest
+- Provide public collections discovery
+- Allow to delete a link
+
+### Improvements
+
+- Change default avatar
+- Display if collection/link is public
+- Improve the link and collection settings menus
+- Add a card shadow to complete blocks of 3
+- Add a light color on card:focus-within
+- Add placeholder on public links without comments
+- Display owner of followed collections
+- Improve tips when there are no news
+- Change links to close modals to buttons
+- Improve `section__nav` margin on mobile
+- Fix wording for private collection back button
+- Go to previous page from public collection
+
+### Bug fixes
+
+- Refactor and fix "back" anchor on link pages
+- Fix `<title>` for collections pages
+- Fix cards design
+- Hide titles overflow
+- Return 404 if deleting non existing collection
+
+### Misc
+
+- Add support for rollbacks
+- Update Parcel to beta-1
+- Add support for serial ids in SaveHelper
+- Add a test on cli usage command
 
 ## 2020-09-04 - v0.8
 
