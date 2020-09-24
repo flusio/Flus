@@ -39,9 +39,13 @@
 }
 
 .section__title h1 {
+    overflow: hidden;
+
     display: inline-block;
     margin-top: 0;
     margin-bottom: 0;
+
+    text-overflow: ellipsis;
 }
 
 .section__title h1::after {
