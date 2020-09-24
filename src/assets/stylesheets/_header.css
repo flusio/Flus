@@ -79,6 +79,8 @@
 
 .header__locale-form {
     display: flex;
+    padding-top: var(--space-smaller);
+    padding-bottom: var(--space-smaller);
 
     flex-direction: column;
     justify-content: center;
