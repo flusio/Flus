@@ -1,0 +1,8 @@
+.sticker {
+    padding: var(--space-smaller) var(--space-small);
+
+    font-size: var(--size-small);
+
+    background-color: var(--color-purple-2);
+    border-radius: var(--border-radius);
+}

@@ -46,6 +46,10 @@
                             <?php else: ?>
                                 <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
                             <?php endif; ?>
+
+                            <?php if ($collection->is_public): ?>
+                                · <?= _('public') ?>
+                            <?php endif; ?>
                         </p>
 
                         <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">

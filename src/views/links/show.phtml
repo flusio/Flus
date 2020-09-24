@@ -66,6 +66,14 @@
         <h1><?= $this->protect($link->title) ?></h1>
     </div>
 
+    <?php if ($link->is_public): ?>
+        <p class="paragraph--centered">
+            <span class="sticker">
+                <?= _('public') ?>
+            </span>
+        </p>
+    <?php endif; ?>
+
     <section class="link__meta">
         <p class="link__details">
             <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>

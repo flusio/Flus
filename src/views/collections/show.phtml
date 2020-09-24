@@ -62,6 +62,14 @@
         <h1><?= $this->protect($collection->name) ?></h1>
     </div>
 
+    <?php if ($collection->is_public): ?>
+        <p class="paragraph--centered">
+            <span class="sticker">
+                <?= _('public') ?>
+            </span>
+        </p>
+    <?php endif; ?>
+
     <div class="collection__meta">
         <div class="collection__details">
             <p class="collection__owner">
@@ -110,6 +118,12 @@
                     </div>
 
                     <div class="card__footer">
+                        <?php if ($link->is_public): ?>
+                            <p class="card__details">
+                                <?= _('public') ?>
+                            </p>
+                        <?php endif; ?>
+
                         <div></div>
 
                         <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
