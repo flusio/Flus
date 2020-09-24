@@ -690,6 +690,23 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link_dao->exists($link_id));
     }
 
+    public function testDeleteRedirectsToRedirectToIfGiven()
+    {
+        $user = $this->login();
+        $link_dao = new models\dao\Link();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => "/links/{$link_id}",
+            'redirect_to' => '/bookmarks',
+        ]);
+
+        $this->assertResponse($response, 302, '/bookmarks');
+    }
+
     public function testDeleteRedirectsIfNotConnected()
     {
         $user_id = $this->create('user', [

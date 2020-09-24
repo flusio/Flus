@@ -346,11 +346,12 @@ class Links
      *
      * @request_param string id
      * @request_param string from default is /links/:id
+     * @request_param string redirect_to default is /
      *
      * @response 302 /login?redirect_to=:from if not connected
      * @response 404 if the link doesn’t exist or user hasn't access
      * @response 302 :from if csrf is invalid
-     * @response 302 /
+     * @response 302 :redirect_to on success
      *
      * @param \Minz\Request $request
      *
@@ -361,6 +362,7 @@ class Links
         $user = utils\CurrentUser::get();
         $link_id = $request->param('id');
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -380,7 +382,7 @@ class Links
         $link_dao = new models\dao\Link();
         $link_dao->delete($link->id);
 
-        return Response::redirect('home');
+        return Response::found($redirect_to);
     }
 
     /**
