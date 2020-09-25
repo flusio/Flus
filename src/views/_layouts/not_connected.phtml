@@ -20,7 +20,7 @@
         </script>
         <script src="<?= url_asset('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
 
-        <title><?= $title ?> · flusio</title>
+        <title><?php if ($environment === 'development'): ?>[devmode] <?php endif; ?><?= $title ?> · flusio</title>
     </head>
 
     <body>
