@@ -199,6 +199,8 @@ class Link extends \Minz\DatabaseModel
              AND l.is_public = true
              AND c.is_public = true
 
+             AND c.user_id != :user_id
+
              AND l.url NOT IN (
                  SELECT nl.url FROM news_links nl
                  WHERE nl.user_id = :user_id

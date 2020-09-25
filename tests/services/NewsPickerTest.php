@@ -364,4 +364,40 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, count($db_links));
     }
+
+    public function testPickDoesNotSelectFromTopicsIfCollectionIsOwned()
+    {
+        $news_picker = new NewsPicker($this->user);
+        $topic_id = $this->create('topic');
+        // make the user interested by topic
+        $this->create('user_to_topic', [
+            'user_id' => $this->user->id,
+            'topic_id' => $topic_id,
+        ]);
+        // create a link in a collection associated to topic
+        $link_id = $this->create('link', [
+            'user_id' => $this->user->id,
+            'reading_time' => 10,
+            'is_public' => 1,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $this->user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+        $this->create('collection_to_topic', [
+            'collection_id' => $collection_id,
+            'topic_id' => $topic_id,
+        ]);
+
+        $db_links = $news_picker->pick();
+
+        // because the user owns the collection, we don't get the link
+        // associated to the topic
+        $this->assertSame(0, count($db_links));
+    }
 }
