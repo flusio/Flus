@@ -10,9 +10,19 @@
         <h1><?= _('News') ?></h1>
     </div>
 
-    <p class="section__intro">
-        <?= _('Get about 1 hour of reading from your bookmarks, followed collections and points of interest.') ?>
-    </p>
+    <div class="section__intro">
+        <p>
+            <?= _('Get about 1 hour of reading from your bookmarks, followed collections and points of interest.') ?>
+        </p>
+
+        <?php if (!$news_links): ?>
+            <p>
+                <a href="<?= url('news preferences') ?>">
+                    <?= _('Configure') ?>
+                </a>
+            </p>
+        <?php endif; ?>
+    </div>
 
     <?php if ($news_links): ?>
         <div class="cards cards--in-column">

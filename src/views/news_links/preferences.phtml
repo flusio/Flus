@@ -1,0 +1,108 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('News preference'),
+        'current_tab' => 'news',
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('News preference') ?></h1>
+    </div>
+
+    <form method="post" action="<?= url('update news preferences') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group <?= isset($errors['duration']) ? 'form-group--invalid' : '' ?>">
+            <label for="duration">
+                <?= _('Get about') ?>
+
+                <input
+                    id="duration"
+                    class="input--number-3"
+                    name="duration"
+                    type="number"
+                    required
+                    value="<?= $duration ?>"
+                    min="<?= $min_duration ?>"
+                    max="<?= $max_duration ?>"
+                    step="15"
+                    autofocus
+                />
+
+                <?= _('minutes of reading') ?>
+            </label>
+
+            <?php if (isset($errors['duration'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['duration'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <fieldset>
+            <legend><?= _('Get suggestions from') ?></legend>
+
+            <?php if (isset($errors['from'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['from'] ?>
+                </p>
+            <?php endif; ?>
+
+            <div class="form-group">
+                <input
+                    type="checkbox"
+                    id="from-bookmarks"
+                    name="from_bookmarks"
+                    <?= $from_bookmarks ? 'checked' : '' ?>
+                />
+
+                <label class="label--checkbox" for="from-bookmarks">
+                    <?= _('Your bookmarks') ?>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <input
+                    type="checkbox"
+                    id="from-followed"
+                    name="from_followed"
+                    <?= $from_followed ? 'checked' : '' ?>
+                />
+
+                <label class="label--checkbox" for="from-followed">
+                    <?= _('The collections you follow') ?>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <input
+                    type="checkbox"
+                    id="from-topics"
+                    name="from_topics"
+                    <?= $from_topics ? 'checked' : '' ?>
+                />
+
+                <label class="label--checkbox" for="from-topics">
+                    <?= _('Your points of interest') ?>
+                </label>
+            </div>
+        </fieldset>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Save') ?>
+            </button>
+
+            <a href="<?= url('news') ?>">
+                <?= _('Cancel and go back to the news') ?>
+            </a>
+        </div>
+    </form>
+</div>
