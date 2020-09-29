@@ -160,60 +160,60 @@
             <?php endforeach; ?>
         </div>
     <?php else: ?>
-        <form class="form--centered" method="post" action="<?= url('fill news') ?>">
-            <?php if ($error): ?>
-                <p class="form__error">
-                    <?= $error ?>
-                </p>
-            <?php endif; ?>
-
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-            <div class="form__actions form__actions--centered">
-                <?php if ($no_news): ?>
-                    <button type="submit">
-                        <?= _('Get new suggestions') ?>
-                    </button>
-                <?php else: ?>
-                    <button type="submit" class="button--primary">
-                        <?= _('Get new suggestions') ?>
-                    </button>
-                <?php endif; ?>
-            </div>
-        </form>
-
         <?php if ($no_news): ?>
-            <p class="paragraph--featured">
-                <?= _('We found no relevant news for you…') ?>
-            </p>
-
             <p class="paragraph--centered">
-                <em><?= _('What can you do?') ?></em><br />
+                <em><?= _('We found no relevant news for you, what can you do?') ?></em>
             </p>
 
-            <?php $tip_number = random_int(0, 1); ?>
+            <?php $tip_number = random_int(0, 2); ?>
             <?php if ($tip_number === 0): ?>
                 <p class="paragraph--centered">
-                    <?= _('As you’re navigating on the Internet, bookmark the links you would like to read later.') ?>
+                    <strong><?= _('As you’re navigating on the Internet, bookmark the links you would like to read later.') ?></strong>
+                </p>
+
+                <p class="paragraph--centered">
+                    <a href="<?= url('news') ?>">
+                        <?= _('Ok, fine') ?>
+                    </a>
+                </p>
+            <?php elseif ($tip_number === 1): ?>
+                <p class="paragraph--centered">
+                    <strong><?= _('Take a break, disconnect from Internet and go for a walk; news can wait.') ?></strong>
+                </p>
+
+                <p class="paragraph--centered">
+                    <a href="<?= url('news') ?>">
+                        <?= _('Ok, fine') ?>
+                    </a>
                 </p>
             <?php else: ?>
                 <p class="paragraph--centered">
-                    <?= _('Discover collections created by the community and follow the ones you are interested in.') ?>
+                    <strong><?= _('Discover collections created by the community and follow the ones you are interested in.') ?></strong>
                 </p>
 
                 <p class="paragraph--centered">
                     <a class="anchor--action" href="<?= url('discover collections') ?>">
-                        <?= _('Start discovering') ?>
+                        <?= _('Discover collections') ?>
                     </a>
                 </p>
             <?php endif; ?>
-
-            <p class="paragraph--centered">
-                <a href="<?= url('news') ?>">
-                    <?= _('Ok, fine') ?>
-                </a>
-            </p>
         <?php else: ?>
+            <form class="form--centered" method="post" action="<?= url('fill news') ?>">
+                <?php if ($error): ?>
+                    <p class="form__error">
+                        <?= $error ?>
+                    </p>
+                <?php endif; ?>
+
+                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                <div class="form__actions form__actions--centered">
+                    <button type="submit" class="button--primary">
+                        <?= _('Get new suggestions') ?>
+                    </button>
+                </div>
+            </form>
+
             <img
                 class="illustration illustration--centered"
                 alt=""

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-29 15:06+0200\n"
-"PO-Revision-Date: 2020-09-29 15:06+0200\n"
+"POT-Creation-Date: 2020-09-29 15:33+0200\n"
+"PO-Revision-Date: 2020-09-29 15:34+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -432,14 +432,15 @@ msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
 #: views/collections/discover.phtml:3 views/collections/discover.phtml:18
+#: views/collections/index.phtml:132 views/news_links/index.phtml:196
 msgid "Discover collections"
-msgstr "Découvrir les collections"
+msgstr "Découvrir des collections"
 
 #: views/collections/discover.phtml:11 views/collections/show.phtml:12
 msgid "Your collections"
 msgstr "Vos collections"
 
-#: views/collections/discover.phtml:22 views/news_links/index.phtml:201
+#: views/collections/discover.phtml:22 views/news_links/index.phtml:191
 msgid ""
 "Discover collections created by the community and follow the ones you are "
 "interested in."
@@ -557,10 +558,6 @@ msgid ""
 msgstr ""
 "Vous ne suivez aucune collection. Commencez par découvrir les collections "
 "créées par la communauté."
-
-#: views/collections/index.phtml:132 views/news_links/index.phtml:206
-msgid "Start discovering"
-msgstr "Commencez la découverte"
 
 #: views/collections/new.phtml:3 views/collections/new.phtml:10
 msgid "New collection"
@@ -886,19 +883,12 @@ msgstr "Je ne suis pas intéressé"
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/news_links/index.phtml:175 views/news_links/index.phtml:179
-msgid "Get new suggestions"
-msgstr "Obtenir des suggestions"
+#: views/news_links/index.phtml:165
+msgid "We found no relevant news for you, what can you do?"
+msgstr ""
+"Nous n’avons rien trouvé d’intéressant pour vous, que pouvez-vous faire ?"
 
-#: views/news_links/index.phtml:187
-msgid "We found no relevant news for you…"
-msgstr "Nous n’avons rien trouvé d’intéressant pour vous…"
-
-#: views/news_links/index.phtml:191
-msgid "What can you do?"
-msgstr "Que pouvez-vous faire ?"
-
-#: views/news_links/index.phtml:197
+#: views/news_links/index.phtml:171
 msgid ""
 "As you’re navigating on the Internet, bookmark the links you would like to "
 "read later."
@@ -906,9 +896,20 @@ msgstr ""
 "Lorsque vous naviguez sur Internet, placez les liens que vous aimeriez lire "
 "plus tard dans vos signets."
 
-#: views/news_links/index.phtml:213
+#: views/news_links/index.phtml:176 views/news_links/index.phtml:186
 msgid "Ok, fine"
 msgstr "Ok, c’est noté"
+
+#: views/news_links/index.phtml:181
+msgid ""
+"Take a break, disconnect from Internet and go for a walk; news can wait."
+msgstr ""
+"Prenez une pause, déconnectez d’Internet et allez vous balader ; l’actualité "
+"peut attendre."
+
+#: views/news_links/index.phtml:212
+msgid "Get new suggestions"
+msgstr "Obtenir des suggestions"
 
 #: views/news_links/preferences.phtml:3 views/news_links/preferences.phtml:10
 msgid "News preference"
