@@ -92,3 +92,82 @@ function url_asset($filename)
         return $file_url;
     }
 }
+
+/**
+ * Format news preferences so it's readable for humans.
+ *
+ * @param \flusio\models\NewsPreferences $preferences
+ *
+ * @return string
+ */
+function format_news_preferences($preferences)
+{
+    $duration = format_news_duration($preferences->duration);
+    $froms = [];
+    if ($preferences->from_bookmarks) {
+        $froms[] = _('bookmarks');
+    }
+    if ($preferences->from_followed) {
+        $froms[] = _('followed collections');
+    }
+    if ($preferences->from_topics) {
+        $froms[] = _('points of interest');
+    }
+    $from = human_implode($froms, ', ', _(' and '));
+
+    return _f('Get about %s of reading from your %s.', $duration, $from);
+}
+
+/**
+ * Return a duration (in minutes) as a formatted string (only suitable for news
+ * preferences).
+ *
+ * @param integer $duration
+ *
+ * @return string
+ */
+function format_news_duration($duration)
+{
+    $hours = floor($duration / 60);
+    $minutes = $duration % 60;
+
+    if ($hours === 0.0) {
+        return _nf('%d&nbsp;minute', '%d&nbsp;minutes', $minutes, $minutes);
+    }
+
+    if ($minutes === 0) {
+        return _nf('%d&nbsp;hour', '%d&nbsp;hours', $hours, $hours);
+    }
+
+    return _f('%d&nbsp;h&nbsp;%d', $hours, $minutes);
+}
+
+/**
+ * Join items from a list, allowing to change the last separator to make it
+ * more natural for humans.
+ *
+ * It acts as normal `implode()` function except the last item is concatenated
+ * with $last_separator. Please note that the array is the first parameter.
+ *
+ * @param string[] $array
+ * @param string $separator
+ * @param string $last_separator
+ *
+ * @return string
+ */
+function human_implode($array, $separator, $last_separator)
+{
+    $string = '';
+    foreach ($array as $index => $item) {
+        $first_item = $index === 0;
+        $last_item = ($index + 1) === count($array);
+        if ($first_item) {
+            $string .= $array[$index];
+        } elseif ($last_item) {
+            $string .= $last_separator . $array[$index];
+        } else {
+            $string .= $separator . $array[$index];
+        }
+    }
+    return $string;
+}

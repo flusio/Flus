@@ -36,6 +36,7 @@ class NewsLinks
 
         return Response::ok('news_links/index.phtml', [
             'news_links' => $news_links,
+            'news_preferences' => models\NewsPreferences::fromJson($user->news_preferences),
             'no_news' => utils\Flash::pop('no_news'),
         ]);
     }
@@ -351,6 +352,7 @@ class NewsLinks
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('news_links/index.phtml', [
                 'news_links' => [],
+                'news_preferences' => models\NewsPreferences::fromJson($user->news_preferences),
                 'no_news' => false,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
