@@ -62,6 +62,8 @@ class Application
         // News page
         $router->addRoute('get', '/news', 'NewsLinks#index', 'news');
         $router->addRoute('post', '/news', 'NewsLinks#fill', 'fill news');
+        $router->addRoute('get', '/news/preferences', 'NewsLinks#preferences', 'news preferences');
+        $router->addRoute('post', '/news/preferences', 'NewsLinks#updatePreferences', 'update news preferences');
         $router->addRoute('get', '/news/:id/add', 'NewsLinks#adding', 'adding news');
         $router->addRoute('post', '/news/:id/add', 'NewsLinks#add', 'add news');
         $router->addRoute('post', '/news/:id/read-later', 'NewsLinks#readLater', 'read news later');

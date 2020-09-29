@@ -11,8 +11,8 @@ namespace flusio\services;
  */
 class NewsPicker
 {
-    public const MIN_DURATION = 60 * 0.9;
-    public const MAX_DURATION = 60 * 1.2;
+    public const MIN_DURATION_RATIO = 0.9;
+    public const MAX_DURATION_RATIO = 1.2;
 
     public const BOOKMARKS_BASE_VALUE = 3;
     public const FOLLOWED_BASE_VALUE = 2;
@@ -21,12 +21,16 @@ class NewsPicker
     /** @var \flusio\models\User */
     private $user;
 
+    /** @var \flusio\models\NewsPreferences */
+    private $preferences;
+
     /**
      * @param \flusio\models\User
      */
     public function __construct($user)
     {
         $this->user = $user;
+        $this->preferences = \flusio\models\NewsPreferences::fromJson($user->news_preferences);
     }
 
     /**
@@ -37,23 +41,33 @@ class NewsPicker
     public function pick()
     {
         $link_dao = new \flusio\models\dao\Link();
+        $bookmarks_db_links = [];
+        $followed_db_links = [];
+        $topics_db_links = [];
 
-        $bookmarks_db_links = $link_dao->listFromBookmarksForNews($this->user->id);
-        $followed_db_links = $link_dao->listFromFollowedCollectionsForNews($this->user->id);
-        $topics_db_links = $link_dao->listFromTopicsForNews($this->user->id);
+        if ($this->preferences->from_bookmarks) {
+            $bookmarks_db_links = $link_dao->listFromBookmarksForNews($this->user->id);
+            $bookmarks_db_links = $this->assignNewsValue(
+                $bookmarks_db_links,
+                self::BOOKMARKS_BASE_VALUE
+            );
+        }
 
-        $bookmarks_db_links = $this->assignNewsValue(
-            $bookmarks_db_links,
-            self::BOOKMARKS_BASE_VALUE
-        );
-        $followed_db_links = $this->assignNewsValue(
-            $followed_db_links,
-            self::FOLLOWED_BASE_VALUE
-        );
-        $topics_db_links = $this->assignNewsValue(
-            $topics_db_links,
-            self::TOPICS_BASE_VALUE
-        );
+        if ($this->preferences->from_followed) {
+            $followed_db_links = $link_dao->listFromFollowedCollectionsForNews($this->user->id);
+            $followed_db_links = $this->assignNewsValue(
+                $followed_db_links,
+                self::FOLLOWED_BASE_VALUE
+            );
+        }
+
+        if ($this->preferences->from_topics) {
+            $topics_db_links = $link_dao->listFromTopicsForNews($this->user->id);
+            $topics_db_links = $this->assignNewsValue(
+                $topics_db_links,
+                self::TOPICS_BASE_VALUE
+            );
+        }
 
         $db_links = array_merge($bookmarks_db_links, $followed_db_links, $topics_db_links);
         $db_links = $this->mergeByUrl($db_links);
@@ -107,6 +121,7 @@ class NewsPicker
      */
     private function greedyCollect($db_links)
     {
+        $asked_duration = $this->preferences->duration;
         $selected_db_links = [];
         $duration = 0;
 
@@ -121,12 +136,12 @@ class NewsPicker
         // minimum and a maximum durations.
         foreach ($db_links as $db_link) {
             $new_duration = $duration + $db_link['reading_time'];
-            if ($new_duration <= self::MAX_DURATION) {
+            if ($new_duration <= $asked_duration * self::MAX_DURATION_RATIO) {
                 $selected_db_links[] = $db_link;
                 $duration = $new_duration;
             }
 
-            if ($duration >= self::MIN_DURATION) {
+            if ($duration >= $asked_duration * self::MIN_DURATION_RATIO) {
                 break;
             }
         }

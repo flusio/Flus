@@ -10,6 +10,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
 
+    private $duration;
     private $user;
     private $other_user;
 
@@ -20,11 +21,18 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
     {
         $user_dao = new models\dao\User();
 
-        $user_id = $this->create('user');
+        $this->duration = $this->fake('numberBetween', 30, 60);
+        $news_preferences = models\NewsPreferences::init($this->duration, true, true, true);
+
+        $user_id = $this->create('user', [
+            'news_preferences' => $news_preferences->toJson(),
+        ]);
         $db_user = $user_dao->find($user_id);
         $this->user = new models\User($db_user);
 
-        $user_id = $this->create('user');
+        $user_id = $this->create('user', [
+            'news_preferences' => $news_preferences->toJson(),
+        ]);
         $db_user = $user_dao->find($user_id);
         $this->other_user = new models\User($db_user);
     }
@@ -156,8 +164,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $reading_times = array_column($db_links, 'reading_time');
         $total_reading_time = array_sum($reading_times);
-        $this->assertGreaterThanOrEqual(NewsPicker::MIN_DURATION, $total_reading_time);
-        $this->assertLessThanOrEqual(NewsPicker::MAX_DURATION, $total_reading_time);
+        $this->assertGreaterThanOrEqual($this->duration * NewsPicker::MIN_DURATION_RATIO, $total_reading_time);
+        $this->assertLessThanOrEqual($this->duration * NewsPicker::MAX_DURATION_RATIO, $total_reading_time);
     }
 
     public function testPickOrdersByNewsValue()
@@ -255,6 +263,94 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $db_links = $news_picker->pick();
 
         $this->assertSame(1, count($db_links));
+    }
+
+    public function testPickDoesNotSelectFromBookmarksIfDisabled()
+    {
+        $news_preferences = models\NewsPreferences::init($this->duration, false, true, true);
+        $this->user->news_preferences = $news_preferences->toJson();
+        $news_picker = new NewsPicker($this->user);
+        $link_id = $this->create('link', [
+            'user_id' => $this->user->id,
+            'reading_time' => 20,
+        ]);
+        $bookmarks_id = $this->create('collection', [
+            'user_id' => $this->user->id,
+            'type' => 'bookmarks',
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $bookmarks_id,
+            'link_id' => $link_id,
+        ]);
+
+        $db_links = $news_picker->pick();
+
+        $this->assertSame(0, count($db_links));
+    }
+
+    public function testPickDoesNotSelectFromFollowedIfDisabled()
+    {
+        $news_preferences = models\NewsPreferences::init($this->duration, true, false, true);
+        $this->user->news_preferences = $news_preferences->toJson();
+        $news_picker = new NewsPicker($this->user);
+        $link_id = $this->create('link', [
+            'user_id' => $this->other_user->id,
+            'reading_time' => 20,
+            'is_public' => 1,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $this->user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $db_links = $news_picker->pick();
+
+        $this->assertSame(0, count($db_links));
+    }
+
+    public function testPickDoesNotSelectFromTopicsIfDisabled()
+    {
+        $news_preferences = models\NewsPreferences::init($this->duration, true, true, false);
+        $this->user->news_preferences = $news_preferences->toJson();
+        $news_picker = new NewsPicker($this->user);
+        $topic_id = $this->create('topic');
+        // make the user interested by topic1
+        $this->create('user_to_topic', [
+            'user_id' => $this->user->id,
+            'topic_id' => $topic_id,
+        ]);
+        // create a link to a collection associated to topic1
+        $link_id = $this->create('link', [
+            'user_id' => $this->other_user->id,
+            'reading_time' => 10,
+            'is_public' => 1,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+        $this->create('collection_to_topic', [
+            'collection_id' => $collection_id,
+            'topic_id' => $topic_id,
+        ]);
+
+        $db_links = $news_picker->pick();
+
+        $this->assertSame(0, count($db_links));
     }
 
     public function testPickDoesNotSelectFromUnfollowedDefaultCollections()

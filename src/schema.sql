@@ -13,6 +13,7 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     locale TEXT NOT NULL DEFAULT 'en_GB',
     csrf TEXT NOT NULL DEFAULT '',
+    news_preferences JSON NOT NULL DEFAULT '{}',
     validated_at TIMESTAMPTZ,
     validation_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE
 );
