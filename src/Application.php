@@ -53,6 +53,11 @@ class Application
         $router->addRoute('post', '/logout', 'Sessions#delete', 'logout');
         $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
+        // Onboarding
+        $router->addRoute('get', '/onboarding', 'Onboarding#show', 'onboarding');
+        $router->addRoute('post', '/onboarding/locale', 'Onboarding#updateLocale', 'onboarding update locale');
+        $router->addRoute('post', '/onboarding/topics', 'Onboarding#updateTopics', 'onboarding update topics');
+
         // Account
         $router->addRoute('get', '/account', 'Accounts#show', 'account');
         $router->addRoute('post', '/account', 'Accounts#update', 'update account');

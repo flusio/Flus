@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="<?= localeToBCP47($current_locale) ?>">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <link rel="canonical" href="<?= url_full($current_action_pointer) ?>">
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
+
+        <link rel="stylesheet" href="<?= url_asset('stylesheets/application.css') ?>" data-turbolinks-track="reload">
+
+        <script id="javascript-configuration" type="application/json">
+            <?= $this->safe('javascript_configuration') ?>
+        </script>
+        <script src="<?= url_asset('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
+
+        <title><?php if ($environment === 'development'): ?>[devmode] <?php endif; ?><?= $title ?></title>
+    </head>
+
+    <body>
+        <a
+            class="no-mobile accessibility-nav anchor--action"
+            href="#main-content"
+            tabindex="0"
+            data-turbolinks="false"
+            data-controller="skip-nav"
+            data-action="skip-nav#skip"
+        >
+            <?= _('Skip to main content') ?>
+        </a>
+
+        <div class="layout">
+            <header class="layout__header layout__header--not-connected header">
+                <nav class="header__container">
+                    <a class="header__link header__link--home" href="<?= url('onboarding') ?>">
+                        <img
+                            alt="flus"
+                            src="<?= url_static('logo.svg') ?>"
+                            width="120"
+                            height="40.6"
+                        />
+                    </a>
+
+                    <div class="header__separator"></div>
+
+                    <p class="text--secondary">
+                        <?= _f('Step %d on %d', $current_step, 5) ?>
+                        <?php if ($current_step < 5): ?>
+                            (<a href="<?= url('onboarding', ['step' => $current_step +1]) ?>"><?= _('skip') ?></a>)
+                        <?php else: ?>
+                            (<?= _('finished') ?>)
+                        <?php endif; ?>
+                    </p>
+                </nav>
+            </header>
+
+            <main id="main-content" class="layout__content" tabindex="-1">
+                <?= $this->safe('content') ?>
+            </main>
+        </div>
+    </body>
+</html>

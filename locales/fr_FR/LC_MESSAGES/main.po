@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-30 10:51+0200\n"
-"PO-Revision-Date: 2020-09-30 10:51+0200\n"
+"POT-Creation-Date: 2020-09-30 15:41+0200\n"
+"PO-Revision-Date: 2020-09-30 15:43+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -70,6 +70,11 @@ msgstr "Le lien n’est pas dans les signets."
 #: Links.php:206 NewsLinks.php:280
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
+
+#: Onboarding.php:46
+#, php-format
+msgid "“%s”"
+msgstr "« %s »"
 
 #: Registrations.php:107
 msgid "An account already exists with this email address."
@@ -250,6 +255,7 @@ msgid "points of interest"
 msgstr "centres d’intérêt"
 
 #: utils/view_helpers.php:116 views/news_links/index.phtml:85
+#: views/onboarding/step4.phtml:43
 msgid " and "
 msgstr " et "
 
@@ -278,6 +284,7 @@ msgid "%d&nbsp;h&nbsp;%d"
 msgstr "%d&nbsp;h&nbsp;%d"
 
 #: views/_layouts/connected.phtml:35 views/_layouts/not_connected.phtml:35
+#: views/_layouts/onboarding.phtml:28
 msgid "Skip to main content"
 msgstr "Sauter au contenu"
 
@@ -341,11 +348,11 @@ msgstr "Oh non&nbsp;😟"
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:80
+#: views/_layouts/not_connected.phtml:80 views/onboarding/step1.phtml:25
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:97
+#: views/_layouts/not_connected.phtml:97 views/onboarding/step1.phtml:44
 msgid "Change"
 msgstr "Changer"
 
@@ -353,6 +360,19 @@ msgstr "Changer"
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
+
+#: views/_layouts/onboarding.phtml:46
+#, php-format
+msgid "Step %d on %d"
+msgstr "Étape %d sur %d"
+
+#: views/_layouts/onboarding.phtml:48
+msgid "skip"
+msgstr "passer"
+
+#: views/_layouts/onboarding.phtml:50
+msgid "finished"
+msgstr "terminé"
 
 #: views/accounts/delete.phtml:3 views/accounts/delete.phtml:9
 msgid "Account deletion"
@@ -938,7 +958,7 @@ msgstr "Vos signets"
 msgid "The collections you follow"
 msgstr "Vos collections suivies"
 
-#: views/news_links/preferences.phtml:100
+#: views/news_links/preferences.phtml:100 views/onboarding/step4.phtml:91
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -949,6 +969,222 @@ msgstr "Page non trouvée"
 #: views/not_found.phtml:10
 msgid "This page doesn’t exist."
 msgstr "Cette page n’existe pas."
+
+#: views/onboarding/step1.phtml:3
+msgid "Welcome!"
+msgstr "Bienvenue !"
+
+#: views/onboarding/step1.phtml:10
+#, php-format
+msgid "Welcome %s!"
+msgstr "Bienvenue %s !"
+
+#: views/onboarding/step1.phtml:51
+#, php-format
+msgid "The few next screens will explain you the main principles of %s."
+msgstr "Les écrans qui suivent vous expliqueront les principes généraux de %s."
+
+#: views/onboarding/step1.phtml:55
+#, php-format
+msgid ""
+"There’s not much to know before getting started with %s. This onboarding "
+"should take less than 5 minutes of your time."
+msgstr ""
+"Il n’y a pas grand-chose à savoir avant de pouvoir utiliser %s. Cette "
+"introduction devrait vous prendre moins de 5 minutes."
+
+#: views/onboarding/step1.phtml:60 views/onboarding/step2.phtml:37
+#: views/onboarding/step3.phtml:60 views/onboarding/step4.phtml:101
+msgid "Continue"
+msgstr "Continuer"
+
+#: views/onboarding/step1.phtml:68
+msgid "Skip the onboarding"
+msgstr "Passer l’introduction"
+
+#: views/onboarding/step2.phtml:3 views/onboarding/step2.phtml:10
+msgid "The big picture"
+msgstr "Vue d’ensemble"
+
+#: views/onboarding/step2.phtml:14
+msgid ""
+"First, you must know about the 3 main features: <em>news</em>, "
+"<em>bookmarks</em> and <em>collections</em>."
+msgstr ""
+"Premièrement, vous devez connaître les 3 fonctionnalités principales : le "
+"<em>journal</em>, les <em>signets</em> et les <em>collections</em>."
+
+#: views/onboarding/step2.phtml:19
+msgid ""
+"<strong>News</strong> is where you <em>get suggestions</em> of what to read;"
+msgstr ""
+"Le <strong>Journal</strong> vous propose des <em>suggestions</em> de liens à "
+"lire ;"
+
+#: views/onboarding/step2.phtml:23
+msgid ""
+"<strong>Bookmarks</strong> is where you save what you want to <em>read "
+"later</em>;"
+msgstr ""
+"Les <strong>Signets</strong> vous permettent d’y placer les liens à <em>lire "
+"plus tard</em> ;"
+
+#: views/onboarding/step2.phtml:27
+msgid ""
+"<strong>Collections</strong> is where you <em>organize the links</em>, they "
+"can be followed by the community."
+msgstr ""
+"Les <strong>Collections</strong> permettent <em>d’organiser les liens</em>, "
+"elles peuvent être suivies par la communauté."
+
+#: views/onboarding/step2.phtml:32
+msgid "Pretty simple, isn’t it?"
+msgstr "Plutôt simple, n’est-ce pas ?"
+
+#: views/onboarding/step3.phtml:3 views/onboarding/step3.phtml:10
+msgid "A closer look at the links"
+msgstr "Les liens dans le détail"
+
+#: views/onboarding/step3.phtml:14
+msgid "Links are central. They create bridges with the rest of the Internet."
+msgstr ""
+"Les liens sont centraux. Ils forment des ponts avec le reste d’Internet."
+
+#: views/onboarding/step3.phtml:19
+msgid "Put them in collections or bookmarks to find them later;"
+msgstr ""
+"Placez-les dans des collections ou vos signets pour les retrouver plus tard ;"
+
+#: views/onboarding/step3.phtml:23
+msgid "comment them and share your thoughts with the rest of the community;"
+msgstr "commentez-les et partagez vos pensées avec le reste de la communauté ;"
+
+#: views/onboarding/step3.phtml:27
+msgid "discover new links based on what the other users shared."
+msgstr ""
+"découvrez de nouveaux liens à partir de ce que les autres utilisateur‧ices "
+"ont partagé."
+
+#: views/onboarding/step3.phtml:32
+#, php-format
+msgid ""
+"In %s, look for the <em class=\"icon icon--inline icon--plus-circle\">plus "
+"in a circle</em> icon when you want to add a link."
+msgstr ""
+"Dans %s, recherchez l’icone du <em class=\"icon icon--inline icon--plus-"
+"circle\">plus dans un cercle</em> lorsque vous voulez ajouter un lien."
+
+#: views/onboarding/step3.phtml:43
+msgid ""
+"Note: when you’re being asked for a “<abbr>URL</abbr>”, you’re supposed to "
+"copy-paste the content of the bar at the top of your browser."
+msgstr ""
+"Note : lorsque l’on vous demande une « <abbr>URL</abbr> », vous devez copier-"
+"coller le contenu de la barre en haut de votre navigateur Internet."
+
+#: views/onboarding/step3.phtml:48
+msgid ""
+"A screenshot of the browser URL bar in Firefox, it contains “https://"
+"contributopia.org/fr/”"
+msgstr ""
+"Une capture d’écran de la barre URL de Firefox, elle contient « https://"
+"contributopia.org/fr/ »"
+
+#: views/onboarding/step3.phtml:54
+msgid ""
+"It should look like this in Firefox. In this example, the <abbr>URL</abbr> "
+"is <code>https://contributopia.org/fr/</code>"
+msgstr ""
+"Cela devrait ressembler à ça dans Firefox. Dans cet exemple, l’<abbr>URL</"
+"abbr> est <code>https://contributopia.org/fr/</code>"
+
+#: views/onboarding/step4.phtml:3 views/onboarding/step4.phtml:10
+msgid "Understanding the news"
+msgstr "Comprendre le journal"
+
+#: views/onboarding/step4.phtml:14
+#, php-format
+msgid ""
+"You might spend a lot of time to read the news. This is why %s gives you "
+"control on its suggestions."
+msgstr ""
+"Vous risquez de passer beaucoup de temps à lire le journal. C’est pourquoi "
+"%s vous donne le contrôle sur ses suggestions."
+
+#: views/onboarding/step4.phtml:19
+msgid ""
+"Specify <em>how much time</em> you have, the suggestions of links are "
+"automatically adapted;"
+msgstr ""
+"Indiquez de <em>combien de temps</em> vous disposez, les suggestions de "
+"liens sont automatiquement adaptées ;"
+
+#: views/onboarding/step4.phtml:23
+msgid ""
+"suggestions come from your bookmarks, collections you follow and points of "
+"interest, but you can change this at any time;"
+msgstr ""
+"les suggestions viennent de vos signets, collections suivies et centres "
+"d’intérêt, mais vous pouvez changer cela à tout moment ;"
+
+#: views/onboarding/step4.phtml:27
+msgid ""
+"in the future, more options will be available to put you in charge of the "
+"algorithm."
+msgstr ""
+"dans le futur, plus d’options seront disponibles pour vous placer aux "
+"commandes de l’algorithme."
+
+#: views/onboarding/step4.phtml:32
+msgid ""
+"No endless scroll, no angry comments: your <em>peace of mind</em> is what "
+"matters."
+msgstr ""
+"Pas de défilement infini, ni de commentaires haineux : votre <em>sérénité</"
+"em> est ce qui compte le plus."
+
+#: views/onboarding/step4.phtml:39 views/onboarding/step4.phtml:55
+msgid ""
+"By the way, you might want to indicate your <em>points of interest</em> "
+"right away, you’ll get better suggestions then."
+msgstr ""
+"D’ailleurs vous pourriez vouloir indiquer vos <em>centres d’intérêt</em> "
+"tout de suite, cela améliorera les suggestions."
+
+#: views/onboarding/step4.phtml:43
+#, php-format
+msgid "You’ve selected %s."
+msgstr "Vous avez sélectionné %s."
+
+#: views/onboarding/step4.phtml:47
+msgid "You’ll be able to change those later."
+msgstr "Vous pourrez changer cela plus tard."
+
+#: views/onboarding/step5.phtml:3 views/onboarding/step5.phtml:10
+msgid "Start exploring"
+msgstr "Commençons à explorer"
+
+#: views/onboarding/step5.phtml:14
+#, php-format
+msgid ""
+"This is the end of the onboarding. You should now have the keys to use %s in "
+"an efficient way."
+msgstr ""
+"C’est la fin de cette introduction. Vous devriez maintenant avoir tous les "
+"éléments en main pour utiliser %s de manière efficace."
+
+#: views/onboarding/step5.phtml:25
+msgid ""
+"All the features weren’t explained and new ones are coming regularly. If "
+"you’re lost, stay curious and you should find your way."
+msgstr ""
+"Toutes les fonctionnalités n’ont pas été présentées et de nouvelles arrivent "
+"régulièrement. Si vous vous sentez perdu‧e, soyez curieux ou curieuse et "
+"vous devriez vous en sortir."
+
+#: views/onboarding/step5.phtml:30
+msgid "Access the news"
+msgstr "Accéder au journal"
 
 #: views/pages/design.phtml:3 views/pages/design.phtml:10
 msgid "flusio design system"

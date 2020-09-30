@@ -1,0 +1,63 @@
+<?php
+    $this->layout('onboarding.phtml', [
+        'title' => _('A closer look at the links'),
+        'current_step' => 3,
+    ]);
+?>
+
+<div class="section section--onboarding">
+    <div class="section__title">
+        <h1><?= _('A closer look at the links') ?></h1>
+    </div>
+
+    <p class="paragraph--featured">
+        <?= _('Links are central. They create bridges with the rest of the Internet.') ?>
+    </p>
+
+    <ul class="list--spaced">
+        <li class="list__item">
+            <?= _('Put them in collections or bookmarks to find them later;') ?>
+        </li>
+
+        <li class="list__item">
+            <?= _('comment them and share your thoughts with the rest of the community;') ?>
+        </li>
+
+        <li class="list__item">
+            <?= _('discover new links based on what the other users shared.') ?>
+        </li>
+    </ul>
+
+    <p class="paragraph--centered">
+        <?= _f('In %s, look for the <em class="icon icon--inline icon--plus-circle">plus in a circle</em> icon when you want to add a link.', $brand) ?>
+    </p>
+
+    <img
+        class="illustration illustration--centered"
+        alt=""
+        src="<?= url_static('illustrations/share_link.svg') ?>"
+        height="250"
+    />
+
+    <p class="paragraph--centered">
+        <?= _('Note: when you’re being asked for a “<abbr>URL</abbr>”, you’re supposed to copy-paste the content of the bar at the top of your browser.') ?>
+    </p>
+
+    <figure class="figure--centered">
+        <img
+            alt="<?= _('A screenshot of the browser URL bar in Firefox, it contains “https://contributopia.org/fr/”') ?>"
+            class="illustration illustration--figure"
+            src="<?= url_static('onboarding/url-bar.png') ?>"
+         />
+
+         <figcaption>
+             <?= _('It should look like this in Firefox. In this example, the <abbr>URL</abbr> is <code>https://contributopia.org/fr/</code>') ?>
+         </figcaption>
+    </figure>
+
+    <p class="paragraph--centered">
+        <a class="anchor--action" href="<?= url('onboarding', ['step' => 4]) ?>">
+            <?= _('Continue') ?>
+        </a>
+    </p>
+</div>

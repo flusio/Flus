@@ -1,0 +1,40 @@
+<?php
+    $this->layout('onboarding.phtml', [
+        'title' => _('The big picture'),
+        'current_step' => 2,
+    ]);
+?>
+
+<div class="section section--onboarding">
+    <div class="section__title">
+        <h1><?= _('The big picture') ?></h1>
+    </div>
+
+    <p class="paragraph--featured">
+        <?= _('First, you must know about the 3 main features: <em>news</em>, <em>bookmarks</em> and <em>collections</em>.') ?>
+    </p>
+
+    <ul class="list--no-style list--spaced">
+        <li class="list__item icon icon--tree">
+            <?= _('<strong>News</strong> is where you <em>get suggestions</em> of what to read;') ?>
+        </li>
+
+        <li class="list__item icon icon--bookmark">
+            <?= _('<strong>Bookmarks</strong> is where you save what you want to <em>read later</em>;') ?>
+        </li>
+
+        <li class="list__item icon icon--collection">
+            <?= _('<strong>Collections</strong> is where you <em>organize the links</em>, they can be followed by the community.') ?>
+        </li>
+    </ul>
+
+    <p class="paragraph--centered">
+        <?= _('Pretty simple, isn’t it?') ?>
+    </p>
+
+    <p class="paragraph--centered">
+        <a class="anchor--action" href="<?= url('onboarding', ['step' => 3]) ?>">
+            <?= _('Continue') ?>
+        </a>
+    </p>
+</div>

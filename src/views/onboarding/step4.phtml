@@ -1,0 +1,104 @@
+<?php
+    $this->layout('onboarding.phtml', [
+        'title' => _('Understanding the news'),
+        'current_step' => 4,
+    ]);
+?>
+
+<div class="section section--onboarding">
+    <div class="section__title">
+        <h1><?= _('Understanding the news') ?></h1>
+    </div>
+
+    <p class="paragraph--featured">
+        <?= _f('You might spend a lot of time to read the news. This is why %s gives you control on its suggestions.', $brand) ?>
+    </p>
+
+    <ul class="list--spaced">
+        <li class="list__item">
+            <?= _('Specify <em>how much time</em> you have, the suggestions of links are automatically adapted;') ?>
+        </li>
+
+        <li class="list__item">
+            <?= _('suggestions come from your bookmarks, collections you follow and points of interest, but you can change this at any time;') ?>
+        </li>
+
+        <li class="list__item">
+            <?= _('in the future, more options will be available to put you in charge of the algorithm.') ?>
+        </li>
+    </ul>
+
+    <p class="paragraph--centered">
+        <?= _('No endless scroll, no angry comments: your <em>peace of mind</em> is what matters.') ?>
+    </p>
+
+    <?php if ($user_topic_labels): ?>
+        <hr />
+
+        <p class="paragraph--centered">
+            <?= _('By the way, you might want to indicate your <em>points of interest</em> right away, you’ll get better suggestions then.') ?>
+        </p>
+
+        <p class="paragraph--centered">
+            <?= _f('You’ve selected %s.', human_implode($user_topic_labels, ', ', _(' and '))) ?>
+        </p>
+
+        <p class="paragraph--centered paragraph--secondary">
+            <i><?= _('You’ll be able to change those later.') ?></i>
+        </p>
+
+        <hr />
+    <?php elseif ($topics): ?>
+        <hr />
+
+        <p class="paragraph--centered">
+            <?= _('By the way, you might want to indicate your <em>points of interest</em> right away, you’ll get better suggestions then.') ?>
+        </p>
+
+        <form
+            method="post"
+            action="<?= url('onboarding update topics') ?>"
+            class="form--centered"
+        >
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+            <?php if (isset($errors['topic_ids'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['topic_ids'] ?>
+                </p>
+            <?php endif; ?>
+
+            <div class="topics-selector">
+                <?php foreach ($topics as $topic): ?>
+                    <div class="topics-selector__item">
+                        <input
+                            type="checkbox"
+                            id="topic-<?= $topic->id ?>"
+                            class="topics-selector__checkbox"
+                            name="topic_ids[]"
+                            value="<?= $topic->id ?>"
+                        />
+
+                        <label class="topics-selector__label" for="topic-<?= $topic->id ?>">
+                            <?= $this->protect($topic->label) ?>
+                        </label>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="button--primary">
+                    <?= _('Save') ?>
+                </button>
+            </div>
+        </form>
+
+        <hr />
+    <?php endif; ?>
+
+    <p class="paragraph--centered">
+        <a class="anchor--action" href="<?= url('onboarding', ['step' => 5]) ?>">
+            <?= _('Continue') ?>
+        </a>
+    </p>
+</div>

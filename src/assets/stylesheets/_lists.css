@@ -7,3 +7,7 @@
 .list__item + .list__item {
     margin-top: var(--space-small);
 }
+
+.list--spaced .list__item + .list__item {
+    margin-top: var(--space-medium);
+}

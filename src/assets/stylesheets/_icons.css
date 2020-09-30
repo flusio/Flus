@@ -20,6 +20,14 @@
     background-size: 1.5em;
 }
 
+.icon--inline {
+    padding-left: 1.9em;
+}
+
+.icon--inline::before {
+    left: 0.1em;
+}
+
 .icon--anchor::before {
     transition: filter 0.3s ease-in-out;
 }
@@ -87,6 +95,10 @@
 /* Essential */
 .icon--copy-to-clipboard::before {
     background-image: url("../icons/essential/copy-to-clipboard-line.svg");
+}
+
+.icon--help::before {
+    background-image: url("../icons/essential/help-line.svg");
 }
 
 .icon--library::before,

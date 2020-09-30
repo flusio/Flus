@@ -4,7 +4,28 @@
     margin: var(--space-larger) var(--space-large);
 }
 
+.illustration--figure {
+    margin: 0;
+}
+
 .illustration--centered {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+figure {
+    margin: 0;
+    padding: var(--space-medium);
+
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+.figure--centered {
+    text-align: center;
+}
+
+.figure--centered img {
     margin-right: auto;
     margin-left: auto;
 }

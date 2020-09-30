@@ -2,6 +2,13 @@
     margin-bottom: var(--space-larger);
 }
 
+.section--onboarding {
+    max-width: 55ch;
+    margin-right: auto;
+    margin-left: auto;
+    padding-bottom: var(--space-larger);
+}
+
 .section__nav {
     display: flex;
     margin: var(--space-small);

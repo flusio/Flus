@@ -54,7 +54,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, $user_dao->count());
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponse($response, 302, '/onboarding');
     }
 
     public function testCreateCreatesARegistrationValidationToken()
@@ -175,7 +175,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponse($response, 302, '/onboarding');
         $this->assertSame(1, $collection_dao->count());
         $db_collection = $collection_dao->listAll()[0];
         $user = utils\CurrentUser::get();

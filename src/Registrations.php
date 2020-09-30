@@ -51,7 +51,7 @@ class Registrations
      * @response 400 if CSRF token is wrong
      * @response 400 if email, username or password is missing/invalid
      * @response 400 if email already exists
-     * @response 302 /
+     * @response 302 /onboarding
      *
      * @param \Minz\Request $request
      *
@@ -135,7 +135,7 @@ class Registrations
         $users_mailer = new mailers\Users();
         $users_mailer->sendRegistrationValidationEmail($user, $validation_token);
 
-        $response = Response::redirect('home');
+        $response = Response::redirect('onboarding');
         $response->setCookie('flusio_session_token', $session_token->token, [
             'expires' => $session_token->expired_at->getTimestamp(),
         ]);

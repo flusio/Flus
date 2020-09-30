@@ -1,5 +1,11 @@
 .topics-selector {
+    margin-bottom: var(--space-medium);
+
     text-align: center;
+}
+
+.topics-selector:last-child {
+    margin-bottom: 0;
 }
 
 .topics-selector__item {
