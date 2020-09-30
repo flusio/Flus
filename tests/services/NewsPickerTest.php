@@ -149,10 +149,10 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->user->id,
             'type' => 'bookmarks',
         ]);
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $link_id = $this->create('link', [
                 'user_id' => $this->user->id,
-                'reading_time' => $this->fake('numberBetween', 10, 15),
+                'reading_time' => $this->fake('numberBetween', 2, 5),
             ]);
             $this->create('link_to_collection', [
                 'collection_id' => $bookmarks_id,
