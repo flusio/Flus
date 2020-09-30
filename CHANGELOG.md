@@ -1,5 +1,12 @@
 # Changelog of flusio
 
+## 2020-xx-yy - v0.10
+
+### Migration notes
+
+(optional) You can change your instance brand name by setting `APP_BRAND` in
+your `.env` file.
+
 ## 2020-09-24 - v0.9
 
 ### Migration notes

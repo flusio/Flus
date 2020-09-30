@@ -160,6 +160,7 @@ class Application
 
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
+            'brand' => \Minz\Configuration::$application['brand'],
             'errors' => $errors,
             'error' => $error,
             'status' => $status,

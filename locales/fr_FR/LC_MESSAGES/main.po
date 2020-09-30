@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-29 15:33+0200\n"
-"PO-Revision-Date: 2020-09-29 15:34+0200\n"
+"POT-Creation-Date: 2020-09-30 10:51+0200\n"
+"PO-Revision-Date: 2020-09-30 10:51+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -126,9 +126,10 @@ msgstr "Retirer des signets"
 msgid "Add to bookmarks"
 msgstr "Ajouter aux signets"
 
-#: mailers/Users.php:9
-msgid "[flusio] Confirm your registration"
-msgstr "[flusio] Confirmer votre inscription"
+#: mailers/Users.php:10
+#, php-format
+msgid "[%s] Confirm your registration"
+msgstr "[%s] Confirmer votre inscription"
 
 #: models/Collection.php:84 models/Collection.php:103
 #: views/_layouts/connected.phtml:73 views/collections/show_bookmarks.phtml:3
@@ -281,9 +282,10 @@ msgid "Skip to main content"
 msgstr "Sauter au contenu"
 
 #: views/_layouts/connected.phtml:42 views/_layouts/not_connected.phtml:42
-msgid "You’re using a demo version of flusio, the data are reset every night."
+#, php-format
+msgid "You’re using a demo version of %s, the data are reset every night."
 msgstr ""
-"Vous utilisez une version de démo de flusio, les données sont réinitialisées "
+"Vous utilisez une version de démo de %s, les données sont réinitialisées "
 "chaque nuit."
 
 #: views/_layouts/connected.phtml:50
@@ -348,8 +350,9 @@ msgid "Change"
 msgstr "Changer"
 
 #: views/_layouts/not_connected.phtml:110
-msgid "About flusio"
-msgstr "À propos de flusio"
+#, php-format
+msgid "About %s"
+msgstr "À propos de %s"
 
 #: views/accounts/delete.phtml:3 views/accounts/delete.phtml:9
 msgid "Account deletion"

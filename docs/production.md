@@ -210,6 +210,13 @@ Don’t forget to restart PHP:
 
 You can find more information on Browscap at [php.net/browscap](https://php.net/browscap).
 
+## Bonus: Set a brand name
+
+The generic brand name is “flusio”, but you might want to change it to
+distinguish your instance from the other ones. This is pretty simple: uncomment
+the `APP_BRAND` variable in your `.env` file, and set the name of your choice.
+It’s recommended to choose a short name.
+
 ## Bonus: Close the registrations
 
 You might want to setup a private instance of flusio. The registrations can be

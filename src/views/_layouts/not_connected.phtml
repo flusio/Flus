@@ -20,7 +20,7 @@
         </script>
         <script src="<?= url_asset('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
 
-        <title><?php if ($environment === 'development'): ?>[devmode] <?php endif; ?><?= $title ?> · flusio</title>
+        <title><?php if ($environment === 'development'): ?>[devmode] <?php endif; ?><?= $title ?> · <?= $brand ?></title>
     </head>
 
     <body>
@@ -39,7 +39,7 @@
             <?php if ($demo): ?>
                 <div class="layout__banner">
                     <div class="banner__container">
-                        <?= _('You’re using a demo version of flusio, the data are reset every night.') ?>
+                        <?= _f('You’re using a demo version of %s, the data are reset every night.', $brand) ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -107,7 +107,7 @@
             <footer class="layout__footer">
                 <p>
                     <a href="https://flus.fr">
-                        <?= _('About flusio') ?>
+                        <?= _f('About %s', $brand) ?>
                     </a>
                 </p>
             </footer>
