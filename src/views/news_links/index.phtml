@@ -109,15 +109,15 @@
                                     <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                                     <button class="popup__item popup__item--button icon icon--bookmark">
-                                        <?= _('I’ll read it later') ?>
+                                        <?= _('Add to bookmarks') ?>
                                     </button>
                                 </form>
 
                                 <form method="post" action="<?= url('hide news', ['id' => $news_link->id]) ?>">
                                     <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
-                                    <button class="popup__item popup__item--button icon icon--thumbs-down">
-                                        <?= _('I’m not interested') ?>
+                                    <button class="popup__item popup__item--button icon icon--times">
+                                        <?= _('Remove from the news') ?>
                                     </button>
                                 </form>
                             </nav>

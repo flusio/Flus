@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-01 12:01+0200\n"
-"PO-Revision-Date: 2020-10-01 12:01+0200\n"
+"POT-Creation-Date: 2020-10-01 14:02+0200\n"
+"PO-Revision-Date: 2020-10-01 14:03+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -128,6 +128,7 @@ msgstr "Retirer des signets"
 
 #: assets/javascripts/controllers/link_card_controller.js:57
 #: assets/javascripts/controllers/link_card_controller.js:58
+#: views/news_links/index.phtml:112
 msgid "Add to bookmarks"
 msgstr "Ajouter aux signets"
 
@@ -895,13 +896,9 @@ msgstr[1] "ont ajouté ce lien."
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/news_links/index.phtml:112
-msgid "I’ll read it later"
-msgstr "Je lirai ça plus tard"
-
 #: views/news_links/index.phtml:120
-msgid "I’m not interested"
-msgstr "Je ne suis pas intéressé"
+msgid "Remove from the news"
+msgstr "Retirer du journal"
 
 #: views/news_links/index.phtml:145
 msgid "Add to collections"
