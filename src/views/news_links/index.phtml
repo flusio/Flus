@@ -77,19 +77,8 @@
                         <?php $count_followed_links = count($matching_followed_links); ?>
                         <?php if ($matching_followed_links): ?>
                             <p>
-                                <?php
-                                    // We use one big loop to avoid spaces before the commas.
-                                    foreach ($matching_followed_links as $key => $link):
-                                        $linking_word = '';
-                                        if ($key > 0 && $key === $count_followed_links - 1):
-                                            $linking_word = _(' and ');
-                                        elseif ($key > 0):
-                                            $linking_word = ', ';
-                                        endif;
-
-                                        echo $linking_word . $this->protect($link->owner()->username);
-                                    endforeach;
-                                ?>
+                                <?php $usernames = array_map(function ($link) { return $link->owner()->username; }, $matching_followed_links); ?>
+                                <?= $this->protect(human_implode($usernames, ', ', _(' and '))) ?>
 
                                 <?php if ($news_link->url_in_bookmarks || $news_link->url_collections_count > 0): ?>
                                     <?= _n('also added this link.', 'also added this link.', $count_followed_links) ?>
