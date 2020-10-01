@@ -84,6 +84,7 @@
 
     color: var(--color-text-secondary);
     font-size: var(--size-small);
+    white-space: nowrap;
 }
 
 .card__ellipsis {
