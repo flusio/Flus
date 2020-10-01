@@ -1,11 +1,40 @@
 # Changelog of flusio
 
-## 2020-xx-yy - v0.10
+## 2020-10-01 - v0.10
 
 ### Migration notes
 
 (optional) You can change your instance brand name by setting `APP_BRAND` in
 your `.env` file.
+
+### New
+
+- Allow to configure news
+- Provide onboarding
+- Allow to change the brand name
+
+### Improvements
+
+- Consider the OpenGraph and Twitter titles
+- Redirect intelligently on link deletion
+- Improve the news tips section
+- Reword options to remove news
+- Increase the topic label max size
+
+### Bug fixes
+
+- Don't select link in owned collection for news
+- Hide "add to collections" if user has no collections
+- Fix select width with long options on mobile
+- Fix padding for header locale form
+
+### Misc
+
+- Add `[devmode]` in page title in development
+- Fix break line in cards details
+- Refactor listing with `human_implode` in News
+- Fix NewsPicker duration test
+- Fix a test to be sure to generate unique URLs
 
 ## 2020-09-24 - v0.9
 
