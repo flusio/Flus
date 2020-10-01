@@ -35,6 +35,36 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is title 1', $title);
     }
 
+    public function testTitleTakesOgTitle()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <head>
+                    <meta property="og:title" content="This is title" />
+                </head>
+            </html>
+        HTML);
+
+        $title = DomExtractor::title($dom);
+
+        $this->assertSame('This is title', $title);
+    }
+
+    public function testTitleTakesTwitterTitle()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <head>
+                    <meta name="twitter:title" content="This is title" />
+                </head>
+            </html>
+        HTML);
+
+        $title = DomExtractor::title($dom);
+
+        $this->assertSame('This is title', $title);
+    }
+
     public function testTitleDoesNotConsiderSvgTitle()
     {
         $dom = Dom::fromText(<<<HTML

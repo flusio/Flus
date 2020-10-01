@@ -843,8 +843,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
         $db_link = $link_dao->find($link_id);
-        $expected_title = 'GitHub - flusio/flusio: The citizen social media';
-        $this->assertSame($expected_title, $db_link['title']);
+        $this->assertSame('flusio/flusio', $db_link['title']);
         $this->assertSame(200, $db_link['fetched_code']);
     }
 

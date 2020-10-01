@@ -19,8 +19,19 @@ class DomExtractor
      */
     public static function title($dom)
     {
-        // Be strict first
-        $title = $dom->select('/html/head/title[1]');
+        // Get the OpenGraph title if it exists
+        $title = $dom->select('/html/head/meta[@property = "og:title"]/attribute::content');
+
+        if (!$title) {
+            // No OpenGraph? Maybe Twitter meta tag?
+            $title = $dom->select('/html/head/meta[@name = "twitter:title"]/attribute::content');
+        }
+
+        if (!$title) {
+            // Still nothing? Get the <title> tag, and be strict first
+            $title = $dom->select('/html/head/title[1]');
+        }
+
         if (!$title) {
             // Then, if we don't find it for some reasons, be more tolerant.
             // This is particularly useful for Youtube!
