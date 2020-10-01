@@ -149,6 +149,21 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('We found no relevant news for you, what can you do?', $response_output);
     }
 
+    public function testIndexHidesAddToCollectionsIfUserHasNoCollections()
+    {
+        $user = $this->login();
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'title' => $this->fake('sentence'),
+            'is_hidden' => 0,
+        ]);
+
+        $response = $this->appRun('get', '/news');
+
+        $response_output = $response->render();
+        $this->assertStringNotContainsString('Add to collections', $response_output);
+    }
+
     public function testIndexRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/news');

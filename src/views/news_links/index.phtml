@@ -133,16 +133,18 @@
                                 <?= _('open') ?>
                             </a>
 
-                            <button
-                                class="button--small"
-                                data-controller="modal-opener"
-                                data-action="modal-opener#fetch"
-                                data-modal-opener-href="<?= url('add news', ['id' => $news_link->id]) ?>"
-                                aria-haspopup="dialog"
-                                aria-controls="modal"
-                            >
-                                <?= _('Add to collections') ?>
-                            </a>
+                            <?php if ($has_collections): ?>
+                                <button
+                                    class="button--small"
+                                    data-controller="modal-opener"
+                                    data-action="modal-opener#fetch"
+                                    data-modal-opener-href="<?= url('add news', ['id' => $news_link->id]) ?>"
+                                    aria-haspopup="dialog"
+                                    aria-controls="modal"
+                                >
+                                    <?= _('Add to collections') ?>
+                                </button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
