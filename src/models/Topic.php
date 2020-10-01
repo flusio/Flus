@@ -8,6 +8,8 @@ namespace flusio\models;
  */
 class Topic extends \Minz\Model
 {
+    public const LABEL_MAX_SIZE = 30;
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'string',
@@ -69,7 +71,7 @@ class Topic extends \Minz\Model
      */
     public static function validateLabel($label)
     {
-        return strlen($label) <= 21;
+        return strlen($label) <= self::LABEL_MAX_SIZE;
     }
 
     /**
@@ -88,7 +90,10 @@ class Topic extends \Minz\Model
             if ($property === 'label' && $code === 'required') {
                 $formatted_error = _('The label is required.');
             } elseif ($property === 'label') {
-                $formatted_error = _('The label must be less than 21 characters.');
+                $formatted_error = vsprintf(
+                    _('The label must be less than %d characters.'),
+                    self::LABEL_MAX_SIZE
+                );
             } else {
                 $formatted_error = $error['description']; // @codeCoverageIgnore
             }

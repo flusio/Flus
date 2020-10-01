@@ -57,13 +57,15 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfLabelIsTooLong()
     {
         $topic_dao = new models\dao\Topic();
-        $label = $this->fake('regexify', '\w{22}');
+        $label_max_size = models\Topic::LABEL_MAX_SIZE;
+        $size = $label_max_size + $this->fake('randomDigitNotNull');
+        $label = $this->fake('regexify', "\w{{$size}}");
 
         $response = $this->appRun('cli', '/topics/create', [
             'label' => $label,
         ]);
 
-        $this->assertResponse($response, 400, "The label must be less than 21 characters.");
+        $this->assertResponse($response, 400, "The label must be less than {$label_max_size} characters.");
         $this->assertSame(0, $topic_dao->count());
     }
 

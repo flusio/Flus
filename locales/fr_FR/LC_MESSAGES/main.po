@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-09-30 15:41+0200\n"
-"PO-Revision-Date: 2020-09-30 15:43+0200\n"
+"POT-Creation-Date: 2020-10-01 12:01+0200\n"
+"PO-Revision-Date: 2020-10-01 12:01+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
 #: Collections.php:506 Collections.php:559 LinkMessages.php:70 Links.php:179
-#: Links.php:322 NewsLinks.php:118 NewsLinks.php:267 NewsLinks.php:357
+#: Links.php:322 NewsLinks.php:119 NewsLinks.php:268 NewsLinks.php:359
 #: Registrations.php:84 Registrations.php:252 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -37,8 +37,8 @@ msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
 #: Collections.php:389 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:378 Links.php:457 Links.php:579 NewsLinks.php:415
-#: NewsLinks.php:483 Sessions.php:191
+#: Links.php:378 Links.php:457 Links.php:579 NewsLinks.php:417
+#: NewsLinks.php:485 Sessions.php:191
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -50,12 +50,12 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: LinkCollections.php:96 Links.php:218 NewsLinks.php:294
+#: LinkCollections.php:96 Links.php:218 NewsLinks.php:295
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:409
-#: NewsLinks.php:477
+#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:411
+#: NewsLinks.php:479
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -67,7 +67,7 @@ msgstr "Le lien est déjà dans les signets."
 msgid "This link is not bookmarked."
 msgstr "Le lien n’est pas dans les signets."
 
-#: Links.php:206 NewsLinks.php:280
+#: Links.php:206 NewsLinks.php:281
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
@@ -184,13 +184,14 @@ msgstr "La durée doit se trouver entre %d et %d."
 msgid "You must select at least one option."
 msgstr "Vous devez sélectionner au moins une option."
 
-#: models/Topic.php:89
+#: models/Topic.php:91
 msgid "The label is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Topic.php:91
-msgid "The label must be less than 21 characters."
-msgstr "Le nom doit faire moins de 21 caractères."
+#: models/Topic.php:94
+#, php-format
+msgid "The label must be less than %d characters."
+msgstr "Le nom doit faire moins de %d caractères."
 
 #: models/User.php:380
 msgid "The username is required."
@@ -254,7 +255,7 @@ msgstr "collections suivies"
 msgid "points of interest"
 msgstr "centres d’intérêt"
 
-#: utils/view_helpers.php:116 views/news_links/index.phtml:85
+#: utils/view_helpers.php:116 views/news_links/index.phtml:81
 #: views/onboarding/step4.phtml:43
 msgid " and "
 msgstr " et "
@@ -455,7 +456,7 @@ msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
 #: views/collections/discover.phtml:3 views/collections/discover.phtml:18
-#: views/collections/index.phtml:132 views/news_links/index.phtml:196
+#: views/collections/index.phtml:132 views/news_links/index.phtml:187
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
@@ -463,7 +464,7 @@ msgstr "Découvrir des collections"
 msgid "Your collections"
 msgstr "Vos collections"
 
-#: views/collections/discover.phtml:22 views/news_links/index.phtml:191
+#: views/collections/discover.phtml:22 views/news_links/index.phtml:182
 msgid ""
 "Discover collections created by the community and follow the ones you are "
 "interested in."
@@ -769,7 +770,7 @@ msgid "share"
 msgstr "partager"
 
 #: views/links/show.phtml:105 views/links/show_public.phtml:40
-#: views/news_links/index.phtml:144
+#: views/news_links/index.phtml:133
 msgid "open"
 msgstr "ouvrir"
 
@@ -878,40 +879,40 @@ msgid_plural "In %d collections"
 msgstr[0] "Dans %d collection"
 msgstr[1] "Dans %d collections"
 
-#: views/news_links/index.phtml:95
+#: views/news_links/index.phtml:84
 msgid "also added this link."
 msgid_plural "also added this link."
 msgstr[0] "a aussi ajouté ce lien."
 msgstr[1] "ont aussi ajouté ce lien."
 
-#: views/news_links/index.phtml:97
+#: views/news_links/index.phtml:86
 msgid "added this link."
 msgid_plural "added this link."
 msgstr[0] "a ajouté ce lien."
 msgstr[1] "ont ajouté ce lien."
 
-#: views/news_links/index.phtml:109 views/news_links/index.phtml:113
+#: views/news_links/index.phtml:98 views/news_links/index.phtml:102
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/news_links/index.phtml:123
+#: views/news_links/index.phtml:112
 msgid "I’ll read it later"
 msgstr "Je lirai ça plus tard"
 
-#: views/news_links/index.phtml:131
+#: views/news_links/index.phtml:120
 msgid "I’m not interested"
 msgstr "Je ne suis pas intéressé"
 
-#: views/news_links/index.phtml:155
+#: views/news_links/index.phtml:145
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/news_links/index.phtml:165
+#: views/news_links/index.phtml:156
 msgid "We found no relevant news for you, what can you do?"
 msgstr ""
 "Nous n’avons rien trouvé d’intéressant pour vous, que pouvez-vous faire ?"
 
-#: views/news_links/index.phtml:171
+#: views/news_links/index.phtml:162
 msgid ""
 "As you’re navigating on the Internet, bookmark the links you would like to "
 "read later."
@@ -919,18 +920,18 @@ msgstr ""
 "Lorsque vous naviguez sur Internet, placez les liens que vous aimeriez lire "
 "plus tard dans vos signets."
 
-#: views/news_links/index.phtml:176 views/news_links/index.phtml:186
+#: views/news_links/index.phtml:167 views/news_links/index.phtml:177
 msgid "Ok, fine"
 msgstr "Ok, c’est noté"
 
-#: views/news_links/index.phtml:181
+#: views/news_links/index.phtml:172
 msgid ""
 "Take a break, disconnect from Internet and go for a walk; news can wait."
 msgstr ""
 "Prenez une pause, déconnectez d’Internet et allez vous balader ; l’actualité "
 "peut attendre."
 
-#: views/news_links/index.phtml:212
+#: views/news_links/index.phtml:203
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 
