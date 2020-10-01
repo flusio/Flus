@@ -152,6 +152,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         for ($i = 0; $i < 50; $i++) {
             $link_id = $this->create('link', [
                 'user_id' => $this->user->id,
+                'url' => $this->fakeUnique('url'),
                 'reading_time' => $this->fake('numberBetween', 2, 5),
             ]);
             $this->create('link_to_collection', [
