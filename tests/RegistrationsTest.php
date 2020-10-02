@@ -143,6 +143,26 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($db_session['token'], $cookie['value']);
     }
 
+    public function testCreateTakesAcceptTermsIfExist()
+    {
+        $app_path = \Minz\Configuration::$app_path;
+        $terms_path = $app_path . '/policies/terms.html';
+        file_put_contents($terms_path, $this->fake('sentence'));
+        $user_dao = new models\dao\User();
+
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
+            'accept_terms' => true,
+        ]);
+
+        @unlink($terms_path);
+        $this->assertSame(1, $user_dao->count());
+        $this->assertResponse($response, 302, '/onboarding');
+    }
+
     public function testCreateRedirectsToHomeIfConnected()
     {
         $this->login();
@@ -306,6 +326,26 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, $user_dao->count());
         $this->assertResponse($response, 400, 'The password is required');
+    }
+
+    public function testCreateFailsIfAcceptTermsIsFalseAndTermsExist()
+    {
+        $app_path = \Minz\Configuration::$app_path;
+        $terms_path = $app_path . '/policies/terms.html';
+        file_put_contents($terms_path, $this->fake('sentence'));
+        $user_dao = new models\dao\User();
+
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
+            'accept_terms' => false,
+        ]);
+
+        @unlink($terms_path);
+        $this->assertSame(0, $user_dao->count());
+        $this->assertResponse($response, 400, 'You must accept the terms of service');
     }
 
     public function testValidationWithoutTokenAndConnectedRendersCorrectly()

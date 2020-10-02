@@ -31,7 +31,12 @@ class Registrations
             return Response::redirect('login');
         }
 
+        $app_path = \Minz\Configuration::$app_path;
+        $terms_path = $app_path . '/policies/terms.html';
+        $has_terms = file_exists($terms_path);
+
         return Response::ok('registrations/new.phtml', [
+            'has_terms' => $has_terms,
             'username' => '',
             'email' => '',
             'password' => '',
@@ -67,9 +72,14 @@ class Registrations
             return Response::redirect('login');
         }
 
+        $app_path = \Minz\Configuration::$app_path;
+        $terms_path = $app_path . '/policies/terms.html';
+        $has_terms = file_exists($terms_path);
+
         $username = $request->param('username');
         $email = $request->param('email');
         $password = $request->param('password');
+        $accept_terms = $request->param('accept_terms', false);
         $user_dao = new models\dao\User();
         $collection_dao = new models\dao\Collection();
         $token_dao = new models\dao\Token();
@@ -78,6 +88,7 @@ class Registrations
 
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('registrations/new.phtml', [
+                'has_terms' => $has_terms,
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
@@ -91,6 +102,7 @@ class Registrations
         $errors = $user->validate();
         if ($errors) {
             return Response::badRequest('registrations/new.phtml', [
+                'has_terms' => $has_terms,
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
@@ -100,11 +112,24 @@ class Registrations
 
         if ($user_dao->findBy(['email' => $user->email])) {
             return Response::badRequest('registrations/new.phtml', [
+                'has_terms' => $has_terms,
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
                 'errors' => [
                     'email' => _('An account already exists with this email address.'),
+                ],
+            ]);
+        }
+
+        if ($has_terms && !$accept_terms) {
+            return Response::badRequest('registrations/new.phtml', [
+                'has_terms' => $has_terms,
+                'username' => $username,
+                'email' => $email,
+                'password' => $password,
+                'errors' => [
+                    'accept_terms' => _('You must accept the terms of service.'),
                 ],
             ]);
         }

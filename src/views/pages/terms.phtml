@@ -1,0 +1,19 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Terms of service'),
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _('Terms of service') ?></h1>
+    </div>
+
+    <?= $this->safe('terms') ?>
+
+    <p class="paragraph--centered">
+        <a class="anchor--action" href="<?= url('registration') ?>">
+            <?= _('back to the registration') ?>
+        </a>
+    </p>
+</div>

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-01 14:02+0200\n"
-"PO-Revision-Date: 2020-10-01 14:03+0200\n"
+"POT-Creation-Date: 2020-10-02 10:46+0200\n"
+"PO-Revision-Date: 2020-10-02 10:48+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
 #: Collections.php:506 Collections.php:559 LinkMessages.php:70 Links.php:179
 #: Links.php:322 NewsLinks.php:119 NewsLinks.php:268 NewsLinks.php:359
-#: Registrations.php:84 Registrations.php:252 Sessions.php:82
+#: Registrations.php:95 Registrations.php:277 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -76,15 +76,19 @@ msgstr "Le lien doit être associé à une collection."
 msgid "“%s”"
 msgstr "« %s »"
 
-#: Registrations.php:107
+#: Registrations.php:120
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:186 Registrations.php:200
+#: Registrations.php:132
+msgid "You must accept the terms of service."
+msgstr "Vous devez accepter les conditions générales d’utilisation"
+
+#: Registrations.php:211 Registrations.php:225
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: Registrations.php:193
+#: Registrations.php:218
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
@@ -346,7 +350,7 @@ msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
 #: views/_layouts/not_connected.phtml:62 views/registrations/new.phtml:3
-#: views/registrations/new.phtml:9 views/registrations/new.phtml:109
+#: views/registrations/new.phtml:9 views/registrations/new.phtml:134
 msgid "Sign up"
 msgstr "S’inscrire"
 
@@ -1192,6 +1196,14 @@ msgstr "système de design de flusio"
 msgid "Colors"
 msgstr "Couleurs"
 
+#: views/pages/terms.phtml:3 views/pages/terms.phtml:9
+msgid "Terms of service"
+msgstr "Conditions générales d’utilisation"
+
+#: views/pages/terms.phtml:16
+msgid "back to the registration"
+msgstr "retour à l’inscription"
+
 #: views/registrations/new.phtml:23
 msgid "How should we name you?"
 msgstr "Comment devons-nous vous appeler ?"
@@ -1212,7 +1224,21 @@ msgstr "Et un mot de passe"
 msgid "A strong password is at least 8 characters long."
 msgstr "Un mot de passe robuste fait au moins 8 caractères."
 
-#: views/registrations/new.phtml:113
+#: views/registrations/new.phtml:110
+#, php-format
+msgid ""
+"Before going any further, you should read <a href=\"%s\" target=\"_blank"
+"\">the terms of service</a> to make sure they are suitable for you."
+msgstr ""
+"Avant d’aller plus loin, vous devriez prendre le temps de lire <a href=\"%s"
+"\" target=\"_blank\">les conditions générales d’utilisation</a> pour vous "
+"assurer que celles-ci vous conviennent."
+
+#: views/registrations/new.phtml:121
+msgid "Accept the terms of service"
+msgstr "Accepter les conditions générales d’utilisation"
+
+#: views/registrations/new.phtml:138
 msgid "Already an account? Sign in"
 msgstr "Déjà un compte ? Se connecter"
 

@@ -8,5 +8,7 @@
 !/cache/.keep
 /data/*
 !/data/.keep
+/policies/*
+!/policies/.keep
 
 /public/dev_assets

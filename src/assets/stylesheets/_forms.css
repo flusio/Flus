@@ -277,3 +277,14 @@ legend {
     border: var(--border-width) solid var(--border-error-color);
     border-radius: var(--border-radius);
 }
+
+.form-group--terms {
+    padding: var(--space-medium);
+
+    background-color: var(--color-purple-1);
+    border-radius: var(--border-radius);
+}
+
+.form-group--terms .form-group__caption {
+    margin-top: 0;
+}
