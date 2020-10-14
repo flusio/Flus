@@ -39,7 +39,7 @@ class Token extends \Minz\Model
     {
         return new self([
             'expired_at' => \Minz\Time::fromNow($number, $duration),
-            'token' => bin2hex(random_bytes(32)),
+            'token' => bin2hex(random_bytes($complexity)),
         ]);
     }
 
