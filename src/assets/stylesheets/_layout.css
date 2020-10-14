@@ -90,6 +90,11 @@
     border-bottom: var(--border-width) solid var(--color-purple-2);
 }
 
+.layout__banner--alert .banner__container {
+    background-color: var(--color-red-1);
+    border-bottom-color: var(--color-red-2);
+}
+
 .banner__container--anchor {
     transition: background-color 0.3s ease-in-out;
 }

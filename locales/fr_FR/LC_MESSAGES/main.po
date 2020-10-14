@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-02 10:46+0200\n"
-"PO-Revision-Date: 2020-10-02 10:48+0200\n"
+"POT-Creation-Date: 2020-10-14 17:09+0200\n"
+"PO-Revision-Date: 2020-10-14 17:10+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
 #: Collections.php:506 Collections.php:559 LinkMessages.php:70 Links.php:179
 #: Links.php:322 NewsLinks.php:119 NewsLinks.php:268 NewsLinks.php:359
-#: Registrations.php:95 Registrations.php:277 Sessions.php:82
+#: Registrations.php:95 Registrations.php:278 Sessions.php:82
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -38,7 +38,7 @@ msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
 #: Collections.php:389 LinkCollections.php:149 LinkCollections.php:201
 #: Links.php:378 Links.php:457 Links.php:579 NewsLinks.php:417
-#: NewsLinks.php:485 Sessions.php:191
+#: NewsLinks.php:485 Sessions.php:192
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -82,13 +82,13 @@ msgstr "Un compte existe déjà avec cette adresse courriel."
 
 #: Registrations.php:132
 msgid "You must accept the terms of service."
-msgstr "Vous devez accepter les conditions générales d’utilisation"
+msgstr "Vous devez accepter les conditions générales d’utilisation."
 
-#: Registrations.php:211 Registrations.php:225
+#: Registrations.php:212 Registrations.php:226
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: Registrations.php:218
+#: Registrations.php:219
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
@@ -142,7 +142,7 @@ msgid "[%s] Confirm your registration"
 msgstr "[%s] Confirmer votre inscription"
 
 #: models/Collection.php:84 models/Collection.php:103
-#: views/_layouts/connected.phtml:73 views/collections/show_bookmarks.phtml:3
+#: views/_layouts/connected.phtml:81 views/collections/show_bookmarks.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
@@ -198,31 +198,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:380
+#: models/User.php:379
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:382
+#: models/User.php:381
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:384
+#: models/User.php:383
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:386
+#: models/User.php:385
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:388
+#: models/User.php:387
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:390
+#: models/User.php:389
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:392
+#: models/User.php:391
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -295,53 +295,59 @@ msgid "Skip to main content"
 msgstr "Sauter au contenu"
 
 #: views/_layouts/connected.phtml:42 views/_layouts/not_connected.phtml:42
+#: views/_layouts/onboarding.phtml:35
+#, php-format
+msgid "You need to activate JavaScript in order to use %s."
+msgstr "Vous devez activer JavaScript pour utiliser %s."
+
+#: views/_layouts/connected.phtml:50 views/_layouts/not_connected.phtml:50
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
 msgstr ""
 "Vous utilisez une version de démo de %s, les données sont réinitialisées "
 "chaque nuit."
 
-#: views/_layouts/connected.phtml:50
+#: views/_layouts/connected.phtml:58
 msgid "You must validate your registration&nbsp;→"
 msgstr "Vous devez valider votre inscription&nbsp;→"
 
-#: views/_layouts/connected.phtml:64 views/news_links/index.phtml:3
+#: views/_layouts/connected.phtml:72 views/news_links/index.phtml:3
 #: views/news_links/index.phtml:10
 msgid "News"
 msgstr "Journal"
 
-#: views/_layouts/connected.phtml:82 views/collections/index.phtml:3
+#: views/_layouts/connected.phtml:90 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/link_collections/index.phtml:19
 #: views/links/new.phtml:62 views/links/show.phtml:114
 #: views/news_links/adding.phtml:41
 msgid "Collections"
 msgstr "Collections"
 
-#: views/_layouts/connected.phtml:93 views/_layouts/connected.phtml:98
+#: views/_layouts/connected.phtml:101 views/_layouts/connected.phtml:106
 #: views/collections/show.phtml:22 views/collections/show.phtml:26
 #: views/links/show.phtml:27 views/links/show.phtml:31
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
-#: views/_layouts/connected.phtml:106 views/accounts/show.phtml:3
+#: views/_layouts/connected.phtml:114 views/accounts/show.phtml:3
 #: views/accounts/show.phtml:11
 msgid "Account"
 msgstr "Compte"
 
-#: views/_layouts/connected.phtml:114
+#: views/_layouts/connected.phtml:122
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:123 views/_layouts/connected.phtml:126
+#: views/_layouts/connected.phtml:131 views/_layouts/connected.phtml:134
 #: views/collections/show.phtml:100 views/collections/show_bookmarks.phtml:26
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/_layouts/connected.phtml:158
+#: views/_layouts/connected.phtml:166
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:159
+#: views/_layouts/connected.phtml:167
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -349,34 +355,30 @@ msgstr "Fermer cette fenêtre"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:62 views/registrations/new.phtml:3
+#: views/_layouts/not_connected.phtml:70 views/registrations/new.phtml:3
 #: views/registrations/new.phtml:9 views/registrations/new.phtml:134
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:80 views/onboarding/step1.phtml:25
+#: views/_layouts/not_connected.phtml:88 views/onboarding/step1.phtml:25
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:97 views/onboarding/step1.phtml:44
-msgid "Change"
-msgstr "Changer"
-
-#: views/_layouts/not_connected.phtml:110
+#: views/_layouts/not_connected.phtml:116
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
 
-#: views/_layouts/onboarding.phtml:46
+#: views/_layouts/onboarding.phtml:54
 #, php-format
 msgid "Step %d on %d"
 msgstr "Étape %d sur %d"
 
-#: views/_layouts/onboarding.phtml:48
+#: views/_layouts/onboarding.phtml:56
 msgid "skip"
 msgstr "passer"
 
-#: views/_layouts/onboarding.phtml:50
+#: views/_layouts/onboarding.phtml:58
 msgid "finished"
 msgstr "terminé"
 
@@ -812,7 +814,7 @@ msgstr "Tout est bon, voir le lien"
 msgid "Let’s change this title"
 msgstr "Changeons ce titre"
 
-#: views/links/show_fetch.phtml:42 views/links/show_fetch.phtml:59
+#: views/links/show_fetch.phtml:42
 msgid "Fetch link information"
 msgstr "Récupérer les informations du lien"
 
@@ -981,12 +983,12 @@ msgstr "Bienvenue !"
 msgid "Welcome %s!"
 msgstr "Bienvenue %s !"
 
-#: views/onboarding/step1.phtml:51
+#: views/onboarding/step1.phtml:49
 #, php-format
 msgid "The few next screens will explain you the main principles of %s."
 msgstr "Les écrans qui suivent vous expliqueront les principes généraux de %s."
 
-#: views/onboarding/step1.phtml:55
+#: views/onboarding/step1.phtml:53
 #, php-format
 msgid ""
 "There’s not much to know before getting started with %s. This onboarding "
@@ -995,12 +997,12 @@ msgstr ""
 "Il n’y a pas grand-chose à savoir avant de pouvoir utiliser %s. Cette "
 "introduction devrait vous prendre moins de 5 minutes."
 
-#: views/onboarding/step1.phtml:60 views/onboarding/step2.phtml:37
+#: views/onboarding/step1.phtml:58 views/onboarding/step2.phtml:37
 #: views/onboarding/step3.phtml:60 views/onboarding/step4.phtml:101
 msgid "Continue"
 msgstr "Continuer"
 
-#: views/onboarding/step1.phtml:68
+#: views/onboarding/step1.phtml:66
 msgid "Skip the onboarding"
 msgstr "Passer l’introduction"
 

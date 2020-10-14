@@ -5,13 +5,6 @@ export default class extends Controller {
         return ['subject'];
     }
 
-    connect () {
-        const submitButton = this.element.querySelector('button[type="submit"]');
-        if (submitButton) {
-            submitButton.remove();
-        }
-    }
-
     submit (e) {
         this.element.submit();
     }

@@ -36,6 +36,14 @@
         </a>
 
         <div class="layout">
+            <noscript>
+                <div class="layout__banner layout__banner--alert">
+                    <div class="banner__container">
+                        <?= _f('You need to activate JavaScript in order to use %s.', $brand) ?>
+                    </div>
+                </div>
+            </noscript>
+
             <?php if ($demo): ?>
                 <div class="layout__banner">
                     <div class="banner__container">
@@ -93,8 +101,6 @@
                                     <?php endforeach; ?>
                                 </select>
                             </label>
-
-                            <button type="submit"><?= _('Change') ?></button>
                         </div>
                     </form>
                 </nav>
