@@ -93,6 +93,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $db_session = $session_dao->listAll()[0];
         $cookie = $response->cookies()['flusio_session_token'];
         $this->assertSame($db_session['token'], $cookie['value']);
+        $this->assertSame('Lax', $cookie['options']['samesite']);
     }
 
     public function testCreateCreatesASessionValidForOneMonth()

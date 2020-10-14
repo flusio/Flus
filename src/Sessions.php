@@ -130,6 +130,7 @@ class Sessions
         $response = Response::found($redirect_to);
         $response->setCookie('flusio_session_token', $token->token, [
             'expires' => $token->expired_at->getTimestamp(),
+            'samesite' => 'Lax',
         ]);
         return $response;
     }

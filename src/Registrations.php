@@ -163,6 +163,7 @@ class Registrations
         $response = Response::redirect('onboarding');
         $response->setCookie('flusio_session_token', $session_token->token, [
             'expires' => $session_token->expired_at->getTimestamp(),
+            'samesite' => 'Lax',
         ]);
         return $response;
     }
