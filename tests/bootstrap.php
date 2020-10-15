@@ -31,6 +31,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
         },
+        'validated_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
         'username' => function () use ($faker) {
             return $faker->name;
         },

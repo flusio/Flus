@@ -138,6 +138,12 @@ class Application
         }
         $current_user = utils\CurrentUser::get();
 
+        // Redirect the user if she didn't validated its account after the
+        // first day.
+        if ($current_user && $this->mustRedirectToValidation($request, $current_user)) {
+            return \Minz\Response::redirect('registration validation');
+        }
+
         // Setup current localization
         if ($current_user) {
             $locale = $current_user->locale;
@@ -185,5 +191,33 @@ class Application
         ]);
 
         return $response;
+    }
+
+    /**
+     * Return true if the user must validate its account (i.e. when not
+     * validated after its first day).
+     *
+     * @param \Minz\Request $request
+     * @param \flusio\models\User $user
+     *
+     * @return boolean
+     */
+    public function mustRedirectToValidation($request, $user)
+    {
+        if (!$user->mustValidateEmail()) {
+            return false;
+        }
+
+        $path = $request->path();
+        $path_is_authorized = (
+            utils\Belt::startsWith($path, '/account') ||
+            utils\Belt::startsWith($path, '/registration') ||
+            utils\Belt::startsWith($path, '/login') ||
+            utils\Belt::startsWith($path, '/logout') ||
+            utils\Belt::startsWith($path, '/terms') ||
+            utils\Belt::startsWith($path, '/onboarding') ||
+            utils\Belt::startsWith($path, '/src/assets')
+        );
+        return !$path_is_authorized;
     }
 }

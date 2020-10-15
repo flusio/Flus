@@ -335,6 +335,19 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return whether the user must validate its email or not.
+     *
+     * Note she has 1 day to test the application before being forced to
+     * validate.
+     *
+     * @return boolean
+     */
+    public function mustValidateEmail()
+    {
+        return !$this->validated_at && $this->created_at < \Minz\Time::ago(1, 'day');
+    }
+
+    /**
      * @param string $email
      * @return boolean
      */

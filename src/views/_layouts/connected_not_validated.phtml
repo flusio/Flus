@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="<?= localeToBCP47($current_locale) ?>">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <?php if($canonical): ?>
+            <link rel="canonical" href="<?= $canonical ?>">
+        <?php elseif($current_action_pointer): ?>
+            <link rel="canonical" href="<?= url_full($current_action_pointer) ?>">
+        <?php endif; ?>
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
+
+        <link rel="stylesheet" href="<?= url_asset('stylesheets/application.css') ?>" data-turbolinks-track="reload">
+        <?php foreach ($styles as $style_name): ?>
+            <link rel="stylesheet" href="<?= url_asset("stylesheets/{$style_name}.css") ?>" data-turbolinks-track="reload">
+        <?php endforeach; ?>
+
+        <script id="javascript-configuration" type="application/json">
+            <?= $this->safe('javascript_configuration') ?>
+        </script>
+        <script src="<?= url_asset('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
+
+        <title><?php if ($environment === 'development'): ?>[devmode] <?php endif; ?><?= $title ?></title>
+    </head>
+
+    <body>
+        <a
+            class="no-mobile accessibility-nav anchor--action"
+            href="#main-content"
+            tabindex="0"
+            data-turbolinks="false"
+            data-controller="skip-nav"
+            data-action="skip-nav#skip"
+        >
+            <?= _('Skip to main content') ?>
+        </a>
+
+        <div class="layout" id="layout">
+            <noscript>
+                <div class="layout__banner layout__banner--alert">
+                    <div class="banner__container">
+                        <?= _f('You need to activate JavaScript in order to use %s.', $brand) ?>
+                    </div>
+                </div>
+            </noscript>
+
+            <?php if ($demo): ?>
+                <div class="layout__banner">
+                    <div class="banner__container">
+                        <?= _f('You’re using a demo version of %s, the data are reset every night.', $brand) ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($banner): ?>
+                <div class="layout__banner">
+                    <a class="banner__container banner__container--anchor" href="<?= url('registration validation') ?>">
+                        <?= _('You must validate your registration&nbsp;→') ?>
+                    </a>
+                </div>
+            <?php endif; ?>
+
+            <header class="layout__header layout__header--connected header">
+                <nav class="header__container">
+                    <div class="header__separator no-mobile"></div>
+
+                    <details
+                        class="header__link header__link--secondary popup"
+                        data-controller="popup"
+                        data-action="click@window->popup#close"
+                    >
+                        <summary class="popup__opener" title="<?= _('Open the menu') ?>">
+                            <i class="icon icon--anchor icon--bars only-mobile"></i>
+                            <img class="header__image no-mobile" src="<?= url_static('default-avatar.svg') ?>" alt="" />
+
+                            <span class="sr-only">
+                                <?= _('Open the menu') ?>
+                            </span>
+                        </summary>
+
+                        <nav class="popup__container popup__container--left">
+                            <div class="popup__title"><?= $this->protect($current_user->username) ?></div>
+
+                            <a class="popup__item popup__item--link icon icon--avatar" href="<?= url('account') ?>">
+                                <?= _('Account') ?>
+                            </a>
+
+                            <div class="popup__separator"></div>
+
+                            <form method="post" action="<?= url('logout') ?>">
+                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                <button type="submit" class="popup__item popup__item--button icon icon--logout">
+                                    <?= _('Log out') ?>
+                                </button>
+                            </form>
+                        </nav>
+                    </details>
+                </nav>
+            </header>
+
+            <main id="main-content" class="layout__content" tabindex="-1">
+                <?= $this->safe('content') ?>
+            </main>
+        </div>
+    </body>
+</html>

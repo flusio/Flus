@@ -5,8 +5,10 @@ namespace flusio;
 class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
+    use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\ResponseAsserts;
 
     public function testRunSetsTheDefaultLocale()
     {
@@ -73,5 +75,20 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
         $user = utils\CurrentUser::get();
         $this->assertSame($user_id, $user->id);
+    }
+
+    public function testRunRedirectsIfUserOlderThan1DaysNotValidated()
+    {
+        $created_at = \Minz\Time::ago($this->fake('numberBetween', 2, 42), 'days');
+        $this->login([
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => null,
+        ]);
+        $request = new \Minz\Request('GET', '/news');
+
+        $application = new Application();
+        $response = $application->run($request);
+
+        $this->assertResponse($response, 302, '/registration/validation');
     }
 }

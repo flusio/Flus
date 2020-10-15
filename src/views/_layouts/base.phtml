@@ -1,6 +1,8 @@
 <?php
     if (!$no_layout) {
-        if ($current_user) {
+        if ($current_user && $current_user->mustValidateEmail()) {
+            $layout_name = 'connected_not_validated.phtml';
+        } elseif ($current_user) {
             $layout_name = 'connected.phtml';
         } else {
             $layout_name = 'not_connected.phtml';
