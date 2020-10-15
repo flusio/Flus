@@ -34,6 +34,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'validated_at' => function () use ($faker) {
             return $faker->iso8601;
         },
+        'subscription_expired_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
         'username' => function () use ($faker) {
             return $faker->name;
         },
