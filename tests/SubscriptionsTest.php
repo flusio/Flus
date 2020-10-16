@@ -31,6 +31,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     {
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
         $this->login([
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => $this->fake('iso8601'),
         ]);
@@ -44,6 +45,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     {
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
         $this->login([
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => $this->fake('iso8601'),
         ]);
@@ -57,6 +59,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     {
         $expired_at = new \DateTime('1970-01-01');
         $this->login([
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => $this->fake('iso8601'),
         ]);
@@ -66,10 +69,25 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, 'You have a <strong>free subscription</strong>');
     }
 
+    public function testShowRendersIfUserHasNoSubscriptionAccountId()
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
+        $this->login([
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('get', '/my/subscription');
+
+        $this->assertResponse($response, 200, 'Create your payment account');
+    }
+
     public function testShowRendersIfUserIsNotValidated()
     {
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
         $this->login([
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => null,
@@ -84,6 +102,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     {
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
         $this->create('user', [
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => $this->fake('iso8601'),
         ]);
@@ -98,6 +117,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
         $this->login([
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => $this->fake('iso8601'),
         ]);
@@ -105,5 +125,173 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', '/my/subscription');
 
         $this->assertResponse($response, 404);
+    }
+
+    public function testCreateSetsSubscriptionProperties()
+    {
+        $user_dao = new models\dao\User();
+        $expired_at = new \DateTime('1970-01-01');
+        $user = $this->login([
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('post', '/my/subscription', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 200);
+        $user = new models\User($user_dao->find($user->id));
+        $this->assertNotNull($user->subscription_account_id);
+        $this->assertNotSame(
+            $expired_at->getTimestamp(),
+            $user->subscription_expired_at->getTimestamp()
+        );
+    }
+
+    public function testCreateDoesNothingIfUserAlreadyHasAccountId()
+    {
+        $user_dao = new models\dao\User();
+        $account_id = $this->fake('regexify', '\w{32}');
+        $expired_at = new \DateTime('1970-01-01');
+        $user = $this->login([
+            'subscription_account_id' => $account_id,
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('post', '/my/subscription', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 200);
+        $user = new models\User($user_dao->find($user->id));
+        $this->assertSame($account_id, $user->subscription_account_id);
+        $this->assertSame(
+            $expired_at->getTimestamp(),
+            $user->subscription_expired_at->getTimestamp()
+        );
+    }
+
+    public function testCreateRedirectsIfUserIsNotConnected()
+    {
+        $user_dao = new models\dao\User();
+        $expired_at = new \DateTime('1970-01-01');
+        $user_id = $this->create('user', [
+            'csrf' => 'a token',
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('post', '/my/subscription', [
+            'csrf' => 'a token',
+        ]);
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsubscription');
+        $user = new models\User($user_dao->find($user_id));
+        $this->assertNull($user->subscription_account_id);
+        $this->assertSame(
+            $expired_at->getTimestamp(),
+            $user->subscription_expired_at->getTimestamp()
+        );
+    }
+
+    public function testCreateFailsIfUserIsNotValidated()
+    {
+        $user_dao = new models\dao\User();
+        $expired_at = new \DateTime('1970-01-01');
+        $user = $this->login([
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => null,
+            'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('post', '/my/subscription', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 400);
+        $user = new models\User($user_dao->find($user->id));
+        $this->assertNull($user->subscription_account_id);
+        $this->assertSame(
+            $expired_at->getTimestamp(),
+            $user->subscription_expired_at->getTimestamp()
+        );
+    }
+
+    public function testCreateFailsIfCsrfIsInvalid()
+    {
+        $user_dao = new models\dao\User();
+        $expired_at = new \DateTime('1970-01-01');
+        $user = $this->login([
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('post', '/my/subscription', [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $user = new models\User($user_dao->find($user->id));
+        $this->assertNull($user->subscription_account_id);
+        $this->assertSame(
+            $expired_at->getTimestamp(),
+            $user->subscription_expired_at->getTimestamp()
+        );
+    }
+
+    public function testCreateFailsIfSecretKeyIsInvalid()
+    {
+        $old_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
+        \Minz\Configuration::$application['subscriptions_private_key'] = 'not the key';
+        $user_dao = new models\dao\User();
+        $expired_at = new \DateTime('1970-01-01');
+        $user = $this->login([
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('post', '/my/subscription', [
+            'csrf' => $user->csrf,
+        ]);
+
+        \Minz\Configuration::$application['subscriptions_private_key'] = $old_private_key;
+
+        $this->assertResponse($response, 500, 'please contact the support');
+        $user = new models\User($user_dao->find($user->id));
+        $this->assertNull($user->subscription_account_id);
+        $this->assertSame(
+            $expired_at->getTimestamp(),
+            $user->subscription_expired_at->getTimestamp()
+        );
+    }
+
+    public function testCreateFailsIfSubscriptionsAreDisabled()
+    {
+        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        $user_dao = new models\dao\User();
+        $expired_at = new \DateTime('1970-01-01');
+        $user = $this->login([
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('post', '/my/subscription', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $user = new models\User($user_dao->find($user->id));
+        $this->assertNull($user->subscription_account_id);
+        $this->assertSame(
+            $expired_at->getTimestamp(),
+            $user->subscription_expired_at->getTimestamp()
+        );
     }
 }

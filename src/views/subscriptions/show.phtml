@@ -9,7 +9,24 @@
         <h1><?= _('Your subscription') ?></h1>
     </div>
 
-    <?php if ($current_user->validated_at): ?>
+    <?php if (!$current_user->validated_at): ?>
+        <p class="paragraph--featured">
+            <?= _f('You must <a href="%s">validate your account</a> first.', url('registration validation')) ?>
+        </p>
+    <?php elseif (!$current_user->subscription_account_id): ?>
+        <?php if ($error): ?>
+            <p class="paragraph--centered form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <form class="form--centered" method="post" action="<?= url('create subscription account') ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <button class="button--primary" type="submit">
+                <?= _('Create your payment account') ?>
+            </button>
+        </form>
+    <?php else: ?>
         <p class="section__intro">
             <?php if ($current_user->isSubscriptionExempted()) { ?>
                 <?= _('You have a <strong>free subscription</strong>!&nbsp;😊') ?>
@@ -18,10 +35,6 @@
             <?php } else { ?>
                 <?= _f('Your subscription will expire on <strong>%s.</strong>', format_date($current_user->subscription_expired_at, '%d %B %Y')) ?>
             <?php } ?>
-        </p>
-    <?php else: ?>
-        <p class="paragraph--featured">
-            <?= _f('You must <a href="%s">validate your account</a> first.', url('registration validation')) ?>
         </p>
     <?php endif; ?>
 </div>

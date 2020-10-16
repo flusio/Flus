@@ -67,6 +67,7 @@ class Application
 
         // Subscriptions
         $router->addRoute('get', '/my/subscription', 'Subscriptions#show', 'subscription');
+        $router->addRoute('post', '/my/subscription', 'Subscriptions#create', 'create subscription account');
 
         // News page
         $router->addRoute('get', '/news', 'NewsLinks#index', 'news');

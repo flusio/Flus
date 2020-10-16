@@ -44,4 +44,71 @@ class Subscriptions
 
         return Response::ok('subscriptions/show.phtml');
     }
+
+    /**
+     * Create a subscription account for the current user.
+     *
+     * @request_param string csrf
+     *
+     * @response 404
+     *     If subscriptions are not enabled (need a host and a key)
+     * @response 302 /login?redirect_to=/subscription
+     *     If the user is not connected
+     * @response 400
+     *     If CSRF token is invalid or user is not validated yet
+     * @response 500
+     *     If an error occurs during account creation
+     * @response 200
+     *     If the user aleady has an account, or on successful creation
+     */
+    public function create($request)
+    {
+        if (!$this->enabled) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $user = utils\CurrentUser::get();
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('subscription'),
+            ]);
+        }
+
+        if ($user->subscription_account_id) {
+            return Response::ok('subscriptions/show.phtml');
+        }
+
+        if (!$user->validated_at) {
+            return Response::badRequest('subscriptions/show.phtml');
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('subscriptions/show.phtml', [
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        $app_conf = \Minz\Configuration::$application;
+        $subscriptions_service = new services\Subscriptions(
+            $app_conf['subscriptions_host'],
+            $app_conf['subscriptions_private_key']
+        );
+        $account = $subscriptions_service->account($user->email);
+        if (!$account) {
+            \Minz\Log::error("Can’t get a subscription account for user {$user->id}.");
+            return Response::internalServerError('subscriptions/show.phtml', [
+                'error' => _('An error occured when getting you a subscription account, please contact the support.'),
+            ]);
+        }
+
+        $user_dao = new models\dao\User();
+        $user->subscription_account_id = $account['id'];
+        $user->subscription_expired_at = date_create_from_format(
+            \Minz\Model::DATETIME_FORMAT,
+            $account['expired_at']
+        );
+        $user_dao->save($user);
+        return Response::ok('subscriptions/show.phtml');
+    }
 }
