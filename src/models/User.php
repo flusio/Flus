@@ -359,6 +359,26 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return wheter the user has a free subscription or not.
+     *
+     * @return boolean
+     */
+    public function isSubscriptionExempted()
+    {
+        return $this->subscription_expired_at->getTimestamp() === 0;
+    }
+
+    /**
+     * Return wheter the user subscription is overdue or not.
+     *
+     * @return boolean
+     */
+    public function isSubscriptionOverdue()
+    {
+        return \Minz\Time::now() > $this->subscription_expired_at;
+    }
+
+    /**
      * @param string $email
      * @return boolean
      */

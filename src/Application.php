@@ -65,6 +65,9 @@ class Application
         $router->addRoute('get', '/account/delete', 'Accounts#showDelete', 'show delete account');
         $router->addRoute('post', '/account/delete', 'Accounts#delete', 'delete account');
 
+        // Subscriptions
+        $router->addRoute('get', '/my/subscription', 'Subscriptions#show', 'subscription');
+
         // News page
         $router->addRoute('get', '/news', 'NewsLinks#index', 'news');
         $router->addRoute('post', '/news', 'NewsLinks#fill', 'fill news');
@@ -170,9 +173,10 @@ class Application
             'internal_server_error_view_pointer' => 'internal_server_error.phtml',
         ]);
 
+        $app_conf = \Minz\Configuration::$application;
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
-            'brand' => \Minz\Configuration::$application['brand'],
+            'brand' => $app_conf['brand'],
             'errors' => $errors,
             'error' => $error,
             'status' => $status,
@@ -185,9 +189,10 @@ class Application
             'styles' => [],
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
             'no_layout' => $request->header('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest',
+            'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
             'banner' => true,
-            'demo' => \Minz\Configuration::$application['demo'],
-            'registrations_opened' => \Minz\Configuration::$application['registrations_opened'],
+            'demo' => $app_conf['demo'],
+            'registrations_opened' => $app_conf['registrations_opened'],
         ]);
 
         return $response;

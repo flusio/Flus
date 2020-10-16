@@ -114,6 +114,12 @@
                                 <?= _('Account') ?>
                             </a>
 
+                            <?php if ($subscriptions_enabled): ?>
+                                <a class="popup__item popup__item--link icon icon--credit-card" href="<?= url('subscription') ?>">
+                                    <?= _('Subscription') ?>
+                                </a>
+                            <?php endif; ?>
+
                             <div class="popup__separator"></div>
 
                             <form method="post" action="<?= url('logout') ?>">

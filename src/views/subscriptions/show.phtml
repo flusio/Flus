@@ -1,0 +1,27 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Your subscription'),
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('Your subscription') ?></h1>
+    </div>
+
+    <?php if ($current_user->validated_at): ?>
+        <p class="section__intro">
+            <?php if ($current_user->isSubscriptionExempted()) { ?>
+                <?= _('You have a <strong>free subscription</strong>!&nbsp;😊') ?>
+            <?php } elseif ($current_user->isSubscriptionOverdue()) { ?>
+                <?= _f('<strong>Your subscription expired on %s.</strong>', format_date($current_user->subscription_expired_at, '%d %B %Y')) ?>
+            <?php } else { ?>
+                <?= _f('Your subscription will expire on <strong>%s.</strong>', format_date($current_user->subscription_expired_at, '%d %B %Y')) ?>
+            <?php } ?>
+        </p>
+    <?php else: ?>
+        <p class="paragraph--featured">
+            <?= _f('You must <a href="%s">validate your account</a> first.', url('registration validation')) ?>
+        </p>
+    <?php endif; ?>
+</div>

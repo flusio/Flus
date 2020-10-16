@@ -59,6 +59,11 @@
     margin-top: -0.6em;
 }
 
+/* Commerce */
+.icon--credit-card::before {
+    background-image: url("../icons/commerce/credit-card-line.svg");
+}
+
 /* Core */
 .icon--avatar::before {
     background-image: url("../icons/core/avatar-line.svg");
