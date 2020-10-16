@@ -56,8 +56,10 @@ $application = new \flusio\cli\Application();
 $response = $application->run($request);
 
 // Display the content
-echo $response->render();
-echo "\n";
+$output = $response->render();
+if ($output) {
+    echo $output . "\n";
+}
 
 $code = $response->code();
 if ($code >= 200 && $code < 300) {
