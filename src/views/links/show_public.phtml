@@ -58,7 +58,7 @@
                             <div class="header__separator"></div>
 
                             <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
-                                <?= format_date($message->created_at) ?>
+                                <?= format_message_date($message->created_at) ?>
                             </time>
                         </div>
                     </header>

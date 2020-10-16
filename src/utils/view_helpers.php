@@ -9,13 +9,13 @@
  */
 
 /**
- * Format DateTime according to current day
+ * Format a DateTime according to current day (designed for Message dates)
  *
  * @param \DateTime $date
  *
  * @return string
  */
-function format_date($date)
+function format_message_date($date)
 {
     $today = new \DateTime('today');
     if ($date >= $today) {
