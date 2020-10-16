@@ -4,6 +4,8 @@ namespace SpiderBits;
 
 class HttpTest extends \PHPUnit\Framework\TestCase
 {
+    public const TESTS_HOST = 'httpbin.org';
+
     /**
      * @dataProvider getProvider
      */
@@ -21,25 +23,75 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testGetWithParameters()
+    {
+        $http = new Http();
+        $url = 'https://' . self::TESTS_HOST . '/get';
+        $parameters = [
+            'foo' => 'bar',
+            'baz' => 'quz',
+        ];
+
+        $response = $http->get($url, $parameters);
+
+        $this->assertSame(200, $response->status);
+        $data = json_decode($response->data, true);
+        $this->assertSame($url . '?foo=bar&baz=quz', $data['url']);
+    }
+
+    public function testGetWithMixedParameters()
+    {
+        $http = new Http();
+        $url = 'https://' . self::TESTS_HOST . '/get?foo=bar';
+        $parameters = [
+            'baz' => 'quz',
+        ];
+
+        $response = $http->get($url, $parameters);
+
+        $this->assertSame(200, $response->status);
+        $data = json_decode($response->data, true);
+        $this->assertSame($url . '&baz=quz', $data['url']);
+    }
+
+    public function testGetWithAuthBasic()
+    {
+        $http = new Http();
+        $user = 'john';
+        $pass = 'secret';
+        $url = 'https://' . self::TESTS_HOST . "/basic-auth/{$user}/{$pass}";
+
+        $response = $http->get($url, [], [
+            'auth_basic' => $user . ':' . $pass,
+        ]);
+
+        $this->assertSame(200, $response->status);
+        $data = json_decode($response->data, true);
+        $this->assertTrue($data['authenticated']);
+        $this->assertSame($user, $data['user']);
+    }
+
     public function getProvider()
     {
         return [
             [
-                'https://flus.fr/',
+                'https://' . self::TESTS_HOST . '/get',
                 200,
-                'Flus, média social citoyen',
-                ['content-type' => 'text/html;charset=UTF-8'],
+                self::TESTS_HOST,
+                ['content-type' => 'application/json'],
             ],
             [
+                'https://' . self::TESTS_HOST . '/status/404',
+                404,
+                '',
+                ['content-type' => 'text/html; charset=utf-8'],
+            ],
+            [
+                // redirections seem to fail on httpbin.org, so test let's test
+                // with my own domain (http is redirected to https)
                 'http://flus.fr/',
                 200,
                 'Flus, média social citoyen',
-                ['content-type' => 'text/html;charset=UTF-8'],
-            ],
-            [
-                'https://flus.fr/does_not_exist.html',
-                404,
-                '',
                 ['content-type' => 'text/html;charset=UTF-8'],
             ],
             [

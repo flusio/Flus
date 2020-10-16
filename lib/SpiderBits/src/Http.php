@@ -20,11 +20,22 @@ class Http
      * Make a GET HTTP request.
      *
      * @param string $url
+     * @param array $parameters
+     * @param array $options
      *
      * @return \SpiderBits\Response
      */
-    public function get($url)
+    public function get($url, $parameters = [], $options = [])
     {
+        if ($parameters) {
+            $parameters_query = http_build_query($parameters);
+            if (strpos($url, '?') === false) {
+                $url .= '?' . $parameters_query;
+            } else {
+                $url .= '&' . $parameters_query;
+            }
+        }
+
         $curl_handle = curl_init();
         curl_setopt($curl_handle, CURLOPT_URL, $url);
         curl_setopt($curl_handle, CURLOPT_HEADER, false);
@@ -32,6 +43,11 @@ class Http
         curl_setopt($curl_handle, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl_handle, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->user_agent);
+
+        if (isset($options['auth_basic'])) {
+            curl_setopt($curl_handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($curl_handle, CURLOPT_USERPWD, $options['auth_basic']);
+        }
 
         $headers = '';
         $done = false;
