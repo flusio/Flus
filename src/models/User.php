@@ -375,7 +375,10 @@ class User extends \Minz\Model
      */
     public function isSubscriptionOverdue()
     {
-        return \Minz\Time::now() > $this->subscription_expired_at;
+        return (
+            !$this->isSubscriptionExempted() &&
+            \Minz\Time::now() > $this->subscription_expired_at
+        );
     }
 
     /**

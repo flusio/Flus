@@ -1,9 +1,13 @@
 <?php
     if (!$no_layout) {
-        if ($current_user && $current_user->mustValidateEmail()) {
-            $layout_name = 'connected_not_validated.phtml';
-        } elseif ($current_user) {
-            $layout_name = 'connected.phtml';
+        if ($current_user) {
+            $must_validate = $current_user->mustValidateEmail();
+            $must_renew = $subscriptions_enabled && $current_user->isSubscriptionOverdue();
+            if ($must_validate || $must_renew) {
+                $layout_name = 'connected_blocked.phtml';
+            } else {
+                $layout_name = 'connected.phtml';
+            }
         } else {
             $layout_name = 'not_connected.phtml';
         }

@@ -149,6 +149,11 @@ class Application
             return \Minz\Response::redirect('registration validation');
         }
 
+        // Redirect the user if its subscription is overdue
+        if ($current_user && $this->mustRedirectToSubscription($request, $current_user)) {
+            return \Minz\Response::redirect('subscription');
+        }
+
         // Setup current localization
         if ($current_user) {
             $locale = $current_user->locale;
@@ -218,6 +223,40 @@ class Application
         $path = $request->path();
         $path_is_authorized = (
             utils\Belt::startsWith($path, '/account') ||
+            utils\Belt::startsWith($path, '/my/subscription') ||
+            utils\Belt::startsWith($path, '/registration') ||
+            utils\Belt::startsWith($path, '/login') ||
+            utils\Belt::startsWith($path, '/logout') ||
+            utils\Belt::startsWith($path, '/terms') ||
+            utils\Belt::startsWith($path, '/onboarding') ||
+            utils\Belt::startsWith($path, '/src/assets')
+        );
+        return !$path_is_authorized;
+    }
+
+    /**
+     * Return true if the user must renew its subscription
+     *
+     * @param \Minz\Request $request
+     * @param \flusio\models\User $user
+     *
+     * @return boolean
+     */
+    public function mustRedirectToSubscription($request, $user)
+    {
+        $app_conf = \Minz\Configuration::$application;
+        if (!$app_conf['subscriptions_enabled']) {
+            return false;
+        }
+
+        if (!$user->isSubscriptionOverdue()) {
+            return false;
+        }
+
+        $path = $request->path();
+        $path_is_authorized = (
+            utils\Belt::startsWith($path, '/account') ||
+            utils\Belt::startsWith($path, '/my/subscription') ||
             utils\Belt::startsWith($path, '/registration') ||
             utils\Belt::startsWith($path, '/login') ||
             utils\Belt::startsWith($path, '/logout') ||
