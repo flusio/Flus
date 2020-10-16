@@ -111,4 +111,52 @@ class Subscriptions
         $user_dao->save($user);
         return Response::ok('subscriptions/show.phtml');
     }
+
+    /**
+     * Redirect to the renew page (subscription account)
+     *
+     * @response 404
+     *     If subscriptions are not enabled (need a host and a key)
+     * @response 302 /login?redirect_to=/subscription
+     *     If the user is not connected
+     * @response 401
+     *     If the user has no account_id
+     * @response 500
+     *     If an error occurs when getting the redirection URL
+     * @response 302 subscriptions_host/account
+     *     On success
+     */
+    public function renewing($request)
+    {
+        if (!$this->enabled) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $user = utils\CurrentUser::get();
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('subscription'),
+            ]);
+        }
+
+        if (!$user->subscription_account_id) {
+            return Response::badRequest('bad_request.phtml');
+        }
+
+        $app_conf = \Minz\Configuration::$application;
+        $subscriptions_service = new services\Subscriptions(
+            $app_conf['subscriptions_host'],
+            $app_conf['subscriptions_private_key']
+        );
+
+        $url = $subscriptions_service->loginUrl($user->subscription_account_id);
+        if ($url) {
+            return Response::found($url);
+        } else {
+            \Minz\Log::error("Can’t get the subscription login URL for user {$user->id}.");
+            return Response::internalServerError('internal_server_error.phtml', [
+                'details' => _('An error occured while logging you, please contact the support.'),
+            ]);
+        }
+    }
 }

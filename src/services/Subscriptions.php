@@ -49,4 +49,27 @@ class Subscriptions
             return null;
         }
     }
+
+    /**
+     * Get a login URL for the given account.
+     *
+     * @param string $account_id
+     *
+     * @return string|null
+     */
+    public function loginUrl($account_id)
+    {
+        $http = new \SpiderBits\Http();
+        $response = $http->get($this->host . '/api/account/login-url', [
+            'account_id' => $account_id,
+        ], [
+            'auth_basic' => $this->private_key . ':',
+        ]);
+        if ($response->success) {
+            $data = json_decode($response->data, true);
+            return $data['url'];
+        } else {
+            return null;
+        }
+    }
 }

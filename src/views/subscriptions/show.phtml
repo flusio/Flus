@@ -36,5 +36,16 @@
                 <?= _f('Your subscription will expire on <strong>%s.</strong>', format_date($current_user->subscription_expired_at, '%d %B %Y')) ?>
             <?php } ?>
         </p>
+
+        <p class="paragraph--centered">
+            <a
+                class="anchor--action"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="<?= url('subscription renew') ?>"
+            >
+                <?= _('Renew from your payment account') ?>
+            </a>
+        </p>
     <?php endif; ?>
 </div>

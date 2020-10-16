@@ -294,4 +294,75 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             $user->subscription_expired_at->getTimestamp()
         );
     }
+
+    public function testRenewingRedirectsToLoginUrl()
+    {
+        $app_conf = \Minz\Configuration::$application;
+        $subscriptions_service = new services\Subscriptions(
+            $app_conf['subscriptions_host'],
+            $app_conf['subscriptions_private_key']
+        );
+        $account = $subscriptions_service->account($this->fake('email'));
+        $this->login([
+            'subscription_account_id' => $account['id'],
+        ]);
+
+        $response = $this->appRun('get', '/my/subscription/renew');
+
+        $this->assertResponse($response, 302);
+        $response_headers = $response->headers(true);
+        $this->assertStringContainsString(
+            $app_conf['subscriptions_host'],
+            $response_headers['Location']
+        );
+    }
+
+    public function testRenewingRedirectsIfNotConnected()
+    {
+        $this->create('user', [
+            // We don't make additional call for a failing test, but this id
+            // should theorically be created on the subscriptions host first.
+            'subscription_account_id' => 'some real id',
+        ]);
+
+        $response = $this->appRun('get', '/my/subscription/renew');
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsubscription');
+    }
+
+    public function testRenewingFailsIfUserHasNoAccountId()
+    {
+        $this->login([
+            'subscription_account_id' => null,
+        ]);
+
+        $response = $this->appRun('get', '/my/subscription/renew');
+
+        $this->assertResponse($response, 400);
+    }
+
+    public function testRenewingFailsIfUserHasInvalidAccountId()
+    {
+        $this->login([
+            'subscription_account_id' => 'not an id',
+        ]);
+
+        $response = $this->appRun('get', '/my/subscription/renew');
+
+        $this->assertResponse($response, 500, 'please contact the support');
+    }
+
+    public function testRenewingFailsIfSubscriptionsAreDisabled()
+    {
+        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        $this->login([
+            // We don't make additional call for a failing test, but this id
+            // should theorically be created on the subscriptions host first.
+            'subscription_account_id' => 'some real id',
+        ]);
+
+        $response = $this->appRun('get', '/my/subscription/renew');
+
+        $this->assertResponse($response, 404);
+    }
 }
