@@ -13,10 +13,19 @@ class Subscriptions
     /** @var boolean */
     private $enabled;
 
+    /** @var \flusio\services\Subscriptions */
+    private $service;
+
     public function __construct()
     {
         $app_conf = \Minz\Configuration::$application;
         $this->enabled = $app_conf['subscriptions_enabled'];
+        if ($this->enabled) {
+            $this->service = new services\Subscriptions(
+                $app_conf['subscriptions_host'],
+                $app_conf['subscriptions_private_key']
+            );
+        }
     }
 
     /**
@@ -43,19 +52,10 @@ class Subscriptions
         }
 
         if ($user->isSubscriptionOverdue()) {
-            $app_conf = \Minz\Configuration::$application;
-            $subscriptions_service = new services\Subscriptions(
-                $app_conf['subscriptions_host'],
-                $app_conf['subscriptions_private_key']
-            );
-
-            $expired_at = $subscriptions_service->expiredAt($user->subscription_account_id);
+            $expired_at = $this->service->expiredAt($user->subscription_account_id);
             if ($expired_at) {
                 $user_dao = new models\dao\User();
-                $user->subscription_expired_at = date_create_from_format(
-                    \Minz\Model::DATETIME_FORMAT,
-                    $expired_at,
-                );
+                $user->subscription_expired_at = $expired_at;
                 $user_dao->save($user);
             } else {
                 \Minz\Log::error("Can’t get the expired_at for user {$user->id}.");
@@ -109,12 +109,7 @@ class Subscriptions
             ]);
         }
 
-        $app_conf = \Minz\Configuration::$application;
-        $subscriptions_service = new services\Subscriptions(
-            $app_conf['subscriptions_host'],
-            $app_conf['subscriptions_private_key']
-        );
-        $account = $subscriptions_service->account($user->email);
+        $account = $this->service->account($user->email);
         if (!$account) {
             \Minz\Log::error("Can’t get a subscription account for user {$user->id}.");
             return Response::internalServerError('subscriptions/show.phtml', [
@@ -124,10 +119,7 @@ class Subscriptions
 
         $user_dao = new models\dao\User();
         $user->subscription_account_id = $account['id'];
-        $user->subscription_expired_at = date_create_from_format(
-            \Minz\Model::DATETIME_FORMAT,
-            $account['expired_at']
-        );
+        $user->subscription_expired_at = $account['expired_at'];
         $user_dao->save($user);
         return Response::ok('subscriptions/show.phtml');
     }
@@ -163,13 +155,7 @@ class Subscriptions
             return Response::badRequest('bad_request.phtml');
         }
 
-        $app_conf = \Minz\Configuration::$application;
-        $subscriptions_service = new services\Subscriptions(
-            $app_conf['subscriptions_host'],
-            $app_conf['subscriptions_private_key']
-        );
-
-        $url = $subscriptions_service->loginUrl($user->subscription_account_id);
+        $url = $this->service->loginUrl($user->subscription_account_id);
         if ($url) {
             return Response::found($url);
         } else {

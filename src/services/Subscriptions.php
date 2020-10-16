@@ -44,7 +44,12 @@ class Subscriptions
             'auth_basic' => $this->private_key . ':',
         ]);
         if ($response->success) {
-            return json_decode($response->data, true);
+            $data = json_decode($response->data, true);
+            $data['expired_at'] = date_create_from_format(
+                \Minz\Model::DATETIME_FORMAT,
+                $data['expired_at']
+            );
+            return $data;
         } else {
             return null;
         }
@@ -90,7 +95,10 @@ class Subscriptions
         ]);
         if ($response->success) {
             $data = json_decode($response->data, true);
-            return $data['expired_at'];
+            return date_create_from_format(
+                \Minz\Model::DATETIME_FORMAT,
+                $data['expired_at']
+            );
         } else {
             return null;
         }

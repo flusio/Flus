@@ -46,18 +46,12 @@ class Subscriptions
             }
 
             $expired_at = $subscriptions_service->expiredAt($user->subscription_account_id);
-            if ($expired_at) {
-                $expired_at = date_create_from_format(
-                    \Minz\Model::DATETIME_FORMAT,
-                    $expired_at,
-                );
-                if ($user->subscription_expired_at->getTimestamp() !== $expired_at->getTimestamp()) {
-                    $user->subscription_expired_at = $expired_at;
-                    $user_dao->save($user);
-                    $sync_results[] = "{$user->id}: OK";
-                }
-            } else {
+            if (!$expired_at) {
                 $sync_results[] = "{$user->id}: failed";
+            } elseif ($user->subscription_expired_at->getTimestamp() !== $expired_at->getTimestamp()) {
+                $user->subscription_expired_at = $expired_at;
+                $user_dao->save($user);
+                $sync_results[] = "{$user->id}: OK";
             }
         }
 

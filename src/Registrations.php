@@ -249,10 +249,7 @@ class Registrations
             $account = $subscriptions_service->account($user->email);
             if ($account) {
                 $user->subscription_account_id = $account['id'];
-                $user->subscription_expired_at = date_create_from_format(
-                    \Minz\Model::DATETIME_FORMAT,
-                    $account['expired_at']
-                );
+                $user->subscription_expired_at = $account['expired_at'];
             } else {
                 \Minz\Log::error("Can’t get a subscription account for user {$user->id}."); // @codeCoverageIgnore
             }
