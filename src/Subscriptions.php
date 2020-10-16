@@ -42,6 +42,26 @@ class Subscriptions
             ]);
         }
 
+        if ($user->isSubscriptionOverdue()) {
+            $app_conf = \Minz\Configuration::$application;
+            $subscriptions_service = new services\Subscriptions(
+                $app_conf['subscriptions_host'],
+                $app_conf['subscriptions_private_key']
+            );
+
+            $expired_at = $subscriptions_service->expiredAt($user->subscription_account_id);
+            if ($expired_at) {
+                $user_dao = new models\dao\User();
+                $user->subscription_expired_at = date_create_from_format(
+                    \Minz\Model::DATETIME_FORMAT,
+                    $expired_at,
+                );
+                $user_dao->save($user);
+            } else {
+                \Minz\Log::error("Can’t get the expired_at for user {$user->id}.");
+            }
+        }
+
         return Response::ok('subscriptions/show.phtml');
     }
 

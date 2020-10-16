@@ -98,6 +98,31 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, 'validate your account');
     }
 
+    public function testShowSyncsExpiredAtIfOverdue()
+    {
+        $user_dao = new models\dao\User();
+        $app_conf = \Minz\Configuration::$application;
+        $subscriptions_service = new services\Subscriptions(
+            $app_conf['subscriptions_host'],
+            $app_conf['subscriptions_private_key']
+        );
+        $account = $subscriptions_service->account($this->fake('email'));
+        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
+        $user = $this->login([
+            'subscription_account_id' => $account['id'],
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('get', '/my/subscription');
+
+        $user = new models\User($user_dao->find($user->id));
+        $this->assertNotSame(
+            $expired_at->getTimestamp(),
+            $user->subscription_expired_at->getTimestamp()
+        );
+    }
+
     public function testShowRedirectsIfNotConnected()
     {
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');

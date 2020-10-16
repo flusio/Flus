@@ -72,4 +72,27 @@ class Subscriptions
             return null;
         }
     }
+
+    /**
+     * Get the expired_at value for the given account.
+     *
+     * @param string $account_id
+     *
+     * @return string|null
+     */
+    public function expiredAt($account_id)
+    {
+        $http = new \SpiderBits\Http();
+        $response = $http->get($this->host . '/api/account/expired-at', [
+            'account_id' => $account_id,
+        ], [
+            'auth_basic' => $this->private_key . ':',
+        ]);
+        if ($response->success) {
+            $data = json_decode($response->data, true);
+            return $data['expired_at'];
+        } else {
+            return null;
+        }
+    }
 }
