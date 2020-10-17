@@ -91,4 +91,21 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/registration/validation');
     }
+
+    public function testRunRedirectsIfUserSubscriptionIsOverdue()
+    {
+        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
+        $this->login([
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $request = new \Minz\Request('GET', '/news');
+
+        $application = new Application();
+        $response = $application->run($request);
+
+        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+
+        $this->assertResponse($response, 302, '/my/subscription');
+    }
 }

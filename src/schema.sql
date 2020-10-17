@@ -15,7 +15,11 @@ CREATE TABLE users (
     csrf TEXT NOT NULL DEFAULT '',
     news_preferences JSON NOT NULL DEFAULT '{}',
     validated_at TIMESTAMPTZ,
-    validation_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE
+    validation_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE,
+    subscription_account_id TEXT,
+    subscription_expired_at TIMESTAMPTZ
+        NOT NULL
+        DEFAULT date_trunc('second', NOW() + INTERVAL '1 month')
 );
 
 CREATE INDEX idx_users_email ON users(email);

@@ -247,4 +247,24 @@ account. The reset itself can be done with the following command:
 flusio# make reset-demo NO_DOCKER=true
 ```
 
-It can be configured via a cron job.
+It can be configured via a cron job:
+
+```cron
+0 2 * * * cd /path/to/flusio && make reset-demo NO_DOCKER=true >/dev/null 2>&1
+```
+
+## Bonus: Enable subscriptions
+
+**This feature is not designed to be reused outside of the [flus.fr](https://flus.fr)
+service.**
+
+You can enable the subscription service by setting the `APP_SUBSCRIPTIONS_HOST`
+and `APP_SUBSCRIPTIONS_PRIVATE_KEY` environment variables. The host must run
+the code of [flusio/flus.fr](https://github.com/flusio/flus.fr).
+
+Moreover, you should setup a cron job twice a day to synchronize subscriptions
+expirations:
+
+```cron
+0 6,18 * * * php /path/to/flusio/cli --request /subscriptions/sync >/dev/null 2>&1
+```

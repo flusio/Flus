@@ -1,5 +1,13 @@
 # Changelog of flusio
 
+## 2020-xx-yy - v0.11
+
+### Migration notes
+
+(optional, mostly for myself) You can configure the subscription feature with
+the `APP_SUBSCRIPTIONS_*` environment variables. Read production documentation
+for more details.
+
 ## 2020-10-01 - v0.10
 
 ### Migration notes

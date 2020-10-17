@@ -11,6 +11,8 @@ $cache_directory = $temporary_directory . '/cache';
 @mkdir($data_directory, 0777, true);
 @mkdir($cache_directory, 0777, true);
 
+$subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
+
 return [
     'app_name' => 'flusio',
 
@@ -29,6 +31,9 @@ return [
         'cache_path' => $cache_directory,
         'demo' => false,
         'registrations_opened' => true,
+        'subscriptions_enabled' => false, // should be enable on a case-by-case basis
+        'subscriptions_host' => $subscriptions_host,
+        'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
     ],
 
     'database' => [

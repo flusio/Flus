@@ -4,6 +4,8 @@ $db_host = $dotenv->pop('DB_HOST');
 $db_port = intval($dotenv->pop('DB_PORT', '5432'));
 $db_name = $dotenv->pop('DB_NAME', 'flusio_production');
 
+$subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
+
 return [
     'app_name' => 'flusio',
 
@@ -24,6 +26,9 @@ return [
         'cache_path' => $dotenv->pop('APP_CACHE_PATH', $app_path . '/cache'),
         'demo' => filter_var($dotenv->pop('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN),
         'registrations_opened' => filter_var($dotenv->pop('APP_OPEN_REGISTRATIONS', true), FILTER_VALIDATE_BOOLEAN),
+        'subscriptions_enabled' => $subscriptions_host !== null,
+        'subscriptions_host' => $subscriptions_host,
+        'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
     ],
 
     'database' => [

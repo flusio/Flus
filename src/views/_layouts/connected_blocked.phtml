@@ -52,7 +52,7 @@
                 </div>
             <?php endif; ?>
 
-            <?php if ($banner): ?>
+            <?php if (!$current_user->validated_at && $banner): ?>
                 <div class="layout__banner">
                     <a class="banner__container banner__container--anchor" href="<?= url('registration validation') ?>">
                         <?= _('You must validate your registration&nbsp;→') ?>
@@ -60,8 +60,17 @@
                 </div>
             <?php endif; ?>
 
-            <header class="layout__header layout__header--connected header">
+            <header class="layout__header header">
                 <nav class="header__container">
+                    <a class="header__link header__link--home" href="<?= url('home') ?>">
+                        <img
+                            alt="flus"
+                            src="<?= url_static('logo.svg') ?>"
+                            width="120"
+                            height="40.6"
+                        />
+                    </a>
+
                     <div class="header__separator no-mobile"></div>
 
                     <details
@@ -84,6 +93,12 @@
                             <a class="popup__item popup__item--link icon icon--avatar" href="<?= url('account') ?>">
                                 <?= _('Account') ?>
                             </a>
+
+                            <?php if ($subscriptions_enabled): ?>
+                                <a class="popup__item popup__item--link icon icon--credit-card" href="<?= url('subscription') ?>">
+                                    <?= _('Subscription') ?>
+                                </a>
+                            <?php endif; ?>
 
                             <div class="popup__separator"></div>
 

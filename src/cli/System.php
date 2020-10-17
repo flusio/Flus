@@ -32,7 +32,8 @@ class System
         $usage .= '      -pemail=EMAIL' . "\n";
         $usage .= '      -ppassword=PASSWORD' . "\n";
         $usage .= '  /users/clean      Clean not validated users created NUMBER months ago' . "\n";
-        $usage .= '      [-psince=NUMBER] where NUMBER is the number of months, greater than 0 (default is 1)';
+        $usage .= '      [-psince=NUMBER] where NUMBER is the number of months, greater than 0 (default is 1)' . "\n";
+        $usage .= '  /subscriptions/sync Synchronize the overdue subscriptions (or nearly overdue)';
 
         return Response::text(200, $usage);
     }

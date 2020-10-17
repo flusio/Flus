@@ -239,6 +239,22 @@ class Registrations
         }
 
         $user->validated_at = \Minz\Time::now();
+
+        $app_conf = \Minz\Configuration::$application;
+        if ($app_conf['subscriptions_enabled']) {
+            $subscriptions_service = new services\Subscriptions(
+                $app_conf['subscriptions_host'],
+                $app_conf['subscriptions_private_key']
+            );
+            $account = $subscriptions_service->account($user->email);
+            if ($account) {
+                $user->subscription_account_id = $account['id'];
+                $user->subscription_expired_at = $account['expired_at'];
+            } else {
+                \Minz\Log::error("Can’t get a subscription account for user {$user->id}."); // @codeCoverageIgnore
+            }
+        }
+
         $user_dao->save($user);
 
         return Response::ok('registrations/validation.phtml', [

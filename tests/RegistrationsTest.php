@@ -432,6 +432,32 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(\Minz\Time::now(), $user->validated_at);
     }
 
+    public function testValidationWithTokenSetsSubscriptionAccountId()
+    {
+        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        $user_dao = new models\dao\User();
+        $this->freeze($this->fake('dateTime'));
+
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $user_id = $this->create('user', [
+            'validated_at' => null,
+            'validation_token' => $token,
+            'subscription_account_id' => null,
+        ]);
+
+        $response = $this->appRun('get', '/registration/validation', [
+            't' => $token,
+        ]);
+
+        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+
+        $user = new models\User($user_dao->find($user_id));
+        $this->assertNotNull($user->subscription_account_id);
+    }
+
     public function testValidationWithTokenRedirectsIfRegistrationAlreadyValidated()
     {
         $user_dao = new models\dao\User();

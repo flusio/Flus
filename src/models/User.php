@@ -24,6 +24,15 @@ class User extends \Minz\Model
 
         'validation_token' => 'string',
 
+        'subscription_account_id' => [
+            'type' => 'string',
+        ],
+
+        'subscription_expired_at' => [
+            'type' => 'datetime',
+            'required' => true,
+        ],
+
         'email' => [
             'type' => 'string',
             'required' => true,
@@ -65,8 +74,10 @@ class User extends \Minz\Model
      */
     public static function init($username, $email, $password)
     {
+        $expired_at = \Minz\Time::fromNow(1, 'month');
         return new self([
             'id' => bin2hex(random_bytes(16)),
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'username' => trim($username),
             'email' => utils\Email::sanitize($email),
             'password_hash' => $password ? password_hash($password, PASSWORD_BCRYPT) : '',
@@ -345,6 +356,29 @@ class User extends \Minz\Model
     public function mustValidateEmail()
     {
         return !$this->validated_at && $this->created_at < \Minz\Time::ago(1, 'day');
+    }
+
+    /**
+     * Return wheter the user has a free subscription or not.
+     *
+     * @return boolean
+     */
+    public function isSubscriptionExempted()
+    {
+        return $this->subscription_expired_at->getTimestamp() === 0;
+    }
+
+    /**
+     * Return wheter the user subscription is overdue or not.
+     *
+     * @return boolean
+     */
+    public function isSubscriptionOverdue()
+    {
+        return (
+            !$this->isSubscriptionExempted() &&
+            \Minz\Time::now() > $this->subscription_expired_at
+        );
     }
 
     /**

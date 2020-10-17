@@ -76,4 +76,21 @@ class User extends \Minz\DatabaseModel
             return null;
         }
     }
+
+    /**
+     * Return users with subscriptions expired_at before a given date
+     *
+     * @param \DateTime $before_this_date
+     *
+     * @return array
+     */
+    public function listBySubscriptionExpiredAtBefore($before_this_date)
+    {
+        $sql = "SELECT * FROM users WHERE subscription_expired_at <= ?";
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            $before_this_date->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        return $statement->fetchAll();
+    }
 }

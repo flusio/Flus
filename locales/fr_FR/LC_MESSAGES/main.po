@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-14 17:09+0200\n"
-"PO-Revision-Date: 2020-10-14 17:10+0200\n"
+"POT-Creation-Date: 2020-10-16 18:40+0200\n"
+"PO-Revision-Date: 2020-10-16 18:43+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -18,7 +18,8 @@ msgstr ""
 #: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
 #: Collections.php:506 Collections.php:559 LinkMessages.php:70 Links.php:179
 #: Links.php:322 NewsLinks.php:119 NewsLinks.php:268 NewsLinks.php:359
-#: Registrations.php:95 Registrations.php:278 Sessions.php:82
+#: Registrations.php:95 Registrations.php:294 Sessions.php:82
+#: Subscriptions.php:108
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -95,6 +96,20 @@ msgstr "Le token a expiré ou a été invalidé."
 #: Sessions.php:99
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
+
+#: Subscriptions.php:116
+msgid ""
+"An error occured when getting you a subscription account, please contact the "
+"support."
+msgstr ""
+"Une erreur est survenue pendant que nous récupérions les informations de "
+"votre compte, merci de contacter le support."
+
+#: Subscriptions.php:164
+msgid "An error occured while logging you, please contact the support."
+msgstr ""
+"Une erreur est survenue pendant que nous vous connections, merci de "
+"contacter le support."
 
 #: assets/javascripts/controllers/collections_selector_controller.js:98
 msgid "Unselect this collection"
@@ -198,31 +213,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:379
+#: models/User.php:426
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:381
+#: models/User.php:428
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:383
+#: models/User.php:430
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:385
+#: models/User.php:432
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:387
+#: models/User.php:434
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:389
+#: models/User.php:436
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:391
+#: models/User.php:438
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -239,75 +254,76 @@ msgstr "plateforme inconnue"
 msgid "%s on %s"
 msgstr "%s sur %s"
 
-#: utils/view_helpers.php:63
+#: utils/view_helpers.php:78
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:65
+#: utils/view_helpers.php:80
 #, php-format
 msgid "%d&nbsp;min"
 msgstr "%d&nbsp;min"
 
-#: utils/view_helpers.php:108
+#: utils/view_helpers.php:123
 msgid "bookmarks"
 msgstr "signets"
 
-#: utils/view_helpers.php:111
+#: utils/view_helpers.php:126
 msgid "followed collections"
 msgstr "collections suivies"
 
-#: utils/view_helpers.php:114
+#: utils/view_helpers.php:129
 msgid "points of interest"
 msgstr "centres d’intérêt"
 
-#: utils/view_helpers.php:116 views/news_links/index.phtml:81
+#: utils/view_helpers.php:131 views/news_links/index.phtml:81
 #: views/onboarding/step4.phtml:43
 msgid " and "
 msgstr " et "
 
-#: utils/view_helpers.php:118
+#: utils/view_helpers.php:133
 #, php-format
 msgid "Get about %s of reading from your %s."
 msgstr "Obtenez environ %s de lecture depuis vos %s."
 
-#: utils/view_helpers.php:135
+#: utils/view_helpers.php:150
 #, php-format
 msgid "%d&nbsp;minute"
 msgid_plural "%d&nbsp;minutes"
 msgstr[0] "%d&nbsp;minute"
 msgstr[1] "%d&nbsp;minutes"
 
-#: utils/view_helpers.php:139
+#: utils/view_helpers.php:154
 #, php-format
 msgid "%d&nbsp;hour"
 msgid_plural "%d&nbsp;hours"
 msgstr[0] "%d&nbsp;heure"
 msgstr[1] "%d&nbsp;heures"
 
-#: utils/view_helpers.php:142
+#: utils/view_helpers.php:157
 #, php-format
 msgid "%d&nbsp;h&nbsp;%d"
 msgstr "%d&nbsp;h&nbsp;%d"
 
-#: views/_layouts/connected.phtml:35 views/_layouts/not_connected.phtml:35
-#: views/_layouts/onboarding.phtml:28
+#: views/_layouts/connected.phtml:35 views/_layouts/connected_blocked.phtml:35
+#: views/_layouts/not_connected.phtml:35 views/_layouts/onboarding.phtml:28
 msgid "Skip to main content"
 msgstr "Sauter au contenu"
 
-#: views/_layouts/connected.phtml:42 views/_layouts/not_connected.phtml:42
-#: views/_layouts/onboarding.phtml:35
+#: views/_layouts/connected.phtml:42 views/_layouts/connected_blocked.phtml:42
+#: views/_layouts/not_connected.phtml:42 views/_layouts/onboarding.phtml:35
 #, php-format
 msgid "You need to activate JavaScript in order to use %s."
 msgstr "Vous devez activer JavaScript pour utiliser %s."
 
-#: views/_layouts/connected.phtml:50 views/_layouts/not_connected.phtml:50
+#: views/_layouts/connected.phtml:50 views/_layouts/connected_blocked.phtml:50
+#: views/_layouts/not_connected.phtml:50
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
 msgstr ""
 "Vous utilisez une version de démo de %s, les données sont réinitialisées "
 "chaque nuit."
 
-#: views/_layouts/connected.phtml:58
+#: views/_layouts/connected.phtml:58 views/_layouts/connected_blocked.phtml:58
 msgid "You must validate your registration&nbsp;→"
 msgstr "Vous devez valider votre inscription&nbsp;→"
 
@@ -324,30 +340,37 @@ msgid "Collections"
 msgstr "Collections"
 
 #: views/_layouts/connected.phtml:101 views/_layouts/connected.phtml:106
-#: views/collections/show.phtml:22 views/collections/show.phtml:26
-#: views/links/show.phtml:27 views/links/show.phtml:31
+#: views/_layouts/connected_blocked.phtml:81
+#: views/_layouts/connected_blocked.phtml:86 views/collections/show.phtml:22
+#: views/collections/show.phtml:26 views/links/show.phtml:27
+#: views/links/show.phtml:31
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
-#: views/_layouts/connected.phtml:114 views/accounts/show.phtml:3
-#: views/accounts/show.phtml:11
+#: views/_layouts/connected.phtml:114 views/_layouts/connected_blocked.phtml:94
+#: views/accounts/show.phtml:3 views/accounts/show.phtml:11
 msgid "Account"
 msgstr "Compte"
 
-#: views/_layouts/connected.phtml:122
+#: views/_layouts/connected.phtml:119 views/_layouts/connected_blocked.phtml:99
+msgid "Subscription"
+msgstr "Abonnement"
+
+#: views/_layouts/connected.phtml:128
+#: views/_layouts/connected_blocked.phtml:108
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:131 views/_layouts/connected.phtml:134
+#: views/_layouts/connected.phtml:137 views/_layouts/connected.phtml:140
 #: views/collections/show.phtml:100 views/collections/show_bookmarks.phtml:26
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/_layouts/connected.phtml:166
+#: views/_layouts/connected.phtml:172
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:167
+#: views/_layouts/connected.phtml:173
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -1304,6 +1327,37 @@ msgstr "Se connecter"
 #: views/sessions/new.phtml:88
 msgid "No account yet? Sign up"
 msgstr "Pas encore de compte ? S’inscrire"
+
+#: views/subscriptions/show.phtml:3 views/subscriptions/show.phtml:9
+msgid "Your subscription"
+msgstr "Votre abonnement"
+
+#: views/subscriptions/show.phtml:14
+#, php-format
+msgid "You must <a href=\"%s\">validate your account</a> first."
+msgstr "Vous devez d’abord <a href=\"%s\">valider votre compte</a>."
+
+#: views/subscriptions/show.phtml:26
+msgid "Create your payment account"
+msgstr "Créer votre compte de paiement"
+
+#: views/subscriptions/show.phtml:32
+msgid "You have a <strong>free subscription</strong>!&nbsp;😊"
+msgstr "Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
+
+#: views/subscriptions/show.phtml:34
+#, php-format
+msgid "<strong>Your subscription expired on %s.</strong>"
+msgstr "<strong>Votre abonnement a expiré le %s.</strong>"
+
+#: views/subscriptions/show.phtml:36
+#, php-format
+msgid "Your subscription will expire on <strong>%s.</strong>"
+msgstr "Votre abonnement expirera le <strong>%s.</strong>"
+
+#: views/subscriptions/show.phtml:47
+msgid "Renew from your payment account"
+msgstr "Renouveler depuis votre compte de paiement"
 
 #: views/unauthorized.phtml:3
 msgid "Unauthorized"
