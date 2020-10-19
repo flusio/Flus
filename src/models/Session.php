@@ -2,6 +2,8 @@
 
 namespace flusio\models;
 
+use flusio\utils;
+
 /**
  * Represent a user login session.
  *
@@ -48,7 +50,7 @@ class Session extends \Minz\Model
     public static function init($name, $ip)
     {
         return new self([
-            'id' => bin2hex(random_bytes(16)),
+            'id' => utils\Random::hex(32),
             'name' => trim($name),
             'ip' => trim($ip),
         ]);

@@ -2,6 +2,8 @@
 
 namespace flusio\models;
 
+use flusio\utils;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -42,7 +44,7 @@ class Message extends \Minz\Model
     public static function init($user_id, $link_id, $content)
     {
         return new self([
-            'id' => bin2hex(random_bytes(16)),
+            'id' => utils\Random::hex(32),
             'content' => trim($content),
             'link_id' => $link_id,
             'user_id' => $user_id,

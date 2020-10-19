@@ -26,7 +26,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
     '\flusio\models\dao\User',
     [
         'id' => function () {
-            return bin2hex(random_bytes(16));
+            return \flusio\utils\Random::hex(32);
         },
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
@@ -51,7 +51,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
             return $faker->randomElement($available_locales);
         },
         'csrf' => function () {
-            return \bin2hex(\random_bytes(32));
+            return \flusio\utils\Random::hex(64);
         },
     ]
 );
@@ -64,7 +64,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
             return $faker->iso8601;
         },
         'token' => function () {
-            return bin2hex(random_bytes(8));
+            return \flusio\utils\Random::hex(32);
         },
         'expired_at' => function () use ($faker) {
             return $faker->iso8601;
@@ -77,7 +77,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
     '\flusio\models\dao\Session',
     [
         'id' => function () {
-            return bin2hex(random_bytes(16));
+            return \flusio\utils\Random::hex(32);
         },
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
@@ -104,7 +104,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
     '\flusio\models\dao\Collection',
     [
         'id' => function () {
-            return bin2hex(random_bytes(16));
+            return \flusio\utils\Random::hex(32);
         },
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
@@ -130,7 +130,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
     '\flusio\models\dao\Link',
     [
         'id' => function () {
-            return bin2hex(random_bytes(16));
+            return \flusio\utils\Random::hex(32);
         },
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
@@ -215,7 +215,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
     '\flusio\models\dao\Message',
     [
         'id' => function () {
-            return bin2hex(random_bytes(16));
+            return \flusio\utils\Random::hex(32);
         },
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
@@ -239,7 +239,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
     '\flusio\models\dao\Topic',
     [
         'id' => function () {
-            return bin2hex(random_bytes(16));
+            return \flusio\utils\Random::hex(32);
         },
         'created_at' => function () use ($faker) {
             return $faker->iso8601;

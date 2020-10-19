@@ -4,7 +4,7 @@ $db_host = $dotenv->pop('DB_HOST');
 $db_port = intval($dotenv->pop('DB_PORT', '5432'));
 $db_name = 'flusio_test';
 
-$temporary_directory = sys_get_temp_dir() . '/flusio/' . bin2hex(random_bytes(6));
+$temporary_directory = sys_get_temp_dir() . '/flusio/' . \flusio\utils\Random::hex(10);
 $data_directory = $temporary_directory . '/data';
 $cache_directory = $temporary_directory . '/cache';
 @mkdir($temporary_directory, 0777, true);

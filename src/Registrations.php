@@ -134,7 +134,7 @@ class Registrations
             ]);
         }
 
-        $validation_token = models\Token::init(1, 'day', 8);
+        $validation_token = models\Token::init(1, 'day', 16);
         $token_dao->save($validation_token);
 
         $user->validation_token = $validation_token->token;
@@ -303,7 +303,7 @@ class Registrations
         $token = new models\Token($token_dao->find($user->validation_token));
         if ($token->expiresIn(30, 'minutes') || $token->isInvalidated()) {
             // the token will expire soon, let's regenerate a new one
-            $token = models\Token::init(1, 'day', 8);
+            $token = models\Token::init(1, 'day', 16);
             $token_dao->save($token);
             $user->validation_token = $token->token;
             $user_dao->save($user);

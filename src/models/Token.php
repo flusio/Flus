@@ -2,6 +2,8 @@
 
 namespace flusio\models;
 
+use flusio\utils;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -31,15 +33,15 @@ class Token extends \Minz\Model
      *
      * @param integer $number
      * @param string $duration
-     * @param integer $complexity default is 32
+     * @param integer $length default is 64
      *
      * @return \flusio\models\Token
      */
-    public static function init($number, $duration, $complexity = 32)
+    public static function init($number, $duration, $length = 64)
     {
         return new self([
             'expired_at' => \Minz\Time::fromNow($number, $duration),
-            'token' => bin2hex(random_bytes($complexity)),
+            'token' => utils\Random::hex($length),
         ]);
     }
 

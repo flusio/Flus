@@ -76,13 +76,13 @@ class User extends \Minz\Model
     {
         $expired_at = \Minz\Time::fromNow(1, 'month');
         return new self([
-            'id' => bin2hex(random_bytes(16)),
+            'id' => utils\Random::hex(32),
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'username' => trim($username),
             'email' => utils\Email::sanitize($email),
             'password_hash' => $password ? password_hash($password, PASSWORD_BCRYPT) : '',
             'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
-            'csrf' => \bin2hex(\random_bytes(32)),
+            'csrf' => utils\Random::hex(64),
             'news_preferences' => '{}',
         ]);
     }

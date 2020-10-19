@@ -2,6 +2,8 @@
 
 namespace flusio\models;
 
+use flusio\utils;
+
 /**
  * Represent a list containing a set of links.
  *
@@ -63,7 +65,7 @@ class Collection extends \Minz\Model
     public static function init($user_id, $name, $description, $is_public)
     {
         return new self([
-            'id' => bin2hex(random_bytes(16)),
+            'id' => utils\Random::hex(32),
             'name' => trim($name),
             'description' => trim($description),
             'type' => 'collection',
@@ -80,7 +82,7 @@ class Collection extends \Minz\Model
     public static function initBookmarks($user_id)
     {
         return new self([
-            'id' => bin2hex(random_bytes(16)),
+            'id' => utils\Random::hex(32),
             'name' => _('Bookmarks'),
             'description' => '',
             'type' => 'bookmarks',

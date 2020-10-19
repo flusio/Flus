@@ -2,6 +2,8 @@
 
 namespace flusio\models;
 
+use flusio\utils;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -71,7 +73,7 @@ class Link extends \Minz\Model
     {
         $url = \SpiderBits\Url::sanitize($url);
         return new self([
-            'id' => bin2hex(random_bytes(16)),
+            'id' => utils\Random::hex(32),
             'title' => $url,
             'url' => $url,
             'is_public' => filter_var($is_public, FILTER_VALIDATE_BOOLEAN),
@@ -90,7 +92,7 @@ class Link extends \Minz\Model
     public static function initFromNews($news_link, $user_id)
     {
         return new self([
-            'id' => bin2hex(random_bytes(16)),
+            'id' => utils\Random::hex(32),
             'title' => $news_link->title,
             'url' => $news_link->url,
             'is_public' => false,
