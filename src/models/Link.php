@@ -73,7 +73,7 @@ class Link extends \Minz\Model
     {
         $url = \SpiderBits\Url::sanitize($url);
         return new self([
-            'id' => utils\Random::hex(32),
+            'id' => utils\Random::timebased(),
             'title' => $url,
             'url' => $url,
             'is_public' => filter_var($is_public, FILTER_VALIDATE_BOOLEAN),

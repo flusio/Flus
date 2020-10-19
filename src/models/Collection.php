@@ -65,7 +65,7 @@ class Collection extends \Minz\Model
     public static function init($user_id, $name, $description, $is_public)
     {
         return new self([
-            'id' => utils\Random::hex(32),
+            'id' => utils\Random::timebased(),
             'name' => trim($name),
             'description' => trim($description),
             'type' => 'collection',
@@ -82,7 +82,7 @@ class Collection extends \Minz\Model
     public static function initBookmarks($user_id)
     {
         return new self([
-            'id' => utils\Random::hex(32),
+            'id' => utils\Random::timebased(),
             'name' => _('Bookmarks'),
             'description' => '',
             'type' => 'bookmarks',

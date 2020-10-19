@@ -2,6 +2,15 @@
 
 ## 2020-xx-yy - v0.11
 
+### Breaking changes
+
+The ids of collections and links are changing to a numeric form, which means
+previous URLs will break. This is not a change that I would do if the service
+was open or installed by other people, at least not in a >= 1.0 release. Since
+I'm almost the only person using it today and that I shared very few URLs, it’s
+OK for me to do it. It's also the last occasion to make this change (or it
+would require more work).
+
 ### Migration notes
 
 (optional, mostly for myself) You can configure the subscription feature with

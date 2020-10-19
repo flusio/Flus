@@ -104,7 +104,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
     '\flusio\models\dao\Collection',
     [
         'id' => function () {
-            return \flusio\utils\Random::hex(32);
+            return \flusio\utils\Random::timebased();
         },
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
@@ -130,7 +130,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
     '\flusio\models\dao\Link',
     [
         'id' => function () {
-            return \flusio\utils\Random::hex(32);
+            return \flusio\utils\Random::timebased();
         },
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
