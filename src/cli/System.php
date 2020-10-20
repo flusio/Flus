@@ -3,6 +3,7 @@
 namespace flusio\cli;
 
 use Minz\Response;
+use flusio\utils;
 
 /**
  * Manipulate the system to setup the application.
@@ -45,7 +46,7 @@ class System
      */
     public function secret()
     {
-        $secret = bin2hex(random_bytes(64));
+        $secret = utils\Random::hex(128);
         return Response::text(200, $secret);
     }
 
