@@ -19,7 +19,7 @@
 
     padding: var(--space-medium) var(--space-small);
 
-    background-color: var(--color-turquoise-2);
+    background: linear-gradient(135deg, var(--color-turquoise-2) 0%, var(--color-turquoise-3) 100%);
 }
 
 @media (min-width: 800px) {
