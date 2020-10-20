@@ -4,13 +4,13 @@ namespace flusio\mailers;
 
 class Users extends \Minz\Mailer
 {
-    public function sendRegistrationValidationEmail($user, $token)
+    public function sendAccountValidationEmail($user, $token)
     {
         $brand = \Minz\Configuration::$application['brand'];
-        $subject = vsprintf(_('[%s] Confirm your registration'), $brand);
+        $subject = vsprintf(_('[%s] Confirm your account'), $brand);
         $this->setBody(
-            'mailers/users/registration_validation_email.phtml',
-            'mailers/users/registration_validation_email.txt',
+            'mailers/users/account_validation_email.phtml',
+            'mailers/users/account_validation_email.txt',
             [
                 'username' => $user->username,
                 'token' => $token->token,

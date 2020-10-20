@@ -3,6 +3,7 @@
 namespace flusio\my;
 
 use Minz\Response;
+use flusio\mailers;
 use flusio\models;
 use flusio\services;
 use flusio\utils;
@@ -47,6 +48,153 @@ class Account
         }
 
         return Response::ok('my/account/show.phtml');
+    }
+
+    /**
+     * Validate an account.
+     *
+     * @request_param string t The validation token
+     *
+     * @response 302 /login?redirect_to=/my/account/validation
+     *     If no token and current user is not connected
+     * @response 302 /
+     *     If no token and current user is already validated
+     * @response 200
+     *     If no token
+     *
+     * @response 404
+     *     If token is given but it doesn't exist for the given user
+     * @response 400
+     *     If token is given but has expired
+     * @response 302 /
+     *     If token is valid and the account is already validated
+     * @response 200
+     *     If token is given and correct (i.e. the account is validated)
+     */
+    public function validation($request)
+    {
+        $user_dao = new models\dao\User();
+        $token_dao = new models\dao\Token();
+
+        $token = $request->param('t');
+        $current_user = utils\CurrentUser::get();
+        if (!$token) {
+            if (!$current_user) {
+                return Response::redirect('login', [
+                    'redirect_to' => \Minz\Url::for('account validation'),
+                ]);
+            } elseif ($current_user->validated_at) {
+                return Response::redirect('home');
+            } else {
+                return Response::ok('my/account/validation.phtml');
+            }
+        }
+
+        $db_token = $token_dao->find($token);
+        if (!$db_token) {
+            return Response::notFound('my/account/validation.phtml', [
+                'error' => _('The token doesn’t exist.'),
+            ]);
+        }
+
+        $token = new models\Token($db_token);
+        if (!$token->isValid()) {
+            return Response::badRequest('my/account/validation.phtml', [
+                'error' => _('The token has expired or has been invalidated.'),
+            ]);
+        }
+
+        $db_user = $user_dao->findBy(['validation_token' => $token->token]);
+        if (!$db_user) {
+            return Response::notFound('my/account/validation.phtml', [
+                'error' => _('The token doesn’t exist.'),
+            ]);
+        }
+
+        $user = new models\User($db_user);
+
+        // No need to keep the token in database, whether or not the user is
+        // already validated.
+        $token_dao->delete($token->token);
+        $user->validation_token = null;
+
+        if ($user->validated_at) {
+            return Response::redirect('home');
+        }
+
+        $user->validated_at = \Minz\Time::now();
+
+        $app_conf = \Minz\Configuration::$application;
+        if ($app_conf['subscriptions_enabled']) {
+            $subscriptions_service = new services\Subscriptions(
+                $app_conf['subscriptions_host'],
+                $app_conf['subscriptions_private_key']
+            );
+            $account = $subscriptions_service->account($user->email);
+            if ($account) {
+                $user->subscription_account_id = $account['id'];
+                $user->subscription_expired_at = $account['expired_at'];
+            } else {
+                \Minz\Log::error("Can’t get a subscription account for user {$user->id}."); // @codeCoverageIgnore
+            }
+        }
+
+        $user_dao->save($user);
+
+        return Response::ok('my/account/validation.phtml', [
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * Resend a validation email.
+     *
+     * A new token is generated if the current one expires soon (i.e. <= 30
+     * minutes).
+     *
+     * @request_param string csrf
+     * @request_param string from default: /
+     *
+     * @response 302 /login?redirect_to=:from
+     *     If the user is not connected
+     * @response 302 :from
+     */
+    public function resendValidationEmail($request)
+    {
+        $user_dao = new models\dao\User();
+        $token_dao = new models\dao\Token();
+        $from = $request->param('from', \Minz\Url::for('home'));
+        $csrf = new \Minz\CSRF();
+        $user = utils\CurrentUser::get();
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+            return Response::found($from);
+        }
+
+        if ($user->validated_at) {
+            // nothing to do, the user is already validated
+            return Response::found($from);
+        }
+
+        $token = new models\Token($token_dao->find($user->validation_token));
+        if ($token->expiresIn(30, 'minutes') || $token->isInvalidated()) {
+            // the token will expire soon, let's regenerate a new one
+            $token = models\Token::init(1, 'day', 16);
+            $token_dao->save($token);
+            $user->validation_token = $token->token;
+            $user_dao->save($user);
+        }
+
+        $users_mailer = new mailers\Users();
+        $users_mailer->sendAccountValidationEmail($user, $token);
+
+        utils\Flash::set('status', 'validation_email_sent');
+        return Response::found($from);
     }
 
     /**

@@ -1,18 +1,26 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('Registration validation'),
+        'title' => _('Account validation'),
         'banner' => false,
     ]);
 ?>
 
 <div class="section">
+    <nav class="section__nav">
+        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('account') ?>">
+            <?= _('Account') ?>
+        </a>
+
+        <div class="section__nav-separator"></div>
+    </nav>
+
     <div class="section__title">
-        <h1><?= _('Registration validation') ?></h1>
+        <h1><?= _('Account validation') ?></h1>
     </div>
 
     <?php if (isset($success) && $success): ?>
         <p class="section__intro">
-            <?= _('Your registration is now validated.') ?>
+            <?= _('Your account is now validated.') ?>
         </p>
 
         <p class="paragraph--centered">
@@ -22,7 +30,7 @@
         </p>
     <?php else: ?>
         <p class="section__intro">
-            <?= _('You must validate your registration so we can contact you in case of a change in our end-user license agreement or a problem concerning your account. <strong>You should have received an email containing a link intended to this purpose.</strong>') ?>
+            <?= _('You must validate your account so we can contact you in case of a change in our end-user license agreement or a problem concerning your account. <strong>You should have received an email containing a link intended to this purpose.</strong>') ?>
         </p>
 
         <?php if ($status === 'validation_email_sent'): ?>
@@ -42,7 +50,7 @@
 
             <form class="form--centered" method="post" action="<?= url('resend validation email') ?>">
                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                <input type="hidden" name="from" value="<?= url('registration validation') ?>" />
+                <input type="hidden" name="from" value="<?= url('account validation') ?>" />
                 <button class="button--primary" type="submit">
                     <?= _('Didn’t receive the email? Resend it') ?>
                 </button>

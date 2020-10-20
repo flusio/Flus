@@ -89,7 +89,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $application = new Application();
         $response = $application->run($request);
 
-        $this->assertResponse($response, 302, '/registration/validation');
+        $this->assertResponse($response, 302, '/my/account/validation');
     }
 
     public function testRunRedirectsIfUserSubscriptionIsOverdue()

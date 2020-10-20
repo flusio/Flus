@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-20 17:41+0200\n"
-"PO-Revision-Date: 2020-10-20 17:41+0200\n"
+"POT-Creation-Date: 2020-10-20 19:33+0200\n"
+"PO-Revision-Date: 2020-10-20 19:34+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -18,8 +18,8 @@ msgstr ""
 #: Collections.php:122 Collections.php:315 Collections.php:506
 #: Collections.php:559 LinkMessages.php:70 Links.php:179 Links.php:322
 #: NewsLinks.php:119 NewsLinks.php:268 NewsLinks.php:359 Registrations.php:95
-#: Registrations.php:294 Sessions.php:82 my/Account.php:80 my/Profile.php:85
-#: my/Subscription.php:111
+#: Sessions.php:82 my/Account.php:175 my/Account.php:246 my/Profile.php:85
+#: my/Subscription.php:73
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -77,19 +77,11 @@ msgstr "Un compte existe déjà avec cette adresse courriel."
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
-#: Registrations.php:212 Registrations.php:226
-msgid "The token doesn’t exist."
-msgstr "Le token n’existe pas."
-
-#: Registrations.php:219
-msgid "The token has expired or has been invalidated."
-msgstr "Le token a expiré ou a été invalidé."
-
 #: Sessions.php:99
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: Sessions.php:111 my/Account.php:88
+#: Sessions.php:111 my/Account.php:254
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -135,8 +127,8 @@ msgstr "Ajouter aux signets"
 
 #: mailers/Users.php:10
 #, php-format
-msgid "[%s] Confirm your registration"
-msgstr "[%s] Confirmer votre inscription"
+msgid "[%s] Confirm your account"
+msgstr "[%s] Confirmer votre compte"
 
 #: models/Collection.php:86 models/Collection.php:105
 #: views/_layouts/connected.phtml:81 views/collections/show_bookmarks.phtml:3
@@ -223,11 +215,19 @@ msgstr "La langue est obligatoire."
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
-#: my/Account.php:96
+#: my/Account.php:96 my/Account.php:110
+msgid "The token doesn’t exist."
+msgstr "Le token n’existe pas."
+
+#: my/Account.php:103
+msgid "The token has expired or has been invalidated."
+msgstr "Le token a expiré ou a été invalidé."
+
+#: my/Account.php:262
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: my/Subscription.php:119
+#: my/Subscription.php:82
 msgid ""
 "An error occured when getting you a subscription account, please contact the "
 "support."
@@ -235,7 +235,7 @@ msgstr ""
 "Une erreur est survenue pendant que nous récupérions les informations de "
 "votre compte, merci de contacter le support."
 
-#: my/Subscription.php:167
+#: my/Subscription.php:131
 msgid "An error occured while logging you, please contact the support."
 msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
@@ -324,8 +324,8 @@ msgstr ""
 "chaque nuit."
 
 #: views/_layouts/connected.phtml:58 views/_layouts/connected_blocked.phtml:58
-msgid "You must validate your registration&nbsp;→"
-msgstr "Vous devez valider votre inscription&nbsp;→"
+msgid "You must validate your account&nbsp;→"
+msgstr "Vous devez valider votre compte&nbsp;→"
 
 #: views/_layouts/connected.phtml:72 views/news_links/index.phtml:3
 #: views/news_links/index.phtml:10
@@ -795,12 +795,12 @@ msgstr "Merci de patienter pendant que nous recueillons les informations."
 msgid "%s didn’t comment on this link."
 msgstr "%s n’a pas commenté ce lien."
 
-#: views/mailers/users/registration_validation_email.phtml:2
+#: views/mailers/users/account_validation_email.phtml:2
 #, php-format
 msgid "Welcome %s,"
 msgstr "Bienvenue %s,"
 
-#: views/mailers/users/registration_validation_email.phtml:6
+#: views/mailers/users/account_validation_email.phtml:6
 #, php-format
 msgid ""
 "Thank you for your inscription on %s. To finish, you’ll have to confirm your "
@@ -811,7 +811,7 @@ msgstr ""
 "votre adresse courriel. Vous avez seulement à cliquer sur le lien suivant, "
 "et tout devrait être bon ensuite :"
 
-#: views/mailers/users/registration_validation_email.phtml:13
+#: views/mailers/users/account_validation_email.phtml:13
 msgid "Have a nice day!"
 msgstr "Bonne journée !"
 
@@ -858,13 +858,71 @@ msgstr "Annuler et retourner à votre compte"
 msgid "You are registered since %s."
 msgstr "Vous êtes inscrit‧e depuis le %s."
 
-#: views/my/account/show.phtml:19
+#: views/my/account/show.phtml:18
+msgid "You have a <strong>free subscription</strong>!&nbsp;😊"
+msgstr "Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
+
+#: views/my/account/show.phtml:20
+#, php-format
+msgid "<strong>Your subscription expired on %s.</strong>"
+msgstr "<strong>Votre abonnement a expiré le %s.</strong>"
+
+#: views/my/account/show.phtml:22
+#, php-format
+msgid "Your subscription will expire on <strong>%s.</strong>"
+msgstr "Votre abonnement expirera le <strong>%s.</strong>"
+
+#: views/my/account/show.phtml:36
+msgid "Validate your account"
+msgstr "Valider votre compte"
+
+#: views/my/account/show.phtml:47
 msgid "Manage your subscription"
 msgstr "Gérer votre abonnement"
 
-#: views/my/account/show.phtml:26
+#: views/my/account/show.phtml:54
+msgid "Create your payment account"
+msgstr "Créer votre compte de paiement"
+
+#: views/my/account/show.phtml:61
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
+
+#: views/my/account/validation.phtml:3 views/my/account/validation.phtml:10
+msgid "Account validation"
+msgstr "Validation du compte"
+
+#: views/my/account/validation.phtml:15
+msgid "Your account is now validated."
+msgstr "Votre compte est maintenant validé."
+
+#: views/my/account/validation.phtml:20
+msgid "Nice! Go to the home page"
+msgstr "Chouette ! Retourner à la page d’accueil"
+
+#: views/my/account/validation.phtml:25
+msgid ""
+"You must validate your account so we can contact you in case of a change in "
+"our end-user license agreement or a problem concerning your account. "
+"<strong>You should have received an email containing a link intended to this "
+"purpose.</strong>"
+msgstr ""
+"Vous devez valider votre compte afin que nous puissions vous contacter en "
+"cas de changement dans nos <abbr>CGU</abbr> ou si un problème survient avec "
+"votre compte. <strong>Vous devriez avoir reçu un courriel contenant un lien "
+"permettant cela.</strong>"
+
+#: views/my/account/validation.phtml:30
+msgid "We’ve just sent you an email!"
+msgstr "Nous vous avons envoyé un courriel !"
+
+#: views/my/account/validation.phtml:34
+msgid "Still nothing? Did you check your spam?"
+msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
+
+#: views/my/account/validation.phtml:47
+msgid "Didn’t receive the email? Resend it"
+msgstr "Courriel non reçu ? Renvoyer"
 
 #: views/my/profile/show.phtml:24
 msgid "Your name"
@@ -885,37 +943,6 @@ msgstr "Votre langue"
 #: views/my/profile/show.phtml:102
 msgid "Save your changes"
 msgstr "Enregistrer vos modifications"
-
-#: views/my/subscription/show.phtml:3 views/my/subscription/show.phtml:9
-msgid "Your subscription"
-msgstr "Votre abonnement"
-
-#: views/my/subscription/show.phtml:14
-#, php-format
-msgid "You must <a href=\"%s\">validate your account</a> first."
-msgstr "Vous devez d’abord <a href=\"%s\">valider votre compte</a>."
-
-#: views/my/subscription/show.phtml:26
-msgid "Create your payment account"
-msgstr "Créer votre compte de paiement"
-
-#: views/my/subscription/show.phtml:32
-msgid "You have a <strong>free subscription</strong>!&nbsp;😊"
-msgstr "Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
-
-#: views/my/subscription/show.phtml:34
-#, php-format
-msgid "<strong>Your subscription expired on %s.</strong>"
-msgstr "<strong>Votre abonnement a expiré le %s.</strong>"
-
-#: views/my/subscription/show.phtml:36
-#, php-format
-msgid "Your subscription will expire on <strong>%s.</strong>"
-msgstr "Votre abonnement expirera le <strong>%s.</strong>"
-
-#: views/my/subscription/show.phtml:47
-msgid "Renew from your payment account"
-msgstr "Renouveler depuis votre compte de paiement"
 
 #: views/news_links/adding.phtml:3 views/news_links/adding.phtml:11
 msgid "Add to your collections"
@@ -1313,43 +1340,6 @@ msgstr "Accepter les conditions générales d’utilisation"
 #: views/registrations/new.phtml:138
 msgid "Already an account? Sign in"
 msgstr "Déjà un compte ? Se connecter"
-
-#: views/registrations/validation.phtml:3
-#: views/registrations/validation.phtml:10
-msgid "Registration validation"
-msgstr "Validation de l’inscription"
-
-#: views/registrations/validation.phtml:15
-msgid "Your registration is now validated."
-msgstr "Votre inscription est maintenant validée."
-
-#: views/registrations/validation.phtml:20
-msgid "Nice! Go to the home page"
-msgstr "Chouette ! Retourner à la page d’accueil"
-
-#: views/registrations/validation.phtml:25
-msgid ""
-"You must validate your registration so we can contact you in case of a "
-"change in our end-user license agreement or a problem concerning your "
-"account. <strong>You should have received an email containing a link "
-"intended to this purpose.</strong>"
-msgstr ""
-"Vous devez valider votre inscription afin que nous puissions vous contacter "
-"en cas de changement dans nos <abbr>CGU</abbr> ou si un problème survient "
-"avec votre compte. <strong>Vous devriez avoir reçu un courriel contenant un "
-"lien permettant cela.</strong>"
-
-#: views/registrations/validation.phtml:30
-msgid "We’ve just sent you an email!"
-msgstr "Nous vous avons envoyé un courriel !"
-
-#: views/registrations/validation.phtml:34
-msgid "Still nothing? Did you check your spam?"
-msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
-
-#: views/registrations/validation.phtml:47
-msgid "Didn’t receive the email? Resend it"
-msgstr "Courriel non reçu ? Renvoyer"
 
 #: views/sessions/new.phtml:3 views/sessions/new.phtml:9
 msgid "Log in"

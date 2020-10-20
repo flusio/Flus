@@ -40,13 +40,6 @@ class Application
         // Registration
         $router->addRoute('get', '/registration', 'Registrations#new', 'registration');
         $router->addRoute('post', '/registration', 'Registrations#create', 'create user');
-        $router->addRoute('get', '/registration/validation', 'Registrations#validation', 'registration validation');
-        $router->addRoute(
-            'post',
-            '/registration/validation/email',
-            'Registrations#resendValidationEmail',
-            'resend validation email'
-        );
 
         // Sessions
         $router->addRoute('get', '/login', 'Sessions#new', 'login');
@@ -64,6 +57,13 @@ class Application
         $router->addRoute('post', '/my/profile', 'my/Profile#update', 'update profile');
 
         $router->addRoute('get', '/my/account', 'my/Account#show', 'account');
+        $router->addRoute('get', '/my/account/validation', 'my/Account#validation', 'account validation');
+        $router->addRoute(
+            'post',
+            '/my/account/validation/email',
+            'my/Account#resendValidationEmail',
+            'resend validation email'
+        );
         $router->addRoute('get', '/my/account/deletion', 'my/Account#deletion', 'account deletion');
         $router->addRoute('post', '/my/account/deletion', 'my/Account#delete', 'delete account');
 
@@ -146,7 +146,7 @@ class Application
         // Redirect the user if she didn't validated its account after the
         // first day.
         if ($current_user && $this->mustRedirectToValidation($request, $current_user)) {
-            return \Minz\Response::redirect('registration validation');
+            return \Minz\Response::redirect('account validation');
         }
 
         // Redirect the user if its subscription is overdue
@@ -223,8 +223,6 @@ class Application
         $path = $request->path();
         $path_is_authorized = (
             utils\Belt::startsWith($path, '/my/') ||
-            utils\Belt::startsWith($path, '/registration') ||
-            utils\Belt::startsWith($path, '/login') ||
             utils\Belt::startsWith($path, '/logout') ||
             utils\Belt::startsWith($path, '/terms') ||
             utils\Belt::startsWith($path, '/onboarding') ||
@@ -255,8 +253,6 @@ class Application
         $path = $request->path();
         $path_is_authorized = (
             utils\Belt::startsWith($path, '/my/') ||
-            utils\Belt::startsWith($path, '/registration') ||
-            utils\Belt::startsWith($path, '/login') ||
             utils\Belt::startsWith($path, '/logout') ||
             utils\Belt::startsWith($path, '/terms') ||
             utils\Belt::startsWith($path, '/onboarding') ||
