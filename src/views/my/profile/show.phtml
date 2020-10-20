@@ -1,17 +1,16 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('Account'),
+        'title' => _('Profile'),
         'current_locale' => $current_locale,
-        'current_tab' => 'account',
     ]);
 ?>
 
 <div class="section">
     <div class="section__title">
-        <h1><?= _('Account') ?></h1>
+        <h1><?= _('Profile') ?></h1>
     </div>
 
-    <form method="post" action="<?= url('update account') ?>">
+    <form method="post" action="<?= url('update profile') ?>">
         <?php if ($error): ?>
             <p class="form__error">
                 <?= $error ?>
@@ -103,14 +102,4 @@
             <button type="submit" class="button--primary"><?= _('Save your changes') ?></button>
         </div>
     </form>
-</div>
-
-<hr />
-
-<div class="section">
-    <p class="paragraph--centered">
-        <a href="<?= url('show delete account') ?>">
-            <?= _('Do you want to delete your account?') ?>
-        </a>
-    </p>
 </div>

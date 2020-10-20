@@ -102,6 +102,10 @@
     background-image: url("../icons/essential/copy-to-clipboard-line.svg");
 }
 
+.icon--details::before {
+    background-image: url("../icons/essential/details-line.svg");
+}
+
 .icon--help::before {
     background-image: url("../icons/essential/help-line.svg");
 }

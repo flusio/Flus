@@ -1,0 +1,29 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => $subscriptions_enabled ? _('Account & subscription') : _('Account'),
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= $subscriptions_enabled ? _('Account & subscription') : _('Account') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _f('You are registered since %s.', format_date($current_user->created_at, '%d %B %Y')) ?>
+    </p>
+
+    <?php if ($subscriptions_enabled): ?>
+        <p class="paragraph--centered">
+            <a href="<?= url('subscription') ?>">
+                <?= _('Manage your subscription') ?>
+            </a>
+        </p>
+    <?php endif; ?>
+
+    <p class="paragraph--centered">
+        <a href="<?= url('account deletion') ?>">
+            <?= _('Delete your account?') ?>
+        </a>
+    </p>
+</div>

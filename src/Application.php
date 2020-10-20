@@ -59,16 +59,17 @@ class Application
         $router->addRoute('post', '/onboarding/locale', 'Onboarding#updateLocale', 'onboarding update locale');
         $router->addRoute('post', '/onboarding/topics', 'Onboarding#updateTopics', 'onboarding update topics');
 
-        // Account
-        $router->addRoute('get', '/account', 'Accounts#show', 'account');
-        $router->addRoute('post', '/account', 'Accounts#update', 'update account');
-        $router->addRoute('get', '/account/delete', 'Accounts#showDelete', 'show delete account');
-        $router->addRoute('post', '/account/delete', 'Accounts#delete', 'delete account');
+        // "My" section
+        $router->addRoute('get', '/my/profile', 'my/Profile#show', 'profile');
+        $router->addRoute('post', '/my/profile', 'my/Profile#update', 'update profile');
 
-        // Subscriptions
-        $router->addRoute('get', '/my/subscription', 'Subscriptions#show', 'subscription');
-        $router->addRoute('post', '/my/subscription', 'Subscriptions#create', 'create subscription account');
-        $router->addRoute('get', '/my/subscription/renew', 'Subscriptions#renewing', 'subscription renew');
+        $router->addRoute('get', '/my/account', 'my/Account#show', 'account');
+        $router->addRoute('get', '/my/account/deletion', 'my/Account#deletion', 'account deletion');
+        $router->addRoute('post', '/my/account/deletion', 'my/Account#delete', 'delete account');
+
+        $router->addRoute('get', '/my/account/subscription', 'my/Subscription#show', 'subscription');
+        $router->addRoute('post', '/my/account/subscription', 'my/Subscription#create', 'create subscription account');
+        $router->addRoute('get', '/my/account/subscription/renew', 'my/Subscription#renewing', 'subscription renew');
 
         // News page
         $router->addRoute('get', '/news', 'NewsLinks#index', 'news');
@@ -222,8 +223,7 @@ class Application
 
         $path = $request->path();
         $path_is_authorized = (
-            utils\Belt::startsWith($path, '/account') ||
-            utils\Belt::startsWith($path, '/my/subscription') ||
+            utils\Belt::startsWith($path, '/my/') ||
             utils\Belt::startsWith($path, '/registration') ||
             utils\Belt::startsWith($path, '/login') ||
             utils\Belt::startsWith($path, '/logout') ||
@@ -255,8 +255,7 @@ class Application
 
         $path = $request->path();
         $path_is_authorized = (
-            utils\Belt::startsWith($path, '/account') ||
-            utils\Belt::startsWith($path, '/my/subscription') ||
+            utils\Belt::startsWith($path, '/my/') ||
             utils\Belt::startsWith($path, '/registration') ||
             utils\Belt::startsWith($path, '/login') ||
             utils\Belt::startsWith($path, '/logout') ||

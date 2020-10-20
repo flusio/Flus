@@ -110,13 +110,17 @@
                         <nav class="popup__container popup__container--left">
                             <div class="popup__title"><?= $this->protect($current_user->username) ?></div>
 
-                            <a class="popup__item popup__item--link icon icon--avatar" href="<?= url('account') ?>">
-                                <?= _('Account') ?>
+                            <a class="popup__item popup__item--link icon icon--avatar" href="<?= url('profile') ?>">
+                                <?= _('Profile') ?>
                             </a>
 
                             <?php if ($subscriptions_enabled): ?>
-                                <a class="popup__item popup__item--link icon icon--credit-card" href="<?= url('subscription') ?>">
-                                    <?= _('Subscription') ?>
+                                <a class="popup__item popup__item--link icon icon--credit-card" href="<?= url('account') ?>">
+                                    <?= _('Account & subscription') ?>
+                                </a>
+                            <?php else: ?>
+                                <a class="popup__item popup__item--link icon icon--details" href="<?= url('account') ?>">
+                                    <?= _('Account') ?>
                                 </a>
                             <?php endif; ?>
 

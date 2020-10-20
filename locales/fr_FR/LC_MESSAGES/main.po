@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-16 18:40+0200\n"
-"PO-Revision-Date: 2020-10-16 18:43+0200\n"
+"POT-Creation-Date: 2020-10-20 17:41+0200\n"
+"PO-Revision-Date: 2020-10-20 17:41+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,27 +15,19 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Accounts.php:83 Accounts.php:180 Collections.php:122 Collections.php:315
-#: Collections.php:506 Collections.php:559 LinkMessages.php:70 Links.php:179
-#: Links.php:322 NewsLinks.php:119 NewsLinks.php:268 NewsLinks.php:359
-#: Registrations.php:95 Registrations.php:294 Sessions.php:82
-#: Subscriptions.php:108
+#: Collections.php:122 Collections.php:315 Collections.php:506
+#: Collections.php:559 LinkMessages.php:70 Links.php:179 Links.php:322
+#: NewsLinks.php:119 NewsLinks.php:268 NewsLinks.php:359 Registrations.php:95
+#: Registrations.php:294 Sessions.php:82 my/Account.php:80 my/Profile.php:85
+#: my/Subscription.php:111
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: Accounts.php:94 Collections.php:134 Collections.php:328
+#: Collections.php:134 Collections.php:328 my/Profile.php:96
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
-
-#: Accounts.php:188 Sessions.php:111
-msgid "The password is incorrect."
-msgstr "Le mot de passe est incorrect."
-
-#: Accounts.php:196
-msgid "Sorry but you cannot delete the demo account 😉"
-msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
 #: Collections.php:389 LinkCollections.php:149 LinkCollections.php:201
 #: Links.php:378 Links.php:457 Links.php:579 NewsLinks.php:417
@@ -97,19 +89,9 @@ msgstr "Le token a expiré ou a été invalidé."
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: Subscriptions.php:116
-msgid ""
-"An error occured when getting you a subscription account, please contact the "
-"support."
-msgstr ""
-"Une erreur est survenue pendant que nous récupérions les informations de "
-"votre compte, merci de contacter le support."
-
-#: Subscriptions.php:164
-msgid "An error occured while logging you, please contact the support."
-msgstr ""
-"Une erreur est survenue pendant que nous vous connections, merci de "
-"contacter le support."
+#: Sessions.php:111 my/Account.php:88
+msgid "The password is incorrect."
+msgstr "Le mot de passe est incorrect."
 
 #: assets/javascripts/controllers/collections_selector_controller.js:98
 msgid "Unselect this collection"
@@ -133,7 +115,7 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:28
-#: views/accounts/delete.phtml:50 views/registrations/new.phtml:96
+#: views/my/account/deletion.phtml:50 views/registrations/new.phtml:96
 #: views/sessions/new.phtml:70
 msgid "Show"
 msgstr "Afficher"
@@ -156,42 +138,42 @@ msgstr "Ajouter aux signets"
 msgid "[%s] Confirm your registration"
 msgstr "[%s] Confirmer votre inscription"
 
-#: models/Collection.php:84 models/Collection.php:103
+#: models/Collection.php:86 models/Collection.php:105
 #: views/_layouts/connected.phtml:81 views/collections/show_bookmarks.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:223
+#: models/Collection.php:225
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:225
+#: models/Collection.php:227
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:172
+#: models/Link.php:174
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:174
+#: models/Link.php:176
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:193
+#: models/Link.php:195
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:198
+#: models/Link.php:200
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:202
+#: models/Link.php:204
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
 "sensible."
 
-#: models/Message.php:79
+#: models/Message.php:81
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
@@ -204,11 +186,11 @@ msgstr "La durée doit se trouver entre %d et %d."
 msgid "You must select at least one option."
 msgstr "Vous devez sélectionner au moins une option."
 
-#: models/Topic.php:91
+#: models/Topic.php:93
 msgid "The label is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Topic.php:94
+#: models/Topic.php:96
 #, php-format
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
@@ -240,6 +222,24 @@ msgstr "La langue est obligatoire."
 #: models/User.php:438
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
+
+#: my/Account.php:96
+msgid "Sorry but you cannot delete the demo account 😉"
+msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
+
+#: my/Subscription.php:119
+msgid ""
+"An error occured when getting you a subscription account, please contact the "
+"support."
+msgstr ""
+"Une erreur est survenue pendant que nous récupérions les informations de "
+"votre compte, merci de contacter le support."
+
+#: my/Subscription.php:167
+msgid "An error occured while logging you, please contact the support."
+msgstr ""
+"Une erreur est survenue pendant que nous vous connections, merci de "
+"contacter le support."
 
 #: utils/Browser.php:36
 msgid "Unknown browser"
@@ -348,29 +348,36 @@ msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
 #: views/_layouts/connected.phtml:114 views/_layouts/connected_blocked.phtml:94
-#: views/accounts/show.phtml:3 views/accounts/show.phtml:11
+#: views/my/profile/show.phtml:3 views/my/profile/show.phtml:10
+msgid "Profile"
+msgstr "Profil"
+
+#: views/_layouts/connected.phtml:119 views/_layouts/connected_blocked.phtml:99
+#: views/my/account/show.phtml:3 views/my/account/show.phtml:9
+msgid "Account & subscription"
+msgstr "Compte & abonnement"
+
+#: views/_layouts/connected.phtml:123
+#: views/_layouts/connected_blocked.phtml:103 views/my/account/show.phtml:3
+#: views/my/account/show.phtml:9
 msgid "Account"
 msgstr "Compte"
 
-#: views/_layouts/connected.phtml:119 views/_layouts/connected_blocked.phtml:99
-msgid "Subscription"
-msgstr "Abonnement"
-
-#: views/_layouts/connected.phtml:128
-#: views/_layouts/connected_blocked.phtml:108
+#: views/_layouts/connected.phtml:132
+#: views/_layouts/connected_blocked.phtml:112
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:137 views/_layouts/connected.phtml:140
+#: views/_layouts/connected.phtml:141 views/_layouts/connected.phtml:144
 #: views/collections/show.phtml:100 views/collections/show_bookmarks.phtml:26
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/_layouts/connected.phtml:172
+#: views/_layouts/connected.phtml:176
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:173
+#: views/_layouts/connected.phtml:177
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -404,68 +411,6 @@ msgstr "passer"
 #: views/_layouts/onboarding.phtml:58
 msgid "finished"
 msgstr "terminé"
-
-#: views/accounts/delete.phtml:3 views/accounts/delete.phtml:9
-msgid "Account deletion"
-msgstr "Suppression du compte"
-
-#: views/accounts/delete.phtml:13
-msgid ""
-"You’re about to delete your account and your data will be lost. This can’t "
-"be canceled!"
-msgstr ""
-"Vous êtes sur le point de supprimer votre compte : vos données seront alors "
-"perdues. Cette action ne peut pas être annulée !"
-
-#: views/accounts/delete.phtml:27
-msgid "Your password"
-msgstr "Votre mot de passe"
-
-#: views/accounts/delete.phtml:31
-msgid "You must type your password so we can confirm your identity."
-msgstr ""
-"Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
-"identité."
-
-#: views/accounts/delete.phtml:48 views/registrations/new.phtml:94
-#: views/sessions/new.phtml:68
-msgid ""
-"Show password as plain text. Note: this will visually expose your password."
-msgstr ""
-"Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
-"mot de passe visuellement."
-
-#: views/accounts/delete.phtml:63
-msgid "Delete the account"
-msgstr "Supprimer le compte"
-
-#: views/accounts/delete.phtml:67
-msgid "Cancel and go back to your account"
-msgstr "Annuler et retourner à votre compte"
-
-#: views/accounts/show.phtml:25
-msgid "Your name"
-msgstr "Votre nom"
-
-#: views/accounts/show.phtml:29 views/registrations/new.phtml:27
-msgid "Your username must not be longer than 50 characters."
-msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
-
-#: views/accounts/show.phtml:50 views/news_links/preferences.phtml:93
-msgid "Your points of interest"
-msgstr "Vos centres d’intérêt"
-
-#: views/accounts/show.phtml:81
-msgid "Your language"
-msgstr "Votre langue"
-
-#: views/accounts/show.phtml:103
-msgid "Save your changes"
-msgstr "Enregistrer vos modifications"
-
-#: views/accounts/show.phtml:113
-msgid "Do you want to delete your account?"
-msgstr "Vous voulez supprimer votre compte ?"
 
 #: views/bad_request.phtml:3
 msgid "Bad request"
@@ -527,7 +472,7 @@ msgstr "suivie"
 #: views/collections/discover.phtml:55 views/collections/index.phtml:56
 #: views/collections/index.phtml:115 views/collections/show.phtml:130
 #: views/collections/show_bookmarks.phtml:71
-#: views/collections/show_public.phtml:92 views/news_links/index.phtml:61
+#: views/collections/show_public.phtml:93 views/news_links/index.phtml:61
 #: views/news_links/index.phtml:72
 msgid "see"
 msgstr "voir"
@@ -669,25 +614,25 @@ msgstr ""
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/collections/show_public.phtml:18 views/links/show.phtml:17
-#: views/links/show_public.phtml:17
+#: views/collections/show_public.phtml:19 views/links/show.phtml:17
+#: views/links/show_public.phtml:18
 msgid "Back"
 msgstr "Retour"
 
-#: views/collections/show_public.phtml:37
+#: views/collections/show_public.phtml:38
 #, php-format
 msgid "Collection created by %s"
 msgstr "Collection créée par %s"
 
-#: views/collections/show_public.phtml:53
+#: views/collections/show_public.phtml:54
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:60
+#: views/collections/show_public.phtml:61
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:104
+#: views/collections/show_public.phtml:105
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -799,7 +744,7 @@ msgstr "Retirer le lien"
 msgid "share"
 msgstr "partager"
 
-#: views/links/show.phtml:105 views/links/show_public.phtml:40
+#: views/links/show.phtml:105 views/links/show_public.phtml:41
 #: views/news_links/index.phtml:133
 msgid "open"
 msgstr "ouvrir"
@@ -845,7 +790,7 @@ msgstr "Récupérer les informations du lien"
 msgid "Please wait while we’re collecting information."
 msgstr "Merci de patienter pendant que nous recueillons les informations."
 
-#: views/links/show_public.phtml:74
+#: views/links/show_public.phtml:75
 #, php-format
 msgid "%s didn’t comment on this link."
 msgstr "%s n’a pas commenté ce lien."
@@ -869,6 +814,108 @@ msgstr ""
 #: views/mailers/users/registration_validation_email.phtml:13
 msgid "Have a nice day!"
 msgstr "Bonne journée !"
+
+#: views/my/account/deletion.phtml:3 views/my/account/deletion.phtml:9
+msgid "Account deletion"
+msgstr "Suppression du compte"
+
+#: views/my/account/deletion.phtml:13
+msgid ""
+"You’re about to delete your account and your data will be lost. This can’t "
+"be canceled!"
+msgstr ""
+"Vous êtes sur le point de supprimer votre compte : vos données seront alors "
+"perdues. Cette action ne peut pas être annulée !"
+
+#: views/my/account/deletion.phtml:27
+msgid "Your password"
+msgstr "Votre mot de passe"
+
+#: views/my/account/deletion.phtml:31
+msgid "You must type your password so we can confirm your identity."
+msgstr ""
+"Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
+"identité."
+
+#: views/my/account/deletion.phtml:48 views/registrations/new.phtml:94
+#: views/sessions/new.phtml:68
+msgid ""
+"Show password as plain text. Note: this will visually expose your password."
+msgstr ""
+"Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
+"mot de passe visuellement."
+
+#: views/my/account/deletion.phtml:63
+msgid "Delete the account"
+msgstr "Supprimer le compte"
+
+#: views/my/account/deletion.phtml:67
+msgid "Cancel and go back to your account"
+msgstr "Annuler et retourner à votre compte"
+
+#: views/my/account/show.phtml:13
+#, php-format
+msgid "You are registered since %s."
+msgstr "Vous êtes inscrit‧e depuis le %s."
+
+#: views/my/account/show.phtml:19
+msgid "Manage your subscription"
+msgstr "Gérer votre abonnement"
+
+#: views/my/account/show.phtml:26
+msgid "Delete your account?"
+msgstr "Supprimer votre compte&nbsp;?"
+
+#: views/my/profile/show.phtml:24
+msgid "Your name"
+msgstr "Votre nom"
+
+#: views/my/profile/show.phtml:28 views/registrations/new.phtml:27
+msgid "Your username must not be longer than 50 characters."
+msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
+
+#: views/my/profile/show.phtml:49 views/news_links/preferences.phtml:93
+msgid "Your points of interest"
+msgstr "Vos centres d’intérêt"
+
+#: views/my/profile/show.phtml:80
+msgid "Your language"
+msgstr "Votre langue"
+
+#: views/my/profile/show.phtml:102
+msgid "Save your changes"
+msgstr "Enregistrer vos modifications"
+
+#: views/my/subscription/show.phtml:3 views/my/subscription/show.phtml:9
+msgid "Your subscription"
+msgstr "Votre abonnement"
+
+#: views/my/subscription/show.phtml:14
+#, php-format
+msgid "You must <a href=\"%s\">validate your account</a> first."
+msgstr "Vous devez d’abord <a href=\"%s\">valider votre compte</a>."
+
+#: views/my/subscription/show.phtml:26
+msgid "Create your payment account"
+msgstr "Créer votre compte de paiement"
+
+#: views/my/subscription/show.phtml:32
+msgid "You have a <strong>free subscription</strong>!&nbsp;😊"
+msgstr "Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
+
+#: views/my/subscription/show.phtml:34
+#, php-format
+msgid "<strong>Your subscription expired on %s.</strong>"
+msgstr "<strong>Votre abonnement a expiré le %s.</strong>"
+
+#: views/my/subscription/show.phtml:36
+#, php-format
+msgid "Your subscription will expire on <strong>%s.</strong>"
+msgstr "Votre abonnement expirera le <strong>%s.</strong>"
+
+#: views/my/subscription/show.phtml:47
+msgid "Renew from your payment account"
+msgstr "Renouveler depuis votre compte de paiement"
 
 #: views/news_links/adding.phtml:3 views/news_links/adding.phtml:11
 msgid "Add to your collections"
@@ -1327,37 +1374,6 @@ msgstr "Se connecter"
 #: views/sessions/new.phtml:88
 msgid "No account yet? Sign up"
 msgstr "Pas encore de compte ? S’inscrire"
-
-#: views/subscriptions/show.phtml:3 views/subscriptions/show.phtml:9
-msgid "Your subscription"
-msgstr "Votre abonnement"
-
-#: views/subscriptions/show.phtml:14
-#, php-format
-msgid "You must <a href=\"%s\">validate your account</a> first."
-msgstr "Vous devez d’abord <a href=\"%s\">valider votre compte</a>."
-
-#: views/subscriptions/show.phtml:26
-msgid "Create your payment account"
-msgstr "Créer votre compte de paiement"
-
-#: views/subscriptions/show.phtml:32
-msgid "You have a <strong>free subscription</strong>!&nbsp;😊"
-msgstr "Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
-
-#: views/subscriptions/show.phtml:34
-#, php-format
-msgid "<strong>Your subscription expired on %s.</strong>"
-msgstr "<strong>Votre abonnement a expiré le %s.</strong>"
-
-#: views/subscriptions/show.phtml:36
-#, php-format
-msgid "Your subscription will expire on <strong>%s.</strong>"
-msgstr "Votre abonnement expirera le <strong>%s.</strong>"
-
-#: views/subscriptions/show.phtml:47
-msgid "Renew from your payment account"
-msgstr "Renouveler depuis votre compte de paiement"
 
 #: views/unauthorized.phtml:3
 msgid "Unauthorized"

@@ -1,14 +1,17 @@
 <?php
 
-namespace flusio;
+namespace flusio\my;
 
 use Minz\Response;
+use flusio\models;
+use flusio\services;
+use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Subscriptions
+class Subscription
 {
     /** @var boolean */
     private $enabled;
@@ -33,7 +36,7 @@ class Subscriptions
      *
      * @response 404
      *     If subscriptions are not enabled (need a host and a key)
-     * @response 302 /login?redirect_to=/subscription
+     * @response 302 /login?redirect_to=/my/account/subscription
      *     If the user is not connected
      * @response 200
      *     On success
@@ -62,7 +65,7 @@ class Subscriptions
             }
         }
 
-        return Response::ok('subscriptions/show.phtml');
+        return Response::ok('my/subscription/show.phtml');
     }
 
     /**
@@ -72,7 +75,7 @@ class Subscriptions
      *
      * @response 404
      *     If subscriptions are not enabled (need a host and a key)
-     * @response 302 /login?redirect_to=/subscription
+     * @response 302 /login?redirect_to=/my/account/subscription
      *     If the user is not connected
      * @response 400
      *     If CSRF token is invalid or user is not validated yet
@@ -95,16 +98,16 @@ class Subscriptions
         }
 
         if ($user->subscription_account_id) {
-            return Response::ok('subscriptions/show.phtml');
+            return Response::ok('my/subscription/show.phtml');
         }
 
         if (!$user->validated_at) {
-            return Response::badRequest('subscriptions/show.phtml');
+            return Response::badRequest('my/subscription/show.phtml');
         }
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('subscriptions/show.phtml', [
+            return Response::badRequest('my/subscription/show.phtml', [
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
@@ -112,7 +115,7 @@ class Subscriptions
         $account = $this->service->account($user->email);
         if (!$account) {
             \Minz\Log::error("Can’t get a subscription account for user {$user->id}.");
-            return Response::internalServerError('subscriptions/show.phtml', [
+            return Response::internalServerError('my/subscription/show.phtml', [
                 'error' => _('An error occured when getting you a subscription account, please contact the support.'),
             ]);
         }
@@ -121,7 +124,7 @@ class Subscriptions
         $user->subscription_account_id = $account['id'];
         $user->subscription_expired_at = $account['expired_at'];
         $user_dao->save($user);
-        return Response::ok('subscriptions/show.phtml');
+        return Response::ok('my/subscription/show.phtml');
     }
 
     /**
@@ -129,7 +132,7 @@ class Subscriptions
      *
      * @response 404
      *     If subscriptions are not enabled (need a host and a key)
-     * @response 302 /login?redirect_to=/subscription
+     * @response 302 /login?redirect_to=/my/account/subscription
      *     If the user is not connected
      * @response 401
      *     If the user has no account_id

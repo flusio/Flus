@@ -1,8 +1,11 @@
 <?php
 
-namespace flusio;
+namespace flusio\my;
 
-class AccountsTest extends \PHPUnit\Framework\TestCase
+use flusio\models;
+use flusio\utils;
+
+class ProfileTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
@@ -16,17 +19,17 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $response = $this->appRun('get', '/account');
+        $response = $this->appRun('get', '/my/profile');
 
         $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'accounts/show.phtml');
+        $this->assertPointer($response, 'my/profile/show.phtml');
     }
 
     public function testShowRedirectsToLoginIfUserNotConnected()
     {
-        $response = $this->appRun('get', '/account');
+        $response = $this->appRun('get', '/my/profile');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
     }
 
     public function testUpdateRendersCorrectlyAndSavesTheUser()
@@ -38,14 +41,14 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'fr_FR',
         ]);
 
         $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'accounts/show.phtml');
+        $this->assertPointer($response, 'my/profile/show.phtml');
         $user = utils\CurrentUser::reload();
         $this->assertSame($new_username, $user->username);
         $this->assertSame('fr_FR', $user->locale);
@@ -57,7 +60,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $this->fake('username'),
             'locale' => 'fr_FR',
@@ -76,7 +79,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'topic_id' => $old_topic_id,
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $this->fake('username'),
             'locale' => 'fr_FR',
@@ -98,13 +101,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'username' => $new_username,
             'locale' => 'fr_FR',
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
         $user = new models\User($user_dao->find($user_id));
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);
@@ -119,7 +122,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => 'not the token',
             'username' => $new_username,
             'locale' => 'fr_FR',
@@ -140,7 +143,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'fr_FR',
@@ -160,7 +163,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'locale' => 'fr_FR',
         ]);
@@ -180,7 +183,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
         ]);
@@ -200,7 +203,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'not a locale',
@@ -221,7 +224,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'topic_id' => $old_topic_id,
         ]);
 
-        $response = $this->appRun('post', '/account', [
+        $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $this->fake('username'),
             'locale' => 'fr_FR',
@@ -232,129 +235,5 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = utils\CurrentUser::reload();
         $topic_ids = array_column($user->topics(), 'id');
         $this->assertSame([$old_topic_id], $topic_ids);
-    }
-
-    public function testShowDeleteRendersCorrectly()
-    {
-        $this->login();
-
-        $response = $this->appRun('get', '/account/delete');
-
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'accounts/delete.phtml');
-    }
-
-    public function testShowDeleteRedirectsToLoginIfUserNotConnected()
-    {
-        $response = $this->appRun('get', '/account/delete');
-
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdelete');
-    }
-
-    public function testDeleteRedirectsToLoginAndDeletesTheUser()
-    {
-        $user_dao = new models\dao\User();
-
-        $password = $this->fake('password');
-        $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
-
-        $response = $this->appRun('post', '/account/delete', [
-            'csrf' => $user->csrf,
-            'password' => $password,
-        ]);
-
-        $this->assertResponse($response, 302, '/login');
-        $this->assertFlash('status', 'user_deleted');
-        $this->assertNull($user_dao->find($user->id));
-        $this->assertNull(utils\CurrentUser::get());
-    }
-
-    public function testDeleteRedirectsToLoginIfUserIsNotConnected()
-    {
-        $response = $this->appRun('post', '/account/delete', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-            'password' => $this->fake('password'),
-        ]);
-
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Faccount%2Fdelete');
-    }
-
-    public function testDeleteDeletesSessionsAssociatedToTheUser()
-    {
-        $user_dao = new models\dao\User();
-        $session_dao = new models\dao\Session();
-
-        $password = $this->fake('password');
-        $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
-
-        $this->assertSame(1, $session_dao->count());
-
-        $response = $this->appRun('post', '/account/delete', [
-            'csrf' => $user->csrf,
-            'password' => $password,
-        ]);
-
-        $this->assertSame(0, $session_dao->count());
-    }
-
-    public function testDeleteFailsIfPasswordIsIncorrect()
-    {
-        $user_dao = new models\dao\User();
-
-        $password = $this->fake('password');
-        $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
-
-        $response = $this->appRun('post', '/account/delete', [
-            'csrf' => $user->csrf,
-            'password' => 'not the password',
-        ]);
-
-        $this->assertResponse($response, 400, 'The password is incorrect.');
-        $this->assertNotNull($user_dao->find($user->id));
-    }
-
-    public function testDeleteFailsIfCsrfIsInvalid()
-    {
-        $user_dao = new models\dao\User();
-
-        $password = $this->fake('password');
-        $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
-
-        $response = $this->appRun('post', '/account/delete', [
-            'csrf' => 'not the token',
-            'password' => $password,
-        ]);
-
-        $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertNotNull($user_dao->find($user->id));
-    }
-
-    public function testDeleteFailsIfTryingToDeleteDemoAccount()
-    {
-        $user_dao = new models\dao\User();
-        \Minz\Configuration::$application['demo'] = true;
-
-        $password = $this->fake('password');
-        $user = $this->login([
-            'email' => 'demo@flus.io',
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
-
-        $response = $this->appRun('post', '/account/delete', [
-            'csrf' => $user->csrf,
-            'password' => $password,
-        ]);
-
-        \Minz\Configuration::$application['demo'] = false;
-        $this->assertResponse($response, 400, 'Sorry but you cannot delete the demo account 😉');
-        $this->assertNotNull($user_dao->find($user->id));
     }
 }

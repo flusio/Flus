@@ -1,8 +1,11 @@
 <?php
 
-namespace flusio;
+namespace flusio\my;
 
-class SubscriptionsTest extends \PHPUnit\Framework\TestCase
+use flusio\models;
+use flusio\services;
+
+class SubscriptionTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
@@ -36,7 +39,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('get', '/my/subscription');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 200, 'Your subscription will expire on');
     }
@@ -50,7 +53,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('get', '/my/subscription');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 200, 'Your subscription expired on');
     }
@@ -64,7 +67,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('get', '/my/subscription');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 200, 'You have a <strong>free subscription</strong>');
     }
@@ -78,7 +81,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('get', '/my/subscription');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 200, 'Create your payment account');
     }
@@ -93,7 +96,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => null,
         ]);
 
-        $response = $this->appRun('get', '/my/subscription');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 200, 'validate your account');
     }
@@ -114,7 +117,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('get', '/my/subscription');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $user = new models\User($user_dao->find($user->id));
         $this->assertNotSame(
@@ -132,9 +135,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('get', '/my/subscription');
+        $response = $this->appRun('get', '/my/account/subscription');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsubscription');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fsubscription');
     }
 
     public function testShowFailsIfSubscriptionsAreDisabled()
@@ -147,7 +150,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('get', '/my/subscription');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 404);
     }
@@ -162,7 +165,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('post', '/my/subscription', [
+        $response = $this->appRun('post', '/my/account/subscription', [
             'csrf' => $user->csrf,
         ]);
 
@@ -186,7 +189,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('post', '/my/subscription', [
+        $response = $this->appRun('post', '/my/account/subscription', [
             'csrf' => $user->csrf,
         ]);
 
@@ -210,11 +213,11 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('post', '/my/subscription', [
+        $response = $this->appRun('post', '/my/account/subscription', [
             'csrf' => 'a token',
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsubscription');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fsubscription');
         $user = new models\User($user_dao->find($user_id));
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -234,7 +237,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
-        $response = $this->appRun('post', '/my/subscription', [
+        $response = $this->appRun('post', '/my/account/subscription', [
             'csrf' => $user->csrf,
         ]);
 
@@ -257,7 +260,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('post', '/my/subscription', [
+        $response = $this->appRun('post', '/my/account/subscription', [
             'csrf' => 'not the token',
         ]);
 
@@ -282,7 +285,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('post', '/my/subscription', [
+        $response = $this->appRun('post', '/my/account/subscription', [
             'csrf' => $user->csrf,
         ]);
 
@@ -308,7 +311,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'validated_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('post', '/my/subscription', [
+        $response = $this->appRun('post', '/my/account/subscription', [
             'csrf' => $user->csrf,
         ]);
 
@@ -332,7 +335,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_account_id' => $account['id'],
         ]);
 
-        $response = $this->appRun('get', '/my/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription/renew');
 
         $this->assertResponse($response, 302);
         $response_headers = $response->headers(true);
@@ -350,9 +353,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_account_id' => 'some real id',
         ]);
 
-        $response = $this->appRun('get', '/my/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription/renew');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsubscription');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fsubscription');
     }
 
     public function testRenewingFailsIfUserHasNoAccountId()
@@ -361,7 +364,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_account_id' => null,
         ]);
 
-        $response = $this->appRun('get', '/my/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription/renew');
 
         $this->assertResponse($response, 400);
     }
@@ -372,7 +375,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_account_id' => 'not an id',
         ]);
 
-        $response = $this->appRun('get', '/my/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription/renew');
 
         $this->assertResponse($response, 500, 'please contact the support');
     }
@@ -386,7 +389,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_account_id' => 'some real id',
         ]);
 
-        $response = $this->appRun('get', '/my/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription/renew');
 
         $this->assertResponse($response, 404);
     }
