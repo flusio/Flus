@@ -19,31 +19,31 @@ class DomExtractor
      */
     public static function title($dom)
     {
-        // Get the OpenGraph title if it exists
-        $title = $dom->select('/html/head/meta[@property = "og:title"]/attribute::content');
+        $xpath_queries = [
+            // Look for OpenGraph title first
+            '/html/head/meta[@property = "og:title"][1]/attribute::content',
+            // Then Twitter meta tag
+            '/html/head/meta[@name = "twitter:title"][1]/attribute::content',
+            // Still nothing? Look for a <title> tag
+            '/html/head/title[1]',
 
-        if (!$title) {
-            // No OpenGraph? Maybe Twitter meta tag?
-            $title = $dom->select('/html/head/meta[@name = "twitter:title"]/attribute::content');
+            // Err, still nothing! Let's try to be more tolerant (e.g. Youtube
+            // puts the meta and title tags in the body :/)
+            '//meta[@property = "og:title"][1]/attribute::content',
+            '//meta[@name = "twitter:title"][1]/attribute::content',
+            // For titles, we must be sure to not consider svg title tags!
+            '//title[not(ancestor::svg)][1]',
+        ];
+
+        foreach ($xpath_queries as $query) {
+            $title = $dom->select($query);
+            if ($title) {
+                return $title->text();
+            }
         }
 
-        if (!$title) {
-            // Still nothing? Get the <title> tag, and be strict first
-            $title = $dom->select('/html/head/title[1]');
-        }
-
-        if (!$title) {
-            // Then, if we don't find it for some reasons, be more tolerant.
-            // This is particularly useful for Youtube!
-            // We must be sure to not consider svg title tags though!
-            $title = $dom->select('//title[not(ancestor::svg)][1]');
-        }
-
-        if ($title) {
-            return $title->text();
-        } else {
-            return '';
-        }
+        // It's hopeless...
+        return '';
     }
 
     /**
