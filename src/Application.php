@@ -67,9 +67,8 @@ class Application
         $router->addRoute('get', '/my/account/deletion', 'my/Account#deletion', 'account deletion');
         $router->addRoute('post', '/my/account/deletion', 'my/Account#delete', 'delete account');
 
-        $router->addRoute('get', '/my/account/subscription', 'my/Subscription#show', 'subscription');
+        $router->addRoute('get', '/my/account/subscription', 'my/Subscription#redirect', 'subscription');
         $router->addRoute('post', '/my/account/subscription', 'my/Subscription#create', 'create subscription account');
-        $router->addRoute('get', '/my/account/subscription/renew', 'my/Subscription#renewing', 'subscription renew');
 
         // News page
         $router->addRoute('get', '/news', 'NewsLinks#index', 'news');
@@ -151,8 +150,8 @@ class Application
         }
 
         // Redirect the user if its subscription is overdue
-        if ($current_user && $this->mustRedirectToSubscription($request, $current_user)) {
-            return \Minz\Response::redirect('subscription');
+        if ($current_user && $this->mustRedirectToAccount($request, $current_user)) {
+            return \Minz\Response::redirect('account');
         }
 
         // Setup current localization
@@ -242,7 +241,7 @@ class Application
      *
      * @return boolean
      */
-    public function mustRedirectToSubscription($request, $user)
+    public function mustRedirectToAccount($request, $user)
     {
         $app_conf = \Minz\Configuration::$application;
         if (!$app_conf['subscriptions_enabled']) {

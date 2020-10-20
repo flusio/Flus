@@ -106,6 +106,6 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
 
-        $this->assertResponse($response, 302, '/my/account/subscription');
+        $this->assertResponse($response, 302, '/my/account');
     }
 }

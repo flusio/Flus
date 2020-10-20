@@ -32,55 +32,18 @@ class Subscription
     }
 
     /**
-     * Show the subscription page for the current user.
-     *
-     * @response 404
-     *     If subscriptions are not enabled (need a host and a key)
-     * @response 302 /login?redirect_to=/my/account/subscription
-     *     If the user is not connected
-     * @response 200
-     *     On success
-     */
-    public function show($request)
-    {
-        if (!$this->enabled) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $user = utils\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('subscription'),
-            ]);
-        }
-
-        if ($user->isSubscriptionOverdue()) {
-            $expired_at = $this->service->expiredAt($user->subscription_account_id);
-            if ($expired_at) {
-                $user_dao = new models\dao\User();
-                $user->subscription_expired_at = $expired_at;
-                $user_dao->save($user);
-            } else {
-                \Minz\Log::error("Can’t get the expired_at for user {$user->id}.");
-            }
-        }
-
-        return Response::ok('my/subscription/show.phtml');
-    }
-
-    /**
      * Create a subscription account for the current user.
      *
      * @request_param string csrf
      *
      * @response 404
      *     If subscriptions are not enabled (need a host and a key)
-     * @response 302 /login?redirect_to=/my/account/subscription
+     * @response 302 /login?redirect_to=/my/account
      *     If the user is not connected
-     * @response 400
-     *     If CSRF token is invalid or user is not validated yet
-     * @response 500
-     *     If an error occurs during account creation
+     * @response 302
+     * @flash error
+     *     If CSRF token is invalid or user is not validated yet or if an error
+     *     occurs during account creation
      * @response 200
      *     If the user aleady has an account, or on successful creation
      */
@@ -93,38 +56,39 @@ class Subscription
         $user = utils\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('subscription'),
+                'redirect_to' => \Minz\Url::for('account'),
             ]);
         }
 
         if ($user->subscription_account_id) {
-            return Response::ok('my/subscription/show.phtml');
+            return Response::redirect('account');
         }
 
         if (!$user->validated_at) {
-            return Response::badRequest('my/subscription/show.phtml');
+            return Response::redirect('account');
         }
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('my/subscription/show.phtml', [
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
+            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+            return Response::redirect('account');
         }
 
         $account = $this->service->account($user->email);
         if (!$account) {
             \Minz\Log::error("Can’t get a subscription account for user {$user->id}.");
-            return Response::internalServerError('my/subscription/show.phtml', [
-                'error' => _('An error occured when getting you a subscription account, please contact the support.'),
-            ]);
+            utils\Flash::set(
+                'error',
+                _('An error occured when getting you a subscription account, please contact the support.')
+            );
+            return Response::redirect('account');
         }
 
         $user_dao = new models\dao\User();
         $user->subscription_account_id = $account['id'];
         $user->subscription_expired_at = $account['expired_at'];
         $user_dao->save($user);
-        return Response::ok('my/subscription/show.phtml');
+        return Response::redirect('account');
     }
 
     /**
@@ -132,16 +96,16 @@ class Subscription
      *
      * @response 404
      *     If subscriptions are not enabled (need a host and a key)
-     * @response 302 /login?redirect_to=/my/account/subscription
+     * @response 302 /login?redirect_to=/my/account
      *     If the user is not connected
-     * @response 401
+     * @response 400
      *     If the user has no account_id
      * @response 500
      *     If an error occurs when getting the redirection URL
      * @response 302 subscriptions_host/account
      *     On success
      */
-    public function renewing($request)
+    public function redirect($request)
     {
         if (!$this->enabled) {
             return Response::notFound('not_found.phtml');
@@ -150,7 +114,7 @@ class Subscription
         $user = utils\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('subscription'),
+                'redirect_to' => \Minz\Url::for('account'),
             ]);
         }
 

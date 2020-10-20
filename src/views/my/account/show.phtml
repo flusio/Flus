@@ -11,14 +11,49 @@
 
     <p class="section__intro">
         <?= _f('You are registered since %s.', format_date($current_user->created_at, '%d %B %Y')) ?>
+
+        <?php if ($subscriptions_enabled): ?>
+            <br />
+            <?php if ($current_user->isSubscriptionExempted()): ?>
+                <?= _('You have a <strong>free subscription</strong>!&nbsp;😊') ?>
+            <?php elseif ($current_user->isSubscriptionOverdue()): ?>
+                <?= _f('<strong>Your subscription expired on %s.</strong>', format_date($current_user->subscription_expired_at, '%d %B %Y')) ?>
+            <?php else: ?>
+                <?= _f('Your subscription will expire on <strong>%s.</strong>', format_date($current_user->subscription_expired_at, '%d %B %Y')) ?>
+            <?php endif; ?>
+        <?php endif; ?>
     </p>
 
-    <?php if ($subscriptions_enabled): ?>
+    <?php if ($error): ?>
+        <p class="paragraph--centered form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+
+    <?php if (!$current_user->validated_at): ?>
         <p class="paragraph--centered">
-            <a href="<?= url('subscription') ?>">
+            <a class="anchor--action" href="<?= url('registration validation') ?>">
+                <?= _('Validate your account') ?>
+            </a>
+        </p>
+    <?php elseif ($subscriptions_enabled && $current_user->subscription_account_id): ?>
+        <p class="paragraph--centered">
+            <a
+                <?= $current_user->isSubscriptionOverdue() ? 'class="anchor--action"' : '' ?>
+                target="_blank"
+                rel="noopener noreferrer"
+                href="<?= url('subscription') ?>"
+            >
                 <?= _('Manage your subscription') ?>
             </a>
         </p>
+    <?php elseif ($subscriptions_enabled): ?>
+        <form class="form--centered" method="post" action="<?= url('create subscription account') ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <button class="button--primary" type="submit">
+                <?= _('Create your payment account') ?>
+            </button>
+        </form>
     <?php endif; ?>
 
     <p class="paragraph--centered">

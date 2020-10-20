@@ -9,6 +9,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
+    use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
@@ -30,131 +31,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
     }
 
-    public function testShowRendersIfSubscriptionIsNotOverdue()
-    {
-        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
-        $this->login([
-            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
-        ]);
-
-        $response = $this->appRun('get', '/my/account/subscription');
-
-        $this->assertResponse($response, 200, 'Your subscription will expire on');
-    }
-
-    public function testShowRendersIfSubscriptionIsOverdue()
-    {
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
-        $this->login([
-            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
-        ]);
-
-        $response = $this->appRun('get', '/my/account/subscription');
-
-        $this->assertResponse($response, 200, 'Your subscription expired on');
-    }
-
-    public function testShowRendersIfSubscriptionIsExempted()
-    {
-        $expired_at = new \DateTime('1970-01-01');
-        $this->login([
-            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
-        ]);
-
-        $response = $this->appRun('get', '/my/account/subscription');
-
-        $this->assertResponse($response, 200, 'You have a <strong>free subscription</strong>');
-    }
-
-    public function testShowRendersIfUserHasNoSubscriptionAccountId()
-    {
-        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
-        $this->login([
-            'subscription_account_id' => null,
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
-        ]);
-
-        $response = $this->appRun('get', '/my/account/subscription');
-
-        $this->assertResponse($response, 200, 'Create your payment account');
-    }
-
-    public function testShowRendersIfUserIsNotValidated()
-    {
-        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
-        $this->login([
-            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => null,
-        ]);
-
-        $response = $this->appRun('get', '/my/account/subscription');
-
-        $this->assertResponse($response, 200, 'validate your account');
-    }
-
-    public function testShowSyncsExpiredAtIfOverdue()
-    {
-        $user_dao = new models\dao\User();
-        $app_conf = \Minz\Configuration::$application;
-        $subscriptions_service = new services\Subscriptions(
-            $app_conf['subscriptions_host'],
-            $app_conf['subscriptions_private_key']
-        );
-        $account = $subscriptions_service->account($this->fake('email'));
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
-        $user = $this->login([
-            'subscription_account_id' => $account['id'],
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
-        ]);
-
-        $response = $this->appRun('get', '/my/account/subscription');
-
-        $user = new models\User($user_dao->find($user->id));
-        $this->assertNotSame(
-            $expired_at->getTimestamp(),
-            $user->subscription_expired_at->getTimestamp()
-        );
-    }
-
-    public function testShowRedirectsIfNotConnected()
-    {
-        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
-        $this->create('user', [
-            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
-        ]);
-
-        $response = $this->appRun('get', '/my/account/subscription');
-
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fsubscription');
-    }
-
-    public function testShowFailsIfSubscriptionsAreDisabled()
-    {
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
-        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
-        $this->login([
-            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
-        ]);
-
-        $response = $this->appRun('get', '/my/account/subscription');
-
-        $this->assertResponse($response, 404);
-    }
-
     public function testCreateSetsSubscriptionProperties()
     {
         $user_dao = new models\dao\User();
@@ -169,7 +45,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 200);
+        $this->assertResponse($response, 302, '/my/account');
         $user = new models\User($user_dao->find($user->id));
         $this->assertNotNull($user->subscription_account_id);
         $this->assertNotSame(
@@ -193,7 +69,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 200);
+        $this->assertResponse($response, 302, '/my/account');
         $user = new models\User($user_dao->find($user->id));
         $this->assertSame($account_id, $user->subscription_account_id);
         $this->assertSame(
@@ -217,7 +93,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'a token',
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fsubscription');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
         $user = new models\User($user_dao->find($user_id));
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -241,7 +117,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 400);
+        $this->assertResponse($response, 302, '/my/account');
         $user = new models\User($user_dao->find($user->id));
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -264,7 +140,8 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponse($response, 302, '/my/account');
+        $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $user = new models\User($user_dao->find($user->id));
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -291,7 +168,11 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['subscriptions_private_key'] = $old_private_key;
 
-        $this->assertResponse($response, 500, 'please contact the support');
+        $this->assertResponse($response, 302, '/my/account');
+        $this->assertFlash(
+            'error',
+            'An error occured when getting you a subscription account, please contact the support.'
+        );
         $user = new models\User($user_dao->find($user->id));
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -323,7 +204,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testRenewingRedirectsToLoginUrl()
+    public function testRedirectRedirectsToLoginUrl()
     {
         $app_conf = \Minz\Configuration::$application;
         $subscriptions_service = new services\Subscriptions(
@@ -335,7 +216,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'subscription_account_id' => $account['id'],
         ]);
 
-        $response = $this->appRun('get', '/my/account/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 302);
         $response_headers = $response->headers(true);
@@ -345,7 +226,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testRenewingRedirectsIfNotConnected()
+    public function testRedirectRedirectsIfNotConnected()
     {
         $this->create('user', [
             // We don't make additional call for a failing test, but this id
@@ -353,34 +234,34 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'subscription_account_id' => 'some real id',
         ]);
 
-        $response = $this->appRun('get', '/my/account/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fsubscription');
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
     }
 
-    public function testRenewingFailsIfUserHasNoAccountId()
+    public function testRedirectFailsIfUserHasNoAccountId()
     {
         $this->login([
             'subscription_account_id' => null,
         ]);
 
-        $response = $this->appRun('get', '/my/account/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 400);
     }
 
-    public function testRenewingFailsIfUserHasInvalidAccountId()
+    public function testRedirectFailsIfUserHasInvalidAccountId()
     {
         $this->login([
             'subscription_account_id' => 'not an id',
         ]);
 
-        $response = $this->appRun('get', '/my/account/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 500, 'please contact the support');
     }
 
-    public function testRenewingFailsIfSubscriptionsAreDisabled()
+    public function testRedirectFailsIfSubscriptionsAreDisabled()
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
         $this->login([
@@ -389,7 +270,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'subscription_account_id' => 'some real id',
         ]);
 
-        $response = $this->appRun('get', '/my/account/subscription/renew');
+        $response = $this->appRun('get', '/my/account/subscription');
 
         $this->assertResponse($response, 404);
     }

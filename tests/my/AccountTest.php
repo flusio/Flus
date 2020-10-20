@@ -3,6 +3,7 @@
 namespace flusio\my;
 
 use flusio\models;
+use flusio\services;
 use flusio\utils;
 
 class AccountTest extends \PHPUnit\Framework\TestCase
@@ -15,6 +16,22 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
+    /**
+     * @before
+     */
+    public function initializeSubscriptionConfiguration()
+    {
+        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+    }
+
+    /**
+     * @afterClass
+     */
+    public static function resetSubscriptionConfiguration()
+    {
+        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+    }
+
     public function testShowRendersCorrectly()
     {
         $this->login();
@@ -23,6 +40,102 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200);
         $this->assertPointer($response, 'my/account/show.phtml');
+    }
+
+    public function testShowRendersIfSubscriptionIsNotOverdue()
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
+        $this->login([
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('get', '/my/account');
+
+        $this->assertResponse($response, 200, 'Your subscription will expire on');
+    }
+
+    public function testShowRendersIfSubscriptionIsOverdue()
+    {
+        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
+        $this->login([
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('get', '/my/account');
+
+        $this->assertResponse($response, 200, 'Your subscription expired on');
+    }
+
+    public function testShowRendersIfSubscriptionIsExempted()
+    {
+        $expired_at = new \DateTime('1970-01-01');
+        $this->login([
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('get', '/my/account');
+
+        $this->assertResponse($response, 200, 'You have a <strong>free subscription</strong>');
+    }
+
+    public function testShowRendersIfUserHasNoSubscriptionAccountId()
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
+        $this->login([
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('get', '/my/account');
+
+        $this->assertResponse($response, 200, 'Create your payment account');
+    }
+
+    public function testShowRendersIfUserIsNotValidated()
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
+        $this->login([
+            'subscription_account_id' => $this->fake('regexify', '\w{32}'),
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => null,
+        ]);
+
+        $response = $this->appRun('get', '/my/account');
+
+        $this->assertResponse($response, 200, 'Validate your account');
+    }
+
+    public function testShowSyncsExpiredAtIfOverdue()
+    {
+        $user_dao = new models\dao\User();
+        $app_conf = \Minz\Configuration::$application;
+        $subscriptions_service = new services\Subscriptions(
+            $app_conf['subscriptions_host'],
+            $app_conf['subscriptions_private_key']
+        );
+        $account = $subscriptions_service->account($this->fake('email'));
+        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
+        $user = $this->login([
+            'subscription_account_id' => $account['id'],
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('get', '/my/account');
+
+        $user = new models\User($user_dao->find($user->id));
+        $this->assertNotSame(
+            $expired_at->getTimestamp(),
+            $user->subscription_expired_at->getTimestamp()
+        );
     }
 
     public function testShowRedirectsToLoginIfUserNotConnected()

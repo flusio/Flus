@@ -4,6 +4,7 @@ namespace flusio\my;
 
 use Minz\Response;
 use flusio\models;
+use flusio\services;
 use flusio\utils;
 
 /**
@@ -22,10 +23,27 @@ class Account
      */
     public function show()
     {
-        if (!utils\CurrentUser::get()) {
+        $user = utils\CurrentUser::get();
+        if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('account'),
             ]);
+        }
+
+        $app_conf = \Minz\Configuration::$application;
+        if ($app_conf['subscriptions_enabled'] && $user->isSubscriptionOverdue()) {
+            $service = new services\Subscriptions(
+                $app_conf['subscriptions_host'],
+                $app_conf['subscriptions_private_key']
+            );
+            $expired_at = $service->expiredAt($user->subscription_account_id);
+            if ($expired_at) {
+                $user_dao = new models\dao\User();
+                $user->subscription_expired_at = $expired_at;
+                $user_dao->save($user);
+            } else {
+                \Minz\Log::error("Can’t get the expired_at for user {$user->id}.");
+            }
         }
 
         return Response::ok('my/account/show.phtml');
