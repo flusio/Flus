@@ -1,0 +1,62 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Login & security'),
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _('Login & security') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('We need you to confirm your password before giving you access to sensitive actions.') ?>
+    </p>
+
+    <form method="post" action="<?= url('confirm password') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
+            <label for="password">
+                <?= _('Your current password') ?>
+            </label>
+
+            <div class="form-group__stack" data-controller="input-password">
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    data-target="input-password.input"
+                />
+
+                <button
+                    type="button"
+                    class="icon icon--eye no-mobile js-only"
+                    data-action="input-password#toggle"
+                    aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
+                >
+                    <?= _('Show') ?>
+                </button>
+            </div>
+
+            <?php if (isset($errors['password_hash'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['password_hash'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions form__actions--centered">
+            <button type="submit" class="button--primary">
+                <?= _('Confirm your password') ?>
+            </button>
+        </div>
+    </form>
+</div>

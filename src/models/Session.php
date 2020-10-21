@@ -18,7 +18,13 @@ class Session extends \Minz\Model
             'required' => true,
         ],
 
-        'created_at' => 'datetime',
+        'created_at' => [
+            'type' => 'datetime',
+        ],
+
+        'confirmed_password_at' => [
+            'type' => 'datetime',
+        ],
 
         'name' => [
             'type' => 'string',
@@ -54,5 +60,19 @@ class Session extends \Minz\Model
             'name' => trim($name),
             'ip' => trim($ip),
         ]);
+    }
+
+    /**
+     * Return wheter the user confirmed its password within the last 15 minutes.
+     *
+     * @return boolean
+     */
+    public function isPasswordConfirmed()
+    {
+        if (!$this->confirmed_password_at) {
+            return false;
+        }
+
+        return $this->confirmed_password_at >= \Minz\Time::ago(15, 'minutes');
     }
 }

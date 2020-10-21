@@ -22,7 +22,10 @@ class CurrentUser
      * The User model is stored in the static $instance variable to avoid
      * useless multiple calls to the database.
      *
-     * @return \flusio\models\User
+     * If the session token doesn't exist, has expired or is invalid, null is
+     * returned.
+     *
+     * @return \flusio\models\User|null
      */
     public static function get()
     {
@@ -46,6 +49,31 @@ class CurrentUser
 
         self::$instance = new models\User($current_user_values);
         return self::$instance;
+    }
+
+    /**
+     * Return the current session.
+     *
+     * Please note the token is not verified, so always check the user is
+     * logged in with the `get()` method.
+     *
+     * @return \flusio\models\Session|null
+     */
+    public static function session()
+    {
+        if (!isset($_SESSION['current_session_token'])) {
+            return null;
+        }
+
+        $session_dao = new models\dao\Session();
+        $db_session = $session_dao->findBy([
+            'token' => $_SESSION['current_session_token'],
+        ]);
+        if (!$db_session) {
+            return null;
+        }
+
+        return new models\Session($db_session);
     }
 
     /**
