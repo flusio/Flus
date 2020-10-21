@@ -46,9 +46,10 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'password_hash' => function () use ($faker) {
             return password_hash($faker->password, PASSWORD_BCRYPT);
         },
-        'locale' => function () use ($faker) {
-            $available_locales = \flusio\utils\Locale::availableLocales();
-            return $faker->randomElement($available_locales);
+        'locale' => function () {
+            // Force the value to facilitate the tests (i.e. we would have to
+            // localize the tests as well, which would be painful)
+            return 'en_GB';
         },
         'csrf' => function () {
             return \flusio\utils\Random::hex(64);
