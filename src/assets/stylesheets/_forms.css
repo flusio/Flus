@@ -21,6 +21,7 @@ textarea {
     color: inherit;
     font-family: inherit;
     font-size: var(--size-normal);
+    line-height: 1.5;
 
     background-color: var(--color-white);
     box-shadow: 2px 2px 4px var(--color-grey-2) inset;
