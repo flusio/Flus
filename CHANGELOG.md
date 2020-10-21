@@ -1,6 +1,6 @@
 # Changelog of flusio
 
-## 2020-xx-yy - v0.11
+## 2020-10-21 - v0.11
 
 ### Breaking changes
 
@@ -16,6 +16,39 @@ would require more work).
 (optional, mostly for myself) You can configure the subscription feature with
 the `APP_SUBSCRIPTIONS_*` environment variables. Read production documentation
 for more details.
+
+### New
+
+- Provide a subscription feature (monetization)
+- Allow users to update login credentials
+- Add a “terms of service” mecanism
+- Block not validated users after 1 day
+
+### Improvements
+
+- Make explicit that JavaScript is required
+- Change links and collections ids format (decimal instead of hexadecimal)
+- Reorganize the "avatar" menu
+- Reduce width of registration/login sections
+- Improve extraction of websites title (again!)
+- Hide back anchors on public page if no back URL
+- Center submit button on profile page
+- Homogeneize titles case
+- Add a light linear gradient on popup menus
+- Fix height of inputs
+
+### Bug fixes
+
+- Set cookies `SameSite` to `Lax`
+- Generate user CSRF token directly instead of calling `Minz\CSRF`
+
+### Misc
+
+- Update Minz version
+- Fix the locale in User factory
+- Improve SpiderBits\Http get method
+- Rename `format_date` to `format_message_date` and create a more generic
+  `format_date()` function
 
 ## 2020-10-01 - v0.10
 
