@@ -29,10 +29,83 @@ class Security
 
         $session = utils\CurrentUser::session();
         if ($session->isPasswordConfirmed()) {
-            return Response::ok('my/security/show_confirmed.phtml');
+            return Response::ok('my/security/show_confirmed.phtml', [
+                'email' => $user->email,
+            ]);
         } else {
             return Response::ok('my/security/show_to_confirm.phtml');
         }
+    }
+
+    /**
+     * Update email and password of the user.
+     *
+     * @request_param string csrf
+     * @request_param string email
+     * @request_param string password
+     *
+     * @response 302 /login?redirect_to=/my/security
+     *    If the user is not connected
+     * @response 400
+     *    If CSRF or email is invalid, or if the user didn't confirmed its
+     *    password first
+     * @response 200
+     *    On success
+     */
+    public function update($request)
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('security'),
+            ]);
+        }
+
+        $session = utils\CurrentUser::session();
+        if (!$session->isPasswordConfirmed()) {
+            return Response::badRequest('my/security/show_to_confirm.phtml', [
+                'error' => _('You must confirm your password.'),
+            ]);
+        }
+
+        $user_dao = new models\dao\User();
+        $email = $request->param('email');
+        $password = $request->param('password');
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('my/security/show_confirmed.phtml', [
+                'email' => $email,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        $user->setLoginCredentials($email, $password);
+
+        $existing_db_user = $user_dao->findBy(['email' => $user->email]);
+        $email_exists = $existing_db_user && $existing_db_user['id'] !== $user->id;
+        if ($email_exists) {
+            return Response::badRequest('my/security/show_confirmed.phtml', [
+                'email' => $email,
+                'errors' => [
+                    'email' => _('An account already exists with this email address.'),
+                ],
+            ]);
+        }
+
+        $errors = $user->validate();
+        if ($errors) {
+            return Response::badRequest('my/security/show_confirmed.phtml', [
+                'email' => $email,
+                'errors' => $errors,
+            ]);
+        }
+
+        $user_dao->save($user);
+
+        return Response::ok('my/security/show_confirmed.phtml', [
+            'email' => $user->email,
+        ]);
     }
 
     /**

@@ -334,6 +334,22 @@ class User extends \Minz\Model
     }
 
     /**
+     * Set login credentials.
+     *
+     * The password is not changed if empty.
+     *
+     * @param string $email
+     * @param string $password (default is null)
+     */
+    public function setLoginCredentials($email, $password = null)
+    {
+        $this->email = utils\Email::sanitize($email);
+        if ($password) {
+            $this->password_hash = password_hash($password, PASSWORD_BCRYPT);
+        }
+    }
+
+    /**
      * Compare a password to the stored hash.
      *
      * @param string $password

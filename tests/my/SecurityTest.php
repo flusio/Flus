@@ -63,6 +63,213 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
     }
 
+    public function testUpdateChangesEmailAndPasswordAndRenders()
+    {
+        $old_email = $this->fake('email');
+        $new_email = $this->fake('email');
+        $old_password = $this->fake('password');
+        $new_password = $this->fake('password');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ], [], [
+            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => $user->csrf,
+            'email' => $new_email,
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $user = utils\CurrentUser::reload();
+        $this->assertSame($new_email, $user->email);
+        $this->assertTrue($user->verifyPassword($new_password));
+    }
+
+    public function testUpdateDoesNotChangePasswordIfEmpty()
+    {
+        $old_email = $this->fake('email');
+        $new_email = $this->fake('email');
+        $old_password = $this->fake('password');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ], [], [
+            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => $user->csrf,
+            'email' => $new_email,
+            'password' => '',
+        ]);
+
+        $user = utils\CurrentUser::reload();
+        $this->assertTrue($user->verifyPassword($old_password));
+    }
+
+    public function testUpdateRedirectsIfNotConnected()
+    {
+        $old_email = $this->fake('email');
+        $new_email = $this->fake('email');
+        $old_password = $this->fake('password');
+        $new_password = $this->fake('password');
+        $user_id = $this->create('user', [
+            'csrf' => 'a token',
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ]);
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => 'a token',
+            'email' => $new_email,
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
+        $user = utils\CurrentUser::reload();
+        $this->assertNull($user);
+        $user_dao = new models\dao\User();
+        $user = new models\User($user_dao->find($user_id));
+        $this->assertSame($old_email, $user->email);
+        $this->assertTrue($user->verifyPassword($old_password));
+    }
+
+    public function testUpdateFailsIfPasswordIsNotConfirmed()
+    {
+        $old_email = $this->fake('email');
+        $new_email = $this->fake('email');
+        $old_password = $this->fake('password');
+        $new_password = $this->fake('password');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ], [], [
+            'confirmed_password_at' => null,
+        ]);
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => $user->csrf,
+            'email' => $new_email,
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponse($response, 400, 'You must confirm your password');
+        $this->assertPointer($response, 'my/security/show_to_confirm.phtml');
+        $user = utils\CurrentUser::reload();
+        $this->assertSame($old_email, $user->email);
+        $this->assertTrue($user->verifyPassword($old_password));
+    }
+
+    public function testUpdateFailsIfCsrfIsInvalid()
+    {
+        $old_email = $this->fake('email');
+        $new_email = $this->fake('email');
+        $old_password = $this->fake('password');
+        $new_password = $this->fake('password');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ], [], [
+            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => 'not the token',
+            'email' => $new_email,
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $user = utils\CurrentUser::reload();
+        $this->assertSame($old_email, $user->email);
+        $this->assertTrue($user->verifyPassword($old_password));
+    }
+
+    public function testUpdateFailsIfAnotherAccountHasTheSameEmail()
+    {
+        $old_email = $this->fake('email');
+        $new_email = $this->fake('email');
+        $old_password = $this->fake('password');
+        $new_password = $this->fake('password');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ], [], [
+            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('user', [
+            'email' => $new_email,
+        ]);
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => $user->csrf,
+            'email' => $new_email,
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponse($response, 400, 'An account already exists with this email address');
+        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $user = utils\CurrentUser::reload();
+        $this->assertSame($old_email, $user->email);
+        $this->assertTrue($user->verifyPassword($old_password));
+    }
+
+    public function testUpdateFailsIfEmailIsInvalid()
+    {
+        $old_email = $this->fake('email');
+        $new_email = $this->fake('word');
+        $old_password = $this->fake('password');
+        $new_password = $this->fake('password');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ], [], [
+            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => $user->csrf,
+            'email' => $new_email,
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponse($response, 400, 'The address email is invalid');
+        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $user = utils\CurrentUser::reload();
+        $this->assertSame($old_email, $user->email);
+        $this->assertTrue($user->verifyPassword($old_password));
+    }
+
+    public function testUpdateFailsIfEmailIsMissing()
+    {
+        $old_email = $this->fake('email');
+        $old_password = $this->fake('password');
+        $new_password = $this->fake('password');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ], [], [
+            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => $user->csrf,
+            'email' => '',
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponse($response, 400, 'The address email is required');
+        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $user = utils\CurrentUser::reload();
+        $this->assertSame($old_email, $user->email);
+        $this->assertTrue($user->verifyPassword($old_password));
+    }
+
     public function testConfirmPasswordSetsConfirmedPasswordAtAndRedirects()
     {
         $this->freeze($this->fake('dateTime'));
