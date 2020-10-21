@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-20 19:33+0200\n"
-"PO-Revision-Date: 2020-10-20 19:34+0200\n"
+"POT-Creation-Date: 2020-10-21 17:55+0200\n"
+"PO-Revision-Date: 2020-10-21 17:57+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: Collections.php:559 LinkMessages.php:70 Links.php:179 Links.php:322
 #: NewsLinks.php:119 NewsLinks.php:268 NewsLinks.php:359 Registrations.php:95
 #: Sessions.php:82 my/Account.php:175 my/Account.php:246 my/Profile.php:85
-#: my/Subscription.php:73
+#: my/Security.php:79 my/Security.php:139 my/Subscription.php:73
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -69,7 +69,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "“%s”"
 msgstr "« %s »"
 
-#: Registrations.php:120
+#: Registrations.php:120 my/Security.php:91
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
@@ -81,7 +81,7 @@ msgstr "Vous devez accepter les conditions générales d’utilisation."
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: Sessions.php:111 my/Account.php:254
+#: Sessions.php:111 my/Account.php:254 my/Security.php:146
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -107,7 +107,8 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:28
-#: views/my/account/deletion.phtml:50 views/registrations/new.phtml:96
+#: views/my/account/deletion.phtml:50 views/my/security/show_confirmed.phtml:72
+#: views/my/security/show_to_confirm.phtml:45 views/registrations/new.phtml:96
 #: views/sessions/new.phtml:70
 msgid "Show"
 msgstr "Afficher"
@@ -187,31 +188,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:426
+#: models/User.php:442
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:428
+#: models/User.php:444
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:430
+#: models/User.php:446
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:432
+#: models/User.php:448
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:434
+#: models/User.php:450
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:436
+#: models/User.php:452
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:438
+#: models/User.php:454
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -226,6 +227,10 @@ msgstr "Le token a expiré ou a été invalidé."
 #: my/Account.php:262
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
+
+#: my/Security.php:67
+msgid "You must confirm your password."
+msgstr "Vous devez confirmer votre mot de passe."
 
 #: my/Subscription.php:82
 msgid ""
@@ -352,32 +357,39 @@ msgstr "Ouvrir le menu"
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:119 views/_layouts/connected_blocked.phtml:99
+#: views/_layouts/connected.phtml:118 views/my/security/show_confirmed.phtml:3
+#: views/my/security/show_confirmed.phtml:9
+#: views/my/security/show_to_confirm.phtml:3
+#: views/my/security/show_to_confirm.phtml:9
+msgid "Login & security"
+msgstr "Identifiants & sécurité"
+
+#: views/_layouts/connected.phtml:123 views/_layouts/connected_blocked.phtml:99
 #: views/my/account/show.phtml:3 views/my/account/show.phtml:9
 msgid "Account & subscription"
 msgstr "Compte & abonnement"
 
-#: views/_layouts/connected.phtml:123
+#: views/_layouts/connected.phtml:127
 #: views/_layouts/connected_blocked.phtml:103 views/my/account/show.phtml:3
-#: views/my/account/show.phtml:9
+#: views/my/account/show.phtml:9 views/my/account/validation.phtml:11
 msgid "Account"
 msgstr "Compte"
 
-#: views/_layouts/connected.phtml:132
+#: views/_layouts/connected.phtml:136
 #: views/_layouts/connected_blocked.phtml:112
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:141 views/_layouts/connected.phtml:144
+#: views/_layouts/connected.phtml:145 views/_layouts/connected.phtml:148
 #: views/collections/show.phtml:100 views/collections/show_bookmarks.phtml:26
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/_layouts/connected.phtml:176
+#: views/_layouts/connected.phtml:180
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:177
+#: views/_layouts/connected.phtml:181
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -837,7 +849,8 @@ msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/my/account/deletion.phtml:48 views/registrations/new.phtml:94
+#: views/my/account/deletion.phtml:48 views/my/security/show_confirmed.phtml:70
+#: views/my/security/show_to_confirm.phtml:43 views/registrations/new.phtml:94
 #: views/sessions/new.phtml:68
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
@@ -888,19 +901,19 @@ msgstr "Créer votre compte de paiement"
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 
-#: views/my/account/validation.phtml:3 views/my/account/validation.phtml:10
+#: views/my/account/validation.phtml:3 views/my/account/validation.phtml:18
 msgid "Account validation"
 msgstr "Validation du compte"
 
-#: views/my/account/validation.phtml:15
+#: views/my/account/validation.phtml:23
 msgid "Your account is now validated."
 msgstr "Votre compte est maintenant validé."
 
-#: views/my/account/validation.phtml:20
+#: views/my/account/validation.phtml:28
 msgid "Nice! Go to the home page"
 msgstr "Chouette ! Retourner à la page d’accueil"
 
-#: views/my/account/validation.phtml:25
+#: views/my/account/validation.phtml:33
 msgid ""
 "You must validate your account so we can contact you in case of a change in "
 "our end-user license agreement or a problem concerning your account. "
@@ -912,15 +925,15 @@ msgstr ""
 "votre compte. <strong>Vous devriez avoir reçu un courriel contenant un lien "
 "permettant cela.</strong>"
 
-#: views/my/account/validation.phtml:30
+#: views/my/account/validation.phtml:38
 msgid "We’ve just sent you an email!"
 msgstr "Nous vous avons envoyé un courriel !"
 
-#: views/my/account/validation.phtml:34
+#: views/my/account/validation.phtml:42
 msgid "Still nothing? Did you check your spam?"
 msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
 
-#: views/my/account/validation.phtml:47
+#: views/my/account/validation.phtml:55
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
@@ -943,6 +956,48 @@ msgstr "Votre langue"
 #: views/my/profile/show.phtml:102
 msgid "Save your changes"
 msgstr "Enregistrer vos modifications"
+
+#: views/my/security/show_confirmed.phtml:13
+msgid "You can change your login details here."
+msgstr "Vous pouvez changer vos identifiants de connexion ici."
+
+#: views/my/security/show_confirmed.phtml:27 views/registrations/new.phtml:49
+msgid "Your email address"
+msgstr "Votre adresse courriel"
+
+#: views/my/security/show_confirmed.phtml:31 views/registrations/new.phtml:53
+msgid "We’ll only use it to send you important emails."
+msgstr "Nous vous enverrons seulement des courriels importants."
+
+#: views/my/security/show_confirmed.phtml:51
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: views/my/security/show_confirmed.phtml:55
+msgid "Leave this field empty if you want to keep your current password."
+msgstr ""
+"Laissez ce champ vide si vous souhaitez conserver votre mot de passe actuel."
+
+#: views/my/security/show_confirmed.phtml:85
+#: views/news_links/preferences.phtml:100 views/onboarding/step4.phtml:91
+msgid "Save"
+msgstr "Enregistrer"
+
+#: views/my/security/show_to_confirm.phtml:13
+msgid ""
+"We need you to confirm your password before giving you access to sensitive "
+"actions."
+msgstr ""
+"Vous devez confirmer votre mot de passe avant de pouvoir effectuer des "
+"actions sensibles."
+
+#: views/my/security/show_to_confirm.phtml:27
+msgid "Your current password"
+msgstr "Votre mot de passe actuel"
+
+#: views/my/security/show_to_confirm.phtml:58
+msgid "Confirm your password"
+msgstr "Confirmer votre mot de passe"
 
 #: views/news_links/adding.phtml:3 views/news_links/adding.phtml:11
 msgid "Add to your collections"
@@ -1058,10 +1113,6 @@ msgstr "Vos signets"
 #: views/news_links/preferences.phtml:80
 msgid "The collections you follow"
 msgstr "Vos collections suivies"
-
-#: views/news_links/preferences.phtml:100 views/onboarding/step4.phtml:91
-msgid "Save"
-msgstr "Enregistrer"
 
 #: views/not_found.phtml:3
 msgid "Page not found"
@@ -1306,14 +1357,6 @@ msgstr "retour à l’inscription"
 #: views/registrations/new.phtml:23
 msgid "How should we name you?"
 msgstr "Comment devons-nous vous appeler ?"
-
-#: views/registrations/new.phtml:49
-msgid "Your email address"
-msgstr "Votre adresse courriel"
-
-#: views/registrations/new.phtml:53
-msgid "We’ll only use it to send you important emails."
-msgstr "Nous vous enverrons seulement des courriels importants."
 
 #: views/registrations/new.phtml:73
 msgid "And a password"
