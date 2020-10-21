@@ -14,24 +14,28 @@ trait LoginHelper
      * Simulate a user who logs in. A User is created using a DatabaseFactory.
      *
      * @param array $user_values Values of the User to create (optional)
+     * @param array $token_values Values of the associated Token (optional)
+     * @param array $session_values Values of the associated Session (optional)
      *
      * @return \flusio\models\User
      */
-    public function login($user_values = [])
+    public function login($user_values = [], $token_values = [], $session_values = [])
     {
         $user_factory = new \Minz\Tests\DatabaseFactory('user');
         $token_factory = new \Minz\Tests\DatabaseFactory('token');
         $session_factory = new \Minz\Tests\DatabaseFactory('session');
 
         $expired_at = \Minz\Time::fromNow(30, 'days');
-        $token = $token_factory->create([
+        $token_values = array_merge([
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-        ]);
+        ], $token_values);
+
+        $token = $token_factory->create($token_values);
         $user_id = $user_factory->create($user_values);
-        $session_factory->create([
-            'user_id' => $user_id,
-            'token' => $token,
-        ]);
+
+        $session_values['token'] = $token;
+        $session_values['user_id'] = $user_id;
+        $session_factory->create($session_values);
 
         \flusio\utils\CurrentUser::setSessionToken($token);
         return \flusio\utils\CurrentUser::get();

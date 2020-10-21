@@ -110,6 +110,10 @@
     background-image: url("../icons/essential/help-line.svg");
 }
 
+.icon--key::before {
+    background-image: url("../icons/essential/key-line.svg");
+}
+
 .icon--library::before,
 .icon--collection::before {
     background-image: url("../icons/essential/library-line.svg");

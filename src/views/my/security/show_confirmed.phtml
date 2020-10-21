@@ -1,0 +1,89 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Login & security'),
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _('Login & security') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('You can change your login details here.') ?>
+    </p>
+
+    <form method="post" action="<?= url('update security') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+            <label for="email">
+                <?= _('Your email address') ?>
+            </label>
+
+            <p class="form-group__caption">
+                <?= _('We’ll only use it to send you important emails.') ?>
+            </p>
+
+            <input
+                id="email"
+                name="email"
+                type="email"
+                value="<?= $email ?>"
+                required
+            />
+
+            <?php if (isset($errors['email'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['email'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
+            <label for="password">
+                <?= _('New password') ?>
+            </label>
+
+            <p class="form-group__caption">
+                <?= _('Leave this field empty if you want to keep your current password.') ?>
+            </p>
+
+            <div class="form-group__stack" data-controller="input-password">
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    data-target="input-password.input"
+                />
+
+                <button
+                    type="button"
+                    class="icon icon--eye no-mobile js-only"
+                    data-action="input-password#toggle"
+                    aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
+                >
+                    <?= _('Show') ?>
+                </button>
+            </div>
+
+            <?php if (isset($errors['password_hash'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['password_hash'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions form__actions--centered">
+            <button type="submit" class="button--primary">
+                <?= _('Save') ?>
+            </button>
+        </div>
+    </form>
+</div>
