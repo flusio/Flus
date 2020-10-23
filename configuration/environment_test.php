@@ -7,9 +7,11 @@ $db_name = 'flusio_test';
 $temporary_directory = sys_get_temp_dir() . '/flusio/' . \flusio\utils\Random::hex(10);
 $data_directory = $temporary_directory . '/data';
 $cache_directory = $temporary_directory . '/cache';
+$media_directory = $temporary_directory . '/media';
 @mkdir($temporary_directory, 0777, true);
 @mkdir($data_directory, 0777, true);
 @mkdir($cache_directory, 0777, true);
+@mkdir($media_directory, 0777, true);
 
 $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 
@@ -29,6 +31,7 @@ return [
         'brand' => 'flusio',
         'version' => trim(@file_get_contents($app_path . '/VERSION.txt')),
         'cache_path' => $cache_directory,
+        'media_path' => $media_directory,
         'demo' => false,
         'registrations_opened' => true,
         'subscriptions_enabled' => false, // should be enable on a case-by-case basis

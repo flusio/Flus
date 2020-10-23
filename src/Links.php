@@ -472,6 +472,11 @@ class Links
         if (isset($info['reading_time'])) {
             $link->reading_time = $info['reading_time'];
         }
+        if (isset($info['url_illustration'])) {
+            $image_service = new services\Image();
+            $image_filename = $image_service->generatePreviews($info['url_illustration']);
+            $link->image_filename = $image_filename;
+        }
 
         $link_dao = new models\dao\Link();
         $link_dao->save($link);

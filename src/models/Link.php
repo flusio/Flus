@@ -39,6 +39,10 @@ class Link extends \Minz\Model
             'required' => true,
         ],
 
+        'image_filename' => [
+            'type' => 'string',
+        ],
+
         'fetched_at' => [
             'type' => 'datetime',
         ],

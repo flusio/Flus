@@ -47,6 +47,37 @@ class DomExtractor
     }
 
     /**
+     * Return the illustration URL of the DOM document.
+     *
+     * @param \SpiderBits\Dom $dom
+     *
+     * @return string
+     */
+    public static function illustration($dom)
+    {
+        $xpath_queries = [
+            // Look for OpenGraph first
+            '/html/head/meta[@property = "og:image"][1]/attribute::content',
+            // Then Twitter meta tag
+            '/html/head/meta[@name = "twitter:image"][1]/attribute::content',
+            // Err, still nothing! Let's try to be more tolerant (e.g. Youtube
+            // puts the meta tags in the body :/)
+            '//meta[@property = "og:image"][1]/attribute::content',
+            '//meta[@name = "twitter:image"][1]/attribute::content',
+        ];
+
+        foreach ($xpath_queries as $query) {
+            $illustration = $dom->select($query);
+            if ($illustration) {
+                return $illustration->text();
+            }
+        }
+
+        // It's hopeless...
+        return '';
+    }
+
+    /**
      * Return the main content of the DOM document.
      *
      * @param \SpiderBits\Dom $dom

@@ -41,6 +41,7 @@ class Fetch
      *     - error
      *     - title
      *     - reading_time
+     *     - url_illustration
      */
     public function fetch($url)
     {
@@ -86,6 +87,13 @@ class Fetch
         $content = \SpiderBits\DomExtractor::content($dom);
         $words = array_filter(explode(' ', $content));
         $info['reading_time'] = intval(count($words) / 200);
+
+        // Get the illustration URL if any
+        $url_illustration = \SpiderBits\DomExtractor::illustration($dom);
+        $url_illustration = \SpiderBits\Url::sanitize($url_illustration);
+        if ($url_illustration) {
+            $info['url_illustration'] = $url_illustration;
+        }
 
         return $info;
     }

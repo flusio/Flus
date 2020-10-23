@@ -900,6 +900,31 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_title, $db_link['title']);
     }
 
+    public function testFetchDownloadsOpenGraphIllustration()
+    {
+        $link_dao = new models\dao\Link();
+
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => 'https://flus.fr/carnet/flus-media-social-citoyen.html',
+            'image_filename' => null,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $link = new models\Link($link_dao->find($link_id));
+        $image_filename = $link->image_filename;
+        $this->assertNotNull($image_filename);
+        $media_path = \Minz\Configuration::$application['media_path'];
+        $card_filepath = "{$media_path}/cards/{$image_filename}";
+        $large_filepath = "{$media_path}/large/{$image_filename}";
+        $this->assertTrue(file_exists($card_filepath));
+        $this->assertTrue(file_exists($large_filepath));
+    }
+
     public function testFetchDoesNotChangeTitleIfUnreachable()
     {
         $link_dao = new models\dao\Link();
