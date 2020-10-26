@@ -17,24 +17,24 @@ class System
     {
         $usage = 'Usage: php ./cli --request REQUEST [-pKEY=VALUE]...' . "\n\n";
         $usage .= 'REQUEST can be one of the following:' . "\n";
-        $usage .= '  /                 Show this help' . "\n";
-        $usage .= '  /database/status  Return the status of the DB connection' . "\n";
-        $usage .= '  /system/secret    Generate a secure key to be used as APP_SECRET_KEY' . "\n";
-        $usage .= '  /system/rollback  Reverse the last migration' . "\n";
+        $usage .= '  /                   Show this help' . "\n";
+        $usage .= '  /database/status    Return the status of the DB connection' . "\n";
+        $usage .= '  /subscriptions/sync Synchronize the overdue subscriptions (or nearly overdue)' . "\n";
+        $usage .= '  /system/rollback    Reverse the last migration' . "\n";
         $usage .= '      [-psteps=NUMBER] where NUMBER is the number of rollbacks to apply (default is 1)' . "\n";
-        $usage .= '  /system/setup     Initialize or update the system' . "\n";
-        $usage .= '  /topics           List the topics' . "\n";
-        $usage .= '  /topics/create    Create a topic' . "\n";
-        $usage .= '      -plabel=TEXT  where TEXT is a 21-chars max string' . "\n";
-        $usage .= '  /topics/delete    Delete a topic' . "\n";
-        $usage .= '      -pid=ID       where ID is the id of the topic to delete' . "\n";
-        $usage .= '  /users/create     Create a user' . "\n";
-        $usage .= '      -pusername=USERNAME where USERNAME is a 50-chars max string' . "\n";
+        $usage .= '  /system/secret      Generate a secure key to be used as APP_SECRET_KEY' . "\n";
+        $usage .= '  /system/setup       Initialize or update the system' . "\n";
+        $usage .= '  /topics             List the topics' . "\n";
+        $usage .= '  /topics/create      Create a topic' . "\n";
+        $usage .= '      -plabel=TEXT    where TEXT is a 21-chars max string' . "\n";
+        $usage .= '  /topics/delete      Delete a topic' . "\n";
+        $usage .= '      -pid=ID         where ID is the id of the topic to delete' . "\n";
+        $usage .= '  /users/clean        Clean not validated users created NUMBER months ago' . "\n";
+        $usage .= '      [-psince=NUMBER] where NUMBER is the number of months, greater than 0 (default is 1)' . "\n";
+        $usage .= '  /users/create       Create a user' . "\n";
         $usage .= '      -pemail=EMAIL' . "\n";
         $usage .= '      -ppassword=PASSWORD' . "\n";
-        $usage .= '  /users/clean      Clean not validated users created NUMBER months ago' . "\n";
-        $usage .= '      [-psince=NUMBER] where NUMBER is the number of months, greater than 0 (default is 1)' . "\n";
-        $usage .= '  /subscriptions/sync Synchronize the overdue subscriptions (or nearly overdue)';
+        $usage .= '      -pusername=USERNAME where USERNAME is a 50-chars max string';
 
         return Response::text(200, $usage);
     }
