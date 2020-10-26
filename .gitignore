@@ -12,3 +12,6 @@
 !/policies/.keep
 
 /public/dev_assets
+
+/public/media/*
+!/public/media/.keep

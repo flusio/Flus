@@ -1,5 +1,17 @@
 # Changelog of flusio
 
+## 2020-xx-yy - v0.12
+
+### Migration notes
+
+(optional) flusio now supports Open Graph and Twitter Cards images. For oldest
+links, you can refresh their image by running the following command:
+
+```console
+flusio$ # where NUMBER should be replaced by a positive integer value (default is 10)
+flusio$ php cli --request /links/refresh -pnumber=NUMBER
+```
+
 ## 2020-10-21 - v0.11
 
 ### Breaking changes

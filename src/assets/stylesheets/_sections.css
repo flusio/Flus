@@ -9,6 +9,17 @@
     padding-bottom: var(--space-larger);
 }
 
+.section__image {
+    display: block;
+    width: 100%;
+    margin-top: var(--space-medium);
+    margin-bottom: var(--space-medium);
+
+    border-radius: 1rem;
+
+    filter: blur(0.7px);
+}
+
 .section__nav {
     display: flex;
     margin: var(--space-small);

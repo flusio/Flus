@@ -23,6 +23,7 @@ return [
         'brand' => $dotenv->pop('APP_BRAND', 'flusio'),
         'version' => trim(@file_get_contents($app_path . '/VERSION.txt')),
         'cache_path' => $dotenv->pop('APP_CACHE_PATH', $app_path . '/cache'),
+        'media_path' => $dotenv->pop('APP_MEDIA_PATH', $app_path . '/public/media'),
         'demo' => filter_var($dotenv->pop('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN),
         'registrations_opened' => filter_var($dotenv->pop('APP_OPEN_REGISTRATIONS', true), FILTER_VALIDATE_BOOLEAN),
         'subscriptions_enabled' => $subscriptions_host !== null,

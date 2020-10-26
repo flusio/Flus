@@ -55,6 +55,11 @@
     opacity: 0.5;
 }
 
+.card__image {
+    display: block;
+    width: 100%;
+}
+
 .card__body {
     padding: var(--space-small);
 

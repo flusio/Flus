@@ -458,43 +458,25 @@ class Links
             ]);
         }
 
-        $cache_path = \Minz\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $url_hash = \SpiderBits\Cache::hash($link->url);
-        $cached_response = $cache->get($url_hash);
+        $fetch_service = new services\Fetch();
+        $info = $fetch_service->fetch($link->url);
 
-        if ($cached_response) {
-            $response = \SpiderBits\Response::fromText($cached_response);
-        } else {
-            $http = new \SpiderBits\Http();
-            $php_os = PHP_OS;
-            $flusio_version = \Minz\Configuration::$application['version'];
-            $http->user_agent = "flusio/{$flusio_version} ({$php_os}; https://github.com/flusio/flusio)";
-            $http->timeout = 5;
-            $response = $http->get($link->url);
-
-            $cache->save($url_hash, (string)$response);
-        }
-
-        if ($response->success) {
-            $content_type = $response->header('content-type');
-            if (utils\Belt::contains($content_type, 'text/html')) {
-                $dom = \SpiderBits\Dom::fromText($response->data);
-                $title = \SpiderBits\DomExtractor::title($dom);
-                if ($title) {
-                    $link->title = $title;
-                }
-
-                $content = \SpiderBits\DomExtractor::content($dom);
-                $words = array_filter(explode(' ', $content));
-                $link->reading_time = intval(count($words) / 200);
-            }
-        } else {
-            $link->fetched_error = $response->data;
-        }
-
-        $link->fetched_code = $response->status;
         $link->fetched_at = \Minz\Time::now();
+        $link->fetched_code = $info['status'];
+        if (isset($info['error'])) {
+            $link->fetched_error = $info['error'];
+        }
+        if (isset($info['title'])) {
+            $link->title = $info['title'];
+        }
+        if (isset($info['reading_time'])) {
+            $link->reading_time = $info['reading_time'];
+        }
+        if (isset($info['url_illustration'])) {
+            $image_service = new services\Image();
+            $image_filename = $image_service->generatePreviews($info['url_illustration']);
+            $link->image_filename = $image_filename;
+        }
 
         $link_dao = new models\dao\Link();
         $link_dao->save($link);

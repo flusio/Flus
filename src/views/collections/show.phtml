@@ -105,6 +105,12 @@
         <div class="cards">
             <?php foreach ($links as $link): ?>
                 <div class="card">
+                    <?php if ($link->image_filename): ?>
+                        <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                            <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
+                        </a>
+                    <?php endif; ?>
+
                     <div class="card__body">
                         <h2 class="card__title">
                             <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">

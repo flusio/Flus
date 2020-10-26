@@ -86,6 +86,36 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $title);
     }
 
+    public function testIllustrationTakesOgImage()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <head>
+                    <meta property="og:image" content="https://domain.com/image.jpg" />
+                </head>
+            </html>
+        HTML);
+
+        $illustration = DomExtractor::illustration($dom);
+
+        $this->assertSame('https://domain.com/image.jpg', $illustration);
+    }
+
+    public function testIllustrationTakesTwitterImage()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <head>
+                    <meta name="twitter:image" content="https://domain.com/image.jpg" />
+                </head>
+            </html>
+        HTML);
+
+        $illustration = DomExtractor::illustration($dom);
+
+        $this->assertSame('https://domain.com/image.jpg', $illustration);
+    }
+
     public function testContentReturnsMainTag()
     {
         $dom = Dom::fromText(<<<HTML

@@ -71,6 +71,14 @@
         </details>
     </nav>
 
+    <?php if ($link->image_filename): ?>
+        <img
+            class="section__image"
+            alt=""
+            src="<?= url_link_image('large', $link->image_filename) ?>"
+        />
+    <?php endif; ?>
+
     <div class="section__title">
         <h1><?= $this->protect($link->title) ?></h1>
     </div>

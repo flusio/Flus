@@ -109,6 +109,27 @@ function url_asset($filename)
 }
 
 /**
+ * Return the relative URL for a link image
+ *
+ * @param string $type Either 'cards' or 'large'
+ * @param string $filename The URL saved in link->image_filename
+ *
+ * @return string
+ */
+function url_link_image($type, $filename)
+{
+    $media_path = \Minz\Configuration::$application['media_path'];
+    $filepath = "{$media_path}/{$type}/{$filename}";
+    $modification_time = @filemtime($filepath);
+    $file_url = \Minz\Url::path() . "/media/{$type}/{$filename}";
+    if ($modification_time) {
+        return $file_url . '?' . $modification_time;
+    } else {
+        return $file_url;
+    }
+}
+
+/**
  * Format news preferences so it's readable for humans.
  *
  * @param \flusio\models\NewsPreferences $preferences

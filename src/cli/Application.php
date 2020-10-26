@@ -31,6 +31,7 @@ class Application
         $router->addRoute('cli', '/topics', 'cli/Topics#index');
         $router->addRoute('cli', '/topics/create', 'cli/Topics#create');
         $router->addRoute('cli', '/topics/delete', 'cli/Topics#delete');
+        $router->addRoute('cli', '/links/refresh', 'cli/Links#refresh');
 
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);

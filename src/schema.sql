@@ -55,6 +55,7 @@ CREATE TABLE links (
     url TEXT NOT NULL,
     is_public BOOLEAN NOT NULL DEFAULT false,
     reading_time INTEGER NOT NULL DEFAULT 0,
+    image_filename TEXT,
     fetched_at TIMESTAMPTZ,
     fetched_code INTEGER NOT NULL DEFAULT 0,
     fetched_error TEXT,
