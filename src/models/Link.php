@@ -96,7 +96,7 @@ class Link extends \Minz\Model
     public static function initFromNews($news_link, $user_id)
     {
         return new self([
-            'id' => utils\Random::hex(32),
+            'id' => utils\Random::timebased(),
             'title' => $news_link->title,
             'url' => $news_link->url,
             'is_public' => false,
