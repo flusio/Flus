@@ -317,8 +317,8 @@ class NewsLinks
             $message_dao->save($message);
         }
 
-        // Finally, remove the news_link from the news page.
-        $news_link->is_removed = true;
+        // Finally, mark the news_link as read.
+        $news_link->is_read = true;
         $news_link_dao->save($news_link);
 
         return Response::redirect('news');

@@ -16,16 +16,25 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $title_news = $this->fake('sentence');
-        $title_not_news = $this->fake('sentence');
+        $title_not_news_1 = $this->fake('sentence');
+        $title_not_news_2 = $this->fake('sentence');
         $this->create('news_link', [
             'user_id' => $user->id,
             'title' => $title_news,
+            'is_read' => 0,
             'is_removed' => 0,
         ]);
         $this->create('news_link', [
             'user_id' => $user->id,
-            'title' => $title_not_news,
+            'title' => $title_not_news_1,
+            'is_read' => 0,
             'is_removed' => 1,
+        ]);
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'title' => $title_not_news_2,
+            'is_read' => 1,
+            'is_removed' => 0,
         ]);
 
         $response = $this->appRun('get', '/news');
@@ -33,7 +42,8 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200);
         $response_output = $response->render();
         $this->assertStringContainsString($title_news, $response_output);
-        $this->assertStringNotContainsString($title_not_news, $response_output);
+        $this->assertStringNotContainsString($title_not_news_1, $response_output);
+        $this->assertStringNotContainsString($title_not_news_2, $response_output);
     }
 
     public function testIndexShowsNumberOfCollections()
@@ -43,6 +53,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $url,
+            'is_read' => 0,
             'is_removed' => 0,
         ]);
         $link_id = $this->create('link', [
@@ -71,6 +82,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $url,
+            'is_read' => 0,
             'is_removed' => 0,
         ]);
         $link_id = $this->create('link', [
@@ -107,6 +119,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $url = $this->fake('url');
         $this->create('news_link', [
             'user_id' => $user->id,
+            'is_read' => 0,
             'is_removed' => 0,
             'url' => $url,
         ]);
@@ -155,6 +168,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'title' => $this->fake('sentence'),
+            'is_read' => 0,
             'is_removed' => 0,
         ]);
 
@@ -701,6 +715,8 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
+            'is_read' => 0,
+            'is_removed' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
@@ -725,7 +741,8 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
         $message = $link->messages()[0];
         $db_link_to_collection = $links_to_collections_dao->listAll()[0];
-        $this->assertTrue($news_link->is_removed);
+        $this->assertTrue($news_link->is_read);
+        $this->assertFalse($news_link->is_removed);
         $this->assertSame($user->id, $link->user_id);
         $this->assertSame($news_link->title, $link->title);
         $this->assertSame($news_link->url, $link->url);

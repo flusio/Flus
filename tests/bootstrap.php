@@ -201,6 +201,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'reading_time' => function () use ($faker) {
             return $faker->randomDigit;
         },
+        'is_read' => function () use ($faker) {
+            return (int)$faker->boolean;
+        },
         'is_removed' => function () use ($faker) {
             return (int)$faker->boolean;
         },
