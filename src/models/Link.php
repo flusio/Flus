@@ -99,6 +99,7 @@ class Link extends \Minz\Model
             'id' => utils\Random::timebased(),
             'title' => $news_link->title,
             'url' => $news_link->url,
+            'image_filename' => $news_link->image_filename,
             'is_public' => false,
             'reading_time' => $news_link->reading_time,
             'fetched_at' => \Minz\Time::now(),

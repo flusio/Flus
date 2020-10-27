@@ -25,9 +25,21 @@
     </div>
 
     <?php if ($news_links): ?>
-        <div class="cards cards--in-column">
+        <div class="cards cards--centered">
             <?php foreach ($news_links as $news_link): ?>
-                <div class="card card--fluid">
+                <div class="card">
+                    <?php if ($news_link->image_filename): ?>
+                        <a
+                            class="anchor--hidden"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            tabindex="-1"
+                            href="<?= $news_link->url ?>"
+                        >
+                            <img class="card__image" alt="" src="<?= url_link_image('cards', $news_link->image_filename) ?>" />
+                        </a>
+                    <?php endif; ?>
+
                     <div class="card__body">
                         <h2 class="card__title">
                             <a

@@ -9,6 +9,10 @@
     flex-direction: column;
 }
 
+.cards--centered {
+    justify-content: center;
+}
+
 .card {
     display: flex;
     width: 100%;

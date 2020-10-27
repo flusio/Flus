@@ -33,6 +33,10 @@ class NewsLink extends \Minz\Model
             'required' => true,
         ],
 
+        'image_filename' => [
+            'type' => 'string',
+        ],
+
         'is_hidden' => [
             'type' => 'boolean',
             'required' => true,
@@ -66,6 +70,7 @@ class NewsLink extends \Minz\Model
             'title' => $link->title,
             'url' => $link->url,
             'reading_time' => $link->reading_time,
+            'image_filename' => $link->image_filename,
             'user_id' => $user_id,
             'is_hidden' => false,
         ]);
