@@ -136,6 +136,14 @@
     background-image: url("../icons/essential/plus-circle-line.svg");
 }
 
+.icon--pop-out::before {
+    background-image: url("../icons/essential/pop-out-line.svg");
+}
+
+.icon--trash::before {
+    background-image: url("../icons/essential/trash-line.svg");
+}
+
 .icon--tree::before {
     background-image: url("../icons/essential/tree-line.svg");
 }

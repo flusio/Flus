@@ -10,24 +10,36 @@
         <h1><?= _('News') ?></h1>
     </div>
 
-    <div class="section__intro">
-        <p>
-            <?= format_news_preferences($news_preferences) ?>
-        </p>
+    <?php if (!$news_links): ?>
+        <div class="section__intro">
+            <p>
+                <?= format_news_preferences($news_preferences) ?>
+            </p>
 
-        <?php if (!$news_links): ?>
             <p>
                 <a href="<?= url('news preferences') ?>">
                     <?= _('Configure') ?>
                 </a>
             </p>
-        <?php endif; ?>
-    </div>
+        </div>
+    <?php endif; ?>
 
     <?php if ($news_links): ?>
-        <div class="cards cards--in-column">
+        <div class="cards cards--centered">
             <?php foreach ($news_links as $news_link): ?>
-                <div class="card card--fluid">
+                <div class="card">
+                    <?php if ($news_link->image_filename): ?>
+                        <a
+                            class="anchor--hidden"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            tabindex="-1"
+                            href="<?= $news_link->url ?>"
+                        >
+                            <img class="card__image" alt="" src="<?= url_link_image('cards', $news_link->image_filename) ?>" />
+                        </a>
+                    <?php endif; ?>
+
                     <div class="card__body">
                         <h2 class="card__title">
                             <a
@@ -89,63 +101,71 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="card__footer card__footer--align-end">
-                        <details
-                            class="popup"
-                            data-controller="popup"
-                            data-action="click@window->popup#close"
-                        >
-                            <summary class="popup__opener" title="<?= _('Remove from the news page') ?>" tabindex="-1">
-                                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
-                                    <i class="icon icon--only icon--times"></i>
-                                    <span class="sr-only">
-                                        <?= _('Remove from the news page') ?>
-                                    </span>
-                                </button>
-                            </summary>
-
-                            <nav class="popup__container popup__container--over">
-                                <form method="post" action="<?= url('read news later', ['id' => $news_link->id]) ?>">
-                                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                                    <button class="popup__item popup__item--button icon icon--bookmark">
-                                        <?= _('Add to bookmarks') ?>
-                                    </button>
-                                </form>
-
-                                <form method="post" action="<?= url('hide news', ['id' => $news_link->id]) ?>">
-                                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                                    <button class="popup__item popup__item--button icon icon--times">
-                                        <?= _('Remove from the news') ?>
-                                    </button>
-                                </form>
-                            </nav>
-                        </details>
-
+                    <div class="card__footer">
                         <div class="card__footer-group">
-                            <a
-                                class="anchor--action icon icon--anchor icon--link"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href="<?= $news_link->url ?>"
+                            <details
+                                class="popup"
+                                data-controller="popup"
+                                data-action="click@window->popup#close"
                             >
-                                <?= _('open') ?>
-                            </a>
+                                <summary class="popup__opener" title="<?= _('Remove from the news page') ?>" tabindex="-1">
+                                    <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
+                                        <i class="icon icon--only icon--times"></i>
+                                        <span class="sr-only">
+                                            <?= _('Remove from the news page') ?>
+                                        </span>
+                                    </button>
+                                </summary>
+
+                                <nav class="popup__container popup__container--over">
+                                    <div class="popup__title">
+                                        <?= _('Remove from the news…') ?>
+                                    </div>
+
+                                    <form method="post" action="<?= url('read news later', ['id' => $news_link->id]) ?>">
+                                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                                        <button class="popup__item popup__item--button icon icon--bookmark">
+                                            <?= _('and read later') ?>
+                                        </button>
+                                    </form>
+
+                                    <form method="post" action="<?= url('hide news', ['id' => $news_link->id]) ?>">
+                                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                                        <button class="popup__item popup__item--button icon icon--trash">
+                                            <?= _('definitively') ?>
+                                        </button>
+                                    </form>
+                                </nav>
+                            </details>
 
                             <?php if ($has_collections): ?>
                                 <button
-                                    class="button--small"
+                                    class="button--ghost button--smaller"
                                     data-controller="modal-opener"
                                     data-action="modal-opener#fetch"
                                     data-modal-opener-href="<?= url('add news', ['id' => $news_link->id]) ?>"
                                     aria-haspopup="dialog"
                                     aria-controls="modal"
+                                    title="<?= _('Add to collections') ?>"
                                 >
-                                    <?= _('Add to collections') ?>
+                                    <i class="icon icon--only icon--collection"></i>
+                                    <span class="sr-only">
+                                        <?= _('Add to collections') ?>
+                                    </span>
                                 </button>
                             <?php endif; ?>
                         </div>
+
+                        <a
+                            class="anchor--action icon icon--anchor icon--pop-out"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href="<?= $news_link->url ?>"
+                        >
+                            <?= _('read') ?>
+                        </a>
                     </div>
                 </div>
             <?php endforeach; ?>
