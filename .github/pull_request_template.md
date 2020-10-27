@@ -9,6 +9,7 @@ Pull request checklist:
 - [ ] code is manually tested
 - [ ] interface works on both mobiles and big screens
 - [ ] new tests are written
+- [ ] French locale is synchronized
 - [ ] commit messages are clear
 - [ ] documentation is updated (including migration notes)
 
