@@ -84,7 +84,6 @@
 
 .popup__item--button:focus {
     background-color: transparent;
-    border: none;
 
     outline: 1px dotted var(--color-purple-5);
 }
@@ -93,9 +92,15 @@
     display: block;
     padding: var(--space-small) var(--space-small) var(--space-small) 2.5em;
 
+    border: 1px solid transparent;
     border-radius: var(--border-radius);
+
+    transition:
+        background-color 0.1s ease-in-out,
+        border-color 0.1s ease-in-out;
 }
 
 .popup__item:hover {
-    background-color: var(--color-turquoise-3);
+    background-color: var(--color-turquoise-2);
+    border-color: var(--color-turquoise-5);
 }
