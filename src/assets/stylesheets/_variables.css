@@ -71,6 +71,8 @@
     --font-family-title: "Comfortaa", "cursive";
 
     --content-width: 1000px;
+
+    --height-bottom-line: 1rem;
 }
 
 @media (min-width: 48em) {

@@ -43,6 +43,15 @@ body {
     background-color: var(--color-body);
 }
 
+body::after {
+    content: '';
+
+    display: block;
+    height: var(--height-bottom-line);
+
+    background: linear-gradient(to left, var(--color-turquoise-2) 0%, var(--color-purple-2) 100%);
+}
+
 .sr-only {
     position: absolute;
 
@@ -105,5 +114,5 @@ hr {
 
     height: 0.5rem;
 
-    background-color: var(--color-purple-5);
+    background: linear-gradient(to right, var(--color-turquoise-5), var(--color-purple-5));
 }

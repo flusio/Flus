@@ -1,3 +1,7 @@
+.layout {
+    min-height: calc(100vh - var(--height-bottom-line));
+}
+
 .layout__header--connected {
     position: fixed;
     z-index: 10;
@@ -5,7 +9,7 @@
 
     width: 100%;
 
-    background-color: var(--color-turquoise-3);
+    background: radial-gradient(circle at top, var(--color-turquoise-3) 60%, var(--color-turquoise-4));
     box-shadow: 0 0 5px var(--color-grey-4);
 }
 
