@@ -1,0 +1,5 @@
+<svg version="1.1" width="36" height="36"  viewBox="0 0 36 36" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>pop-out-line</title>
+    <path class="clr-i-outline clr-i-outline-path-1" d="M 25.50,30.50 H 7.17 A 1.67,1.67 0 0 1 5.50,28.83 V 10.50 A 1.67,1.67 0 0 1 7.17,8.83 h 8.33 V 10.50 H 7.17 v 18.33 h 18.33 v -8.33 h 1.67 v 8.33 a 1.67,1.67 0 0 1 -1.67,1.67 z"></path><path class="clr-i-outline clr-i-outline-path-2" d="m 18,5.50 a 0.83,0.83 0 0 0 0,1.67 h 9.66 L 16.12,18.71 a 0.83,0.83 0 1 0 1.17,1.17 L 28.83,8.34 v 9.66 a 0.83,0.83 0 0 0 1.67,0 V 5.50 Z"></path>
+    <rect x="0" y="0" width="36" height="36" fill-opacity="0"/>
+</svg>
