@@ -123,22 +123,9 @@
 .card__footer-group {
     display: flex;
 
-    flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
 }
 
 .card__footer-group > * + * {
-    margin-top: var(--space-small);
-}
-
-@media (min-width: 800px) {
-    .card__footer-group {
-        flex-direction: row;
-        align-items: center;
-    }
-
-    .card__footer-group > * + * {
-        margin-top: 0;
-        margin-left: var(--space-small);
-    }
+    margin-left: var(--space-small);
 }
