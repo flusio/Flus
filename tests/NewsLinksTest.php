@@ -20,12 +20,12 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'title' => $title_news,
-            'is_hidden' => 0,
+            'is_removed' => 0,
         ]);
         $this->create('news_link', [
             'user_id' => $user->id,
             'title' => $title_not_news,
-            'is_hidden' => 1,
+            'is_removed' => 1,
         ]);
 
         $response = $this->appRun('get', '/news');
@@ -43,7 +43,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $url,
-            'is_hidden' => 0,
+            'is_removed' => 0,
         ]);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -71,7 +71,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $url,
-            'is_hidden' => 0,
+            'is_removed' => 0,
         ]);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -107,7 +107,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $url = $this->fake('url');
         $this->create('news_link', [
             'user_id' => $user->id,
-            'is_hidden' => 0,
+            'is_removed' => 0,
             'url' => $url,
         ]);
 
@@ -155,7 +155,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'title' => $this->fake('sentence'),
-            'is_hidden' => 0,
+            'is_removed' => 0,
         ]);
 
         $response = $this->appRun('get', '/news');
@@ -725,7 +725,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
         $message = $link->messages()[0];
         $db_link_to_collection = $links_to_collections_dao->listAll()[0];
-        $this->assertTrue($news_link->is_hidden);
+        $this->assertTrue($news_link->is_removed);
         $this->assertSame($user->id, $link->user_id);
         $this->assertSame($news_link->title, $link->title);
         $this->assertSame($news_link->url, $link->url);
@@ -1115,26 +1115,26 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($db_link, 'The link should not exist.');
     }
 
-    public function testHideHidesLinkFromNewsAndRedirects()
+    public function testRemoveRemovesLinkFromNewsAndRedirects()
     {
         $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $this->fake('url'),
-            'is_hidden' => 0,
+            'is_removed' => 0,
         ]);
 
-        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+        $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
             'csrf' => $user->csrf,
         ]);
 
         $this->assertResponse($response, 302, '/news');
         $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
-        $this->assertTrue($news_link->is_hidden, 'The news link should be hidden.');
+        $this->assertTrue($news_link->is_removed, 'The news link should be removed.');
     }
 
-    public function testHideRemovesFromBookmarksIfCorrespondingUrlInLinks()
+    public function testRemoveRemovesFromBookmarksIfCorrespondingUrlInLinks()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $news_link_dao = new models\dao\NewsLink();
@@ -1156,10 +1156,10 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
-            'is_hidden' => 0,
+            'is_removed' => 0,
         ]);
 
-        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+        $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
             'csrf' => $user->csrf,
         ]);
 
@@ -1167,7 +1167,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($exists_in_bookmarks, 'The link should no longer be in bookmarks.');
     }
 
-    public function testHideRedirectsToLoginIfNotConnected()
+    public function testRemoveRedirectsToLoginIfNotConnected()
     {
         $news_link_dao = new models\dao\NewsLink();
         $user_id = $this->create('user', [
@@ -1176,39 +1176,39 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user_id,
             'url' => $this->fake('url'),
-            'is_hidden' => 0,
+            'is_removed' => 0,
         ]);
 
-        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+        $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
             'csrf' => 'a token',
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
         $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
-        $this->assertFalse($news_link->is_hidden, 'The news link should not be hidden.');
+        $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
     }
 
-    public function testHideFailsIfCsrfIsInvalid()
+    public function testRemoveFailsIfCsrfIsInvalid()
     {
         $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $this->fake('url'),
-            'is_hidden' => 0,
+            'is_removed' => 0,
         ]);
 
-        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+        $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
             'csrf' => 'not the token',
         ]);
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
         $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
-        $this->assertFalse($news_link->is_hidden, 'The news link should not be hidden.');
+        $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
     }
 
-    public function testHideFailsIfUserDoesNotOwnTheLink()
+    public function testRemoveFailsIfUserDoesNotOwnTheLink()
     {
         $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
@@ -1216,16 +1216,16 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $other_user_id,
             'url' => $this->fake('url'),
-            'is_hidden' => 0,
+            'is_removed' => 0,
         ]);
 
-        $response = $this->appRun('post', "/news/{$news_link_id}/hide", [
+        $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
             'csrf' => $user->csrf,
         ]);
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'The link doesn’t exist.');
         $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
-        $this->assertFalse($news_link->is_hidden, 'The news link should not be hidden.');
+        $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
     }
 }

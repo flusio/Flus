@@ -37,7 +37,7 @@ class NewsLink extends \Minz\Model
             'type' => 'string',
         ],
 
-        'is_hidden' => [
+        'is_removed' => [
             'type' => 'boolean',
             'required' => true,
         ],
@@ -72,7 +72,7 @@ class NewsLink extends \Minz\Model
             'reading_time' => $link->reading_time,
             'image_filename' => $link->image_filename,
             'user_id' => $user_id,
-            'is_hidden' => false,
+            'is_removed' => false,
         ]);
     }
 

@@ -317,8 +317,8 @@ class NewsLinks
             $message_dao->save($message);
         }
 
-        // Finally, hide the news_link from the news page.
-        $news_link->is_hidden = true;
+        // Finally, remove the news_link from the news page.
+        $news_link->is_removed = true;
         $news_link_dao->save($news_link);
 
         return Response::redirect('news');
@@ -438,15 +438,15 @@ class NewsLinks
             $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
         }
 
-        // Then, remove the news (we don't hide it since it would no longer be
-        // suggested to the user).
+        // Then, delete the news (we don't set the is_removed or it would no
+        // longer be suggested to the user).
         $news_link_dao->delete($news_link->id);
 
         return Response::found($from);
     }
 
     /**
-     * Hide a link from news and remove it from bookmarks.
+     * Remove a link from news and bookmarks.
      *
      * @request_param string csrf
      * @request_param string id
@@ -464,7 +464,7 @@ class NewsLinks
      *
      * @return \Minz\Response
      */
-    public function hide($request)
+    public function remove($request)
     {
         $user = utils\CurrentUser::get();
         $from = \Minz\Url::for('news');
@@ -489,8 +489,8 @@ class NewsLinks
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $news_link_dao = new models\dao\NewsLink();
 
-        // First, hide the link from the news.
-        $news_link->is_hidden = true;
+        // First, remove the link from the news.
+        $news_link->is_removed = true;
         $news_link_dao->save($news_link);
 
         // Then, we try to find a link with corresponding URL in order to

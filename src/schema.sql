@@ -89,7 +89,7 @@ CREATE TABLE news_links (
     url TEXT NOT NULL,
     reading_time INTEGER NOT NULL DEFAULT 0,
     image_filename TEXT,
-    is_hidden BOOLEAN NOT NULL DEFAULT false,
+    is_removed BOOLEAN NOT NULL DEFAULT false,
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 
