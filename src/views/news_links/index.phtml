@@ -10,19 +10,19 @@
         <h1><?= _('News') ?></h1>
     </div>
 
-    <div class="section__intro">
-        <p>
-            <?= format_news_preferences($news_preferences) ?>
-        </p>
+    <?php if (!$news_links): ?>
+        <div class="section__intro">
+            <p>
+                <?= format_news_preferences($news_preferences) ?>
+            </p>
 
-        <?php if (!$news_links): ?>
             <p>
                 <a href="<?= url('news preferences') ?>">
                     <?= _('Configure') ?>
                 </a>
             </p>
-        <?php endif; ?>
-    </div>
+        </div>
+    <?php endif; ?>
 
     <?php if ($news_links): ?>
         <div class="cards cards--centered">
