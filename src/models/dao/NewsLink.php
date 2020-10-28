@@ -41,7 +41,8 @@ class NewsLink extends \Minz\DatabaseModel
             LEFT JOIN links_to_collections lc ON lc.link_id = l.id
             LEFT JOIN collections c ON lc.collection_id = c.id AND c.user_id = :user_id
 
-            WHERE nl.is_hidden = false
+            WHERE nl.is_removed = false
+            AND nl.is_read = false
             AND nl.user_id = :user_id
 
             GROUP BY nl.id

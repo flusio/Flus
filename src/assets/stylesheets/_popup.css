@@ -1,5 +1,7 @@
 .popup {
     position: relative;
+
+    display: inline-block;
 }
 
 .popup__opener {
@@ -33,6 +35,16 @@
 
         box-shadow: 0 0 2px 0 var(--color-turquoise-6);
         border-radius: var(--border-radius);
+    }
+
+    .popup__container--bottom {
+        left: 50%;
+
+        margin-top: 0.5rem;
+        margin-right: auto;
+        margin-left: auto;
+
+        transform: translateX(-50%);
     }
 
     .popup__container--left {

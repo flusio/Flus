@@ -1,0 +1,33 @@
+.news__postpone {
+    margin-top: var(--space-large);
+    margin-bottom: 15rem;
+    padding: var(--space-medium);
+
+    text-align: center;
+
+    background: radial-gradient(circle at top, var(--color-purple-1) 80%, var(--color-purple-2));
+    box-shadow: 0 1px 4px 1px var(--color-purple-2);
+    border-radius: var(--border-radius);
+}
+
+@media (min-width: 800px) {
+    .news__postpone {
+        margin-bottom: 20rem;
+    }
+}
+
+.news__postpone-popup .popup__container {
+    font-size: var(--size-normal);
+}
+
+@media (min-width: 800px) {
+    .news__postpone-popup .popup__container {
+        width: 34rem;
+    }
+}
+
+.news__postpone-button {
+    font-size: 1.1em;
+
+    border-color: var(--color-purple-3);
+}

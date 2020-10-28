@@ -130,7 +130,7 @@
                                         </button>
                                     </form>
 
-                                    <form method="post" action="<?= url('hide news', ['id' => $news_link->id]) ?>">
+                                    <form method="post" action="<?= url('remove news', ['id' => $news_link->id]) ?>">
                                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                                         <button class="popup__item popup__item--button icon icon--trash">
@@ -169,6 +169,42 @@
                     </div>
                 </div>
             <?php endforeach; ?>
+        </div>
+
+        <div class="news__postpone">
+            <p class="paragraph--centered">
+                <?= _('Did you read everything? Or do you want to postpone your reading?') ?>
+            </p>
+
+            <details
+                class="popup news__postpone-popup"
+                data-controller="popup"
+                data-action="click@window->popup#close"
+            >
+                <summary class="popup__opener" tabindex="-1">
+                    <button class="news__postpone-button icon icon--recycle" type="button" data-action="popup#toggle">
+                        <?= _('Recycle the news') ?>
+                    </button>
+                </summary>
+
+                <nav class="popup__container popup__container--bottom">
+                    <form method="post" action="<?= url('mark news as read', ['id' => 'all']) ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                        <button class="popup__item popup__item--button icon icon--check">
+                            <?= _('Mark all as read') ?>
+                        </button>
+                    </form>
+
+                    <form method="post" action="<?= url('read news later', ['id' => 'all']) ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                        <button class="popup__item popup__item--button icon icon--bookmark">
+                            <?= _('Read the links later') ?>
+                        </button>
+                    </form>
+                </nav>
+            </details>
         </div>
     <?php else: ?>
         <?php if ($no_news): ?>

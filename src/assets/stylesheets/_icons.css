@@ -140,6 +140,10 @@
     background-image: url("../icons/essential/pop-out-line.svg");
 }
 
+.icon--recycle::before {
+    background-image: url("../icons/essential/recycle-line.svg");
+}
+
 .icon--trash::before {
     background-image: url("../icons/essential/trash-line.svg");
 }

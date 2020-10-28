@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-27 17:18+0100\n"
-"PO-Revision-Date: 2020-10-27 17:18+0100\n"
+"POT-Creation-Date: 2020-10-28 09:16+0100\n"
+"PO-Revision-Date: 2020-10-28 09:40+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -17,9 +17,10 @@ msgstr ""
 
 #: Collections.php:122 Collections.php:315 Collections.php:506
 #: Collections.php:559 LinkMessages.php:70 Links.php:179 Links.php:322
-#: NewsLinks.php:119 NewsLinks.php:268 NewsLinks.php:359 Registrations.php:95
-#: Sessions.php:82 my/Account.php:175 my/Account.php:246 my/Profile.php:85
-#: my/Security.php:79 my/Security.php:139 my/Subscription.php:73
+#: NewsLinkRemovals.php:133 NewsLinks.php:119 NewsLinks.php:182
+#: Registrations.php:95 Sessions.php:82 my/Account.php:175 my/Account.php:246
+#: my/Profile.php:85 my/Security.php:79 my/Security.php:139
+#: my/Subscription.php:73
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -30,8 +31,8 @@ msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
 #: Collections.php:389 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:378 Links.php:457 Links.php:561 NewsLinks.php:417
-#: NewsLinks.php:485 Sessions.php:192
+#: Links.php:378 Links.php:457 Links.php:561 NewsLinkRemovals.php:225
+#: NewsLinkRemovals.php:296 NewsLinkRemovals.php:379 Sessions.php:192
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -43,12 +44,12 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: LinkCollections.php:96 Links.php:218 NewsLinks.php:295
+#: LinkCollections.php:96 Links.php:218 NewsLinkRemovals.php:160
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: LinkCollections.php:136 LinkCollections.php:188 NewsLinks.php:411
-#: NewsLinks.php:479
+#: LinkCollections.php:136 LinkCollections.php:188 NewsLinkRemovals.php:234
+#: NewsLinkRemovals.php:305 NewsLinkRemovals.php:373
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -60,7 +61,7 @@ msgstr "Le lien est déjà dans les signets."
 msgid "This link is not bookmarked."
 msgstr "Le lien n’est pas dans les signets."
 
-#: Links.php:206 NewsLinks.php:281
+#: Links.php:206 NewsLinkRemovals.php:146
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
@@ -339,7 +340,7 @@ msgstr "Journal"
 #: views/_layouts/connected.phtml:90 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/link_collections/index.phtml:19
 #: views/links/new.phtml:62 views/links/show.phtml:122
-#: views/news_links/adding.phtml:41
+#: views/news_link_removals/adding.phtml:41
 msgid "Collections"
 msgstr "Collections"
 
@@ -444,7 +445,7 @@ msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
 #: views/collections/discover.phtml:3 views/collections/discover.phtml:18
-#: views/collections/index.phtml:132 views/news_links/index.phtml:207
+#: views/collections/index.phtml:132 views/news_links/index.phtml:243
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
@@ -452,7 +453,7 @@ msgstr "Découvrir des collections"
 msgid "Your collections"
 msgstr "Vos collections"
 
-#: views/collections/discover.phtml:22 views/news_links/index.phtml:202
+#: views/collections/discover.phtml:22 views/news_links/index.phtml:238
 msgid ""
 "Discover collections created by the community and follow the ones you are "
 "interested in."
@@ -509,7 +510,7 @@ msgid "Its description"
 msgstr "Sa description"
 
 #: views/collections/edit.phtml:48 views/collections/new.phtml:47
-#: views/news_links/adding.phtml:84
+#: views/news_link_removals/adding.phtml:84
 msgid "(optional)"
 msgstr "(optionnel)"
 
@@ -663,7 +664,8 @@ msgstr "Collections du lien"
 
 #: views/link_collections/index.phtml:49 views/link_collections/index.phtml:52
 #: views/links/new.phtml:92 views/links/new.phtml:95
-#: views/news_links/adding.phtml:71 views/news_links/adding.phtml:74
+#: views/news_link_removals/adding.phtml:71
+#: views/news_link_removals/adding.phtml:74
 msgid "Add to a collection"
 msgstr "Ajouter à une collection"
 
@@ -681,7 +683,7 @@ msgid "The title of your link"
 msgstr "Le titre de votre lien"
 
 #: views/links/edit.phtml:57 views/links/new.phtml:57
-#: views/news_links/adding.phtml:36
+#: views/news_link_removals/adding.phtml:36
 msgid "Show the link publicly"
 msgstr "Afficher le lien publiquement"
 
@@ -766,7 +768,7 @@ msgstr "lire"
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:187 views/news_links/adding.phtml:82
+#: views/links/show.phtml:187 views/news_link_removals/adding.phtml:82
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -1000,19 +1002,21 @@ msgstr "Votre mot de passe actuel"
 msgid "Confirm your password"
 msgstr "Confirmer votre mot de passe"
 
-#: views/news_links/adding.phtml:3 views/news_links/adding.phtml:11
+#: views/news_link_removals/adding.phtml:3
+#: views/news_link_removals/adding.phtml:11
 msgid "Add to your collections"
 msgstr "Ajouter à vos collections"
 
-#: views/news_links/adding.phtml:97
+#: views/news_link_removals/adding.phtml:97
 msgid "Save and mark as read"
 msgstr "Enregister et marquer comme lu"
 
-#: views/news_links/adding.phtml:101
+#: views/news_link_removals/adding.phtml:101
 msgid "Add and mark as read"
 msgstr "Ajouter et marquer comme lu"
 
-#: views/news_links/adding.phtml:106 views/news_links/adding.phtml:109
+#: views/news_link_removals/adding.phtml:106
+#: views/news_link_removals/adding.phtml:109
 #: views/news_links/preferences.phtml:104
 msgid "Cancel and go back to the news"
 msgstr "Annuler et retourner au journal"
@@ -1072,11 +1076,27 @@ msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
 #: views/news_links/index.phtml:176
+msgid "Did you read everything? Or do you want to postpone your reading?"
+msgstr "Avez-vous tout lu ? Ou voulez-vous finir de lire plus tard ?"
+
+#: views/news_links/index.phtml:186
+msgid "Recycle the news"
+msgstr "Recycler le journal"
+
+#: views/news_links/index.phtml:195
+msgid "Mark all as read"
+msgstr "Tout marquer comme lu"
+
+#: views/news_links/index.phtml:203
+msgid "Read the links later"
+msgstr "Lire les liens plus tard"
+
+#: views/news_links/index.phtml:212
 msgid "We found no relevant news for you, what can you do?"
 msgstr ""
 "Nous n’avons rien trouvé d’intéressant pour vous, que pouvez-vous faire ?"
 
-#: views/news_links/index.phtml:182
+#: views/news_links/index.phtml:218
 msgid ""
 "As you’re navigating on the Internet, bookmark the links you would like to "
 "read later."
@@ -1084,18 +1104,18 @@ msgstr ""
 "Lorsque vous naviguez sur Internet, placez les liens que vous aimeriez lire "
 "plus tard dans vos signets."
 
-#: views/news_links/index.phtml:187 views/news_links/index.phtml:197
+#: views/news_links/index.phtml:223 views/news_links/index.phtml:233
 msgid "Ok, fine"
 msgstr "Ok, c’est noté"
 
-#: views/news_links/index.phtml:192
+#: views/news_links/index.phtml:228
 msgid ""
 "Take a break, disconnect from Internet and go for a walk; news can wait."
 msgstr ""
 "Prenez une pause, déconnectez d’Internet et allez vous balader ; l’actualité "
 "peut attendre."
 
-#: views/news_links/index.phtml:223
+#: views/news_links/index.phtml:259
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 
