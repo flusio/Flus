@@ -79,10 +79,10 @@ class Application
         $router->addRoute('post', '/news', 'NewsLinks#fill', 'fill news');
         $router->addRoute('get', '/news/preferences', 'NewsLinks#preferences', 'news preferences');
         $router->addRoute('post', '/news/preferences', 'NewsLinks#updatePreferences', 'update news preferences');
-        $router->addRoute('get', '/news/:id/add', 'NewsLinks#adding', 'adding news');
-        $router->addRoute('post', '/news/:id/add', 'NewsLinks#add', 'add news');
-        $router->addRoute('post', '/news/:id/read-later', 'NewsLinks#readLater', 'read news later');
-        $router->addRoute('post', '/news/:id/remove', 'NewsLinks#remove', 'remove news');
+        $router->addRoute('get', '/news/:id/add', 'NewsLinkRemovals#adding', 'adding news');
+        $router->addRoute('post', '/news/:id/add', 'NewsLinkRemovals#add', 'add news');
+        $router->addRoute('post', '/news/:id/read-later', 'NewsLinkRemovals#readLater', 'read news later');
+        $router->addRoute('post', '/news/:id/remove', 'NewsLinkRemovals#remove', 'remove news');
 
         // Collections
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');
