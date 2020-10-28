@@ -1,8 +1,13 @@
 # Changelog of flusio
 
-## 2020-xx-yy - v0.12
+## 2020-10-28 - v0.12
 
 ### Migration notes
+
+Make sure that the GD PHP extension is installed with support of PNG, JPEG and
+WEBP images.
+
+You might need to reset some ids due to the bug fixed by [`df29d41`](https://github.com/flusio/flusio/commit/df29d413260cffa2d9f433139891c574ddcb504f).
 
 (optional) flusio now supports Open Graph and Twitter Cards images. For oldest
 links, you can refresh their image by running the following command:
@@ -11,6 +16,32 @@ links, you can refresh their image by running the following command:
 flusio$ # where NUMBER should be replaced by a positive integer value (default is 10)
 flusio$ php cli --request /links/refresh -pnumber=NUMBER
 ```
+
+### New
+
+- Display Open Graph images on links
+- Add batch actions at the bottom of news
+
+### Improvements
+
+- Improve the UX of news
+- Improve unbookmark UX
+- Save and redirect at step 4 of onboarding
+- Improve visibility of `.popup__item` on hover
+- Add light gradient backgrounds
+- Change cursor on button hover to pointer
+- Reduce line-height of cards titles
+- Reorganize commands in CLI usage action
+
+### Bug fixes
+
+- Fix id on Link::initFromNews
+
+### Misc
+
+- Don't hide card--shadow on mobile per default
+- Add French sync to PR template
+- Add PHP gd extension requirement
 
 ## 2020-10-21 - v0.11
 
