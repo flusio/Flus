@@ -47,7 +47,11 @@
             <i><?= _('You’ll be able to change those later.') ?></i>
         </p>
 
-        <hr />
+        <p class="paragraph--centered">
+            <a class="anchor--action" href="<?= url('onboarding', ['step' => 5]) ?>">
+                <?= _('Continue') ?>
+            </a>
+        </p>
     <?php elseif ($topics): ?>
         <hr />
 
@@ -88,17 +92,9 @@
 
             <div class="form-group">
                 <button type="submit" class="button--primary">
-                    <?= _('Save') ?>
+                    <?= _('Save and continue') ?>
                 </button>
             </div>
         </form>
-
-        <hr />
     <?php endif; ?>
-
-    <p class="paragraph--centered">
-        <a class="anchor--action" href="<?= url('onboarding', ['step' => 5]) ?>">
-            <?= _('Continue') ?>
-        </a>
-    </p>
 </div>

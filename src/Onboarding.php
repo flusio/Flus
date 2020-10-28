@@ -127,11 +127,13 @@ class Onboarding
         $csrf_valid = $csrf->validateToken($request->param('csrf'));
         $topics_valid = !$topic_ids || $topic_dao->exists($topic_ids);
 
-        if ($csrf_valid && $topics_valid) {
-            $users_to_topics_dao = new models\dao\UsersToTopics();
-            $users_to_topics_dao->set($user->id, $topic_ids);
+        if (!$csrf_valid || !$topics_valid) {
+            return Response::redirect('onboarding', ['step' => 4]);
         }
 
-        return Response::redirect('onboarding', ['step' => 4]);
+        $users_to_topics_dao = new models\dao\UsersToTopics();
+        $users_to_topics_dao->set($user->id, $topic_ids);
+
+        return Response::redirect('onboarding', ['step' => 5]);
     }
 }

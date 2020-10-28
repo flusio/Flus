@@ -175,7 +175,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
             'topic_ids' => [$topic_id],
         ]);
 
-        $this->assertResponse($response, 302, '/onboarding?step=4');
+        $this->assertResponse($response, 302, '/onboarding?step=5');
         $user = new models\User($user_dao->find($user->id));
         $topic_ids = array_column($user->topics(), 'id');
         $this->assertSame([$topic_id], $topic_ids);

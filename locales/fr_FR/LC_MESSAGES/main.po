@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-28 09:16+0100\n"
-"PO-Revision-Date: 2020-10-28 09:40+0100\n"
+"POT-Creation-Date: 2020-10-28 10:43+0100\n"
+"PO-Revision-Date: 2020-10-28 10:43+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -982,7 +982,7 @@ msgstr ""
 "Laissez ce champ vide si vous souhaitez conserver votre mot de passe actuel."
 
 #: views/my/security/show_confirmed.phtml:85
-#: views/news_links/preferences.phtml:100 views/onboarding/step4.phtml:91
+#: views/news_links/preferences.phtml:100
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -1175,7 +1175,7 @@ msgstr ""
 "introduction devrait vous prendre moins de 5 minutes."
 
 #: views/onboarding/step1.phtml:58 views/onboarding/step2.phtml:37
-#: views/onboarding/step3.phtml:60 views/onboarding/step4.phtml:101
+#: views/onboarding/step3.phtml:60 views/onboarding/step4.phtml:52
 msgid "Continue"
 msgstr "Continuer"
 
@@ -1324,7 +1324,7 @@ msgstr ""
 "Pas de défilement infini, ni de commentaires haineux : votre <em>sérénité</"
 "em> est ce qui compte le plus."
 
-#: views/onboarding/step4.phtml:39 views/onboarding/step4.phtml:55
+#: views/onboarding/step4.phtml:39 views/onboarding/step4.phtml:59
 msgid ""
 "By the way, you might want to indicate your <em>points of interest</em> "
 "right away, you’ll get better suggestions then."
@@ -1340,6 +1340,10 @@ msgstr "Vous avez sélectionné %s."
 #: views/onboarding/step4.phtml:47
 msgid "You’ll be able to change those later."
 msgstr "Vous pourrez changer cela plus tard."
+
+#: views/onboarding/step4.phtml:95
+msgid "Save and continue"
+msgstr "Enregistrer et continuer"
 
 #: views/onboarding/step5.phtml:3 views/onboarding/step5.phtml:10
 msgid "Start exploring"
