@@ -30,13 +30,7 @@
     <?php if ($links): ?>
         <div class="cards">
             <?php foreach ($links as $link): ?>
-                <div
-                    class="card"
-                    data-controller="link-card"
-                    data-link-card-bookmarked="true"
-                    data-link-card-bookmark-action="<?= url('bookmark link', ['id' => $link->id]) ?>"
-                    data-link-card-unbookmark-action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
-                >
+                <div class="card" data-controller="link-card">
                     <?php if ($link->image_filename): ?>
                         <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
                             <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
@@ -59,8 +53,7 @@
                         <form
                             method="post"
                             action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
-                            data-action="link-card#toggleBookmarked"
-                            data-target="link-card.bookmarkForm"
+                            data-action="link-card#unbookmark"
                         >
                             <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
@@ -69,13 +62,27 @@
                                 title="<?= _('Remove from bookmarks') ?>"
                                 aria-label="<?= _('Remove from bookmarks') ?>"
                             >
-                                <i class="icon icon--only icon--solid icon--ghost icon--bookmark"></i>
+                                <i class="icon icon--only icon--ghost icon--times"></i>
                             </button>
                         </form>
 
                         <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
                             <?= _('see') ?>
                         </a>
+                    </div>
+
+                    <div class="card__mask" data-target="link-card.mask">
+                        <form
+                            method="post"
+                            action="<?= url('bookmark link', ['id' => $link->id]) ?>"
+                            data-action="link-card#bookmark"
+                        >
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                            <button class="button--ghost button--small">
+                                <?= _('Cancel?') ?>
+                            </button>
+                        </form>
                     </div>
                 </div>
             <?php endforeach; ?>

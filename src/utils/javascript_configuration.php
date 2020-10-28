@@ -1,13 +1,11 @@
 <?php
 
 $translations = [
-    'Add to bookmarks',
     'copied',
     'copy',
     'Unselect',
     'Unselect this collection',
     'Hide',
-    'Remove from bookmarks',
     'Show',
 ];
 

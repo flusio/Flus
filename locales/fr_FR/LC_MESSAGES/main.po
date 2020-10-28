@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-28 10:43+0100\n"
-"PO-Revision-Date: 2020-10-28 10:43+0100\n"
+"POT-Creation-Date: 2020-10-28 14:25+0100\n"
+"PO-Revision-Date: 2020-10-28 14:26+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -113,18 +113,6 @@ msgstr "Cacher"
 #: views/sessions/new.phtml:70
 msgid "Show"
 msgstr "Afficher"
-
-#: assets/javascripts/controllers/link_card_controller.js:37
-#: assets/javascripts/controllers/link_card_controller.js:38
-#: views/collections/show_bookmarks.phtml:69
-#: views/collections/show_bookmarks.phtml:70
-msgid "Remove from bookmarks"
-msgstr "Retirer des signets"
-
-#: assets/javascripts/controllers/link_card_controller.js:57
-#: assets/javascripts/controllers/link_card_controller.js:58
-msgid "Add to bookmarks"
-msgstr "Ajouter aux signets"
 
 #: mailers/Users.php:10
 #, php-format
@@ -485,7 +473,7 @@ msgstr "suivie"
 
 #: views/collections/discover.phtml:55 views/collections/index.phtml:56
 #: views/collections/index.phtml:115 views/collections/show.phtml:136
-#: views/collections/show_bookmarks.phtml:77
+#: views/collections/show_bookmarks.phtml:70
 #: views/collections/show_public.phtml:99 views/news_links/index.phtml:73
 #: views/news_links/index.phtml:84
 msgid "see"
@@ -616,7 +604,7 @@ msgstr "Supprimer la collection"
 msgid "Collection created by yourself"
 msgstr "Collection créée par vous-même"
 
-#: views/collections/show.phtml:148 views/collections/show_bookmarks.phtml:89
+#: views/collections/show.phtml:148 views/collections/show_bookmarks.phtml:96
 msgid ""
 "This collection is empty. The links will appear here once you start adding "
 "them."
@@ -627,6 +615,15 @@ msgstr ""
 #: views/collections/show_bookmarks.phtml:14
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
+
+#: views/collections/show_bookmarks.phtml:62
+#: views/collections/show_bookmarks.phtml:63
+msgid "Remove from bookmarks"
+msgstr "Retirer des signets"
+
+#: views/collections/show_bookmarks.phtml:83
+msgid "Cancel?"
+msgstr "Annuler ?"
 
 #: views/collections/show_public.phtml:19 views/links/show.phtml:17
 #: views/links/show_public.phtml:18
