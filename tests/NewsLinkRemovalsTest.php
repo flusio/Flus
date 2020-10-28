@@ -316,6 +316,8 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
+            'is_read' => 0,
+            'is_removed' => 0,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
@@ -344,6 +346,8 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
+            'is_read' => 0,
+            'is_removed' => 0,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
@@ -389,6 +393,63 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($db_link_to_collection, 'The link should still be in bookmarks.');
     }
 
+    public function testReadLaterAcceptsAnIdEqualsToAll()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $link_url_1 = $this->fake('url');
+        $link_url_2 = $this->fake('url');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $link_id_1 = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $link_url_1,
+        ]);
+        $link_id_2 = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $link_url_2,
+        ]);
+        $news_link_id_1 = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $link_url_1,
+            'is_read' => 0,
+            'is_removed' => 0,
+        ]);
+        $news_link_id_2 = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $link_url_2,
+            'is_read' => 0,
+            'is_removed' => 0,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_2,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', '/news/all/read-later', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $exists_1 = $news_link_dao->exists($news_link_id_1);
+        $exists_2 = $news_link_dao->exists($news_link_id_2);
+        $this->assertFalse($exists_1, 'The news should no longer exist.');
+        $this->assertFalse($exists_2, 'The news should no longer exist.');
+        $db_link_to_collection_1 = $links_to_collections_dao->findBy([
+            'link_id' => $link_id_1,
+            'collection_id' => $collection_id,
+        ]);
+        $db_link_to_collection_2 = $links_to_collections_dao->findBy([
+            'link_id' => $link_id_2,
+            'collection_id' => $collection_id,
+        ]);
+        $this->assertNotNull($db_link_to_collection_1, 'The link should be in bookmarks.');
+        $this->assertNotNull($db_link_to_collection_2, 'The link should be in bookmarks.');
+    }
+
     public function testReadLaterRedirectsToLoginIfNotConnected()
     {
         $news_link_dao = new models\dao\NewsLink();
@@ -404,6 +465,8 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user_id,
             'url' => $link_url,
+            'is_read' => 0,
+            'is_removed' => 0,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
@@ -430,6 +493,8 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
+            'is_read' => 0,
+            'is_removed' => 0,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
@@ -457,6 +522,8 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
+            'is_read' => 0,
+            'is_removed' => 0,
         ]);
 
         $response = $this->appRun('post', '/news/-1/read-later', [
@@ -485,6 +552,8 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $other_user_id,
             'url' => $link_url,
+            'is_read' => 0,
+            'is_removed' => 0,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
@@ -497,6 +566,169 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $db_link = $link_dao->findBy(['url' => $link_url]);
         $this->assertTrue($exists, 'The news should still exist.');
         $this->assertNull($db_link, 'The link should not exist.');
+    }
+
+    public function testMarkAsReadMarksLinkAsReadAndRedirects()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $this->fake('url'),
+            'is_read' => 0,
+            'is_removed' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $this->assertTrue($news_link->is_read, 'The news link should be read.');
+    }
+
+    public function testMarkAsReadRemovesFromBookmarksIfCorrespondingUrlInLinks()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $news_link_dao = new models\dao\NewsLink();
+        $link_dao = new models\dao\Link();
+        $user = $this->login();
+        $link_url = $this->fake('url');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $link_url,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $link_url,
+            'is_read' => 0,
+            'is_removed' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_collection_id);
+        $this->assertFalse($exists_in_bookmarks, 'The link should no longer be in bookmarks.');
+    }
+
+    public function testMarkAsReadAcceptsAnIdEqualsToAll()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $link_url = $this->fake('url');
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $link_url,
+        ]);
+        $link_to_collection_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $news_link_id_1 = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $link_url,
+            'is_read' => 0,
+            'is_removed' => 0,
+        ]);
+        $news_link_id_2 = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $this->fake('url'),
+            'is_read' => 0,
+            'is_removed' => 0,
+        ]);
+
+        $response = $this->appRun('post', '/news/all/mark-as-read', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $news_link_1 = new models\NewsLink($news_link_dao->find($news_link_id_1));
+        $news_link_2 = new models\NewsLink($news_link_dao->find($news_link_id_2));
+        $this->assertTrue($news_link_1->is_read, 'The news link should be read.');
+        $this->assertTrue($news_link_2->is_read, 'The news link should be read.');
+        $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_collection_id);
+        $this->assertFalse($exists_in_bookmarks, 'The link should no longer be in bookmarks.');
+    }
+
+    public function testMarkAsReadRedirectsToLoginIfNotConnected()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user_id = $this->create('user', [
+            'csrf' => 'a token',
+        ]);
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $user_id,
+            'url' => $this->fake('url'),
+            'is_read' => 0,
+            'is_removed' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
+            'csrf' => 'a token',
+        ]);
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
+        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $this->assertFalse($news_link->is_read, 'The news link should not be read.');
+    }
+
+    public function testMarkAsReadFailsIfCsrfIsInvalid()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $this->fake('url'),
+            'is_read' => 0,
+            'is_removed' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $this->assertFlash('error', 'A security verification failed.');
+        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $this->assertFalse($news_link->is_read, 'The news link should not be read.');
+    }
+
+    public function testMarkAsReadFailsIfUserDoesNotOwnTheLink()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $news_link_id = $this->create('news_link', [
+            'user_id' => $other_user_id,
+            'url' => $this->fake('url'),
+            'is_read' => 0,
+            'is_removed' => 0,
+        ]);
+
+        $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $this->assertFlash('error', 'The link doesn’t exist.');
+        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $this->assertFalse($news_link->is_read, 'The news link should not be read.');
     }
 
     public function testRemoveRemovesLinkFromNewsAndRedirects()
