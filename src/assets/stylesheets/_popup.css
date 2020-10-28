@@ -90,8 +90,6 @@
     border: none;
 
     transition: none;
-
-    cursor: pointer;
 }
 
 .popup__item--button:focus {
