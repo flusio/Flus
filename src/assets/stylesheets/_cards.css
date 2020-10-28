@@ -43,16 +43,8 @@
 }
 
 .card--shadow {
-    display: none;
-
     background-color: var(--color-grey-1);
     box-shadow: none;
-}
-
-@media (min-width: 800px) {
-    .card--shadow {
-        display: initial;
-    }
 }
 
 .card--transparent {
