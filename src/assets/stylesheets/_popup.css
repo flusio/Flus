@@ -16,7 +16,7 @@
     position: fixed;
     z-index: 10;
     right: 0;
-    bottom: 5.5rem;
+    bottom: var(--height-header);
     left: 0;
 
     padding: var(--space-medium) var(--space-small);

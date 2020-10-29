@@ -22,12 +22,19 @@
 }
 
 .layout__header--connected .header__link {
+    height: var(--height-header);
     padding: var(--space-small);
 
     text-decoration: none;
 
     border-top: 0.5rem solid transparent;
     border-bottom: 0.5rem solid transparent;
+}
+
+@media (min-width: 800px) {
+    .layout__header--connected .header__link {
+        height: auto;
+    }
 }
 
 .layout__header--connected .header__link--icon {
