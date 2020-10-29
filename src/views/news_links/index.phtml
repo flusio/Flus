@@ -17,9 +17,16 @@
             </p>
 
             <p>
-                <a href="<?= url('news preferences') ?>">
+                <button
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href="<?= url('news preferences') ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                    title="<?= _('Add to collections') ?>"
+                >
                     <?= _('Configure') ?>
-                </a>
+                </button>
             </p>
         </div>
     <?php endif; ?>

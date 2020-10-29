@@ -7,7 +7,7 @@
 
 <div class="section">
     <div class="section__title">
-        <h1><?= _('News preference') ?></h1>
+        <h1 id="modal-title"><?= _('News preference') ?></h1>
     </div>
 
     <form method="post" action="<?= url('update news preferences') ?>">
@@ -100,9 +100,12 @@
                 <?= _('Save') ?>
             </button>
 
-            <a href="<?= url('news') ?>">
+            <a href="<?= url('news') ?>" class="no-modal">
                 <?= _('Cancel and go back to the news') ?>
             </a>
+            <button type="button" class="only-modal" data-action="modal#close">
+                <?= _('Cancel and go back to the news') ?>
+            </button>
         </div>
     </form>
 </div>
