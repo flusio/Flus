@@ -89,6 +89,7 @@
 .card__title {
     overflow: hidden;
 
+    display: block;
     margin-top: 0;
     margin-bottom: 0;
 
