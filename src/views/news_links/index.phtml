@@ -205,7 +205,13 @@
                 </summary>
 
                 <nav class="popup__container popup__container--bottom">
-                    <form method="post" action="<?= url('mark news as read', ['id' => 'all']) ?>">
+                    <form
+                        method="post"
+                        action="<?= url('mark news as read', ['id' => 'all']) ?>"
+                        data-controller="confirmation"
+                        data-action="confirmation#confirm"
+                        data-message="<?= _('You’ll mark all the news links as read, this action cannot be canceled. Are you sure?') ?>"
+                    >
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                         <button class="popup__item popup__item--button icon icon--check">
