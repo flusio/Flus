@@ -89,13 +89,16 @@
 .card__title {
     overflow: hidden;
 
-    display: block;
     margin-top: 0;
     margin-bottom: 0;
 
     font-size: var(--size-normal);
     line-height: 1.3;
     text-overflow: ellipsis;
+}
+
+.card__title a {
+    display: block;
 }
 
 .card__title.icon {
