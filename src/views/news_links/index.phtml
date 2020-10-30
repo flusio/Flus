@@ -119,7 +119,7 @@
                             >
                                 <summary class="popup__opener" title="<?= _('Remove from the news page') ?>" tabindex="-1">
                                     <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
-                                        <i class="icon icon--only icon--times"></i>
+                                        <i class="icon icon--only icon--ellipsis-horizontal"></i>
                                         <span class="sr-only">
                                             <?= _('Remove from the news page') ?>
                                         </span>
@@ -130,6 +130,14 @@
                                     <div class="popup__title">
                                         <?= _('Remove from the news…') ?>
                                     </div>
+
+                                    <form method="post" action="<?= url('mark news as read', ['id' => $news_link->id]) ?>">
+                                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                                        <button class="popup__item popup__item--button icon icon--check">
+                                            <?= _('and mark as read') ?>
+                                        </button>
+                                    </form>
 
                                     <form method="post" action="<?= url('read news later', ['id' => $news_link->id]) ?>">
                                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
