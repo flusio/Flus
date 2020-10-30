@@ -45,19 +45,6 @@
             <?php endif; ?>
         </div>
 
-        <div class="form-group">
-            <input
-                type="checkbox"
-                id="is_public"
-                name="is_public"
-                <?= $is_public ? 'checked' : '' ?>
-            />
-
-            <label class="label--checkbox" for="is_public">
-                <?= _('Show the link publicly') ?>
-            </label>
-        </div>
-
         <fieldset class="no-modal">
             <legend><?= _('Collections') ?></legend>
 
@@ -97,6 +84,19 @@
                 </select>
             </div>
         </fieldset>
+
+        <div class="form-group">
+            <input
+                type="checkbox"
+                id="is_public"
+                name="is_public"
+                <?= $is_public ? 'checked' : '' ?>
+            />
+
+            <label class="label--checkbox" for="is_public">
+                <?= _('Show the link publicly') ?>
+            </label>
+        </div>
 
         <div class="form__actions">
             <button type="submit" class="button--primary">

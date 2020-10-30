@@ -24,19 +24,6 @@
 
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
-        <div class="form-group">
-            <input
-                type="checkbox"
-                id="is_public"
-                name="is_public"
-                <?= $is_public ? 'checked' : '' ?>
-            />
-
-            <label class="label--checkbox" for="is_public">
-                <?= _('Show the link publicly') ?>
-            </label>
-        </div>
-
         <fieldset>
             <legend><?= _('Collections') ?></legend>
 
@@ -89,6 +76,19 @@
                 id="comment"
                 name="comment"
             ><?= $comment ?></textarea>
+        </div>
+
+        <div class="form-group">
+            <input
+                type="checkbox"
+                id="is_public"
+                name="is_public"
+                <?= $is_public ? 'checked' : '' ?>
+            />
+
+            <label class="label--checkbox" for="is_public">
+                <?= _('Show the link publicly') ?>
+            </label>
         </div>
 
         <div class="form__actions">
