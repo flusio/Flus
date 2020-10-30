@@ -1,5 +1,34 @@
 # Changelog of flusio
 
+## 2020-10-30 - v0.13
+
+### News
+
+- Allow to mark a single link as read
+
+### Improvements
+
+- Pick public news links in private collections
+- Display a default card image for links with no image
+- Move news preferences in a modal
+- Improve readability of fieldsets
+- Increase the quantity of blue in grey color
+- Change cards titles to display block
+- Add autofocus on security confirm password
+- Add a pop-out icon on the subscription anchor
+- Reword collections index section intro
+- Improve details of the link fetching page
+- Put "Show publicly" always at the end of forms
+- Reword default option to select collections
+- Change the color of selected collections
+- Add a confirmation on "mark all as read"
+- Add a bit of colors to cards footers
+- Animate slowly the "body after" bar
+
+### Bug fixes
+
+- Fix popup menu position on mobile
+
 ## 2020-10-28 - v0.12
 
 ### Migration notes
