@@ -126,7 +126,26 @@
     align-items: center;
     justify-content: space-between;
 
-    background-color: var(--color-grey-1);
+    background-color: var(--color-purple-1);
+    background-image: linear-gradient(to right, var(--color-purple-2), var(--color-turquoise-2) 25%, var(--color-purple-2) 50%, var(--color-turquoise-2) 75%, var(--color-purple-2));
+    background-repeat: repeat-x;
+    background-position: 0 100%;
+    background-size: 200% 3px;
+    box-shadow: 0 -1px 2px 0 var(--color-purple-1);
+}
+
+.card__footer:focus-within {
+    animation: cardFooterBorder 10s linear infinite;
+}
+
+@keyframes cardFooterBorder {
+    0% {
+        background-position: 200% 100%;
+    }
+
+    100% {
+        background-position: 0% 100%;
+    }
 }
 
 .card__footer--align-end {
