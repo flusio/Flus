@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-30 16:13+0100\n"
-"PO-Revision-Date: 2020-10-30 16:13+0100\n"
+"POT-Creation-Date: 2020-10-30 16:18+0100\n"
+"PO-Revision-Date: 2020-10-30 16:18+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -31,7 +31,7 @@ msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
 #: Collections.php:389 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:378 Links.php:458 Links.php:562 NewsLinkRemovals.php:225
+#: Links.php:378 Links.php:457 Links.php:561 NewsLinkRemovals.php:225
 #: NewsLinkRemovals.php:296 NewsLinkRemovals.php:379 Sessions.php:192
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
@@ -521,12 +521,11 @@ msgstr "Annuler et retourner à la collection"
 
 #: views/collections/index.phtml:14
 msgid ""
-"Collections allow to group links by topics. They are handy for finding them "
-"later and sharing with other users."
+"Collections allow to group links by topics, find them later and share them "
+"with the community."
 msgstr ""
-"Les collections permettent de grouper les liens par thématiques. Elles sont "
-"utiles pour les retrouver plus tard et les partager avec les autres "
-"utilisateur‧ices."
+"Les collections permettent de grouper les liens par thématiques, de les "
+"retrouver plus tard et de les partager avec la communauté."
 
 #: views/collections/index.phtml:26
 msgid "Add a collection"
