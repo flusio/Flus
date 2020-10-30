@@ -39,7 +39,7 @@
     <?php elseif ($subscriptions_enabled && $current_user->subscription_account_id): ?>
         <p class="paragraph--centered">
             <a
-                <?= $current_user->isSubscriptionOverdue() ? 'class="anchor--action"' : '' ?>
+                class="icon icon--anchor icon--pop-out <?= $current_user->isSubscriptionOverdue() ? 'anchor--action' : '' ?>"
                 target="_blank"
                 rel="noopener noreferrer"
                 href="<?= url('subscription') ?>"
