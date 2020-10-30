@@ -185,22 +185,18 @@ class Link extends \Minz\DatabaseModel
     public function listFromTopicsForNews($user_id)
     {
         $sql = <<<SQL
-             SELECT l.* FROM links l, collections c, links_to_collections lc, collections_to_topics ct
+             SELECT l.* FROM links l, links_to_collections lc, collections_to_topics ct
 
-             WHERE ct.collection_id = lc.collection_id
-             AND ct.topic_id IN (
+             WHERE ct.topic_id IN (
                 SELECT ut.topic_id FROM users_to_topics ut
                 WHERE ut.user_id = :user_id
              )
 
+             AND ct.collection_id = lc.collection_id
              AND lc.link_id = l.id
-             AND lc.collection_id = c.id
 
              AND l.is_public = true
-             AND c.is_public = true
-
-             AND c.user_id != :user_id
-
+             AND l.user_id != :user_id
              AND l.url NOT IN (
                  SELECT nl.url FROM news_links nl
                  WHERE nl.user_id = :user_id
