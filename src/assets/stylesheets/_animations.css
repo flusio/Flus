@@ -3,7 +3,7 @@
     height: 40px;
     margin: 30px auto;
 
-    background-color: var(--color-grey-8);
+    background-color: var(--color-purple-6);
     border-radius: 100%;
 
     -webkit-animation: sk-scaleout 1s infinite ease-in-out;

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-30 15:53+0100\n"
-"PO-Revision-Date: 2020-10-30 15:54+0100\n"
+"POT-Creation-Date: 2020-10-30 16:13+0100\n"
+"PO-Revision-Date: 2020-10-30 16:13+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -31,7 +31,7 @@ msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
 #: Collections.php:389 LinkCollections.php:149 LinkCollections.php:201
-#: Links.php:378 Links.php:457 Links.php:561 NewsLinkRemovals.php:225
+#: Links.php:378 Links.php:458 Links.php:562 NewsLinkRemovals.php:225
 #: NewsLinkRemovals.php:296 NewsLinkRemovals.php:379 Sessions.php:192
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
@@ -327,8 +327,8 @@ msgstr "Journal"
 
 #: views/_layouts/connected.phtml:90 views/collections/index.phtml:3
 #: views/collections/index.phtml:10 views/link_collections/index.phtml:19
-#: views/links/new.phtml:62 views/links/show.phtml:122
-#: views/news_link_removals/adding.phtml:41
+#: views/links/new.phtml:49 views/links/show.phtml:122
+#: views/news_link_removals/adding.phtml:28
 msgid "Collections"
 msgstr "Collections"
 
@@ -498,7 +498,7 @@ msgid "Its description"
 msgstr "Sa description"
 
 #: views/collections/edit.phtml:48 views/collections/new.phtml:47
-#: views/news_link_removals/adding.phtml:84
+#: views/news_link_removals/adding.phtml:71
 msgid "(optional)"
 msgstr "(optionnel)"
 
@@ -660,9 +660,9 @@ msgid "Link collections"
 msgstr "Collections du lien"
 
 #: views/link_collections/index.phtml:49 views/link_collections/index.phtml:52
-#: views/links/new.phtml:92 views/links/new.phtml:95
-#: views/news_link_removals/adding.phtml:71
-#: views/news_link_removals/adding.phtml:74
+#: views/links/new.phtml:79 views/links/new.phtml:82
+#: views/news_link_removals/adding.phtml:58
+#: views/news_link_removals/adding.phtml:61
 msgid "Select a collection"
 msgstr "Sélectionner une collection"
 
@@ -679,8 +679,8 @@ msgstr "Modification d’un lien"
 msgid "The title of your link"
 msgstr "Le titre de votre lien"
 
-#: views/links/edit.phtml:57 views/links/new.phtml:57
-#: views/news_link_removals/adding.phtml:36
+#: views/links/edit.phtml:57 views/links/new.phtml:97
+#: views/news_link_removals/adding.phtml:90
 msgid "Show the link publicly"
 msgstr "Afficher le lien publiquement"
 
@@ -765,7 +765,7 @@ msgstr "lire"
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:187 views/news_link_removals/adding.phtml:82
+#: views/links/show.phtml:187 views/news_link_removals/adding.phtml:69
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -799,8 +799,8 @@ msgid "Fetch link information"
 msgstr "Récupérer les informations du lien"
 
 #: views/links/show_fetch.phtml:47
-msgid "Please wait while we’re collecting information."
-msgstr "Merci de patienter pendant que nous recueillons les informations."
+msgid "Please wait while we’re collecting information…"
+msgstr "Merci de patienter pendant que nous recueillons les informations…"
 
 #: views/links/show_public.phtml:83
 #, php-format
