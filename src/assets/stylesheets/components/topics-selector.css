@@ -17,16 +17,13 @@
     margin-bottom: 0;
     padding: var(--space-small) var(--space-medium);
 
-    border: var(--border-width) solid var(--color-grey-2);
+    background-color: var(--color-white);
+    border: var(--border-width) solid var(--border-color);
     border-radius: var(--border-button-radius);
 
     transition:
         background-color 0.2s ease-in-out,
         border-color 0.2s ease-in-out;
-}
-
-input[type="checkbox"] + .topics-selector__label::before {
-    border-color: var(--color-grey-2);
 }
 
 input[type="checkbox"]:focus + .topics-selector__label {
