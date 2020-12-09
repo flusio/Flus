@@ -25,6 +25,12 @@ class Subscriptions
     {
         $this->host = $host;
         $this->private_key = $private_key;
+
+        $php_os = PHP_OS;
+        $flusio_version = \Minz\Configuration::$application['version'];
+        $this->http = new \SpiderBits\Http();
+        $this->http->user_agent = "flusio/{$flusio_version} ({$php_os}; https://github.com/flusio/flusio)";
+        $this->http->timeout = 5;
     }
 
     /**
@@ -37,8 +43,7 @@ class Subscriptions
      */
     public function account($email)
     {
-        $http = new \SpiderBits\Http();
-        $response = $http->get($this->host . '/api/account', [
+        $response = $this->http->get($this->host . '/api/account', [
             'email' => $email,
         ], [
             'auth_basic' => $this->private_key . ':',
@@ -64,8 +69,7 @@ class Subscriptions
      */
     public function loginUrl($account_id)
     {
-        $http = new \SpiderBits\Http();
-        $response = $http->get($this->host . '/api/account/login-url', [
+        $response = $this->http->get($this->host . '/api/account/login-url', [
             'account_id' => $account_id,
         ], [
             'auth_basic' => $this->private_key . ':',
@@ -87,8 +91,7 @@ class Subscriptions
      */
     public function expiredAt($account_id)
     {
-        $http = new \SpiderBits\Http();
-        $response = $http->get($this->host . '/api/account/expired-at', [
+        $response = $this->http->get($this->host . '/api/account/expired-at', [
             'account_id' => $account_id,
         ], [
             'auth_basic' => $this->private_key . ':',

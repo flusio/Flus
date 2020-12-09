@@ -11,7 +11,7 @@ namespace SpiderBits;
 class Http
 {
     /** @var integer */
-    public $timeout = 1;
+    public $timeout = 5;
 
     /** @var string */
     public $user_agent = 'SpiderBits/0.0.1 (' . PHP_OS . '; https://github.com/flusio/SpiderBits)';
