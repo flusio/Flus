@@ -42,6 +42,7 @@ class Subscriptions
         foreach ($db_users as $db_user) {
             $user = new models\User($db_user);
             if (!$user->subscription_account_id) {
+                $sync_results[] = "{$user->id}: no subscription account";
                 continue;
             }
 
