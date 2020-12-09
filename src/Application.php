@@ -56,6 +56,8 @@ class Application
         $router->addRoute('get', '/my/profile', 'my/Profile#show', 'profile');
         $router->addRoute('post', '/my/profile', 'my/Profile#update', 'update profile');
 
+        $router->addRoute('get', '/my/info.json', 'my/Profile#info', 'profile info');
+
         $router->addRoute('get', '/my/security', 'my/Security#show', 'security');
         $router->addRoute('post', '/my/security', 'my/Security#update', 'update security');
         $router->addRoute('post', '/my/security/confirm', 'my/Security#confirmPassword', 'confirm password');

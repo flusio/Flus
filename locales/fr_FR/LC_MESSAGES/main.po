@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-10-30 16:18+0100\n"
-"PO-Revision-Date: 2020-10-30 16:18+0100\n"
+"POT-Creation-Date: 2020-11-04 18:32+0100\n"
+"PO-Revision-Date: 2020-11-04 18:33+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -109,7 +109,7 @@ msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:28
 #: views/my/account/deletion.phtml:50 views/my/security/show_confirmed.phtml:72
-#: views/my/security/show_to_confirm.phtml:45 views/registrations/new.phtml:96
+#: views/my/security/show_to_confirm.phtml:46 views/registrations/new.phtml:96
 #: views/sessions/new.phtml:70
 msgid "Show"
 msgstr "Afficher"
@@ -849,7 +849,7 @@ msgstr ""
 "identité."
 
 #: views/my/account/deletion.phtml:48 views/my/security/show_confirmed.phtml:70
-#: views/my/security/show_to_confirm.phtml:43 views/registrations/new.phtml:94
+#: views/my/security/show_to_confirm.phtml:44 views/registrations/new.phtml:94
 #: views/sessions/new.phtml:68
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
@@ -994,7 +994,7 @@ msgstr ""
 msgid "Your current password"
 msgstr "Votre mot de passe actuel"
 
-#: views/my/security/show_to_confirm.phtml:58
+#: views/my/security/show_to_confirm.phtml:59
 msgid "Confirm your password"
 msgstr "Confirmer votre mot de passe"
 
@@ -1185,7 +1185,7 @@ msgstr ""
 "introduction devrait vous prendre moins de 5 minutes."
 
 #: views/onboarding/step1.phtml:58 views/onboarding/step2.phtml:37
-#: views/onboarding/step3.phtml:60 views/onboarding/step4.phtml:52
+#: views/onboarding/step3.phtml:65 views/onboarding/step4.phtml:52
 msgid "Continue"
 msgstr "Continuer"
 
@@ -1288,6 +1288,21 @@ msgid ""
 msgstr ""
 "Cela devrait ressembler à ça dans Firefox. Dans cet exemple, l’<abbr>URL</"
 "abbr> est <code>https://contributopia.org/fr/</code>"
+
+#: views/onboarding/step3.phtml:59
+#, php-format
+msgid ""
+"A handy way to add links is to install the <a class=\"anchor--inverted\" "
+"href=\"https://flus.fr/addons/gecko/latest\">Web extension for %s</a> on "
+"Firefox."
+msgstr ""
+"Une manière pratique pour ajouter des liens est d’installer <a class="
+"\"anchor--inverted\" href=\"https://flus.fr/addons/gecko/latest"
+"\">l’extension navigateur pour %s</a> sur Firefox."
+
+#: views/onboarding/step3.phtml:60
+msgid "Using Chrome? The extension is coming soon, please be patient."
+msgstr "Vous utilisez Chrome ? Une extension arrive bientôt, soyez patient."
 
 #: views/onboarding/step4.phtml:3 views/onboarding/step4.phtml:10
 msgid "Understanding the news"
