@@ -1,0 +1,535 @@
+* [31mbf0b6be[m - G tec: Increase HTTP timeout [32m(2020-12-09 17:29:56 +0100) [1;34m<Marien Fressinaud>[m [33m (HEAD -> release/0.14, origin/main, main)[m
+* [31m7422c2a[m - G tec: Bump ParcelJS version [32m(2020-12-09 15:54:11 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31ma2e6237[m - G imp: Provide better browser extension integration [32m(2020-12-09 15:39:59 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[33m\[m  
+[32m|[m * [31m0da682a[m - G Provide a link to download the Web Extension [32m(2020-12-09 15:34:41 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31mdae7720[m - G Add an endpoint for the WebExtension [32m(2020-12-09 15:34:41 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[32m/[m  
+* [31m4758fd3[m - G tec: Add log on subscriptions sync [32m(2020-12-09 15:34:41 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31meb5b027[m - G release: Publish version v0.13 [32m(2020-10-30 18:05:45 +0100) [1;34m<Marien Fressinaud>[m [33m (tag: v0.13)[m
+* [31mc33083e[m - G imp: Improve readability of fieldsets [32m(2020-10-30 17:54:43 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8e2edb2[m - G imp: Increase the quantity of blue in grey color [32m(2020-10-30 16:50:27 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mcd10639[m - G imp: Change cards titles to display block [32m(2020-10-30 16:36:10 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m85c83e4[m - G imp: Add autofocus on security confirm password [32m(2020-10-30 16:23:17 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31ma23f96c[m - G imp: Add a pop-out icon on the subscription anchor [32m(2020-10-30 16:21:23 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mee72aef[m - G imp: Reword collections index section intro [32m(2020-10-30 16:19:16 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m234a5cb[m - G imp: Improve details of the link fetching page [32m(2020-10-30 16:15:16 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m57e6163[m - G imp: Put "Show publicly" always at the end of forms [32m(2020-10-30 16:07:19 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m52b60c1[m - G imp: Reword default option to select collections [32m(2020-10-30 15:54:39 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m779afff[m - G imp: Change the color of selected collections [32m(2020-10-30 15:54:14 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m56110bf[m - G imp: Change cards titles to display block [32m(2020-10-30 15:24:15 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31ma65bafc[m - G imp: Add a confirmation on "mark all as read" [32m(2020-10-30 15:12:25 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfe49947[m - G add: Allow to mark a single link as read [32m(2020-10-30 15:05:05 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1333be6[m - G imp: Add a bit of colors to cards footers [32m(2020-10-30 15:05:05 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31ma2ae91f[m - G imp: Animate slowly the "body after" bar [32m(2020-10-30 15:05:05 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m58409ca[m - G imp: Pick public news links in private collections [32m(2020-10-30 10:58:01 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mcfae5c0[m - G fix: Fix popup menu position on mobile [32m(2020-10-29 12:03:45 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7faf889[m - G imp: Move news preferences in a modal [32m(2020-10-29 10:44:19 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mdc9ae60[m - G imp: Display a default card for link without image [32m(2020-10-29 10:11:35 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8bbf675[m - G release: Publish version v0.12 [32m(2020-10-28 15:03:37 +0100) [1;34m<Marien Fressinaud>[m [33m (tag: v0.12)[m
+* [31mf99946a[m - G imp: Change cursor on button hover to pointer [32m(2020-10-28 14:40:29 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m13553da[m - G imp: Improve unbookmark UX [32m(2020-10-28 14:30:43 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m9d7a046[m - G tec: Don't hide card--shadow on mobile per default [32m(2020-10-28 14:23:27 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8be901b[m - G imp: Save and redirect at step 4 of onboarding [32m(2020-10-28 10:52:22 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m9c1d124[m - G add: Add batch actions at the bottom of news [32m(2020-10-28 09:48:43 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[35m\[m  
+[34m|[m * [31m8b4e2d5[m - G Update French locale [32m(2020-10-28 09:41:53 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m6f12a7a[m - G Add batch actions on news page [32m(2020-10-28 09:41:49 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31mf01e85c[m - G Extract NewsLink removals actions to a controller [32m(2020-10-28 08:14:07 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31mc44e1c0[m - G Distinguish "mark as read" and "remove" actions [32m(2020-10-27 19:41:39 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31mcaf8da1[m - G Rename news is_hidden to is_removed [32m(2020-10-27 19:41:39 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[34m/[m  
+* [31m763e44c[m - G imp: Add light linear gradient backgrounds [32m(2020-10-27 18:53:16 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m5b6e901[m - G imp: Improve the UX of news [32m(2020-10-27 17:24:58 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m[1;31m\[m  
+[36m|[m * [31m56a56db[m - G Update French locales [32m(2020-10-27 17:19:10 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31mfb1f8e1[m - G Hide section intro if news page has links [32m(2020-10-27 16:38:37 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31m47546fa[m - G Add image to news links [32m(2020-10-27 16:38:37 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31me9146e7[m - G Reword news "remove" items [32m(2020-10-27 16:38:37 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31me323615[m - G Move "add to collections" on the left in news card [32m(2020-10-27 16:38:37 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31mcd40470[m - G Rename "open" links to "read" and change icons [32m(2020-10-27 16:38:36 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m[36m/[m  
+* [31m1442d09[m - G imp: Improve visibility of popup__item on hover [32m(2020-10-27 16:38:36 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m3d0e467[m - G tec: Add French sync to PR template [32m(2020-10-27 10:36:10 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mdf29d41[m - G fix: Fix id on Link::initFromNews [32m(2020-10-27 10:36:10 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m1ec4931[m - G add: Display Open Graph images on links [32m(2020-10-26 17:54:46 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m[1;33m\[m  
+[1;32m|[m * [31m43a53f6[m - G Add a command to refresh links images [32m(2020-10-26 17:49:36 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m2440560[m - G Show links preview images [32m(2020-10-26 17:49:36 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m11a2e67[m - G Generate links images previews [32m(2020-10-26 17:49:36 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m4ee0e16[m - G Extract link fetching to a dedicated service [32m(2020-10-26 17:33:48 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m5733b8f[m - G Add PHP gd extension requirement [32m(2020-10-26 17:33:28 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m[1;32m/[m  
+* [31m284a1dc[m - G imp: Reorganize commands in CLI usage action [32m(2020-10-26 17:27:44 +0100) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m319582d[m - G imp: Reduce line-height of cards titles [32m(2020-10-22 10:43:13 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31meaa35b9[m - G release: Publish version v0.11 [32m(2020-10-21 18:39:57 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.11)[m
+*   [31m175a606[m - G add: Allow users to update login credentials [32m(2020-10-21 18:22:08 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [31m1e70947[m - G Update French locales [32m(2020-10-21 18:14:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31m9cf9a8a[m - G Allow users to change email and password [32m(2020-10-21 18:14:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31m75e158d[m - G Ask user for its password to give secured access [32m(2020-10-21 18:14:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m[1;34m/[m  
+* [31m1d6fcad[m - G imp: Center submit button on profile page [32m(2020-10-21 17:52:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mece234e[m - G tec: Fix the locale in User factory [32m(2020-10-21 17:52:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31maa61317[m - G fix: Fix height of inputs [32m(2020-10-21 17:52:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m52b7c92[m - G Change registration validation to account validation [32m(2020-10-21 09:55:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m54dcf18[m - G Move subscriptions workflow to account page [32m(2020-10-21 09:54:30 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfad7984[m - G Separate profile and account pages [32m(2020-10-21 09:54:26 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m32eb872[m - G fix: Improve extraction of websites title [32m(2020-10-20 15:40:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31me40b39d[m - G tec: Update Minz version [32m(2020-10-20 15:30:35 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1f741fc[m - G imp: Hide back anchors on public page if no back URL [32m(2020-10-20 11:27:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31md97a133[m - G imp: Homogeneize titles case [32m(2020-10-20 11:21:29 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7783eae[m - G imp: Add a light linear gradient on popup menus [32m(2020-10-20 10:32:29 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31md154c31[m - G imp: Change links and collections ids format [32m(2020-10-20 09:29:59 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m[31m\[m  
+[1;36m|[m * [31m200419e[m - G Migrate collections and links ids to numeric form [32m(2020-10-19 19:57:18 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31m2de8d16[m - G Refactor generation of random strings [32m(2020-10-19 18:32:35 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m[1;36m/[m  
+*   [31m9906694[m - G add: Provide subscriptions feature [32m(2020-10-17 09:57:09 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[33m\[m  
+[32m|[m * [31m5cbd3fd[m - G Configure the CI with subscriptions secrets [32m(2020-10-17 09:50:13 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m7baeb39[m - G Add documentation [32m(2020-10-17 09:50:13 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m2e18ce1[m - G Update French locales [32m(2020-10-16 18:45:29 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m2d1cc5d[m - G Refactor Subscriptions controllers [32m(2020-10-16 18:40:14 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31mc554a0e[m - G Add a command to sync subscriptions expired_at [32m(2020-10-16 18:32:29 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m9aa6fb5[m - G Sync expired_at if subscription is overdue [32m(2020-10-16 17:53:48 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m161d9f7[m - G Block user if subscription is overdue [32m(2020-10-16 17:38:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m0c9f660[m - G Allow to redirect to the renewing page [32m(2020-10-16 17:07:42 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31mfffd7cb[m - G Create a subscription account on email validation [32m(2020-10-16 17:07:42 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31mda60b5e[m - G Allow to create a subscription account [32m(2020-10-16 17:07:41 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m72801ba[m - G Add a subscription page to show expiration date [32m(2020-10-16 16:20:47 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m626d22b[m - G Add subscription properties to users table [32m(2020-10-16 16:20:47 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[32m/[m  
+* [31mef6819f[m - G tec: Improve SpiderBits\Http get method [32m(2020-10-16 16:20:47 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m0104030[m - G tec: Rename format_date to format_message_date [32m(2020-10-16 16:20:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb89c7e8[m - G imp: Block not validated users after 1 day [32m(2020-10-15 17:30:47 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfe26762[m - G fix: Make use of Token complexity parameter [32m(2020-10-14 17:21:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31me71886c[m - G imp: Make the use of JavaScript explicit [32m(2020-10-14 17:11:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1abfb35[m - G fix: Set cookies SameSite to Lax [32m(2020-10-14 16:25:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m84485b0[m - G fix: Generate user CSRF token directly [32m(2020-10-14 16:09:24 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m2d1395b[m - G add: Provide a “terms of service” mecanism [32m(2020-10-02 11:07:16 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m9e73679[m - G imp: Reduce width of registration/login sections [32m(2020-10-01 18:04:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m821b794[m - G release: Publish version v0.10 [32m(2020-10-01 14:48:22 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.10)[m
+* [31m6848407[m - G tec: Fix a test to be sure to generate unique URLs [32m(2020-10-01 14:18:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31me76ebf7[m - G imp: Reword options to remove news [32m(2020-10-01 14:17:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31md1cad25[m - G imp: Consider the OpenGraph and Twitter titles [32m(2020-10-01 14:17:33 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m99fac78[m - G fix: Fix break line in cards details [32m(2020-10-01 13:29:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8130062[m - G imp: Increase the topic label max size [32m(2020-10-01 12:01:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfadbb25[m - G fix: Hide "add to collections" if user has no collections [32m(2020-10-01 11:21:57 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb947b17[m - G tec: Refactor listing with human_implode in News [32m(2020-10-01 10:23:57 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf883dd2[m - G fix: Fix NewsPicker duration test [32m(2020-09-30 17:29:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m990d3ec[m - G add: Provide onboarding [32m(2020-09-30 16:57:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1e74c9a[m - G add: Allow to change the brand name [32m(2020-09-30 16:57:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m78b9e91[m - G imp: Improve the news tips section [32m(2020-09-29 15:45:39 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31maf4e5e1[m - G add: Allow to configure news [32m(2020-09-29 15:29:44 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[35m\[m  
+[34m|[m * [31m47f258e[m - G Update French locales [32m(2020-09-29 15:11:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31mc711e2a[m - G Adapt intro of news page based on preferences [32m(2020-09-29 15:11:35 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31mc23bbe2[m - G Consider news preferences in NewsPicker [32m(2020-09-29 15:11:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m10110aa[m - G Add a page to configure news preferences [32m(2020-09-29 15:11:00 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[34m/[m  
+* [31mf4c00ae[m - G tec: Add [devmode] in page title in development [32m(2020-09-25 10:07:52 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m0cecbc5[m - G fix: Don't select link in owned collection for news [32m(2020-09-25 09:02:13 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m5c4d5d3[m - G imp: Redirect intelligently on link deletion [32m(2020-09-24 16:54:33 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m224580f[m - G fix: Fix select width with long options on mobile [32m(2020-09-24 16:14:09 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb268b7c[m - G fix: Fix padding for header locale form [32m(2020-09-24 15:59:34 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m0ec06f0[m - G release: Publish version v0.9 [32m(2020-09-24 10:40:09 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.9)[m
+* [31m00e15fc[m - G fix: Hide titles overflow [32m(2020-09-24 10:21:44 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m2136985[m - G imp: Improve section__nav margin on mobile [32m(2020-09-24 10:10:42 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m392fffd[m - G imp: Display if collection/link is public [32m(2020-09-24 10:10:31 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m979860c[m - G imp: Add placeholder on public links without comments [32m(2020-09-23 18:16:17 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m2057d39[m - G fix: Fix wording for private collection back button [32m(2020-09-23 18:06:35 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31ma06f3aa[m - G imp: Go to previous page from public collection [32m(2020-09-23 18:04:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc8f5ea7[m - G fix: Refactor and fix "back" anchor on link pages [32m(2020-09-23 17:56:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m9cd6310[m - G imp: Add a light color on card:focus-within [32m(2020-09-23 17:34:17 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbd8f06a[m - G imp: Add a card shadow to complete blocks of 3 [32m(2020-09-23 17:30:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m5cb1ca9[m - G fix: Fix cards design [32m(2020-09-23 17:12:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31me223808[m - G imp: Return 404 if deleting non existing collection [32m(2020-09-23 16:43:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m2794f85[m - G add: Allow to delete a link [32m(2020-09-23 16:41:23 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfa54771[m - G imp: Improve the link settings menu [32m(2020-09-23 16:16:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc390672[m - G imp: Improve the collection settings menu [32m(2020-09-23 15:56:35 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1d304a4[m - G imp: Display owner of followed collections [32m(2020-09-23 12:47:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m16b7528[m - G imp: Improve tips when there are no news [32m(2020-09-23 12:47:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1b0cc55[m - G add: Provide public collections discovery [32m(2020-09-23 12:24:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m5ee6505[m - G imp: Change default avatar [32m(2020-09-23 10:51:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc50635a[m - G add: Get news suggestions from points of interest [32m(2020-09-22 18:18:39 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31meef4529[m - G add: Allow users to set their points of interest [32m(2020-09-22 17:39:14 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m074fb1e[m - G tec: Update parcel to beta-1 [32m(2020-09-22 16:29:44 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m13059d0[m - G add: Provide topics for collections [32m(2020-09-22 15:56:03 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m[1;31m\[m  
+[36m|[m * [31md68d48c[m - G Add documentation about topics [32m(2020-09-22 15:52:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31mc870930[m - G Update French locales [32m(2020-09-22 15:52:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31m167467c[m - G Display topics on collections [32m(2020-09-22 15:52:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31me7db69a[m - G Allow to set topics on collections [32m(2020-09-22 15:52:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31m2410406[m - G Allow to create topics with CLI [32m(2020-09-22 15:52:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31m6aa76c1[m - G Add the Topic model [32m(2020-09-22 15:22:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m[36m/[m  
+* [31mecfae8c[m - G imp: Change links to close modals to buttons [32m(2020-09-22 14:52:40 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m5967cd9[m - G tec: Add support for serial ids in SaveHelper [32m(2020-09-14 16:48:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc0c4ca1[m - G fix: Fix <title> for collections pages [32m(2020-09-14 16:48:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m6858a1e[m - G tec: Add a test on cli usage command [32m(2020-09-10 15:01:15 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbafb1e9[m - G tec: Add support for rollbacks [32m(2020-09-10 15:01:15 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m629dc9d[m - G release: Publish version v0.8 [32m(2020-09-04 16:07:28 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.8)[m
+* [31m985ea8d[m - G imp: Improve and homogeneize wording [32m(2020-09-04 15:48:03 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb543728[m - G imp: Add few illustrations [32m(2020-09-04 15:38:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m69c6602[m - G add: Show related info from followed collections on news [32m(2020-09-04 15:21:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbc653ff[m - G imp: Put primary buttons on the right [32m(2020-09-04 13:52:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31ma08a709[m - G add: Provide tips if there are no news to suggest [32m(2020-09-04 12:18:39 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m30e0723[m - G imp: Change the news icon [32m(2020-09-04 11:43:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc63050b[m - G imp: Add an anchor on news titles [32m(2020-09-04 11:36:37 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m58c10fe[m - G fix: Fix scrolling to top on Firefox [32m(2020-09-04 11:20:53 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m02e1a27[m - G add: Allow to permanently hide a news [32m(2020-09-04 11:12:40 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m80aab8d[m - G imp: Improve layout of news buttons on mobile [32m(2020-09-04 09:43:08 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf051963[m - G imp: Improve the look of navbar on mobile [32m(2020-09-04 09:19:37 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m4ad931c[m - G fix: Fix cards overflow [32m(2020-09-04 08:59:33 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m9ae8ff8[m - G add: Allow to follow collections [32m(2020-09-03 17:36:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m[1;33m\[m  
+[1;32m|[m * [31m353372c[m - G Update French locales [32m(2020-09-03 17:33:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31mf4aee5e[m - G Add links from followed collections to the news [32m(2020-09-03 17:33:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m88c4f66[m - G List followed collections on Collections#index [32m(2020-09-03 17:28:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m0daa796[m - G Allow users to follow collections [32m(2020-09-03 17:21:55 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m[1;32m/[m  
+* [31m928e847[m - G tec: Change include_once for JS configuration [32m(2020-09-03 17:17:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m6f28e5f[m - G tec: Improve performances of modal rendering [32m(2020-09-03 17:17:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8233796[m - G imp: Add back anchor on public pages [32m(2020-09-03 17:17:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m67ec010[m - G imp: Remove note about news being in collections [32m(2020-09-03 17:17:04 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31md748fb5[m - G fix: Fix autofocus on link collections edition [32m(2020-09-03 17:05:11 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbcf6058[m - G fix: Save backForLink on turbolinks:visit [32m(2020-09-03 17:05:11 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m471c063[m - E tec: Bump bl from 4.0.2 to 4.0.3 [32m(2020-09-03 09:25:38 +0200) [1;34m<dependabot[bot]>[m [33m[m
+* [31m802e3bb[m - G imp: Improve modal transition on opening/closing [32m(2020-09-01 17:32:17 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m2306af3[m - G imp: Move a bunch of actions in modals [32m(2020-09-01 17:14:55 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m80a5a90[m - G imp: Add an anchor to go back from links add page [32m(2020-09-01 16:18:18 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf34f2a7[m - G imp: Improve the collections selector [32m(2020-09-01 16:06:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8b86565[m - G imp: Add a link to skip to the main content [32m(2020-08-31 18:49:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m014bef2[m - G imp: Add autofocus on a bunch of inputs [32m(2020-08-31 18:49:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31md0b8932[m - G imp: Redirect directly to link page after fetch [32m(2020-08-31 18:49:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m8c1cf05[m - G add: Improve process to add news to collections [32m(2020-08-31 17:45:16 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [31m0dae00d[m - G Update French locales [32m(2020-08-31 17:39:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31m0db271f[m - G Move the news link adding form in a modal [32m(2020-08-31 17:39:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31m3bd98be[m - G Remove the unused 'read news' endpoint [32m(2020-08-31 17:39:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31m5b4d8eb[m - G Change "read" news to "add to collections" [32m(2020-08-31 17:39:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m[1;34m/[m  
+* [31m8edb83c[m - G tec: Provide a modal mechanism [32m(2020-08-31 17:33:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8f3997e[m - G fix: Fix sanitization of titles [32m(2020-08-31 10:48:34 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m2469342[m - G sec: Forbid access to not owned collections [32m(2020-08-28 14:46:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m2f1417e[m - G tec: Migrate the news system to a dedicated model [32m(2020-08-27 18:19:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m[31m\[m  
+[1;36m|[m * [31m50e1e84[m - G Migrate old news and drop links in_news column [32m(2020-08-27 18:11:51 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31m510dddf[m - G Display where are saved news links [32m(2020-08-27 18:11:51 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31md38e7f0[m - G Refactor news links with a dedicated model [32m(2020-08-27 17:53:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31mb4a2a1d[m - G Rename the News controller in NewsLinks [32m(2020-08-27 17:52:55 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31m56bd155[m - G Change "see" button to "open" in news cards [32m(2020-08-26 17:38:40 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m[1;36m/[m  
+* [31mc481c89[m - G imp: Add a light background to cards footers [32m(2020-08-26 17:38:16 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbff1140[m - G fix: Fix margins of card__details [32m(2020-08-26 16:37:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mff915b4[m - G imp: Allow to set link public during creation/edit [32m(2020-08-26 16:16:16 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbae1b29[m - G fix: Hide marker of popup__opener on Chrome [32m(2020-08-26 14:43:48 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m00ad28b[m - G imp: Improve the look of checkboxes [32m(2020-08-26 14:43:48 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc153423[m - G imp: Move public checkboxes at the end of forms [32m(2020-08-26 13:33:45 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m90fa6ab[m - G tec: Extract a CSS card component [32m(2020-08-25 17:39:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31meab9fd3[m - G add: Allow to create public collections [32m(2020-08-25 14:22:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mdea1a00[m - G imp: Fix links "collections" button padding [32m(2020-08-25 11:28:11 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfbb59dc[m - G release: Publish version v0.7 [32m(2020-08-21 17:41:48 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.7)[m
+* [31me1f7756[m - G add: Provide a back anchor on link page [32m(2020-08-21 17:23:10 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mccb888e[m - G imp: Show link title on edit and collections [32m(2020-08-21 17:12:26 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m97b8fed[m - G tec: Return l10n key if value doesn't exist (JS) [32m(2020-08-21 17:11:14 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31ma1148e3[m - G add: Provide a basic "news" system [32m(2020-08-21 15:50:17 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[33m\[m  
+[32m|[m * [31m5f1b567[m - G Update French locales [32m(2020-08-21 15:39:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m802f38e[m - G Redirects home page to /news [32m(2020-08-21 15:39:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m3c60577[m - G Add the News page [32m(2020-08-21 15:39:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m99d6b4e[m - G Add a Links in_news property [32m(2020-08-21 15:33:49 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[32m/[m  
+* [31m17d671a[m - G imp: Make a bunch of small design adjustments [32m(2020-08-21 11:45:03 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbfbc198[m - G release: Publish version v0.6 [32m(2020-08-06 18:02:05 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.6)[m
+* [31m00c5bc1[m - G imp: Add the logo to the "not connected" header [32m(2020-08-06 17:52:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m53f2aa2[m - G fix: Set correct link to check-line icon [32m(2020-08-06 17:45:33 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf439ad0[m - G fix: Add a title on "manage" link collections [32m(2020-08-06 17:24:11 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31md5022f9[m - G add: Allow to share public links [32m(2020-08-06 17:07:42 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[35m\[m  
+[34m|[m * [31m4843bdd[m - G Update French locales [32m(2020-08-06 16:56:50 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31mb541ad5[m - G Add a share page for links [32m(2020-08-06 16:56:50 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m03654e1[m - G Allow access to public links [32m(2020-08-06 16:56:50 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[34m/[m  
+* [31m2c2c74e[m - G imp: Improve look of buttons [32m(2020-08-06 16:56:50 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m808499a[m - G imp: Set session cookie on registration [32m(2020-08-06 16:56:49 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m84b0842[m - G tec: Split Links controller file [32m(2020-08-06 16:56:49 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m35c7b42[m - G fix: Remove margin on non-first items in form actions [32m(2020-08-06 16:56:49 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m3e769f2[m - E tec: Bump elliptic from 6.5.2 to 6.5.3 (#84) [32m(2020-08-05 16:39:21 +0200) [1;34m<dependabot[bot]>[m [33m[m
+* [31m516e97d[m - G imp: Add anchors on cards titles [32m(2020-07-27 15:23:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m62222f5[m - G add: Allow to comment links [32m(2020-07-24 18:38:16 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m[1;31m\[m  
+[36m|[m * [31m0f3c84e[m - G Update French locales [32m(2020-07-24 18:33:30 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31m3e23500[m - G Display messages on links [32m(2020-07-24 18:33:30 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31mdbf5c07[m - G Provide a Message model [32m(2020-07-24 16:52:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m[36m/[m  
+* [31m353a124[m - G imp: Improve link collections section [32m(2020-07-24 16:39:27 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfa73813[m - G doc: Update the PR template [32m(2020-07-23 15:19:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf49c377[m - G tec: Update Minz properties management [32m(2020-07-23 10:20:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m9283e21[m - G doc: Complete doc about release and update [32m(2020-07-22 16:01:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc9ae0f1[m - E tec: Bump lodash from 4.17.15 to 4.17.19 [32m(2020-07-21 17:08:49 +0200) [1;34m<dependabot[bot]>[m [33m[m
+* [31md765c05[m - G imp: Improve (un)bookmark button [32m(2020-07-21 16:43:59 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m323c515[m - G release: Publish version v0.5 [32m(2020-07-17 12:32:30 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.5)[m
+* [31m0b76ffe[m - G l10n: Update French locales [32m(2020-07-17 12:23:55 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m351479b[m - G tec: Parse title only for HTML pages [32m(2020-07-17 12:23:38 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m84a52d7[m - G imp: Always show anchor to add links to collection [32m(2020-07-17 12:23:38 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf48047d[m - G imp: Rename new collection description label [32m(2020-07-17 11:24:39 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb48550a[m - G imp: Reduce time before fetching link [32m(2020-07-17 11:19:21 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m70abd33[m - G imp: Hide "www." from the link host [32m(2020-07-17 11:17:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfb211f1[m - G fix: Fix header UI details [32m(2020-07-17 11:15:45 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m4693e7d[m - G fix: Change "about" link to flus.fr [32m(2020-07-17 10:28:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m6dd599b[m - G fix: Fix bookmarks name localization [32m(2020-07-17 10:25:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31maa6b893[m - G fix: Fix title scrapping for Youtube [32m(2020-07-17 10:12:50 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m79d6b6e[m - G release: Publish version v0.4 [32m(2020-07-16 08:28:50 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.4)[m
+* [31mc9fb125[m - G l10n: Update French locales [32m(2020-07-16 08:16:52 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m272f0b9[m - G tec: Force CSRF token for connected users [32m(2020-07-16 08:08:32 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mdc2cb57[m - G imp: Change style of hr tag [32m(2020-07-15 16:14:47 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7907abc[m - G add: Add support for mobiles [32m(2020-07-15 16:11:21 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m66d322d[m - G imp: Add shortcut to add link to collection placeholder [32m(2020-07-15 14:34:59 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m76a8603[m - G imp: Homogenize page to update links collections [32m(2020-07-15 12:11:06 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m89b4c25[m - G add: Provide a dedicated page to add links [32m(2020-07-15 12:04:09 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m24d9fa3[m - G fix: Fix header "avatar" button position [32m(2020-07-15 11:07:16 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m926c956[m - G imp: Set Turbolinks progress bar style [32m(2020-07-15 08:35:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m89726c6[m - G fix: Set correct version in SpiderBits user agent [32m(2020-07-15 08:22:35 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m59fb13b[m - G add: Manage link collections [32m(2020-07-14 17:50:06 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m[1;33m\[m  
+[1;32m|[m * [31m237f1de[m - G Update French locales [32m(2020-07-14 17:44:18 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m701b368[m - G Allow to change link collections [32m(2020-07-14 17:41:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m37ae844[m - G Show collections on link page [32m(2020-07-14 17:01:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m[1;32m/[m  
+* [31m18dae64[m - G tec: Change Link->collectionIds in collections [32m(2020-07-14 16:58:33 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7be1c24[m - G tec: Refactor controllers [32m(2020-07-14 16:46:35 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m41ffc6c[m - G imp: Move link "edit" anchor on show page [32m(2020-07-14 14:40:21 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31ma643462[m - G tec: Homogeneize routes and controller actions [32m(2020-07-14 14:31:43 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31maa4d0be[m - G l10n: Update French locales [32m(2020-07-13 16:42:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m59edb24[m - G add: Allow to delete a collection [32m(2020-07-13 16:42:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31md11fea7[m - G add: Allow to update a collection [32m(2020-07-13 16:42:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m66c10c4[m - G add: Allow creation of collections [32m(2020-07-11 16:40:55 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [31mca772ea[m - G Update French localization [32m(2020-07-11 16:38:27 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31me893163[m - G Rework header bar [32m(2020-07-11 16:38:27 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31mb34f10d[m - G List collections on a dedicated page [32m(2020-07-11 16:38:27 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31md2e9f40[m - G Allow to create collections [32m(2020-07-11 16:34:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31m6db6b4d[m - G Show a description on bookmarks collection [32m(2020-07-11 16:34:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m[1;34m/[m  
+* [31m8e5fc08[m - G tec: Update icons [32m(2020-07-11 16:22:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mda1f29d[m - G tec: Rename collections/show in show_bookmarks [32m(2020-07-10 15:20:51 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m2a2a800[m - G tec: Provide a FakerHelper for tests [32m(2020-07-10 15:20:41 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf53d43e[m - G release: Publish version v0.3 [32m(2020-07-01 17:19:52 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.3)[m
+* [31mc20420d[m - G imp: Remove script tags from dom content [32m(2020-07-01 17:01:59 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m6717551[m - G imp: Decrease margins to put more content on screen [32m(2020-07-01 11:10:16 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m945565b[m - G imp: Add few illustrations [32m(2020-07-01 11:06:27 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m3722475[m - G l10n: Update French l10n [32m(2020-07-01 11:06:27 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m6af2cee[m - G fix: Fix title encoding on some websites [32m(2020-06-30 17:48:37 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m066c8b7[m - G fix: Initialize the session from a custom cookie [32m(2020-06-30 17:16:42 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m37b7f47[m - G tec: Remove unset SEED variable warning [32m(2020-06-30 12:16:49 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m44addb9[m - G tec: Allow to close registrations [32m(2020-06-30 12:14:55 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1e0bebf[m - G imp: Create a demo account during demo reset [32m(2020-06-30 12:09:43 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m114e1af[m - G add: Allow to create users via the CLI [32m(2020-06-30 11:13:48 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1b80c86[m - G imp: Select locale based on http Accept-Language [32m(2020-06-30 10:22:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m0b8a026[m - G tec: Set error views only in web Application [32m(2020-06-29 17:04:34 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m821d68b[m - G imp: Improve success message when account deleted [32m(2020-06-29 16:00:44 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1e1cca2[m - G release: Publish version v0.2 [32m(2020-06-26 17:47:18 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.2)[m
+* [31mcf5eecd[m - G tec: Cache response during links fetching [32m(2020-06-26 17:39:53 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf8527f3[m - G tec: Improve SpiderBits Response [32m(2020-06-26 17:22:06 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb00a2c2[m - G imp: Show a spinner animation during link fetching [32m(2020-06-26 11:09:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m15f3b2e[m - G imp: Don't lowercase links title [32m(2020-06-26 11:09:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m0b1953d[m - G imp: Puny-decode links host [32m(2020-06-26 11:09:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfce22a7[m - G tec: Comment or remove optional vars in env.sample [32m(2020-06-26 11:00:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfb8fb04[m - G fix: Fix "reseted" typo [32m(2020-06-26 11:00:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb752e3c[m - G release: Publish version v0.1 [32m(2020-06-25 19:22:33 +0200) [1;34m<Marien Fressinaud>[m [33m (tag: v0.1)[m
+* [31md288935[m - G tec: Provide documentation to deploy in production [32m(2020-06-25 19:11:41 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf41b168[m - G tec: Provide make command to release a new version [32m(2020-06-25 17:51:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m67ed69d[m - G tec: Provide a command to generate a secret key [32m(2020-06-25 17:51:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbf27a04[m - G tec: Change assets folder destination [32m(2020-06-25 17:51:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m223b816[m - G fix: Fix header link action spacing in production [32m(2020-06-25 17:51:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m0559c92[m - G fix: Fix French typo [32m(2020-06-25 17:51:28 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfa7cf58[m - G add: Allow to setup a demo instance [32m(2020-06-24 16:35:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31me6f24ee[m - G l10n: Bump French localization [32m(2020-06-24 15:53:17 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m332ba16[m - G add: Allow to update username [32m(2020-06-24 15:47:17 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m4b698dd[m - G imp: Improve the overall look and feel [32m(2020-06-24 15:27:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m[31m\[m  
+[1;36m|[m * [31m9ceafb0[m - G Split layout for connected and not_connected user [32m(2020-06-24 15:16:26 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31m356a041[m - G Improve error pages look [32m(2020-06-24 15:16:26 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31me38d0f9[m - G Redirect home page to login if not connected [32m(2020-06-24 12:09:03 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31m1ecc3c4[m - G Reorganize registration validation workflow [32m(2020-06-24 12:09:03 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31m1ac44da[m - G Remove section__headers [32m(2020-06-24 12:09:03 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31md1f1d00[m - G Homogenize pages style [32m(2020-06-24 12:09:03 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31me915c59[m - G Improve account pages [32m(2020-06-23 18:55:09 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31m96eefbb[m - G Redirect home to bookmarks if connected [32m(2020-06-23 18:55:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31mfbb4551[m - G Hide the footer if user is connected [32m(2020-06-23 18:55:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31ma24042b[m - G Improve look of links#show page [32m(2020-06-23 18:55:03 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m[1;36m/[m  
+* [31m82f6b3b[m - G tec: Finish to rename bookmarked in bookmarks [32m(2020-06-23 18:54:40 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m972b889[m - G tec: Rename "show bookmarks" in "bookmarks" [32m(2020-06-23 18:54:39 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1526cc8[m - G tec: Rename "bookmarked" in "bookmarks" [32m(2020-06-23 16:54:06 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m13f2494[m - G l10n: Bump French localization [32m(2020-06-23 16:43:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc31f2a9[m - G imp: Append flusio to title if not connected [32m(2020-06-23 16:38:43 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m02b1a86[m - G tec: Move User errors format in model [32m(2020-06-23 16:21:40 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m65efc36[m - G tec: Homogenize errors based on guidelines [32m(2020-06-23 16:21:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf2f2e2e[m - G doc: Add a guide about errors handling [32m(2020-06-23 13:24:22 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m66a4a62[m - G doc: Reorganize the documentation [32m(2020-06-23 10:59:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8244a6e[m - G imp: Show reading time on links [32m(2020-06-22 17:54:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m9aac659[m - G imp: Show the links URL hosts [32m(2020-06-22 17:54:18 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m840d474[m - G tec: Provide a DomExtractor [32m(2020-06-22 17:54:18 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7541f3a[m - G fix: Get correct link title [32m(2020-06-22 17:54:18 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31md41abd3[m - G l10n: Bump French localization [32m(2020-06-19 20:24:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m4ea860f[m - G fix: Make sure to use localized "Bookmarks" [32m(2020-06-19 20:24:56 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m223e19f[m - G imp: Add a favicon [32m(2020-06-19 20:00:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m2d40fe6[m - G add: Allow to update a link [32m(2020-06-19 19:36:50 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mef6225b[m - G add: Provide a dedicated link fetch page [32m(2020-06-19 19:36:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m6659411[m - G imp: Rename Bookmarked collection in Bookmarks [32m(2020-06-19 19:22:55 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31me153ec5[m - G add: Allow to remove link from bookmarked [32m(2020-06-19 16:56:27 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mdbe97af[m - G tec: Rename show_bookmarked view in show [32m(2020-06-19 11:35:50 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m4a2f47a[m - G imp: Rename "read later" in "bookmarked" [32m(2020-06-19 11:20:44 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31md9e3b1c[m - G tec: Rename master branch in main [32m(2020-06-19 11:00:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m31dff02[m - G fix: Fix access to error on an unreachable line [32m(2020-06-18 19:18:17 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m031ec22[m - G tec: Add more tests for SpiderBits\Url sanitize [32m(2020-06-18 19:14:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb062526[m - G tec: Ignore code coverage on unreachable Link lines [32m(2020-06-18 19:06:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m3607026[m - G tec: Add tests for Flash class [32m(2020-06-18 18:58:35 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m189b50b[m - G tec: Add a test for the design page [32m(2020-06-18 18:51:08 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m0d41a64[m - G tec: Change handling of database errors [32m(2020-06-18 18:47:33 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m9500f73[m - G tec: Rename raw_* model objects in db_* [32m(2020-06-18 18:19:55 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbc89639[m - G add: Fetch links titles [32m(2020-06-18 18:08:34 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf37705c[m - G tec: Improve the SpiderBits lib with Dom and Http [32m(2020-06-18 17:32:57 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m608f235[m - G fix: Create link if it exists for another user [32m(2020-06-18 10:42:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31md45626a[m - G add: Allow to add links in bookmarked collection [32m(2020-06-17 19:02:37 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[33m\[m  
+[32m|[m * [31mdd4cbc0[m - G Create bookmarked collection on signup [32m(2020-06-17 18:58:23 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31mfa88030[m - G Allow to add links to the bookmarked collection [32m(2020-06-17 18:26:24 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m77a260b[m - G Allow to create a bookmarked collection [32m(2020-06-17 18:26:24 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[32m/[m  
+* [31m523c650[m - G imp: Improve icons system to change color of icons [32m(2020-06-17 18:23:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8d7ee9c[m - G imp: Improve error pages [32m(2020-06-17 18:23:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m0b95604[m - G imp: Improve bottom border on titles [32m(2020-06-17 18:23:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7c47b10[m - G tec: Provide two more icons [32m(2020-06-17 18:23:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m32f0a9b[m - G tec: Pass URL as redirect_to instead of pointer [32m(2020-06-17 18:23:01 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m97a8876[m - G tec: Provide a Flash utility class [32m(2020-06-17 18:23:01 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m53e3db5[m - G tec: Rename _links.css in _anchors.css [32m(2020-06-17 18:23:01 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m08b57f8[m - G tec: Add a make reset target [32m(2020-06-17 18:23:00 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m4d37bb1[m - G tec: Initialize the SpiderBits lib to sanitize URLs [32m(2020-06-17 18:23:00 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbd3494b[m - G l10n: Fix French typo [32m(2020-06-17 16:15:48 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfb44b6a[m - G fix: Fix buttons look in .form-group__stack [32m(2020-06-17 16:15:48 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m054d8d9[m - G l10n: Bump French localization [32m(2020-06-11 17:45:01 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf9728ae[m - G fix: Put design title in a .title block [32m(2020-06-11 17:44:53 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mfb06d67[m - G imp: Setup basic style identity [32m(2020-06-11 17:33:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m6d64cae[m - G tec: Bump Minz version [32m(2020-06-11 17:33:01 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7d205a7[m - G tec: Bump parcel version [32m(2020-06-11 17:33:01 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mcc5d6e8[m - G tec: Improve stylelintrc and force CSS order [32m(2020-06-11 17:33:01 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m4cdfe1c[m - G doc: Fix the documentation related to installation [32m(2020-06-08 15:02:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mdf65c86[m - G tec: Bump Minz version [32m(2020-06-08 15:02:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m6b6c703[m - G tec: Remove model constructors [32m(2020-05-29 18:15:00 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m91bb309[m - G add: Allow users to login and logout [32m(2020-05-21 19:59:06 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[35m\[m  
+[34m|[m * [31m1cdf5b3[m - G Allow a user to logout [32m(2020-05-21 19:55:37 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31meb75875[m - G Base the login system on session token [32m(2020-05-21 19:55:30 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m544cb5a[m - G Create a Session on registration [32m(2020-05-21 19:53:48 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m3dc1491[m - G Allow users to login [32m(2020-05-21 16:18:34 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m14b09a2[m - G Create a Session model [32m(2020-05-21 16:18:33 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[34m/[m  
+* [31m7084a64[m - G tec: Add an index on users.email DB column [32m(2020-05-21 16:13:32 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m06bf9dc[m - G tec: Extract the dao save method [32m(2020-05-21 15:29:47 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb494183[m - G tec: Extract methods related to email addresses [32m(2020-05-21 15:11:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1c56ec4[m - G tec: Configure PHP browscap [32m(2020-05-21 15:11:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m045242f[m - G tec: Make Token properties explicit in init [32m(2020-05-21 15:11:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb7324ec[m - G imp: Configure sessions lifetime to 30 days [32m(2020-05-21 15:11:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m63b600c[m - G fix: Fix migration failures handling [32m(2020-05-21 15:11:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m3b4102c[m - G fix: Homogeneize redirect_to param in account deletion [32m(2020-05-21 14:31:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31mc1c39c6[m - G tec: Refactor the Users controller [32m(2020-05-20 09:42:11 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m[1;31m\[m  
+[36m|[m * [31mb263383[m - G Sync French localization files [32m(2020-05-20 09:38:43 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31m11030be[m - G Rename the Users controller into Accounts [32m(2020-05-20 09:31:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m * [31m1c55e08[m - G Extract registration methods in dedicated controller [32m(2020-05-20 09:30:43 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[36m|[m[36m/[m  
+* [31ma2510d4[m - G imp: Generate a new token on resend if invalidated [32m(2020-05-19 17:53:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7ef597f[m - G tec: Remove token when validating a user [32m(2020-05-19 17:37:24 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc725536[m - G fix: Check that token is completely valid [32m(2020-05-19 17:28:07 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m10f53ae[m - G doc: Add documentation about the CLI [32m(2020-05-19 15:07:41 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8f4af11[m - G add: Provide a /users/clean CLI command [32m(2020-05-19 14:38:13 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m67281fd[m - G l10n: Complete French localization [32m(2020-05-19 10:28:38 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m665c9b0[m - G imp: Improve the username input [32m(2020-05-19 10:26:37 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m67fd324[m - G imp: Create user with current locale [32m(2020-05-19 10:24:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m4f4a2da[m - G tec: Remove unused completion.phtml file [32m(2020-05-19 09:56:42 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31ma464b23[m - G imp: Improve password input on deletion page [32m(2020-05-19 09:32:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31md936695[m - G doc: Provide funding information [32m(2020-05-19 09:00:33 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m317478e[m - G add: Save locale in user if connected [32m(2020-05-18 17:29:07 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb01dfde[m - G fix: Fix a potential XSS issue [32m(2020-05-18 17:02:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m4ffd61d[m - G fix: Set correct param in change locale form [32m(2020-05-18 16:39:01 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7f66d97[m - G tec: Ignore coverage of untestable lines [32m(2020-05-18 16:32:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31ma72cf24[m - G tec: Test the migrations system [32m(2020-05-18 16:32:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m3769d94[m - G tec: Test the CLI Application with a usage request [32m(2020-05-18 16:32:18 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mec763b0[m - G tec: Test localeToBCP47 function [32m(2020-05-18 16:19:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m028d9e7[m - G tec: Remove token validation format [32m(2020-05-18 16:19:54 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb52b495[m - G tec: Rename changeLocale back param in redirect_to [32m(2020-05-18 15:14:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m57eab3e[m - G fix: Return 404 if token isn't associated to User [32m(2020-05-18 15:14:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mbb509b6[m - G imp: Show a message when the account is deleted [32m(2020-05-18 15:14:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc3f9cb8[m - G add: Add a password toggle button [32m(2020-05-18 15:14:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m0c0d5fa[m - G tec: Configure localization in JavaScript [32m(2020-05-18 15:14:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8873b5b[m - G tec: Refactor model validation [32m(2020-05-16 17:48:06 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m52d9708[m - G fix: Set the correct html lang attribute [32m(2020-05-14 18:34:14 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31md15901b[m - G tec: Remove the canonical declaration [32m(2020-05-14 18:28:51 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb256092[m - G fix: Fix the locale form redirection [32m(2020-05-14 18:28:51 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m8c3138c[m - G add: Provide a basic layout [32m(2020-05-14 18:28:51 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m4e57211[m - G misc: Add a pull request template [32m(2020-05-14 17:16:50 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m1d27a2e[m - G fix: Sync current user instance and session [32m(2020-05-14 16:38:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mf32f5bf[m - G tec: Refactor the tests with a pinch of magic [32m(2020-05-14 16:27:21 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m22cce5a[m - G tec: Improve redirection assertions [32m(2020-05-13 21:04:11 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m42f1ea0[m - G add: Allow users to delete their account [32m(2020-05-13 17:43:51 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7cad1c9[m - G tec: Add a make tree target [32m(2020-05-13 17:42:09 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m43bf57e[m - G add: Allow to resend the registration email [32m(2020-05-13 16:44:20 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m[1;33m\[m  
+[1;32m|[m * [31m7abd2c5[m - G Allow users to resend the registration email [32m(2020-05-13 16:37:42 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m34eaa33[m - G Forbid users to access registration if logged in [32m(2020-05-13 16:27:32 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m * [31m3de93a3[m - G Log users in during registration [32m(2020-05-13 16:27:32 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;32m|[m[1;32m/[m  
+* [31m76df744[m - G tec: Enhance the make test target [32m(2020-05-13 13:06:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mafdbaec[m - G fix: Set a Turbolinks-Location header to responses [32m(2020-05-13 11:00:50 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m224935c[m - G add: Provide a simple registration process [32m(2020-05-13 10:12:25 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [31m8fdf11b[m - G Change relation between users and tokens [32m(2020-05-12 18:45:30 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31md11c2dc[m - G Allow to validate a registration [32m(2020-05-12 18:42:37 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31ma132b8a[m - G Send a validation email on registration [32m(2020-05-12 18:42:37 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31mf4b42d5[m - G Allow users to register [32m(2020-05-12 18:42:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31m02b8bd8[m - G Create a Token model [32m(2020-05-12 18:42:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m * [31m65d507f[m - G Create the User model [32m(2020-05-12 18:42:36 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;34m|[m[1;34m/[m  
+* [31md3ea035[m - G tec: Bump Minz version [32m(2020-05-12 15:27:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mc992eca[m - G tec: Add Faker to be used in tests [32m(2020-05-12 15:27:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m6138dc4[m - G tec: Export coverage in HTML during development [32m(2020-05-12 15:27:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m173b7bf[m - G tec: Allow to run a specific test file [32m(2020-05-12 15:27:12 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb5effbc[m - G fix: Fix the schema loading in System#init [32m(2020-05-12 15:27:11 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m9cf9557[m - G fix: Fix dev configuration to use dotenv variables [32m(2020-05-12 15:27:11 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m48bf562[m - G doc: Fix command to start built-in PHP server [32m(2020-05-10 20:59:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m5081cf5[m - G tec: Add moaaar tests [32m(2020-05-10 18:42:47 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m8e5eff0[m - G tec: Configure assets source mapping [32m(2020-05-10 16:54:07 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m[31m\[m  
+[1;36m|[m * [31m9fb97a1[m - G Configure source mapping in development [32m(2020-05-10 16:46:33 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m * [31m88c98d8[m - G Configure source mapping [32m(2020-05-10 16:46:14 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[1;36m|[m[1;36m/[m  
+* [31m91079fd[m - G tec: Add a useful utils\Belt class [32m(2020-05-10 16:36:38 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m25419ed[m - G tec: Configure stylelint [32m(2020-05-08 17:41:05 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31ma4e3032[m - G tec: Setup Stimulus and Turbolinks [32m(2020-05-08 17:26:17 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[33m\[m  
+[32m|[m * [31m9e96ded[m - G Add Turbolinks and Stimulus to the documentation [32m(2020-05-08 17:25:42 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31ma156bfc[m - G Provide an about page to test Turbolinks [32m(2020-05-08 17:17:48 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m22dbe30[m - G Setup Turbolinks [32m(2020-05-08 17:17:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m * [31m6aa6369[m - G Setup Stimulus [32m(2020-05-08 17:16:41 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[32m|[m[32m/[m  
+* [31mc78b758[m - G tec: Add ESLint to lint the JS files [32m(2020-05-08 17:16:23 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m2222c09[m - G doc: Add doc about docker/bin scripts [32m(2020-05-08 17:16:23 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+*   [31m23aaafa[m - G tec: Setup the technical stack [32m(2020-05-08 15:29:39 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[35m\[m  
+[34m|[m * [31mc0498f7[m - G Document the technical stack [32m(2020-05-08 15:26:02 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31ma601e62[m - G Configure a Github Action to run the CI [32m(2020-05-08 15:25:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m63b6ba7[m - G Setup an assets bundler [32m(2020-05-08 15:25:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m7ffc2d6[m - G Configure the Mailer [32m(2020-05-08 15:25:46 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m20c4375[m - G Setup localization [32m(2020-05-08 15:25:45 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m4ddba8c[m - G Setup database and migrations [32m(2020-05-08 15:25:45 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m51720fd[m - G Setup a basic application based on Minz [32m(2020-05-08 15:25:45 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31m03c3cb8[m - G Provide PHPUnit and PHP_CodeSniffer [32m(2020-05-08 15:25:09 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m * [31md36881a[m - G Setup docker configuration for a basic PHP app [32m(2020-05-08 15:23:19 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+[34m|[m[34m/[m  
+* [31mf386d1d[m - G doc: Fix case of "flusio" [32m(2020-05-02 09:26:58 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31m7f37c5c[m - G doc: Provide a README and a license [32m(2020-05-01 18:21:48 +0200) [1;34m<Marien Fressinaud>[m [33m[m
+* [31mb027167[m - N First commit [32m(2020-05-01 17:16:47 +0200) [1;34m<Marien Fressinaud>[m [33m[m

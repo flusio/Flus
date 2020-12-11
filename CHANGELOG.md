@@ -1,5 +1,19 @@
 # Changelog of flusio
 
+## 2020-12-11 - v0.14
+
+A small release for the “grand opening”!
+
+### Improvements
+
+- Provide better integration for browser extension
+
+### Misc
+
+- Bump ParcelJS version
+- Increase default HTTP timeout
+- Add log on subscriptions sync
+
 ## 2020-10-30 - v0.13
 
 ### News
