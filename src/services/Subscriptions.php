@@ -71,6 +71,7 @@ class Subscriptions
     {
         $response = $this->http->get($this->host . '/api/account/login-url', [
             'account_id' => $account_id,
+            'service' => 'flusio',
         ], [
             'auth_basic' => $this->private_key . ':',
         ]);
