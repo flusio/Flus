@@ -91,7 +91,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
                 // with my own domain (http is redirected to https)
                 'http://flus.fr/',
                 200,
-                'Flus, média social citoyen',
+                'Flus, média social de veille',
                 ['content-type' => 'text/html;charset=UTF-8'],
             ],
             [
