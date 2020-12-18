@@ -146,14 +146,6 @@
                                             <?= _('and read later') ?>
                                         </button>
                                     </form>
-
-                                    <form method="post" action="<?= url('remove news', ['id' => $news_link->id]) ?>">
-                                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                                        <button class="popup__item popup__item--button icon icon--trash">
-                                            <?= _('definitively') ?>
-                                        </button>
-                                    </form>
                                 </nav>
                             </details>
 

@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-11-04 18:32+0100\n"
-"PO-Revision-Date: 2020-11-04 18:33+0100\n"
+"POT-Creation-Date: 2020-12-18 14:45+0100\n"
+"PO-Revision-Date: 2020-12-18 14:45+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Poedit-Basepath: ../../../src\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
@@ -433,7 +433,7 @@ msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
 #: views/collections/discover.phtml:3 views/collections/discover.phtml:18
-#: views/collections/index.phtml:132 views/news_links/index.phtml:266
+#: views/collections/index.phtml:132 views/news_links/index.phtml:258
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
@@ -441,7 +441,7 @@ msgstr "Découvrir des collections"
 msgid "Your collections"
 msgstr "Vos collections"
 
-#: views/collections/discover.phtml:22 views/news_links/index.phtml:261
+#: views/collections/discover.phtml:22 views/news_links/index.phtml:253
 msgid ""
 "Discover collections created by the community and follow the ones you are "
 "interested in."
@@ -756,7 +756,7 @@ msgid "share"
 msgstr "partager"
 
 #: views/links/show.phtml:113 views/links/show_public.phtml:49
-#: views/news_links/index.phtml:184
+#: views/news_links/index.phtml:176
 msgid "read"
 msgstr "lire"
 
@@ -1018,8 +1018,8 @@ msgstr "Ajouter et marquer comme lu"
 msgid "Cancel and go back to the news"
 msgstr "Annuler et retourner au journal"
 
-#: views/news_links/index.phtml:26 views/news_links/index.phtml:168
-#: views/news_links/index.phtml:172
+#: views/news_links/index.phtml:26 views/news_links/index.phtml:160
+#: views/news_links/index.phtml:164
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
@@ -1073,19 +1073,15 @@ msgstr "et marquer comme lu"
 msgid "and read later"
 msgstr "et lire plus tard"
 
-#: views/news_links/index.phtml:154
-msgid "definitively"
-msgstr "définitivement"
-
-#: views/news_links/index.phtml:193
+#: views/news_links/index.phtml:185
 msgid "Did you read everything? Or do you want to postpone your reading?"
 msgstr "Avez-vous tout lu ? Ou voulez-vous finir de lire plus tard ?"
 
-#: views/news_links/index.phtml:203
+#: views/news_links/index.phtml:195
 msgid "Recycle the news"
 msgstr "Recycler le journal"
 
-#: views/news_links/index.phtml:213
+#: views/news_links/index.phtml:205
 msgid ""
 "You’ll mark all the news links as read, this action cannot be canceled. Are "
 "you sure?"
@@ -1093,20 +1089,20 @@ msgstr ""
 "Vous allez marquer tous les liens du journal comme lus, cette action ne peut "
 "pas être annulée. Confirmez-vous ?"
 
-#: views/news_links/index.phtml:218
+#: views/news_links/index.phtml:210
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/news_links/index.phtml:226
+#: views/news_links/index.phtml:218
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news_links/index.phtml:235
+#: views/news_links/index.phtml:227
 msgid "We found no relevant news for you, what can you do?"
 msgstr ""
 "Nous n’avons rien trouvé d’intéressant pour vous, que pouvez-vous faire ?"
 
-#: views/news_links/index.phtml:241
+#: views/news_links/index.phtml:233
 msgid ""
 "As you’re navigating on the Internet, bookmark the links you would like to "
 "read later."
@@ -1114,18 +1110,18 @@ msgstr ""
 "Lorsque vous naviguez sur Internet, placez les liens que vous aimeriez lire "
 "plus tard dans vos signets."
 
-#: views/news_links/index.phtml:246 views/news_links/index.phtml:256
+#: views/news_links/index.phtml:238 views/news_links/index.phtml:248
 msgid "Ok, fine"
 msgstr "Ok, c’est noté"
 
-#: views/news_links/index.phtml:251
+#: views/news_links/index.phtml:243
 msgid ""
 "Take a break, disconnect from Internet and go for a walk; news can wait."
 msgstr ""
 "Prenez une pause, déconnectez d’Internet et allez vous balader ; l’actualité "
 "peut attendre."
 
-#: views/news_links/index.phtml:282
+#: views/news_links/index.phtml:274
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 
