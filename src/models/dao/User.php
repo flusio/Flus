@@ -78,7 +78,8 @@ class User extends \Minz\DatabaseModel
     }
 
     /**
-     * Return users with subscriptions expired_at before a given date
+     * Return users with subscriptions expired_at before a given date. It does
+     * not return users with no account id (you should create them first).
      *
      * @param \DateTime $before_this_date
      *
@@ -86,7 +87,11 @@ class User extends \Minz\DatabaseModel
      */
     public function listBySubscriptionExpiredAtBefore($before_this_date)
     {
-        $sql = "SELECT * FROM users WHERE subscription_expired_at <= ?";
+        $sql = <<<'SQL'
+            SELECT * FROM users
+            WHERE subscription_expired_at <= ?
+            AND subscription_account_id IS NOT NULL
+        SQL;
         $statement = $this->prepare($sql);
         $statement->execute([
             $before_this_date->format(\Minz\Model::DATETIME_FORMAT),

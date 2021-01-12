@@ -37,22 +37,36 @@ class Subscriptions
 
         $sync_results = [];
 
+        // First, make sure all users have a subscription account. It might
+        // happen for users who didn't validate their account yet, or if a
+        // previous request failed.
+        $db_users = $user_dao->listBy(['subscription_account_id' => null]);
+        foreach ($db_users as $db_user) {
+            $user = new models\User($db_user);
+            $account = $subscriptions_service->account($user->email);
+            if ($account) {
+                $user->subscription_account_id = $account['id'];
+                $user->subscription_expired_at = $account['expired_at'];
+                $user_dao->save($user);
+                $sync_results[] = "{$user->id}: ✅ subscription account created";
+            } else {
+                $sync_results[] = "{$user->id}: ❌ can't create subscription account";
+            }
+        }
+
+        // Then, synchronize expiration date for users having account expiring
+        // in 2 weeks or less.
         $before_this_date = \Minz\Time::fromNow(2, 'weeks');
         $db_users = $user_dao->listBySubscriptionExpiredAtBefore($before_this_date);
         foreach ($db_users as $db_user) {
             $user = new models\User($db_user);
-            if (!$user->subscription_account_id) {
-                $sync_results[] = "{$user->id}: no subscription account";
-                continue;
-            }
-
             $expired_at = $subscriptions_service->expiredAt($user->subscription_account_id);
             if (!$expired_at) {
-                $sync_results[] = "{$user->id}: failed";
+                $sync_results[] = "{$user->id}: ❌ can't get the expiration date";
             } elseif ($user->subscription_expired_at->getTimestamp() !== $expired_at->getTimestamp()) {
                 $user->subscription_expired_at = $expired_at;
                 $user_dao->save($user);
-                $sync_results[] = "{$user->id}: OK";
+                $sync_results[] = "{$user->id}: ✅ synchronized";
             }
         }
 

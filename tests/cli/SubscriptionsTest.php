@@ -54,7 +54,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/subscriptions/sync');
 
-        $this->assertResponse($response, 200, "{$user_id}: OK");
+        $this->assertResponse($response, 200, "{$user_id}: ✅ synchronized");
         $user = new models\User($user_dao->find($user_id));
         $this->assertNotSame(
             $expired_at->getTimestamp(),
@@ -79,12 +79,33 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/subscriptions/sync');
 
-        $this->assertResponse($response, 200, "{$user_id}: OK");
+        $this->assertResponse($response, 200, "{$user_id}: ✅ synchronized");
         $user = new models\User($user_dao->find($user_id));
         $this->assertNotSame(
             $expired_at->getTimestamp(),
             $user->subscription_expired_at->getTimestamp()
         );
+    }
+
+    public function testSyncUpdatesAccountIdIfMissing()
+    {
+        $user_dao = new models\dao\User();
+        $app_conf = \Minz\Configuration::$application;
+        $subscriptions_service = new services\Subscriptions(
+            $app_conf['subscriptions_host'],
+            $app_conf['subscriptions_private_key']
+        );
+        $user_id = $this->create('user', [
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('cli', '/subscriptions/sync');
+
+        $this->assertResponse($response, 200, "{$user_id}: ✅ subscription account created");
+        $user = new models\User($user_dao->find($user_id));
+        $this->assertNotNull($user->subscription_account_id);
+        $this->assertNotNull($user->subscription_expired_at);
     }
 
     public function testSyncIgnoresUsersWithFarExpiredAt()
@@ -112,25 +133,6 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testSyncIgnoresUserWithoutAccountId()
-    {
-        $user_dao = new models\dao\User();
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
-        $user_id = $this->create('user', [
-            'subscription_account_id' => null,
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-        ]);
-
-        $response = $this->appRun('cli', '/subscriptions/sync');
-
-        $this->assertResponse($response, 200);
-        $user = new models\User($user_dao->find($user_id));
-        $this->assertSame(
-            $expired_at->getTimestamp(),
-            $user->subscription_expired_at->getTimestamp()
-        );
-    }
-
     public function testSyncFailsWithInvalidAccountId()
     {
         $user_dao = new models\dao\User();
@@ -142,7 +144,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/subscriptions/sync');
 
-        $this->assertResponse($response, 200, "{$user_id}: failed");
+        $this->assertResponse($response, 200, "{$user_id}: ❌ can't get the expiration date");
         $user = new models\User($user_dao->find($user_id));
         $this->assertSame(
             $expired_at->getTimestamp(),
