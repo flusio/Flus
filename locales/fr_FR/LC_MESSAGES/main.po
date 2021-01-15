@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2020-12-18 14:45+0100\n"
-"PO-Revision-Date: 2020-12-18 14:45+0100\n"
+"POT-Creation-Date: 2021-01-15 17:58+0100\n"
+"PO-Revision-Date: 2021-01-15 18:00+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -711,6 +711,14 @@ msgstr "Annuler et revenir à la page précédente"
 msgid "Cancel and close this window"
 msgstr "Annuler et fermer cette fenêtre"
 
+#: views/links/new.phtml:123 views/onboarding/step3.phtml:60
+msgid "Make your life easier by using the Web extension on"
+msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
+
+#: views/links/new.phtml:129 views/onboarding/step3.phtml:67
+msgid "or"
+msgstr "ou"
+
 #: views/links/sharing.phtml:3 views/links/sharing.phtml:21
 msgid "Link sharing"
 msgstr "Partage d’un lien"
@@ -1181,7 +1189,7 @@ msgstr ""
 "introduction devrait vous prendre moins de 5 minutes."
 
 #: views/onboarding/step1.phtml:58 views/onboarding/step2.phtml:37
-#: views/onboarding/step3.phtml:65 views/onboarding/step4.phtml:52
+#: views/onboarding/step3.phtml:79 views/onboarding/step4.phtml:52
 msgid "Continue"
 msgstr "Continuer"
 
@@ -1284,21 +1292,6 @@ msgid ""
 msgstr ""
 "Cela devrait ressembler à ça dans Firefox. Dans cet exemple, l’<abbr>URL</"
 "abbr> est <code>https://contributopia.org/fr/</code>"
-
-#: views/onboarding/step3.phtml:59
-#, php-format
-msgid ""
-"A handy way to add links is to install the <a class=\"anchor--inverted\" "
-"href=\"https://flus.fr/addons/gecko/latest\">Web extension for %s</a> on "
-"Firefox."
-msgstr ""
-"Une manière pratique pour ajouter des liens est d’installer <a class="
-"\"anchor--inverted\" href=\"https://flus.fr/addons/gecko/latest"
-"\">l’extension navigateur pour %s</a> sur Firefox."
-
-#: views/onboarding/step3.phtml:60
-msgid "Using Chrome? The extension is coming soon, please be patient."
-msgstr "Vous utilisez Chrome ? Une extension arrive bientôt, soyez patient."
 
 #: views/onboarding/step4.phtml:3 views/onboarding/step4.phtml:10
 msgid "Understanding the news"
