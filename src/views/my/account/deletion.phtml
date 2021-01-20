@@ -5,6 +5,14 @@
 ?>
 
 <div class="section">
+    <nav class="section__nav no-modal">
+        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('account') ?>">
+            <?= _('Account') ?>
+        </a>
+
+        <div class="section__nav-separator"></div>
+    </nav>
+
     <div class="section__title">
         <h1><?= _('Account deletion') ?></h1>
     </div>
@@ -60,12 +68,8 @@
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                <?= _('Delete the account') ?>
+                <?= _('Delete your account') ?>
             </button>
-
-            <a href="<?= url('account') ?>">
-                <?= _('Cancel and go back to your account') ?>
-            </a>
         </div>
     </form>
 </div>

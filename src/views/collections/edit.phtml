@@ -7,6 +7,14 @@
 ?>
 
 <div class="section">
+    <nav class="section__nav no-modal">
+        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('collection', ['id' => $collection->id]) ?>">
+            <?= _('Collection') ?>
+        </a>
+
+        <div class="section__nav-separator"></div>
+    </nav>
+
     <div class="section__title">
         <h1 id="modal-title"><?= _('Collection edition') ?></h1>
     </div>
@@ -92,7 +100,6 @@
             </fieldset>
         <?php endif; ?>
 
-
         <div class="form-group">
             <input
                 type="checkbox"
@@ -108,14 +115,7 @@
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                <?= _('Update') ?>
-            </button>
-
-            <a href="<?= url('collection', ['id' => $collection->id]) ?>" class="no-modal">
-                <?= _('Cancel and go back to the collection') ?>
-            </a>
-            <button type="button" class="only-modal" data-action="modal#close">
-                <?= _('Cancel and go back to the collection') ?>
+                <?= _('Save changes') ?>
             </button>
         </div>
     </form>

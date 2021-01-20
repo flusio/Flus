@@ -6,6 +6,14 @@
 ?>
 
 <div class="section">
+    <nav class="section__nav no-modal">
+        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('news') ?>">
+            <?= _('News') ?>
+        </a>
+
+        <div class="section__nav-separator"></div>
+    </nav>
+
     <div class="section__title">
         <h1 id="modal-title"><?= _('News preference') ?></h1>
     </div>
@@ -98,13 +106,6 @@
         <div class="form__actions">
             <button type="submit" class="button--primary">
                 <?= _('Save') ?>
-            </button>
-
-            <a href="<?= url('news') ?>" class="no-modal">
-                <?= _('Cancel and go back to the news') ?>
-            </a>
-            <button type="button" class="only-modal" data-action="modal#close">
-                <?= _('Cancel and go back to the news') ?>
             </button>
         </div>
     </form>

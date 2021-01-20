@@ -65,6 +65,7 @@
 @media (min-width: 800px) {
     .modal__body {
         padding-right: var(--space-medium);
+        padding-bottom: var(--space-medium);
         padding-left: var(--space-medium);
     }
 }

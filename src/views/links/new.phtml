@@ -6,6 +6,20 @@
 ?>
 
 <div class="section">
+    <nav class="section__nav no-modal">
+        <a
+            class="anchor--action icon icon--anchor icon--undo"
+            href="<?= url('news') ?>"
+            data-controller="back-anchor"
+            data-back-anchor-type="link"
+            data-back-anchor-replace="href"
+        >
+            <?= _('Back') ?>
+        </a>
+
+        <div class="section__nav-separator"></div>
+    </nav>
+
     <div class="section__title">
         <h1 id="modal-title"><?= _('New link') ?></h1>
     </div>
@@ -101,19 +115,6 @@
         <div class="form__actions">
             <button type="submit" class="button--primary">
                 <?= _('Add the link') ?>
-            </button>
-
-            <a
-                class="no-modal"
-                href="<?= url('news') ?>"
-                data-controller="back-anchor"
-                data-back-anchor-type="link"
-                data-back-anchor-replace="href"
-            >
-                <?= _('Cancel and go back') ?>
-            </a>
-            <button type="button" class="only-modal" data-action="modal#close">
-                <?= _('Cancel and close this window') ?>
             </button>
         </div>
     </form>

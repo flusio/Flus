@@ -243,12 +243,11 @@ legend {
 
 .form__actions {
     display: flex;
-    margin-bottom: var(--space-large);
     padding: var(--space-small);
 
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .form__actions > * + * {
@@ -258,10 +257,6 @@ legend {
 @media (min-width: 800px) {
     .form__actions {
         flex-direction: row-reverse;
-    }
-
-    .form__actions--centered {
-        justify-content: center;
     }
 
     .form__actions > * + * {
