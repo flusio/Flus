@@ -12,6 +12,10 @@
             $layout_name = 'not_connected.phtml';
         }
 
+        if (!isset($back)) {
+            $back = null;
+        }
+
         $this->layout($layout_name, [
             // The title can be considered as safe since it's already sanitized in
             // the calling view.
@@ -22,6 +26,7 @@
             'canonical' => $canonical,
             'styles' => $styles,
             'banner' => $banner,
+            'back' => $back,
         ]);
     }
 

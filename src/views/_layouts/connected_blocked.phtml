@@ -35,7 +35,7 @@
             <?= _('Skip to main content') ?>
         </a>
 
-        <div class="layout" id="layout">
+        <div class="layout layout--connected layout--blocked" id="layout">
             <noscript>
                 <div class="layout__banner layout__banner--alert">
                     <div class="banner__container">
@@ -62,7 +62,7 @@
 
             <header class="layout__header header">
                 <nav class="header__container">
-                    <a class="header__link header__link--home" href="<?= url('home') ?>">
+                    <a class="header__link header__link--home no-mobile" href="<?= url('home') ?>">
                         <img
                             alt="flus"
                             src="<?= url_static('logo.svg') ?>"
@@ -121,8 +121,33 @@
                 </nav>
             </header>
 
-            <main id="main-content" class="layout__content" tabindex="-1">
-                <?= $this->safe('content') ?>
+            <main id="main-content" class="layout__main" tabindex="-1">
+                <?php if ($back): ?>
+                    <nav class="layout__back">
+                        <?php if (isset($back['js-back-anchor-type'])): ?>
+                            <a
+                                class="icon icon--anchor icon--left icon--arrow"
+                                href="<?= $back['href'] ?>"
+                                data-controller="back-anchor"
+                                data-back-anchor-type="<?= $back['js-back-anchor-type'] ?>"
+                                data-back-anchor-replace="href"
+                                <?php if (isset($back['js-back-anchor-mode'])): ?>
+                                    data-back-anchor-mode="<?= $back['js-back-anchor-mode'] ?>"
+                                <?php endif; ?>
+                            >
+                                <?= $back['label'] ?>
+                            </a>
+                        <?php else: ?>
+                            <a class="icon icon--anchor icon--left icon--arrow" href="<?= $back['href'] ?>">
+                                <?= $back['label'] ?>
+                            </a>
+                        <?php endif; ?>
+                    </nav>
+                <?php endif; ?>
+
+                <section class="layout__content">
+                    <?= $this->safe('content') ?>
+                </section>
             </main>
         </div>
     </body>

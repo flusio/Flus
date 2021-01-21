@@ -28,7 +28,7 @@
             <?= _('Skip to main content') ?>
         </a>
 
-        <div class="layout">
+        <div class="layout layout--onboarding" id="layout">
             <noscript>
                 <div class="layout__banner layout__banner--alert">
                     <div class="banner__container">
@@ -61,8 +61,10 @@
                 </nav>
             </header>
 
-            <main id="main-content" class="layout__content" tabindex="-1">
-                <?= $this->safe('content') ?>
+            <main id="main-content" class="layout__main" tabindex="-1">
+                <section class="layout__content">
+                    <?= $this->safe('content') ?>
+                </section>
             </main>
         </div>
     </body>

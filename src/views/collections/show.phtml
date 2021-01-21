@@ -3,84 +3,48 @@
         'title' => $collection->name,
         'canonical' => url('collection', ['id' => $collection->id]),
         'current_tab' => 'collections',
+        'back' => [
+            'href' => url('collections'),
+            'label' => _('Your collections'),
+        ],
     ]);
 ?>
 
 <div class="section" data-controller="back-storage" data-back-storage-type="link">
-    <nav class="section__nav">
-        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('collections') ?>">
-            <?= _('Your collections') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-
-        <details
-            class="popup"
-            data-controller="popup"
-            data-action="click@window->popup#close"
-        >
-            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
-                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
-                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
-                    <span class="sr-only">
-                        <?= _('Open the menu') ?>
-                    </span>
-                </button>
-            </summary>
-
-            <nav class="popup__container popup__container--left">
-                <button
-                    class="popup__item popup__item--button icon icon--cog"
-                    data-controller="modal-opener"
-                    data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('edit collection', ['id' => $collection->id]) ?>"
-                    aria-haspopup="dialog"
-                    aria-controls="modal"
-                >
-                    <?= _('Edit the collection') ?>
-                </button>
-
-                <form
-                    method="post"
-                    action="<?= url('delete collection', ['id' => $collection->id]) ?>"
-                    data-controller="confirmation"
-                    data-action="confirmation#confirm"
-                    data-message="<?= _('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.') ?>"
-                >
-                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                    <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
-
-                    <button type="submit" class="popup__item popup__item--button icon icon--times">
-                        <?= _('Delete the collection') ?>
-                    </button>
-                </form>
-            </nav>
-        </details>
-    </nav>
-
     <div class="section__title">
         <h1><?= $this->protect($collection->name) ?></h1>
     </div>
 
-    <?php if ($collection->is_public): ?>
-        <p class="paragraph--centered">
-            <span class="sticker">
-                <?= _('public') ?>
-            </span>
+    <?php if ($topics): ?>
+        <p class="collection__topics">
+            <?= implode('&nbsp;·&nbsp;', array_column($topics, 'label')) ?>
         </p>
     <?php endif; ?>
 
     <div class="collection__meta">
         <div class="collection__details">
             <p class="collection__owner">
-                <?= _f('Collection created by yourself') ?>
-            </p>
+                <?php if ($collection->is_public): ?>
+                    <span class="collection__public sticker">
+                        <?= _('public') ?>
+                    </span>
+                <?php endif; ?>
 
-            <?php if ($topics): ?>
-                <p class="collection__topics">
-                    <?= implode('&nbsp;·&nbsp;', array_column($topics, 'label')) ?>
-                </p>
-            <?php endif; ?>
+                <?= _f('created by you') ?>
+            </p>
+        </div>
+
+        <div class="collection__actions">
+            <button
+                class="button--small"
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href="<?= url('edit collection', ['id' => $collection->id]) ?>"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                <?= _('Edit') ?>
+            </button>
         </div>
     </div>
 
@@ -88,66 +52,61 @@
         <?= nl2br($this->protect($collection->description)) ?>
     </p>
 
-    <p class="paragraph--centered">
-        <button
-            class="icon icon--plus-circle"
-            data-controller="modal-opener"
-            data-action="modal-opener#fetch"
-            data-modal-opener-href="<?= url('new link', ['collection' => $collection->id]) ?>"
-            aria-haspopup="dialog"
-            aria-controls="modal"
-        >
-            <?= _('Add a link') ?>
-        </button>
-    </p>
-
-    <?php if ($links): ?>
-        <div class="cards">
-            <?php foreach ($links as $link): ?>
-                <div class="card">
-                    <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
-                        <?php if ($link->image_filename): ?>
-                            <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
-                        <?php else: ?>
-                            <img class="card__image" alt="" src="<?= url_static('default-card.png') ?>" />
-                        <?php endif; ?>
-                    </a>
-
-                    <div class="card__body">
-                        <h2 class="card__title">
-                            <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
-                                <?= $this->protect($link->title) ?>
-                            </a>
-                        </h2>
-
-                        <p class="card__details">
-                            <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
-                        </p>
-                    </div>
-
-                    <div class="card__footer">
-                        <?php if ($link->is_public): ?>
-                            <p class="card__details">
-                                <?= _('public') ?>
-                            </p>
-                        <?php endif; ?>
-
-                        <div></div>
-
-                        <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
-                            <?= _('see') ?>
-                        </a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-
-            <?php for ($i = 0; $i < (3 - (count($links) % 3)); $i++): ?>
-                <div class="card card--shadow no-mobile"></div>
-            <?php endfor; ?>
+    <div class="cards">
+        <div class="card card--action">
+            <button
+                class="card__button card__button--link"
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href="<?= url('new link', ['collection' => $collection->id]) ?>"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                <i class="icon icon--only icon--plus-circle"></i><br />
+                <?= _('Add a link') ?>
+            </button>
         </div>
-    <?php else: ?>
-        <p class="paragraph--placeholder">
-            <?= _('This collection is empty. The links will appear here once you start adding them.') ?>
-        </p>
-    <?php endif; ?>
+
+        <?php foreach ($links as $link): ?>
+            <div class="card">
+                <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                    <?php if ($link->image_filename): ?>
+                        <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
+                    <?php else: ?>
+                        <img class="card__image" alt="" src="<?= url_static('default-card.png') ?>" />
+                    <?php endif; ?>
+                </a>
+
+                <div class="card__body">
+                    <h2 class="card__title">
+                        <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                            <?= $this->protect($link->title) ?>
+                        </a>
+                    </h2>
+
+                    <p class="card__details">
+                        <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                    </p>
+                </div>
+
+                <div class="card__footer">
+                    <?php if ($link->is_public): ?>
+                        <p class="card__details">
+                            <?= _('public') ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <div></div>
+
+                    <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
+                        <?= _('see') ?>
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <?php for ($i = 0; $i < (3 - ((count($links) + 1) % 3)); $i++): ?>
+            <div class="card card--shadow no-mobile"></div>
+        <?php endfor; ?>
+    </div>
 </div>

@@ -2,6 +2,10 @@
     $this->layout('base.phtml', [
         'title' => _('Link edition'),
         'canonical' => url_full('edit link', ['id' => $link->id]),
+        'back' => [
+            'href' => url('link', ['id' => $link->id]),
+            'label' => _('Link'),
+        ],
     ]);
 ?>
 
@@ -60,15 +64,32 @@
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                <?= _('Update') ?>
-            </button>
-
-            <a href="<?= url('link', ['id' => $link->id]) ?>" class="no-modal">
-                <?= _('Cancel and go back to the link') ?>
-            </a>
-            <button type="button" class="only-modal" data-action="modal#close">
-                <?= _('Cancel and go back to the link') ?>
+                <?= _('Save changes') ?>
             </button>
         </div>
+    </form>
+
+    <form
+        class="form--danger"
+        method="post"
+        action="<?= url('delete link', ['id' => $link->id]) ?>"
+        data-controller="confirmation"
+        data-action="confirmation#confirm"
+        data-message="<?= _('Are you sure that you want to remove this link?') ?>"
+    >
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="from" value="<?= url('link', ['id' => $link->id]) ?>" />
+        <input
+            type="hidden"
+            name="redirect_to"
+            value="<?= url('home') ?>"
+            data-controller="back-anchor"
+            data-back-anchor-type="link"
+            data-back-anchor-replace="value"
+         />
+
+        <button type="submit" class="button--danger icon icon--trash">
+            <?= _('Delete the link') ?>
+        </button>
     </form>
 </div>

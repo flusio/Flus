@@ -3,6 +3,10 @@
         'title' => _('Add to your collections'),
         'current_tab' => 'news',
         'canonical' => url('adding news', ['id' => $news_link->id]),
+        'back' => [
+            'href' => url('news'),
+            'label' => _('News'),
+        ],
     ]);
 ?>
 
@@ -101,13 +105,6 @@
                     <?= _('Add and mark as read') ?>
                 </button>
             <?php endif; ?>
-
-            <a href="<?= url('news') ?>" class="no-modal">
-                <?= _('Cancel and go back to the news') ?>
-            </a>
-            <button type="button" class="only-modal" data-action="modal#close">
-                <?= _('Cancel and go back to the news') ?>
-            </button>
         </div>
     </form>
 </div>

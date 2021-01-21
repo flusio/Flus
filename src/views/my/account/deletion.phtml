@@ -1,10 +1,14 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Account deletion'),
+        'back' => [
+            'href' => url('account'),
+            'label' => _('Account'),
+        ],
     ]);
 ?>
 
-<div class="section">
+<div class="section section--small">
     <div class="section__title">
         <h1><?= _('Account deletion') ?></h1>
     </div>
@@ -59,13 +63,9 @@
         </div>
 
         <div class="form__actions">
-            <button type="submit" class="button--primary">
-                <?= _('Delete the account') ?>
+            <button type="submit" class="button--danger">
+                <?= _('Delete your account') ?>
             </button>
-
-            <a href="<?= url('account') ?>">
-                <?= _('Cancel and go back to your account') ?>
-            </a>
         </div>
     </form>
 </div>

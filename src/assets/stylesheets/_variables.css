@@ -46,7 +46,7 @@
     --color-text-success: var(--color-turquoise-8);
     --color-text-error: var(--color-red-8);
     --color-link: var(--color-purple-6);
-    --color-body: var(--color-white);
+    --color-body: var(--color-turquoise-1);
 
     --size-base: calc(1.6em + 0.5vw);
     --size-small: 0.8em;
@@ -70,7 +70,7 @@
     --font-family-text: "Open Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", "sans-serif";
     --font-family-title: "Comfortaa", "cursive";
 
-    --content-width: 1000px;
+    --content-width: 1100px;
 
     --height-header: 5.5rem;
     --height-bottom-line: 0.5rem;

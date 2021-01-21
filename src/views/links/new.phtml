@@ -2,6 +2,11 @@
     $this->layout('base.phtml', [
         'title' => _('New link'),
         'current_tab' => 'new link',
+        'back' => [
+            'href' => url('news'),
+            'label' => _('Back'),
+            'js-back-anchor-type' => 'link',
+        ],
     ]);
 ?>
 
@@ -101,19 +106,6 @@
         <div class="form__actions">
             <button type="submit" class="button--primary">
                 <?= _('Add the link') ?>
-            </button>
-
-            <a
-                class="no-modal"
-                href="<?= url('news') ?>"
-                data-controller="back-anchor"
-                data-back-anchor-type="link"
-                data-back-anchor-replace="href"
-            >
-                <?= _('Cancel and go back') ?>
-            </a>
-            <button type="button" class="only-modal" data-action="modal#close">
-                <?= _('Cancel and close this window') ?>
             </button>
         </div>
     </form>

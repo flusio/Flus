@@ -2,6 +2,10 @@
     $this->layout('base.phtml', [
         'title' => _('Link collections'),
         'canonical' => url_full('link collections', ['id' => $link->id]),
+        'back' => [
+            'href' => url('link', ['id' => $link->id]),
+            'label' => _('Link'),
+        ],
     ]);
 ?>
 
@@ -57,14 +61,7 @@
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                <?= _('Update') ?>
-            </button>
-
-            <a href="<?= url('link', ['id' => $link->id]) ?>" class="no-modal">
-                <?= _('Cancel and go back to the link') ?>
-            </a>
-            <button type="button" class="only-modal" data-action="modal#close">
-                <?= _('Cancel and go back to the link') ?>
+                <?= _('Save changes') ?>
             </button>
         </div>
     </form>

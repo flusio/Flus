@@ -2,6 +2,10 @@
     $this->layout('base.phtml', [
         'title' => _('News preference'),
         'current_tab' => 'news',
+        'back' => [
+            'href' => url('news'),
+            'label' => _('News'),
+        ],
     ]);
 ?>
 
@@ -98,13 +102,6 @@
         <div class="form__actions">
             <button type="submit" class="button--primary">
                 <?= _('Save') ?>
-            </button>
-
-            <a href="<?= url('news') ?>" class="no-modal">
-                <?= _('Cancel and go back to the news') ?>
-            </a>
-            <button type="button" class="only-modal" data-action="modal#close">
-                <?= _('Cancel and go back to the news') ?>
             </button>
         </div>
     </form>

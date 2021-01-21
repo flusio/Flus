@@ -11,7 +11,6 @@
 @media (min-width: 800px) {
     .collection__meta {
         flex-direction: row;
-        align-items: flex-start;
     }
 }
 
@@ -27,18 +26,22 @@
     }
 }
 
-.collection__topics {
-    font-style: italic;
+.collection__public {
+    margin-right: var(--space-medium);
 }
 
-.collection__actions {
-    padding-top: var(--space-small);
-    padding-bottom: var(--space-small);
+.collection__topics {
+    max-width: 55ch;
+    margin-right: auto;
+    margin-left: auto;
+
+    font-style: italic;
+    text-align: center;
 }
 
 .collection__description {
     max-width: 55ch;
-    margin: var(--space-medium) auto var(--space-large);
+    margin: var(--space-large) auto;
     padding-right: var(--space-smaller);
     padding-left: var(--space-smaller);
 }

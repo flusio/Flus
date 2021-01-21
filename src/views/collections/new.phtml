@@ -2,6 +2,10 @@
     $this->layout('base.phtml', [
         'title' => _('New collection'),
         'current_tab' => 'collections',
+        'back' => [
+            'href' => url('collections'),
+            'label' => _('Collections'),
+        ],
     ]);
 ?>
 
@@ -107,13 +111,6 @@
         <div class="form__actions">
             <button type="submit" class="button--primary">
                 <?= _('Create the collection') ?>
-            </button>
-
-            <a href="<?= url('collections') ?>" class="no-modal">
-                <?= _('Cancel and go back to collections') ?>
-            </a>
-            <button type="button" class="only-modal" data-action="modal#close">
-                <?= _('Cancel and go back to collections') ?>
             </button>
         </div>
     </form>
