@@ -92,11 +92,11 @@
                             </a>
                         </h2>
 
-                        <p class="card__details">
+                        <p class="card__text card__text--oneline">
                             <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                         </p>
 
-                        <p class="card__details">
+                        <p class="card__text">
                             <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $link->id]) ?>">
                                 <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
                             </a>

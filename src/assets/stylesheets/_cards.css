@@ -134,11 +134,14 @@
     left: 0;
 }
 
-.card__details {
-    display: flex;
-
+.card__text {
     color: var(--color-text-secondary);
     font-size: var(--size-small);
+}
+
+.card__text--oneline {
+    display: flex;
+
     white-space: nowrap;
 }
 
@@ -165,13 +168,6 @@
 
 .card__footer--align-end {
     align-items: flex-end;
-}
-
-.card__footer .card__details {
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-right: var(--space-smaller);
-    padding-left: var(--space-smaller);
 }
 
 .card__footer-group {
