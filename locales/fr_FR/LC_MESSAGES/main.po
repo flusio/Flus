@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-01-15 17:58+0100\n"
-"PO-Revision-Date: 2021-01-15 18:00+0100\n"
+"POT-Creation-Date: 2021-01-21 14:17+0100\n"
+"PO-Revision-Date: 2021-01-21 14:17+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -99,7 +99,7 @@ msgid "copied"
 msgstr "copié"
 
 #: assets/javascripts/controllers/copy_to_clipboard_controller.js:18
-#: views/links/sharing.phtml:42
+#: views/links/sharing.phtml:35
 msgid "copy"
 msgstr "copier"
 
@@ -108,7 +108,7 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:28
-#: views/my/account/deletion.phtml:50 views/my/security/show_confirmed.phtml:72
+#: views/my/account/deletion.phtml:54 views/my/security/show_confirmed.phtml:72
 #: views/my/security/show_to_confirm.phtml:46 views/registrations/new.phtml:96
 #: views/sessions/new.phtml:70
 msgid "Show"
@@ -320,23 +320,22 @@ msgstr ""
 msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
-#: views/_layouts/connected.phtml:72 views/news_links/index.phtml:3
-#: views/news_links/index.phtml:10
+#: views/_layouts/connected.phtml:72 views/news_link_removals/adding.phtml:8
+#: views/news_links/index.phtml:3 views/news_links/index.phtml:10
+#: views/news_links/preferences.phtml:7
 msgid "News"
 msgstr "Journal"
 
 #: views/_layouts/connected.phtml:90 views/collections/index.phtml:3
-#: views/collections/index.phtml:10 views/link_collections/index.phtml:19
-#: views/links/new.phtml:49 views/links/show.phtml:122
-#: views/news_link_removals/adding.phtml:28
+#: views/collections/index.phtml:10 views/collections/new.phtml:7
+#: views/link_collections/index.phtml:23 views/links/new.phtml:54
+#: views/links/show.phtml:74 views/news_link_removals/adding.phtml:32
 msgid "Collections"
 msgstr "Collections"
 
 #: views/_layouts/connected.phtml:101 views/_layouts/connected.phtml:106
 #: views/_layouts/connected_blocked.phtml:81
-#: views/_layouts/connected_blocked.phtml:86 views/collections/show.phtml:22
-#: views/collections/show.phtml:26 views/links/show.phtml:27
-#: views/links/show.phtml:31
+#: views/_layouts/connected_blocked.phtml:86
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
@@ -360,8 +359,9 @@ msgid "Account & subscription"
 msgstr "Compte & abonnement"
 
 #: views/_layouts/connected.phtml:127
-#: views/_layouts/connected_blocked.phtml:107 views/my/account/show.phtml:3
-#: views/my/account/show.phtml:9 views/my/account/validation.phtml:11
+#: views/_layouts/connected_blocked.phtml:107 views/my/account/deletion.phtml:6
+#: views/my/account/show.phtml:3 views/my/account/show.phtml:9
+#: views/my/account/validation.phtml:7
 msgid "Account"
 msgstr "Compte"
 
@@ -371,15 +371,15 @@ msgid "Log out"
 msgstr "Se déconnecter"
 
 #: views/_layouts/connected.phtml:145 views/_layouts/connected.phtml:148
-#: views/collections/show.phtml:100 views/collections/show_bookmarks.phtml:26
+#: views/collections/show.phtml:66 views/collections/show_bookmarks.phtml:28
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/_layouts/connected.phtml:180
+#: views/_layouts/connected.phtml:205
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:181
+#: views/_layouts/connected.phtml:206
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -396,7 +396,7 @@ msgstr "S’inscrire"
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:116
+#: views/_layouts/not_connected.phtml:141
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
@@ -432,16 +432,16 @@ msgstr "Retour à la page précédente"
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
-#: views/collections/discover.phtml:3 views/collections/discover.phtml:18
-#: views/collections/index.phtml:132 views/news_links/index.phtml:258
+#: views/collections/discover.phtml:3 views/collections/discover.phtml:14
+#: views/collections/index.phtml:120 views/news_links/index.phtml:258
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
-#: views/collections/discover.phtml:11 views/collections/show.phtml:12
+#: views/collections/discover.phtml:7 views/collections/show.phtml:8
 msgid "Your collections"
 msgstr "Vos collections"
 
-#: views/collections/discover.phtml:22 views/news_links/index.phtml:253
+#: views/collections/discover.phtml:18 views/news_links/index.phtml:253
 msgid ""
 "Discover collections created by the community and follow the ones you are "
 "interested in."
@@ -449,75 +449,88 @@ msgstr ""
 "Découvrez les collections créées par la communauté et suivez celles qui vous "
 "intéressent."
 
-#: views/collections/discover.phtml:37 views/collections/index.phtml:101
+#: views/collections/discover.phtml:33 views/collections/index.phtml:89
 #, php-format
 msgid "Created by %s"
 msgstr "Créée par %s"
 
-#: views/collections/discover.phtml:44 views/collections/index.phtml:45
-#: views/collections/index.phtml:108
+#: views/collections/discover.phtml:40 views/collections/index.phtml:45
+#: views/collections/index.phtml:96
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/discover.phtml:46 views/collections/index.phtml:47
-#: views/collections/index.phtml:110
+#: views/collections/discover.phtml:42 views/collections/index.phtml:47
+#: views/collections/index.phtml:98
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/discover.phtml:50
+#: views/collections/discover.phtml:46
 msgid "followed"
 msgstr "suivie"
 
-#: views/collections/discover.phtml:55 views/collections/index.phtml:56
-#: views/collections/index.phtml:115 views/collections/show.phtml:138
+#: views/collections/discover.phtml:51 views/collections/index.phtml:56
+#: views/collections/index.phtml:103 views/collections/show.phtml:102
 #: views/collections/show_bookmarks.phtml:72
-#: views/collections/show_public.phtml:101 views/news_links/index.phtml:82
+#: views/collections/show_public.phtml:92 views/news_links/index.phtml:82
 #: views/news_links/index.phtml:93
 msgid "see"
 msgstr "voir"
 
-#: views/collections/discover.phtml:67
+#: views/collections/discover.phtml:63
 msgid "The community didn’t publish any collection yet. Will you be the first?"
 msgstr ""
 "La communauté n’a pas encore publié de collection. Serez-vous le ou la "
 "première ?"
 
-#: views/collections/edit.phtml:3 views/collections/edit.phtml:11
+#: views/collections/edit.phtml:3 views/collections/edit.phtml:15
 msgid "Collection edition"
 msgstr "Modification d'une collection"
 
-#: views/collections/edit.phtml:25
+#: views/collections/edit.phtml:8
+msgid "Collection"
+msgstr "Collection"
+
+#: views/collections/edit.phtml:29
 msgid "The name of your collection"
 msgstr "Le nom de votre collection"
 
-#: views/collections/edit.phtml:46
+#: views/collections/edit.phtml:50
 msgid "Its description"
 msgstr "Sa description"
 
-#: views/collections/edit.phtml:48 views/collections/new.phtml:47
-#: views/news_link_removals/adding.phtml:71
+#: views/collections/edit.phtml:52 views/collections/new.phtml:51
+#: views/news_link_removals/adding.phtml:75
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/edit.phtml:66
+#: views/collections/edit.phtml:70
 msgid "Its topics"
 msgstr "Ses thématiques"
 
-#: views/collections/edit.phtml:105 views/collections/new.phtml:103
+#: views/collections/edit.phtml:108 views/collections/new.phtml:107
 msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
-#: views/collections/edit.phtml:111 views/link_collections/index.phtml:60
-#: views/links/edit.phtml:63
-msgid "Update"
-msgstr "Mettre à jour"
+#: views/collections/edit.phtml:114 views/link_collections/index.phtml:64
+#: views/links/edit.phtml:67 views/my/profile/show.phtml:103
+#: views/my/security/show_confirmed.phtml:85
+msgid "Save changes"
+msgstr "Enregistrer les modifications"
 
-#: views/collections/edit.phtml:115 views/collections/edit.phtml:118
-msgid "Cancel and go back to the collection"
-msgstr "Annuler et retourner à la collection"
+#: views/collections/edit.phtml:125
+msgid ""
+"Are you sure that you want to delete this collection? You may lose the links "
+"that are attached only to this collection."
+msgstr ""
+"Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
+"les liens qui lui sont attachés."
+
+#: views/collections/edit.phtml:131
+msgid "Delete the collection"
+msgstr "Supprimer la collection"
 
 #: views/collections/index.phtml:14
 msgid ""
@@ -527,31 +540,24 @@ msgstr ""
 "Les collections permettent de grouper les liens par thématiques, de les "
 "retrouver plus tard et de les partager avec la communauté."
 
-#: views/collections/index.phtml:26
-msgid "Add a collection"
-msgstr "Ajouter une collection"
+#: views/collections/index.phtml:28
+msgid "Create a collection"
+msgstr "Créer une collection"
 
-#: views/collections/index.phtml:51 views/collections/show.phtml:68
-#: views/collections/show.phtml:131 views/links/show.phtml:89
+#: views/collections/index.phtml:51 views/collections/show.phtml:29
+#: views/collections/show.phtml:95 views/links/show.phtml:29
 msgid "public"
 msgstr "public"
 
 #: views/collections/index.phtml:68
-msgid ""
-"You have no collections yet. They’ll appear here once you start adding them."
-msgstr ""
-"Vous n’avez pas encore de collection. Elles apparaîtront ici une fois que "
-"vous commencerez à en ajouter."
-
-#: views/collections/index.phtml:80
 msgid "Followed collections"
 msgstr "Collections suivies"
 
-#: views/collections/index.phtml:86
+#: views/collections/index.phtml:74
 msgid "Discover more collections"
 msgstr "Découvrir plus de collections"
 
-#: views/collections/index.phtml:127
+#: views/collections/index.phtml:115
 msgid ""
 "You don’t follow any collection. Start by discovering collections created by "
 "the community."
@@ -559,57 +565,33 @@ msgstr ""
 "Vous ne suivez aucune collection. Commencez par découvrir les collections "
 "créées par la communauté."
 
-#: views/collections/new.phtml:3 views/collections/new.phtml:10
+#: views/collections/new.phtml:3 views/collections/new.phtml:14
 msgid "New collection"
 msgstr "Nouvelle collection"
 
-#: views/collections/new.phtml:24
+#: views/collections/new.phtml:28
 msgid "What do you want to name this collection?"
 msgstr "Comment voulez-vous nommer cette collection ?"
 
-#: views/collections/new.phtml:45
+#: views/collections/new.phtml:49
 msgid "What’s the purpose of this collection?"
 msgstr "Quelle est la raison d’être de cette collection ?"
 
-#: views/collections/new.phtml:65
+#: views/collections/new.phtml:69
 msgid "What topics will be covered?"
 msgstr "Quelles thématiques seront abordées ?"
 
-#: views/collections/new.phtml:109
+#: views/collections/new.phtml:113
 msgid "Create the collection"
-msgstr "Créer une collection"
+msgstr "Créer la collection"
 
-#: views/collections/new.phtml:113 views/collections/new.phtml:116
-msgid "Cancel and go back to collections"
-msgstr "Annuler et retourner aux collections"
+#: views/collections/show.phtml:33
+msgid "created by you"
+msgstr "créée par vous"
 
-#: views/collections/show.phtml:40
-msgid "Edit the collection"
-msgstr "Modifier la collection"
-
-#: views/collections/show.phtml:48
-msgid ""
-"Are you sure that you want to delete this collection? You may lose the links "
-"that are attached only to this collection."
-msgstr ""
-"Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
-"les liens qui lui sont attachés."
-
-#: views/collections/show.phtml:54
-msgid "Delete the collection"
-msgstr "Supprimer la collection"
-
-#: views/collections/show.phtml:76
-msgid "Collection created by yourself"
-msgstr "Collection créée par vous-même"
-
-#: views/collections/show.phtml:150 views/collections/show_bookmarks.phtml:98
-msgid ""
-"This collection is empty. The links will appear here once you start adding "
-"them."
-msgstr ""
-"Cette collection est vide. Les liens apparaîtront ici une fois que vous "
-"commencerez à en ajouter."
+#: views/collections/show.phtml:46 views/links/show.phtml:67
+msgid "Edit"
+msgstr "Modifier"
 
 #: views/collections/show_bookmarks.phtml:14
 msgid "Place here the links you want to consult later on."
@@ -624,25 +606,25 @@ msgstr "Retirer des signets"
 msgid "Cancel?"
 msgstr "Annuler ?"
 
-#: views/collections/show_public.phtml:19 views/links/show.phtml:17
-#: views/links/show_public.phtml:18
+#: views/collections/show_public.phtml:8 views/links/new.phtml:7
+#: views/links/show.phtml:7 views/links/show_public.phtml:7
 msgid "Back"
 msgstr "Retour"
 
-#: views/collections/show_public.phtml:38
+#: views/collections/show_public.phtml:35
 #, php-format
-msgid "Collection created by %s"
-msgstr "Collection créée par %s"
+msgid "created by %s"
+msgstr "créée par %s"
 
-#: views/collections/show_public.phtml:54
+#: views/collections/show_public.phtml:45
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:61
+#: views/collections/show_public.phtml:52
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:113
+#: views/collections/show_public.phtml:104
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -654,44 +636,52 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/link_collections/index.phtml:3 views/link_collections/index.phtml:10
+#: views/link_collections/index.phtml:3 views/link_collections/index.phtml:14
 msgid "Link collections"
 msgstr "Collections du lien"
 
-#: views/link_collections/index.phtml:49 views/link_collections/index.phtml:52
-#: views/links/new.phtml:79 views/links/new.phtml:82
-#: views/news_link_removals/adding.phtml:58
-#: views/news_link_removals/adding.phtml:61
+#: views/link_collections/index.phtml:7 views/links/edit.phtml:7
+#: views/links/sharing.phtml:7
+msgid "Link"
+msgstr "Lien"
+
+#: views/link_collections/index.phtml:53 views/link_collections/index.phtml:56
+#: views/links/new.phtml:84 views/links/new.phtml:87
+#: views/news_link_removals/adding.phtml:62
+#: views/news_link_removals/adding.phtml:65
 msgid "Select a collection"
 msgstr "Sélectionner une collection"
 
-#: views/link_collections/index.phtml:64 views/link_collections/index.phtml:67
-#: views/links/edit.phtml:67 views/links/edit.phtml:70
-msgid "Cancel and go back to the link"
-msgstr "Annuler et retourner au lien"
-
-#: views/links/edit.phtml:3 views/links/edit.phtml:10
+#: views/links/edit.phtml:3 views/links/edit.phtml:14
 msgid "Link edition"
 msgstr "Modification d’un lien"
 
-#: views/links/edit.phtml:28
+#: views/links/edit.phtml:32
 msgid "The title of your link"
 msgstr "Le titre de votre lien"
 
-#: views/links/edit.phtml:57 views/links/new.phtml:97
-#: views/news_link_removals/adding.phtml:90
+#: views/links/edit.phtml:61 views/links/new.phtml:102
+#: views/news_link_removals/adding.phtml:94
 msgid "Show the link publicly"
 msgstr "Afficher le lien publiquement"
 
-#: views/links/new.phtml:3 views/links/new.phtml:10
+#: views/links/edit.phtml:78
+msgid "Are you sure that you want to remove this link?"
+msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
+
+#: views/links/edit.phtml:92
+msgid "Delete the link"
+msgstr "Supprimer le lien"
+
+#: views/links/new.phtml:3 views/links/new.phtml:15
 msgid "New link"
 msgstr "Nouveau lien"
 
-#: views/links/new.phtml:24
+#: views/links/new.phtml:29
 msgid "What’s the <abbr>URL</abbr> of the link?"
 msgstr "Quelle est l’<abbr>URL</abbr> du lien ?"
 
-#: views/links/new.phtml:28
+#: views/links/new.phtml:33
 msgid ""
 "It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
 "browser."
@@ -699,35 +689,23 @@ msgstr ""
 "Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
 "votre navigateur."
 
-#: views/links/new.phtml:103
+#: views/links/new.phtml:108
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
-#: views/links/new.phtml:113
-msgid "Cancel and go back"
-msgstr "Annuler et revenir à la page précédente"
-
-#: views/links/new.phtml:116
-msgid "Cancel and close this window"
-msgstr "Annuler et fermer cette fenêtre"
-
-#: views/links/new.phtml:123 views/onboarding/step3.phtml:60
+#: views/links/new.phtml:115 views/onboarding/step3.phtml:60
 msgid "Make your life easier by using the Web extension on"
 msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
 
-#: views/links/new.phtml:129 views/onboarding/step3.phtml:67
+#: views/links/new.phtml:121 views/onboarding/step3.phtml:67
 msgid "or"
 msgstr "ou"
 
-#: views/links/sharing.phtml:3 views/links/sharing.phtml:21
+#: views/links/sharing.phtml:3 views/links/sharing.phtml:14
 msgid "Link sharing"
 msgstr "Partage d’un lien"
 
-#: views/links/sharing.phtml:14
-msgid "Link"
-msgstr "Lien"
-
-#: views/links/sharing.phtml:30
+#: views/links/sharing.phtml:23
 msgid ""
 "You can copy the following link to share your comments with people on other "
 "social media:"
@@ -735,7 +713,7 @@ msgstr ""
 "Vous pouvez copier le lien suivant pour partager vos commentaires sur "
 "d’autres réseaux sociaux :"
 
-#: views/links/sharing.phtml:52
+#: views/links/sharing.phtml:45
 msgid ""
 "This link is actually private. To share the link and its associated "
 "comments, you have to make it public."
@@ -743,44 +721,32 @@ msgstr ""
 "Ce lien est actuellement privé. Pour le partager ainsi que les commentaires "
 "associés, vous devez le rendre public."
 
-#: views/links/sharing.phtml:66
+#: views/links/sharing.phtml:59
 msgid "Make it public"
 msgstr "Rendre public"
 
-#: views/links/show.phtml:45
-msgid "Edit the link"
-msgstr "Modifier le lien"
-
-#: views/links/show.phtml:53
-msgid "Are you sure that you want to remove this link?"
-msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
-
-#: views/links/show.phtml:67
-msgid "Remove the link"
-msgstr "Retirer le lien"
-
-#: views/links/show.phtml:102
+#: views/links/show.phtml:42
 msgid "share"
 msgstr "partager"
 
-#: views/links/show.phtml:113 views/links/show_public.phtml:49
+#: views/links/show.phtml:53 views/links/show_public.phtml:40
 #: views/news_links/index.phtml:176
 msgid "read"
 msgstr "lire"
 
-#: views/links/show.phtml:129 views/links/show.phtml:130
+#: views/links/show.phtml:81 views/links/show.phtml:82
 msgid "Manage"
 msgstr "Gérer"
 
-#: views/links/show.phtml:187 views/news_link_removals/adding.phtml:69
+#: views/links/show.phtml:139 views/news_link_removals/adding.phtml:73
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
-#: views/links/show.phtml:189
+#: views/links/show.phtml:141
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:208
+#: views/links/show.phtml:160
 msgid "Comment"
 msgstr "Commenter"
 
@@ -809,7 +775,7 @@ msgstr "Récupérer les informations du lien"
 msgid "Please wait while we’re collecting information…"
 msgstr "Merci de patienter pendant que nous recueillons les informations…"
 
-#: views/links/show_public.phtml:83
+#: views/links/show_public.phtml:74
 #, php-format
 msgid "%s didn’t comment on this link."
 msgstr "%s n’a pas commenté ce lien."
@@ -834,11 +800,11 @@ msgstr ""
 msgid "Have a nice day!"
 msgstr "Bonne journée !"
 
-#: views/my/account/deletion.phtml:3 views/my/account/deletion.phtml:9
+#: views/my/account/deletion.phtml:3 views/my/account/deletion.phtml:13
 msgid "Account deletion"
 msgstr "Suppression du compte"
 
-#: views/my/account/deletion.phtml:13
+#: views/my/account/deletion.phtml:17
 msgid ""
 "You’re about to delete your account and your data will be lost. This can’t "
 "be canceled!"
@@ -846,17 +812,17 @@ msgstr ""
 "Vous êtes sur le point de supprimer votre compte : vos données seront alors "
 "perdues. Cette action ne peut pas être annulée !"
 
-#: views/my/account/deletion.phtml:27
+#: views/my/account/deletion.phtml:31
 msgid "Your password"
 msgstr "Votre mot de passe"
 
-#: views/my/account/deletion.phtml:31
+#: views/my/account/deletion.phtml:35
 msgid "You must type your password so we can confirm your identity."
 msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/my/account/deletion.phtml:48 views/my/security/show_confirmed.phtml:70
+#: views/my/account/deletion.phtml:52 views/my/security/show_confirmed.phtml:70
 #: views/my/security/show_to_confirm.phtml:44 views/registrations/new.phtml:94
 #: views/sessions/new.phtml:68
 msgid ""
@@ -865,13 +831,9 @@ msgstr ""
 "Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
 "mot de passe visuellement."
 
-#: views/my/account/deletion.phtml:63
-msgid "Delete the account"
-msgstr "Supprimer le compte"
-
 #: views/my/account/deletion.phtml:67
-msgid "Cancel and go back to your account"
-msgstr "Annuler et retourner à votre compte"
+msgid "Delete your account"
+msgstr "Supprimer votre compte"
 
 #: views/my/account/show.phtml:13
 #, php-format
@@ -908,19 +870,19 @@ msgstr "Créer votre compte de paiement"
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 
-#: views/my/account/validation.phtml:3 views/my/account/validation.phtml:18
+#: views/my/account/validation.phtml:3 views/my/account/validation.phtml:14
 msgid "Account validation"
 msgstr "Validation du compte"
 
-#: views/my/account/validation.phtml:23
+#: views/my/account/validation.phtml:19
 msgid "Your account is now validated."
 msgstr "Votre compte est maintenant validé."
 
-#: views/my/account/validation.phtml:28
+#: views/my/account/validation.phtml:24
 msgid "Nice! Go to the home page"
 msgstr "Chouette ! Retourner à la page d’accueil"
 
-#: views/my/account/validation.phtml:33
+#: views/my/account/validation.phtml:29
 msgid ""
 "You must validate your account so we can contact you in case of a change in "
 "our end-user license agreement or a problem concerning your account. "
@@ -932,15 +894,15 @@ msgstr ""
 "votre compte. <strong>Vous devriez avoir reçu un courriel contenant un lien "
 "permettant cela.</strong>"
 
-#: views/my/account/validation.phtml:38
+#: views/my/account/validation.phtml:34
 msgid "We’ve just sent you an email!"
 msgstr "Nous vous avons envoyé un courriel !"
 
-#: views/my/account/validation.phtml:42
+#: views/my/account/validation.phtml:38
 msgid "Still nothing? Did you check your spam?"
 msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
 
-#: views/my/account/validation.phtml:55
+#: views/my/account/validation.phtml:51
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
@@ -952,17 +914,13 @@ msgstr "Votre nom"
 msgid "Your username must not be longer than 50 characters."
 msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: views/my/profile/show.phtml:49 views/news_links/preferences.phtml:93
+#: views/my/profile/show.phtml:49 views/news_links/preferences.phtml:97
 msgid "Your points of interest"
 msgstr "Vos centres d’intérêt"
 
 #: views/my/profile/show.phtml:80
 msgid "Your language"
 msgstr "Votre langue"
-
-#: views/my/profile/show.phtml:102
-msgid "Save your changes"
-msgstr "Enregistrer vos modifications"
 
 #: views/my/security/show_confirmed.phtml:13
 msgid "You can change your login details here."
@@ -985,11 +943,6 @@ msgid "Leave this field empty if you want to keep your current password."
 msgstr ""
 "Laissez ce champ vide si vous souhaitez conserver votre mot de passe actuel."
 
-#: views/my/security/show_confirmed.phtml:85
-#: views/news_links/preferences.phtml:100
-msgid "Save"
-msgstr "Enregistrer"
-
 #: views/my/security/show_to_confirm.phtml:13
 msgid ""
 "We need you to confirm your password before giving you access to sensitive "
@@ -1007,24 +960,17 @@ msgid "Confirm your password"
 msgstr "Confirmer votre mot de passe"
 
 #: views/news_link_removals/adding.phtml:3
-#: views/news_link_removals/adding.phtml:11
+#: views/news_link_removals/adding.phtml:15
 msgid "Add to your collections"
 msgstr "Ajouter à vos collections"
 
-#: views/news_link_removals/adding.phtml:97
+#: views/news_link_removals/adding.phtml:101
 msgid "Save and mark as read"
 msgstr "Enregister et marquer comme lu"
 
-#: views/news_link_removals/adding.phtml:101
+#: views/news_link_removals/adding.phtml:105
 msgid "Add and mark as read"
 msgstr "Ajouter et marquer comme lu"
-
-#: views/news_link_removals/adding.phtml:106
-#: views/news_link_removals/adding.phtml:109
-#: views/news_links/preferences.phtml:104
-#: views/news_links/preferences.phtml:107
-msgid "Cancel and go back to the news"
-msgstr "Annuler et retourner au journal"
 
 #: views/news_links/index.phtml:26 views/news_links/index.phtml:160
 #: views/news_links/index.phtml:164
@@ -1133,29 +1079,33 @@ msgstr ""
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 
-#: views/news_links/preferences.phtml:3 views/news_links/preferences.phtml:10
+#: views/news_links/preferences.phtml:3 views/news_links/preferences.phtml:14
 msgid "News preference"
 msgstr "Préférences du journal"
 
-#: views/news_links/preferences.phtml:24
+#: views/news_links/preferences.phtml:28
 msgid "Get about"
 msgstr "Obtenir environ"
 
-#: views/news_links/preferences.phtml:39
+#: views/news_links/preferences.phtml:43
 msgid "minutes of reading"
 msgstr "minutes de lecture"
 
-#: views/news_links/preferences.phtml:50
+#: views/news_links/preferences.phtml:54
 msgid "Get suggestions from"
 msgstr "Obtenir des suggestions depuis"
 
-#: views/news_links/preferences.phtml:67
+#: views/news_links/preferences.phtml:71
 msgid "Your bookmarks"
 msgstr "Vos signets"
 
-#: views/news_links/preferences.phtml:80
+#: views/news_links/preferences.phtml:84
 msgid "The collections you follow"
 msgstr "Vos collections suivies"
+
+#: views/news_links/preferences.phtml:104
+msgid "Save"
+msgstr "Enregistrer"
 
 #: views/not_found.phtml:3
 msgid "Page not found"
@@ -1427,7 +1377,7 @@ msgstr ""
 msgid "Accept the terms of service"
 msgstr "Accepter les conditions générales d’utilisation"
 
-#: views/registrations/new.phtml:138
+#: views/registrations/new.phtml:141
 msgid "Already an account? Sign in"
 msgstr "Déjà un compte ? Se connecter"
 
@@ -1451,7 +1401,7 @@ msgstr "Mot de passe"
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/sessions/new.phtml:88
+#: views/sessions/new.phtml:91
 msgid "No account yet? Sign up"
 msgstr "Pas encore de compte ? S’inscrire"
 
