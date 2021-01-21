@@ -51,6 +51,17 @@ button:active {
     border-color: var(--border-active-color);
 }
 
+.button--danger {
+    background-color: var(--color-red-1);
+    border-color: var(--color-red-5);
+}
+
+.button--danger:hover,
+.button--danger:focus {
+    background-color: var(--color-red-2);
+    border-color: var(--color-red-2);
+}
+
 .button--large {
     padding-right: var(--space-large);
     padding-left: var(--space-large);

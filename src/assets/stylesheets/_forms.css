@@ -2,6 +2,15 @@
     text-align: center;
 }
 
+.form--danger {
+    margin-top: var(--space-larger);
+    padding: var(--space-medium);
+
+    text-align: right;
+
+    background-color: var(--color-red-1);
+}
+
 label {
     display: block;
     margin-bottom: var(--space-medium);
