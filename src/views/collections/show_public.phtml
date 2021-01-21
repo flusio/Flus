@@ -3,25 +3,16 @@
         'title' => $collection->name,
         'canonical' => url('collection', ['id' => $collection->id]),
         'current_tab' => 'collections',
+        'back' => [
+            'href' => url('home'),
+            'label' => _('Back'),
+            'js-back-anchor-type' => 'collection',
+            'js-back-anchor-mode' => 'hide-if-none',
+        ],
     ]);
 ?>
 
 <div class="section" data-controller="back-storage" data-back-storage-type="link">
-    <nav class="section__nav">
-        <a
-            class="anchor--action icon icon--anchor icon--undo"
-            href="<?= url('home') ?>"
-            data-controller="back-anchor"
-            data-back-anchor-type="collection"
-            data-back-anchor-replace="href"
-            data-back-anchor-mode="hide-if-none"
-        >
-            <?= _('Back') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-    </nav>
-
     <div class="section__title">
         <h1><?= $this->protect($collection->name) ?></h1>
     </div>

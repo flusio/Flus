@@ -2,18 +2,14 @@
     $this->layout('base.phtml', [
         'title' => _('News preference'),
         'current_tab' => 'news',
+        'back' => [
+            'href' => url('news'),
+            'label' => _('News'),
+        ],
     ]);
 ?>
 
 <div class="section">
-    <nav class="section__nav no-modal">
-        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('news') ?>">
-            <?= _('News') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-    </nav>
-
     <div class="section__title">
         <h1 id="modal-title"><?= _('News preference') ?></h1>
     </div>

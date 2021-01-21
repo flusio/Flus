@@ -2,18 +2,14 @@
     $this->layout('base.phtml', [
         'title' => _('Discover collections'),
         'current_tab' => 'collections',
+        'back' => [
+            'href' => url('collections'),
+            'label' => _('Your collections'),
+        ],
     ]);
 ?>
 
 <div class="section" data-controller="back-storage" data-back-storage-type="collection">
-    <nav class="section__nav">
-        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('collections') ?>">
-            <?= _('Your collections') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-    </nav>
-
     <div class="section__title">
         <h1><?= _('Discover collections') ?></h1>
     </div>

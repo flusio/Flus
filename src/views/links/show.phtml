@@ -2,24 +2,15 @@
     $this->layout('base.phtml', [
         'title' => $link->title,
         'canonical' => url_full('link', ['id' => $link->id]),
+        'back' => [
+            'href' => url('news'),
+            'label' => _('Back'),
+            'js-back-anchor-type' => 'link',
+        ],
     ]);
 ?>
 
 <div class="section">
-    <nav class="section__nav">
-        <a
-            class="anchor--action icon icon--anchor icon--undo"
-            href="<?= url('news') ?>"
-            data-controller="back-anchor"
-            data-back-anchor-type="link"
-            data-back-anchor-replace="href"
-        >
-            <?= _('Back') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-    </nav>
-
     <?php if ($link->image_filename): ?>
         <img
             class="section__image"

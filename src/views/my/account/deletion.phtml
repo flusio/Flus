@@ -1,18 +1,14 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Account deletion'),
+        'back' => [
+            'href' => url('account'),
+            'label' => _('Account'),
+        ],
     ]);
 ?>
 
-<div class="section">
-    <nav class="section__nav no-modal">
-        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('account') ?>">
-            <?= _('Account') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-    </nav>
-
+<div class="section section--small">
     <div class="section__title">
         <h1><?= _('Account deletion') ?></h1>
     </div>

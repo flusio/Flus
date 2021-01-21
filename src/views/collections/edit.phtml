@@ -3,18 +3,14 @@
         'title' => _('Collection edition'),
         'current_tab' => 'collections',
         'canonical' => url('edit collection', ['id' => $collection->id]),
+        'back' => [
+            'href' => url('collection', ['id' => $collection->id]),
+            'label' => _('Collection'),
+        ],
     ]);
 ?>
 
 <div class="section">
-    <nav class="section__nav no-modal">
-        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('collection', ['id' => $collection->id]) ?>">
-            <?= _('Collection') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-    </nav>
-
     <div class="section__title">
         <h1 id="modal-title"><?= _('Collection edition') ?></h1>
     </div>

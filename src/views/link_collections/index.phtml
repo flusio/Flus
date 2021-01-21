@@ -2,18 +2,14 @@
     $this->layout('base.phtml', [
         'title' => _('Link collections'),
         'canonical' => url_full('link collections', ['id' => $link->id]),
+        'back' => [
+            'href' => url('link', ['id' => $link->id]),
+            'label' => _('Link'),
+        ],
     ]);
 ?>
 
 <div class="section">
-    <nav class="section__nav no-modal">
-        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('link', ['id' => $link->id]) ?>">
-            <?= _('Link') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-    </nav>
-
     <div class="section__title">
         <h1 id="modal-title"><?= _('Link collections') ?></h1>
     </div>

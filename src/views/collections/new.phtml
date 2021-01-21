@@ -2,18 +2,14 @@
     $this->layout('base.phtml', [
         'title' => _('New collection'),
         'current_tab' => 'collections',
+        'back' => [
+            'href' => url('collections'),
+            'label' => _('Collections'),
+        ],
     ]);
 ?>
 
 <div class="section">
-    <nav class="section__nav no-modal">
-        <a class="anchor--action icon icon--anchor icon--undo" href="<?= url('collections') ?>">
-            <?= _('Collections') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-    </nav>
-
     <div class="section__title">
         <h1 id="modal-title"><?= _('New collection') ?></h1>
     </div>

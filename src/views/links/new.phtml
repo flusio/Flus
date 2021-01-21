@@ -2,24 +2,15 @@
     $this->layout('base.phtml', [
         'title' => _('New link'),
         'current_tab' => 'new link',
+        'back' => [
+            'href' => url('news'),
+            'label' => _('Back'),
+            'js-back-anchor-type' => 'link',
+        ],
     ]);
 ?>
 
 <div class="section">
-    <nav class="section__nav no-modal">
-        <a
-            class="anchor--action icon icon--anchor icon--undo"
-            href="<?= url('news') ?>"
-            data-controller="back-anchor"
-            data-back-anchor-type="link"
-            data-back-anchor-replace="href"
-        >
-            <?= _('Back') ?>
-        </a>
-
-        <div class="section__nav-separator"></div>
-    </nav>
-
     <div class="section__title">
         <h1 id="modal-title"><?= _('New link') ?></h1>
     </div>

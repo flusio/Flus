@@ -59,6 +59,22 @@
     margin-top: -0.6em;
 }
 
+.icon--top::before {
+    transform: rotate(0);
+}
+
+.icon--right::before {
+    transform: rotate(90deg);
+}
+
+.icon--bottom::before {
+    transform: rotate(180deg);
+}
+
+.icon--left::before {
+    transform: rotate(270deg);
+}
+
 /* Commerce */
 .icon--credit-card::before {
     background-image: url("../icons/commerce/credit-card-line.svg");
@@ -98,6 +114,10 @@
 }
 
 /* Essential */
+.icon--arrow::before {
+    background-image: url("../icons/essential/arrow-line.svg");
+}
+
 .icon--copy-to-clipboard::before {
     background-image: url("../icons/essential/copy-to-clipboard-line.svg");
 }
