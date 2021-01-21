@@ -88,66 +88,61 @@
         <?= nl2br($this->protect($collection->description)) ?>
     </p>
 
-    <p class="paragraph--centered">
-        <button
-            class="icon icon--plus-circle"
-            data-controller="modal-opener"
-            data-action="modal-opener#fetch"
-            data-modal-opener-href="<?= url('new link', ['collection' => $collection->id]) ?>"
-            aria-haspopup="dialog"
-            aria-controls="modal"
-        >
-            <?= _('Add a link') ?>
-        </button>
-    </p>
-
-    <?php if ($links): ?>
-        <div class="cards">
-            <?php foreach ($links as $link): ?>
-                <div class="card">
-                    <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
-                        <?php if ($link->image_filename): ?>
-                            <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
-                        <?php else: ?>
-                            <img class="card__image" alt="" src="<?= url_static('default-card.png') ?>" />
-                        <?php endif; ?>
-                    </a>
-
-                    <div class="card__body">
-                        <h2 class="card__title">
-                            <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
-                                <?= $this->protect($link->title) ?>
-                            </a>
-                        </h2>
-
-                        <p class="card__details">
-                            <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
-                        </p>
-                    </div>
-
-                    <div class="card__footer">
-                        <?php if ($link->is_public): ?>
-                            <p class="card__details">
-                                <?= _('public') ?>
-                            </p>
-                        <?php endif; ?>
-
-                        <div></div>
-
-                        <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
-                            <?= _('see') ?>
-                        </a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-
-            <?php for ($i = 0; $i < (3 - (count($links) % 3)); $i++): ?>
-                <div class="card card--shadow no-mobile"></div>
-            <?php endfor; ?>
+    <div class="cards">
+        <div class="card card--action">
+            <button
+                class="card__button card__button--link"
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href="<?= url('new link', ['collection' => $collection->id]) ?>"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                <i class="icon icon--only icon--plus-circle"></i><br />
+                <?= _('Add a link') ?>
+            </button>
         </div>
-    <?php else: ?>
-        <p class="paragraph--placeholder">
-            <?= _('This collection is empty. The links will appear here once you start adding them.') ?>
-        </p>
-    <?php endif; ?>
+
+        <?php foreach ($links as $link): ?>
+            <div class="card">
+                <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                    <?php if ($link->image_filename): ?>
+                        <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
+                    <?php else: ?>
+                        <img class="card__image" alt="" src="<?= url_static('default-card.png') ?>" />
+                    <?php endif; ?>
+                </a>
+
+                <div class="card__body">
+                    <h2 class="card__title">
+                        <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                            <?= $this->protect($link->title) ?>
+                        </a>
+                    </h2>
+
+                    <p class="card__details">
+                        <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                    </p>
+                </div>
+
+                <div class="card__footer">
+                    <?php if ($link->is_public): ?>
+                        <p class="card__details">
+                            <?= _('public') ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <div></div>
+
+                    <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
+                        <?= _('see') ?>
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <?php for ($i = 0; $i < (3 - ((count($links) + 1) % 3)); $i++): ?>
+            <div class="card card--shadow no-mobile"></div>
+        <?php endfor; ?>
+    </div>
 </div>

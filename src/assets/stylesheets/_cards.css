@@ -55,6 +55,31 @@
     box-shadow: none;
 }
 
+.card--action {
+    padding: 2px;
+
+    align-items: stretch;
+    justify-content: center;
+
+    background: linear-gradient(135deg, var(--color-purple-5), var(--color-turquoise-5));
+}
+
+.card__button {
+    min-height: 150px;
+
+    flex: 1;
+
+    background-color: var(--color-purple-1);
+    border: none;
+    border-radius: 0;
+}
+
+@media (min-width: 800px) {
+    .card__button--link {
+        min-height: 300px;
+    }
+}
+
 .card__mask {
     position: absolute;
     top: 0;
