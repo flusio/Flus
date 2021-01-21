@@ -60,6 +60,11 @@ class Link extends \Minz\Model
             'required' => true,
         ],
 
+        'number_comments' => [
+            'type' => 'integer',
+            'computed' => true,
+        ],
+
         'news_value' => [
             'type' => 'integer',
             'computed' => true,

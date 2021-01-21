@@ -65,7 +65,13 @@
         <div class="cards cards--centered">
             <?php foreach ($links as $link): ?>
                 <div class="card">
-                    <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                    <a
+                        class="anchor--hidden"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        tabindex="-1"
+                        href="<?= $link->url ?>"
+                    >
                         <?php if ($link->image_filename): ?>
                             <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
                         <?php else: ?>
@@ -75,7 +81,13 @@
 
                     <div class="card__body">
                         <h2 class="card__title">
-                            <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                            <a
+                                class="anchor--hidden"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                tabindex="-1"
+                                href="<?= $link->url ?>"
+                            >
                                 <?= $this->protect($link->title) ?>
                             </a>
                         </h2>
@@ -83,13 +95,24 @@
                         <p class="card__details">
                             <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                         </p>
+
+                        <p class="card__details">
+                            <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $link->id]) ?>">
+                                <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
+                            </a>
+                        </p>
                     </div>
 
                     <div class="card__footer">
                         <div></div>
 
-                        <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
-                            <?= _('see') ?>
+                        <a
+                            class="anchor--action icon icon--anchor icon--pop-out"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href="<?= $link->url ?>"
+                        >
+                            <?= _('read') ?>
                         </a>
                     </div>
                 </div>
