@@ -13,59 +13,42 @@
         </a>
 
         <div class="section__nav-separator"></div>
-
-        <details
-            class="popup"
-            data-controller="popup"
-            data-action="click@window->popup#close"
-        >
-            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
-                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
-                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
-                    <span class="sr-only">
-                        <?= _('Open the menu') ?>
-                    </span>
-                </button>
-            </summary>
-
-            <nav class="popup__container popup__container--left">
-                <button
-                    class="popup__item popup__item--button icon icon--cog"
-                    data-controller="modal-opener"
-                    data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('edit collection', ['id' => $collection->id]) ?>"
-                    aria-haspopup="dialog"
-                    aria-controls="modal"
-                >
-                    <?= _('Edit the collection') ?>
-                </button>
-            </nav>
-        </details>
     </nav>
 
     <div class="section__title">
         <h1><?= $this->protect($collection->name) ?></h1>
     </div>
 
-    <?php if ($collection->is_public): ?>
-        <p class="paragraph--centered">
-            <span class="sticker">
-                <?= _('public') ?>
-            </span>
+    <?php if ($topics): ?>
+        <p class="collection__topics">
+            <?= implode('&nbsp;·&nbsp;', array_column($topics, 'label')) ?>
         </p>
     <?php endif; ?>
 
     <div class="collection__meta">
         <div class="collection__details">
             <p class="collection__owner">
-                <?= _f('Collection created by yourself') ?>
-            </p>
+                <?php if ($collection->is_public): ?>
+                    <span class="collection__public sticker">
+                        <?= _('public') ?>
+                    </span>
+                <?php endif; ?>
 
-            <?php if ($topics): ?>
-                <p class="collection__topics">
-                    <?= implode('&nbsp;·&nbsp;', array_column($topics, 'label')) ?>
-                </p>
-            <?php endif; ?>
+                <?= _f('created by you') ?>
+            </p>
+        </div>
+
+        <div class="collection__actions">
+            <button
+                class="button--small"
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href="<?= url('edit collection', ['id' => $collection->id]) ?>"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                <?= _('Edit') ?>
+            </button>
         </div>
     </div>
 

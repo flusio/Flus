@@ -32,17 +32,17 @@
         </p>
     <?php endif; ?>
 
+    <?php if ($topics): ?>
+        <p class="collection__topics">
+            <?= implode('&nbsp;·&nbsp;', array_column($topics, 'label')) ?>
+        </p>
+    <?php endif; ?>
+
     <div class="collection__meta">
         <div class="collection__details">
             <p class="collection__owner">
-                <?= _f('Collection created by %s', $this->protect($collection->owner()->username)) ?>
+                <?= _f('created by %s', $this->protect($collection->owner()->username)) ?>
             </p>
-
-            <?php if ($topics): ?>
-                <p class="collection__topics">
-                    <?= implode('&nbsp;·&nbsp;', array_column($topics, 'label')) ?>
-                </p>
-            <?php endif; ?>
         </div>
 
         <div class="collection__actions">
@@ -50,14 +50,14 @@
                 <?php if ($current_user->isFollowing($collection->id)): ?>
                     <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <button>
+                        <button class="button--small">
                             <?= _('Unfollow') ?>
                         </button>
                     </form>
                 <?php else: ?>
                     <form method="post" action="<?= url('follow collection', ['id' => $collection->id]) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <button>
+                        <button class="button--small">
                             <?= _('Follow') ?>
                         </button>
                     </form>

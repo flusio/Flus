@@ -18,34 +18,6 @@
         </a>
 
         <div class="section__nav-separator"></div>
-
-        <details
-            class="popup"
-            data-controller="popup"
-            data-action="click@window->popup#close"
-        >
-            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
-                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
-                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
-                    <span class="sr-only">
-                        <?= _('Open the menu') ?>
-                    </span>
-                </button>
-            </summary>
-
-            <nav class="popup__container popup__container--left">
-                <button
-                    class="popup__item popup__item--button icon icon--cog"
-                    data-controller="modal-opener"
-                    data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('edit link', ['id' => $link->id]) ?>"
-                    aria-haspopup="dialog"
-                    aria-controls="modal"
-                >
-                    <?= _('Edit the link') ?>
-                </button>
-            </nav>
-        </details>
     </nav>
 
     <?php if ($link->image_filename): ?>
@@ -92,6 +64,18 @@
             </li>
         </ul>
     </section>
+
+    <div class="paragraph--centered">
+        <button
+            data-controller="modal-opener"
+            data-action="modal-opener#fetch"
+            data-modal-opener-href="<?= url('edit link', ['id' => $link->id]) ?>"
+            aria-haspopup="dialog"
+            aria-controls="modal"
+        >
+            <?= _('Edit') ?>
+        </button>
+    </div>
 
     <section class="subsection subsection--small">
         <header class="subsection__header header">
