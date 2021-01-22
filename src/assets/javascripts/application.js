@@ -33,3 +33,17 @@ application.register('modal', ModalController);
 application.register('modal-opener', ModalOpenerController);
 application.register('popup', PopupController);
 application.register('skip-nav', SkipNavController);
+
+function adaptLayoutContentBorderRadius () {
+    const layoutContentNode = document.querySelector('.layout__content');
+    if (!layoutContentNode) {
+        return;
+    }
+
+    const bottomPosition = layoutContentNode.offsetTop + layoutContentNode.clientHeight;
+    if (bottomPosition >= document.body.clientHeight) {
+        layoutContentNode.classList.add('layout__content--touch-bottom');
+    }
+}
+
+document.addEventListener('turbolinks:load', adaptLayoutContentBorderRadius);

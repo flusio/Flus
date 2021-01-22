@@ -11,6 +11,8 @@
     margin-bottom: var(--space-medium);
     margin-left: calc(var(--space-large) * -1);
 
+    border-radius: 0.5rem 0.5rem 0 0;
+
     filter: blur(0.7px);
 }
 

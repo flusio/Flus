@@ -110,6 +110,11 @@
         border-radius: 0.5rem;
     }
 
+    .layout__content--touch-bottom {
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
     .layout--connected .layout__content {
         min-height: auto;
         margin-bottom: 0;
