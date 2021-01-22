@@ -1,5 +1,37 @@
 # Changelog of flusio
 
+## 2021-01-22 - v0.15
+
+This release brings mainly a lot of UI/UX improvements.
+
+### Improvements
+
+- Improve overall layout structure
+    - Reorganize create/edit/delete buttons
+    - Remove cancel actions from forms
+    - Change body background
+    - Add a border around content
+- Improve links UX
+    - Change link main action from "see" to "read"
+    - Move actions from link show page to collection cards
+    - Remove quick unbookmark button in cards
+    - Simplify link show page
+    - Remove sharing page
+- Add links to web extension stores
+- Remove shadow card from discover and public lists
+- Hide "remove from news definitively" option
+- Change card footer from turquoise to purple
+- Change the green color in collections illustration to turquoise
+- Create subscription accounts on Cron sync
+
+### Misc
+
+- Add service param in subscription login request
+- Fix a SpiderBits test
+- Fix the GitHub funding link
+- Bump ParcelJS version
+- Bump JS ini version to 1.3.8
+
 ## 2020-12-11 - v0.14
 
 A small release for the “grand opening”!
