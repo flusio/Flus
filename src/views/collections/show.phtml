@@ -114,7 +114,22 @@
                 </div>
 
                 <div class="card__footer">
-                    <div></div>
+                    <div class="card__footer-group">
+                        <button
+                            class="button--ghost button--smaller"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href="<?= url('link collections', ['id' => $link->id, 'from' => url('collection', ['id' => $collection->id])]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                            title="<?= _('Manage collections') ?>"
+                        >
+                            <i class="icon icon--only icon--collection"></i>
+                            <span class="sr-only">
+                                <?= _('Manage collections') ?>
+                            </span>
+                        </button>
+                    </div>
 
                     <a
                         class="anchor--action icon icon--anchor icon--pop-out"

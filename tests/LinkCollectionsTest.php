@@ -116,6 +116,32 @@ class LinkCollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_collection_2);
     }
 
+    public function testUpdateRedirectsToFrom()
+    {
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => $user->csrf,
+            'collection_ids' => [$collection_id],
+            'from' => \Minz\Url::for('collection', ['id' => $collection_id]),
+        ]);
+
+        $this->assertResponse($response, 302, "/collections/{$collection_id}");
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link_to_collection = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->assertNotNull($link_to_collection);
+    }
+
     public function testUpdateRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -211,7 +237,30 @@ class LinkCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertFlash('error', 'One of the associated collection doesn’t exist.');
+        $this->assertSame(0, $links_to_collections_dao->count());
+    }
+
+    public function testUpdateFailsIfCsrfIsInvalid()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => 'not the token',
+            'collection_ids' => [$collection_id],
+        ]);
+
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertFlash('error', 'A security verification failed.');
         $this->assertSame(0, $links_to_collections_dao->count());
     }
 
