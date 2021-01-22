@@ -27,7 +27,7 @@
 }
 
 .collection__public {
-    margin-right: var(--space-medium);
+    margin-right: var(--space-small);
 }
 
 .collection__topics {
