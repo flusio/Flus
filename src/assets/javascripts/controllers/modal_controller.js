@@ -54,7 +54,7 @@ export default class extends Controller {
     setContent (content) {
         // set the content to the modal body
         if (content) {
-            this.bodyTarget.innerHTML = event.detail.content;
+            this.bodyTarget.innerHTML = content;
             this.bodyTarget.classList.add('modal__body--has-content');
         } else {
             this.bodyTarget.innerHTML = '<div class="spinner"></div>';
@@ -100,8 +100,8 @@ export default class extends Controller {
         // remove the content with a timeout to wait for the modal close
         // animation
         setTimeout(() => {
-            this.bodyTarget.innerHTML = event.content;
-        }, 500);
+            this.setContent(null);
+        }, 300);
 
         // give the focus back to the link/button that opened the modal
         if (this.focusBackElement) {
