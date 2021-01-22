@@ -96,5 +96,11 @@
                 </button>
             </div>
         </form>
+    <?php else: ?>
+        <p class="paragraph--centered">
+            <a class="anchor--action" href="<?= url('onboarding', ['step' => 5]) ?>">
+                <?= _('Continue') ?>
+            </a>
+        </p>
     <?php endif; ?>
 </div>
