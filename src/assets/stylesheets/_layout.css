@@ -1,5 +1,5 @@
 .layout {
-    min-height: calc(100vh - var(--height-bottom-line));
+    min-height: 100vh;
 }
 
 .layout--connected .layout__header {
@@ -60,12 +60,12 @@
 
     background-color: var(--color-turquoise-4);
     border: none;
-    border-left: var(--border-width) solid var(--color-white);
+    border-left: var(--border-width) solid var(--color-body);
 }
 
 @media (min-width: 800px) {
     .layout--connected .layout__header .header__link--featured {
-        border-right: var(--border-width) solid var(--color-white);
+        border-right: var(--border-width) solid var(--color-body);
     }
 }
 
@@ -107,7 +107,7 @@
     .layout__content {
         padding: var(--space-medium) var(--space-large) var(--space-large);
 
-        border-radius: 0.25rem;
+        border-radius: 0.5rem;
     }
 
     .layout--connected .layout__content {
