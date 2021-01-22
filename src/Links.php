@@ -246,6 +246,7 @@ class Links
      * Show the update link page.
      *
      * @request_param string id
+     * @request_param string from (default is /links/:id)
      *
      * @response 302 /login?redirect_to=/links/:id/edit if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
@@ -259,6 +260,7 @@ class Links
     {
         $user = utils\CurrentUser::get();
         $link_id = $request->param('id');
+        $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
 
         if (!$user) {
             return Response::redirect('login', [
@@ -272,6 +274,7 @@ class Links
                 'link' => $link,
                 'title' => $link->title,
                 'is_public' => $link->is_public,
+                'from' => $from,
             ]);
         } else {
             return Response::notFound('not_found.phtml');
@@ -285,11 +288,12 @@ class Links
      * @request_param string id
      * @request_param string title
      * @request_param boolean is_public
+     * @request_param string from (default is /links/:id)
      *
      * @response 302 /login?redirect_to=/links/:id/edit if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
-     * @response 400 if csrf token or title are invalid
-     * @response 302 /links/:id
+     * @response 302 :from if csrf token or title are invalid
+     * @response 302 :from
      *
      * @param \Minz\Request $request
      *
@@ -301,6 +305,7 @@ class Links
         $link_id = $request->param('id');
         $new_title = $request->param('title');
         $is_public = $request->param('is_public', false);
+        $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
 
         if (!$user) {
             return Response::redirect('login', [
@@ -315,30 +320,22 @@ class Links
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('links/edit.phtml', [
-                'link' => $link,
-                'title' => $new_title,
-                'is_public' => $is_public,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
         }
 
         $link->title = trim($new_title);
         $link->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
         $errors = $link->validate();
         if ($errors) {
-            return Response::badRequest('links/edit.phtml', [
-                'link' => $link,
-                'title' => $new_title,
-                'is_public' => $is_public,
-                'errors' => $errors,
-            ]);
+            utils\Flash::set('errors', $errors);
+            return Response::found($from);
         }
 
         $link_dao = new models\dao\Link();
         $link_dao->save($link);
 
-        return Response::redirect('link', ['id' => $link->id]);
+        return Response::found($from);
     }
 
     /**

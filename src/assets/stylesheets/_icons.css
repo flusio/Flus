@@ -148,6 +148,10 @@
     background-image: url("../icons/essential/logout-line.svg");
 }
 
+.icon--pencil::before {
+    background-image: url("../icons/essential/pencil-line.svg");
+}
+
 .icon--plus::before {
     background-image: url("../icons/essential/plus-line.svg");
 }

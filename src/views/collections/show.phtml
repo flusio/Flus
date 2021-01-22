@@ -115,6 +115,34 @@
 
                 <div class="card__footer">
                     <div class="card__footer-group">
+                        <details
+                            class="popup"
+                            data-controller="popup"
+                            data-action="click@window->popup#close"
+                        >
+                            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
+                                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
+                                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
+                                    <span class="sr-only">
+                                        <?= _('Open the menu') ?>
+                                    </span>
+                                </button>
+                            </summary>
+
+                            <nav class="popup__container popup__container--over">
+                                <button
+                                    class="popup__item popup__item--button icon icon--pencil"
+                                    data-controller="modal-opener"
+                                    data-action="modal-opener#fetch"
+                                    data-modal-opener-href="<?= url('edit link', ['id' => $link->id, 'from' => url('collection', ['id' => $collection->id])]) ?>"
+                                    aria-haspopup="dialog"
+                                    aria-controls="modal"
+                                >
+                                    <?= _('Edit') ?>
+                                </button>
+                            </nav>
+                        </details>
+
                         <button
                             class="button--ghost button--smaller"
                             data-controller="modal-opener"

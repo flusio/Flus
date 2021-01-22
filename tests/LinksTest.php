@@ -562,6 +562,35 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($db_link['is_public']);
     }
 
+    public function testUpdateRedirectsToFrom()
+    {
+        $link_dao = new models\dao\Link();
+        $old_title = $this->fake('words', 3, true);
+        $new_title = $this->fake('words', 5, true);
+        $old_public = 0;
+        $new_public = 1;
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => $this->fake('iso8601'),
+            'title' => $old_title,
+            'is_public' => $old_public,
+        ]);
+        $from = \Minz\Url::for('bookmarks');
+
+        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+            'csrf' => $user->csrf,
+            'title' => $new_title,
+            'is_public' => $new_public,
+            'from' => $from,
+        ]);
+
+        $this->assertResponse($response, 302, $from);
+        $db_link = $link_dao->find($link_id);
+        $this->assertSame($new_title, $db_link['title']);
+        $this->assertTrue($db_link['is_public']);
+    }
+
     public function testUpdateFailsIfCsrfIsInvalid()
     {
         $link_dao = new models\dao\Link();
@@ -579,7 +608,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertFlash('error', 'A security verification failed.');
         $db_link = $link_dao->find($link_id);
         $this->assertSame($old_title, $db_link['title']);
     }
@@ -601,7 +631,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 400, 'The title is required');
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertFlash('errors', [
+            'title' => 'The title is required.',
+        ]);
         $db_link = $link_dao->find($link_id);
         $this->assertSame($old_title, $db_link['title']);
     }
