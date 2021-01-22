@@ -30,7 +30,7 @@
         </div>
 
         <?php foreach ($links as $link): ?>
-            <div class="card" data-controller="link-card">
+            <div class="card">
                 <a
                     class="anchor--hidden"
                     target="_blank"
@@ -125,22 +125,6 @@
                                 <?= _('Manage collections') ?>
                             </span>
                         </button>
-
-                        <form
-                            method="post"
-                            action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
-                            data-action="link-card#unbookmark"
-                        >
-                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                            <button
-                                class="button--ghost button--smaller"
-                                title="<?= _('Remove from bookmarks') ?>"
-                                aria-label="<?= _('Remove from bookmarks') ?>"
-                            >
-                                <i class="icon icon--only icon--times"></i>
-                            </button>
-                        </form>
                     </div>
 
 
@@ -152,20 +136,6 @@
                     >
                         <?= _('read') ?>
                     </a>
-                </div>
-
-                <div class="card__mask" data-target="link-card.mask">
-                    <form
-                        method="post"
-                        action="<?= url('bookmark link', ['id' => $link->id]) ?>"
-                        data-action="link-card#bookmark"
-                    >
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                        <button class="button--ghost button--small">
-                            <?= _('Cancel?') ?>
-                        </button>
-                    </form>
                 </div>
             </div>
         <?php endforeach; ?>

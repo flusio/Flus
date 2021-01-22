@@ -80,25 +80,6 @@
     }
 }
 
-.card__mask {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-
-    display: none;
-    padding: var(--space-small);
-
-    flex-direction: column;
-    justify-content: flex-end;
-
-    opacity: 0;
-    background-color: var(--color-grey-1);
-
-    transition: opacity 0.5s ease-in-out;
-}
-
 .card__image {
     display: block;
     width: 100%;

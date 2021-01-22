@@ -114,8 +114,6 @@ class Application
         // Link collections
         $router->addRoute('get', '/links/:id/collections', 'LinkCollections#index', 'link collections');
         $router->addRoute('post', '/links/:id/collections', 'LinkCollections#update', 'update link collections');
-        $router->addRoute('post', '/links/:id/bookmark', 'LinkCollections#bookmark', 'bookmark link');
-        $router->addRoute('post', '/links/:id/unbookmark', 'LinkCollections#unbookmark', 'unbookmark link');
 
         // Messages
         $router->addRoute('get', '/links/:link_id/messages', 'LinkMessages#index', 'links/messages');
