@@ -70,21 +70,79 @@
                 </div>
 
                 <div class="card__footer">
-                    <form
-                        method="post"
-                        action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
-                        data-action="link-card#unbookmark"
-                    >
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                    <div class="card__footer-group">
+                        <details
+                            class="popup"
+                            data-controller="popup"
+                            data-action="click@window->popup#close"
+                        >
+                            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
+                                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
+                                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
+                                    <span class="sr-only">
+                                        <?= _('Open the menu') ?>
+                                    </span>
+                                </button>
+                            </summary>
+
+                            <nav class="popup__container popup__container--over">
+                                <button
+                                    class="popup__item popup__item--button icon icon--pencil"
+                                    data-controller="modal-opener"
+                                    data-action="modal-opener#fetch"
+                                    data-modal-opener-href="<?= url('edit link', ['id' => $link->id, 'from' => url('bookmarks')]) ?>"
+                                    aria-haspopup="dialog"
+                                    aria-controls="modal"
+                                >
+                                    <?= _('Edit') ?>
+                                </button>
+
+                                <div data-controller="copy-to-clipboard">
+                                    <input type="hidden" value="<?= $link->url ?>" data-target="copy-to-clipboard.copyable" />
+
+                                    <button
+                                        class="popup__item popup__item--button share__button icon icon--copy-to-clipboard"
+                                        data-action="copy-to-clipboard#copy"
+                                        data-target="copy-to-clipboard.feedback"
+                                    >
+                                        <?= _('Copy the external link') ?>
+                                    </button>
+                                </div>
+                            </nav>
+                        </details>
 
                         <button
                             class="button--ghost button--smaller"
-                            title="<?= _('Remove from bookmarks') ?>"
-                            aria-label="<?= _('Remove from bookmarks') ?>"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href="<?= url('link collections', ['id' => $link->id, 'from' => url('bookmarks')]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                            title="<?= _('Manage collections') ?>"
                         >
-                            <i class="icon icon--only icon--ghost icon--times"></i>
+                            <i class="icon icon--only icon--collection"></i>
+                            <span class="sr-only">
+                                <?= _('Manage collections') ?>
+                            </span>
                         </button>
-                    </form>
+
+                        <form
+                            method="post"
+                            action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
+                            data-action="link-card#unbookmark"
+                        >
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                            <button
+                                class="button--ghost button--smaller"
+                                title="<?= _('Remove from bookmarks') ?>"
+                                aria-label="<?= _('Remove from bookmarks') ?>"
+                            >
+                                <i class="icon icon--only icon--times"></i>
+                            </button>
+                        </form>
+                    </div>
+
 
                     <a
                         class="anchor--action icon icon--anchor icon--pop-out"
