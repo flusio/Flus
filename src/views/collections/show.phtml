@@ -140,6 +140,18 @@
                                 >
                                     <?= _('Edit') ?>
                                 </button>
+
+                                <div data-controller="copy-to-clipboard">
+                                    <input type="hidden" value="<?= $link->url ?>" data-target="copy-to-clipboard.copyable" />
+
+                                    <button
+                                        class="popup__item popup__item--button share__button icon icon--copy-to-clipboard"
+                                        data-action="copy-to-clipboard#copy"
+                                        data-target="copy-to-clipboard.feedback"
+                                    >
+                                        <?= _('Copy the external link') ?>
+                                    </button>
+                                </div>
                             </nav>
                         </details>
 
