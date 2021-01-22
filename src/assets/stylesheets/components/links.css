@@ -21,6 +21,10 @@
     font-size: var(--size-small);
 }
 
+.link__public {
+    margin-right: var(--space-small);
+}
+
 .link__actions {
     padding-left: 0;
 }

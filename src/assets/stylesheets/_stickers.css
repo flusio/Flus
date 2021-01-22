@@ -1,8 +1,17 @@
 .sticker {
     padding: var(--space-smaller) var(--space-small);
 
+    color: var(--color-text);
     font-size: var(--size-small);
 
     background-color: var(--color-purple-2);
     border-radius: var(--border-radius);
+}
+
+.sticker--right {
+    float: right;
+}
+
+.sticker--left {
+    float: left;
 }

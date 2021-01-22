@@ -562,6 +562,35 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($db_link['is_public']);
     }
 
+    public function testUpdateRedirectsToFrom()
+    {
+        $link_dao = new models\dao\Link();
+        $old_title = $this->fake('words', 3, true);
+        $new_title = $this->fake('words', 5, true);
+        $old_public = 0;
+        $new_public = 1;
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => $this->fake('iso8601'),
+            'title' => $old_title,
+            'is_public' => $old_public,
+        ]);
+        $from = \Minz\Url::for('bookmarks');
+
+        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+            'csrf' => $user->csrf,
+            'title' => $new_title,
+            'is_public' => $new_public,
+            'from' => $from,
+        ]);
+
+        $this->assertResponse($response, 302, $from);
+        $db_link = $link_dao->find($link_id);
+        $this->assertSame($new_title, $db_link['title']);
+        $this->assertTrue($db_link['is_public']);
+    }
+
     public function testUpdateFailsIfCsrfIsInvalid()
     {
         $link_dao = new models\dao\Link();
@@ -579,7 +608,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertFlash('error', 'A security verification failed.');
         $db_link = $link_dao->find($link_id);
         $this->assertSame($old_title, $db_link['title']);
     }
@@ -601,7 +631,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 400, 'The title is required');
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertFlash('errors', [
+            'title' => 'The title is required.',
+        ]);
         $db_link = $link_dao->find($link_id);
         $this->assertSame($old_title, $db_link['title']);
     }
@@ -1019,188 +1052,5 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $db_link = $link_dao->find($link_id);
         $expected_title = 'https://github.com/flusio/flusio';
         $this->assertSame($expected_title, $db_link['title']);
-    }
-
-    public function testSharingRendersCorrectlyWhenPrivate()
-    {
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'is_public' => 0,
-        ]);
-
-        $response = $this->appRun('get', "/links/{$link_id}/share");
-
-        $this->assertResponse($response, 200, 'Make it public');
-        $this->assertPointer($response, 'links/sharing.phtml');
-    }
-
-    public function testSharingRendersCorrectlyWhenPublic()
-    {
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'is_public' => 1,
-        ]);
-
-        $response = $this->appRun('get', "/links/{$link_id}/share");
-
-        $this->assertResponse($response, 200, 'You can copy the following link to share');
-        $this->assertPointer($response, 'links/sharing.phtml');
-    }
-
-    public function testSharingRedirectsIfNotConnected()
-    {
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-        ]);
-
-        $response = $this->appRun('get', "/links/{$link_id}/share");
-
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fshare");
-    }
-
-    public function testSharingFailsIfUserDoesNotOwnTheLink()
-    {
-        $this->login();
-        $other_user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-        ]);
-
-        $response = $this->appRun('get', "/links/{$link_id}/share");
-
-        $this->assertResponse($response, 404);
-    }
-
-    public function testSharingFailsIfLinkDoesNotExist()
-    {
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-        ]);
-
-        $response = $this->appRun('get', '/links/unknown/share');
-
-        $this->assertResponse($response, 404);
-    }
-
-    public function testUpdateVisibilityChangesIsPublicToTrueAndRedirects()
-    {
-        $link_dao = new models\dao\Link();
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'is_public' => 0,
-        ]);
-
-        $response = $this->appRun('post', "/links/{$link_id}/visibility", [
-            'csrf' => $user->csrf,
-            'visibility' => 'public',
-        ]);
-
-        $this->assertResponse($response, 302, "/links/{$link_id}/share");
-        $link = new models\Link($link_dao->find($link_id));
-        $this->assertTrue($link->is_public);
-    }
-
-    public function testUpdateVisibilityChangesIsPublicToFalseAndRedirects()
-    {
-        $link_dao = new models\dao\Link();
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'is_public' => 1,
-        ]);
-
-        $response = $this->appRun('post', "/links/{$link_id}/visibility", [
-            'csrf' => $user->csrf,
-            'visibility' => 'private',
-        ]);
-
-        $this->assertResponse($response, 302, "/links/{$link_id}/share");
-        $link = new models\Link($link_dao->find($link_id));
-        $this->assertFalse($link->is_public);
-    }
-
-    public function testUpdateVisibilityRedirectsIfNotConnected()
-    {
-        $link_dao = new models\dao\Link();
-        $user_id = $this->create('user', [
-            'csrf' => 'a token',
-        ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_public' => 0,
-        ]);
-
-        $response = $this->appRun('post', "/links/{$link_id}/visibility", [
-            'csrf' => 'a token',
-            'visibility' => 'public',
-        ]);
-
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fshare");
-        $link = new models\Link($link_dao->find($link_id));
-        $this->assertFalse($link->is_public);
-    }
-
-    public function testUpdateVisibilityRedirectsIfCsrfIsInvalid()
-    {
-        $link_dao = new models\dao\Link();
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'is_public' => 0,
-        ]);
-
-        $response = $this->appRun('post', "/links/{$link_id}/visibility", [
-            'csrf' => 'not the token',
-            'visibility' => 'public',
-        ]);
-
-        $this->assertResponse($response, 302, "/links/{$link_id}/share");
-        $this->assertFlash('error', 'A security verification failed.');
-        $link = new models\Link($link_dao->find($link_id));
-        $this->assertFalse($link->is_public);
-    }
-
-    public function testUpdateVisibilityFailsIfLinkDoesNotExist()
-    {
-        $link_dao = new models\dao\Link();
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'is_public' => 0,
-        ]);
-
-        $response = $this->appRun('post', '/links/unknown/visibility', [
-            'csrf' => $user->csrf,
-            'visibility' => 'public',
-        ]);
-
-        $this->assertResponse($response, 404);
-        $link = new models\Link($link_dao->find($link_id));
-        $this->assertFalse($link->is_public);
-    }
-
-    public function testUpdateVisibilityFailsIfUserDoesNotOwnTheLink()
-    {
-        $link_dao = new models\dao\Link();
-        $user = $this->login();
-        $other_user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'is_public' => 0,
-        ]);
-
-        $response = $this->appRun('post', "/links/{$link_id}/visibility", [
-            'csrf' => $user->csrf,
-            'visibility' => 'public',
-        ]);
-
-        $this->assertResponse($response, 404);
-        $link = new models\Link($link_dao->find($link_id));
-        $this->assertFalse($link->is_public);
     }
 }

@@ -26,6 +26,7 @@
         <?php endif; ?>
 
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
 
         <div class="form-group <?= isset($errors['title']) ? 'form-group--invalid' : '' ?>">
             <label for="title">
@@ -78,11 +79,11 @@
         data-message="<?= _('Are you sure that you want to remove this link?') ?>"
     >
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= url('link', ['id' => $link->id]) ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
         <input
             type="hidden"
             name="redirect_to"
-            value="<?= url('home') ?>"
+            value="<?= $from ?>"
             data-controller="back-anchor"
             data-back-anchor-type="link"
             data-back-anchor-replace="value"

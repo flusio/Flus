@@ -8,14 +8,22 @@ export default class extends Controller {
     }
 
     copy (event) {
-        const text = this.copyableTarget.textContent.trim();
+        let text;
+        if (this.copyableTarget.hasAttribute('value')) {
+            text = this.copyableTarget.getAttribute('value').trim();
+        } else {
+            text = this.copyableTarget.textContent.trim();
+        }
+
         navigator.clipboard.writeText(text);
         this.element.classList.add('copy--success');
-        this.feedbackTarget.textContent = _('copied');
+
+        const oldFeedbackTargetText = this.feedbackTarget.textContent;
+        this.feedbackTarget.textContent = _('Copied');
 
         setTimeout(() => {
             this.element.classList.remove('copy--success');
-            this.feedbackTarget.textContent = _('copy');
+            this.feedbackTarget.textContent = oldFeedbackTargetText;
         }, 2000);
     }
 };

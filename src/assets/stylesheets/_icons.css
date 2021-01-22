@@ -148,6 +148,10 @@
     background-image: url("../icons/essential/logout-line.svg");
 }
 
+.icon--pencil::before {
+    background-image: url("../icons/essential/pencil-line.svg");
+}
+
 .icon--plus::before {
     background-image: url("../icons/essential/plus-line.svg");
 }
@@ -188,6 +192,11 @@
 
 .icon--bookmark.icon--solid::before {
     background-image: url("../icons/social/bookmark-solid.svg");
+}
+
+.icon--chat-bubble::before,
+.icon--comments::before {
+    background-image: url("../icons/social/chat-bubble-line.svg");
 }
 
 .icon--thumbs-down::before {

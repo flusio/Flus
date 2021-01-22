@@ -69,7 +69,13 @@
 
         <?php foreach ($links as $link): ?>
             <div class="card">
-                <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                <a
+                    class="anchor--hidden"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    tabindex="-1"
+                    href="<?= $link->url ?>"
+                >
                     <?php if ($link->image_filename): ?>
                         <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
                     <?php else: ?>
@@ -79,27 +85,99 @@
 
                 <div class="card__body">
                     <h2 class="card__title">
-                        <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                        <a
+                            class="anchor--hidden"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            tabindex="-1"
+                            href="<?= $link->url ?>"
+                        >
                             <?= $this->protect($link->title) ?>
                         </a>
                     </h2>
 
-                    <p class="card__details">
+                    <p class="card__text card__text--oneline">
                         <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                    </p>
+
+                    <p class="card__text">
+                        <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $link->id]) ?>">
+                            <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
+                        </a>
+
+                        <?php if ($link->is_public): ?>
+                            <span class="sticker sticker--right">
+                                <?= _('public') ?>
+                            </span>
+                        <?php endif; ?>
                     </p>
                 </div>
 
                 <div class="card__footer">
-                    <?php if ($link->is_public): ?>
-                        <p class="card__details">
-                            <?= _('public') ?>
-                        </p>
-                    <?php endif; ?>
+                    <div class="card__footer-group">
+                        <details
+                            class="popup"
+                            data-controller="popup"
+                            data-action="click@window->popup#close"
+                        >
+                            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
+                                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
+                                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
+                                    <span class="sr-only">
+                                        <?= _('Open the menu') ?>
+                                    </span>
+                                </button>
+                            </summary>
 
-                    <div></div>
+                            <nav class="popup__container popup__container--over">
+                                <button
+                                    class="popup__item popup__item--button icon icon--pencil"
+                                    data-controller="modal-opener"
+                                    data-action="modal-opener#fetch"
+                                    data-modal-opener-href="<?= url('edit link', ['id' => $link->id, 'from' => url('collection', ['id' => $collection->id])]) ?>"
+                                    aria-haspopup="dialog"
+                                    aria-controls="modal"
+                                >
+                                    <?= _('Edit') ?>
+                                </button>
 
-                    <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
-                        <?= _('see') ?>
+                                <div data-controller="copy-to-clipboard">
+                                    <input type="hidden" value="<?= $link->url ?>" data-target="copy-to-clipboard.copyable" />
+
+                                    <button
+                                        class="popup__item popup__item--button share__button icon icon--copy-to-clipboard"
+                                        data-action="copy-to-clipboard#copy"
+                                        data-target="copy-to-clipboard.feedback"
+                                    >
+                                        <?= _('Copy the external link') ?>
+                                    </button>
+                                </div>
+                            </nav>
+                        </details>
+
+                        <button
+                            class="button--ghost button--smaller"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href="<?= url('link collections', ['id' => $link->id, 'from' => url('collection', ['id' => $collection->id])]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                            title="<?= _('Manage collections') ?>"
+                        >
+                            <i class="icon icon--only icon--collection"></i>
+                            <span class="sr-only">
+                                <?= _('Manage collections') ?>
+                            </span>
+                        </button>
+                    </div>
+
+                    <a
+                        class="anchor--action icon icon--anchor icon--pop-out"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="<?= $link->url ?>"
+                    >
+                        <?= _('read') ?>
                     </a>
                 </div>
             </div>

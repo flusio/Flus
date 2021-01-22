@@ -23,26 +23,18 @@
         <h1><?= $this->protect($link->title) ?></h1>
     </div>
 
-    <?php if ($link->is_public): ?>
-        <p class="paragraph--centered">
-            <span class="sticker">
-                <?= _('public') ?>
-            </span>
-        </p>
-    <?php endif; ?>
-
     <section class="link__meta">
         <p class="link__details">
+            <?php if ($link->is_public): ?>
+                <span class="link__public sticker">
+                    <?= _('public') ?>
+                </span>
+            <?php endif; ?>
+
             <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
         </p>
 
         <ul class="link__actions">
-            <li class="link__action">
-                <a href="<?= url('sharing link', ['id' => $link->id]) ?>">
-                    <?= _('share') ?>
-                </a>
-            </li>
-
             <li class="link__action">
                 <a
                     class="anchor--action icon icon--anchor icon--pop-out"
@@ -55,49 +47,6 @@
             </li>
         </ul>
     </section>
-
-    <div class="paragraph--centered">
-        <button
-            data-controller="modal-opener"
-            data-action="modal-opener#fetch"
-            data-modal-opener-href="<?= url('edit link', ['id' => $link->id]) ?>"
-            aria-haspopup="dialog"
-            aria-controls="modal"
-        >
-            <?= _('Edit') ?>
-        </button>
-    </div>
-
-    <section class="subsection subsection--small">
-        <header class="subsection__header header">
-            <div class="header__container header__container--centered">
-                <h2 class="subsection__title"><?= _('Collections') ?></h2>
-
-                <button
-                    class="button--ghost button--smaller"
-                    data-controller="modal-opener"
-                    data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('link collections', ['id' => $link->id]) ?>"
-                    title="<?= _('Manage') ?>"
-                    aria-label="<?= _('Manage') ?>"
-                    aria-haspopup="dialog"
-                    aria-controls="modal"
-                >
-                    <i class="icon icon--only icon--cog"></i>
-                </button>
-            </div>
-        </header>
-
-        <ul class="list list--no-style">
-            <?php foreach ($collections as $collection): ?>
-                <li class="list__item icon <?= $collection->type === 'bookmarks' ? 'icon--bookmark' : 'icon--collection' ?>">
-                    <?= $this->protect($collection->name()) ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    </section>
-
-    <hr />
 
     <section class="subsection subsection--small" id="messages">
         <?php foreach ($messages as $message): ?>

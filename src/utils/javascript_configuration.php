@@ -1,8 +1,7 @@
 <?php
 
 $translations = [
-    'copied',
-    'copy',
+    'Copied',
     'Unselect',
     'Unselect this collection',
     'Hide',

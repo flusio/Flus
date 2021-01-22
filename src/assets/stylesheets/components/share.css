@@ -19,24 +19,6 @@
     flex: 1;
 }
 
-.share__button {
-    margin-top: var(--space-small);
-
-    background-color: var(--color-purple-1);
-    border-color: var(--color-purple-3);
-}
-
-@media (min-width: 800px) {
-    .share__button {
-        margin-top: 0;
-    }
-}
-
-.copy--success .share__button {
-    background-color: var(--color-white);
-    border-color: var(--border-active-color);
-}
-
 .copy--success .share__button::before {
     background-image: url("../../icons/core/check-line.svg");
 }

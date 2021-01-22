@@ -69,7 +69,8 @@
 }
 
 .subsection {
-    margin-top: var(--space-larger);
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
 }
 
 .subsection--small {

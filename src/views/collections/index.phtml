@@ -37,10 +37,8 @@
                             <?= $this->protect($collection->name) ?>
                         </a>
                     </h2>
-                </div>
 
-                <div class="card__footer">
-                    <p class="card__details">
+                    <p class="card__text">
                         <?php if ($collection->number_links === 0): ?>
                             <?= _('no links') ?>
                         <?php else: ?>
@@ -48,9 +46,15 @@
                         <?php endif; ?>
 
                         <?php if ($collection->is_public): ?>
-                            · <?= _('public') ?>
+                            <span class="sticker sticker--right">
+                                <?= _('public') ?>
+                            </span>
                         <?php endif; ?>
                     </p>
+                </div>
+
+                <div class="card__footer">
+                    <div></div>
 
                     <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
                         <?= _('see') ?>
@@ -85,19 +89,19 @@
                             </a>
                         </h2>
 
-                        <p class="card__ellipsis">
-                            <?= _f('Created by %s', $this->protect($collection->owner()->username)) ?>
-                        </p>
-                    </div>
-
-                    <div class="card__footer">
-                        <p class="card__details">
+                        <p class="card__text">
                             <?php if ($collection->number_links === 0): ?>
                                 <?= _('no links') ?>
                             <?php else: ?>
                                 <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
                             <?php endif; ?>
+
+                            · <?= _f('created by %s', $this->protect($collection->owner()->username)) ?>
                         </p>
+                    </div>
+
+                    <div class="card__footer">
+                        <div></div>
 
                         <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
                             <?= _('see') ?>

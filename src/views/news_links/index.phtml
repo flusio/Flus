@@ -62,12 +62,12 @@
                             </a>
                         </h2>
 
-                        <p class="card__details">
+                        <p class="card__text card__text--oneline">
                             <span class="card__ellipsis"><?= $this->protect($news_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
                         </p>
 
                         <?php if ($news_link->url_in_bookmarks): ?>
-                            <p>
+                            <p class="card__text">
                                 <?= _('In your bookmarks') ?>
 
                                 <?php if ($news_link->url_collections_count > 0): ?>
@@ -82,7 +82,7 @@
                                 (<a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>"><?= _('see') ?></a>)
                             </p>
                         <?php elseif ($news_link->url_collections_count > 0): ?>
-                            <p>
+                            <p class="card__text">
                                 <?= _nf(
                                     'In %d collection',
                                     'In %d collections',
@@ -97,7 +97,7 @@
                         <?php $matching_followed_links = $news_link->matchingFollowedLinks(); ?>
                         <?php $count_followed_links = count($matching_followed_links); ?>
                         <?php if ($matching_followed_links): ?>
-                            <p>
+                            <p class="card__text">
                                 <?php $usernames = array_map(function ($link) { return $link->owner()->username; }, $matching_followed_links); ?>
                                 <?= $this->protect(human_implode($usernames, ', ', _(' and '))) ?>
 

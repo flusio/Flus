@@ -30,8 +30,14 @@
         </div>
 
         <?php foreach ($links as $link): ?>
-            <div class="card" data-controller="link-card">
-                <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+            <div class="card">
+                <a
+                    class="anchor--hidden"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    tabindex="-1"
+                    href="<?= $link->url ?>"
+                >
                     <?php if ($link->image_filename): ?>
                         <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
                     <?php else: ?>
@@ -41,50 +47,95 @@
 
                 <div class="card__body">
                     <h2 class="card__title">
-                        <a class="anchor--hidden" href="<?= url('link', ['id' => $link->id]) ?>" tabindex="-1">
+                        <a
+                            class="anchor--hidden"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            tabindex="-1"
+                            href="<?= $link->url ?>"
+                        >
                             <?= $this->protect($link->title) ?>
                         </a>
                     </h2>
 
-                    <p class="card__details">
+                    <p class="card__text card__text--oneline">
                         <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                    </p>
+
+                    <p class="card__text">
+                        <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $link->id]) ?>">
+                            <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
+                        </a>
                     </p>
                 </div>
 
                 <div class="card__footer">
-                    <form
-                        method="post"
-                        action="<?= url('unbookmark link', ['id' => $link->id]) ?>"
-                        data-action="link-card#unbookmark"
-                    >
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                    <div class="card__footer-group">
+                        <details
+                            class="popup"
+                            data-controller="popup"
+                            data-action="click@window->popup#close"
+                        >
+                            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
+                                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
+                                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
+                                    <span class="sr-only">
+                                        <?= _('Open the menu') ?>
+                                    </span>
+                                </button>
+                            </summary>
+
+                            <nav class="popup__container popup__container--over">
+                                <button
+                                    class="popup__item popup__item--button icon icon--pencil"
+                                    data-controller="modal-opener"
+                                    data-action="modal-opener#fetch"
+                                    data-modal-opener-href="<?= url('edit link', ['id' => $link->id, 'from' => url('bookmarks')]) ?>"
+                                    aria-haspopup="dialog"
+                                    aria-controls="modal"
+                                >
+                                    <?= _('Edit') ?>
+                                </button>
+
+                                <div data-controller="copy-to-clipboard">
+                                    <input type="hidden" value="<?= $link->url ?>" data-target="copy-to-clipboard.copyable" />
+
+                                    <button
+                                        class="popup__item popup__item--button share__button icon icon--copy-to-clipboard"
+                                        data-action="copy-to-clipboard#copy"
+                                        data-target="copy-to-clipboard.feedback"
+                                    >
+                                        <?= _('Copy the external link') ?>
+                                    </button>
+                                </div>
+                            </nav>
+                        </details>
 
                         <button
                             class="button--ghost button--smaller"
-                            title="<?= _('Remove from bookmarks') ?>"
-                            aria-label="<?= _('Remove from bookmarks') ?>"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href="<?= url('link collections', ['id' => $link->id, 'from' => url('bookmarks')]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                            title="<?= _('Manage collections') ?>"
                         >
-                            <i class="icon icon--only icon--ghost icon--times"></i>
+                            <i class="icon icon--only icon--collection"></i>
+                            <span class="sr-only">
+                                <?= _('Manage collections') ?>
+                            </span>
                         </button>
-                    </form>
+                    </div>
 
-                    <a class="anchor--action" href="<?= url('link', ['id' => $link->id]) ?>">
-                        <?= _('see') ?>
-                    </a>
-                </div>
 
-                <div class="card__mask" data-target="link-card.mask">
-                    <form
-                        method="post"
-                        action="<?= url('bookmark link', ['id' => $link->id]) ?>"
-                        data-action="link-card#bookmark"
+                    <a
+                        class="anchor--action icon icon--anchor icon--pop-out"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="<?= $link->url ?>"
                     >
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                        <button class="button--ghost button--small">
-                            <?= _('Cancel?') ?>
-                        </button>
-                    </form>
+                        <?= _('read') ?>
+                    </a>
                 </div>
             </div>
         <?php endforeach; ?>

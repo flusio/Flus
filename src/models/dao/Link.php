@@ -28,14 +28,19 @@ class Link extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listByCollectionId($collection_id)
+    public function listByCollectionIdWithNumberComments($collection_id)
     {
         $sql = <<<'SQL'
-            SELECT * FROM links WHERE id IN (
-                SELECT link_id FROM links_to_collections
-                WHERE collection_id = ?
+            SELECT l.*, (
+                SELECT COUNT(*) FROM messages m
+                WHERE m.link_id = l.id
+            ) AS number_comments
+            FROM links l
+            WHERE l.id IN (
+                SELECT lc.link_id FROM links_to_collections lc
+                WHERE lc.collection_id = ?
             )
-            ORDER BY created_at DESC
+            ORDER BY l.created_at DESC
         SQL;
 
         $statement = $this->prepare($sql);
@@ -50,14 +55,20 @@ class Link extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listPublicByCollectionId($collection_id)
+    public function listPublicByCollectionIdWithNumberComments($collection_id)
     {
         $sql = <<<'SQL'
-            SELECT * FROM links WHERE id IN (
-                SELECT link_id FROM links_to_collections
-                WHERE collection_id = ? AND is_public = '1'
+            SELECT l.*, (
+                SELECT COUNT(*) FROM messages m
+                WHERE m.link_id = l.id
+            ) AS number_comments
+            FROM links l
+            WHERE l.id IN (
+                SELECT lc.link_id FROM links_to_collections lc
+                WHERE lc.collection_id = ?
             )
-            ORDER BY created_at DESC
+            AND l.is_public = '1'
+            ORDER BY l.created_at DESC
         SQL;
 
         $statement = $this->prepare($sql);
