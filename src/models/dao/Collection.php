@@ -117,13 +117,15 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Return public collections randomly.
+     * Return collections discoverable by the given user.
      *
      * @param string $user_id
+     * @param integer $pagination_offset
+     * @param integer $pagination_limit
      *
      * @return array
      */
-    public function listForDiscovering($user_id)
+    public function listForDiscovering($user_id, $pagination_offset, $pagination_limit)
     {
         $sql = <<<SQL
             SELECT c.*, COUNT(l.id) AS number_links
@@ -139,14 +141,46 @@ class Collection extends \Minz\DatabaseModel
 
             GROUP BY c.id
 
-            ORDER BY random()
-            LIMIT 25
+            ORDER BY c.name
+            OFFSET :offset
+            LIMIT :limit
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':offset' => $pagination_offset,
+            ':limit' => $pagination_limit,
+        ]);
+        return $statement->fetchAll();
+    }
+
+    /**
+     * Return total count of collections discoverable by the given user.
+     *
+     * @param string $user_id
+     *
+     * @return integer
+     */
+    public function countForDiscovering($user_id)
+    {
+        $sql = <<<SQL
+            SELECT COUNT(DISTINCT c.id)
+            FROM collections c, links l, links_to_collections lc
+
+            WHERE lc.collection_id = c.id
+            AND lc.link_id = l.id
+
+            AND l.is_public = true
+            AND c.is_public = true
+
+            AND c.user_id != :user_id
         SQL;
 
         $statement = $this->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
         ]);
-        return $statement->fetchAll();
+        return intval($statement->fetchColumn());
     }
 }

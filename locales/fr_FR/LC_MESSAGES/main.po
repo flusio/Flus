@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-01-25 14:27+0100\n"
-"PO-Revision-Date: 2021-01-25 14:27+0100\n"
+"POT-Creation-Date: 2021-01-26 09:47+0100\n"
+"PO-Revision-Date: 2021-01-26 09:47+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,8 +15,8 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Collections.php:122 Collections.php:315 Collections.php:506
-#: Collections.php:559 LinkMessages.php:70 Links.php:179
+#: Collections.php:122 Collections.php:315 Collections.php:522
+#: Collections.php:575 LinkMessages.php:70 Links.php:179
 #: NewsLinkRemovals.php:133 NewsLinks.php:119 NewsLinks.php:182
 #: Registrations.php:97 Sessions.php:82 my/Account.php:175 my/Account.php:246
 #: my/Profile.php:85 my/Security.php:79 my/Security.php:139
@@ -468,7 +468,15 @@ msgstr "suivie"
 msgid "see"
 msgstr "voir"
 
-#: views/collections/discover.phtml:60
+#: views/collections/discover.phtml:64 views/collections/discover.phtml:69
+msgid "Previous"
+msgstr "Précédent"
+
+#: views/collections/discover.phtml:90 views/collections/discover.phtml:95
+msgid "Next"
+msgstr "Suivant"
+
+#: views/collections/discover.phtml:104
 msgid "The community didn’t publish any collection yet. Will you be the first?"
 msgstr ""
 "La communauté n’a pas encore publié de collection. Serez-vous le ou la "

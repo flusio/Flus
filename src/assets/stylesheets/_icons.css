@@ -81,6 +81,10 @@
 }
 
 /* Core */
+.icon--angle::before {
+    background-image: url("../icons/core/angle-line.svg");
+}
+
 .icon--avatar::before {
     background-image: url("../icons/core/avatar-line.svg");
 }

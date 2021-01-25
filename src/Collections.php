@@ -433,14 +433,17 @@ class Collections
     /**
      * Show the discovering page
      *
+     * @request_param integer page
+     *
      * @response 302 /login?redirect_to=/collections/discover if not connected
+     * @response 302 /collections/discover?page=:bounded_page if :page is invalid
      * @response 200
      *
      * @param \Minz\Request $request
      *
      * @return \Minz\Response
      */
-    public function discover()
+    public function discover($request)
     {
         $user = utils\CurrentUser::get();
         if (!$user) {
@@ -450,7 +453,19 @@ class Collections
         }
 
         $collection_dao = new models\dao\Collection();
-        $db_collections = $collection_dao->listForDiscovering($user->id);
+        $number_collections = $collection_dao->countForDiscovering($user->id);
+
+        $pagination_page = intval($request->param('page', 1));
+        $pagination = new utils\Pagination($number_collections, 30, $pagination_page);
+        if ($pagination_page !== $pagination->currentPage()) {
+            return Response::redirect('discover collections', ['page' => $pagination->currentPage()]);
+        }
+
+        $db_collections = $collection_dao->listForDiscovering(
+            $user->id,
+            $pagination->currentOffset(),
+            $pagination->numberPerPage()
+        );
         $collections = [];
         foreach ($db_collections as $db_collection) {
             $collections[] = new models\Collection($db_collection);
@@ -459,6 +474,7 @@ class Collections
 
         return Response::ok('collections/discover.phtml', [
             'collections' => $collections,
+            'pagination' => $pagination,
         ]);
     }
 
