@@ -107,7 +107,7 @@
     padding: var(--space-medium) var(--space-smaller) var(--space-large);
 
     background-color: var(--color-white);
-    box-shadow: 0 1px 2px 1px var(--color-grey-3);
+    box-shadow: 0 1px 2px 1px var(--color-grey-2);
 }
 
 .layout--connected .layout__content {
