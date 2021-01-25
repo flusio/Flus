@@ -118,7 +118,8 @@
 
 @media (min-width: 800px) {
     .layout__content {
-        padding: var(--space-medium) var(--space-large) var(--space-large);
+        padding-right: var(--space-large);
+        padding-left: var(--space-large);
 
         border-radius: 0.5rem;
     }

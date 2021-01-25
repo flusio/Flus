@@ -6,14 +6,21 @@
 
 .section__image {
     display: block;
-    width: calc(100% + 2 * var(--space-large));
+    width: calc(100% + 2 * var(--space-smaller));
     margin-top: calc(var(--space-medium) * -1);
     margin-bottom: var(--space-medium);
-    margin-left: calc(var(--space-large) * -1);
-
-    border-radius: 0.5rem 0.5rem 0 0;
+    margin-left: calc(var(--space-smaller) * -1);
 
     filter: blur(0.7px);
+}
+
+@media (min-width: 800px) {
+    .section__image {
+        width: calc(100% + 2 * var(--space-large));
+        margin-left: calc(var(--space-large) * -1);
+
+        border-radius: 0.5rem 0.5rem 0 0;
+    }
 }
 
 .section__title {
