@@ -9,7 +9,7 @@
 
     width: 100%;
 
-    background: radial-gradient(circle at top, var(--color-turquoise-3) 60%, var(--color-turquoise-4));
+    background: var(--color-turquoise-3);
     box-shadow: 0 0 5px var(--color-grey-4);
 }
 
@@ -17,6 +17,7 @@
     .layout--connected .layout__header {
         position: static;
 
+        background: radial-gradient(circle at top, var(--color-turquoise-3) 60%, var(--color-turquoise-4));
         box-shadow: none;
     }
 
