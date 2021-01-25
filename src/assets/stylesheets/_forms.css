@@ -81,7 +81,7 @@ input[type="checkbox"] + label::before {
     height: 2.5rem;
     margin-right: var(--space-small);
 
-    vertical-align: middle;
+    flex-shrink: 0;
 
     background-color: var(--color-white);
     border: var(--border-width) solid var(--border-color);
