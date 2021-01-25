@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-01-25 10:47+0100\n"
-"PO-Revision-Date: 2021-01-25 10:47+0100\n"
+"POT-Creation-Date: 2021-01-25 10:58+0100\n"
+"PO-Revision-Date: 2021-01-25 11:00+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: Collections.php:122 Collections.php:315 Collections.php:506
 #: Collections.php:559 LinkMessages.php:70 Links.php:179
 #: NewsLinkRemovals.php:133 NewsLinks.php:119 NewsLinks.php:182
-#: Registrations.php:95 Sessions.php:82 my/Account.php:175 my/Account.php:246
+#: Registrations.php:97 Sessions.php:82 my/Account.php:175 my/Account.php:246
 #: my/Profile.php:85 my/Security.php:79 my/Security.php:139
 #: my/Subscription.php:73
 msgid "A security verification failed: you should retry to submit the form."
@@ -61,11 +61,11 @@ msgstr "Le lien n’existe pas."
 msgid "“%s”"
 msgstr "« %s »"
 
-#: Registrations.php:120 my/Security.php:91
+#: Registrations.php:122 my/Security.php:91
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:132
+#: Registrations.php:134
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
@@ -890,7 +890,7 @@ msgstr "Vous pouvez changer vos identifiants de connexion ici."
 msgid "Your email address"
 msgstr "Votre adresse courriel"
 
-#: views/my/security/show_confirmed.phtml:31 views/registrations/new.phtml:53
+#: views/my/security/show_confirmed.phtml:31
 msgid "We’ll only use it to send you important emails."
 msgstr "Nous vous enverrons seulement des courriels importants."
 
@@ -1315,6 +1315,14 @@ msgstr "retour à l’inscription"
 #: views/registrations/new.phtml:23
 msgid "How should we name you?"
 msgstr "Comment devons-nous vous appeler ?"
+
+#: views/registrations/new.phtml:53
+msgid ""
+"We only send emails necessary for the operation of the service, or in the "
+"event of a problem with your account."
+msgstr ""
+"Nous n’y enverrons que des courriels nécessaires au fonctionnement du "
+"service, ou en cas de problème avec votre compte."
 
 #: views/registrations/new.phtml:73
 msgid "And a password"
