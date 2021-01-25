@@ -36,6 +36,7 @@ class Application
         $router = new \Minz\Router();
         $router->addRoute('get', '/', 'Pages#home', 'home');
         $router->addRoute('get', '/terms', 'Pages#terms', 'terms');
+        $router->addRoute('get', '/app.webmanifest', 'Pages#webmanifest', 'webmanifest');
 
         // Registration
         $router->addRoute('get', '/registration', 'Registrations#new', 'registration');

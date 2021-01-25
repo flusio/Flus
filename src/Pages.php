@@ -54,6 +54,18 @@ class Pages
     }
 
     /**
+     * Show the webmanifest page.
+     *
+     * @response 200
+     */
+    public function webmanifest()
+    {
+        $response = Response::ok('pages/webmanifest.json');
+        $response->setHeader('Content-Type', 'application/manifest+json');
+        return $response;
+    }
+
+    /**
      * Show the design page.
      *
      * @response 200
