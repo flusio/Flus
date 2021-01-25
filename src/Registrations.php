@@ -50,11 +50,13 @@ class Registrations
      * @request_param string email
      * @request_param string username
      * @request_param string password
+     * @request_param string accept_terms
      *
      * @response 302 / if already connected
      * @response 302 /login if registrations are closed
      * @response 400 if CSRF token is wrong
      * @response 400 if email, username or password is missing/invalid
+     * @response 400 if the service has terms of service and accept_terms is false
      * @response 400 if email already exists
      * @response 302 /onboarding
      *

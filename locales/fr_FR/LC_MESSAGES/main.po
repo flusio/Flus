@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-01-22 15:21+0100\n"
-"PO-Revision-Date: 2021-01-22 15:22+0100\n"
+"POT-Creation-Date: 2021-01-25 10:47+0100\n"
+"PO-Revision-Date: 2021-01-25 10:47+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1100,6 +1100,7 @@ msgstr ""
 
 #: views/onboarding/step1.phtml:58 views/onboarding/step2.phtml:37
 #: views/onboarding/step3.phtml:79 views/onboarding/step4.phtml:52
+#: views/onboarding/step4.phtml:102
 msgid "Continue"
 msgstr "Continuer"
 
@@ -1326,12 +1327,12 @@ msgstr "Un mot de passe robuste fait au moins 8 caractères."
 #: views/registrations/new.phtml:110
 #, php-format
 msgid ""
-"Before going any further, you should read <a href=\"%s\" target=\"_blank"
-"\">the terms of service</a> to make sure they are suitable for you."
+"Before going any further, please read <a href=\"%s\" target=\"_blank\">the "
+"terms of service</a> to make sure they are suitable for you."
 msgstr ""
-"Avant d’aller plus loin, vous devriez prendre le temps de lire <a href=\"%s"
-"\" target=\"_blank\">les conditions générales d’utilisation</a> pour vous "
-"assurer que celles-ci vous conviennent."
+"Avant d’aller plus loin, prenez le temps de lire <a href=\"%s\" target="
+"\"_blank\">les conditions générales d’utilisation</a> pour vous assurer que "
+"celles-ci vous conviennent."
 
 #: views/registrations/new.phtml:121
 msgid "Accept the terms of service"
