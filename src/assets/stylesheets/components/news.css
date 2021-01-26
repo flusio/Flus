@@ -6,7 +6,6 @@
 
 .news__postpone {
     margin-top: var(--space-large);
-    margin-bottom: var(--space-large);
     padding: var(--space-medium);
 
     text-align: center;
@@ -14,6 +13,12 @@
     background: radial-gradient(circle at top, var(--color-purple-1) 80%, var(--color-purple-2));
     box-shadow: 0 1px 4px 1px var(--color-purple-2);
     border-radius: var(--border-radius);
+}
+
+@media (min-width: 800px) {
+    .news__postpone {
+        margin-bottom: calc(var(--space-larger) * 2);
+    }
 }
 
 .news__postpone-popup .popup__container {
