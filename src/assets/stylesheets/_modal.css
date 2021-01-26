@@ -28,7 +28,7 @@
 
 .modal__box {
     max-width: var(--content-width);
-    margin: var(--space-medium) auto;
+    margin: var(--space-medium) auto var(--space-larger);
 
     background-color: var(--color-white);
     box-shadow: 0 0 10px var(--color-grey-7);
@@ -37,7 +37,6 @@
 @media (min-width: 800px) {
     .modal__box {
         margin-top: var(--space-larger);
-        margin-bottom: var(--space-larger);
     }
 }
 
