@@ -64,6 +64,38 @@
                         <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
                             <?= format_message_date($message->created_at) ?>
                         </time>
+
+                        <details
+                            class="popup"
+                            data-controller="popup"
+                            data-action="click@window->popup#close"
+                        >
+                            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
+                                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
+                                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
+                                    <span class="sr-only">
+                                        <?= _('Open the menu') ?>
+                                    </span>
+                                </button>
+                            </summary>
+
+                            <nav class="popup__container popup__container--left">
+                                <form
+                                    method="post"
+                                    action="<?= url('delete message', ['id' => $message->id]) ?>"
+                                    data-controller="confirmation"
+                                    data-action="confirmation#confirm"
+                                    data-message="<?= _('Are you sure that you want to delete this message?') ?>"
+                                >
+                                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                    <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />
+
+                                    <button type="submit" class="popup__item popup__item--button icon icon--trash">
+                                        <?= _('Delete') ?>
+                                    </button>
+                                </form>
+                            </nav>
+                        </details>
                     </div>
                 </header>
 

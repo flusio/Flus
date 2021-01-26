@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-01-26 15:10+0100\n"
-"PO-Revision-Date: 2021-01-26 15:10+0100\n"
+"POT-Creation-Date: 2021-01-26 15:54+0100\n"
+"PO-Revision-Date: 2021-01-26 15:54+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -31,8 +31,8 @@ msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
 #: Collections.php:389 LinkCollections.php:100 Links.php:323 Links.php:375
-#: Links.php:454 NewsLinkRemovals.php:225 NewsLinkRemovals.php:296
-#: NewsLinkRemovals.php:379 Sessions.php:192
+#: Links.php:454 Messages.php:45 NewsLinkRemovals.php:225
+#: NewsLinkRemovals.php:296 NewsLinkRemovals.php:379 Sessions.php:192
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -322,7 +322,8 @@ msgstr "Collections"
 #: views/_layouts/connected_blocked.phtml:92
 #: views/_layouts/connected_blocked.phtml:97 views/collections/show.phtml:123
 #: views/collections/show.phtml:127 views/collections/show_bookmarks.phtml:79
-#: views/collections/show_bookmarks.phtml:83
+#: views/collections/show_bookmarks.phtml:83 views/links/show.phtml:73
+#: views/links/show.phtml:77
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
@@ -706,15 +707,23 @@ msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
 msgid "or"
 msgstr "ou"
 
-#: views/links/show.phtml:88 views/news_link_removals/adding.phtml:73
+#: views/links/show.phtml:88
+msgid "Are you sure that you want to delete this message?"
+msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
+
+#: views/links/show.phtml:94
+msgid "Delete"
+msgstr "Supprimer"
+
+#: views/links/show.phtml:120 views/news_link_removals/adding.phtml:73
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
-#: views/links/show.phtml:90
+#: views/links/show.phtml:122
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:109
+#: views/links/show.phtml:141
 msgid "Comment"
 msgstr "Commenter"
 

@@ -2,11 +2,8 @@
     margin-bottom: var(--space-large);
 }
 
-.message__header {
-    font-size: var(--size-small);
-}
-
 .message__author {
+    font-size: var(--size-small);
     font-weight: bold;
 }
 
@@ -19,6 +16,7 @@
 
 .message__date {
     color: var(--color-text-secondary);
+    font-size: var(--size-small);
 }
 
 .message__content {

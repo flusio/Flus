@@ -119,6 +119,7 @@ class Application
         // Messages
         $router->addRoute('get', '/links/:link_id/messages', 'LinkMessages#index', 'links/messages');
         $router->addRoute('post', '/links/:link_id/messages', 'LinkMessages#create', 'links/create message');
+        $router->addRoute('post', '/messages/:id/delete', 'Messages#delete', 'delete message');
 
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');
