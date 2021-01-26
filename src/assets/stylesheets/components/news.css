@@ -1,3 +1,9 @@
+.news__via {
+    margin-top: calc(var(--space-small) * -1);
+
+    font-style: italic;
+}
+
 .news__postpone {
     margin-top: var(--space-large);
     margin-bottom: var(--space-large);

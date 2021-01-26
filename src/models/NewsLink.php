@@ -37,6 +37,18 @@ class NewsLink extends \Minz\Model
             'type' => 'string',
         ],
 
+        'via_type' => [
+            'type' => 'string',
+        ],
+
+        'via_collection_id' => [
+            'type' => 'string',
+        ],
+
+        'via_link_id' => [
+            'type' => 'string',
+        ],
+
         'is_read' => [
             'type' => 'boolean',
             'required' => true,
@@ -52,12 +64,7 @@ class NewsLink extends \Minz\Model
             'required' => true,
         ],
 
-        'url_in_bookmarks' => [
-            'type' => 'boolean',
-            'computed' => true,
-        ],
-
-        'url_collections_count' => [
+        'number_comments' => [
             'type' => 'integer',
             'computed' => true,
         ],
@@ -77,44 +84,40 @@ class NewsLink extends \Minz\Model
             'reading_time' => $link->reading_time,
             'image_filename' => $link->image_filename,
             'user_id' => $user_id,
+            'via_type' => $link->news_via_type,
+            'via_link_id' => $link->id,
+            'via_collection_id' => $link->news_via_collection_id,
             'is_read' => false,
             'is_removed' => false,
         ]);
     }
 
     /**
-     * Return a Link matching news URL and user_id, if any.
-     *
-     * @return \flusio\models\Link|null
+     * @return \flusio\models\Collection|null
      */
-    public function matchingLink()
+    public function viaCollection()
     {
-        $link_dao = new dao\Link();
-        $db_link = $link_dao->findBy([
-            'url' => $this->url,
-            'user_id' => $this->user_id,
-        ]);
-        if ($db_link) {
-            return new Link($db_link);
-        } else {
+        if (!$this->via_collection_id) {
             return null;
         }
+
+        $collection_dao = new dao\Collection();
+        $db_collection = $collection_dao->find($this->via_collection_id);
+        return new Collection($db_collection);
     }
 
     /**
-     * Return the links matching news URL in current user's followed collections.
-     *
-     * @return \flusio\models\Link[]
+     * @return \flusio\models\Link|null
      */
-    public function matchingFollowedLinks()
+    public function viaLink()
     {
-        $link_dao = new dao\Link();
-        $db_links = $link_dao->listFromFollowedByUrl($this->user_id, $this->url);
-        $links = [];
-        foreach ($db_links as $db_link) {
-            $links[] = new Link($db_link);
+        if (!$this->via_link_id) {
+            return null;
         }
-        return $links;
+
+        $link_dao = new dao\Link();
+        $db_link = $link_dao->find($this->via_link_id);
+        return new Link($db_link);
     }
 
     /**

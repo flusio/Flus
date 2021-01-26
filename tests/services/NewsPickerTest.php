@@ -56,6 +56,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $db_links = $news_picker->pick();
 
         $this->assertSame(1, count($db_links));
+        $this->assertSame('bookmarks', $db_links[0]['news_via_type']);
     }
 
     public function testPickSelectsFromFollowed()
@@ -83,6 +84,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $db_links = $news_picker->pick();
 
         $this->assertSame(1, count($db_links));
+        $this->assertSame('followed', $db_links[0]['news_via_type']);
+        $this->assertSame($collection_id, $db_links[0]['news_via_collection_id']);
     }
 
     public function testPickSelectsFromTopics()
@@ -138,6 +141,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         // associated to topic1
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id1, $db_links[0]['id']);
+        $this->assertSame('topics', $db_links[0]['news_via_type']);
+        $this->assertSame($collection_id1, $db_links[0]['news_via_collection_id']);
     }
 
     public function testPickSelectsForAtLeastMinimumDurationOfReading()

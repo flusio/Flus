@@ -22,6 +22,34 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return link with given id, with computed number_comments
+     *
+     * @param string $link_id
+     *
+     * @return array
+     */
+    public function findWithNumberComments($link_id)
+    {
+        $sql = <<<'SQL'
+            SELECT l.*, (
+                SELECT COUNT(*) FROM messages m
+                WHERE m.link_id = l.id
+            ) AS number_comments
+            FROM links l
+            WHERE l.id = ?
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([$link_id]);
+        $result = $statement->fetch();
+        if ($result) {
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Return links within the given collection
      *
      * @param string $collection_id
@@ -77,42 +105,6 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return public links with same URL, listed in followed collections of the
-     * given user.
-     *
-     * @param string $user_id
-     * @param string $url
-     *
-     * @return array
-     */
-    public function listFromFollowedByUrl($user_id, $url)
-    {
-        $sql = <<<SQL
-             SELECT l.* FROM links l, collections c, links_to_collections lc, followed_collections fc
-
-             WHERE fc.user_id = :user_id
-             AND fc.collection_id = lc.collection_id
-
-             AND lc.link_id = l.id
-             AND lc.collection_id = c.id
-
-             AND l.is_public = true
-             AND c.is_public = true
-
-             AND l.url = :url
-
-             GROUP BY l.id
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([
-            ':user_id' => $user_id,
-            ':url' => $url,
-        ]);
-        return $statement->fetchAll();
-    }
-
-    /**
      * Return links listed in bookmarks of the given user, ordered randomly.
      *
      * @param string $user_id
@@ -122,7 +114,8 @@ class Link extends \Minz\DatabaseModel
     public function listFromBookmarksForNews($user_id)
     {
         $sql = <<<'SQL'
-            SELECT l.* FROM links l, collections c, links_to_collections lc
+            SELECT l.*, 'bookmarks' AS news_via_type
+            FROM links l, collections c, links_to_collections lc
 
             WHERE lc.link_id = l.id
             AND lc.collection_id = c.id
@@ -156,26 +149,27 @@ class Link extends \Minz\DatabaseModel
     public function listFromFollowedCollectionsForNews($user_id)
     {
         $sql = <<<SQL
-             SELECT l.* FROM links l, collections c, links_to_collections lc, followed_collections fc
+            SELECT l.*, 'followed' AS news_via_type, c.id AS news_via_collection_id
+            FROM links l, collections c, links_to_collections lc, followed_collections fc
 
-             WHERE fc.user_id = :user_id
-             AND fc.collection_id = lc.collection_id
+            WHERE fc.user_id = :user_id
+            AND fc.collection_id = lc.collection_id
 
-             AND lc.link_id = l.id
-             AND lc.collection_id = c.id
+            AND lc.link_id = l.id
+            AND lc.collection_id = c.id
 
-             AND l.is_public = true
-             AND c.is_public = true
+            AND l.is_public = true
+            AND c.is_public = true
 
-             AND l.url NOT IN (
-                 SELECT nl.url FROM news_links nl
-                 WHERE nl.user_id = :user_id
-             )
+            AND l.url NOT IN (
+                SELECT nl.url FROM news_links nl
+                WHERE nl.user_id = :user_id
+            )
 
-             GROUP BY l.id
+            GROUP BY l.id, c.id
 
-             ORDER BY random()
-             LIMIT 500
+            ORDER BY random()
+            LIMIT 500
         SQL;
 
         $statement = $this->prepare($sql);
@@ -196,27 +190,28 @@ class Link extends \Minz\DatabaseModel
     public function listFromTopicsForNews($user_id)
     {
         $sql = <<<SQL
-             SELECT l.* FROM links l, links_to_collections lc, collections_to_topics ct
+            SELECT l.*, 'topics' AS news_via_type, ct.collection_id AS news_via_collection_id
+            FROM links l, links_to_collections lc, collections_to_topics ct
 
-             WHERE ct.topic_id IN (
+            WHERE ct.topic_id IN (
                 SELECT ut.topic_id FROM users_to_topics ut
                 WHERE ut.user_id = :user_id
-             )
+            )
 
-             AND ct.collection_id = lc.collection_id
-             AND lc.link_id = l.id
+            AND ct.collection_id = lc.collection_id
+            AND lc.link_id = l.id
 
-             AND l.is_public = true
-             AND l.user_id != :user_id
-             AND l.url NOT IN (
-                 SELECT nl.url FROM news_links nl
-                 WHERE nl.user_id = :user_id
-             )
+            AND l.is_public = true
+            AND l.user_id != :user_id
+            AND l.url NOT IN (
+                SELECT nl.url FROM news_links nl
+                WHERE nl.user_id = :user_id
+            )
 
-             GROUP BY l.id
+            GROUP BY l.id, ct.collection_id
 
-             ORDER BY random()
-             LIMIT 500
+            ORDER BY random()
+            LIMIT 500
         SQL;
 
         $statement = $this->prepare($sql);

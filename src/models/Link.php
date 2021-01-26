@@ -65,6 +65,16 @@ class Link extends \Minz\Model
             'computed' => true,
         ],
 
+        'news_via_type' => [
+            'type' => 'string',
+            'computed' => true,
+        ],
+
+        'news_via_collection_id' => [
+            'type' => 'string',
+            'computed' => true,
+        ],
+
         'news_value' => [
             'type' => 'integer',
             'computed' => true,

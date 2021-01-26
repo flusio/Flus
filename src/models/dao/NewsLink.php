@@ -31,21 +31,15 @@ class NewsLink extends \Minz\DatabaseModel
     public function listComputedByUserId($user_id)
     {
         $sql = <<<'SQL'
-            SELECT
-                nl.*,
-                SUM(CASE c.type WHEN 'collection' THEN 1 END) url_collections_count,
-                SUM(CASE c.type WHEN 'bookmarks' THEN 1 END) url_in_bookmarks
-
+            SELECT nl.*, (
+                SELECT COUNT(*) FROM messages m
+                WHERE m.link_id = nl.via_link_id
+            ) AS number_comments
             FROM news_links nl
-            LEFT JOIN links l ON nl.url = l.url AND l.user_id = :user_id
-            LEFT JOIN links_to_collections lc ON lc.link_id = l.id
-            LEFT JOIN collections c ON lc.collection_id = c.id AND c.user_id = :user_id
 
             WHERE nl.is_removed = false
             AND nl.is_read = false
             AND nl.user_id = :user_id
-
-            GROUP BY nl.id
         SQL;
 
         $statement = $this->prepare($sql);

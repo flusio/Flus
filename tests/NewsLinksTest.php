@@ -46,85 +46,46 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString($title_not_news_2, $response_output);
     }
 
-    public function testIndexShowsNumberOfCollections()
+    public function testIndexShowsIfViaBookmarks()
     {
         $user = $this->login();
         $url = $this->fake('url');
-        $this->create('news_link', [
-            'user_id' => $user->id,
-            'url' => $url,
-            'is_read' => 0,
-            'is_removed' => 0,
-        ]);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'url' => $url,
         ]);
         $collection_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
-        ]);
-
-        $response = $this->appRun('get', '/news');
-
-        $response_output = $response->render();
-        $this->assertStringContainsString('In 1 collection', $response_output);
-    }
-
-    public function testIndexShowsIfInBookmarks()
-    {
-        $user = $this->login();
-        $url = $this->fake('url');
-        $this->create('news_link', [
-            'user_id' => $user->id,
-            'url' => $url,
-            'is_read' => 0,
-            'is_removed' => 0,
-        ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $collection_id_1 = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
-        $collection_id_2 = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $collection_id_1,
+            'collection_id' => $collection_id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id_2,
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'url' => $url,
+            'is_read' => 0,
+            'is_removed' => 0,
+            'via_type' => 'bookmarks',
+            'via_link_id' => $link_id,
         ]);
 
         $response = $this->appRun('get', '/news');
 
         $response_output = $response->render();
-        $this->assertStringContainsString('In your bookmarks', $response_output);
-        $this->assertStringContainsString('and 1 collection', $response_output);
+        $this->assertStringContainsString('via your <strong>bookmarks</strong>', $response_output);
     }
 
-    public function testIndexRendersIfInFollowedCollections()
+    public function testIndexRendersIfViaFollowedCollections()
     {
         $user = $this->login();
         $url = $this->fake('url');
-        $this->create('news_link', [
-            'user_id' => $user->id,
-            'is_read' => 0,
-            'is_removed' => 0,
-            'url' => $url,
+        $collection_name = $this->fake('word');
+        $username = $this->fake('username');
+        $other_user_id = $this->create('user', [
+            'username' => $username,
         ]);
-
-        $other_user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
             'url' => $url,
@@ -132,23 +93,86 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
+            'name' => $collection_name,
             'is_public' => 1,
+            'type' => 'collection',
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
             'collection_id' => $collection_id,
         ]);
-
         $this->create('followed_collection', [
             'user_id' => $user->id,
             'collection_id' => $collection_id,
+        ]);
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'is_read' => 0,
+            'is_removed' => 0,
+            'url' => $url,
+            'via_type' => 'followed',
+            'via_link_id' => $link_id,
+            'via_collection_id' => $collection_id,
         ]);
 
         $response = $this->appRun('get', '/news');
 
         $this->assertResponse($response, 200);
         $response_output = $response->render();
-        $this->assertStringContainsString('added this link', $response_output);
+        $this->assertStringContainsString(
+            "via <strong>{$collection_name}</strong> by {$username}",
+            $response_output
+        );
+    }
+
+    public function testIndexRendersIfViaTopics()
+    {
+        $user = $this->login();
+        $url = $this->fake('url');
+        $username = $this->fake('username');
+        $other_user_id = $this->create('user', [
+            'username' => $username,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'url' => $url,
+            'is_public' => 1,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'is_public' => 1,
+            'type' => 'collection',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $topic_id = $this->create('topic');
+        $this->create('collection_to_topic', [
+            'collection_id' => $collection_id,
+            'topic_id' => $topic_id,
+        ]);
+        $this->create('user_to_topic', [
+            'user_id' => $user->id,
+            'topic_id' => $topic_id,
+        ]);
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'is_read' => 0,
+            'is_removed' => 0,
+            'url' => $url,
+            'via_type' => 'topics',
+            'via_link_id' => $link_id,
+        ]);
+
+        $response = $this->appRun('get', '/news');
+
+        $this->assertResponse($response, 200);
+        $response_output = $response->render();
+        $this->assertStringContainsString(
+            "via your <strong>points of interest</strong>, added by {$username}",
+            $response_output
+        );
     }
 
     public function testIndexRendersTipsIfNoNewsFlash()
@@ -437,6 +461,8 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/news');
         $news_link = $news_link_dao->findBy(['url' => $link_url]);
         $this->assertNotNull($news_link);
+        $this->assertSame('bookmarks', $news_link['via_type']);
+        $this->assertSame($link_id, $news_link['via_link_id']);
     }
 
     public function testFillSelectsLinksFromFollowedCollections()
@@ -473,6 +499,53 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $news_link = $news_link_dao->findBy(['url' => $link_url]);
         $this->assertNotNull($news_link);
         $this->assertSame($user->id, $news_link['user_id']);
+        $this->assertSame('followed', $news_link['via_type']);
+        $this->assertSame($collection_id, $news_link['via_collection_id']);
+        $this->assertSame($link_id, $news_link['via_link_id']);
+    }
+
+    public function testFillSelectsLinksFromTopics()
+    {
+        $news_link_dao = new models\dao\NewsLink();
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'url' => $link_url,
+            'reading_time' => 10,
+            'is_public' => 1,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $topic_id = $this->create('topic');
+        $this->create('collection_to_topic', [
+            'collection_id' => $collection_id,
+            'topic_id' => $topic_id,
+        ]);
+        $this->create('user_to_topic', [
+            'user_id' => $user->id,
+            'topic_id' => $topic_id,
+        ]);
+
+        $response = $this->appRun('post', '/news', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $news_link = $news_link_dao->findBy(['url' => $link_url]);
+        $this->assertNotNull($news_link);
+        $this->assertSame($user->id, $news_link['user_id']);
+        $this->assertSame('topics', $news_link['via_type']);
+        $this->assertSame($collection_id, $news_link['via_collection_id']);
+        $this->assertSame($link_id, $news_link['via_link_id']);
     }
 
     public function testFillSelectsLinksUpToAbout1Hour()

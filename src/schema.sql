@@ -89,6 +89,9 @@ CREATE TABLE news_links (
     url TEXT NOT NULL,
     reading_time INTEGER NOT NULL DEFAULT 0,
     image_filename TEXT,
+    via_type TEXT NOT NULL DEFAULT '',
+    via_link_id TEXT REFERENCES links ON DELETE SET NULL ON UPDATE CASCADE,
+    via_collection_id TEXT REFERENCES collections ON DELETE SET NULL ON UPDATE CASCADE,
     is_read BOOLEAN NOT NULL DEFAULT false,
     is_removed BOOLEAN NOT NULL DEFAULT false,
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE

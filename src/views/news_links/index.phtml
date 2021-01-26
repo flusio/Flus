@@ -66,46 +66,27 @@
                             <span class="card__ellipsis"><?= $this->protect($news_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
                         </p>
 
-                        <?php if ($news_link->url_in_bookmarks): ?>
+                        <p class="card__text news__via">
+                            <?php if ($news_link->via_type === 'bookmarks'): ?>
+                                <?= _('via your <strong>bookmarks</strong>') ?>
+                            <?php elseif ($news_link->via_type === 'topics' && $news_link->via_link_id): ?>
+                                <?php $via_link = $news_link->viaLink(); ?>
+                                <?= _f('via your <strong>points of interest</strong>, added by %s', $this->protect($via_link->owner()->username)) ?>
+                            <?php elseif ($news_link->via_type === 'topics'): ?>
+                                <?= _('via your <strong>points of interest</strong>') ?>
+                            <?php elseif ($news_link->via_type === 'followed' && $news_link->via_collection_id): ?>
+                                <?php $via_collection = $news_link->viaCollection(); ?>
+                                <?= _f('via <strong>%s</strong> by %s', $this->protect($via_collection->name()), $this->protect($via_collection->owner()->username)) ?>
+                            <?php elseif ($news_link->via_type === 'followed'): ?>
+                                <?= _('via a <strong>followed collection</strong> (now deleted)') ?>
+                            <?php endif; ?>
+                        </p>
+
+                        <?php if ($news_link->via_link_id): ?>
                             <p class="card__text">
-                                <?= _('In your bookmarks') ?>
-
-                                <?php if ($news_link->url_collections_count > 0): ?>
-                                    <?= _nf(
-                                        ' and %d collection',
-                                        ' and %d collections',
-                                        $news_link->url_collections_count,
-                                        $news_link->url_collections_count
-                                    ) ?>
-                                <?php endif; ?>
-
-                                (<a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>"><?= _('see') ?></a>)
-                            </p>
-                        <?php elseif ($news_link->url_collections_count > 0): ?>
-                            <p class="card__text">
-                                <?= _nf(
-                                    'In %d collection',
-                                    'In %d collections',
-                                    $news_link->url_collections_count,
-                                    $news_link->url_collections_count
-                                ) ?>
-
-                                (<a href="<?= url('link', ['id' => $news_link->matchingLink()->id]) ?>"><?= _('see') ?></a>)
-                            </p>
-                        <?php endif; ?>
-
-                        <?php $matching_followed_links = $news_link->matchingFollowedLinks(); ?>
-                        <?php $count_followed_links = count($matching_followed_links); ?>
-                        <?php if ($matching_followed_links): ?>
-                            <p class="card__text">
-                                <?php $usernames = array_map(function ($link) { return $link->owner()->username; }, $matching_followed_links); ?>
-                                <?= $this->protect(human_implode($usernames, ', ', _(' and '))) ?>
-
-                                <?php if ($news_link->url_in_bookmarks || $news_link->url_collections_count > 0): ?>
-                                    <?= _n('also added this link.', 'also added this link.', $count_followed_links) ?>
-                                <?php else: ?>
-                                    <?= _n('added this link.', 'added this link.', $count_followed_links) ?>
-                                <?php endif; ?>
+                                <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $news_link->via_link_id]) ?>">
+                                    <?= _nf('%d comment', '%d comments', $news_link->number_comments, $news_link->number_comments) ?>
+                                </a>
                             </p>
                         <?php endif; ?>
                     </div>
