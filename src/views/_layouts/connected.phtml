@@ -63,7 +63,7 @@
                 </div>
             <?php endif; ?>
 
-            <?php if (!$current_user->validated_at && $banner): ?>
+            <?php if (!$current_user->validated_at && $current_page !== 'account validation'): ?>
                 <div class="layout__banner">
                     <a class="banner__container banner__container--anchor" href="<?= url('account validation') ?>">
                         <?= _('You must validate your account&nbsp;→') ?>
@@ -77,6 +77,7 @@
 
                     <a
                         class="header__link header__link--icon icon icon--anchor icon--tree <?= $current_tab === 'news' ? 'header__link--active' : '' ?>"
+                        <?= $current_page === 'news' ? 'aria-current="page"' : '' ?>
                         href="<?= url('news') ?>"
                     >
                         <span class="no-mobile">
@@ -86,6 +87,7 @@
 
                     <a
                         class="header__link header__link--icon icon icon--anchor icon--bookmark <?= $current_tab === 'bookmarks' ? 'header__link--active' : '' ?>"
+                        <?= $current_page === 'bookmarks' ? 'aria-current="page"' : '' ?>
                         href="<?= url('bookmarks') ?>"
                     >
                         <span class="no-mobile">
@@ -95,6 +97,7 @@
 
                     <a
                         class="header__link header__link--icon icon icon--anchor icon--collection <?= $current_tab === 'collections' ? 'header__link--active' : '' ?>"
+                        <?= $current_page === 'collections' ? 'aria-current="page"' : '' ?>
                         href="<?= url('collections') ?>"
                     >
                         <span class="no-mobile">
@@ -121,20 +124,36 @@
                         <nav class="popup__container popup__container--left">
                             <div class="popup__title"><?= $this->protect($current_user->username) ?></div>
 
-                            <a class="popup__item popup__item--link icon icon--avatar" href="<?= url('profile') ?>">
+                            <a
+                                class="popup__item popup__item--link icon icon--avatar"
+                                <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
+                                href="<?= url('profile') ?>"
+                            >
                                 <?= _('Profile') ?>
                             </a>
 
-                            <a class="popup__item popup__item--link icon icon--key" href="<?= url('security') ?>">
+                            <a
+                                class="popup__item popup__item--link icon icon--key"
+                                <?= $current_page === 'security' ? 'aria-current="page"' : '' ?>
+                                href="<?= url('security') ?>"
+                            >
                                 <?= _('Login & security') ?>
                             </a>
 
                             <?php if ($subscriptions_enabled): ?>
-                                <a class="popup__item popup__item--link icon icon--credit-card" href="<?= url('account') ?>">
+                                <a
+                                    class="popup__item popup__item--link icon icon--credit-card"
+                                    <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
+                                    href="<?= url('account') ?>"
+                                >
                                     <?= _('Account & subscription') ?>
                                 </a>
                             <?php else: ?>
-                                <a class="popup__item popup__item--link icon icon--details" href="<?= url('account') ?>">
+                                <a
+                                    class="popup__item popup__item--link icon icon--credit-details"
+                                    <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
+                                    href="<?= url('account') ?>"
+                                >
                                     <?= _('Account') ?>
                                 </a>
                             <?php endif; ?>
@@ -152,6 +171,7 @@
 
                     <a
                         class="header__link header__link--featured header__link--icon icon icon--anchor icon--plus-circle"
+                        <?= $current_page === 'new link' ? 'aria-current="page"' : '' ?>
                         href="<?= url('new link') ?>"
                         title="<?= _('Add a link') ?>"
                     >

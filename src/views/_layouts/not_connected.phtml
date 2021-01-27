@@ -76,9 +76,13 @@
 
                     <div class="header__separator"></div>
 
-                    <?php if ($registrations_opened): ?>
+                    <?php if ($registrations_opened && $current_page !== 'registration'): ?>
                         <a class="header__link no-mobile" href="<?= url('registration') ?>">
                             <?= _('Sign up') ?>
+                        </a>
+                    <?php elseif ($current_page !== 'login'): ?>
+                        <a class="header__link no-mobile" href="<?= url('login') ?>">
+                            <?= _('Login') ?>
                         </a>
                     <?php endif; ?>
 

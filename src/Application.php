@@ -198,11 +198,11 @@ class Application
             'current_locale' => $locale,
             'current_user' => $current_user,
             'current_tab' => null,
+            'current_page' => null,
             'styles' => [],
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
             'no_layout' => $request->header('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest',
             'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
-            'banner' => true,
             'demo' => $app_conf['demo'],
             'registrations_opened' => $app_conf['registrations_opened'],
         ]);

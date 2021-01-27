@@ -74,7 +74,11 @@
                     <?php foreach ($pagination->pages() as $page): ?>
                         <?php if ($page['type'] === 'number'): ?>
                             <li class="pagination__item pagination__item--number <?= $pagination->isPageCurrent($page['number']) ? 'pagination__item--current' : '' ?>">
-                                <a class="pagination__link" href="<?= url('discover collections', ['page' => $page['number']]) ?>">
+                                <a
+                                    class="pagination__link"
+                                    href="<?= url('discover collections', ['page' => $page['number']]) ?>"
+                                    <?= $pagination->isPageCurrent($page['number']) ? 'aria-current="page"' : '' ?>
+                                >
                                     <?= $page['number'] ?>
                                 </a>
                             </li>
