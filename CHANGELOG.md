@@ -1,5 +1,36 @@
 # Changelog of flusio
 
+## 2021-01-27 - v0.16
+
+A new batch of fixes and improvements to deploy in production today!
+
+### News
+
+- Allow to delete messages
+- Provide pagination on discovering page
+
+### Improvements
+
+- Display origin of news links
+- Change wording for accepting terms of service
+- Clarify important emails on registration
+- Improve integration on various platforms
+- Improve account nav menu
+- Increase modal margin bottom on mobile
+- Change default title font-family to sans-serif
+- Add spacing under `.news__postpone`
+- Remove some autofocus
+- Lighten the layout border color
+- Homogeneize card-action border width with footer
+
+### Bug fixes
+
+- Fix link to continue on step 4 of onboarding
+- Fix modal undefined content
+- Fix checkbox shrinking on mobile
+- Fix section image on mobile
+- Fix header background for Firefox on mobile
+
 ## 2021-01-22 - v0.15
 
 This release brings mainly a lot of UI/UX improvements.
