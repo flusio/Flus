@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-01-26 15:54+0100\n"
-"PO-Revision-Date: 2021-01-26 15:54+0100\n"
+"POT-Creation-Date: 2021-01-27 10:43+0100\n"
+"PO-Revision-Date: 2021-01-27 10:43+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -95,7 +95,7 @@ msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:28
 #: views/my/account/deletion.phtml:54 views/my/security/show_confirmed.phtml:72
-#: views/my/security/show_to_confirm.phtml:46 views/registrations/new.phtml:96
+#: views/my/security/show_to_confirm.phtml:45 views/registrations/new.phtml:96
 #: views/sessions/new.phtml:70
 msgid "Show"
 msgstr "Afficher"
@@ -511,7 +511,7 @@ msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
 #: views/collections/edit.phtml:114 views/link_collections/index.phtml:67
-#: views/links/edit.phtml:68 views/my/profile/show.phtml:103
+#: views/links/edit.phtml:68 views/my/profile/show.phtml:102
 #: views/my/security/show_confirmed.phtml:85
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -800,7 +800,7 @@ msgstr ""
 "identité."
 
 #: views/my/account/deletion.phtml:52 views/my/security/show_confirmed.phtml:70
-#: views/my/security/show_to_confirm.phtml:44 views/registrations/new.phtml:94
+#: views/my/security/show_to_confirm.phtml:43 views/registrations/new.phtml:94
 #: views/sessions/new.phtml:68
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
@@ -831,19 +831,19 @@ msgstr "<strong>Votre abonnement a expiré le %s.</strong>"
 msgid "Your subscription will expire on <strong>%s.</strong>"
 msgstr "Votre abonnement expirera le <strong>%s.</strong>"
 
-#: views/my/account/show.phtml:36
+#: views/my/account/show.phtml:38
 msgid "Validate your account"
 msgstr "Valider votre compte"
 
-#: views/my/account/show.phtml:47
+#: views/my/account/show.phtml:49
 msgid "Manage your subscription"
 msgstr "Gérer votre abonnement"
 
-#: views/my/account/show.phtml:54
+#: views/my/account/show.phtml:57
 msgid "Create your payment account"
 msgstr "Créer votre compte de paiement"
 
-#: views/my/account/show.phtml:61
+#: views/my/account/show.phtml:65
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 
@@ -891,11 +891,11 @@ msgstr "Votre nom"
 msgid "Your username must not be longer than 50 characters."
 msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: views/my/profile/show.phtml:49 views/news_links/preferences.phtml:97
+#: views/my/profile/show.phtml:48 views/news_links/preferences.phtml:97
 msgid "Your points of interest"
 msgstr "Vos centres d’intérêt"
 
-#: views/my/profile/show.phtml:80
+#: views/my/profile/show.phtml:79
 msgid "Your language"
 msgstr "Votre langue"
 
@@ -936,7 +936,7 @@ msgstr ""
 msgid "Your current password"
 msgstr "Votre mot de passe actuel"
 
-#: views/my/security/show_to_confirm.phtml:59
+#: views/my/security/show_to_confirm.phtml:58
 msgid "Confirm your password"
 msgstr "Confirmer votre mot de passe"
 

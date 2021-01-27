@@ -30,35 +30,41 @@
         </p>
     <?php endif; ?>
 
-    <?php if (!$current_user->validated_at): ?>
-        <p class="paragraph--centered">
-            <a class="anchor--action" href="<?= url('account validation') ?>">
-                <?= _('Validate your account') ?>
-            </a>
-        </p>
-    <?php elseif ($subscriptions_enabled && $current_user->subscription_account_id): ?>
-        <p class="paragraph--centered">
-            <a
-                class="icon icon--anchor icon--pop-out <?= $current_user->isSubscriptionOverdue() ? 'anchor--action' : '' ?>"
-                target="_blank"
-                rel="noopener noreferrer"
-                href="<?= url('subscription') ?>"
-            >
-                <?= _('Manage your subscription') ?>
-            </a>
-        </p>
-    <?php elseif ($subscriptions_enabled): ?>
-        <form class="form--centered" method="post" action="<?= url('create subscription account') ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-            <button class="button--primary" type="submit">
-                <?= _('Create your payment account') ?>
-            </button>
-        </form>
-    <?php endif; ?>
+    <nav class="groupnav">
+        <ul class="groupnav__container">
+            <?php if (!$current_user->validated_at): ?>
+                <li class="groupnav__item groupnav__item--featured groupnav__item--validate">
+                    <a class="groupnav__anchor" href="<?= url('account validation') ?>">
+                        <?= _('Validate your account') ?>
+                    </a>
+                </li>
+            <?php elseif ($subscriptions_enabled && $current_user->subscription_account_id): ?>
+                <li class="groupnav__item groupnav__item--subscription <?= $current_user->isSubscriptionOverdue() ? 'groupnav__item--featured' : '' ?>">
+                    <a
+                        class="groupnav__anchor"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="<?= url('subscription') ?>"
+                    >
+                        <?= _('Manage your subscription') ?>
+                    </a>
+                </li>
+            <?php elseif ($subscriptions_enabled): ?>
+                <li class="groupnav__item groupnav__item--create groupnav__item--featured">
+                    <form method="post" action="<?= url('create subscription account') ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <button class="groupnav__button" type="submit">
+                            <?= _('Create your payment account') ?>
+                        </button>
+                    </form>
+                </li>
+            <?php endif; ?>
 
-    <p class="paragraph--centered">
-        <a href="<?= url('account deletion') ?>">
-            <?= _('Delete your account?') ?>
-        </a>
-    </p>
+            <li class="groupnav__item groupnav__item--delete">
+                <a class="groupnav__anchor" href="<?= url('account deletion') ?>">
+                    <?= _('Delete your account?') ?>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
