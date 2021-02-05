@@ -18,21 +18,9 @@ class Application
      */
     public function __construct()
     {
-        // Initialize the routes
+        // Load the router with its routes
         $router = new \Minz\Router();
-        $router->addRoute('cli', '/', 'cli/System#usage');
-        $router->addRoute('cli', '/system/secret', 'cli/System#secret');
-        $router->addRoute('cli', '/system/setup', 'cli/System#setup');
-        $router->addRoute('cli', '/system/rollback', 'cli/System#rollback');
-        $router->addRoute('cli', '/database/status', 'cli/Database#status');
-        $router->addRoute('cli', '/users/create', 'cli/Users#create');
-        $router->addRoute('cli', '/users/clean', 'cli/Users#clean');
-        $router->addRoute('cli', '/subscriptions/sync', 'cli/Subscriptions#sync');
-        $router->addRoute('cli', '/topics', 'cli/Topics#index');
-        $router->addRoute('cli', '/topics/create', 'cli/Topics#create');
-        $router->addRoute('cli', '/topics/delete', 'cli/Topics#delete');
-        $router->addRoute('cli', '/links/refresh', 'cli/Links#refresh');
-
+        \flusio\Routes::loadCli($router);
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
     }

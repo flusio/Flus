@@ -43,6 +43,8 @@ last parameter allows us to reference this route more easily (e.g. in a view
 file, we can output its URL with `<?= url('change locale') ?>`). Otherwise, we
 would reference it by its action pointer (i.e. `Sessions#changeLocale`).
 
+The routes are declared in their own class: [`Routes`](/src/Routes.php).
+
 The last thing to know is an action ALWAYS returns a `Response`. A `Response`
 has a HTTP code (e.g. 200, 302, 404) and a content. Most of the time, the
 content comes from a view file that you can find under [the `src/views/`
