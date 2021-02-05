@@ -19,6 +19,7 @@ class System
         $usage .= 'REQUEST can be one of the following:' . "\n";
         $usage .= '  /                   Show this help' . "\n";
         $usage .= '  /database/status    Return the status of the DB connection' . "\n";
+        $usage .= '  /jobs/run           Execute one waiting job' . "\n";
         $usage .= '  /links/refresh      Refresh the oldest links (only illustration images)' . "\n";
         $usage .= '      [-pnumber=NUMBER] where NUMBER is the number of links to refresh (default is 10)' . "\n";
         $usage .= '  /subscriptions/sync Synchronize the overdue subscriptions (or nearly overdue)' . "\n";

@@ -1,3 +1,14 @@
+CREATE TABLE jobs (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    handler JSON NOT NULL,
+    perform_at TIMESTAMPTZ NOT NULL,
+    locked_at TIMESTAMPTZ,
+    number_attempts INTEGER NOT NULL DEFAULT 0,
+    last_error TEXT,
+    failed_at TIMESTAMPTZ
+);
+
 CREATE TABLE tokens (
     token TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,

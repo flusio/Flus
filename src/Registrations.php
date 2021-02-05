@@ -159,8 +159,8 @@ class Registrations
 
         utils\CurrentUser::setSessionToken($session_token->token);
 
-        $users_mailer = new mailers\Users();
-        $users_mailer->sendAccountValidationEmail($user, $validation_token);
+        $mailer_job = new jobs\Mailer();
+        $mailer_job->performLater('Users', 'sendAccountValidationEmail', $user->id);
 
         $response = Response::redirect('onboarding');
         $response->setCookie('flusio_session_token', $session_token->token, [

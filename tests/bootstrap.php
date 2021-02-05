@@ -283,3 +283,22 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
     ]
 );
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'job',
+    '\flusio\models\dao\Job',
+    [
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'handler' => function () {
+            return json_encode([
+                'job_class' => 'flusio\jobs\Job',
+                'job_args' => [],
+            ]);
+        },
+        'perform_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+    ]
+);

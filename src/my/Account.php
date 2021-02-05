@@ -3,6 +3,7 @@
 namespace flusio\my;
 
 use Minz\Response;
+use flusio\jobs;
 use flusio\mailers;
 use flusio\models;
 use flusio\services;
@@ -190,8 +191,8 @@ class Account
             $user_dao->save($user);
         }
 
-        $users_mailer = new mailers\Users();
-        $users_mailer->sendAccountValidationEmail($user, $token);
+        $mailer_job = new jobs\Mailer();
+        $mailer_job->performLater('Users', 'sendAccountValidationEmail', $user->id);
 
         utils\Flash::set('status', 'validation_email_sent');
         return Response::found($from);
