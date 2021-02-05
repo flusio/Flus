@@ -35,10 +35,14 @@ class JobsWorker
         $job_class = $handler['job_class'];
         $job_args = $handler['job_args'];
 
-        $job = new $job_class();
-        $job->perform(...$job_args);
-
-        $job_dao->delete($db_job['id']);
+        try {
+            $job = new $job_class();
+            $job->perform(...$job_args);
+            $job_dao->delete($db_job['id']);
+        } catch (\Exception $exception) {
+            $job_dao->fail($db_job['id'], (string)$exception);
+            return Response::text(500, "job#{$db_job['id']}: failed");
+        }
 
         return Response::text(200, "job#{$db_job['id']}: done");
     }

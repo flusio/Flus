@@ -70,4 +70,23 @@ class Job extends \Minz\DatabaseModel
         ]);
         return $statement->rowCount() === 1;
     }
+
+    /**
+     * Mark a job as failed
+     *
+     * @param string $db_job_id
+     * @param string $error
+     */
+    public function fail($db_job_id, $error)
+    {
+        $db_job = $this->find($db_job_id);
+        $number_seconds = 5 + pow($db_job['number_attempts'], 4);
+        $new_perform_at = \Minz\Time::fromNow($number_seconds, 'seconds');
+        $this->update($db_job['id'], [
+            'locked_at' => null,
+            'perform_at' => $new_perform_at->format(\Minz\Model::DATETIME_FORMAT),
+            'last_error' => $error,
+            'failed_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+    }
 }
