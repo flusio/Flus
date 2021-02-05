@@ -128,10 +128,6 @@ class Application
 
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
-
-        // Initialize the localization
-        bindtextdomain('main', utils\Locale::localesPath());
-        textdomain('main');
     }
 
     /**

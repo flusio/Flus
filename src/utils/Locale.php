@@ -13,6 +13,9 @@ class Locale
     public const DEFAULT_LOCALE = 'en_GB';
     public const DEFAULT_LOCALE_NAME = 'English';
 
+    /** @var boolean */
+    private static $is_initialized = false;
+
     /**
      * Return the path to the locales.
      *
@@ -46,6 +49,10 @@ class Locale
      */
     public static function setCurrentLocale($locale)
     {
+        if (!self::$is_initialized) {
+            self::init();
+        }
+
         return setlocale(LC_ALL, $locale . '.UTF8');
     }
 
@@ -143,5 +150,15 @@ class Locale
 
         // Still nothing? Return the default locale
         return self::DEFAULT_LOCALE;
+    }
+
+    /**
+     * Set domain path for localization.
+     */
+    private static function init()
+    {
+        bindtextdomain('main', self::localesPath());
+        textdomain('main');
+        self::$is_initialized = true;
     }
 }
