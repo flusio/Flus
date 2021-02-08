@@ -13,6 +13,43 @@ use flusio\models;
 class JobsWorker
 {
     /**
+     * List all the current jobs
+     *
+     * @response 200
+     */
+    public function index($request)
+    {
+        $job_dao = new models\dao\Job();
+        $db_jobs = $job_dao->listAll();
+        $result = [];
+        foreach ($db_jobs as $db_job) {
+            $job_as_text = "job#{$db_job['id']} at {$db_job['perform_at']}";
+            if ($db_job['locked_at']) {
+                $job_as_text .= ' (locked)';
+            }
+            if ($db_job['failed_at']) {
+                $job_as_text .= ' (failed)';
+            }
+
+            $result[] = $job_as_text;
+        }
+
+        return Response::text(200, implode("\n", $result));
+    }
+
+    /**
+     * Delete all the jobs.
+     *
+     * @response 200
+     */
+    public function clear($request)
+    {
+        $job_dao = new models\dao\Job();
+        $count = $job_dao->deleteAll();
+        return Response::text(200, "{$count} jobs deleted");
+    }
+
+    /**
      * Find an available job and run it.
      *
      * @response 204 If no job to run

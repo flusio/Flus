@@ -19,6 +19,8 @@ class System
         $usage .= 'REQUEST can be one of the following:' . "\n";
         $usage .= '  /                   Show this help' . "\n";
         $usage .= '  /database/status    Return the status of the DB connection' . "\n";
+        $usage .= '  /jobs               List the jobs' . "\n";
+        $usage .= '  /jobs/clear         Delete all the jobs' . "\n";
         $usage .= '  /jobs/run           Execute one waiting job' . "\n";
         $usage .= '  /jobs/watch         Wait and execute jobs' . "\n";
         $usage .= '  /links/refresh      Refresh the oldest links (only illustration images)' . "\n";

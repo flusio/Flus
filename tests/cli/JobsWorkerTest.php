@@ -23,6 +23,86 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         self::$application = new \flusio\cli\Application();
     }
 
+    public function testIndexRendersCorrectly()
+    {
+        $job_dao = new models\dao\Job();
+        $job_perform_at_1 = substr(str_replace('T', ' ', $this->fake('iso8601')), 0, -2);
+        $job_id_1 = $this->create('job', [
+            'perform_at' => $job_perform_at_1,
+            'locked_at' => $this->fake('iso8601'),
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => [],
+            ]),
+        ]);
+        $job_perform_at_2 = substr(str_replace('T', ' ', $this->fake('iso8601')), 0, -2);
+        $job_id_2 = $this->create('job', [
+            'perform_at' => $job_perform_at_2,
+            'locked_at' => null,
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => [],
+            ]),
+        ]);
+        $job_perform_at_3 = substr(str_replace('T', ' ', $this->fake('iso8601')), 0, -2);
+        $job_id_3 = $this->create('job', [
+            'perform_at' => $job_perform_at_3,
+            'locked_at' => null,
+            'failed_at' => $this->fake('iso8601'),
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => [],
+            ]),
+        ]);
+        $job_perform_at_4 = substr(str_replace('T', ' ', $this->fake('iso8601')), 0, -2);
+        $job_id_4 = $this->create('job', [
+            'perform_at' => $job_perform_at_4,
+            'locked_at' => $this->fake('iso8601'),
+            'failed_at' => $this->fake('iso8601'),
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => [],
+            ]),
+        ]);
+
+        $response = $this->appRun('cli', '/jobs');
+
+        $this->assertResponse($response, 200, <<<TEXT
+        job#{$job_id_1} at {$job_perform_at_1} (locked)
+        job#{$job_id_2} at {$job_perform_at_2}
+        job#{$job_id_3} at {$job_perform_at_3} (failed)
+        job#{$job_id_4} at {$job_perform_at_4} (locked) (failed)
+        TEXT);
+    }
+
+    public function testClearDeleteTheJobsAndRendersCorrectly()
+    {
+        $job_dao = new models\dao\Job();
+        $this->create('job', [
+            'perform_at' => \Minz\Time::ago(1, 'hour')->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => \Minz\Time::fromNow(30, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => [],
+            ]),
+        ]);
+        $this->create('job', [
+            'perform_at' => \Minz\Time::fromNow(1, 'hour')->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => null,
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => [],
+            ]),
+        ]);
+
+        $this->assertSame(2, $job_dao->count());
+
+        $response = $this->appRun('cli', '/jobs/clear');
+
+        $this->assertResponse($response, 200, '2 jobs deleted');
+        $this->assertSame(0, $job_dao->count());
+    }
+
     public function testRunExecutesAJobAndRendersCorrectly()
     {
         $job_dao = new models\dao\Job();

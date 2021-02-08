@@ -89,4 +89,14 @@ class Job extends \Minz\DatabaseModel
             'failed_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
         ]);
     }
+
+    /**
+     * Delete all the jobs
+     *
+     * @throws \PDOException if an error occured in the SQL syntax
+     */
+    public function deleteAll()
+    {
+        return $this->exec("DELETE FROM {$this->table_name}");
+    }
 }
