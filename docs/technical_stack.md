@@ -15,6 +15,10 @@ because I plan to use specific features from it. Please do not ask support for
 other kind of databases: even if it might work, this would add complexity to
 maintain the whole software.
 
+The asynchronous jobs, such as emails sending, are handled by a PHP script. The
+worker should be configured as a OS service (e.g. systemd service), or can be
+handled via a CRON task (but with less efficiency).
+
 The assets (CSS and JS) are bundled with [Parcel](https://parceljs.org/). The
 JavaScript relies on both [Stimulus](https://github.com/stimulusjs/stimulus) (a
 “modest” framework) and [Turbolinks](https://github.com/turbolinks/turbolinks)
@@ -28,6 +32,6 @@ for the PHP files. JS files are linted with [ESLint](https://eslint.org/docs/rul
 and CSS files with [stylelint](https://stylelint.io/).
 
 The development environment is powered by Docker and docker-compose setting up
-3 containers: a PHP development server, a PostgreSQL database and a Node
-container running Parcel in watch mode. See the [`docker/` folder](/docker/)
+4 containers: a PHP development server, a job worker, a PostgreSQL database and
+a Node container running Parcel in watch mode. See the [`docker/` folder](/docker/)
 for more information.

@@ -5,7 +5,7 @@ notions in sysadmin. First, make sure you match with the following
 requirements:
 
 - git, Nginx, PHP 7.3+ and PostgreSQL are installed on your server;
-- PHP requires `intl`, `gettext`, `gd`, `pdo` and `pdo_pgsql` extensions;
+- PHP requires `intl`, `gettext`, `pcntl`, `gd`, `pdo` and `pdo_pgsql` extensions;
 - your PostgreSQL user must have the permission to create a database;
 - flusio must be served over <abbr>HTTPS</abbr>.
 
@@ -158,6 +158,41 @@ with `systemctl reload nginx`.
 
 If you’ve done everything right, you should now be able to access flusio at the
 address you’ve configured, congratulations!
+
+## Setup the job worker
+
+A last step is required to install flusio on your server though. Some long
+tasks (e.g. sending emails) are run in background via a job system. You’ll need
+to start a worker to process them. For instance, you can create a systemd
+service by creating a `/etc/systemd/system/flusio-worker.service` file.
+
+```systemd
+[Unit]
+Description=A job worker for flusio
+
+[Service]
+Type=simple
+ExecStart=php /var/www/flusio/cli --request /jobs/watch
+```
+
+Then, reload the systemd daemon and start the service:
+
+```console
+# systemctl daemon-reload
+# systemctl enable flusio-worker
+# systemctl start flusio-worker
+```
+
+You should obviously adapt this file to your needs. Also, you might not have
+permission on your server to create a new service. An alternative is to setup a
+cron task:
+
+```cron
+* * * * * php /var/www/flusio/cli --request /jobs/run >/dev/null 2>&1
+```
+
+It will find and run a single job every minute. It’s less efficient than a
+service, but it should work.
 
 ## Bonus: Create topics
 

@@ -1,5 +1,13 @@
 # Changelog of flusio
 
+## 2021-xx-yy - v0.17
+
+### Breaking changes
+
+Validation emails are now sent asynchronously by a jobs worker. First of all,
+you must make sure to have installed the `pcntl` PHP extension. Then, please
+have a look to the production documentation to learn how to setup the worker.
+
 ## 2021-01-27 - v0.16
 
 A new batch of fixes and improvements to deploy in production today!
