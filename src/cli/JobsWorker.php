@@ -24,6 +24,7 @@ class JobsWorker
         $result = [];
         foreach ($db_jobs as $db_job) {
             $job_as_text = "job#{$db_job['id']} at {$db_job['perform_at']}";
+            $job_as_text .= " {$db_job['number_attempts']} attempts";
             if ($db_job['locked_at']) {
                 $job_as_text .= ' (locked)';
             }

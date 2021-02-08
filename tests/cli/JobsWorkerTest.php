@@ -27,38 +27,46 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
     {
         $job_dao = new models\dao\Job();
         $job_perform_at_1 = substr(str_replace('T', ' ', $this->fake('iso8601')), 0, -2);
+        $job_attempts_1 = $this->fake('numberBetween', 0, 100);
         $job_id_1 = $this->create('job', [
             'perform_at' => $job_perform_at_1,
             'locked_at' => $this->fake('iso8601'),
+            'number_attempts' => $job_attempts_1,
             'handler' => json_encode([
                 'job_class' => 'flusio\jobs\Mailer',
                 'job_args' => [],
             ]),
         ]);
         $job_perform_at_2 = substr(str_replace('T', ' ', $this->fake('iso8601')), 0, -2);
+        $job_attempts_2 = $this->fake('numberBetween', 0, 100);
         $job_id_2 = $this->create('job', [
             'perform_at' => $job_perform_at_2,
             'locked_at' => null,
+            'number_attempts' => $job_attempts_2,
             'handler' => json_encode([
                 'job_class' => 'flusio\jobs\Mailer',
                 'job_args' => [],
             ]),
         ]);
         $job_perform_at_3 = substr(str_replace('T', ' ', $this->fake('iso8601')), 0, -2);
+        $job_attempts_3 = $this->fake('numberBetween', 0, 100);
         $job_id_3 = $this->create('job', [
             'perform_at' => $job_perform_at_3,
             'locked_at' => null,
             'failed_at' => $this->fake('iso8601'),
+            'number_attempts' => $job_attempts_3,
             'handler' => json_encode([
                 'job_class' => 'flusio\jobs\Mailer',
                 'job_args' => [],
             ]),
         ]);
         $job_perform_at_4 = substr(str_replace('T', ' ', $this->fake('iso8601')), 0, -2);
+        $job_attempts_4 = $this->fake('numberBetween', 0, 100);
         $job_id_4 = $this->create('job', [
             'perform_at' => $job_perform_at_4,
             'locked_at' => $this->fake('iso8601'),
             'failed_at' => $this->fake('iso8601'),
+            'number_attempts' => $job_attempts_4,
             'handler' => json_encode([
                 'job_class' => 'flusio\jobs\Mailer',
                 'job_args' => [],
@@ -68,10 +76,10 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/jobs');
 
         $this->assertResponse($response, 200, <<<TEXT
-        job#{$job_id_1} at {$job_perform_at_1} (locked)
-        job#{$job_id_2} at {$job_perform_at_2}
-        job#{$job_id_3} at {$job_perform_at_3} (failed)
-        job#{$job_id_4} at {$job_perform_at_4} (locked) (failed)
+        job#{$job_id_1} at {$job_perform_at_1} {$job_attempts_1} attempts (locked)
+        job#{$job_id_2} at {$job_perform_at_2} {$job_attempts_2} attempts
+        job#{$job_id_3} at {$job_perform_at_3} {$job_attempts_3} attempts (failed)
+        job#{$job_id_4} at {$job_perform_at_4} {$job_attempts_4} attempts (locked) (failed)
         TEXT);
     }
 
@@ -113,6 +121,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $job_id = $this->create('job', [
             'perform_at' => \Minz\Time::ago(1, 'second')->format(\Minz\Model::DATETIME_FORMAT),
             'locked_at' => null,
+            'number_attempts' => $this->fake('numberBetween', 0, 25),
             'handler' => json_encode([
                 'job_class' => 'flusio\jobs\Mailer',
                 'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
@@ -139,6 +148,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $job_id = $this->create('job', [
             'perform_at' => \Minz\Time::fromNow(1, 'minute')->format(\Minz\Model::DATETIME_FORMAT),
             'locked_at' => null,
+            'number_attempts' => $this->fake('numberBetween', 0, 25),
             'handler' => json_encode([
                 'job_class' => 'flusio\jobs\Mailer',
                 'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
@@ -162,6 +172,31 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $job_id = $this->create('job', [
             'perform_at' => \Minz\Time::ago(1, 'second')->format(\Minz\Model::DATETIME_FORMAT),
             'locked_at' => $this->fake('iso8601'),
+            'number_attempts' => $this->fake('numberBetween', 0, 25),
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
+            ]),
+        ]);
+
+        $response = $this->appRun('cli', '/jobs/run');
+
+        $this->assertResponse($response, 204);
+        $this->assertEmailsCount(0);
+        $this->assertSame(1, $job_dao->count());
+    }
+
+    public function testRunDoesNotSelectJobWithTooManyAttempts()
+    {
+        $job_dao = new models\dao\Job();
+        $token = $this->create('token');
+        $user_id = $this->create('user', [
+            'validation_token' => $token,
+        ]);
+        $job_id = $this->create('job', [
+            'perform_at' => \Minz\Time::ago(1, 'second')->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => null,
+            'number_attempts' => $this->fake('numberBetween', 26, 100),
             'handler' => json_encode([
                 'job_class' => 'flusio\jobs\Mailer',
                 'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
@@ -180,7 +215,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $job_dao = new models\dao\Job();
-        $number_attempts = $this->fake('randomDigit');
+        $number_attempts = $this->fake('numberBetween', 0, 25);
         $job_id = $this->create('job', [
             'perform_at' => \Minz\Time::ago(1, 'second')->format(\Minz\Model::DATETIME_FORMAT),
             'locked_at' => null,
@@ -216,6 +251,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $job_id = $this->create('job', [
             'perform_at' => \Minz\Time::ago(1, 'second')->format(\Minz\Model::DATETIME_FORMAT),
             'locked_at' => null,
+            'number_attempts' => $this->fake('numberBetween', 0, 25),
             'handler' => json_encode([
                 'job_class' => 'flusio\jobs\Mailer',
                 'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],

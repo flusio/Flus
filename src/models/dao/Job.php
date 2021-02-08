@@ -36,6 +36,7 @@ class Job extends \Minz\DatabaseModel
             SELECT * FROM jobs
             WHERE locked_at IS NULL
             AND perform_at <= ?
+            AND number_attempts <= 25
             ORDER BY created_at;
         SQL;
 
