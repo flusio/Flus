@@ -2,7 +2,7 @@
 
 For now, the development environment is managed with Docker by default. This is
 to avoid installing the dependencies at a system level and to avoid (or at
-least to reduse) issues with people not being able to setup the environment
+least to reduce) issues with people not being able to setup the environment
 (i.e. everyone run the same configured environment with the same dependencies).
 If you don’t want to use Docker, I provide some information below to help you
 to get started, but please don’t expect I’ll be able to help you: you know your
@@ -107,6 +107,12 @@ You’re all good now, just start a PHP development server:
 
 ```console
 $ php -t public/ -S localhost:8000 public/index.php
+```
+
+Then start the job worker in a different console:
+
+```console
+$ php ./cli --request /jobs/watch
 ```
 
 And Parcel in another console:

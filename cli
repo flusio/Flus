@@ -55,15 +55,28 @@ try {
 $application = new \flusio\cli\Application();
 $response = $application->run($request);
 
-// Display the content
-$output = $response->render();
-if ($output) {
-    echo $output . "\n";
-}
+if ($response instanceof Generator) {
+    // This is used by the JobsWorker#watch method in order to provide a
+    // long-running service.
+    foreach ($response as $response_part) {
+        $output = $response_part->render();
+        if ($output) {
+            echo $output . "\n";
+        }
+    }
 
-$code = $response->code();
-if ($code >= 200 && $code < 300) {
     exit(0);
 } else {
-    exit(1);
+    // Display the content
+    $output = $response->render();
+    if ($output) {
+        echo $output . "\n";
+    }
+
+    $code = $response->code();
+    if ($code >= 200 && $code < 300) {
+        exit(0);
+    } else {
+        exit(1);
+    }
 }
