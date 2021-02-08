@@ -125,4 +125,35 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('I failed you :(', $db_job['last_error']);
         $this->assertSame($now->getTimestamp(), $failed_at->getTimestamp());
     }
+
+    public function testWatchRendersCorrectly()
+    {
+        $job_dao = new models\dao\Job();
+        $token = $this->create('token');
+        $user_id = $this->create('user', [
+            'validation_token' => $token,
+        ]);
+        $job_id = $this->create('job', [
+            'perform_at' => \Minz\Time::ago(1, 'second')->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => null,
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
+            ]),
+        ]);
+
+        \pcntl_alarm(3); // the worker will get a SIGALRM signal and stop in 3s
+        $response_generator = $this->appRun('cli', '/jobs/watch');
+
+        $response = $response_generator->current();
+        $this->assertResponse($response, 200, '[Job worker started]');
+        $response_generator->next();
+        $response = $response_generator->current();
+        $this->assertResponse($response, 200, "job#{$job_id}: done");
+        $response_generator->next();
+        $response = $response_generator->current();
+        $this->assertResponse($response, 200, '[Job worker stopped]');
+        $this->assertEmailsCount(1);
+        $this->assertSame(0, $job_dao->count());
+    }
 }

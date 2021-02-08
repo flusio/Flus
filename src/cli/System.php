@@ -20,6 +20,7 @@ class System
         $usage .= '  /                   Show this help' . "\n";
         $usage .= '  /database/status    Return the status of the DB connection' . "\n";
         $usage .= '  /jobs/run           Execute one waiting job' . "\n";
+        $usage .= '  /jobs/watch         Wait and execute jobs' . "\n";
         $usage .= '  /links/refresh      Refresh the oldest links (only illustration images)' . "\n";
         $usage .= '      [-pnumber=NUMBER] where NUMBER is the number of links to refresh (default is 10)' . "\n";
         $usage .= '  /subscriptions/sync Synchronize the overdue subscriptions (or nearly overdue)' . "\n";

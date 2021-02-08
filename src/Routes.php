@@ -134,6 +134,7 @@ class Routes
         $router->addRoute('cli', '/links/refresh', 'cli/Links#refresh');
 
         $router->addRoute('cli', '/jobs/run', 'cli/JobsWorker#run');
+        $router->addRoute('cli', '/jobs/watch', 'cli/JobsWorker#watch');
 
         self::load($router);
     }
