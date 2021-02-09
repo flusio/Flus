@@ -2,11 +2,15 @@ import { Controller } from 'stimulus';
 
 export default class extends Controller {
     connect () {
-        const form = this.element;
-        if (form) {
+        const mode = this.data.get('mode');
+        if (mode === 'timeout') {
             window.setTimeout(() => {
-                form.submit();
+                this.submit();
             }, 500);
         }
+    }
+
+    submit (event) {
+        this.element.submit();
     }
 };

@@ -52,7 +52,8 @@
             <form
                  method="post"
                  action="<?= url('fetch link', ['id' => $link->id]) ?>"
-                 data-controller="link-fetcher"
+                 data-controller="autosubmit"
+                 data-autosubmit-mode="timeout"
              >
                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
             </form>

@@ -90,7 +90,7 @@
                         class="header__locale-form"
                         method="post"
                         action="<?= url('change locale') ?>"
-                        data-controller="form-autosubmit"
+                        data-controller="autosubmit"
                     >
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                         <?php if(isset($canonical)): ?>
@@ -104,7 +104,7 @@
                                 <select
                                     id="locale"
                                     name="locale"
-                                    data-action="form-autosubmit#submit"
+                                    data-action="autosubmit#submit"
                                 >
                                     <?php foreach ($available_locales as $locale_value => $locale_name): ?>
                                         <option
