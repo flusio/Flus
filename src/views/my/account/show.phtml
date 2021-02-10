@@ -61,6 +61,14 @@
                 </li>
             <?php endif; ?>
 
+            <?php if ($pocket_enabled): ?>
+                <li class="groupnav__item groupnav__item--import">
+                    <a class="groupnav__anchor" href="<?= url('pocket') ?>">
+                        <?= _('Import your data from Pocket') ?>
+                    </a>
+                </li>
+            <?php endif; ?>
+
             <li class="groupnav__item groupnav__item--delete">
                 <a class="groupnav__anchor" href="<?= url('account deletion') ?>">
                     <?= _('Delete your account?') ?>

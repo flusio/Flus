@@ -58,6 +58,13 @@ class Routes
         $router->addRoute('get', '/my/account/subscription', 'my/Subscription#redirect', 'subscription');
         $router->addRoute('post', '/my/account/subscription', 'my/Subscription#create', 'create subscription account');
 
+        // Importations
+        $router->addRoute('get', '/pocket', 'importations/Pocket#show', 'pocket');
+        $router->addRoute('post', '/pocket', 'importations/Pocket#import', 'import pocket');
+        $router->addRoute('post', '/pocket/request', 'importations/Pocket#requestAccess', 'request pocket access');
+        $router->addRoute('get', '/pocket/auth', 'importations/Pocket#authorization', 'pocket auth');
+        $router->addRoute('post', '/pocket/auth', 'importations/Pocket#authorize', 'authorize pocket');
+
         // News page
         $router->addRoute('get', '/news', 'NewsLinks#index', 'news');
         $router->addRoute('post', '/news', 'NewsLinks#fill', 'fill news');

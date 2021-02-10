@@ -67,6 +67,22 @@ class User extends \Minz\Model
             'type' => 'string',
             'required' => true,
         ],
+
+        'pocket_username' => [
+            'type' => 'string',
+        ],
+
+        'pocket_access_token' => [
+            'type' => 'string',
+        ],
+
+        'pocket_request_token' => [
+            'type' => 'string',
+        ],
+
+        'pocket_error' => [
+            'type' => 'integer',
+        ],
     ];
 
     /**

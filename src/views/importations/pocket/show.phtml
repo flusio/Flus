@@ -1,0 +1,41 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Importation from Pocket'),
+        'back' => [
+            'href' => url('account'),
+            'label' => _('Account'),
+        ],
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('Importation from Pocket') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _f('%s enables you to import your links saved in Pocket.', $brand) ?>
+    </p>
+
+    <?php if ($error): ?>
+        <p class="form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+
+    <?php if ($current_user->pocket_access_token): ?>
+        <p class="paragraph--featured">
+            <?= _f('You authorized %s to access your Pocket data, thanks!', $brand) ?>
+        </p>
+    <?php else: ?>
+        <form method="post" action="<?= url('request pocket access') ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Connect to Pocket') ?>
+                </button>
+            </div>
+        </form>
+    <?php endif; ?>
+</div>

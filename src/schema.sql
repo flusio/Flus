@@ -30,7 +30,12 @@ CREATE TABLE users (
     subscription_account_id TEXT,
     subscription_expired_at TIMESTAMPTZ
         NOT NULL
-        DEFAULT date_trunc('second', NOW() + INTERVAL '1 month')
+        DEFAULT date_trunc('second', NOW() + INTERVAL '1 month'),
+
+    pocket_request_token TEXT,
+    pocket_access_token TEXT,
+    pocket_username TEXT,
+    pocket_error INTEGER
 );
 
 CREATE INDEX idx_users_email ON users(email);
