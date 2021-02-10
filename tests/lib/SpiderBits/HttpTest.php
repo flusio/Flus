@@ -71,6 +71,73 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user, $data['user']);
     }
 
+    public function testGetWithSettingHeaders()
+    {
+        $http = new Http();
+        $headers = [
+            'X-Custom' => 'foo',
+        ];
+        $url = 'https://' . self::TESTS_HOST . '/get';
+
+        $response = $http->get($url, [], [
+            'headers' => $headers,
+        ]);
+
+        $this->assertSame(200, $response->status);
+        $data = json_decode($response->data, true);
+        $this->assertSame('foo', $data['headers']['X-Custom']);
+    }
+
+
+    public function testGetWithSettingGlobalHeaders()
+    {
+        $http = new Http();
+        $http->headers = [
+            'X-Custom' => 'foo',
+        ];
+        $url = 'https://' . self::TESTS_HOST . '/get';
+
+        $response = $http->get($url);
+
+        $this->assertSame(200, $response->status);
+        $data = json_decode($response->data, true);
+        $this->assertSame('foo', $data['headers']['X-Custom']);
+    }
+
+    /**
+     * @dataProvider postProvider
+     */
+    public function testPost($url, $expected_code, $expected_text, $expected_headers)
+    {
+        $http = new Http();
+
+        $response = $http->post($url);
+
+        $this->assertSame($expected_code, $response->status);
+        $this->assertStringContainsString($expected_text, $response->data);
+        foreach ($expected_headers as $field_name => $field_value) {
+            $this->assertArrayHasKey($field_name, $response->headers);
+            $this->assertSame($field_value, $response->headers[$field_name]);
+        }
+    }
+
+    public function testPostWithParameters()
+    {
+        $http = new Http();
+        $url = 'https://' . self::TESTS_HOST . '/post';
+        $parameters = [
+            'foo' => 'bar',
+            'baz' => 'quz',
+        ];
+
+        $response = $http->post($url, $parameters);
+
+        $this->assertSame(200, $response->status);
+        $data = json_decode($response->data, true);
+        $this->assertSame($parameters['foo'], $data['form']['foo']);
+        $this->assertSame($parameters['baz'], $data['form']['baz']);
+    }
+
     public function getProvider()
     {
         return [
@@ -93,6 +160,24 @@ class HttpTest extends \PHPUnit\Framework\TestCase
                 200,
                 'Flus, média social de veille',
                 ['content-type' => 'text/html;charset=UTF-8'],
+            ],
+            [
+                'not a url',
+                0,
+                '',
+                [],
+            ],
+        ];
+    }
+
+    public function postProvider()
+    {
+        return [
+            [
+                'https://' . self::TESTS_HOST . '/post',
+                200,
+                self::TESTS_HOST,
+                ['content-type' => 'application/json'],
             ],
             [
                 'not a url',

@@ -16,6 +16,9 @@ class Http
     /** @var string */
     public $user_agent = 'SpiderBits/0.0.1 (' . PHP_OS . '; https://github.com/flusio/SpiderBits)';
 
+    /** @var array */
+    public $headers = [];
+
     /**
      * Make a GET HTTP request.
      *
@@ -36,6 +39,35 @@ class Http
             }
         }
 
+        return $this->request('get', $url, [], $options);
+    }
+
+    /**
+     * Make a POST HTTP request.
+     *
+     * @param string $url
+     * @param array $parameters
+     * @param array $options
+     *
+     * @return \SpiderBits\Response
+     */
+    public function post($url, $parameters = [], $options = [])
+    {
+        return $this->request('post', $url, $parameters, $options);
+    }
+
+    /**
+     * Generic method that uses Curl to make HTTP requests.
+     *
+     * @param string $method get or post
+     * @param string $url
+     * @param array $parameters
+     * @param array $options
+     *
+     * @return \SpiderBits\Response
+     */
+    private function request($method, $url, $parameters = [], $options = [])
+    {
         $curl_handle = curl_init();
         curl_setopt($curl_handle, CURLOPT_URL, $url);
         curl_setopt($curl_handle, CURLOPT_HEADER, false);
@@ -44,10 +76,25 @@ class Http
         curl_setopt($curl_handle, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->user_agent);
 
+        if ($method === 'post') {
+            curl_setopt($curl_handle, CURLOPT_POST, true);
+            curl_setopt($curl_handle, CURLOPT_POSTFIELDS, http_build_query($parameters));
+        }
+
         if (isset($options['auth_basic'])) {
             curl_setopt($curl_handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($curl_handle, CURLOPT_USERPWD, $options['auth_basic']);
         }
+
+        if (isset($options['headers'])) {
+            $request_headers = array_merge($this->headers, $options['headers']);
+        } else {
+            $request_headers = $this->headers;
+        }
+        $request_headers = array_map(function ($name, $value) {
+            return "{$name}: {$value}";
+        }, array_keys($request_headers), $request_headers);
+        curl_setopt($curl_handle, CURLOPT_HTTPHEADER, $request_headers);
 
         $headers = '';
         $done = false;
