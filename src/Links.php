@@ -33,8 +33,7 @@ class Links
     {
         $user = utils\CurrentUser::get();
         $link_id = $request->param('id');
-        $link_dao = new models\dao\Link();
-        $db_link = $link_dao->find($link_id);
+        $link = models\Link::find($link_id);
 
         // We must show the link in 3 main cases:
         // 1. the visitor is connected and owns the link
@@ -44,12 +43,11 @@ class Links
         // The first thing to do is to calculate the 3 boolean variables which
         // will allow us to handle these different cases.
         $is_connected = $user !== null;
-        $is_owned = $is_connected && $db_link && $user->id === $db_link['user_id'];
-        $is_public = $db_link && $db_link['is_public'];
+        $is_owned = $is_connected && $link && $user->id === $link->user_id;
+        $is_public = $link && $link->is_public;
 
         // This branch handles case 1
         if ($is_connected && $is_owned) {
-            $link = new models\Link($db_link);
             if (!$link->fetched_at) {
                 return Response::redirect('show fetch link', [
                     'id' => $link->id,
@@ -69,7 +67,6 @@ class Links
 
         // This branch handles cases 2 and 3
         if ($is_public) {
-            $link = new models\Link($db_link);
             return Response::ok('links/show_public.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
@@ -180,10 +177,6 @@ class Links
             ]);
         }
 
-        $link_dao = new models\dao\Link();
-        $collection_dao = new models\dao\Collection();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $link = models\Link::init($url, $user->id, $is_public);
         $errors = $link->validate();
         if ($errors) {
@@ -208,7 +201,7 @@ class Links
             ]);
         }
 
-        if (!$collection_dao->existForUser($user->id, $collection_ids)) {
+        if (!models\Collection::daoCall('existForUser', $user->id, $collection_ids)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_public' => $is_public,
@@ -220,20 +213,21 @@ class Links
             ]);
         }
 
-        $existing_db_link = $link_dao->findBy([
+        $existing_link = models\Link::findBy([
             'url' => $link->url,
             'user_id' => $user->id,
         ]);
-        if ($existing_db_link) {
-            $link = new models\Link($existing_db_link);
+        if ($existing_link) {
+            $link = $existing_link;
         } else {
-            $link_dao->save($link);
+            models\Link::save($link);
         }
 
         $existing_collections = $link->collections();
         $existing_collection_ids = array_column($existing_collections, 'id');
         $collection_ids = array_diff($collection_ids, $existing_collection_ids);
         if ($collection_ids) {
+            $links_to_collections_dao = new models\dao\LinksToCollections();
             $links_to_collections_dao->attach($link->id, $collection_ids);
         }
 
@@ -332,8 +326,7 @@ class Links
             return Response::found($from);
         }
 
-        $link_dao = new models\dao\Link();
-        $link_dao->save($link);
+        models\Link::save($link);
 
         return Response::found($from);
     }
@@ -376,8 +369,7 @@ class Links
             return Response::found($from);
         }
 
-        $link_dao = new models\dao\Link();
-        $link_dao->delete($link->id);
+        models\Link::delete($link->id);
 
         return Response::found($redirect_to);
     }
@@ -475,8 +467,7 @@ class Links
             $link->image_filename = $image_filename;
         }
 
-        $link_dao = new models\dao\Link();
-        $link_dao->save($link);
+        models\Link::save($link);
 
         return Response::redirect('link', ['id' => $link->id]);
     }

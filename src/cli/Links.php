@@ -25,13 +25,10 @@ class Links
 
         $fetch_service = new services\Fetch();
         $image_service = new services\Image();
-        $link_dao = new models\dao\Link();
 
-        $db_links = $link_dao->listByOldestFetching($number);
+        $links = models\Link::daoToList('listByOldestFetching', $number);
         $results = [];
-        foreach ($db_links as $db_link) {
-            $link = new models\Link($db_link);
-
+        foreach ($links as $link) {
             $result = "Link #{$link->id} ({$link->url}): ";
 
             $info = $fetch_service->fetch($link->url);
@@ -48,7 +45,7 @@ class Links
                 $result .= "nothing";
             }
 
-            $link_dao->save($link);
+            models\Link::save($link);
 
             $results[] = $result;
         }

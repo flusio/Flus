@@ -22,15 +22,13 @@ class Topics
      */
     public function index($request)
     {
-        $topic_dao = new models\dao\Topic();
-        $db_topics = $topic_dao->listAll();
-
-        $topics = [];
-        foreach ($db_topics as $db_topic) {
-            $topics[] = $db_topic['id'] . ' ' . $db_topic['label'];
+        $topics = models\Topic::listAll();
+        $presented_topics = [];
+        foreach ($topics as $topic) {
+            $presented_topics[] = $topic->id . ' ' . $topic->label;
         }
 
-        return Response::text(200, implode("\n", $topics));
+        return Response::text(200, implode("\n", $presented_topics));
     }
 
     /**
@@ -47,9 +45,7 @@ class Topics
      */
     public function create($request)
     {
-        $topic_dao = new models\dao\Topic();
         $label = $request->param('label');
-
         $topic = models\Topic::init($label);
 
         $errors = $topic->validate();
@@ -58,7 +54,7 @@ class Topics
             return Response::text(400, "Topic creation failed: {$errors}");
         }
 
-        $topic_id = $topic_dao->save($topic);
+        $topic_id = models\Topic::save($topic);
 
         return Response::text(200, "Topic {$topic->label} ({$topic_id}) has been created.");
     }
@@ -77,16 +73,14 @@ class Topics
      */
     public function delete($request)
     {
-        $topic_dao = new models\dao\Topic();
         $id = $request->param('id');
 
-        $db_topic = $topic_dao->find($id);
-        if (!$db_topic) {
+        $topic = models\Topic::find($id);
+        if (!$topic) {
             return Response::text(404, "Topic id `{$id}` does not exist.");
         }
 
-        $topic = new models\Topic($db_topic);
-        $topic_dao->delete($topic->id);
+        models\Topic::delete($topic->id);
 
         return Response::text(200, "Topic {$topic->label} ({$topic->id}) has been deleted.");
     }

@@ -82,10 +82,6 @@ class Registrations
         $email = $request->param('email');
         $password = $request->param('password');
         $accept_terms = $request->param('accept_terms', false);
-        $user_dao = new models\dao\User();
-        $collection_dao = new models\dao\Collection();
-        $token_dao = new models\dao\Token();
-        $session_dao = new models\dao\Session();
         $csrf = new \Minz\CSRF();
 
         if (!$csrf->validateToken($request->param('csrf'))) {
@@ -112,7 +108,7 @@ class Registrations
             ]);
         }
 
-        if ($user_dao->findBy(['email' => $user->email])) {
+        if (models\User::findBy(['email' => $user->email])) {
             return Response::badRequest('registrations/new.phtml', [
                 'has_terms' => $has_terms,
                 'username' => $username,
@@ -137,25 +133,25 @@ class Registrations
         }
 
         $validation_token = models\Token::init(1, 'day', 16);
-        $token_dao->save($validation_token);
+        models\Token::save($validation_token);
 
         $user->validation_token = $validation_token->token;
-        $user_id = $user_dao->save($user);
+        $user_id = models\User::save($user);
 
         // Initialize the bookmarks collection
         $bookmarks_collection = models\Collection::initBookmarks($user_id);
-        $collection_dao->save($bookmarks_collection);
+        models\Collection::save($bookmarks_collection);
 
         // Initialize the current session
         $session_token = models\Token::init(1, 'month');
-        $token_dao->save($session_token);
+        models\Token::save($session_token);
 
         $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
         $ip = $request->header('REMOTE_ADDR', 'unknown');
         $session = models\Session::init($session_name, $ip);
         $session->user_id = $user_id;
         $session->token = $session_token->token;
-        $session_dao->save($session);
+        models\Session::save($session);
 
         utils\CurrentUser::setSessionToken($session_token->token);
 

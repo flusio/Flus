@@ -12,6 +12,8 @@ use flusio\utils;
  */
 class Collection extends \Minz\Model
 {
+    use DaoConnector;
+
     public const VALID_TYPES = ['bookmarks', 'collection'];
 
     public const PROPERTIES = [
@@ -115,9 +117,7 @@ class Collection extends \Minz\Model
      */
     public function owner()
     {
-        $user_dao = new dao\User();
-        $db_user = $user_dao->find($this->user_id);
-        return new User($db_user);
+        return User::find($this->user_id);
     }
 
     /**
@@ -127,13 +127,7 @@ class Collection extends \Minz\Model
      */
     public function links()
     {
-        $link_dao = new dao\Link();
-        $db_links = $link_dao->listByCollectionIdWithNumberComments($this->id);
-        $links = [];
-        foreach ($db_links as $db_link) {
-            $links[] = new Link($db_link);
-        }
-        return $links;
+        return Link::daoToList('listByCollectionIdWithNumberComments', $this->id);
     }
 
     /**
@@ -143,13 +137,7 @@ class Collection extends \Minz\Model
      */
     public function publicLinks()
     {
-        $link_dao = new dao\Link();
-        $db_links = $link_dao->listPublicByCollectionIdWithNumberComments($this->id);
-        $links = [];
-        foreach ($db_links as $db_link) {
-            $links[] = new Link($db_link);
-        }
-        return $links;
+        return Link::daoToList('listPublicByCollectionIdWithNumberComments', $this->id);
     }
 
     /**
@@ -159,13 +147,7 @@ class Collection extends \Minz\Model
      */
     public function topics()
     {
-        $topic_dao = new dao\Topic();
-        $topics = [];
-        $db_topics = $topic_dao->listByCollectionId($this->id);
-        foreach ($db_topics as $db_topic) {
-            $topics[] = new Topic($db_topic);
-        }
-        return $topics;
+        return Topic::daoToList('listByCollectionId', $this->id);
     }
 
     /**

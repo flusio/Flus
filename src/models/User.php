@@ -12,6 +12,8 @@ use flusio\utils;
  */
 class User extends \Minz\Model
 {
+    use DaoConnector;
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'string',
@@ -94,13 +96,7 @@ class User extends \Minz\Model
      */
     public function topics()
     {
-        $topic_dao = new dao\Topic();
-        $topics = [];
-        $db_topics = $topic_dao->listByUserId($this->id);
-        foreach ($db_topics as $db_topic) {
-            $topics[] = new Topic($db_topic);
-        }
-        return $topics;
+        return Topic::daoToList('listByUserId', $this->id);
     }
 
     /**
@@ -112,16 +108,10 @@ class User extends \Minz\Model
      */
     public function link($link_id)
     {
-        $link_dao = new dao\Link();
-        $db_link = $link_dao->findBy([
+        return Link::findBy([
             'id' => $link_id,
             'user_id' => $this->id,
         ]);
-        if ($db_link) {
-            return new Link($db_link);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -133,16 +123,10 @@ class User extends \Minz\Model
      */
     public function linkByUrl($link_url)
     {
-        $link_dao = new dao\Link();
-        $db_link = $link_dao->findBy([
-            'user_id' => $this->id,
+        return Link::findBy([
             'url' => $link_url,
+            'user_id' => $this->id,
         ]);
-        if ($db_link) {
-            return new Link($db_link);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -152,16 +136,10 @@ class User extends \Minz\Model
      */
     public function newsLink($news_link_id)
     {
-        $news_link_dao = new dao\NewsLink();
-        $db_news_link = $news_link_dao->findBy([
+        return NewsLink::findBy([
             'id' => $news_link_id,
             'user_id' => $this->id,
         ]);
-        if ($db_news_link) {
-            return new NewsLink($db_news_link);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -171,13 +149,7 @@ class User extends \Minz\Model
      */
     public function newsLinks()
     {
-        $news_link_dao = new dao\NewsLink();
-        $db_news_links = $news_link_dao->listComputedByUserId($this->id);
-        $news_links = [];
-        foreach ($db_news_links as $db_news_link) {
-            $news_links[] = new NewsLink($db_news_link);
-        }
-        return $news_links;
+        return NewsLink::daoToList('listComputedByUserId', $this->id);
     }
 
     /**
@@ -187,16 +159,10 @@ class User extends \Minz\Model
      */
     public function bookmarks()
     {
-        $collection_dao = new dao\Collection();
-        $db_collection = $collection_dao->findBy([
+        return Collection::findBy([
             'user_id' => $this->id,
             'type' => 'bookmarks',
         ]);
-        if ($db_collection) {
-            return new Collection($db_collection);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -206,17 +172,11 @@ class User extends \Minz\Model
      */
     public function collection($collection_id)
     {
-        $collection_dao = new dao\Collection();
-        $db_collection = $collection_dao->findBy([
+        return Collection::findBy([
             'id' => $collection_id,
             'user_id' => $this->id,
             'type' => 'collection',
         ]);
-        if ($db_collection) {
-            return new Collection($db_collection);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -228,23 +188,16 @@ class User extends \Minz\Model
      */
     public function collections($exclude_bookmarks = false)
     {
-        $collection_dao = new dao\Collection();
         if ($exclude_bookmarks) {
-            $db_collections = $collection_dao->listBy([
+            return Collection::listBy([
                 'user_id' => $this->id,
                 'type' => 'collection',
             ]);
         } else {
-            $db_collections = $collection_dao->listBy([
+            return Collection::listBy([
                 'user_id' => $this->id,
             ]);
         }
-
-        $collections = [];
-        foreach ($db_collections as $db_collection) {
-            $collections[] = new Collection($db_collection);
-        }
-        return $collections;
     }
 
     /**
@@ -254,13 +207,7 @@ class User extends \Minz\Model
      */
     public function collectionsWithNumberLinks()
     {
-        $collection_dao = new dao\Collection();
-        $db_collections = $collection_dao->listWithNumberLinksForUser($this->id);
-        $collections = [];
-        foreach ($db_collections as $db_collection) {
-            $collections[] = new Collection($db_collection);
-        }
-        return $collections;
+        return Collection::daoToList('listWithNumberLinksForUser', $this->id);
     }
 
     /**
@@ -270,13 +217,7 @@ class User extends \Minz\Model
      */
     public function followedCollectionsWithNumberLinks()
     {
-        $collection_dao = new dao\Collection();
-        $db_collections = $collection_dao->listFollowedWithNumberLinksForUser($this->id);
-        $collections = [];
-        foreach ($db_collections as $db_collection) {
-            $collections[] = new Collection($db_collection);
-        }
-        return $collections;
+        return Collection::daoToList('listFollowedWithNumberLinksForUser', $this->id);
     }
 
     /**

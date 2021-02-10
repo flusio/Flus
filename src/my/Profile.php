@@ -58,8 +58,6 @@ class Profile
      */
     public function update($request)
     {
-        $user_dao = new models\dao\User();
-        $topic_dao = new models\dao\Topic();
         $users_to_topics_dao = new models\dao\UsersToTopics();
         $username = $request->param('username');
         $locale = $request->param('locale');
@@ -86,7 +84,7 @@ class Profile
             ]);
         }
 
-        if ($topic_ids && !$topic_dao->exists($topic_ids)) {
+        if ($topic_ids && !models\Topic::exists($topic_ids)) {
             return Response::badRequest('my/profile/show.phtml', [
                 'username' => $username,
                 'locale' => $locale,
@@ -120,7 +118,7 @@ class Profile
             ]);
         }
 
-        $user_dao->save($user);
+        models\User::save($user);
         utils\Locale::setCurrentLocale($locale);
         $users_to_topics_dao->set($user->id, $topic_ids);
 

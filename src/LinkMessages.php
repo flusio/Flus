@@ -85,8 +85,7 @@ class LinkMessages
             ]);
         }
 
-        $message_dao = new models\dao\Message();
-        $message_dao->save($message);
+        models\Message::save($message);
 
         return Response::redirect('link', ['id' => $link_id]);
     }

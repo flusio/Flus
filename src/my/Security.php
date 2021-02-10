@@ -68,7 +68,6 @@ class Security
             ]);
         }
 
-        $user_dao = new models\dao\User();
         $email = $request->param('email');
         $password = $request->param('password');
 
@@ -82,8 +81,8 @@ class Security
 
         $user->setLoginCredentials($email, $password);
 
-        $existing_db_user = $user_dao->findBy(['email' => $user->email]);
-        $email_exists = $existing_db_user && $existing_db_user['id'] !== $user->id;
+        $existing_user = models\User::findBy(['email' => $user->email]);
+        $email_exists = $existing_user && $existing_user->id !== $user->id;
         if ($email_exists) {
             return Response::badRequest('my/security/show_confirmed.phtml', [
                 'email' => $email,
@@ -101,7 +100,7 @@ class Security
             ]);
         }
 
-        $user_dao->save($user);
+        models\User::save($user);
 
         return Response::ok('my/security/show_confirmed.phtml', [
             'email' => $user->email,
@@ -148,10 +147,9 @@ class Security
             return Response::redirect('security');
         }
 
-        $session_dao = new models\dao\Session();
         $session = utils\CurrentUser::session();
         $session->confirmed_password_at = \Minz\Time::now();
-        $session_dao->save($session);
+        models\Session::save($session);
 
         return Response::redirect('security');
     }

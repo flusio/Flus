@@ -106,12 +106,6 @@ class NewsLinkRemovals
             return Response::notFound('not_found.phtml');
         }
 
-        $link_dao = new models\dao\Link();
-        $news_link_dao = new models\dao\NewsLink();
-        $collection_dao = new models\dao\Collection();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $message_dao = new models\dao\Message();
-
         $collections = $user->collections(true);
         models\Collection::sort($collections, $user->locale);
 
@@ -148,7 +142,7 @@ class NewsLinkRemovals
             ]);
         }
 
-        if (!$collection_dao->existForUser($user->id, $collection_ids)) {
+        if (!models\Collection::daoCall('existForUser', $user->id, $collection_ids)) {
             return Response::badRequest('news_link_removals/adding.phtml', [
                 'news_link' => $news_link,
                 'is_public' => $is_public,
@@ -170,21 +164,22 @@ class NewsLinkRemovals
             $link = models\Link::initFromNews($news_link, $user->id);
         }
         $link->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
-        $link_dao->save($link);
+        models\Link::save($link);
 
         // Attach the link to the given collections (and potentially forget the
         // old ones)
+        $links_to_collections_dao = new models\dao\LinksToCollections();
         $links_to_collections_dao->set($link->id, $collection_ids);
 
         // Then, if a comment has been passed, save it.
         if (trim($comment)) {
             $message = models\Message::init($user->id, $link->id, $comment);
-            $message_dao->save($message);
+            models\Message::save($message);
         }
 
         // Finally, mark the news_link as read.
         $news_link->is_read = true;
-        $news_link_dao->save($news_link);
+        models\NewsLink::save($news_link);
 
         return Response::redirect('news');
     }
@@ -237,14 +232,12 @@ class NewsLinkRemovals
             $news_links = [$news_link];
         }
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
         $bookmarks = $user->bookmarks();
 
         foreach ($news_links as $news_link) {
             // First, we mark the news link as read
             $news_link->is_read = true;
-            $news_link_dao->save($news_link);
+            models\NewsLink::save($news_link);
 
             // Then, we try to find a link with corresponding URL in order to
             // remove it from bookmarks.
@@ -252,6 +245,7 @@ class NewsLinkRemovals
             if ($link) {
                 $actual_collection_ids = array_column($link->collections(), 'id');
                 if (in_array($bookmarks->id, $actual_collection_ids)) {
+                    $links_to_collections_dao = new models\dao\LinksToCollections();
                     $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
                 }
             }
@@ -309,8 +303,6 @@ class NewsLinkRemovals
         }
 
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $link_dao = new models\dao\Link();
-        $news_link_dao = new models\dao\NewsLink();
 
         foreach ($news_links as $news_link) {
             // First, we want the link with corresponding URL to exist for the
@@ -319,7 +311,7 @@ class NewsLinkRemovals
             $link = $user->linkByUrl($news_link->url);
             if (!$link) {
                 $link = models\Link::initFromNews($news_link, $user->id);
-                $link_dao->save($link);
+                models\Link::save($link);
             }
 
             // Then, we check if the link is bookmarked. If it isn't, bookmark it.
@@ -331,7 +323,7 @@ class NewsLinkRemovals
 
             // Then, delete the news (we don't set the is_removed or it would no
             // longer be suggested to the user).
-            $news_link_dao->delete($news_link->id);
+            models\NewsLink::delete($news_link->id);
         }
 
         return Response::found($from);
@@ -381,11 +373,10 @@ class NewsLinkRemovals
         }
 
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
 
         // First, remove the link from the news.
         $news_link->is_removed = true;
-        $news_link_dao->save($news_link);
+        models\NewsLink::save($news_link);
 
         // Then, we try to find a link with corresponding URL in order to
         // remove it from bookmarks.

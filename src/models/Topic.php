@@ -10,6 +10,8 @@ use flusio\utils;
  */
 class Topic extends \Minz\Model
 {
+    use DaoConnector;
+
     public const LABEL_MAX_SIZE = 30;
 
     public const PROPERTIES = [
@@ -38,19 +40,6 @@ class Topic extends \Minz\Model
             'id' => utils\Random::hex(32),
             'label' => trim($label),
         ]);
-    }
-
-    /**
-     * @return \flusio\models\Topic[]
-     */
-    public static function listAll()
-    {
-        $topic_dao = new dao\Topic();
-        $topics = [];
-        foreach ($topic_dao->listAll() as $db_topic) {
-            $topics[] = new self($db_topic);
-        }
-        return $topics;
     }
 
     /**

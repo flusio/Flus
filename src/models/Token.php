@@ -10,6 +10,8 @@ use flusio\utils;
  */
 class Token extends \Minz\Model
 {
+    use DaoConnector;
+
     public const PROPERTIES = [
         'created_at' => 'datetime',
 
