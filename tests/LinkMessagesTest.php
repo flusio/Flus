@@ -20,7 +20,6 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesMessageAndRedirects()
     {
-        $message_dao = new models\dao\Message();
         $user = $this->login();
         $user_id = $user->id;
         $link_id = $this->create('link', [
@@ -29,7 +28,7 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
         $csrf = $user->csrf;
         $content = $this->fake('paragraphs', 3, true);
 
-        $this->assertSame(0, $message_dao->count());
+        $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('post', "/links/{$link_id}/messages", [
             'csrf' => $csrf,
@@ -37,16 +36,15 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
-        $this->assertSame(1, $message_dao->count());
-        $db_message = $message_dao->listAll()[0];
-        $this->assertSame($content, $db_message['content']);
-        $this->assertSame($user_id, $db_message['user_id']);
-        $this->assertSame($link_id, $db_message['link_id']);
+        $this->assertSame(1, models\Message::count());
+        $message = models\Message::take();
+        $this->assertSame($content, $message->content);
+        $this->assertSame($user_id, $message->user_id);
+        $this->assertSame($link_id, $message->link_id);
     }
 
     public function testCreateRedirectsIfNotConnected()
     {
-        $message_dao = new models\dao\Message();
         $csrf = 'the token';
         $user_id = $this->create('user', [
             'csrf' => $csrf,
@@ -62,12 +60,11 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
-        $this->assertSame(0, $message_dao->count());
+        $this->assertSame(0, models\Message::count());
     }
 
     public function testCreateFailsIfLinkIsNotOwned()
     {
-        $message_dao = new models\dao\Message();
         $user = $this->login();
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
@@ -76,7 +73,7 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
         $csrf = $user->csrf;
         $content = $this->fake('paragraphs', 3, true);
 
-        $this->assertSame(0, $message_dao->count());
+        $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('post', "/links/{$link_id}/messages", [
             'csrf' => $csrf,
@@ -84,12 +81,11 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertSame(0, $message_dao->count());
+        $this->assertSame(0, models\Message::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid()
     {
-        $message_dao = new models\dao\Message();
         $user = $this->login();
         $user_id = $user->id;
         $link_id = $this->create('link', [
@@ -98,7 +94,7 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
         $csrf = 'not the token';
         $content = $this->fake('paragraphs', 3, true);
 
-        $this->assertSame(0, $message_dao->count());
+        $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('post', "/links/{$link_id}/messages", [
             'csrf' => $csrf,
@@ -106,12 +102,11 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertSame(0, $message_dao->count());
+        $this->assertSame(0, models\Message::count());
     }
 
     public function testCreateFailsIfContentIsEmpty()
     {
-        $message_dao = new models\dao\Message();
         $user = $this->login();
         $user_id = $user->id;
         $link_id = $this->create('link', [
@@ -120,7 +115,7 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
         $csrf = $user->csrf;
         $content = '';
 
-        $this->assertSame(0, $message_dao->count());
+        $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('post', "/links/{$link_id}/messages", [
             'csrf' => $csrf,
@@ -128,6 +123,6 @@ class LinkMessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The message is required');
-        $this->assertSame(0, $message_dao->count());
+        $this->assertSame(0, models\Message::count());
     }
 }

@@ -123,11 +123,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testCreateCreatesCollectionAndRedirects()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
 
-        $this->assertSame(0, $collection_dao->count());
+        $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('post', '/collections/new', [
             'csrf' => $user->csrf,
@@ -135,18 +134,17 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'description' => $description,
         ]);
 
-        $this->assertSame(1, $collection_dao->count());
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertResponse($response, 302, "/collections/{$db_collection['id']}");
-        $this->assertSame($name, $db_collection['name']);
-        $this->assertSame($description, $db_collection['description']);
-        $this->assertFalse($db_collection['is_public']);
+        $this->assertSame(1, models\Collection::count());
+        $collection = models\Collection::take();
+        $this->assertResponse($response, 302, "/collections/{$collection->id}");
+        $this->assertSame($name, $collection->name);
+        $this->assertSame($description, $collection->description);
+        $this->assertFalse($collection->is_public);
     }
 
     public function testCreateAllowsToCreatePublicCollections()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
 
@@ -157,14 +155,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
 
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertTrue($db_collection['is_public']);
+        $collection = models\Collection::take();
+        $this->assertTrue($collection->is_public);
     }
 
     public function testCreateAllowsToAttachTopics()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
         $topic_id = $this->create('topic');
@@ -176,13 +173,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'topic_ids' => [$topic_id],
         ]);
 
-        $collection = new models\Collection($collection_dao->listAll()[0]);
+        $collection = models\Collection::take();
         $this->assertContains($topic_id, array_column($collection->topics(), 'id'));
     }
 
     public function testCreateRedirectsIfNotConnected()
     {
-        $collection_dao = new models\dao\Collection();
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
 
@@ -193,13 +189,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fcollections%2Fnew');
-        $this->assertSame(0, $collection_dao->count());
+        $this->assertSame(0, models\Collection::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
 
@@ -210,13 +205,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertSame(0, $collection_dao->count());
+        $this->assertSame(0, models\Collection::count());
     }
 
     public function testCreateFailsIfNameIsInvalid()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $name = $this->fake('words', 100, true);
         $description = $this->fake('sentence');
 
@@ -227,13 +221,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The name must be less than 100 characters');
-        $this->assertSame(0, $collection_dao->count());
+        $this->assertSame(0, models\Collection::count());
     }
 
     public function testCreateFailsIfNameIsMissing()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $description = $this->fake('sentence');
 
         $response = $this->appRun('post', '/collections/new', [
@@ -242,13 +235,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The name is required');
-        $this->assertSame(0, $collection_dao->count());
+        $this->assertSame(0, models\Collection::count());
     }
 
     public function testCreateFailsIfTopicIdsIsInvalid()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
         $topic_id = $this->create('topic');
@@ -261,7 +253,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'One of the associated topic doesn’t exist.');
-        $this->assertSame(0, $collection_dao->count());
+        $this->assertSame(0, models\Collection::count());
     }
 
     public function testShowRendersCorrectly()
@@ -452,7 +444,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateUpdatesCollectionAndRedirects()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
@@ -475,16 +466,15 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/collections/{$collection_id}");
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertSame($new_name, $db_collection['name']);
-        $this->assertSame($new_description, $db_collection['description']);
-        $this->assertTrue($db_collection['is_public']);
+        $collection = models\Collection::take();
+        $this->assertSame($new_name, $collection->name);
+        $this->assertSame($new_description, $collection->description);
+        $this->assertTrue($collection->is_public);
     }
 
     public function testUpdateChangesTopics()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $new_name = $this->fakeUnique('words', 3, true);
         $new_description = $this->fakeUnique('sentence');
         $new_public = 1;
@@ -507,7 +497,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'topic_ids' => [$new_topic_id],
         ]);
 
-        $collection = new models\Collection($collection_dao->find($collection_id));
+        $collection = models\Collection::take();
         $topic_ids = array_column($collection->topics(), 'id');
         $this->assertSame([$new_topic_id], $topic_ids);
     }
@@ -515,7 +505,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
-        $collection_dao = new models\dao\Collection();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
@@ -534,15 +523,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}%2Fedit");
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertSame($old_name, $db_collection['name']);
-        $this->assertSame($old_description, $db_collection['description']);
+        $collection = models\Collection::take();
+        $this->assertSame($old_name, $collection->name);
+        $this->assertSame($old_description, $collection->description);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
@@ -561,15 +549,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertSame($old_name, $db_collection['name']);
-        $this->assertSame($old_description, $db_collection['description']);
+        $collection = models\Collection::take();
+        $this->assertSame($old_name, $collection->name);
+        $this->assertSame($old_description, $collection->description);
     }
 
     public function testUpdateFailsIfNameIsInvalid()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 100, true);
         $old_description = $this->fakeUnique('sentence');
@@ -588,15 +575,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The name must be less than 100 characters');
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertSame($old_name, $db_collection['name']);
-        $this->assertSame($old_description, $db_collection['description']);
+        $collection = models\Collection::take();
+        $this->assertSame($old_name, $collection->name);
+        $this->assertSame($old_description, $collection->description);
     }
 
     public function testUpdateFailsIfNameIsMissing()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = '';
         $old_description = $this->fakeUnique('sentence');
@@ -615,15 +601,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The name is required');
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertSame($old_name, $db_collection['name']);
-        $this->assertSame($old_description, $db_collection['description']);
+        $collection = models\Collection::take();
+        $this->assertSame($old_name, $collection->name);
+        $this->assertSame($old_description, $collection->description);
     }
 
     public function testUpdateFailsIfTopicIdsIsInvalid()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $new_name = $this->fakeUnique('words', 3, true);
         $new_description = $this->fakeUnique('sentence');
         $new_public = 1;
@@ -646,7 +631,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'One of the associated topic doesn’t exist.');
-        $collection = new models\Collection($collection_dao->find($collection_id));
+        $collection = models\Collection::find($collection_id);
         $topic_ids = array_column($collection->topics(), 'id');
         $this->assertSame([$old_topic_id], $topic_ids);
     }
@@ -654,7 +639,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfCollectionDoesNotExist()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $new_name = $this->fakeUnique('words', 3, true);
         $new_description = $this->fakeUnique('sentence');
 
@@ -671,7 +655,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $collection_dao = new models\dao\Collection();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
@@ -690,15 +673,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertSame($old_name, $db_collection['name']);
-        $this->assertSame($old_description, $db_collection['description']);
+        $collection = models\Collection::take();
+        $this->assertSame($old_name, $collection->name);
+        $this->assertSame($old_description, $collection->description);
     }
 
     public function testUpdateFailsIfCollectionIsNotOfCorrectType()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
@@ -717,15 +699,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $db_collection = $collection_dao->listAll()[0];
-        $this->assertSame($old_name, $db_collection['name']);
-        $this->assertSame($old_description, $db_collection['description']);
+        $collection = models\Collection::take();
+        $this->assertSame($old_name, $collection->name);
+        $this->assertSame($old_description, $collection->description);
     }
 
     public function testDeleteDeletesCollectionAndRedirects()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'collection',
@@ -737,13 +718,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/collections');
-        $this->assertFalse($collection_dao->exists($collection_id));
+        $this->assertFalse(models\Collection::exists($collection_id));
     }
 
     public function testDeleteRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
-        $collection_dao = new models\dao\Collection();
         $collection_id = $this->create('collection', [
             'user_id' => $user_id,
             'type' => 'collection',
@@ -755,13 +735,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}%2Fedit");
-        $this->assertTrue($collection_dao->exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection_id));
     }
 
     public function testDeleteFailsIfCollectionDoesNotExist()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'collection',
@@ -773,14 +752,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertTrue($collection_dao->exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection_id));
     }
 
     public function testDeleteFailsIfCollectionIsNotOwnedByCurrentUser()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $collection_dao = new models\dao\Collection();
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
             'type' => 'collection',
@@ -792,13 +770,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertTrue($collection_dao->exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection_id));
     }
 
     public function testDeleteFailsIfCollectionIsNotOfCorrectType()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'bookmarks',
@@ -810,13 +787,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertTrue($collection_dao->exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection_id));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $collection_dao = new models\dao\Collection();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'collection',
@@ -828,7 +804,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/collections/{$collection_id}/edit");
-        $this->assertTrue($collection_dao->exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection_id));
         $this->assertFlash('error', 'A security verification failed.');
     }
 

@@ -76,7 +76,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateReturnsACookie()
     {
-        $session_dao = new models\dao\Session();
         $email = $this->fake('email');
         $password = $this->fake('password');
         $user_id = $this->create('user', [
@@ -90,17 +89,14 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $db_session = $session_dao->listAll()[0];
+        $session = models\Session::take();
         $cookie = $response->cookies()['flusio_session_token'];
-        $this->assertSame($db_session['token'], $cookie['value']);
+        $this->assertSame($session->token, $cookie['value']);
         $this->assertSame('Lax', $cookie['options']['samesite']);
     }
 
     public function testCreateCreatesASessionValidForOneMonth()
     {
-        $session_dao = new models\dao\Session();
-        $token_dao = new models\dao\Token();
-
         $this->freeze($this->fake('dateTime'));
 
         $ip = $this->fake('ipv6');
@@ -111,7 +107,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $this->assertSame(0, $session_dao->count());
+        $this->assertSame(0, models\Session::count());
 
         $response = $this->appRun('post', '/login', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -122,10 +118,10 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0',
         ]);
 
-        $this->assertSame(1, $session_dao->count());
+        $this->assertSame(1, models\Session::count());
 
-        $session = new models\Session($session_dao->listAll()[0]);
-        $token = new models\Token($token_dao->find($session->token));
+        $session = models\Session::take();
+        $token = models\Token::find($session->token);
         $this->assertSame($user_id, $session->user_id);
         $this->assertSame('Firefox on Linux', $session->name);
         $this->assertSame($ip, $session->ip);
@@ -134,7 +130,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateDoesNotCreateASessionIfConnected()
     {
-        $session_dao = new models\dao\Session();
         $email = $this->fake('email');
         $password = $this->fake('password');
         $user = $this->login([
@@ -142,7 +137,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $number_tokens = $session_dao->count();
+        $number_tokens = models\Session::count();
 
         $response = $this->appRun('post', '/login', [
             'csrf' => $user->csrf,
@@ -150,7 +145,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertSame($number_tokens, $session_dao->count());
+        $this->assertSame($number_tokens, models\Session::count());
         $this->assertResponse($response, 302, '/');
     }
 
@@ -198,7 +193,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid()
     {
-        $session_dao = new models\dao\Session();
         $email = $this->fake('email');
         $password = $this->fake('password');
         $user_id = $this->create('user', [
@@ -214,12 +208,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertSame(0, $session_dao->count());
+        $this->assertSame(0, models\Session::count());
     }
 
     public function testCreateFailsIfEmailDoesNotMatchAUser()
     {
-        $session_dao = new models\dao\Session();
         $email = $this->fake('email');
         $password = $this->fake('password');
         $user_id = $this->create('user', [
@@ -234,12 +227,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'We can’t find any account with this email address');
-        $this->assertSame(0, $session_dao->count());
+        $this->assertSame(0, models\Session::count());
     }
 
     public function testCreateFailsIfPasswordDoesNotMatch()
     {
-        $session_dao = new models\dao\Session();
         $email = $this->fake('email');
         $password = $this->fake('password');
         $user_id = $this->create('user', [
@@ -254,31 +246,29 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The password is incorrect');
-        $this->assertSame(0, $session_dao->count());
+        $this->assertSame(0, models\Session::count());
     }
 
     public function testDeleteDeletesCurrentSessionAndRedirectsToHome()
     {
-        $session_dao = new models\dao\Session();
         $user = $this->login();
 
-        $this->assertSame(1, $session_dao->count());
+        $this->assertSame(1, models\Session::count());
 
         $response = $this->appRun('post', '/logout', [
             'csrf' => $user->csrf,
         ]);
 
         $this->assertResponse($response, 302, '/');
-        $this->assertSame(0, $session_dao->count());
+        $this->assertSame(0, models\Session::count());
         $this->assertNull(\flusio\utils\CurrentUser::get());
     }
 
     public function testDeleteReturnsACookie()
     {
-        $session_dao = new models\dao\Session();
         $user = $this->login();
 
-        $this->assertSame(1, $session_dao->count());
+        $this->assertSame(1, models\Session::count());
 
         $response = $this->appRun('post', '/logout', [
             'csrf' => $user->csrf,
@@ -291,8 +281,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteRedirectsToHomeIfNotConnected()
     {
-        $session_dao = new models\dao\Session();
-        $this->assertSame(0, $session_dao->count());
+        $this->assertSame(0, models\Session::count());
 
         $response = $this->appRun('post', '/logout', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -303,7 +292,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
-        $session_dao = new models\dao\Session();
         $this->login();
 
         $response = $this->appRun('post', '/logout', [
@@ -312,7 +300,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/');
         $this->assertFlash('error', 'A security verification failed.');
-        $this->assertSame(1, $session_dao->count());
+        $this->assertSame(1, models\Session::count());
     }
 
     public function testChangeLocaleSetsSessionLocale()

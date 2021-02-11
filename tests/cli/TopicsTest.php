@@ -41,22 +41,20 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesATopicAndRendersCorrectly()
     {
-        $topic_dao = new models\dao\Topic();
         $label = $this->fake('word');
 
-        $this->assertSame(0, $topic_dao->count());
+        $this->assertSame(0, models\Topic::count());
 
         $response = $this->appRun('cli', '/topics/create', [
             'label' => $label,
         ]);
 
         $this->assertResponse($response, 200, 'has been created');
-        $this->assertSame(1, $topic_dao->count());
+        $this->assertSame(1, models\Topic::count());
     }
 
     public function testCreateFailsIfLabelIsTooLong()
     {
-        $topic_dao = new models\dao\Topic();
         $label_max_size = models\Topic::LABEL_MAX_SIZE;
         $size = $label_max_size + $this->fake('randomDigitNotNull');
         $label = $this->fake('regexify', "\w{{$size}}");
@@ -66,39 +64,35 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, "The label must be less than {$label_max_size} characters.");
-        $this->assertSame(0, $topic_dao->count());
+        $this->assertSame(0, models\Topic::count());
     }
 
     public function testCreateFailsIfLabelIsEmpty()
     {
-        $topic_dao = new models\dao\Topic();
-
         $response = $this->appRun('cli', '/topics/create', [
             'label' => '',
         ]);
 
         $this->assertResponse($response, 400, "The label is required.");
-        $this->assertSame(0, $topic_dao->count());
+        $this->assertSame(0, models\Topic::count());
     }
 
     public function testDeleteDeletesTopic()
     {
-        $topic_dao = new models\dao\Topic();
         $topic_id = $this->create('topic');
 
-        $this->assertSame(1, $topic_dao->count());
+        $this->assertSame(1, models\Topic::count());
 
         $response = $this->appRun('cli', '/topics/delete', [
             'id' => $topic_id,
         ]);
 
         $this->assertResponse($response, 200, 'has been deleted');
-        $this->assertSame(0, $topic_dao->count());
+        $this->assertSame(0, models\Topic::count());
     }
 
     public function testDeleteFailsIfIdIsInvalid()
     {
-        $topic_dao = new models\dao\Topic();
         $topic_id = $this->create('topic');
 
         $response = $this->appRun('cli', '/topics/delete', [
@@ -106,6 +100,6 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404, 'Topic id `not an id` does not exist.');
-        $this->assertSame(1, $topic_dao->count());
+        $this->assertSame(1, models\Topic::count());
     }
 }

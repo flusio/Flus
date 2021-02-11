@@ -23,12 +23,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesAValidatedUser()
     {
-        $user_dao = new models\dao\User();
         $username = $this->fake('name');
         $email = $this->fake('email');
         $password = $this->fake('password');
 
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
 
         $response = $this->appRun('cli', '/users/create', [
             'username' => $username,
@@ -37,19 +36,16 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 200, "User {$username} ({$email}) has been created");
-        $this->assertSame(1, $user_dao->count());
-        $db_user = $user_dao->listAll()[0];
-        $this->assertSame($username, $db_user['username']);
-        $this->assertSame($email, $db_user['email']);
-        $this->assertNotNull($db_user['validated_at']);
+        $this->assertSame(1, models\User::count());
+        $user = models\User::take();
+        $this->assertSame($username, $user->username);
+        $this->assertSame($email, $user->email);
+        $this->assertNotNull($user->validated_at);
     }
 
     public function testCreateCreatesABookmarksCollection()
     {
-        $user_dao = new models\dao\User();
-        $collection_dao = new models\dao\Collection();
-
-        $this->assertSame(0, $collection_dao->count());
+        $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('cli', '/users/create', [
             'username' => $this->fake('name'),
@@ -57,16 +53,15 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(1, $collection_dao->count());
-        $db_collection = $collection_dao->listAll()[0];
-        $db_user = $user_dao->listAll()[0];
-        $this->assertSame('bookmarks', $db_collection['type']);
-        $this->assertSame($db_user['id'], $db_collection['user_id']);
+        $this->assertSame(1, models\Collection::count());
+        $collection = models\Collection::take();
+        $user = models\User::take();
+        $this->assertSame('bookmarks', $collection->type);
+        $this->assertSame($user->id, $collection->user_id);
     }
 
     public function testCreateFailsIfAnArgumentIsInvalid()
     {
-        $user_dao = new models\dao\User();
         $email = $this->fake('email');
         $password = $this->fake('password');
 
@@ -76,12 +71,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'User creation failed: The username is required.');
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
     }
 
     public function testCleanDeletesNotValidatedUsersOlderThan1Month()
     {
-        $user_dao = new \flusio\models\dao\User();
         $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(1, 'month')->format(\Minz\Model::DATETIME_FORMAT),
@@ -91,13 +85,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/users/clean');
 
         $this->assertResponse($response, 200, '1 user has been deleted.');
-        $user = $user_dao->find($user_id);
-        $this->assertNull($user);
+        $this->assertFalse(models\User::exists($user_id));
     }
 
     public function testCleanDontRemoveValidatedUsersOlderThan1Month()
     {
-        $user_dao = new \flusio\models\dao\User();
         $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(1, 'month')->format(\Minz\Model::DATETIME_FORMAT),
@@ -107,13 +99,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/users/clean');
 
         $this->assertResponse($response, 200, '0 users have been deleted.');
-        $user = $user_dao->find($user_id);
-        $this->assertNotNull($user);
+        $this->assertTrue(models\User::exists($user_id));
     }
 
     public function testCleanDontRemoveNotValidatedUsersYoungerThan1Month()
     {
-        $user_dao = new \flusio\models\dao\User();
         $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(21, 'days')->format(\Minz\Model::DATETIME_FORMAT),
@@ -123,13 +113,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/users/clean');
 
         $this->assertResponse($response, 200, '0 users have been deleted.');
-        $user = $user_dao->find($user_id);
-        $this->assertNotNull($user);
+        $this->assertTrue(models\User::exists($user_id));
     }
 
     public function testCleanAcceptsASinceParameter()
     {
-        $user_dao = new \flusio\models\dao\User();
         $this->freeze($this->fake('dateTime'));
         $since = $this->fake('randomDigitNotNull');
         $user_id_older = $this->create('user', [
@@ -146,15 +134,12 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 200, '1 user has been deleted.');
-        $user_older = $user_dao->find($user_id_older);
-        $user_younger = $user_dao->find($user_id_younger);
-        $this->assertNull($user_older);
-        $this->assertNotNull($user_younger);
+        $this->assertFalse(models\User::exists($user_id_older));
+        $this->assertTrue(models\User::exists($user_id_younger));
     }
 
     public function testCleanFailsIfSinceIsLessThan1()
     {
-        $user_dao = new \flusio\models\dao\User();
         $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(1, 'month')->format(\Minz\Model::DATETIME_FORMAT),
@@ -166,13 +151,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The `since` parameter must be greater or equal to 1.');
-        $user = $user_dao->find($user_id);
-        $this->assertNotNull($user);
+        $this->assertTrue(models\User::exists($user_id));
     }
 
     public function testCleanFailsIfSinceIsNotAnInteger()
     {
-        $user_dao = new \flusio\models\dao\User();
         $this->freeze($this->fake('dateTime'));
         $user_id = $this->create('user', [
             'created_at' => \Minz\Time::ago(1, 'month')->format(\Minz\Model::DATETIME_FORMAT),
@@ -184,7 +167,6 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The `since` parameter must be an integer.');
-        $user = $user_dao->find($user_id);
-        $this->assertNotNull($user);
+        $this->assertTrue(models\User::exists($user_id));
     }
 }

@@ -117,7 +117,6 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testShowSyncsExpiredAtIfOverdue()
     {
-        $user_dao = new models\dao\User();
         $app_conf = \Minz\Configuration::$application;
         $subscriptions_service = new services\Subscriptions(
             $app_conf['subscriptions_host'],
@@ -133,7 +132,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account');
 
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertNotSame(
             $expired_at->getTimestamp(),
             $user->subscription_expired_at->getTimestamp()
@@ -209,7 +208,6 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithTokenRendersCorrectlyAndValidatesRegistration()
     {
-        $user_dao = new models\dao\User();
         $this->freeze($this->fake('dateTime'));
 
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
@@ -226,14 +224,13 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 200, 'Your account is now validated');
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $this->assertEquals(\Minz\Time::now(), $user->validated_at);
     }
 
     public function testValidationWithTokenSetsSubscriptionAccountId()
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
-        $user_dao = new models\dao\User();
         $this->freeze($this->fake('dateTime'));
 
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
@@ -252,13 +249,12 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
 
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $this->assertNotNull($user->subscription_account_id);
     }
 
     public function testValidationWithTokenRedirectsIfRegistrationAlreadyValidated()
     {
-        $user_dao = new models\dao\User();
         $this->freeze($this->fake('dateTime'));
 
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
@@ -279,8 +275,6 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithTokenDeletesToken()
     {
-        $user_dao = new models\dao\User();
-        $token_dao = new models\dao\Token();
         $this->freeze($this->fake('dateTime'));
 
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
@@ -296,15 +290,14 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             't' => $token_id,
         ]);
 
-        $token = $token_dao->find($token_id);
-        $user = new models\User($user_dao->find($user_id));
+        $token = models\Token::find($token_id);
+        $user = models\User::find($user_id);
         $this->assertNull($token);
         $this->assertNull($user->validation_token);
     }
 
     public function testValidationWithTokenFailsIfTokenHasExpired()
     {
-        $user_dao = new models\dao\User();
         $this->freeze($this->fake('dateTime'));
 
         $expired_at = \Minz\Time::ago($this->fake('numberBetween', 1, 9000), 'minutes');
@@ -321,13 +314,12 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The token has expired or has been invalidated');
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $this->assertNull($user->validated_at);
     }
 
     public function testValidationWithTokenFailsIfTokenHasBeenInvalidated()
     {
-        $user_dao = new models\dao\User();
         $this->freeze($this->fake('dateTime'));
 
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
@@ -345,7 +337,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The token has expired or has been invalidated');
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $this->assertNull($user->validated_at);
     }
 
@@ -365,7 +357,6 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testValidationWithTokenFailsIfTokenDoesNotExist()
     {
-        $user_dao = new models\dao\User();
         $this->freeze($this->fake('dateTime'));
 
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
@@ -382,7 +373,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404, 'The token doesn’t exist');
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $this->assertNull($user->validated_at);
     }
 
@@ -436,9 +427,6 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testResendValidationEmailCreatesANewTokenIfExpiresSoon()
     {
-        $user_dao = new models\dao\User();
-        $token_dao = new models\dao\Token();
-
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 30), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -448,22 +436,19 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token,
         ]);
 
-        $number_tokens = $token_dao->count();
+        $number_tokens = models\Token::count();
 
         $response = $this->appRun('post', '/my/account/validation/email', [
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertSame($number_tokens + 1, $token_dao->count());
-        $user = new models\User($user_dao->find($user->id)); // reload the user
+        $this->assertSame($number_tokens + 1, models\Token::count());
+        $user = models\User::find($user->id);
         $this->assertNotSame($user->validation_token, $token);
     }
 
     public function testResendValidationEmailCreatesANewTokenIfInvalidated()
     {
-        $user_dao = new models\dao\User();
-        $token_dao = new models\dao\Token();
-
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 31, 9000), 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -474,14 +459,14 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token,
         ]);
 
-        $number_tokens = $token_dao->count();
+        $number_tokens = models\Token::count();
 
         $response = $this->appRun('post', '/my/account/validation/email', [
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertSame($number_tokens + 1, $token_dao->count());
-        $user = new models\User($user_dao->find($user->id)); // reload the user
+        $this->assertSame($number_tokens + 1, models\Token::count());
+        $user = models\User::find($user->id);
         $this->assertNotSame($user->validation_token, $token);
     }
 
@@ -548,8 +533,6 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteRedirectsToLoginAndDeletesTheUser()
     {
-        $user_dao = new models\dao\User();
-
         $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -562,7 +545,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/login');
         $this->assertFlash('status', 'user_deleted');
-        $this->assertNull($user_dao->find($user->id));
+        $this->assertFalse(models\User::exists($user->id));
         $this->assertNull(utils\CurrentUser::get());
     }
 
@@ -578,28 +561,23 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteDeletesSessionsAssociatedToTheUser()
     {
-        $user_dao = new models\dao\User();
-        $session_dao = new models\dao\Session();
-
         $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $this->assertSame(1, $session_dao->count());
+        $this->assertSame(1, models\Session::count());
 
         $response = $this->appRun('post', '/my/account/deletion', [
             'csrf' => $user->csrf,
             'password' => $password,
         ]);
 
-        $this->assertSame(0, $session_dao->count());
+        $this->assertSame(0, models\Session::count());
     }
 
     public function testDeleteFailsIfPasswordIsIncorrect()
     {
-        $user_dao = new models\dao\User();
-
         $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -611,13 +589,11 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The password is incorrect.');
-        $this->assertNotNull($user_dao->find($user->id));
+        $this->assertTrue(models\User::exists($user->id));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
-        $user_dao = new models\dao\User();
-
         $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -629,12 +605,11 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertNotNull($user_dao->find($user->id));
+        $this->assertTrue(models\User::exists($user->id));
     }
 
     public function testDeleteFailsIfTryingToDeleteDemoAccount()
     {
-        $user_dao = new models\dao\User();
         \Minz\Configuration::$application['demo'] = true;
 
         $password = $this->fake('password');
@@ -650,6 +625,6 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['demo'] = false;
         $this->assertResponse($response, 400, 'Sorry but you cannot delete the demo account 😉');
-        $this->assertNotNull($user_dao->find($user->id));
+        $this->assertTrue(models\User::exists($user->id));
     }
 }

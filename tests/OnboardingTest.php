@@ -97,7 +97,6 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateLocaleChangeLocaleAndRedirect()
     {
-        $user_dao = new models\dao\User();
         $user = $this->login([
             'locale' => 'en_GB',
         ]);
@@ -108,13 +107,12 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertSame('fr_FR', $user->locale);
     }
 
     public function testUpdateLocaleRedirectsIfNotConnected()
     {
-        $user_dao = new models\dao\User();
         $user_id = $this->create('user', [
             'csrf' => 'a token',
             'locale' => 'en_GB',
@@ -126,13 +124,12 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fonboarding');
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $this->assertSame('en_GB', $user->locale);
     }
 
     public function testUpdateLocaleRedirectsIfCsrfIsInvalid()
     {
-        $user_dao = new models\dao\User();
         $user = $this->login([
             'locale' => 'en_GB',
         ]);
@@ -143,13 +140,12 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertSame('en_GB', $user->locale);
     }
 
     public function testUpdateLocaleRedirectsIfLocaleIsInvalid()
     {
-        $user_dao = new models\dao\User();
         $user = $this->login([
             'locale' => 'en_GB',
         ]);
@@ -160,13 +156,12 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertSame('en_GB', $user->locale);
     }
 
     public function testUpdateTopicsSetsTopicsAndRedirect()
     {
-        $user_dao = new models\dao\User();
         $user = $this->login();
         $topic_id = $this->create('topic');
 
@@ -176,14 +171,13 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding?step=5');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $topic_ids = array_column($user->topics(), 'id');
         $this->assertSame([$topic_id], $topic_ids);
     }
 
     public function testUpdateTopicsRedirectsIfNotConnected()
     {
-        $user_dao = new models\dao\User();
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
@@ -195,14 +189,13 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fonboarding%3Fstep%3D4');
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $topic_ids = array_column($user->topics(), 'id');
         $this->assertSame([], $topic_ids);
     }
 
     public function testUpdateTopicsRedirectsIfCsrfIsInvalid()
     {
-        $user_dao = new models\dao\User();
         $user = $this->login();
         $topic_id = $this->create('topic');
 
@@ -212,14 +205,13 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding?step=4');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $topic_ids = array_column($user->topics(), 'id');
         $this->assertSame([], $topic_ids);
     }
 
     public function testUpdateTopicsRedirectsIfTopicIdsIsInvalid()
     {
-        $user_dao = new models\dao\User();
         $user = $this->login();
         $topic_id = $this->create('topic');
 
@@ -229,7 +221,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding?step=4');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $topic_ids = array_column($user->topics(), 'id');
         $this->assertSame([], $topic_ids);
     }

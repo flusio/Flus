@@ -219,7 +219,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesLinkAndRedirects()
     {
-        $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
@@ -228,7 +227,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
         $url = $this->fake('url');
 
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
         $this->assertSame(0, $links_to_collections_dao->count());
 
         $response = $this->appRun('post', '/links/new', [
@@ -237,11 +236,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(1, models\Link::count());
         $this->assertSame(1, $links_to_collections_dao->count());
 
-        $link = new models\Link($link_dao->listAll()[0]);
-
+        $link = models\Link::take();
         $this->assertResponse($response, 302, "/links/{$link->id}");
         $this->assertSame($url, $link->url);
         $this->assertSame($user->id, $link->user_id);
@@ -251,7 +249,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateAllowsToCreatePublicLinks()
     {
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
@@ -264,13 +261,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
 
-        $link = new models\Link($link_dao->listAll()[0]);
+        $link = models\Link::take();
         $this->assertTrue($link->is_public);
     }
 
     public function testCreateDoesNotCreateLinkIfItExists()
     {
-        $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
@@ -283,7 +279,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(1, models\Link::count());
         $this->assertSame(0, $links_to_collections_dao->count());
 
         $response = $this->appRun('post', '/links/new', [
@@ -292,16 +288,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(1, models\Link::count());
         $this->assertSame(1, $links_to_collections_dao->count());
 
-        $link = new models\Link($link_dao->find($link_id));
+        $link = models\Link::find($link_id);
         $this->assertContains($collection_id, array_column($link->collections(), 'id'));
     }
 
     public function testCreateCreatesLinkIfItExistsForAnotherUser()
     {
-        $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
@@ -315,7 +310,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(1, models\Link::count());
         $this->assertSame(0, $links_to_collections_dao->count());
 
         $response = $this->appRun('post', '/links/new', [
@@ -324,16 +319,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertSame(2, $link_dao->count());
+        $this->assertSame(2, models\Link::count());
         $this->assertSame(1, $links_to_collections_dao->count());
 
-        $link = new models\Link($link_dao->findBy(['user_id' => $user->id]));
+        $link = models\Link::findBy(['user_id' => $user->id]);
         $this->assertContains($collection_id, array_column($link->collections(), 'id'));
     }
 
     public function testCreateHandlesMultipleCollections()
     {
-        $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
@@ -353,7 +347,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id_1,
         ]);
 
-        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(1, models\Link::count());
         $this->assertSame(1, $links_to_collections_dao->count());
 
         $response = $this->appRun('post', '/links/new', [
@@ -362,17 +356,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id_1, $collection_id_2],
         ]);
 
-        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(1, models\Link::count());
         $this->assertSame(2, $links_to_collections_dao->count());
 
-        $link = new models\Link($link_dao->find($link_id));
+        $link = models\Link::find($link_id);
         $this->assertContains($collection_id_1, array_column($link->collections(), 'id'));
         $this->assertContains($collection_id_2, array_column($link->collections(), 'id'));
     }
 
     public function testCreateRedirectsIfNotConnected()
     {
-        $link_dao = new models\dao\Link();
         $user_id = $this->create('user');
         $collection_id = $this->create('collection', [
             'user_id' => $user_id,
@@ -390,12 +383,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             302,
             '/login?redirect_to=%2Flinks%2Fnew%3Furl%3D' . urlencode(urlencode($url))
         );
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid()
     {
-        $link_dao = new models\dao\Link();
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
@@ -410,13 +402,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testCreateFailsIfUrlIsInvalid()
     {
-        $link_dao = new models\dao\Link();
-
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
@@ -429,13 +419,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Link scheme must be either http or https.');
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testCreateFailsIfUrlIsMissing()
     {
-        $link_dao = new models\dao\Link();
-
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
@@ -447,12 +435,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The link is required.');
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testCreateFailsIfCollectionIdsContainsNotOwnedId()
     {
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
@@ -466,13 +453,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testCreateFailsIfCollectionIsMissing()
     {
-        $link_dao = new models\dao\Link();
-
         $user = $this->login();
 
         $response = $this->appRun('post', '/links/new', [
@@ -482,7 +467,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The link must be associated to a collection.');
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testEditRendersCorrectly()
@@ -537,7 +522,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateChangesTheTitleAndRedirects()
     {
-        $link_dao = new models\dao\Link();
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $old_public = 0;
@@ -557,14 +541,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
-        $db_link = $link_dao->find($link_id);
-        $this->assertSame($new_title, $db_link['title']);
-        $this->assertTrue($db_link['is_public']);
+        $link = models\Link::find($link_id);
+        $this->assertSame($new_title, $link->title);
+        $this->assertTrue($link->is_public);
     }
 
     public function testUpdateRedirectsToFrom()
     {
-        $link_dao = new models\dao\Link();
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $old_public = 0;
@@ -586,14 +569,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, $from);
-        $db_link = $link_dao->find($link_id);
-        $this->assertSame($new_title, $db_link['title']);
-        $this->assertTrue($db_link['is_public']);
+        $link = models\Link::find($link_id);
+        $this->assertSame($new_title, $link->title);
+        $this->assertTrue($link->is_public);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid()
     {
-        $link_dao = new models\dao\Link();
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
@@ -610,13 +592,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
         $this->assertFlash('error', 'A security verification failed.');
-        $db_link = $link_dao->find($link_id);
-        $this->assertSame($old_title, $db_link['title']);
+        $link = models\Link::find($link_id);
+        $this->assertSame($old_title, $link->title);
     }
 
     public function testUpdateFailsIfTitleIsInvalid()
     {
-        $link_dao = new models\dao\Link();
         $old_title = $this->fake('words', 3, true);
         $new_title = '';
         $user = $this->login();
@@ -635,13 +616,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFlash('errors', [
             'title' => 'The title is required.',
         ]);
-        $db_link = $link_dao->find($link_id);
-        $this->assertSame($old_title, $db_link['title']);
+        $link = models\Link::find($link_id);
+        $this->assertSame($old_title, $link->title);
     }
 
     public function testUpdateFailsIfNotConnected()
     {
-        $link_dao = new models\dao\Link();
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $user_id = $this->create('user');
@@ -657,13 +637,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
-        $db_link = $link_dao->find($link_id);
-        $this->assertSame($old_title, $db_link['title']);
+        $link = models\Link::find($link_id);
+        $this->assertSame($old_title, $link->title);
     }
 
     public function testUpdateFailsIfLinkDoesNotExist()
     {
-        $link_dao = new models\dao\Link();
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
@@ -679,13 +658,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404, 'This page doesn’t exist.');
-        $db_link = $link_dao->find($link_id);
-        $this->assertSame($old_title, $db_link['title']);
+        $link = models\Link::find($link_id);
+        $this->assertSame($old_title, $link->title);
     }
 
     public function testUpdateFailsIfUserDoesNotOwnTheLink()
     {
-        $link_dao = new models\dao\Link();
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
@@ -702,14 +680,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404, 'This page doesn’t exist.');
-        $db_link = $link_dao->find($link_id);
-        $this->assertSame($old_title, $db_link['title']);
+        $link = models\Link::find($link_id);
+        $this->assertSame($old_title, $link->title);
     }
 
     public function testDeleteDeletesLinkAndRedirects()
     {
         $user = $this->login();
-        $link_dao = new models\dao\Link();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
         ]);
@@ -720,13 +697,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/');
-        $this->assertFalse($link_dao->exists($link_id));
+        $this->assertFalse(models\Link::exists($link_id));
     }
 
     public function testDeleteRedirectsToRedirectToIfGiven()
     {
         $user = $this->login();
-        $link_dao = new models\dao\Link();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
         ]);
@@ -745,7 +721,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
-        $link_dao = new models\dao\Link();
         $link_id = $this->create('link', [
             'user_id' => $user_id,
         ]);
@@ -756,14 +731,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
-        $this->assertTrue($link_dao->exists($link_id));
+        $this->assertTrue(models\Link::exists($link_id));
     }
 
     public function testDeleteFailsIfLinkIsNotOwned()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $link_dao = new models\dao\Link();
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
         ]);
@@ -774,13 +748,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertTrue($link_dao->exists($link_id));
+        $this->assertTrue(models\Link::exists($link_id));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $link_dao = new models\dao\Link();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
         ]);
@@ -791,7 +764,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
-        $this->assertTrue($link_dao->exists($link_id));
+        $this->assertTrue(models\Link::exists($link_id));
         $this->assertFlash('error', 'A security verification failed.');
     }
 
@@ -861,8 +834,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchUpdatesLinkWithTheTitleAndRedirects()
     {
-        $link_dao = new models\dao\Link();
-
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -875,9 +846,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
-        $db_link = $link_dao->find($link_id);
-        $this->assertSame('flusio/flusio', $db_link['title']);
-        $this->assertSame(200, $db_link['fetched_code']);
+        $link = models\Link::find($link_id);
+        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertSame(200, $link->fetched_code);
     }
 
     public function testFetchSavesResponseInCache()
@@ -901,8 +872,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchUsesCache()
     {
-        $link_dao = new models\dao\Link();
-
         $user = $this->login();
         $url = 'https://github.com/flusio/flusio';
         $link_id = $this->create('link', [
@@ -929,14 +898,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $db_link = $link_dao->find($link_id);
-        $this->assertSame($expected_title, $db_link['title']);
+        $link = models\Link::find($link_id);
+        $this->assertSame($expected_title, $link->title);
     }
 
     public function testFetchDownloadsOpenGraphIllustration()
     {
-        $link_dao = new models\dao\Link();
-
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -948,7 +915,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $link = new models\Link($link_dao->find($link_id));
+        $link = models\Link::find($link_id);
         $image_filename = $link->image_filename;
         $this->assertNotNull($image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
@@ -960,8 +927,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchDoesNotChangeTitleIfUnreachable()
     {
-        $link_dao = new models\dao\Link();
-
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -973,16 +938,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $db_link = $link_dao->find($link_id);
+        $link = models\Link::find($link_id);
         $expected_title = 'https://flus.fr/does_not_exist.html';
-        $this->assertSame($expected_title, $db_link['title']);
-        $this->assertSame(404, $db_link['fetched_code']);
+        $this->assertSame($expected_title, $link->title);
+        $this->assertSame(404, $link->fetched_code);
     }
 
     public function testFetchFailsIfCsrfIsInvalid()
     {
-        $link_dao = new models\dao\Link();
-
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -995,15 +958,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $db_link = $link_dao->find($link_id);
+        $link = models\Link::find($link_id);
         $expected_title = 'https://github.com/flusio/flusio';
-        $this->assertSame($expected_title, $db_link['title']);
+        $this->assertSame($expected_title, $link->title);
     }
 
     public function testFetchFailsIfNotConnected()
     {
-        $link_dao = new models\dao\Link();
-
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $user_id,
@@ -1016,9 +977,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Ffetch");
-        $db_link = $link_dao->find($link_id);
+        $link = models\Link::find($link_id);
         $expected_title = 'https://github.com/flusio/flusio';
-        $this->assertSame($expected_title, $db_link['title']);
+        $this->assertSame($expected_title, $link->title);
     }
 
     public function testFetchFailsIfTheLinkDoesNotExist()
@@ -1034,8 +995,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchFailsIfUserDoesNotOwnTheLink()
     {
-        $link_dao = new models\dao\Link();
-
         $user = $this->login();
         $other_user_id = $this->create('user');
         $link_id = $this->create('link', [
@@ -1049,8 +1008,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404, 'This page doesn’t exist');
-        $db_link = $link_dao->find($link_id);
+        $link = models\Link::find($link_id);
         $expected_title = 'https://github.com/flusio/flusio';
-        $this->assertSame($expected_title, $db_link['title']);
+        $this->assertSame($expected_title, $link->title);
     }
 }
