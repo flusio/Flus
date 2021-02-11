@@ -54,9 +54,9 @@ class Topics
             return Response::text(400, "Topic creation failed: {$errors}");
         }
 
-        $topic_id = models\Topic::save($topic);
+        $topic->save();
 
-        return Response::text(200, "Topic {$topic->label} ({$topic_id}) has been created.");
+        return Response::text(200, "Topic {$topic->label} ({$topic->id}) has been created.");
     }
 
     /**

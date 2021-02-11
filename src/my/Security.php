@@ -100,7 +100,7 @@ class Security
             ]);
         }
 
-        models\User::save($user);
+        $user->save();
 
         return Response::ok('my/security/show_confirmed.phtml', [
             'email' => $user->email,
@@ -149,7 +149,7 @@ class Security
 
         $session = utils\CurrentUser::session();
         $session->confirmed_password_at = \Minz\Time::now();
-        models\Session::save($session);
+        $session->save();
 
         return Response::redirect('security');
     }

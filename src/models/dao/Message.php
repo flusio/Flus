@@ -10,8 +10,6 @@ namespace flusio\models\dao;
  */
 class Message extends \Minz\DatabaseModel
 {
-    use SaveHelper;
-
     /**
      * @throws \Minz\Errors\DatabaseError
      */

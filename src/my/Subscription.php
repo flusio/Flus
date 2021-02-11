@@ -86,7 +86,7 @@ class Subscription
 
         $user->subscription_account_id = $account['id'];
         $user->subscription_expired_at = $account['expired_at'];
-        models\User::save($user);
+        $user->save();
         return Response::redirect('account');
     }
 

@@ -45,7 +45,7 @@ class Links
                 $result .= "nothing";
             }
 
-            models\Link::save($link);
+            $link->save();
 
             $results[] = $result;
         }

@@ -41,7 +41,7 @@ class Account
             $expired_at = $service->expiredAt($user->subscription_account_id);
             if ($expired_at) {
                 $user->subscription_expired_at = $expired_at;
-                models\User::save($user);
+                $user->save();
             } else {
                 \Minz\Log::error("Can’t get the expired_at for user {$user->id}.");
             }
@@ -133,7 +133,7 @@ class Account
             }
         }
 
-        models\User::save($user);
+        $user->save();
 
         return Response::ok('my/account/validation.phtml', [
             'success' => true,
@@ -177,9 +177,9 @@ class Account
         if ($token->expiresIn(30, 'minutes') || $token->isInvalidated()) {
             // the token will expire soon, let's regenerate a new one
             $token = models\Token::init(1, 'day', 16);
-            models\Token::save($token);
+            $token->save();
             $user->validation_token = $token->token;
-            models\User::save($user);
+            $user->save();
         }
 
         $mailer_job = new jobs\Mailer();

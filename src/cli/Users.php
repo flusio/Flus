@@ -42,10 +42,10 @@ class Users
             return Response::text(400, "User creation failed: {$errors}");
         }
 
-        $user_id = models\User::save($user);
+        $user->save();
 
-        $bookmarks_collection = models\Collection::initBookmarks($user_id);
-        models\Collection::save($bookmarks_collection);
+        $bookmarks_collection = models\Collection::initBookmarks($user->id);
+        $bookmarks_collection->save();
 
         return Response::text(200, "User {$user->username} ({$user->email}) has been created.");
     }

@@ -111,14 +111,14 @@ class Sessions
         // The session cookie will probably expire before, but it's another
         // security barrier.
         $token = models\Token::init(1, 'month');
-        models\Token::save($token);
+        $token->save();
 
         $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
         $ip = $request->header('REMOTE_ADDR', 'unknown');
         $session = models\Session::init($session_name, $ip);
         $session->user_id = $user->id;
         $session->token = $token->token;
-        models\Session::save($session);
+        $session->save();
 
         utils\CurrentUser::setSessionToken($token->token);
 

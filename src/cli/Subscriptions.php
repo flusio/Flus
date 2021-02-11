@@ -45,7 +45,7 @@ class Subscriptions
             if ($account) {
                 $user->subscription_account_id = $account['id'];
                 $user->subscription_expired_at = $account['expired_at'];
-                models\User::save($user);
+                $user->save();
                 $sync_results[] = "{$user->id}: ✅ subscription account created";
             } else {
                 $sync_results[] = "{$user->id}: ❌ can't create subscription account";
@@ -62,7 +62,7 @@ class Subscriptions
                 $sync_results[] = "{$user->id}: ❌ can't get the expiration date";
             } elseif ($user->subscription_expired_at->getTimestamp() !== $expired_at->getTimestamp()) {
                 $user->subscription_expired_at = $expired_at;
-                models\User::save($user);
+                $user->save();
                 $sync_results[] = "{$user->id}: ✅ synchronized";
             }
         }

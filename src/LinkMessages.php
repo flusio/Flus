@@ -85,7 +85,7 @@ class LinkMessages
             ]);
         }
 
-        models\Message::save($message);
+        $message->save();
 
         return Response::redirect('link', ['id' => $link_id]);
     }

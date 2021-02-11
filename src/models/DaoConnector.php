@@ -25,11 +25,36 @@ trait DaoConnector
     private static $dao;
 
     /**
-     * @see \flusio\models\dao\SaveHelper::save
+     * Create or update the current model in database.
+     *
+     * It also sets the `created_at` property at creation. If created, the
+     * primary key and created_at properties are set in the model.
+     *
+     * @throws \Minz\DatabaseModelError
      */
-    public static function save($model)
+    public function save()
     {
-        return self::daoCall('save', $model);
+        $dao = self::dao();
+        $primary_key_name = $dao->primaryKeyName();
+        $values = $this->toValues();
+        if ($this->created_at) {
+            self::update($this->$primary_key_name, $values);
+        } else {
+            $values['created_at'] = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
+
+            // If the value is null, it most probably means the id is a serial
+            // type (i.e. it will be set by the DB). However, if we pass the
+            // null value, postgresql will try to create an entry with
+            // id=null, which will fail. So we need to remove null values.
+            if ($values[$primary_key_name] === null) {
+                unset($values[$primary_key_name]);
+            }
+
+            $pk_value = self::create($values);
+
+            $this->$primary_key_name = $pk_value;
+            $this->created_at = $values['created_at'];
+        }
     }
 
     /**
@@ -181,16 +206,28 @@ trait DaoConnector
      */
     public static function daoCall($name, ...$arguments)
     {
+        $dao = self::dao();
+
+        if (!is_callable([$dao, $name])) {
+            throw new \BadMethodCallException('Call to undefined method ' . get_called_class() . '::' . $name);
+        }
+
+        return $dao->$name(...$arguments);
+    }
+
+    /**
+     * Return the dao for the current model. It stores the dao in a static
+     * attribute in order to not instantiate it at each call.
+     *
+     * @return \Minz\DatabaseModel
+     */
+    private static function dao()
+    {
         if (!self::$dao) {
             $base_class = substr(get_called_class(), strlen('flusio\\models\\'));
             $dao_class_name = "\\flusio\\models\\dao\\{$base_class}";
             self::$dao = new $dao_class_name();
         }
-
-        if (!is_callable([self::$dao, $name])) {
-            throw new \BadMethodCallException('Call to undefined method ' . get_called_class() . '::' . $name);
-        }
-
-        return self::$dao->$name(...$arguments);
+        return self::$dao;
     }
 }

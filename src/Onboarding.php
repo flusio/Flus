@@ -85,7 +85,7 @@ class Onboarding
 
         $errors = $user->validate();
         if ($csrf->validateToken($request->param('csrf')) && !$errors) {
-            models\User::save($user);
+            $user->save();
             utils\Locale::setCurrentLocale($locale);
         }
 

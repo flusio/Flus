@@ -133,25 +133,25 @@ class Registrations
         }
 
         $validation_token = models\Token::init(1, 'day', 16);
-        models\Token::save($validation_token);
+        $validation_token->save();
 
         $user->validation_token = $validation_token->token;
-        $user_id = models\User::save($user);
+        $user->save();
 
         // Initialize the bookmarks collection
-        $bookmarks_collection = models\Collection::initBookmarks($user_id);
-        models\Collection::save($bookmarks_collection);
+        $bookmarks_collection = models\Collection::initBookmarks($user->id);
+        $bookmarks_collection->save();
 
         // Initialize the current session
         $session_token = models\Token::init(1, 'month');
-        models\Token::save($session_token);
+        $session_token->save();
 
         $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
         $ip = $request->header('REMOTE_ADDR', 'unknown');
         $session = models\Session::init($session_name, $ip);
-        $session->user_id = $user_id;
+        $session->user_id = $user->id;
         $session->token = $session_token->token;
-        models\Session::save($session);
+        $session->save();
 
         utils\CurrentUser::setSessionToken($session_token->token);
 

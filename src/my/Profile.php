@@ -118,7 +118,7 @@ class Profile
             ]);
         }
 
-        models\User::save($user);
+        $user->save();
         utils\Locale::setCurrentLocale($locale);
         $users_to_topics_dao->set($user->id, $topic_ids);
 

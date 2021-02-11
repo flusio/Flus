@@ -141,7 +141,7 @@ class NewsLinks
         }
 
         $user->news_preferences = $preferences->toJson();
-        models\User::save($user);
+        $user->save();
 
         return Response::redirect('news');
     }
@@ -188,7 +188,7 @@ class NewsLinks
         foreach ($db_links as $db_link) {
             $link = new models\Link($db_link);
             $news_link = models\NewsLink::initFromLink($link, $user->id);
-            models\NewsLink::save($news_link);
+            $news_link->save();
         }
 
         if (!$db_links) {

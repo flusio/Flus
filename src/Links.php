@@ -220,7 +220,7 @@ class Links
         if ($existing_link) {
             $link = $existing_link;
         } else {
-            models\Link::save($link);
+            $link->save();
         }
 
         $existing_collections = $link->collections();
@@ -326,7 +326,7 @@ class Links
             return Response::found($from);
         }
 
-        models\Link::save($link);
+        $link->save();
 
         return Response::found($from);
     }
@@ -467,7 +467,7 @@ class Links
             $link->image_filename = $image_filename;
         }
 
-        models\Link::save($link);
+        $link->save();
 
         return Response::redirect('link', ['id' => $link->id]);
     }

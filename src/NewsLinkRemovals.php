@@ -164,7 +164,7 @@ class NewsLinkRemovals
             $link = models\Link::initFromNews($news_link, $user->id);
         }
         $link->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
-        models\Link::save($link);
+        $link->save();
 
         // Attach the link to the given collections (and potentially forget the
         // old ones)
@@ -174,12 +174,12 @@ class NewsLinkRemovals
         // Then, if a comment has been passed, save it.
         if (trim($comment)) {
             $message = models\Message::init($user->id, $link->id, $comment);
-            models\Message::save($message);
+            $message->save();
         }
 
         // Finally, mark the news_link as read.
         $news_link->is_read = true;
-        models\NewsLink::save($news_link);
+        $news_link->save();
 
         return Response::redirect('news');
     }
@@ -237,7 +237,7 @@ class NewsLinkRemovals
         foreach ($news_links as $news_link) {
             // First, we mark the news link as read
             $news_link->is_read = true;
-            models\NewsLink::save($news_link);
+            $news_link->save();
 
             // Then, we try to find a link with corresponding URL in order to
             // remove it from bookmarks.
@@ -311,7 +311,7 @@ class NewsLinkRemovals
             $link = $user->linkByUrl($news_link->url);
             if (!$link) {
                 $link = models\Link::initFromNews($news_link, $user->id);
-                models\Link::save($link);
+                $link->save();
             }
 
             // Then, we check if the link is bookmarked. If it isn't, bookmark it.
@@ -376,7 +376,7 @@ class NewsLinkRemovals
 
         // First, remove the link from the news.
         $news_link->is_removed = true;
-        models\NewsLink::save($news_link);
+        $news_link->save();
 
         // Then, we try to find a link with corresponding URL in order to
         // remove it from bookmarks.

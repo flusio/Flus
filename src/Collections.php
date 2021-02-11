@@ -145,13 +145,13 @@ class Collections
             ]);
         }
 
-        $collection_id = models\Collection::save($collection);
+        $collection->save();
         if ($topic_ids) {
             $collections_to_topics_dao = new models\dao\CollectionsToTopics();
-            $collections_to_topics_dao->attach($collection_id, $topic_ids);
+            $collections_to_topics_dao->attach($collection->id, $topic_ids);
         }
 
-        return Response::redirect('collection', ['id' => $collection_id]);
+        return Response::redirect('collection', ['id' => $collection->id]);
     }
 
     /**
@@ -336,9 +336,9 @@ class Collections
             ]);
         }
 
-        models\Collection::save($collection);
+        $collection->save();
         $collections_to_topics_dao = new models\dao\CollectionsToTopics();
-        $collections_to_topics_dao->set($collection_id, $topic_ids);
+        $collections_to_topics_dao->set($collection->id, $topic_ids);
 
         return Response::redirect('collection', ['id' => $collection->id]);
     }
