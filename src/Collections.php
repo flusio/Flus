@@ -99,10 +99,6 @@ class Collections
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
-        $collections_to_topics_dao = new models\dao\CollectionsToTopics();
-        $topic_dao = new models\dao\Topic();
-
         $name = $request->param('name', '');
         $description = $request->param('description', '');
         $topic_ids = $request->param('topic_ids', []);
@@ -123,7 +119,7 @@ class Collections
             ]);
         }
 
-        if ($topic_ids && !$topic_dao->exists($topic_ids)) {
+        if ($topic_ids && !models\Topic::exists($topic_ids)) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
@@ -149,12 +145,13 @@ class Collections
             ]);
         }
 
-        $collection_id = $collection_dao->save($collection);
+        $collection->save();
         if ($topic_ids) {
-            $collections_to_topics_dao->attach($collection_id, $topic_ids);
+            $collections_to_topics_dao = new models\dao\CollectionsToTopics();
+            $collections_to_topics_dao->attach($collection->id, $topic_ids);
         }
 
-        return Response::redirect('collection', ['id' => $collection_id]);
+        return Response::redirect('collection', ['id' => $collection->id]);
     }
 
     /**
@@ -176,15 +173,13 @@ class Collections
     {
         $user = utils\CurrentUser::get();
         $collection_id = $request->param('id');
-        $collection_dao = new models\dao\Collection();
-        $db_collection = $collection_dao->find($collection_id);
+        $collection = models\Collection::find($collection_id);
 
         $is_connected = $user !== null;
-        $is_owned = $is_connected && $db_collection && $user->id === $db_collection['user_id'];
-        $is_public = $db_collection && $db_collection['is_public'];
+        $is_owned = $is_connected && $collection && $user->id === $collection->user_id;
+        $is_public = $collection && $collection->is_public;
 
         if ($is_connected && $is_owned) {
-            $collection = new models\Collection($db_collection);
             $topics = $collection->topics();
             models\Topic::sort($topics, $user->locale);
             return Response::ok('collections/show.phtml', [
@@ -195,7 +190,6 @@ class Collections
         }
 
         if ($is_public) {
-            $collection = new models\Collection($db_collection);
             $topics = $collection->topics();
             models\Topic::sort($topics, utils\Locale::currentLocale());
             return Response::ok('collections/show_public.phtml', [
@@ -291,10 +285,6 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
-        $topic_dao = new models\dao\Topic();
-        $collection_dao = new models\dao\Collection();
-        $collections_to_topics_dao = new models\dao\CollectionsToTopics();
-
         $topics = models\Topic::listAll();
         models\Topic::sort($topics, $user->locale);
 
@@ -316,7 +306,7 @@ class Collections
             ]);
         }
 
-        if ($topic_ids && !$topic_dao->exists($topic_ids)) {
+        if ($topic_ids && !models\Topic::exists($topic_ids)) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
@@ -346,8 +336,9 @@ class Collections
             ]);
         }
 
-        $collection_dao->save($collection);
-        $collections_to_topics_dao->set($collection_id, $topic_ids);
+        $collection->save();
+        $collections_to_topics_dao = new models\dao\CollectionsToTopics();
+        $collections_to_topics_dao->set($collection->id, $topic_ids);
 
         return Response::redirect('collection', ['id' => $collection->id]);
     }
@@ -390,8 +381,7 @@ class Collections
             return Response::found($from);
         }
 
-        $collection_dao = new models\dao\Collection();
-        $collection_dao->delete($collection->id);
+        models\Collection::delete($collection->id);
 
         return Response::redirect('collections');
     }
@@ -452,8 +442,7 @@ class Collections
             ]);
         }
 
-        $collection_dao = new models\dao\Collection();
-        $number_collections = $collection_dao->countForDiscovering($user->id);
+        $number_collections = models\Collection::daoCall('countForDiscovering', $user->id);
 
         $pagination_page = intval($request->param('page', 1));
         $pagination = new utils\Pagination($number_collections, 30, $pagination_page);
@@ -461,15 +450,12 @@ class Collections
             return Response::redirect('discover collections', ['page' => $pagination->currentPage()]);
         }
 
-        $db_collections = $collection_dao->listForDiscovering(
+        $collections = models\Collection::daoToList(
+            'listForDiscovering',
             $user->id,
             $pagination->currentOffset(),
             $pagination->numberPerPage()
         );
-        $collections = [];
-        foreach ($db_collections as $db_collection) {
-            $collections[] = new models\Collection($db_collection);
-        }
         models\Collection::sort($collections, $user->locale);
 
         return Response::ok('collections/discover.phtml', [
@@ -499,7 +485,6 @@ class Collections
     {
         $user = utils\CurrentUser::get();
         $collection_id = $request->param('id');
-        $collection_dao = new models\dao\Collection();
 
         if (!$user) {
             return Response::redirect('login', [
@@ -507,13 +492,8 @@ class Collections
             ]);
         }
 
-        $db_collection = $collection_dao->find($collection_id);
-        if (!$db_collection) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $collection = new models\Collection($db_collection);
-        if (!$collection->is_public) {
+        $collection = models\Collection::find($collection_id);
+        if (!$collection || !$collection->is_public) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -552,7 +532,6 @@ class Collections
     {
         $user = utils\CurrentUser::get();
         $collection_id = $request->param('id');
-        $collection_dao = new models\dao\Collection();
 
         if (!$user) {
             return Response::redirect('login', [
@@ -560,13 +539,8 @@ class Collections
             ]);
         }
 
-        $db_collection = $collection_dao->find($collection_id);
-        if (!$db_collection) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $collection = new models\Collection($db_collection);
-        if (!$collection->is_public) {
+        $collection = models\Collection::find($collection_id);
+        if (!$collection || !$collection->is_public) {
             return Response::notFound('not_found.phtml');
         }
 

@@ -31,12 +31,11 @@ class Messages
             return Response::redirect('login', ['redirect_to' => $redirect_to]);
         }
 
-        $message_dao = new models\dao\Message();
-        $db_message = $message_dao->findBy([
+        $message = models\Message::findBy([
             'id' => $message_id,
             'user_id' => $user->id,
         ]);
-        if (!$db_message) {
+        if (!$message) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -46,7 +45,7 @@ class Messages
             return Response::found($redirect_to);
         }
 
-        $message_dao->delete($db_message['id']);
+        models\Message::delete($message->id);
 
         return Response::found($redirect_to);
     }

@@ -83,14 +83,10 @@ class Sessions
             ]);
         }
 
-        $user_dao = new models\dao\User();
-        $token_dao = new models\dao\Token();
-        $session_dao = new models\dao\Session();
-
-        $db_user = $user_dao->findBy([
+        $user = models\User::findBy([
             'email' => utils\Email::sanitize($email),
         ]);
-        if (!$db_user) {
+        if (!$user) {
             return Response::badRequest('sessions/new.phtml', [
                 'email' => $email,
                 'password' => $password,
@@ -101,7 +97,6 @@ class Sessions
             ]);
         }
 
-        $user = new models\User($db_user);
         if (!$user->verifyPassword($password)) {
             return Response::badRequest('sessions/new.phtml', [
                 'email' => $email,
@@ -116,14 +111,14 @@ class Sessions
         // The session cookie will probably expire before, but it's another
         // security barrier.
         $token = models\Token::init(1, 'month');
-        $token_dao->save($token);
+        $token->save();
 
         $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
         $ip = $request->header('REMOTE_ADDR', 'unknown');
         $session = models\Session::init($session_name, $ip);
         $session->user_id = $user->id;
         $session->token = $token->token;
-        $session_dao->save($session);
+        $session->save();
 
         utils\CurrentUser::setSessionToken($token->token);
 
@@ -193,12 +188,9 @@ class Sessions
             return Response::redirect('home');
         }
 
-        $session_dao = new models\dao\Session();
         $current_session_token = utils\CurrentUser::sessionToken();
-        $db_session = $session_dao->findBy(['token' => $current_session_token]);
-        $session = new models\Session($db_session);
-
-        $session_dao->delete($session->id);
+        $session = models\Session::findBy(['token' => $current_session_token]);
+        models\Session::delete($session->id);
         utils\CurrentUser::reset();
 
         $response = Response::redirect('home');

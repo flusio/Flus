@@ -10,6 +10,8 @@ use flusio\utils;
  */
 class Message extends \Minz\Model
 {
+    use DaoConnector;
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'string',
@@ -58,10 +60,7 @@ class Message extends \Minz\Model
      */
     public function user()
     {
-        $user_dao = new dao\User();
-        $db_user = $user_dao->find($this->user_id);
-        $user = new User($db_user);
-        return $user;
+        return User::find($this->user_id);
     }
 
     /**

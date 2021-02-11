@@ -29,8 +29,6 @@ class Users
      */
     public function create($request)
     {
-        $user_dao = new models\dao\User();
-        $collection_dao = new models\dao\Collection();
         $username = $request->param('username');
         $email = $request->param('email');
         $password = $request->param('password');
@@ -44,10 +42,10 @@ class Users
             return Response::text(400, "User creation failed: {$errors}");
         }
 
-        $user_id = $user_dao->save($user);
+        $user->save();
 
-        $bookmarks_collection = models\Collection::initBookmarks($user_id);
-        $collection_dao->save($bookmarks_collection);
+        $bookmarks_collection = models\Collection::initBookmarks($user->id);
+        $bookmarks_collection->save();
 
         return Response::text(200, "User {$user->username} ({$user->email}) has been created.");
     }
@@ -64,8 +62,6 @@ class Users
      */
     public function clean($request)
     {
-        $user_dao = new models\dao\User();
-
         $since = $request->param('since', 1);
         if (filter_var($since, FILTER_VALIDATE_INT) === false) {
             return Response::text(400, 'The `since` parameter must be an integer.');
@@ -76,12 +72,12 @@ class Users
             return Response::text(400, 'The `since` parameter must be greater or equal to 1.');
         }
 
-        $db_users = $user_dao->listNotValidatedOlderThan($since, 'month');
-        $users_ids = array_column($db_users, 'id');
+        $users = models\User::daoToList('listNotValidatedOlderThan', $since, 'month');
+        $users_ids = array_column($users, 'id');
 
         $number_to_delete = count($users_ids);
         if ($number_to_delete > 0) {
-            $user_dao->delete($users_ids);
+            models\User::delete($users_ids);
         }
 
         if ($number_to_delete === 1) {

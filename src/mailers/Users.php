@@ -18,14 +18,12 @@ class Users extends \Minz\Mailer
      */
     public function sendAccountValidationEmail($user_id)
     {
-        $user_dao = new models\dao\User();
-        $db_user = $user_dao->find($user_id);
-        if (!$db_user) {
+        $user = models\User::find($user_id);
+        if (!$user) {
             \Minz\Log::warning("Can’t send validation email to user {$user_id} (not found)");
             return;
         }
 
-        $user = new models\User($db_user);
         if (!$user->validation_token) {
             \Minz\Log::warning("Can’t send validation email to user {$user_id} (no token)");
             return;

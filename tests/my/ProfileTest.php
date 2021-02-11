@@ -93,7 +93,6 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsToLoginIfUserNotConnected()
     {
-        $user_dao = new models\dao\User();
         $old_username = $this->fakeUnique('username');
         $new_username = $this->fakeUnique('username');
         $user_id = $this->create('user', [
@@ -108,7 +107,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);
     }

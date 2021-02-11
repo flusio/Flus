@@ -12,6 +12,8 @@ use flusio\utils;
  */
 class Session extends \Minz\Model
 {
+    use DaoConnector;
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'string',

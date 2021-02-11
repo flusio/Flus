@@ -236,7 +236,6 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdatePreferencesSavesUserNewsPreferencesAndRedirects()
     {
-        $user_dao = new models\dao\User();
         $min_duration = models\NewsPreferences::MIN_DURATION;
         $max_duration = models\NewsPreferences::MAX_DURATION;
         $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
@@ -266,7 +265,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
         $this->assertSame($new_duration, $news_preferences->duration);
         $this->assertSame($new_from_bookmarks, $news_preferences->from_bookmarks);
@@ -276,7 +275,6 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdatePreferencesRedirectsIfNotConnected()
     {
-        $user_dao = new models\dao\User();
         $min_duration = models\NewsPreferences::MIN_DURATION;
         $max_duration = models\NewsPreferences::MAX_DURATION;
         $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
@@ -307,7 +305,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews%2Fpreferences');
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
         $this->assertSame($old_duration, $news_preferences->duration);
         $this->assertSame($old_from_bookmarks, $news_preferences->from_bookmarks);
@@ -317,7 +315,6 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdatePreferencesFailsIfCsrfIsInvalid()
     {
-        $user_dao = new models\dao\User();
         $min_duration = models\NewsPreferences::MIN_DURATION;
         $max_duration = models\NewsPreferences::MAX_DURATION;
         $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
@@ -347,7 +344,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
         $this->assertSame($old_duration, $news_preferences->duration);
         $this->assertSame($old_from_bookmarks, $news_preferences->from_bookmarks);
@@ -357,7 +354,6 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdatePreferencesFailsIfDurationIsInvalid()
     {
-        $user_dao = new models\dao\User();
         $min_duration = models\NewsPreferences::MIN_DURATION;
         $max_duration = models\NewsPreferences::MAX_DURATION;
         $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
@@ -387,7 +383,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, "The duration must be between {$min_duration} and {$max_duration}");
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
         $this->assertSame($old_duration, $news_preferences->duration);
         $this->assertSame($old_from_bookmarks, $news_preferences->from_bookmarks);
@@ -397,7 +393,6 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdatePreferencesFailsIfNoFromIsSelected()
     {
-        $user_dao = new models\dao\User();
         $min_duration = models\NewsPreferences::MIN_DURATION;
         $max_duration = models\NewsPreferences::MAX_DURATION;
         $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
@@ -427,7 +422,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'You must select at least one option');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
         $this->assertSame($old_duration, $news_preferences->duration);
         $this->assertSame($old_from_bookmarks, $news_preferences->from_bookmarks);
@@ -437,7 +432,6 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
     public function testFillSelectsLinksFromBookmarksAndRedirects()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $link_url = $this->fake('url');
         $link_id = $this->create('link', [
@@ -459,15 +453,14 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $news_link = $news_link_dao->findBy(['url' => $link_url]);
+        $news_link = models\NewsLink::findBy(['url' => $link_url]);
         $this->assertNotNull($news_link);
-        $this->assertSame('bookmarks', $news_link['via_type']);
-        $this->assertSame($link_id, $news_link['via_link_id']);
+        $this->assertSame('bookmarks', $news_link->via_type);
+        $this->assertSame($link_id, $news_link->via_link_id);
     }
 
     public function testFillSelectsLinksFromFollowedCollections()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $other_user_id = $this->create('user');
         $link_url = $this->fake('url');
@@ -496,17 +489,16 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $news_link = $news_link_dao->findBy(['url' => $link_url]);
+        $news_link = models\NewsLink::findBy(['url' => $link_url]);
         $this->assertNotNull($news_link);
-        $this->assertSame($user->id, $news_link['user_id']);
-        $this->assertSame('followed', $news_link['via_type']);
-        $this->assertSame($collection_id, $news_link['via_collection_id']);
-        $this->assertSame($link_id, $news_link['via_link_id']);
+        $this->assertSame($user->id, $news_link->user_id);
+        $this->assertSame('followed', $news_link->via_type);
+        $this->assertSame($collection_id, $news_link->via_collection_id);
+        $this->assertSame($link_id, $news_link->via_link_id);
     }
 
     public function testFillSelectsLinksFromTopics()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $other_user_id = $this->create('user');
         $link_url = $this->fake('url');
@@ -540,17 +532,16 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $news_link = $news_link_dao->findBy(['url' => $link_url]);
+        $news_link = models\NewsLink::findBy(['url' => $link_url]);
         $this->assertNotNull($news_link);
-        $this->assertSame($user->id, $news_link['user_id']);
-        $this->assertSame('topics', $news_link['via_type']);
-        $this->assertSame($collection_id, $news_link['via_collection_id']);
-        $this->assertSame($link_id, $news_link['via_link_id']);
+        $this->assertSame($user->id, $news_link->user_id);
+        $this->assertSame('topics', $news_link->via_type);
+        $this->assertSame($collection_id, $news_link->via_collection_id);
+        $this->assertSame($link_id, $news_link->via_link_id);
     }
 
-    public function testFillSelectsLinksUpToAbout1Hour()
+    public function testFillSelectsLinksUpToAbout30MinutesByDefault()
     {
-        $news_link_dao = new models\dao\Link();
         $user = $this->login();
         $link_url_1 = $this->fake('url');
         $link_url_2 = $this->fake('url');
@@ -558,17 +549,17 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $link_id_1 = $this->create('link', [
             'user_id' => $user->id,
             'url' => $link_url_1,
-            'reading_time' => 15,
+            'reading_time' => 5,
         ]);
         $link_id_2 = $this->create('link', [
             'user_id' => $user->id,
             'url' => $link_url_2,
-            'reading_time' => 25,
+            'reading_time' => 15,
         ]);
         $link_id_3 = $this->create('link', [
             'user_id' => $user->id,
             'url' => $link_url_3,
-            'reading_time' => 20,
+            'reading_time' => 10,
         ]);
         $bookmarks_id = $this->create('collection', [
             'user_id' => $user->id,
@@ -591,9 +582,9 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $news_link_1 = $news_link_dao->findBy(['url' => $link_url_1]);
-        $news_link_2 = $news_link_dao->findBy(['url' => $link_url_2]);
-        $news_link_3 = $news_link_dao->findBy(['url' => $link_url_3]);
+        $news_link_1 = models\NewsLink::findBy(['url' => $link_url_1]);
+        $news_link_2 = models\NewsLink::findBy(['url' => $link_url_2]);
+        $news_link_3 = models\NewsLink::findBy(['url' => $link_url_3]);
         $this->assertNotNull($news_link_1);
         $this->assertNotNull($news_link_2);
         $this->assertNotNull($news_link_3);
@@ -601,7 +592,6 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
     public function testFillDoesNotSelectTooLongLinks()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $link_url = $this->fake('url');
         $link_id = $this->create('link', [
@@ -622,13 +612,12 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $news_link = $news_link_dao->findBy(['url' => $link_url]);
+        $news_link = models\NewsLink::findBy(['url' => $link_url]);
         $this->assertNull($news_link);
     }
 
     public function testFillDoesNotSelectNotBookmarkedLinks()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $link_url = $this->fake('url');
         $link_id = $this->create('link', [
@@ -645,7 +634,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $news_link = $news_link_dao->findBy(['url' => $link_url]);
+        $news_link = models\NewsLink::findBy(['url' => $link_url]);
         $this->assertNull($news_link);
     }
 
@@ -662,7 +651,6 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
 
     public function testFillRedirectsIfNotConnected()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
@@ -686,13 +674,12 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
-        $news_link = $news_link_dao->findBy(['url' => $link_url]);
+        $news_link = models\NewsLink::findBy(['url' => $link_url]);
         $this->assertNull($news_link);
     }
 
     public function testFillFailsIfCsrfIsInvalid()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $link_url = $this->fake('url');
         $link_id = $this->create('link', [
@@ -714,7 +701,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $news_link = $news_link_dao->findBy(['url' => $link_url]);
+        $news_link = models\NewsLink::findBy(['url' => $link_url]);
         $this->assertNull($news_link);
     }
 }

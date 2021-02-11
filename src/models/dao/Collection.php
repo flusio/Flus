@@ -10,8 +10,6 @@ namespace flusio\models\dao;
  */
 class Collection extends \Minz\DatabaseModel
 {
-    use SaveHelper;
-
     /**
      * @throws \Minz\Errors\DatabaseError
      */

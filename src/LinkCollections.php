@@ -89,8 +89,7 @@ class LinkCollections
             return Response::notFound('not_found.phtml');
         }
 
-        $collection_dao = new models\dao\Collection();
-        if (!$collection_dao->existForUser($user->id, $new_collection_ids)) {
+        if (!models\Collection::daoCall('existForUser', $user->id, $new_collection_ids)) {
             utils\Flash::set('error', _('One of the associated collection doesn’t exist.'));
             return Response::found($from);
         }

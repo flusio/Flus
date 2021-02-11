@@ -19,22 +19,18 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
      */
     public function setUsers()
     {
-        $user_dao = new models\dao\User();
-
         $this->duration = $this->fake('numberBetween', 30, 60);
         $news_preferences = models\NewsPreferences::init($this->duration, true, true, true);
 
         $user_id = $this->create('user', [
             'news_preferences' => $news_preferences->toJson(),
         ]);
-        $db_user = $user_dao->find($user_id);
-        $this->user = new models\User($db_user);
+        $this->user = models\User::find($user_id);
 
         $user_id = $this->create('user', [
             'news_preferences' => $news_preferences->toJson(),
         ]);
-        $db_user = $user_dao->find($user_id);
-        $this->other_user = new models\User($db_user);
+        $this->other_user = models\User::find($user_id);
     }
 
     public function testPickSelectsFromBookmarks()

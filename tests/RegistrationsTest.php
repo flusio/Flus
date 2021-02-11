@@ -42,9 +42,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesAUserAndRedirects()
     {
-        $user_dao = new models\dao\User();
-
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -53,7 +51,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(1, $user_dao->count());
+        $this->assertSame(1, models\User::count());
         $this->assertResponse($response, 302, '/onboarding');
     }
 
@@ -61,10 +59,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze($this->fake('dateTime'));
 
-        $user_dao = new models\dao\User();
-        $token_dao = new models\dao\Token();
-
-        $this->assertSame(0, $token_dao->count());
+        $this->assertSame(0, models\Token::count());
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -74,16 +69,15 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         // it also creates a session token
-        $this->assertSame(2, $token_dao->count());
+        $this->assertSame(2, models\Token::count());
 
-        $user = new Models\User($user_dao->listAll()[0]);
-        $token = new Models\Token($token_dao->findBy(['token' => $user->validation_token]));
+        $user = models\User::take();
+        $token = models\Token::findBy(['token' => $user->validation_token]);
         $this->assertEquals(\Minz\Time::fromNow(1, 'day'), $token->expired_at);
     }
 
     public function testCreateSendsAValidationEmail()
     {
-        $token_dao = new models\dao\Token();
         $email = $this->fake('email');
 
         $this->assertEmailsCount(0);
@@ -97,7 +91,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEmailsCount(1);
 
-        $token = new Models\Token($token_dao->listAll()[0]);
+        $token = models\Token::take();
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertEmailSubject($email_sent, '[flusio] Confirm your account');
         $this->assertEmailContainsTo($email_sent, $email);
@@ -106,13 +100,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateLogsTheUserIn()
     {
-        $user_dao = new models\dao\User();
-        $session_dao = new models\dao\Session();
         $email = $this->fake('email');
 
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
-        $this->assertSame(0, $session_dao->count());
+        $this->assertSame(0, models\Session::count());
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -123,14 +115,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $user = utils\CurrentUser::get();
         $this->assertSame($email, $user->email);
-        $this->assertSame(1, $session_dao->count());
+        $this->assertSame(1, models\Session::count());
     }
 
     public function testCreateReturnsACookie()
     {
-        $user_dao = new models\dao\User();
-        $session_dao = new models\dao\Session();
-
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'username' => $this->fake('name'),
@@ -138,9 +127,9 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $db_session = $session_dao->listAll()[0];
+        $session = models\Session::take();
         $cookie = $response->cookies()['flusio_session_token'];
-        $this->assertSame($db_session['token'], $cookie['value']);
+        $this->assertSame($session->token, $cookie['value']);
         $this->assertSame('Lax', $cookie['options']['samesite']);
     }
 
@@ -149,7 +138,6 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $app_path = \Minz\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
         file_put_contents($terms_path, $this->fake('sentence'));
-        $user_dao = new models\dao\User();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -160,7 +148,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         @unlink($terms_path);
-        $this->assertSame(1, $user_dao->count());
+        $this->assertSame(1, models\User::count());
         $this->assertResponse($response, 302, '/onboarding');
     }
 
@@ -168,9 +156,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $user_dao = new models\dao\User();
-
-        $this->assertSame(1, $user_dao->count());
+        $this->assertSame(1, models\User::count());
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -179,15 +165,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(1, $user_dao->count());
+        $this->assertSame(1, models\User::count());
         $this->assertResponse($response, 302, '/');
     }
 
     public function testCreateCreatesABookmarksCollection()
     {
-        $collection_dao = new models\dao\Collection();
-
-        $this->assertSame(0, $collection_dao->count());
+        $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -197,17 +181,16 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding');
-        $this->assertSame(1, $collection_dao->count());
-        $db_collection = $collection_dao->listAll()[0];
+        $this->assertSame(1, models\Collection::count());
+        $collection = models\Collection::take();
         $user = utils\CurrentUser::get();
-        $this->assertSame('bookmarks', $db_collection['type']);
-        $this->assertSame($user->id, $db_collection['user_id']);
+        $this->assertSame('bookmarks', $collection->type);
+        $this->assertSame($user->id, $collection->user_id);
     }
 
     public function testCreateRedirectsIfRegistrationsAreClosed()
     {
         \Minz\Configuration::$application['registrations_opened'] = false;
-        $user_dao = new models\dao\User();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -218,12 +201,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['registrations_opened'] = true;
         $this->assertResponse($response, 302, '/login');
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
     }
 
     public function testCreateFailsIfCsrfIsWrong()
     {
-        $user_dao = new models\dao\User();
         (new \Minz\CSRF())->generateToken();
 
         $response = $this->appRun('post', '/registration', [
@@ -233,28 +215,24 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
         $this->assertResponse($response, 400, 'A security verification failed');
     }
 
     public function testCreateFailsIfUsernameIsMissing()
     {
-        $user_dao = new models\dao\User();
-
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
         $this->assertResponse($response, 400, 'The username is required');
     }
 
     public function testCreateFailsIfUsernameIsTooLong()
     {
-        $user_dao = new models\dao\User();
-
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'username' => $this->fake('sentence', 50, false),
@@ -262,27 +240,23 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
         $this->assertResponse($response, 400, 'The username must be less than 50 characters');
     }
 
     public function testCreateFailsIfEmailIsMissing()
     {
-        $user_dao = new models\dao\User();
-
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'username' => $this->fake('name'),
         ]);
 
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
         $this->assertResponse($response, 400, 'The address email is required');
     }
 
     public function testCreateFailsIfEmailIsInvalid()
     {
-        $user_dao = new models\dao\User();
-
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'username' => $this->fake('name'),
@@ -290,14 +264,12 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
         $this->assertResponse($response, 400, 'The address email is invalid');
     }
 
     public function testCreateFailsIfEmailAlreadyExistsAndValidated()
     {
-        $user_dao = new models\dao\User();
-
         $email = $this->fake('email');
         $this->create('user', [
             'email' => $email,
@@ -311,21 +283,19 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(1, $user_dao->count());
+        $this->assertSame(1, models\User::count());
         $this->assertResponse($response, 400, 'An account already exists with this email address');
     }
 
     public function testCreateFailsIfPasswordIsMissing()
     {
-        $user_dao = new models\dao\User();
-
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
         ]);
 
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
         $this->assertResponse($response, 400, 'The password is required');
     }
 
@@ -334,7 +304,6 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $app_path = \Minz\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
         file_put_contents($terms_path, $this->fake('sentence'));
-        $user_dao = new models\dao\User();
 
         $response = $this->appRun('post', '/registration', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -345,7 +314,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         @unlink($terms_path);
-        $this->assertSame(0, $user_dao->count());
+        $this->assertSame(0, models\User::count());
         $this->assertResponse($response, 400, 'You must accept the terms of service');
     }
 }

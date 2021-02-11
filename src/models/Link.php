@@ -10,6 +10,8 @@ use flusio\utils;
  */
 class Link extends \Minz\Model
 {
+    use DaoConnector;
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'string',
@@ -130,9 +132,7 @@ class Link extends \Minz\Model
      */
     public function owner()
     {
-        $user_dao = new dao\User();
-        $db_user = $user_dao->find($this->user_id);
-        return new User($db_user);
+        return User::find($this->user_id);
     }
 
     /**
@@ -142,13 +142,7 @@ class Link extends \Minz\Model
      */
     public function collections()
     {
-        $collection_dao = new dao\Collection();
-        $collections = [];
-        $db_collections = $collection_dao->listByLinkId($this->id);
-        foreach ($db_collections as $db_collection) {
-            $collections[] = new Collection($db_collection);
-        }
-        return $collections;
+        return Collection::daoToList('listByLinkId', $this->id);
     }
 
     /**
@@ -158,15 +152,9 @@ class Link extends \Minz\Model
      */
     public function messages()
     {
-        $message_dao = new dao\Message();
-        $messages = [];
-        $db_messages = $message_dao->listBy([
+        return Message::listBy([
             'link_id' => $this->id,
         ]);
-        foreach ($db_messages as $db_message) {
-            $messages[] = new Message($db_message);
-        }
-        return $messages;
     }
 
     /**

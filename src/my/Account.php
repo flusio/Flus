@@ -40,9 +40,8 @@ class Account
             );
             $expired_at = $service->expiredAt($user->subscription_account_id);
             if ($expired_at) {
-                $user_dao = new models\dao\User();
                 $user->subscription_expired_at = $expired_at;
-                $user_dao->save($user);
+                $user->save();
             } else {
                 \Minz\Log::error("Can’t get the expired_at for user {$user->id}.");
             }
@@ -74,9 +73,6 @@ class Account
      */
     public function validation($request)
     {
-        $user_dao = new models\dao\User();
-        $token_dao = new models\dao\Token();
-
         $token = $request->param('t');
         $current_user = utils\CurrentUser::get();
         if (!$token) {
@@ -91,32 +87,29 @@ class Account
             }
         }
 
-        $db_token = $token_dao->find($token);
-        if (!$db_token) {
+        $token = models\Token::find($token);
+        if (!$token) {
             return Response::notFound('my/account/validation.phtml', [
                 'error' => _('The token doesn’t exist.'),
             ]);
         }
 
-        $token = new models\Token($db_token);
         if (!$token->isValid()) {
             return Response::badRequest('my/account/validation.phtml', [
                 'error' => _('The token has expired or has been invalidated.'),
             ]);
         }
 
-        $db_user = $user_dao->findBy(['validation_token' => $token->token]);
-        if (!$db_user) {
+        $user = models\User::findBy(['validation_token' => $token->token]);
+        if (!$user) {
             return Response::notFound('my/account/validation.phtml', [
                 'error' => _('The token doesn’t exist.'),
             ]);
         }
 
-        $user = new models\User($db_user);
-
         // No need to keep the token in database, whether or not the user is
         // already validated.
-        $token_dao->delete($token->token);
+        models\Token::delete($token->token);
         $user->validation_token = null;
 
         if ($user->validated_at) {
@@ -140,7 +133,7 @@ class Account
             }
         }
 
-        $user_dao->save($user);
+        $user->save();
 
         return Response::ok('my/account/validation.phtml', [
             'success' => true,
@@ -162,8 +155,6 @@ class Account
      */
     public function resendValidationEmail($request)
     {
-        $user_dao = new models\dao\User();
-        $token_dao = new models\dao\Token();
         $from = $request->param('from', \Minz\Url::for('home'));
         $csrf = new \Minz\CSRF();
         $user = utils\CurrentUser::get();
@@ -182,13 +173,13 @@ class Account
             return Response::found($from);
         }
 
-        $token = new models\Token($token_dao->find($user->validation_token));
+        $token = models\Token::find($user->validation_token);
         if ($token->expiresIn(30, 'minutes') || $token->isInvalidated()) {
             // the token will expire soon, let's regenerate a new one
             $token = models\Token::init(1, 'day', 16);
-            $token_dao->save($token);
+            $token->save();
             $user->validation_token = $token->token;
-            $user_dao->save($user);
+            $user->save();
         }
 
         $mailer_job = new jobs\Mailer();
@@ -264,8 +255,7 @@ class Account
             ]);
         }
 
-        $user_dao = new models\dao\User();
-        $user_dao->delete($current_user->id);
+        models\User::delete($current_user->id);
         utils\CurrentUser::reset();
         utils\Flash::set('status', 'user_deleted');
         return Response::redirect('login');

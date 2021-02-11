@@ -33,7 +33,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateSetsSubscriptionProperties()
     {
-        $user_dao = new models\dao\User();
         $expired_at = new \DateTime('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
@@ -46,7 +45,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/my/account');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertNotNull($user->subscription_account_id);
         $this->assertNotSame(
             $expired_at->getTimestamp(),
@@ -56,7 +55,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateDoesNothingIfUserAlreadyHasAccountId()
     {
-        $user_dao = new models\dao\User();
         $account_id = $this->fake('regexify', '\w{32}');
         $expired_at = new \DateTime('1970-01-01');
         $user = $this->login([
@@ -70,7 +68,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/my/account');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertSame($account_id, $user->subscription_account_id);
         $this->assertSame(
             $expired_at->getTimestamp(),
@@ -80,7 +78,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfUserIsNotConnected()
     {
-        $user_dao = new models\dao\User();
         $expired_at = new \DateTime('1970-01-01');
         $user_id = $this->create('user', [
             'csrf' => 'a token',
@@ -94,7 +91,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
-        $user = new models\User($user_dao->find($user_id));
+        $user = models\User::find($user_id);
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
             $expired_at->getTimestamp(),
@@ -104,7 +101,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUserIsNotValidated()
     {
-        $user_dao = new models\dao\User();
         $expired_at = new \DateTime('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
@@ -118,7 +114,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/my/account');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
             $expired_at->getTimestamp(),
@@ -128,7 +124,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid()
     {
-        $user_dao = new models\dao\User();
         $expired_at = new \DateTime('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
@@ -142,7 +137,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/my/account');
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
             $expired_at->getTimestamp(),
@@ -154,7 +149,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
     {
         $old_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
         \Minz\Configuration::$application['subscriptions_private_key'] = 'not the key';
-        $user_dao = new models\dao\User();
         $expired_at = new \DateTime('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
@@ -173,7 +167,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'error',
             'An error occured when getting you a subscription account, please contact the support.'
         );
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
             $expired_at->getTimestamp(),
@@ -184,7 +178,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfSubscriptionsAreDisabled()
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
-        $user_dao = new models\dao\User();
         $expired_at = new \DateTime('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
@@ -196,7 +189,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $user = new models\User($user_dao->find($user->id));
+        $user = models\User::find($user->id);
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
             $expired_at->getTimestamp(),

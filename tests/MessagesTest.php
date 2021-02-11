@@ -15,7 +15,6 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
     public function testDeleteDeletesMessageAndRedirects()
     {
         $user = $this->login();
-        $message_dao = new models\dao\Message();
         $message_id = $this->create('message', [
             'user_id' => $user->id,
         ]);
@@ -25,13 +24,12 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/');
-        $this->assertFalse($message_dao->exists($message_id));
+        $this->assertFalse(models\Message::exists($message_id));
     }
 
     public function testDeleteRedirectsToRedirectToIfGiven()
     {
         $user = $this->login();
-        $message_dao = new models\dao\Message();
         $message_id = $this->create('message', [
             'user_id' => $user->id,
         ]);
@@ -42,7 +40,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/bookmarks');
-        $this->assertFalse($message_dao->exists($message_id));
+        $this->assertFalse(models\Message::exists($message_id));
     }
 
     public function testDeleteRedirectsIfNotConnected()
@@ -50,7 +48,6 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
-        $message_dao = new models\dao\Message();
         $message_id = $this->create('message', [
             'user_id' => $user_id,
         ]);
@@ -60,14 +57,13 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2F');
-        $this->assertTrue($message_dao->exists($message_id));
+        $this->assertTrue(models\Message::exists($message_id));
     }
 
     public function testDeleteFailsIfMessageIsNotOwned()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $message_dao = new models\dao\Message();
         $message_id = $this->create('message', [
             'user_id' => $other_user_id,
         ]);
@@ -77,13 +73,12 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertTrue($message_dao->exists($message_id));
+        $this->assertTrue(models\Message::exists($message_id));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $message_dao = new models\dao\Message();
         $message_id = $this->create('message', [
             'user_id' => $user->id,
         ]);
@@ -94,6 +89,6 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/');
         $this->assertFlash('error', 'A security verification failed.');
-        $this->assertTrue($message_dao->exists($message_id));
+        $this->assertTrue(models\Message::exists($message_id));
     }
 }

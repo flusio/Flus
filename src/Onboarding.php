@@ -71,7 +71,6 @@ class Onboarding
      */
     public function updateLocale($request)
     {
-        $user_dao = new models\dao\User();
         $csrf = new \Minz\CSRF();
         $locale = $request->param('locale');
 
@@ -86,7 +85,7 @@ class Onboarding
 
         $errors = $user->validate();
         if ($csrf->validateToken($request->param('csrf')) && !$errors) {
-            $user_dao->save($user);
+            $user->save();
             utils\Locale::setCurrentLocale($locale);
         }
 
@@ -112,7 +111,6 @@ class Onboarding
      */
     public function updateTopics($request)
     {
-        $user_dao = new models\dao\User();
         $topic_ids = $request->param('topic_ids', []);
 
         $user = utils\CurrentUser::get();
@@ -123,9 +121,8 @@ class Onboarding
         }
 
         $csrf = new \Minz\CSRF();
-        $topic_dao = new models\dao\Topic();
         $csrf_valid = $csrf->validateToken($request->param('csrf'));
-        $topics_valid = !$topic_ids || $topic_dao->exists($topic_ids);
+        $topics_valid = !$topic_ids || models\Topic::exists($topic_ids);
 
         if (!$csrf_valid || !$topics_valid) {
             return Response::redirect('onboarding', ['step' => 4]);

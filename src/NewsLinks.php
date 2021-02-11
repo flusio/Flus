@@ -140,9 +140,8 @@ class NewsLinks
             ]);
         }
 
-        $user_dao = new models\dao\User();
         $user->news_preferences = $preferences->toJson();
-        $user_dao->save($user);
+        $user->save();
 
         return Response::redirect('news');
     }
@@ -183,14 +182,13 @@ class NewsLinks
             ]);
         }
 
-        $news_link_dao = new models\dao\NewsLink();
         $news_picker = new services\NewsPicker($user);
         $db_links = $news_picker->pick();
 
         foreach ($db_links as $db_link) {
             $link = new models\Link($db_link);
             $news_link = models\NewsLink::initFromLink($link, $user->id);
-            $news_link_dao->save($news_link);
+            $news_link->save();
         }
 
         if (!$db_links) {

@@ -40,14 +40,13 @@ class CurrentUser
         }
 
         // Let's load the user from the database
-        $user_dao = new models\dao\User();
-        $current_user_values = $user_dao->findBySessionToken($_SESSION['current_session_token']);
-        if (!$current_user_values) {
+        $current_user = models\User::daoToModel('findBySessionToken', $_SESSION['current_session_token']);
+        if (!$current_user) {
             // The user doesn't exist… what are you trying to do evil user?
             return null;
         }
 
-        self::$instance = new models\User($current_user_values);
+        self::$instance = $current_user;
         return self::$instance;
     }
 
@@ -61,19 +60,13 @@ class CurrentUser
      */
     public static function session()
     {
-        if (!isset($_SESSION['current_session_token'])) {
+        if (isset($_SESSION['current_session_token'])) {
+            return models\Session::findBy([
+                'token' => $_SESSION['current_session_token'],
+            ]);
+        } else {
             return null;
         }
-
-        $session_dao = new models\dao\Session();
-        $db_session = $session_dao->findBy([
-            'token' => $_SESSION['current_session_token'],
-        ]);
-        if (!$db_session) {
-            return null;
-        }
-
-        return new models\Session($db_session);
     }
 
     /**

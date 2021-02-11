@@ -84,10 +84,9 @@ class Subscription
             return Response::redirect('account');
         }
 
-        $user_dao = new models\dao\User();
         $user->subscription_account_id = $account['id'];
         $user->subscription_expired_at = $account['expired_at'];
-        $user_dao->save($user);
+        $user->save();
         return Response::redirect('account');
     }
 

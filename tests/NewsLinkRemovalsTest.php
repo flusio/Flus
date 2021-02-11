@@ -77,8 +77,6 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
     public function testAddCreatesALinkAndRedirects()
     {
         $user = $this->login();
-        $link_dao = new models\dao\Link();
-        $news_link_dao = new models\dao\NewsLink();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
@@ -92,7 +90,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $comment = $this->fake('sentence');
         $collection_ids = [$collection_id];
 
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
@@ -101,11 +99,11 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
             'comment' => $comment,
         ]);
 
-        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(1, models\Link::count());
 
         $this->assertResponse($response, 302, '/news');
-        $link = new models\Link($link_dao->listAll()[0]);
-        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $link = models\Link::take();
+        $news_link = models\NewsLink::find($news_link_id);
         $message = $link->messages()[0];
         $db_link_to_collection = $links_to_collections_dao->listAll()[0];
         $this->assertTrue($news_link->is_read);
@@ -122,8 +120,6 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
     public function testAddUpdatesExistingLinks()
     {
         $user = $this->login();
-        $link_dao = new models\dao\Link();
-        $news_link_dao = new models\dao\NewsLink();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $url = $this->fake('url');
         $news_link_id = $this->create('news_link', [
@@ -149,7 +145,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $comment = $this->fake('sentence');
         $collection_ids = [$new_collection_id];
 
-        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(1, models\Link::count());
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
@@ -158,10 +154,10 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
             'comment' => $comment,
         ]);
 
-        $this->assertSame(1, $link_dao->count());
+        $this->assertSame(1, models\Link::count());
 
         $this->assertResponse($response, 302, '/news');
-        $link = new models\Link($link_dao->find($link_id));
+        $link = models\Link::find($link_id);
         $this->assertTrue($link->is_public);
         $this->assertFalse($links_to_collections_dao->exists($link_to_collection_id));
         $new_db_link_to_collection = $links_to_collections_dao->listAll()[0];
@@ -174,7 +170,6 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
-        $link_dao = new models\dao\Link();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user_id,
         ]);
@@ -193,14 +188,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/login?redirect_to=%2Fnews%2F{$news_link_id}%2Fadd");
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testAddFailsIfUserDoesNotOwnTheNewsLink()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $link_dao = new models\dao\Link();
         $news_link_id = $this->create('news_link', [
             'user_id' => $other_user_id,
         ]);
@@ -219,13 +213,12 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testAddFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $link_dao = new models\dao\Link();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
         ]);
@@ -244,13 +237,12 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testAddFailsIfCollectionIdsIsEmpty()
     {
         $user = $this->login();
-        $link_dao = new models\dao\Link();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
         ]);
@@ -269,14 +261,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The link must be associated to a collection.');
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testAddFailsIfCollectionIdsContainsNotOwnedId()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $link_dao = new models\dao\Link();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
         ]);
@@ -295,14 +286,12 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
-        $this->assertSame(0, $link_dao->count());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testReadLaterRemovesLinkFromNewsAndAddsToBookmarksAndRedirects()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
@@ -325,7 +314,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $exists = $news_link_dao->exists($news_link_id);
+        $exists = models\NewsLink::exists($news_link_id);
         $db_link_to_collection = $links_to_collections_dao->findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id,
@@ -336,7 +325,6 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
     public function testReadLaterCreatesTheLinkIfItDoesNotExistForCurrentUser()
     {
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
@@ -354,15 +342,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $db_link = $link_dao->findBy(['url' => $link_url]);
-        $this->assertNotNull($db_link, 'The link should exist.');
+        $link = models\Link::findBy(['url' => $link_url]);
+        $this->assertNotNull($link, 'The link should exist.');
     }
 
     public function testReadLaterJustRemovesFromNewsIfAlreadyBookmarked()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
@@ -387,7 +373,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $exists = $news_link_dao->exists($news_link_id);
+        $exists = models\NewsLink::exists($news_link_id);
         $db_link_to_collection = $links_to_collections_dao->find($link_to_collection_id);
         $this->assertFalse($exists, 'The news should no longer exist.');
         $this->assertNotNull($db_link_to_collection, 'The link should still be in bookmarks.');
@@ -396,7 +382,6 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
     public function testReadLaterAcceptsAnIdEqualsToAll()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $link_url_1 = $this->fake('url');
         $link_url_2 = $this->fake('url');
@@ -434,8 +419,8 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $exists_1 = $news_link_dao->exists($news_link_id_1);
-        $exists_2 = $news_link_dao->exists($news_link_id_2);
+        $exists_1 = models\NewsLink::exists($news_link_id_1);
+        $exists_2 = models\NewsLink::exists($news_link_id_2);
         $this->assertFalse($exists_1, 'The news should no longer exist.');
         $this->assertFalse($exists_2, 'The news should no longer exist.');
         $db_link_to_collection_1 = $links_to_collections_dao->findBy([
@@ -452,8 +437,6 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
     public function testReadLaterRedirectsToLoginIfNotConnected()
     {
-        $news_link_dao = new models\dao\NewsLink();
-        $link_dao = new models\dao\Link();
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
@@ -474,16 +457,14 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
-        $exists = $news_link_dao->exists($news_link_id);
-        $db_link = $link_dao->findBy(['url' => $link_url]);
+        $exists = models\NewsLink::exists($news_link_id);
+        $link = models\Link::findBy(['url' => $link_url]);
         $this->assertTrue($exists, 'The news should still exist.');
-        $this->assertNull($db_link, 'The link should not exist.');
+        $this->assertNull($link, 'The link should not exist.');
     }
 
     public function testReadLaterFailsIfCsrfIsInvalid()
     {
-        $news_link_dao = new models\dao\NewsLink();
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
@@ -503,16 +484,14 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
-        $exists = $news_link_dao->exists($news_link_id);
-        $db_link = $link_dao->findBy(['url' => $link_url]);
+        $exists = models\NewsLink::exists($news_link_id);
+        $link = models\Link::findBy(['url' => $link_url]);
         $this->assertTrue($exists, 'The news should still exist.');
-        $this->assertNull($db_link, 'The link should not exist.');
+        $this->assertNull($link, 'The link should not exist.');
     }
 
     public function testReadLaterFailsIfLinkDoesNotExist()
     {
-        $news_link_dao = new models\dao\NewsLink();
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
@@ -532,16 +511,14 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'The link doesn’t exist.');
-        $exists = $news_link_dao->exists($news_link_id);
-        $db_link = $link_dao->findBy(['url' => $link_url]);
+        $exists = models\NewsLink::exists($news_link_id);
+        $link = models\Link::findBy(['url' => $link_url]);
         $this->assertTrue($exists, 'The news should still exist.');
-        $this->assertNull($db_link, 'The link should not exist.');
+        $this->assertNull($link, 'The link should not exist.');
     }
 
     public function testReadLaterFailsIfUserDoesNotOwnTheLink()
     {
-        $news_link_dao = new models\dao\NewsLink();
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $other_user_id = $this->create('user');
         $link_url = $this->fake('url');
@@ -562,15 +539,14 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'The link doesn’t exist.');
-        $exists = $news_link_dao->exists($news_link_id);
-        $db_link = $link_dao->findBy(['url' => $link_url]);
+        $exists = models\NewsLink::exists($news_link_id);
+        $link = models\Link::findBy(['url' => $link_url]);
         $this->assertTrue($exists, 'The news should still exist.');
-        $this->assertNull($db_link, 'The link should not exist.');
+        $this->assertNull($link, 'The link should not exist.');
     }
 
     public function testMarkAsReadMarksLinkAsReadAndRedirects()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
@@ -584,15 +560,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $news_link = models\NewsLink::find($news_link_id);
         $this->assertTrue($news_link->is_read, 'The news link should be read.');
     }
 
     public function testMarkAsReadRemovesFromBookmarksIfCorrespondingUrlInLinks()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
@@ -625,7 +599,6 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
     public function testMarkAsReadAcceptsAnIdEqualsToAll()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
@@ -658,8 +631,8 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $news_link_1 = new models\NewsLink($news_link_dao->find($news_link_id_1));
-        $news_link_2 = new models\NewsLink($news_link_dao->find($news_link_id_2));
+        $news_link_1 = models\NewsLink::find($news_link_id_1);
+        $news_link_2 = models\NewsLink::find($news_link_id_2);
         $this->assertTrue($news_link_1->is_read, 'The news link should be read.');
         $this->assertTrue($news_link_2->is_read, 'The news link should be read.');
         $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_collection_id);
@@ -668,7 +641,6 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
     public function testMarkAsReadRedirectsToLoginIfNotConnected()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
@@ -684,13 +656,12 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
-        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $news_link = models\NewsLink::find($news_link_id);
         $this->assertFalse($news_link->is_read, 'The news link should not be read.');
     }
 
     public function testMarkAsReadFailsIfCsrfIsInvalid()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
@@ -705,13 +676,12 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
-        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $news_link = models\NewsLink::find($news_link_id);
         $this->assertFalse($news_link->is_read, 'The news link should not be read.');
     }
 
     public function testMarkAsReadFailsIfUserDoesNotOwnTheLink()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $other_user_id = $this->create('user');
         $news_link_id = $this->create('news_link', [
@@ -727,13 +697,12 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'The link doesn’t exist.');
-        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $news_link = models\NewsLink::find($news_link_id);
         $this->assertFalse($news_link->is_read, 'The news link should not be read.');
     }
 
     public function testRemoveRemovesLinkFromNewsAndRedirects()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
@@ -746,15 +715,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $news_link = models\NewsLink::find($news_link_id);
         $this->assertTrue($news_link->is_removed, 'The news link should be removed.');
     }
 
     public function testRemoveRemovesFromBookmarksIfCorrespondingUrlInLinks()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $news_link_dao = new models\dao\NewsLink();
-        $link_dao = new models\dao\Link();
         $user = $this->login();
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
@@ -785,7 +752,6 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoveRedirectsToLoginIfNotConnected()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
@@ -800,13 +766,12 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
-        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $news_link = models\NewsLink::find($news_link_id);
         $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
     }
 
     public function testRemoveFailsIfCsrfIsInvalid()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
@@ -820,13 +785,12 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
-        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $news_link = models\NewsLink::find($news_link_id);
         $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
     }
 
     public function testRemoveFailsIfUserDoesNotOwnTheLink()
     {
-        $news_link_dao = new models\dao\NewsLink();
         $user = $this->login();
         $other_user_id = $this->create('user');
         $news_link_id = $this->create('news_link', [
@@ -841,7 +805,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'The link doesn’t exist.');
-        $news_link = new models\NewsLink($news_link_dao->find($news_link_id));
+        $news_link = models\NewsLink::find($news_link_id);
         $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
     }
 }

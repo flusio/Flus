@@ -8,8 +8,6 @@ namespace flusio\models\dao;
  */
 class Topic extends \Minz\DatabaseModel
 {
-    use SaveHelper;
-
     /**
      * @throws \Minz\Errors\DatabaseError
      */

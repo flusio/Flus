@@ -8,6 +8,8 @@ namespace flusio\models;
  */
 class NewsLink extends \Minz\Model
 {
+    use DaoConnector;
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'integer',
@@ -97,13 +99,7 @@ class NewsLink extends \Minz\Model
      */
     public function viaCollection()
     {
-        if (!$this->via_collection_id) {
-            return null;
-        }
-
-        $collection_dao = new dao\Collection();
-        $db_collection = $collection_dao->find($this->via_collection_id);
-        return new Collection($db_collection);
+        return Collection::find($this->via_collection_id);
     }
 
     /**
@@ -111,13 +107,7 @@ class NewsLink extends \Minz\Model
      */
     public function viaLink()
     {
-        if (!$this->via_link_id) {
-            return null;
-        }
-
-        $link_dao = new dao\Link();
-        $db_link = $link_dao->find($this->via_link_id);
-        return new Link($db_link);
+        return Link::find($this->via_link_id);
     }
 
     /**
