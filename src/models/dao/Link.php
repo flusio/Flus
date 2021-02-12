@@ -10,6 +10,8 @@ namespace flusio\models\dao;
  */
 class Link extends \Minz\DatabaseModel
 {
+    use BulkHelper;
+
     /**
      * @throws \Minz\Errors\DatabaseError
      */
