@@ -8,6 +8,7 @@ use flusio\utils;
 
 class PocketTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \tests\LoginHelper;
     use \tests\FlashAsserts;
     use \Minz\Tests\ApplicationHelper;
@@ -43,6 +44,47 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200, 'Importation from Pocket');
         $this->assertPointer($response, 'importations/pocket/show.phtml');
+    }
+
+    public function testShowIfImportationIsOngoing()
+    {
+        $user = $this->login();
+        $this->create('importation', [
+            'user_id' => $user->id,
+            'status' => 'ongoing',
+        ]);
+
+        $response = $this->appRun('get', '/pocket');
+
+        $this->assertResponse($response, 200, 'We’re importing your data from Pocket');
+    }
+
+    public function testShowIfImportationIsFinished()
+    {
+        $user = $this->login();
+        $this->create('importation', [
+            'user_id' => $user->id,
+            'status' => 'finished',
+        ]);
+
+        $response = $this->appRun('get', '/pocket');
+
+        $this->assertResponse($response, 200, 'We’ve imported your data from Pocket.');
+    }
+
+    public function testShowIfImportationIsInError()
+    {
+        $user = $this->login();
+        $error = $this->fake('sentence');
+        $this->create('importation', [
+            'user_id' => $user->id,
+            'status' => 'error',
+            'error' => $error,
+        ]);
+
+        $response = $this->appRun('get', '/pocket');
+
+        $this->assertResponse($response, 200, $error);
     }
 
     public function testShowRedirectsToLoginIfNotConnected()

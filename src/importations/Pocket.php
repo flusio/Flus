@@ -36,7 +36,13 @@ class Pocket
             ]);
         }
 
-        return Response::ok('importations/pocket/show.phtml');
+        $importation = models\Importation::findBy([
+            'type' => 'pocket',
+            'user_id' => $user->id,
+        ]);
+        return Response::ok('importations/pocket/show.phtml', [
+            'importation' => $importation,
+        ]);
     }
 
     /**
@@ -72,12 +78,14 @@ class Pocket
         ]);
         if ($importation) {
             return Response::badRequest('importations/pocket/show.phtml', [
+                'importation' => $importation,
                 'error' => _('You already have an ongoing Pocket importation.')
             ]);
         }
 
         if (!$user->pocket_access_token) {
             return Response::badRequest('importations/pocket/show.phtml', [
+                'importation' => null,
                 'error' => _('You didn’t authorize us to access your Pocket data.'),
             ]);
         }
@@ -85,6 +93,7 @@ class Pocket
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('importations/pocket/show.phtml', [
+                'importation' => null,
                 'error' => _('A security verification failed.'),
             ]);
         }
@@ -94,7 +103,9 @@ class Pocket
         $importator_job = new jobs\Importator();
         $importator_job->performLater($importation->id);
 
-        return Response::ok('importations/pocket/show.phtml');
+        return Response::ok('importations/pocket/show.phtml', [
+            'importation' => $importation,
+        ]);
     }
 
     /**

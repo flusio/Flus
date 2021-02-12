@@ -23,9 +23,74 @@
         </p>
     <?php endif; ?>
 
-    <?php if ($current_user->pocket_access_token): ?>
+    <?php if ($importation && $importation->status === 'ongoing'): ?>
         <p class="paragraph--featured">
-            <?= _f('You authorized %s to access your Pocket data, thanks!', $brand) ?>
+            <?= _('We’re importing your data from Pocket…') ?>
+        </p>
+
+        <div class="spinner"></div>
+
+        <form
+             method="get"
+             action="<?= url('pocket') ?>"
+             data-controller="autosubmit"
+             data-autosubmit-mode="timeout"
+             data-autosubmit-timeout="4000"
+        >
+        </form>
+    <?php elseif ($importation && $importation->status === 'finished'): ?>
+        <p class="paragraph--featured">
+            <?= _('We’ve imported your data from Pocket.') ?>
+        </p>
+
+        <p class="paragraph--centered">
+            <?= _('You should see new links in your collections and/or bookmarks. We’ll fetch their illustrations in background.') ?>
+        </p>
+
+        <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="from" value="<?= url('pocket') ?>" />
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Ok!') ?>
+                </button>
+            </div>
+        </form>
+    <?php elseif ($importation && $importation->status === 'error'): ?>
+        <p class="paragraph--featured">
+            <?= _('Oops, a problem occured during your importation.') ?>
+        </p>
+
+        <p class="paragraph--centered">
+            <?= $this->protect($importation->error) ?>
+        </p>
+
+        <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="from" value="<?= url('pocket') ?>" />
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Ok!') ?>
+                </button>
+            </div>
+        </form>
+    <?php elseif ($current_user->pocket_access_token): ?>
+        <form method="post" action="<?= url('import pocket') ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Import from Pocket') ?>
+                </button>
+            </div>
+        </form>
+
+        <p class="paragraph--centered paragraph--secondary">
+            <small>
+                <?= _f('connected with account <em>%s</em>', $this->protect($current_user->pocket_username)) ?>
+            </small>
         </p>
     <?php else: ?>
         <form method="post" action="<?= url('request pocket access') ?>">
