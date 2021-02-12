@@ -40,12 +40,17 @@ class Pocket
     }
 
     /**
-     * Do nothing for now
+     * Initialize a new Pocket importation and register an Importator job.
+     *
+     * @request_param string $csrf
      *
      * @response 404
      *    If the pocket_consumer_key is not set in conf
      * @response 302 /login?redirect_to=/pocket
      *    If the user is not connected
+     * @response 400
+     *    If the CSRF token is invalid, if user has no access token or if an
+     *    import of pocket type already exists
      * @response 200
      */
     public function import($request)
@@ -60,6 +65,34 @@ class Pocket
                 'redirect_to' => \Minz\Url::for('pocket'),
             ]);
         }
+
+        $importation = models\Importation::findBy([
+            'type' => 'pocket',
+            'user_id' => $user->id,
+        ]);
+        if ($importation) {
+            return Response::badRequest('importations/pocket/show.phtml', [
+                'error' => _('You already have an ongoing Pocket importation.')
+            ]);
+        }
+
+        if (!$user->pocket_access_token) {
+            return Response::badRequest('importations/pocket/show.phtml', [
+                'error' => _('You didn’t authorize us to access your Pocket data.'),
+            ]);
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('importations/pocket/show.phtml', [
+                'error' => _('A security verification failed.'),
+            ]);
+        }
+
+        $importation = models\Importation::init('pocket', $user->id);
+        $importation->save();
+        $importator_job = new jobs\Importator();
+        $importator_job->performLater($importation->id);
 
         return Response::ok('importations/pocket/show.phtml');
     }

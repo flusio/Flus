@@ -240,4 +240,30 @@ class Link extends \Minz\DatabaseModel
         $statement->execute([$number]);
         return $statement->fetchAll();
     }
+
+    /**
+     * Return the list of url ids indexed by urls for the given user.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listIdsByUrls($user_id)
+    {
+        $sql = <<<SQL
+            SELECT id, url FROM links
+            WHERE user_id = :user_id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
+
+        $ids_by_urls = [];
+        foreach ($statement->fetchAll() as $row) {
+            $ids_by_urls[$row['url']] = $row['id'];
+        }
+        return $ids_by_urls;
+    }
 }

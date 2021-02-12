@@ -35,6 +35,27 @@ class Pocket
     }
 
     /**
+     * Get the list of items from Pocket
+     *
+     * @see https://getpocket.com/developer/docs/v3/retrieve
+     *
+     * @param string $access_token
+     * @param array $parameters List of optional parameters to pass in the request
+     *
+     * @return array
+     */
+    public function retrieve($access_token, $parameters = [])
+    {
+        $endpoint = self::HOST . '/v3/get';
+        $response = $this->http->post($endpoint, array_merge($parameters, [
+            'consumer_key' => $this->consumer_key,
+            'access_token' => $access_token,
+        ]));
+        $json = json_decode($response->data, true);
+        return $json['list'];
+    }
+
+    /**
      * Get a request token from Pocket.
      *
      * @param string $redirect_uri

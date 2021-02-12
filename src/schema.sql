@@ -52,6 +52,16 @@ CREATE TABLE sessions (
 
 CREATE INDEX idx_sessions_token ON sessions(token);
 
+CREATE TABLE importations (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    type TEXT NOT NULL,
+    status TEXT NOT NULL,
+    options JSON NOT NULL,
+    error TEXT NOT NULL DEFAULT '',
+    user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE collections (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,

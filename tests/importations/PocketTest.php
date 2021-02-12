@@ -62,6 +62,136 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404);
     }
 
+    public function testImportRegistersAnImportatorJobAndRendersCorrectly()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $job_dao = new models\dao\Job();
+        $user = $this->login([
+            'pocket_access_token' => 'some token',
+        ]);
+
+        $this->assertSame(0, models\Importation::count());
+        $this->assertSame(0, $job_dao->count());
+
+        $response = $this->appRun('post', '/pocket', [
+            'csrf' => $user->csrf,
+        ]);
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertSame(1, models\Importation::count());
+        $this->assertSame(1, $job_dao->count());
+
+        $this->assertResponse($response, 200, 'Importation from Pocket');
+        $this->assertPointer($response, 'importations/pocket/show.phtml');
+        $importation = models\Importation::take();
+        $db_job = $job_dao->listAll()[0];
+        $handler = json_decode($db_job['handler'], true);
+        $this->assertSame('flusio\\jobs\\Importator', $handler['job_class']);
+        $this->assertSame([$importation->id], $handler['job_args']);
+    }
+
+    public function testImportRedirectsToLoginIfNotConnected()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $job_dao = new models\dao\Job();
+        $user_id = $this->create('user', [
+            'csrf' => 'some token',
+            'pocket_access_token' => 'some token',
+        ]);
+
+        $response = $this->appRun('post', '/pocket', [
+            'csrf' => 'some token',
+        ]);
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fpocket');
+        $this->assertSame(0, models\Importation::count());
+        $this->assertSame(0, $job_dao->count());
+    }
+
+    public function testImportFailsIfPocketNotConfigured()
+    {
+        \Minz\Configuration::$application['pocket_consumer_key'] = null;
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $job_dao = new models\dao\Job();
+        $user = $this->login([
+            'pocket_access_token' => 'some token',
+        ]);
+
+        $response = $this->appRun('post', '/pocket', [
+            'csrf' => $user->csrf,
+        ]);
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertResponse($response, 404);
+        $this->assertSame(0, models\Importation::count());
+        $this->assertSame(0, $job_dao->count());
+    }
+
+    public function testImportFailsIfUserHasNoAccessToken()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $job_dao = new models\dao\Job();
+        $user = $this->login([
+            'pocket_access_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/pocket', [
+            'csrf' => $user->csrf,
+        ]);
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertResponse($response, 400, 'You didn’t authorize us to access your Pocket data');
+        $this->assertSame(0, models\Importation::count());
+        $this->assertSame(0, $job_dao->count());
+    }
+
+    public function testImportFailsIfCsrfIsInvalid()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $job_dao = new models\dao\Job();
+        $user = $this->login([
+            'pocket_access_token' => 'some token',
+        ]);
+
+        $response = $this->appRun('post', '/pocket', [
+            'csrf' => 'not the token',
+        ]);
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertSame(0, models\Importation::count());
+        $this->assertSame(0, $job_dao->count());
+    }
+
+    public function testImportFailsIfAnImportAlreadyExists()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $job_dao = new models\dao\Job();
+        $user = $this->login([
+            'pocket_access_token' => 'some token',
+        ]);
+        $this->create('importation', [
+            'type' => 'pocket',
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', '/pocket', [
+            'csrf' => $user->csrf,
+        ]);
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertResponse($response, 400, 'You already have an ongoing Pocket importation');
+        $this->assertSame(1, models\Importation::count());
+        $this->assertSame(0, $job_dao->count());
+    }
+
     public function testRequestAccessSetRequestTokenAndRedirectsUser()
     {
         $user = $this->login([
