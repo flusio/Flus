@@ -58,6 +58,30 @@ trait DaoConnector
     }
 
     /**
+     * Find a model in DB and create it if it doesn't exist.
+     *
+     * @param array $values The values to look for
+     * @param array $values_for_create
+     *     Values which will override $values, on creation only
+     *
+     * @throws \Minz\DatabaseModelError
+     *
+     * @return \Minz\Model
+     */
+    public static function findOrCreateBy($values, $values_for_create = [])
+    {
+        $model = self::findBy($values);
+        if ($model) {
+            return $model;
+        }
+
+        $model = new self(array_merge($values, $values_for_create));
+        $model->save();
+
+        return $model;
+    }
+
+    /**
      * @see \Minz\DatabaseModel::create
      */
     public static function create($values)
