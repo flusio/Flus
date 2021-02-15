@@ -448,25 +448,7 @@ class Links
         }
 
         $fetch_service = new services\Fetch();
-        $info = $fetch_service->fetch($link->url);
-
-        $link->fetched_at = \Minz\Time::now();
-        $link->fetched_code = $info['status'];
-        if (isset($info['error'])) {
-            $link->fetched_error = $info['error'];
-        }
-        if (isset($info['title'])) {
-            $link->title = $info['title'];
-        }
-        if (isset($info['reading_time'])) {
-            $link->reading_time = $info['reading_time'];
-        }
-        if (isset($info['url_illustration'])) {
-            $image_service = new services\Image();
-            $image_filename = $image_service->generatePreviews($info['url_illustration']);
-            $link->image_filename = $image_filename;
-        }
-
+        $fetch_service->fetch($link);
         $link->save();
 
         return Response::redirect('link', ['id' => $link->id]);

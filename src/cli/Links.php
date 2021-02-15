@@ -31,7 +31,7 @@ class Links
         foreach ($links as $link) {
             $result = "Link #{$link->id} ({$link->url}): ";
 
-            $info = $fetch_service->fetch($link->url);
+            $info = $fetch_service->fetchUrl($link->url);
             $link->fetched_at = \Minz\Time::now();
             $link->fetched_code = $info['status'];
             if (isset($info['error'])) {

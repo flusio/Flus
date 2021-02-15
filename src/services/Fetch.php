@@ -32,6 +32,33 @@ class Fetch
     }
 
     /**
+     * Fetch a link and set its properties
+     *
+     * @param \flusio\models\Link
+     */
+    public function fetch($link)
+    {
+        $info = $this->fetchUrl($link->url);
+
+        $link->fetched_at = \Minz\Time::now();
+        $link->fetched_code = $info['status'];
+        if (isset($info['error'])) {
+            $link->fetched_error = $info['error'];
+        }
+        if (isset($info['title'])) {
+            $link->title = $info['title'];
+        }
+        if (isset($info['reading_time'])) {
+            $link->reading_time = $info['reading_time'];
+        }
+        if (isset($info['url_illustration'])) {
+            $image_service = new Image();
+            $image_filename = $image_service->generatePreviews($info['url_illustration']);
+            $link->image_filename = $image_filename;
+        }
+    }
+
+    /**
      * Fetch URL content and return information about the page
      *
      * @param string $url
@@ -43,7 +70,7 @@ class Fetch
      *     - reading_time
      *     - url_illustration
      */
-    public function fetch($url)
+    public function fetchUrl($url)
     {
         // First, we "GET" the URL...
         $url_hash = \SpiderBits\Cache::hash($url);
