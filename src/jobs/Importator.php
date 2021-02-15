@@ -49,6 +49,7 @@ class Importator extends Job
 
         $offset = 0;
         $count = 500;
+        $imported_count = 0;
         $error = '';
         $exit_loop = false;
         while (!$exit_loop) {
@@ -64,6 +65,7 @@ class Importator extends Job
                 $this->importPocketItems($user, $items);
 
                 $offset = $offset + $count;
+                $imported_count = $imported_count + count($items);
                 $exit_loop = count($items) !== $count;
             } catch (services\PocketError $e) {
                 $user->pocket_error = $e->getCode();
@@ -82,6 +84,12 @@ class Importator extends Job
             $importation->finish();
         }
         $importation->save();
+
+        if ($imported_count > 0) {
+            // we now register a job to fetch the links
+            $fetcher_job = new UserLinksFetcher();
+            $fetcher_job->performLater($user->id);
+        }
     }
 
     /**

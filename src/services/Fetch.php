@@ -45,7 +45,8 @@ class Fetch
         if (isset($info['error'])) {
             $link->fetched_error = $info['error'];
         }
-        if (isset($info['title'])) {
+        // we set the title only if it wasn't changed yet
+        if ($link->title === $link->url && isset($info['title'])) {
             $link->title = $info['title'];
         }
         if (isset($info['reading_time'])) {
