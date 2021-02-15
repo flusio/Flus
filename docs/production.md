@@ -217,6 +217,13 @@ listing them:
 flusio# php ./cli --request /topics
 ```
 
+## Bonus: Configure Pocket
+
+flusio allows users to import their data from Pocket. First, you have to
+[create a Pocket app](https://getpocket.com/developer/apps/new). It will give
+you a "consumer key". Set this key in the `APP_POCKET_CONSUMER_KEY` variable of
+your `.env` file. That’s all!
+
 ## Bonus: Configure Browscap
 
 We use Browscap to identify the users’ sessions via their user agent. flusio

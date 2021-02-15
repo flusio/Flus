@@ -57,6 +57,21 @@ class Collection extends \Minz\Model
     ];
 
     /**
+     * Initialize the model with default values.
+     *
+     * @param mixed $values
+     */
+    public function __construct($values)
+    {
+        parent::__construct(array_merge([
+            'id' => utils\Random::timebased(),
+            'description' => '',
+            'type' => 'collection',
+            'is_public' => false,
+        ], $values));
+    }
+
+    /**
      * @param string $user_id
      * @param string $name
      * @param string $description
@@ -67,10 +82,8 @@ class Collection extends \Minz\Model
     public static function init($user_id, $name, $description, $is_public)
     {
         return new self([
-            'id' => utils\Random::timebased(),
             'name' => trim($name),
             'description' => trim($description),
-            'type' => 'collection',
             'is_public' => filter_var($is_public, FILTER_VALIDATE_BOOLEAN),
             'user_id' => $user_id,
         ]);
@@ -84,11 +97,8 @@ class Collection extends \Minz\Model
     public static function initBookmarks($user_id)
     {
         return new self([
-            'id' => utils\Random::timebased(),
             'name' => _('Bookmarks'),
-            'description' => '',
             'type' => 'bookmarks',
-            'is_public' => 0,
             'user_id' => $user_id,
         ]);
     }

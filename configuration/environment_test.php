@@ -38,6 +38,7 @@ return [
         'subscriptions_host' => $subscriptions_host,
         'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
         'job_adapter' => 'test',
+        'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY'),
     ],
 
     'database' => [

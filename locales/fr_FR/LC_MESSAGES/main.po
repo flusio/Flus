@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-02-08 16:35+0100\n"
-"PO-Revision-Date: 2021-02-08 16:35+0100\n"
+"POT-Creation-Date: 2021-02-15 18:15+0100\n"
+"PO-Revision-Date: 2021-02-15 18:16+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,28 +15,30 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Collections.php:122 Collections.php:315 Collections.php:522
-#: Collections.php:575 LinkMessages.php:70 Links.php:179
-#: NewsLinkRemovals.php:133 NewsLinks.php:119 NewsLinks.php:182
-#: Registrations.php:97 Sessions.php:82 my/Account.php:176 my/Account.php:247
-#: my/Profile.php:85 my/Security.php:79 my/Security.php:139
+#: Collections.php:118 Collections.php:305 Collections.php:502
+#: Collections.php:549 LinkMessages.php:70 Links.php:176
+#: NewsLinkRemovals.php:127 NewsLinks.php:119 NewsLinks.php:181
+#: Registrations.php:93 Sessions.php:82 my/Account.php:169 my/Account.php:240
+#: my/Profile.php:83 my/Security.php:78 my/Security.php:138
 #: my/Subscription.php:73
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: Collections.php:134 Collections.php:328 my/Profile.php:96
+#: Collections.php:130 Collections.php:318 my/Profile.php:94
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: Collections.php:389 LinkCollections.php:100 Links.php:323 Links.php:375
-#: Links.php:454 Messages.php:45 NewsLinkRemovals.php:225
-#: NewsLinkRemovals.php:296 NewsLinkRemovals.php:379 Sessions.php:192
+#: Collections.php:380 LinkCollections.php:99 Links.php:317 Links.php:368
+#: Links.php:446 Messages.php:44 NewsLinkRemovals.php:220
+#: NewsLinkRemovals.php:290 NewsLinkRemovals.php:371 Sessions.php:187
+#: importations/Importations.php:46 importations/Pocket.php:97
+#: importations/Pocket.php:140 importations/Pocket.php:232
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: Collections.php:423
+#: Collections.php:413
 msgid ""
 "It looks like you have no “Bookmarks” collection, you should contact the "
 "support."
@@ -44,15 +46,15 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: LinkCollections.php:94 Links.php:218 NewsLinkRemovals.php:160
+#: LinkCollections.php:93 Links.php:211 NewsLinkRemovals.php:154
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: Links.php:206 NewsLinkRemovals.php:146
+#: Links.php:199 NewsLinkRemovals.php:140
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: NewsLinkRemovals.php:234 NewsLinkRemovals.php:305 NewsLinkRemovals.php:373
+#: NewsLinkRemovals.php:229 NewsLinkRemovals.php:299 NewsLinkRemovals.php:365
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -61,19 +63,19 @@ msgstr "Le lien n’existe pas."
 msgid "“%s”"
 msgstr "« %s »"
 
-#: Registrations.php:122 my/Security.php:91
+#: Registrations.php:118 my/Security.php:90
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:134
+#: Registrations.php:130
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
-#: Sessions.php:99
+#: Sessions.php:95
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: Sessions.php:111 my/Account.php:255 my/Security.php:146
+#: Sessions.php:106 my/Account.php:248 my/Security.php:145
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -100,47 +102,87 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: mailers/Users.php:37
+#: importations/Pocket.php:82
+msgid "You already have an ongoing Pocket importation."
+msgstr "Vous avez déjà une importation Pocket en cours."
+
+#: importations/Pocket.php:89
+msgid "You didn’t authorize us to access your Pocket data."
+msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
+
+#: jobs/Importator.php:33
+msgid ""
+"We tried to import from Pocket, but pocket_consumer_key is missing (please "
+"contact the support)."
+msgstr ""
+"Nous avons essayé d’importer depuis Pocket, mais il manque la "
+"clépocket_consumer_key (merci de contacter le support)."
+
+#: jobs/Importator.php:41
+msgid ""
+"We tried to import from Pocket, but you didn’t authorize us to access your "
+"Pocket data."
+msgstr ""
+"Nous avons essayé d’importer depuis Pocket, mais vous n’avez pas autorisé "
+"l’accès à vos données Pocket."
+
+#: jobs/Importator.php:107
+msgid "Pocket links"
+msgstr "Liens Pocket"
+
+#: jobs/Importator.php:110
+msgid "All your links imported from Pocket."
+msgstr "Tous vos liens importés depuis Pocket."
+
+#: jobs/Importator.php:113
+msgid "Pocket favorite"
+msgstr "Favoris Pocket"
+
+#: jobs/Importator.php:116
+msgid "All your favorites imported from Pocket."
+msgstr "Tous vos favoris importés depuis Pocket."
+
+#: mailers/Users.php:35
 #, php-format
 msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
-#: models/Collection.php:86 models/Collection.php:105
+#: models/Collection.php:100 models/Collection.php:117
 #: views/_layouts/connected.phtml:94 views/collections/show_bookmarks.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:225
+#: models/Collection.php:217
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:227
+#: models/Collection.php:219
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:194
+#: models/Link.php:182
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:196
+#: models/Link.php:184
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:215
+#: models/Link.php:203
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:220
+#: models/Link.php:208
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:224
+#: models/Link.php:212
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
 "sensible."
 
-#: models/Message.php:81
+#: models/Message.php:80
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
@@ -153,52 +195,52 @@ msgstr "La durée doit se trouver entre %d et %d."
 msgid "You must select at least one option."
 msgstr "Vous devez sélectionner au moins une option."
 
-#: models/Topic.php:93
+#: models/Topic.php:82
 msgid "The label is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Topic.php:96
+#: models/Topic.php:85
 #, php-format
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:442
+#: models/User.php:399
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:444
+#: models/User.php:401
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:446
+#: models/User.php:403
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:448
+#: models/User.php:405
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:450
+#: models/User.php:407
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:452
+#: models/User.php:409
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:454
+#: models/User.php:411
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
-#: my/Account.php:97 my/Account.php:111
+#: my/Account.php:95 my/Account.php:108
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: my/Account.php:104
+#: my/Account.php:101
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: my/Account.php:263
+#: my/Account.php:256
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
@@ -214,11 +256,31 @@ msgstr ""
 "Une erreur est survenue pendant que nous récupérions les informations de "
 "votre compte, merci de contacter le support."
 
-#: my/Subscription.php:131
+#: my/Subscription.php:130
 msgid "An error occured while logging you, please contact the support."
 msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
+
+#: services/PocketError.php:15
+#, php-format
+msgid "Pocket error: Pocket has issues, please try later (error code %d)."
+msgstr ""
+"Erreur Pocket : Pocket rencontre des soucis, merci de réessayer plus tard "
+"(code erreur %d)."
+
+#: services/PocketError.php:17
+#, php-format
+msgid "Pocket error: you rejected the authorization (error code %d)."
+msgstr "Erreur Pocket : vous avez refusé l’autorisation (code erreur %d)."
+
+#: services/PocketError.php:19
+#, php-format
+msgid ""
+"Pocket error: bad configuration, please contact the support (error code %d)."
+msgstr ""
+"Erreur Pocket : mauvaise configuration, merci de contacter le support (code "
+"erreur %d)."
 
 #: utils/Browser.php:36
 msgid "Unknown browser"
@@ -349,7 +411,9 @@ msgid "Account & subscription"
 msgstr "Compte & abonnement"
 
 #: views/_layouts/connected.phtml:157
-#: views/_layouts/connected_blocked.phtml:134 views/my/account/deletion.phtml:6
+#: views/_layouts/connected_blocked.phtml:134
+#: views/importations/pocket/authorization.phtml:6
+#: views/importations/pocket/show.phtml:6 views/my/account/deletion.phtml:6
 #: views/my/account/show.phtml:3 views/my/account/show.phtml:10
 #: views/my/account/validation.phtml:7
 msgid "Account"
@@ -639,6 +703,67 @@ msgstr "Suivre"
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
+#: views/importations/pocket/authorization.phtml:3
+#: views/importations/pocket/authorization.phtml:13
+msgid "Pocket authorization"
+msgstr "Autorisation de Pocket"
+
+#: views/importations/pocket/authorization.phtml:24
+msgid "Check authorization"
+msgstr "Vérifier l’autorisation"
+
+#: views/importations/pocket/authorization.phtml:29
+msgid "Please wait while we’re verifying access to Pocket…"
+msgstr "Merci de patienter pendant que nous vérifions l’accès à Pocket…"
+
+#: views/importations/pocket/show.phtml:3
+#: views/importations/pocket/show.phtml:13
+msgid "Importation from Pocket"
+msgstr "Importation depuis Pocket"
+
+#: views/importations/pocket/show.phtml:17
+#, php-format
+msgid "%s enables you to import your links saved in Pocket."
+msgstr "%s vous permet d’importer vos liens sauvegardés dans Pocket."
+
+#: views/importations/pocket/show.phtml:28
+msgid "We’re importing your data from Pocket…"
+msgstr "Nous importons vos données depuis Pocket…"
+
+#: views/importations/pocket/show.phtml:43
+msgid "We’ve imported your data from Pocket."
+msgstr "Nous venons d’importer vos données depuis Pocket."
+
+#: views/importations/pocket/show.phtml:47
+msgid ""
+"You should see new links in your collections and/or bookmarks. We’ll fetch "
+"their illustrations in background."
+msgstr ""
+"Vous devriez voir de nouveaux liens dans vos collections et/ou signets. Nous "
+"allons télécharger leurs illustrations en tâche de fond."
+
+#: views/importations/pocket/show.phtml:56
+#: views/importations/pocket/show.phtml:75
+msgid "Ok!"
+msgstr "Ok !"
+
+#: views/importations/pocket/show.phtml:62
+msgid "Oops, a problem occured during your importation."
+msgstr "Oups, un problème est survenu durant l’importation."
+
+#: views/importations/pocket/show.phtml:85
+msgid "Import from Pocket"
+msgstr "Importer depuis Pocket"
+
+#: views/importations/pocket/show.phtml:92
+#, php-format
+msgid "connected with account <em>%s</em>"
+msgstr "connecté‧e avec le compte <em>%s</em>"
+
+#: views/importations/pocket/show.phtml:101
+msgid "Connect to Pocket"
+msgstr "Se connecter à Pocket"
+
 #: views/internal_server_error.phtml:3
 msgid "Something bad happened"
 msgstr "Quelque chose s’est mal passé"
@@ -847,7 +972,11 @@ msgstr "Gérer votre abonnement"
 msgid "Create your payment account"
 msgstr "Créer votre compte de paiement"
 
-#: views/my/account/show.phtml:66
+#: views/my/account/show.phtml:67
+msgid "Import your data from Pocket"
+msgstr "Importer vos données depuis Pocket"
+
+#: views/my/account/show.phtml:74
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 

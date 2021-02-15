@@ -79,6 +79,10 @@
     background-image: url("../icons/essential/pop-out-line.svg");
 }
 
+.groupnav__item--import .groupnav__anchor {
+    background-image: url("../icons/technology/backup-line.svg");
+}
+
 .groupnav__item--delete .groupnav__anchor {
     background-image: url("../icons/essential/trash-line.svg");
 }

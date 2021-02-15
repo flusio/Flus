@@ -47,7 +47,9 @@ class Account
             }
         }
 
-        return Response::ok('my/account/show.phtml');
+        return Response::ok('my/account/show.phtml', [
+            'pocket_enabled' => isset($app_conf['pocket_consumer_key']),
+        ]);
     }
 
     /**

@@ -30,7 +30,12 @@ CREATE TABLE users (
     subscription_account_id TEXT,
     subscription_expired_at TIMESTAMPTZ
         NOT NULL
-        DEFAULT date_trunc('second', NOW() + INTERVAL '1 month')
+        DEFAULT date_trunc('second', NOW() + INTERVAL '1 month'),
+
+    pocket_request_token TEXT,
+    pocket_access_token TEXT,
+    pocket_username TEXT,
+    pocket_error INTEGER
 );
 
 CREATE INDEX idx_users_email ON users(email);
@@ -46,6 +51,16 @@ CREATE TABLE sessions (
 );
 
 CREATE INDEX idx_sessions_token ON sessions(token);
+
+CREATE TABLE importations (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    type TEXT NOT NULL,
+    status TEXT NOT NULL,
+    options JSON NOT NULL,
+    error TEXT NOT NULL DEFAULT '',
+    user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 CREATE TABLE collections (
     id TEXT PRIMARY KEY,
