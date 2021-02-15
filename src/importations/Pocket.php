@@ -119,7 +119,7 @@ class Pocket
      *    If the user is not connected
      * @response 302 /pocket
      * @flash error
-     *    If the CSRF token is invalid
+     *    If the CSRF token is invalid or if Pocket returns an error
      * @response 302 https://getpocket.com/auth/authorize?request_token=:token&redirect_url=:url
      */
     public function requestAccess($request)
@@ -144,13 +144,20 @@ class Pocket
         $consumer_key = \Minz\Configuration::$application['pocket_consumer_key'];
         $pocket_service = new services\Pocket($consumer_key);
 
-        $redirect_uri = \Minz\Url::absoluteFor('pocket auth');
-        $request_token = $pocket_service->requestToken($redirect_uri);
-        $user->pocket_request_token = $request_token;
-        $user->save();
+        try {
+            $redirect_uri = \Minz\Url::absoluteFor('pocket auth');
+            $request_token = $pocket_service->requestToken($redirect_uri);
+            $user->pocket_request_token = $request_token;
+            $user->save();
 
-        $auth_url = $pocket_service->authorizationUrl($request_token, $redirect_uri);
-        return Response::found($auth_url);
+            $auth_url = $pocket_service->authorizationUrl($request_token, $redirect_uri);
+            return Response::found($auth_url);
+        } catch (services\PocketError $e) {
+            $user->pocket_error = $e->getCode();
+            $user->save();
+            utils\Flash::set('error', $e->getMessage());
+            return Response::redirect('pocket');
+        }
     }
 
     /**
@@ -194,9 +201,12 @@ class Pocket
      * @response 302 /login?redirect_to=/pocket/auth
      *    If the user is not connected
      * @response 302 /pocket
-     *    If the user has not request token
+     *    If the user has no request token
      * @response 400
      *    If the CSRF token is invalid
+     * @response 302 /pocket
+     * @flash error
+     *    If Pocket returns an error
      * @response 302 /pocket
      */
     public function authorize($request)
@@ -226,12 +236,19 @@ class Pocket
         $consumer_key = \Minz\Configuration::$application['pocket_consumer_key'];
         $pocket_service = new services\Pocket($consumer_key);
 
-        list($access_token, $username) = $pocket_service->accessToken($user->pocket_request_token);
+        try {
+            list($access_token, $username) = $pocket_service->accessToken($user->pocket_request_token);
 
-        $user->pocket_access_token = $access_token;
-        $user->pocket_username = $username;
-        $user->pocket_request_token = null;
-        $user->save();
+            $user->pocket_access_token = $access_token;
+            $user->pocket_username = $username;
+            $user->pocket_request_token = null;
+            $user->save();
+        } catch (services\PocketError $e) {
+            $user->pocket_request_token = null;
+            $user->pocket_error = $e->getCode();
+            $user->save();
+            utils\Flash::set('error', $e->getMessage());
+        }
 
         return Response::redirect('pocket');
     }

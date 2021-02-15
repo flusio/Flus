@@ -42,6 +42,8 @@ class Pocket
      * @param string $access_token
      * @param array $parameters List of optional parameters to pass in the request
      *
+     * @throw \flusio\services\PocketError
+     *
      * @return array
      */
     public function retrieve($access_token, $parameters = [])
@@ -51,14 +53,21 @@ class Pocket
             'consumer_key' => $this->consumer_key,
             'access_token' => $access_token,
         ]));
-        $json = json_decode($response->data, true);
-        return $json['list'];
+
+        if ($response->success) {
+            $json = json_decode($response->data, true);
+            return $json['list'];
+        } else {
+            throw new PocketError($response->header('X-Error-Code', 42));
+        }
     }
 
     /**
      * Get a request token from Pocket.
      *
      * @param string $redirect_uri
+     *
+     * @throw \flusio\services\PocketError
      *
      * @return string
      */
@@ -69,8 +78,13 @@ class Pocket
             'consumer_key' => $this->consumer_key,
             'redirect_uri' => $redirect_uri,
         ]);
-        $json = json_decode($response->data);
-        return $json->code;
+
+        if ($response->success) {
+            $json = json_decode($response->data);
+            return $json->code;
+        } else {
+            throw new PocketError($response->header('X-Error-Code', 42));
+        }
     }
 
     /**
@@ -96,6 +110,8 @@ class Pocket
      *
      * @param string $request_token
      *
+     * @throw \flusio\services\PocketError
+     *
      * @return string[] First item is token, second item is username
      */
     public function accessToken($request_token)
@@ -105,7 +121,11 @@ class Pocket
             'consumer_key' => $this->consumer_key,
             'code' => $request_token,
         ]);
-        $json = json_decode($response->data);
-        return [$json->access_token, $json->username];
+        if ($response->success) {
+            $json = json_decode($response->data);
+            return [$json->access_token, $json->username];
+        } else {
+            throw new PocketError($response->header('X-Error-Code', 42));
+        }
     }
 }

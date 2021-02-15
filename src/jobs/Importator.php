@@ -65,6 +65,11 @@ class Importator extends Job
 
                 $offset = $offset + $count;
                 $exit_loop = count($items) !== $count;
+            } catch (services\PocketError $e) {
+                $user->pocket_error = $e->getCode();
+                $user->save();
+                $error = $e->getMessage();
+                $exit_loop = true;
             } catch (\Exception $e) {
                 $error = (string)$e;
                 $exit_loop = true;
