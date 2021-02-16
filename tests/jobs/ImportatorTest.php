@@ -29,8 +29,13 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
                 'status' => '0',
             ],
         ];
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
 
-        $importator->importPocketItems($user, $items);
+        $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $url]);
         $this->assertNotNull($link);
@@ -41,8 +46,45 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($db_links_to_collection);
     }
 
+    public function testImportPocketItemsDoesNotImportInBookmarksIfOption()
+    {
+        $importator = new Importator();
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $bookmarks_id = $this->create('collection', [
+            'type' => 'bookmarks',
+            'user_id' => $user->id,
+        ]);
+        $url = $this->fake('url');
+        $items = [
+            [
+                'given_url' => $url,
+                'resolved_url' => $url,
+                'favorite' => '0',
+                'status' => '0',
+            ],
+        ];
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => false,
+            'import_favorites' => true,
+        ];
+
+        $importator->importPocketItems($user, $items, $options);
+
+        $link = models\Link::findBy(['url' => $url]);
+        $this->assertNotNull($link);
+        $db_links_to_collection = $links_to_collections_dao->findBy([
+            'link_id' => $link->id,
+            'collection_id' => $bookmarks_id,
+        ]);
+        $this->assertNull($db_links_to_collection);
+    }
+
     public function testImportPocketItemsImportInFavorite()
     {
+        $importator = new Importator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -55,9 +97,13 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
                 'status' => '1',
             ],
         ];
-        $importator = new Importator();
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
 
-        $importator->importPocketItems($user, $items);
+        $importator->importPocketItems($user, $items, $options);
 
         $collection = models\Collection::findBy(['name' => 'Pocket favorite']);
         $this->assertNotNull($collection);
@@ -70,8 +116,38 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($db_links_to_collection);
     }
 
+    public function testImportPocketItemsDoesNotImportInFavoriteIfOption()
+    {
+        $importator = new Importator();
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $url = $this->fake('url');
+        $items = [
+            [
+                'given_url' => $url,
+                'resolved_url' => $url,
+                'favorite' => '1',
+                'status' => '1',
+            ],
+        ];
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => false,
+        ];
+
+        $importator->importPocketItems($user, $items, $options);
+
+        $link = models\Link::findBy(['url' => $url]);
+        $this->assertNotNull($link);
+        $collection = models\Collection::findBy(['name' => 'Pocket favorite']);
+        $this->assertNull($collection);
+    }
+
     public function testImportPocketItemsImportInDefaultCollection()
     {
+        $importator = new Importator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -84,9 +160,13 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
                 'status' => '1',
             ],
         ];
-        $importator = new Importator();
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
 
-        $importator->importPocketItems($user, $items);
+        $importator->importPocketItems($user, $items, $options);
 
         $collection = models\Collection::findBy(['name' => 'Pocket links']);
         $this->assertNotNull($collection);
@@ -99,8 +179,89 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($db_links_to_collection);
     }
 
+    public function testImportPocketItemsDoesNotImportTags()
+    {
+        $importator = new Importator();
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $url = $this->fake('url');
+        $tag = $this->fake('word');
+        $items = [
+            [
+                'given_url' => $url,
+                'resolved_url' => $url,
+                'favorite' => '0',
+                'status' => '1',
+                'tags' => [
+                    $tag => ['item_id' => 'some id', 'tag' => $tag],
+                ],
+            ],
+        ];
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
+
+        $importator->importPocketItems($user, $items, $options);
+
+        $link = models\Link::findBy(['url' => $url]);
+        $this->assertNotNull($link);
+        $collection = models\Collection::findBy(['name' => $tag]);
+        $this->assertNull($collection);
+    }
+
+    public function testImportPocketItemsImportTagsIfOption()
+    {
+        $importator = new Importator();
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $url = $this->fake('url');
+        $tag1 = $this->fake('word');
+        $tag2 = $this->fake('word');
+        $items = [
+            [
+                'given_url' => $url,
+                'resolved_url' => $url,
+                'favorite' => '0',
+                'status' => '1',
+                'tags' => [
+                    $tag1 => ['item_id' => 'some id 1', 'tag' => $tag1],
+                    $tag2 => ['item_id' => 'some id 2', 'tag' => $tag2],
+                ],
+            ],
+        ];
+        $options = [
+            'ignore_tags' => false,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
+
+        $importator->importPocketItems($user, $items, $options);
+
+        $collection1 = models\Collection::findBy(['name' => $tag1]);
+        $collection2 = models\Collection::findBy(['name' => $tag2]);
+        $this->assertNotNull($collection1);
+        $this->assertNotNull($collection2);
+        $link = models\Link::findBy(['url' => $url]);
+        $this->assertNotNull($link);
+        $db_links_to_collection1 = $links_to_collections_dao->findBy([
+            'link_id' => $link->id,
+            'collection_id' => $collection1->id,
+        ]);
+        $db_links_to_collection2 = $links_to_collections_dao->findBy([
+            'link_id' => $link->id,
+            'collection_id' => $collection2->id,
+        ]);
+        $this->assertNotNull($db_links_to_collection1);
+        $this->assertNotNull($db_links_to_collection2);
+    }
+
     public function testImportPocketItemsDoesNotDuplicateAGivenUrlAlreadyThere()
     {
+        $importator = new Importator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -125,9 +286,13 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
                 'status' => '1',
             ],
         ];
-        $importator = new Importator();
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
 
-        $importator->importPocketItems($user, $items);
+        $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $given_url]);
         $this->assertSame($previous_link_id, $link->id);
@@ -142,6 +307,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsDoesNotDuplicateAResolvedUrlAlreadyThere()
     {
+        $importator = new Importator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -166,9 +332,13 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
                 'status' => '1',
             ],
         ];
-        $importator = new Importator();
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
 
-        $importator->importPocketItems($user, $items);
+        $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $resolved_url]);
         $this->assertSame($previous_link_id, $link->id);
@@ -183,6 +353,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsSetsResolvedTitle()
     {
+        $importator = new Importator();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -196,9 +367,13 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
                 'status' => '1',
             ],
         ];
-        $importator = new Importator();
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
 
-        $importator->importPocketItems($user, $items);
+        $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $url]);
         $this->assertSame($title, $link->title);
@@ -206,6 +381,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsSetsGivenTitle()
     {
+        $importator = new Importator();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -219,9 +395,13 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
                 'status' => '1',
             ],
         ];
-        $importator = new Importator();
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
 
-        $importator->importPocketItems($user, $items);
+        $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $url]);
         $this->assertSame($title, $link->title);

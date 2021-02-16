@@ -62,7 +62,7 @@ class Importator extends Job
                     'offset' => $offset,
                 ]);
 
-                $this->importPocketItems($user, $items);
+                $this->importPocketItems($user, $items, $importation->options());
 
                 $offset = $offset + $count;
                 $imported_count = $imported_count + count($items);
@@ -99,8 +99,9 @@ class Importator extends Job
      *
      * @param \flusio\models\User $user
      * @param array $items
+     * @param array $options
      */
-    public function importPocketItems($user, $items)
+    public function importPocketItems($user, $items, $options)
     {
         $bookmarks_collection = $user->bookmarks();
         $pocket_collection = models\Collection::findOrCreateBy([
@@ -109,32 +110,74 @@ class Importator extends Job
         ], [
             'description' => _('All your links imported from Pocket.'),
         ]);
-        $favorite_collection = models\Collection::findOrCreateBy([
-            'name' => _('Pocket favorite'),
-            'user_id' => $user->id,
-        ], [
-            'description' => _('All your favorites imported from Pocket.'),
-        ]);
+        if ($options['import_favorites']) {
+            $favorite_collection = models\Collection::findOrCreateBy([
+                'name' => _('Pocket favorite'),
+                'user_id' => $user->id,
+            ], [
+                'description' => _('All your favorites imported from Pocket.'),
+            ]);
+        }
 
         // This will be used to check if URL has already been added by the user
         $link_ids_by_urls = models\Link::daoCall('listIdsByUrls', $user->id);
+        // ... or collection already exists
+        $collection_ids_by_names = models\Collection::daoCall('listIdsByNames', $user->id);
 
         // This will store the items that we effectively need to create. We
-        // don't create links and their collections-relation on the fly because
+        // don't create links, collections and their relation on the fly because
         // it would be too intensive. We rather prefer to insert them all at
         // once (see calls to `bulkInsert` below).
         $links_columns = [];
         $links_to_create = [];
+        $collections_columns = [];
+        $collections_to_create = [];
         $links_to_collections_to_create = [];
 
         foreach ($items as $item) {
             $collection_ids = [];
             $collection_ids[] = $pocket_collection->id;
-            if ($item['favorite'] === '1') {
+            if ($item['favorite'] === '1' && $options['import_favorites']) {
                 $collection_ids[] = $favorite_collection->id;
             }
-            if ($item['status'] === '0') { // 1 means archived, so 0 is "to read"
+            if ($item['status'] === '0' && $options['import_bookmarks']) { // 1 means archived, so 0 is "to read"
                 $collection_ids[] = $bookmarks_collection->id;
+            }
+
+            if (isset($item['tags']) && !$options['ignore_tags']) {
+                // we want to create a collection per tag
+                $tags = array_keys($item['tags']);
+                foreach ($tags as $tag) {
+                    if (isset($collection_ids_by_names[$tag])) {
+                        // a collection named by the current tag already
+                        // exists, just pick its id
+                        $collection_ids[] = $collection_ids_by_names[$tag];
+                    } else {
+                        // the collection needs to be created
+                        $collection = models\Collection::init($user->id, $tag, '', false);
+                        $collection->created_at = \Minz\Time::now();
+
+                        // export its values and merge them in the values array
+                        $db_collection = $collection->toValues();
+                        $collections_to_create = array_merge(
+                            $collections_to_create,
+                            array_values($db_collection)
+                        );
+
+                        // we need to remember the order of columns
+                        if (!$collections_columns) {
+                            $collections_columns = array_keys($db_collection);
+                        }
+
+                        // add the collection to the map array to avoid
+                        // creating it again next time we find it
+                        $collection_ids_by_names[$collection->name] = $collection->id;
+
+                        // and add the collection id to the array which stores
+                        // the link collections
+                        $collection_ids[] = $collection->id;
+                    }
+                }
             }
 
             $given_url = \SpiderBits\Url::sanitize($item['given_url']);
@@ -177,7 +220,7 @@ class Importator extends Job
             }
 
             // We now have a link_id and a list of collection ids. We store
-            // here the relations in the second _to_create array.
+            // here the relations in the last _to_create array.
             foreach ($collection_ids as $collection_id) {
                 $links_to_collections_to_create[] = $link_id;
                 $links_to_collections_to_create[] = $collection_id;
@@ -190,6 +233,14 @@ class Importator extends Job
                 'bulkInsert',
                 $links_columns,
                 $links_to_create
+            );
+        }
+
+        if ($collections_to_create) {
+            models\Collection::daoCall(
+                'bulkInsert',
+                $collections_columns,
+                $collections_to_create
             );
         }
 

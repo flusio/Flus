@@ -52,18 +52,27 @@ class Importation extends \Minz\Model
     /**
      * @param string $type
      * @param string $user_id
+     * @param array $options
      *
      * @return \flusio\models\Importation
      */
-    public static function init($type, $user_id)
+    public static function init($type, $user_id, $options = [])
     {
         return new self([
             'type' => $type,
             'status' => 'ongoing',
-            'options' => '{}',
+            'options' => json_encode($options),
             'user_id' => $user_id,
             'error' => '',
         ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function options()
+    {
+        return json_decode($this->options, true);
     }
 
     /**

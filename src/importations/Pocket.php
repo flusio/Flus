@@ -49,6 +49,9 @@ class Pocket
      * Initialize a new Pocket importation and register an Importator job.
      *
      * @request_param string $csrf
+     * @request_param boolean $ignore_tags
+     * @request_param boolean $import_bookmarks
+     * @request_param boolean $import_favorites
      *
      * @response 404
      *    If the pocket_consumer_key is not set in conf
@@ -98,7 +101,13 @@ class Pocket
             ]);
         }
 
-        $importation = models\Importation::init('pocket', $user->id);
+        $options = [
+            'ignore_tags' => filter_var($request->param('ignore_tags'), FILTER_VALIDATE_BOOLEAN),
+            'import_bookmarks' => filter_var($request->param('import_bookmarks'), FILTER_VALIDATE_BOOLEAN),
+            'import_favorites' => filter_var($request->param('import_favorites'), FILTER_VALIDATE_BOOLEAN),
+        ];
+
+        $importation = models\Importation::init('pocket', $user->id, $options);
         $importation->save();
         $importator_job = new jobs\Importator();
         $importator_job->performLater($importation->id);

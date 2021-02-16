@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-02-15 18:15+0100\n"
-"PO-Revision-Date: 2021-02-15 18:16+0100\n"
+"POT-Creation-Date: 2021-02-16 16:07+0100\n"
+"PO-Revision-Date: 2021-02-16 16:08+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -33,8 +33,8 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: Collections.php:380 LinkCollections.php:99 Links.php:317 Links.php:368
 #: Links.php:446 Messages.php:44 NewsLinkRemovals.php:220
 #: NewsLinkRemovals.php:290 NewsLinkRemovals.php:371 Sessions.php:187
-#: importations/Importations.php:46 importations/Pocket.php:97
-#: importations/Pocket.php:140 importations/Pocket.php:232
+#: importations/Importations.php:46 importations/Pocket.php:100
+#: importations/Pocket.php:149 importations/Pocket.php:241
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -102,11 +102,11 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: importations/Pocket.php:82
+#: importations/Pocket.php:85
 msgid "You already have an ongoing Pocket importation."
 msgstr "Vous avez déjà une importation Pocket en cours."
 
-#: importations/Pocket.php:89
+#: importations/Pocket.php:92
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
@@ -126,19 +126,19 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais vous n’avez pas autorisé "
 "l’accès à vos données Pocket."
 
-#: jobs/Importator.php:107
+#: jobs/Importator.php:108
 msgid "Pocket links"
 msgstr "Liens Pocket"
 
-#: jobs/Importator.php:110
+#: jobs/Importator.php:111
 msgid "All your links imported from Pocket."
 msgstr "Tous vos liens importés depuis Pocket."
 
-#: jobs/Importator.php:113
+#: jobs/Importator.php:115
 msgid "Pocket favorite"
 msgstr "Favoris Pocket"
 
-#: jobs/Importator.php:116
+#: jobs/Importator.php:118
 msgid "All your favorites imported from Pocket."
 msgstr "Tous vos favoris importés depuis Pocket."
 
@@ -751,16 +751,66 @@ msgstr "Ok !"
 msgid "Oops, a problem occured during your importation."
 msgstr "Oups, un problème est survenu durant l’importation."
 
-#: views/importations/pocket/show.phtml:85
-msgid "Import from Pocket"
-msgstr "Importer depuis Pocket"
+#: views/importations/pocket/show.phtml:94
+msgid "Import your links by ignoring the tags"
+msgstr "Importer vos liens en ignorant les tags"
 
-#: views/importations/pocket/show.phtml:92
+#: views/importations/pocket/show.phtml:99
+#, php-format
+msgid ""
+"%s will import your links in a collection named “Pocket links”, your tags "
+"will be ignored."
+msgstr ""
+"%s importera vos liens dans une collection nommée « Liens Pocket », vos tags "
+"seront ignorés."
+
+#: views/importations/pocket/show.phtml:103
+#, php-format
+msgid "%s will import your links in collections named after your tags."
+msgstr "%s importera vos liens dans des collections nommées d’après vos tags."
+
+#: views/importations/pocket/show.phtml:119
+msgid "Import non-archived links in your bookmarks"
+msgstr "Importer vos liens non-archivés dans vos signets"
+
+#: views/importations/pocket/show.phtml:124
+#, php-format
+msgid "%s will import your non-archived Pocket links in your bookmarks."
+msgstr "%s importera vos liens Pocket non-archivés dans vos signets."
+
+#: views/importations/pocket/show.phtml:128
+#, php-format
+msgid "%s will leave your bookmarks unchanged."
+msgstr "%s ne modifiera pas vos signets."
+
+#: views/importations/pocket/show.phtml:144
+msgid "Import your Pocket favorites in a dedicated collection"
+msgstr "Importer vos favoris Pocket dans une collection dédiée"
+
+#: views/importations/pocket/show.phtml:149
+#, php-format
+msgid ""
+"%s doesn’t provide favorites, but it’ll import them in a collection named "
+"“Pocket favorites”."
+msgstr ""
+"%s ne propose pas de système de favoris, mais il les importera dans une "
+"collection appelée « Favoris Pocket »."
+
+#: views/importations/pocket/show.phtml:153
+#, php-format
+msgid "%s doesn’t provide favorites, so they’ll be ignored."
+msgstr "%s ne propose pas de système de favoris, ils seront donc ignorés."
+
+#: views/importations/pocket/show.phtml:160
+msgid "Start the import"
+msgstr "Démarrer l’importation"
+
+#: views/importations/pocket/show.phtml:167
 #, php-format
 msgid "connected with account <em>%s</em>"
 msgstr "connecté‧e avec le compte <em>%s</em>"
 
-#: views/importations/pocket/show.phtml:101
+#: views/importations/pocket/show.phtml:176
 msgid "Connect to Pocket"
 msgstr "Se connecter à Pocket"
 
@@ -1515,3 +1565,11 @@ msgstr "Non autorisé"
 #: views/unauthorized.phtml:10
 msgid "You must be connected to see this page."
 msgstr "Vous devez être connecté·e pour voir cette page."
+
+#, php-format
+#~ msgid "Tip: if you use Pocket, you can import your links into %s."
+#~ msgstr ""
+#~ "Astuce : si vous utilisez Pocket, vous pouvez importer vos liens dans %s."
+
+#~ msgid "Import from Pocket"
+#~ msgstr "Importer depuis Pocket"

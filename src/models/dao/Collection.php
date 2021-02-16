@@ -10,6 +10,8 @@ namespace flusio\models\dao;
  */
 class Collection extends \Minz\DatabaseModel
 {
+    use BulkHelper;
+
     /**
      * @throws \Minz\Errors\DatabaseError
      */
@@ -180,5 +182,31 @@ class Collection extends \Minz\DatabaseModel
             ':user_id' => $user_id,
         ]);
         return intval($statement->fetchColumn());
+    }
+
+    /**
+     * Return the list of ids indexed by names for the given user.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listIdsByNames($user_id)
+    {
+        $sql = <<<SQL
+            SELECT id, name FROM collections
+            WHERE user_id = :user_id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
+
+        $ids_by_names = [];
+        foreach ($statement->fetchAll() as $row) {
+            $ids_by_names[$row['name']] = $row['id'];
+        }
+        return $ids_by_names;
     }
 }

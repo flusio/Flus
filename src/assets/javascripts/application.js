@@ -10,6 +10,7 @@ import CopyToClipboardController from 'js/controllers/copy_to_clipboard_controll
 import InputPasswordController from 'js/controllers/input_password_controller.js';
 import ModalController from 'js/controllers/modal_controller.js';
 import ModalOpenerController from 'js/controllers/modal_opener_controller.js';
+import PocketOptionController from 'js/controllers/pocket_option_controller.js';
 import PopupController from 'js/controllers/popup_controller.js';
 import SkipNavController from 'js/controllers/skip_nav_controller.js';
 
@@ -27,6 +28,7 @@ application.register('copy-to-clipboard', CopyToClipboardController);
 application.register('input-password', InputPasswordController);
 application.register('modal', ModalController);
 application.register('modal-opener', ModalOpenerController);
+application.register('pocket-option', PocketOptionController);
 application.register('popup', PopupController);
 application.register('skip-nav', SkipNavController);
 

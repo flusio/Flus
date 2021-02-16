@@ -8,7 +8,7 @@
     ]);
 ?>
 
-<div class="section">
+<div class="section section--small">
     <div class="section__title">
         <h1><?= _('Importation from Pocket') ?></h1>
     </div>
@@ -80,9 +80,84 @@
         <form method="post" action="<?= url('import pocket') ?>">
             <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
+            <div class="form-group pocket-option" data-controller="pocket-option">
+                <input
+                    type="checkbox"
+                    id="ignore-tags"
+                    name="ignore_tags"
+                    checked
+                    data-target="pocket-option.checkbox"
+                    data-action="pocket-option#changeCaption"
+                />
+
+                <label class="label--checkbox" for="ignore-tags">
+                    <?= _('Import your links by ignoring the tags') ?>
+                </label>
+
+                <p class="form-group__caption pocket-option__caption">
+                    <span data-target="pocket-option.captionTrue">
+                        <?= _f('%s will import your links in a collection named “Pocket links”, your tags will be ignored.', $brand) ?>
+                    </span>
+
+                    <span data-target="pocket-option.captionFalse">
+                        <?= _f('%s will import your links in collections named after your tags.', $brand) ?>
+                    </span>
+                </p>
+            </div>
+
+            <div class="form-group pocket-option" data-controller="pocket-option">
+                <input
+                    type="checkbox"
+                    id="import-bookmarks"
+                    name="import_bookmarks"
+                    checked
+                    data-target="pocket-option.checkbox"
+                    data-action="pocket-option#changeCaption"
+                />
+
+                <label class="label--checkbox" for="import-bookmarks">
+                    <?= _('Import non-archived links in your bookmarks') ?>
+                </label>
+
+                <p class="form-group__caption pocket-option__caption">
+                    <span data-target="pocket-option.captionTrue">
+                        <?= _f('%s will import your non-archived Pocket links in your bookmarks.', $brand) ?>
+                    </span>
+
+                    <span data-target="pocket-option.captionFalse">
+                        <?= _f('%s will leave your bookmarks unchanged.', $brand) ?>
+                    </span>
+                </p>
+            </div>
+
+            <div class="form-group pocket-option" data-controller="pocket-option">
+                <input
+                    type="checkbox"
+                    id="import-favorites"
+                    name="import_favorites"
+                    checked
+                    data-target="pocket-option.checkbox"
+                    data-action="pocket-option#changeCaption"
+                />
+
+                <label class="label--checkbox" for="import-favorites">
+                    <?= _('Import your Pocket favorites in a dedicated collection') ?>
+                </label>
+
+                <p class="form-group__caption pocket-option__caption">
+                    <span data-target="pocket-option.captionTrue">
+                        <?= _f('%s doesn’t provide favorites, but it’ll import them in a collection named “Pocket favorites”.', $brand) ?>
+                    </span>
+
+                    <span data-target="pocket-option.captionFalse">
+                        <?= _f('%s doesn’t provide favorites, so they’ll be ignored.', $brand) ?>
+                    </span>
+                </p>
+            </div>
+
             <div class="form__actions">
                 <button type="submit" class="button--primary">
-                    <?= _('Import from Pocket') ?>
+                    <?= _('Start the import') ?>
                 </button>
             </div>
         </form>
