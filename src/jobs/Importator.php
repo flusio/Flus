@@ -172,6 +172,7 @@ class Importator extends Job
                     $links_columns = array_keys($db_link);
                 }
 
+                $link_ids_by_urls[$link->url] = $link->id;
                 $link_id = $link->id;
             }
 
