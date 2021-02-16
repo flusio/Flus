@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-02-16 16:07+0100\n"
+"POT-Creation-Date: 2021-02-16 16:08+0100\n"
 "PO-Revision-Date: 2021-02-16 16:08+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
@@ -1492,6 +1492,16 @@ msgstr ""
 msgid "Access the news"
 msgstr "Accéder au journal"
 
+#: views/onboarding/step5.phtml:37
+#, php-format
+msgid "Tip: if you use Pocket, you can import your links into %s."
+msgstr ""
+"Astuce : si vous utilisez Pocket, vous pouvez importer vos liens dans %s."
+
+#: views/onboarding/step5.phtml:42
+msgid "Import from Pocket"
+msgstr "Importer depuis Pocket"
+
 #: views/pages/design.phtml:3 views/pages/design.phtml:10
 msgid "flusio design system"
 msgstr "système de design de flusio"
@@ -1565,11 +1575,3 @@ msgstr "Non autorisé"
 #: views/unauthorized.phtml:10
 msgid "You must be connected to see this page."
 msgstr "Vous devez être connecté·e pour voir cette page."
-
-#, php-format
-#~ msgid "Tip: if you use Pocket, you can import your links into %s."
-#~ msgstr ""
-#~ "Astuce : si vous utilisez Pocket, vous pouvez importer vos liens dans %s."
-
-#~ msgid "Import from Pocket"
-#~ msgstr "Importer depuis Pocket"
