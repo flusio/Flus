@@ -1,7 +1,7 @@
 <h1 align="center">flusio</h1>
 
 <p align="center">
-    <strong>A citizen social media to soothe our online relationship with the news.</strong>
+    <strong>A social media to soothe our online relationship with the news.</strong>
 </p>
 
 ---
@@ -12,24 +12,33 @@ enhance their knowledge.
 
 It’s [free/libre software](https://en.wikipedia.org/wiki/Free_software)
 (politically speaking) while being supported by a micro-enterprise to ensure
-its viability. The main service will be available to French people at
-[flus.fr](https://flus.fr).
+its viability. The main service is available to French people at [flus.fr](https://flus.fr).
+You can help to fund the development, by taking a subscription to the service.
 
-If you want to help to fund the development, you can either take a subscription
-to [Flus 1](https://rss.flus.fr) or contribute to [a common pot](https://flus.fr/cagnotte).
-These methods are intended for French people. You can [learn more here](https://flus.fr/financement).
+flusio comes with three main features:
 
-**The rest of the documentation is intended to potential developers.**
+- the **Bookmarks** to save the articles to read later;
+- the **News** to read within your available time;
+- the thematic **Collections** to organise the information.
+
+More is coming such as feed aggregation and community discussions.
+
+![Screenshot of the news page with 3 links](public/static/screenshot.jpg)
 
 ## How to contribute?
 
-There’s no process to contribute yet, but feel free to [send me a message](https://flus.fr/contact).
+I sincerely appreciate if you want to contribute. Here’s a few things you can
+do:
 
-If you open a pull request anyway, please fill the pull request message
-properly. It’s intented to remind you (and me!) important things to check when
-code is changed. You’ll have to wait for the CI to run over your code then. If
-everything is fine, the status should tell you the checks are successful and
-the pull request can be merged.
+- taking a subscription at [flus.fr](https://flus.fr) (French);
+- reporting bugs or make feature requests [in issues](https://github.com/flusio/flusio/issues);
+- writing blog posts to speak about the project.
+
+I don’t accept Pull Requests on this project. A code contribution requires a
+lot of time to review, to comment and to maintain. Even the smallest one can
+require hours of my time. Also, code isn’t where I need help.
+
+If you have any question, feel free to [send me a message](https://flus.fr/contact).
 
 ## Technical guides
 
