@@ -3,8 +3,8 @@
 flusio is using [PHP](https://www.php.net/) 7.3+. The version isn’t strongly
 fixed and can change. While I’ll do my best to keep things simple, remember
 that easy installation is not my main priority. If I absolutely need a specific
-feature from PHP 7.4 for instance, I’ll not hesitate. The PHP dependencies are
-managed with [Composer](https://getcomposer.org/).
+feature from PHP 7.4 for instance, I’ll not hesitate. Some PHP dependencies in
+development are managed with [Composer](https://getcomposer.org/).
 
 It’s using a personal PHP framework: [Minz](https://github.com/flusio/Minz).
 The framework is directly integrated in the source code (as a submodule) since
@@ -23,7 +23,9 @@ The assets (CSS and JS) are bundled with [Parcel](https://parceljs.org/). The
 JavaScript relies on both [Stimulus](https://github.com/stimulusjs/stimulus) (a
 “modest” framework) and [Turbolinks](https://github.com/turbolinks/turbolinks)
 (used to speed up navigation on the application). The dependencies are managed
-with [NPM](https://www.npmjs.com/), the default Node package manager.
+with [NPM](https://www.npmjs.com/), the default Node package manager. NPM is
+not needed in production because I bundle assets and add them in the repository
+at each new release.
 
 The test suite is runned over [GitHub Actions](https://github.com/features/actions).
 It’s using [PHPUnit 9](https://phpunit.de/) as a testing framework and

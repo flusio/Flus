@@ -23,7 +23,9 @@ flusio comes with three main features:
 
 More is coming such as feed aggregation and community discussions.
 
-![Screenshot of the news page with 3 links](public/static/screenshot.jpg)
+flusio is licensed under [AGPL 3](/LICENSE.txt).
+
+![Screenshot of the news page with 3 links](/public/static/screenshot.jpg)
 
 ## How to contribute?
 
@@ -40,14 +42,26 @@ require hours of my time. Also, code isn’t where I need help.
 
 If you have any question, feel free to [send me a message](https://flus.fr/contact).
 
-## Technical guides
+## Administrator guide
+
+This guide is intended to people who want to install flusio on their own server.
+
+1. [Deploy in production](/docs/production.md)
+1. [How to update flusio](/docs/update.md)
+1. [CHANGELOG](/CHANGELOG.md)
+
+You also might be interested by the following:
+
+1. [Technical stack overview](/docs/technical_stack.md)
+1. [How is the CLI working](/docs/cli.md)
+
+## Developer guide
 
 If you plan to take a look at the code, these guides should be helpful to
 understand how flusio is developed.
 
 1. [Technical stack overview](/docs/technical_stack.md)
 1. [Setup the development environment](/docs/development.md)
-1. [Deploy in production](/docs/production.md)
 1. [How to update flusio](/docs/update.md)
 1. [Getting started](/docs/getting_started.md)
 1. [Working with Docker](/docs/docker.md)
@@ -56,8 +70,9 @@ understand how flusio is developed.
 1. [How is the localization managed](/docs/localization.md)
 1. [How are the assets bundled](/docs/assets.md)
 1. [How to run the test suite](/docs/tests.md)
+
+## Maintainer guide
+
+This guide is intended to myself, as a maintainer of flusio.
+
 1. [How to release a new version](/docs/release.md)
-
-## License
-
-flusio is licensed under [AGPL 3](LICENSE.txt).
