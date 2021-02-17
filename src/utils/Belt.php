@@ -60,6 +60,44 @@ class Belt
     }
 
     /**
+     * Strip a substring if string starts with.
+     *
+     * If the string doesn’t start with substring, the string is returned.
+     *
+     * @param string $string The string to look into
+     * @param string $substring The string to strip
+     *
+     * @return string
+     */
+    public static function stripsStart($string, $substring)
+    {
+        if (self::startsWith($string, $substring)) {
+            return substr($string, strlen($substring));
+        } else {
+            return $string;
+        }
+    }
+
+    /**
+     * Strip a substring if string ends with.
+     *
+     * If the string doesn’t end with substring, the string is returned.
+     *
+     * @param string $string The string to look into
+     * @param string $substring The string to strip
+     *
+     * @return string
+     */
+    public static function stripsEnd($string, $substring)
+    {
+        if (self::endsWith($string, $substring)) {
+            return substr($string, 0, -strlen($substring));
+        } else {
+            return $string;
+        }
+    }
+
+    /**
      * Extract the host from a URL. If the host starts with "www.", they are
      * removed from the host.
      *

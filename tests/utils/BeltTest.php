@@ -183,4 +183,44 @@ class BeltTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($result);
     }
+
+    public function testStripsStart()
+    {
+        $string = 'foobar';
+        $substring = 'foo';
+
+        $result = Belt::stripsStart($string, $substring);
+
+        $this->assertSame('bar', $result);
+    }
+
+    public function testStripsStartDoesNotStartWith()
+    {
+        $string = 'foobar';
+        $substring = 'bar';
+
+        $result = Belt::stripsStart($string, $substring);
+
+        $this->assertSame('foobar', $result);
+    }
+
+    public function testStripsEnd()
+    {
+        $string = 'foobar';
+        $substring = 'bar';
+
+        $result = Belt::stripsEnd($string, $substring);
+
+        $this->assertSame('foo', $result);
+    }
+
+    public function testStripsEndDoesNotEndWith()
+    {
+        $string = 'foobar';
+        $substring = 'foo';
+
+        $result = Belt::stripsEnd($string, $substring);
+
+        $this->assertSame('foobar', $result);
+    }
 }
