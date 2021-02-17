@@ -61,7 +61,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 20,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $this->other_user->id,
@@ -98,7 +98,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id1 = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 10,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id1 = $this->create('collection', [
             'user_id' => $this->other_user->id,
@@ -116,7 +116,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id2 = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 10,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id2 = $this->create('collection', [
             'user_id' => $this->other_user->id,
@@ -200,7 +200,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             $link_id = $this->create('link', [
                 'user_id' => $this->other_user->id,
                 'reading_time' => $this->fake('numberBetween', 1, 5),
-                'is_public' => 1,
+                'is_hidden' => 0,
             ]);
             $this->create('link_to_collection', [
                 'collection_id' => $collection_id,
@@ -243,7 +243,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id_2 = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 20,
-            'is_public' => 1,
+            'is_hidden' => 0,
             'url' => $url,
         ]);
         $collection_id = $this->create('collection', [
@@ -296,7 +296,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 20,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $this->other_user->id,
@@ -332,7 +332,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 10,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $this->other_user->id,
@@ -373,13 +373,13 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($db_links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfLinkIsNotPublic()
+    public function testPickDoesNotSelectFromFollowedIfLinkIsHidden()
     {
         $news_picker = new NewsPicker($this->user);
         $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 20,
-            'is_public' => 0,
+            'is_hidden' => 1,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $this->other_user->id,
@@ -406,7 +406,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 20,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $this->other_user->id,
@@ -434,7 +434,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 20,
-            'is_public' => 1,
+            'is_hidden' => 0,
             'url' => $url,
         ]);
         $collection_id = $this->create('collection', [
@@ -473,7 +473,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $this->user->id,
             'reading_time' => 10,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $this->user->id,
@@ -494,7 +494,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($db_links));
     }
 
-    public function testPickDoesNotSelectFromTopicsIfLinkIsPrivate()
+    public function testPickDoesNotSelectFromTopicsIfLinkIsHidden()
     {
         $news_picker = new NewsPicker($this->user);
         $topic_id = $this->create('topic');
@@ -507,11 +507,12 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
             'reading_time' => 10,
-            'is_public' => 0,
+            'is_hidden' => 1,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $this->other_user->id,
             'type' => 'collection',
+            'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
             'collection_id' => $collection_id,

@@ -86,7 +86,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
-        $is_public = true;
+        $is_hidden = true;
         $comment = $this->fake('sentence');
         $collection_ids = [$collection_id];
 
@@ -94,7 +94,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
-            'is_public' => $is_public,
+            'is_hidden' => $is_hidden,
             'collection_ids' => $collection_ids,
             'comment' => $comment,
         ]);
@@ -111,7 +111,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->id, $link->user_id);
         $this->assertSame($news_link->title, $link->title);
         $this->assertSame($news_link->url, $link->url);
-        $this->assertTrue($link->is_public);
+        $this->assertTrue($link->is_hidden);
         $this->assertSame($comment, $message->content);
         $this->assertSame($link->id, $db_link_to_collection['link_id']);
         $this->assertSame($collection_id, $db_link_to_collection['collection_id']);
@@ -129,7 +129,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'url' => $url,
-            'is_public' => 0,
+            'is_hidden' => 0,
         ]);
         $old_collection_id = $this->create('collection', [
             'user_id' => $user->id,
@@ -141,7 +141,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
             'link_id' => $link_id,
             'collection_id' => $old_collection_id,
         ]);
-        $is_public = true;
+        $is_hidden = true;
         $comment = $this->fake('sentence');
         $collection_ids = [$new_collection_id];
 
@@ -149,7 +149,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
-            'is_public' => $is_public,
+            'is_hidden' => $is_hidden,
             'collection_ids' => $collection_ids,
             'comment' => $comment,
         ]);
@@ -158,7 +158,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $link = models\Link::find($link_id);
-        $this->assertTrue($link->is_public);
+        $this->assertTrue($link->is_hidden);
         $this->assertFalse($links_to_collections_dao->exists($link_to_collection_id));
         $new_db_link_to_collection = $links_to_collections_dao->listAll()[0];
         $this->assertSame($link_id, $new_db_link_to_collection['link_id']);
@@ -176,13 +176,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user_id,
         ]);
-        $is_public = true;
+        $is_hidden = true;
         $comment = $this->fake('sentence');
         $collection_ids = [$collection_id];
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => 'a token',
-            'is_public' => $is_public,
+            'is_hidden' => $is_hidden,
             'collection_ids' => $collection_ids,
             'comment' => $comment,
         ]);
@@ -201,13 +201,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
         ]);
-        $is_public = true;
+        $is_hidden = true;
         $comment = $this->fake('sentence');
         $collection_ids = [$collection_id];
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
-            'is_public' => $is_public,
+            'is_hidden' => $is_hidden,
             'collection_ids' => $collection_ids,
             'comment' => $comment,
         ]);
@@ -225,13 +225,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
-        $is_public = true;
+        $is_hidden = true;
         $comment = $this->fake('sentence');
         $collection_ids = [$collection_id];
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => 'not the token',
-            'is_public' => $is_public,
+            'is_hidden' => $is_hidden,
             'collection_ids' => $collection_ids,
             'comment' => $comment,
         ]);
@@ -249,13 +249,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
-        $is_public = true;
+        $is_hidden = true;
         $comment = $this->fake('sentence');
         $collection_ids = [];
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
-            'is_public' => $is_public,
+            'is_hidden' => $is_hidden,
             'collection_ids' => $collection_ids,
             'comment' => $comment,
         ]);
@@ -274,13 +274,13 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
         ]);
-        $is_public = true;
+        $is_hidden = true;
         $comment = $this->fake('sentence');
         $collection_ids = [$collection_id];
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
-            'is_public' => $is_public,
+            'is_hidden' => $is_hidden,
             'collection_ids' => $collection_ids,
             'comment' => $comment,
         ]);

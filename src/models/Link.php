@@ -31,7 +31,7 @@ class Link extends \Minz\Model
             'validator' => '\flusio\models\Link::validateUrl',
         ],
 
-        'is_public' => [
+        'is_hidden' => [
             'type' => 'boolean',
             'required' => true,
         ],
@@ -86,18 +86,18 @@ class Link extends \Minz\Model
     /**
      * @param string $url
      * @param string $user_id
-     * @param boolean|string $is_public
+     * @param boolean|string $is_hidden
      *
      * @return \flusio\models\Link
      */
-    public static function init($url, $user_id, $is_public)
+    public static function init($url, $user_id, $is_hidden)
     {
         $url = \SpiderBits\Url::sanitize($url);
         return new self([
             'id' => utils\Random::timebased(),
             'title' => $url,
             'url' => $url,
-            'is_public' => filter_var($is_public, FILTER_VALIDATE_BOOLEAN),
+            'is_hidden' => filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN),
             'user_id' => $user_id,
             'reading_time' => 0,
             'fetched_code' => 0,
@@ -117,7 +117,7 @@ class Link extends \Minz\Model
             'title' => $news_link->title,
             'url' => $news_link->url,
             'image_filename' => $news_link->image_filename,
-            'is_public' => false,
+            'is_hidden' => false,
             'reading_time' => $news_link->reading_time,
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 200,

@@ -25,12 +25,6 @@
 
     <section class="link__meta">
         <p class="link__details">
-            <?php if ($link->is_public): ?>
-                <span class="link__public sticker">
-                    <?= _('public') ?>
-                </span>
-            <?php endif; ?>
-
             <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
         </p>
 
@@ -142,5 +136,11 @@
                 </button>
             </div>
         </form>
+
+        <?php if ($link->is_hidden): ?>
+            <p class="paragraph--centered paragraph--secondary">
+                <?= _('This link being hidden, the comments are private.') ?>
+            </p>
+        <?php endif; ?>
     </section>
 </div>

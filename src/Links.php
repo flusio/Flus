@@ -37,14 +37,14 @@ class Links
 
         // We must show the link in 3 main cases:
         // 1. the visitor is connected and owns the link
-        // 2. the visitor is connected and the link is public
-        // 3. the visitor is not connected and the link is public
+        // 2. the visitor is connected and the link is not hidden
+        // 3. the visitor is not connected and the link is not hidden
 
         // The first thing to do is to calculate the 3 boolean variables which
         // will allow us to handle these different cases.
         $is_connected = $user !== null;
         $is_owned = $is_connected && $link && $user->id === $link->user_id;
-        $is_public = $link && $link->is_public;
+        $is_hidden = $link && $link->is_hidden;
 
         // This branch handles case 1
         if ($is_connected && $is_owned) {
@@ -66,7 +66,7 @@ class Links
         }
 
         // This branch handles cases 2 and 3
-        if ($is_public) {
+        if ($link && !$is_hidden) {
             return Response::ok('links/show_public.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
@@ -126,7 +126,7 @@ class Links
 
         return Response::ok('links/new.phtml', [
             'url' => $default_url,
-            'is_public' => false,
+            'is_hidden' => false,
             'collection_ids' => $default_collection_ids,
             'collections' => $collections,
         ]);
@@ -137,7 +137,7 @@ class Links
      *
      * @request_param string csrf
      * @request_param string url It must be a valid non-empty URL
-     * @request_param boolean is_public
+     * @request_param boolean is_hidden
      * @request_param string[] collection_ids It must contain at least one
      *                                        collection id
      *
@@ -154,7 +154,7 @@ class Links
     {
         $user = utils\CurrentUser::get();
         $url = $request->param('url', '');
-        $is_public = $request->param('is_public', false);
+        $is_hidden = $request->param('is_hidden', false);
         $collection_ids = $request->param('collection_ids', []);
 
         if (!$user) {
@@ -170,19 +170,19 @@ class Links
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
-                'is_public' => $is_public,
+                'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $link = models\Link::init($url, $user->id, $is_public);
+        $link = models\Link::init($url, $user->id, $is_hidden);
         $errors = $link->validate();
         if ($errors) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
-                'is_public' => $is_public,
+                'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'errors' => $errors,
@@ -192,7 +192,7 @@ class Links
         if (empty($collection_ids)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
-                'is_public' => $is_public,
+                'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'errors' => [
@@ -204,7 +204,7 @@ class Links
         if (!models\Collection::daoCall('existForUser', $user->id, $collection_ids)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
-                'is_public' => $is_public,
+                'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'errors' => [
@@ -267,7 +267,7 @@ class Links
             return Response::ok('links/edit.phtml', [
                 'link' => $link,
                 'title' => $link->title,
-                'is_public' => $link->is_public,
+                'is_hidden' => $link->is_hidden,
                 'from' => $from,
             ]);
         } else {
@@ -281,7 +281,7 @@ class Links
      * @request_param string csrf
      * @request_param string id
      * @request_param string title
-     * @request_param boolean is_public
+     * @request_param boolean is_hidden
      * @request_param string from (default is /links/:id)
      *
      * @response 302 /login?redirect_to=/links/:id/edit if not connected
@@ -298,7 +298,7 @@ class Links
         $user = utils\CurrentUser::get();
         $link_id = $request->param('id');
         $new_title = $request->param('title');
-        $is_public = $request->param('is_public', false);
+        $is_hidden = $request->param('is_hidden', false);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
 
         if (!$user) {
@@ -319,7 +319,7 @@ class Links
         }
 
         $link->title = trim($new_title);
-        $link->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
+        $link->is_hidden = filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN);
         $errors = $link->validate();
         if ($errors) {
             utils\Flash::set('errors', $errors);

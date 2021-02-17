@@ -141,13 +141,13 @@ class Collection extends \Minz\Model
     }
 
     /**
-     * Return the list of public (only) links attached to this collection
+     * Return the list of not hidden links attached to this collection
      *
      * @return \flusio\models\Link[]
      */
-    public function publicLinks()
+    public function visibleLinks()
     {
-        return Link::daoToList('listPublicByCollectionIdWithNumberComments', $this->id);
+        return Link::daoToList('listVisibleByCollectionIdWithNumberComments', $this->id);
     }
 
     /**

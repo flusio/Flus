@@ -105,9 +105,9 @@
                             <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
                         </a>
 
-                        <?php if ($link->is_public): ?>
+                        <?php if ($collection->is_public && $link->is_hidden): ?>
                             <span class="sticker sticker--right">
-                                <?= _('public') ?>
+                                <?= _('hidden') ?>
                             </span>
                         <?php endif; ?>
                     </p>

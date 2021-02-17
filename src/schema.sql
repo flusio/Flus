@@ -79,7 +79,7 @@ CREATE TABLE links (
     created_at TIMESTAMPTZ NOT NULL,
     title TEXT NOT NULL,
     url TEXT NOT NULL,
-    is_public BOOLEAN NOT NULL DEFAULT false,
+    is_hidden BOOLEAN NOT NULL DEFAULT false,
     reading_time INTEGER NOT NULL DEFAULT 0,
     image_filename TEXT,
     fetched_at TIMESTAMPTZ,

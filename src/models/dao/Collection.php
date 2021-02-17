@@ -82,7 +82,7 @@ class Collection extends \Minz\DatabaseModel
                 SELECT COUNT(l.id) FROM links l, links_to_collections lc
                 WHERE lc.collection_id = c.id
                 AND lc.link_id = l.id
-                AND l.is_public = true
+                AND l.is_hidden = false
             ) AS number_links
             FROM collections c, followed_collections fc
             WHERE fc.user_id = ?
@@ -134,7 +134,7 @@ class Collection extends \Minz\DatabaseModel
             WHERE lc.collection_id = c.id
             AND lc.link_id = l.id
 
-            AND l.is_public = true
+            AND l.is_hidden = false
             AND c.is_public = true
 
             AND c.user_id != :user_id
@@ -171,7 +171,7 @@ class Collection extends \Minz\DatabaseModel
             WHERE lc.collection_id = c.id
             AND lc.link_id = l.id
 
-            AND l.is_public = true
+            AND l.is_hidden = false
             AND c.is_public = true
 
             AND c.user_id != :user_id

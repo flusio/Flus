@@ -77,13 +77,13 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return public (only) links within the given collection
+     * Return not hidden links within the given collection
      *
      * @param string $collection_id
      *
      * @return array
      */
-    public function listPublicByCollectionIdWithNumberComments($collection_id)
+    public function listVisibleByCollectionIdWithNumberComments($collection_id)
     {
         $sql = <<<'SQL'
             SELECT l.*, (
@@ -95,7 +95,7 @@ class Link extends \Minz\DatabaseModel
                 SELECT lc.link_id FROM links_to_collections lc
                 WHERE lc.collection_id = ?
             )
-            AND l.is_public = '1'
+            AND l.is_hidden = false
             ORDER BY l.created_at DESC
         SQL;
 
@@ -158,7 +158,7 @@ class Link extends \Minz\DatabaseModel
             AND lc.link_id = l.id
             AND lc.collection_id = c.id
 
-            AND l.is_public = true
+            AND l.is_hidden = false
             AND c.is_public = true
 
             AND l.url NOT IN (
@@ -201,7 +201,7 @@ class Link extends \Minz\DatabaseModel
             AND ct.collection_id = lc.collection_id
             AND lc.link_id = l.id
 
-            AND l.is_public = true
+            AND l.is_hidden = false
             AND l.user_id != :user_id
             AND l.url NOT IN (
                 SELECT nl.url FROM news_links nl

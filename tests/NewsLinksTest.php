@@ -89,7 +89,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
             'url' => $url,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
@@ -136,7 +136,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
             'url' => $url,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
@@ -468,7 +468,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user_id,
             'url' => $link_url,
             'reading_time' => 10,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
@@ -506,7 +506,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user_id,
             'url' => $link_url,
             'reading_time' => 10,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,

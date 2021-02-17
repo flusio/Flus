@@ -195,7 +195,7 @@ class Collections
             return Response::ok('collections/show_public.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
-                'links' => $collection->publicLinks(),
+                'links' => $collection->visibleLinks(),
             ]);
         }
 

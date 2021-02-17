@@ -292,7 +292,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $user_id,
             'title' => $link_title,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
@@ -318,7 +318,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $owner_id,
             'title' => $link_title,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
@@ -331,7 +331,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'collections/show_public.phtml');
     }
 
-    public function testShowHidesPrivateLinksInPublicCollections()
+    public function testShowHidesHiddenLinksInPublicCollections()
     {
         $user_id = $this->create('user');
         $link_title = $this->fake('words', 3, true);
@@ -343,7 +343,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $user_id,
             'title' => $link_title,
-            'is_public' => 0,
+            'is_hidden' => 1,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
@@ -859,7 +859,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $this->create('link_to_collection', [
             'collection_id' => $collection_id,
@@ -883,7 +883,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $this->create('link_to_collection', [
             'collection_id' => $collection_id,
@@ -925,7 +925,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $this->create('link_to_collection', [
             'collection_id' => $collection_id,
@@ -938,7 +938,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString($collection_name, $output);
     }
 
-    public function testDiscoverDoesNotCountPrivateLinks()
+    public function testDiscoverDoesNotCountHiddenLinks()
     {
         $user = $this->login();
         $collection_name = $this->fake('sentence');
@@ -950,11 +950,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $link_id1 = $this->create('link', [
             'user_id' => $other_user_id,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $link_id2 = $this->create('link', [
             'user_id' => $other_user_id,
-            'is_public' => 0,
+            'is_hidden' => 1,
         ]);
         $this->create('link_to_collection', [
             'collection_id' => $collection_id,
@@ -983,7 +983,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
         $this->create('link_to_collection', [
             'collection_id' => $collection_id,

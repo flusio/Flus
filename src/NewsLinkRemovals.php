@@ -50,17 +50,17 @@ class NewsLinkRemovals
 
         $existing_link = $user->linkByUrl($news_link->url);
         if ($existing_link) {
-            $is_public = $existing_link->is_public;
+            $is_hidden = $existing_link->is_hidden;
             $existing_collections = $existing_link->collections();
             $collection_ids = array_column($existing_collections, 'id');
         } else {
-            $is_public = false;
+            $is_hidden = false;
             $collection_ids = [];
         }
 
         return Response::ok('news_link_removals/adding.phtml', [
             'news_link' => $news_link,
-            'is_public' => $is_public,
+            'is_hidden' => $is_hidden,
             'collection_ids' => $collection_ids,
             'collections' => $collections,
             'comment' => '',
@@ -73,7 +73,7 @@ class NewsLinkRemovals
      *
      * @request_param string id
      * @request_param string csrf
-     * @request_param boolean is_public
+     * @request_param boolean is_hidden
      * @request_param string[] collection_ids
      * @request_param string comment
      *
@@ -111,7 +111,7 @@ class NewsLinkRemovals
 
         $existing_link = $user->linkByUrl($news_link->url);
 
-        $is_public = $request->param('is_public', false);
+        $is_hidden = $request->param('is_hidden', false);
         $collection_ids = $request->param('collection_ids', []);
         $comment = $request->param('comment', '');
 
@@ -119,7 +119,7 @@ class NewsLinkRemovals
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('news_link_removals/adding.phtml', [
                 'news_link' => $news_link,
-                'is_public' => $is_public,
+                'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'comment' => $comment,
@@ -131,7 +131,7 @@ class NewsLinkRemovals
         if (empty($collection_ids)) {
             return Response::badRequest('news_link_removals/adding.phtml', [
                 'news_link' => $news_link,
-                'is_public' => $is_public,
+                'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'comment' => $comment,
@@ -145,7 +145,7 @@ class NewsLinkRemovals
         if (!models\Collection::daoCall('existForUser', $user->id, $collection_ids)) {
             return Response::badRequest('news_link_removals/adding.phtml', [
                 'news_link' => $news_link,
-                'is_public' => $is_public,
+                'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'comment' => $comment,
@@ -157,13 +157,13 @@ class NewsLinkRemovals
         }
 
         // First, save the link (if a Link with matching URL exists, just get
-        // this link and optionally change its is_public status)
+        // this link and optionally change its is_hidden status)
         if ($existing_link) {
             $link = $existing_link;
         } else {
             $link = models\Link::initFromNews($news_link, $user->id);
         }
-        $link->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
+        $link->is_hidden = filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN);
         $link->save();
 
         // Attach the link to the given collections (and potentially forget the

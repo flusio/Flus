@@ -57,13 +57,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, nl2br($content));
     }
 
-    public function testShowRendersCorrectlyIfPublicAndNotConnected()
+    public function testShowRendersCorrectlyIfNotHiddenAndNotConnected()
     {
         $title = $this->fake('words', 3, true);
         $link_id = $this->create('link', [
             'fetched_at' => $this->fake('iso8601'),
             'title' => $title,
-            'is_public' => true,
+            'is_hidden' => 0,
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}");
@@ -72,7 +72,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'links/show_public.phtml');
     }
 
-    public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink()
+    public function testShowRendersCorrectlyIfNotHiddenAndDoesNotOwnTheLink()
     {
         $this->login();
         $title = $this->fake('words', 3, true);
@@ -81,7 +81,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user_id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $title,
-            'is_public' => 1,
+            'is_hidden' => 0,
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}");
@@ -103,14 +103,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, "/links/{$link_id}/fetch");
     }
 
-    public function testShowRedirectsIfPrivateAndNotConnected()
+    public function testShowRedirectsIfHiddenAndNotConnected()
     {
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $user_id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $this->fake('words', 3, true),
-            'is_public' => 0,
+            'is_hidden' => 1,
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}");
@@ -135,7 +135,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user_id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $this->fake('words', 3, true),
-            'is_public' => 0,
+            'is_hidden' => 1,
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}");
@@ -244,10 +244,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($url, $link->url);
         $this->assertSame($user->id, $link->user_id);
         $this->assertContains($collection_id, array_column($link->collections(), 'id'));
-        $this->assertFalse($link->is_public);
+        $this->assertFalse($link->is_hidden);
     }
 
-    public function testCreateAllowsToCreatePublicLinks()
+    public function testCreateAllowsToCreateHiddenLinks()
     {
         $user = $this->login();
         $collection_id = $this->create('collection', [
@@ -258,11 +258,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'url' => $this->fake('url'),
             'collection_ids' => [$collection_id],
-            'is_public' => true,
+            'is_hidden' => true,
         ]);
 
         $link = models\Link::take();
-        $this->assertTrue($link->is_public);
+        $this->assertTrue($link->is_hidden);
     }
 
     public function testCreateDoesNotCreateLinkIfItExists()
@@ -524,54 +524,54 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
-        $old_public = 0;
-        $new_public = 1;
+        $old_hidden = 0;
+        $new_hidden = 1;
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
-            'is_public' => $old_public,
+            'is_hidden' => $old_hidden,
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
-            'is_public' => $new_public,
+            'is_hidden' => $new_hidden,
         ]);
 
         $this->assertResponse($response, 302, "/links/{$link_id}");
         $link = models\Link::find($link_id);
         $this->assertSame($new_title, $link->title);
-        $this->assertTrue($link->is_public);
+        $this->assertTrue($link->is_hidden);
     }
 
     public function testUpdateRedirectsToFrom()
     {
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
-        $old_public = 0;
-        $new_public = 1;
+        $old_hidden = 0;
+        $new_hidden = 1;
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
-            'is_public' => $old_public,
+            'is_hidden' => $old_hidden,
         ]);
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
-            'is_public' => $new_public,
+            'is_hidden' => $new_hidden,
             'from' => $from,
         ]);
 
         $this->assertResponse($response, 302, $from);
         $link = models\Link::find($link_id);
         $this->assertSame($new_title, $link->title);
-        $this->assertTrue($link->is_public);
+        $this->assertTrue($link->is_hidden);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid()
