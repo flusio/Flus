@@ -86,6 +86,54 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $title);
     }
 
+    public function testDescriptionTakesFirstDescriptionIfNotInHtmlHead()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                    <meta name="description" content="This is description 1" />
+                    <meta name="description" content="This is description 2" />
+                </body>
+            </html>
+        HTML);
+
+        $description = DomExtractor::description($dom);
+
+        $this->assertSame('This is description 1', $description);
+    }
+
+    public function testDescriptionTakesOgDescription()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <head>
+                    <meta property="og:description" content="This is description 1" />
+                    <meta property="og:description" content="This is description 2" />
+                </head>
+            </html>
+        HTML);
+
+        $description = DomExtractor::description($dom);
+
+        $this->assertSame('This is description 1', $description);
+    }
+
+    public function testDescriptionTakesTwitterDescription()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <head>
+                    <meta name="twitter:description" content="This is description 1" />
+                    <meta name="twitter:description" content="This is description 2" />
+                </head>
+            </html>
+        HTML);
+
+        $description = DomExtractor::description($dom);
+
+        $this->assertSame('This is description 1', $description);
+    }
+
     public function testIllustrationTakesOgImage()
     {
         $dom = Dom::fromText(<<<HTML

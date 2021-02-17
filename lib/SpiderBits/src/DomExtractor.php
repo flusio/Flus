@@ -47,6 +47,41 @@ class DomExtractor
     }
 
     /**
+     * Return the description of the DOM document.
+     *
+     * @param \SpiderBits\Dom $dom
+     *
+     * @return string
+     */
+    public static function description($dom)
+    {
+        $xpath_queries = [
+            // Look for OpenGraph first
+            '/html/head/meta[@property = "og:description"][1]/attribute::content',
+            // Then Twitter meta tag
+            '/html/head/meta[@name = "twitter:description"][1]/attribute::content',
+            // Still nothing? Look for a description meta tag
+            '/html/head/meta[@name = "description"][1]/attribute::content',
+
+            // Err, still nothing! Let's try to be more tolerant (e.g. Youtube
+            // puts the meta tags in the body :/)
+            '//meta[@property = "og:description"][1]/attribute::content',
+            '//meta[@name = "twitter:description"][1]/attribute::content',
+            '//meta[@name = "description"][1]/attribute::content',
+        ];
+
+        foreach ($xpath_queries as $query) {
+            $description = $dom->select($query);
+            if ($description) {
+                return $description->text();
+            }
+        }
+
+        // It's hopeless...
+        return '';
+    }
+
+    /**
      * Return the illustration URL of the DOM document.
      *
      * @param \SpiderBits\Dom $dom
