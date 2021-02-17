@@ -425,6 +425,27 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertFlash('status', 'validation_email_sent');
     }
 
+    public function testResendValidationEmailCreatesANewTokenIfNoToken()
+    {
+        $email = $this->fake('email');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        $user = $this->login([
+            'email' => $email,
+            'validated_at' => null,
+            'validation_token' => null,
+        ]);
+
+        $number_tokens = models\Token::count();
+
+        $response = $this->appRun('post', '/my/account/validation/email', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertSame($number_tokens + 1, models\Token::count());
+        $user = models\User::find($user->id);
+        $this->assertNotNull($user->validation_token);
+    }
+
     public function testResendValidationEmailCreatesANewTokenIfExpiresSoon()
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 30), 'minutes');

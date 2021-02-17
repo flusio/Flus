@@ -175,6 +175,15 @@ class Account
             return Response::found($from);
         }
 
+        if (!$user->validation_token) {
+            // The user has no token? This should not happen, but maybe the
+            // admin changed something in DB... who knows?
+            $token = models\Token::init(1, 'day', 16);
+            $token->save();
+            $user->validation_token = $token->token;
+            $user->save();
+        }
+
         $token = models\Token::find($user->validation_token);
         if ($token->expiresIn(30, 'minutes') || $token->isInvalidated()) {
             // the token will expire soon, let's regenerate a new one
