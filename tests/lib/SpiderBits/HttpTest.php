@@ -4,6 +4,8 @@ namespace SpiderBits;
 
 class HttpTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
+
     public const TESTS_HOST = 'httpbin.org';
 
     /**
@@ -88,7 +90,6 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('foo', $data['headers']['X-Custom']);
     }
 
-
     public function testGetWithSettingGlobalHeaders()
     {
         $http = new Http();
@@ -102,6 +103,21 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
         $this->assertSame('foo', $data['headers']['X-Custom']);
+    }
+
+    public function testGetWithSettingUserAgent()
+    {
+        $http = new Http();
+        $url = 'https://' . self::TESTS_HOST . '/get';
+        $user_agent = $this->fake('userAgent');
+
+        $response = $http->get($url, [], [
+            'user_agent' => $user_agent,
+        ]);
+
+        $this->assertSame(200, $response->status);
+        $data = json_decode($response->data, true);
+        $this->assertSame($user_agent, $data['headers']['User-Agent']);
     }
 
     /**

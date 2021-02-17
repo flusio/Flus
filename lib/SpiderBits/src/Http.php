@@ -68,13 +68,19 @@ class Http
      */
     private function request($method, $url, $parameters = [], $options = [])
     {
+        if (isset($options['user_agent'])) {
+            $user_agent = $options['user_agent'];
+        } else {
+            $user_agent = $this->user_agent;
+        }
+
         $curl_handle = curl_init();
         curl_setopt($curl_handle, CURLOPT_URL, $url);
         curl_setopt($curl_handle, CURLOPT_HEADER, false);
         curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl_handle, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl_handle, CURLOPT_TIMEOUT, $this->timeout);
-        curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->user_agent);
+        curl_setopt($curl_handle, CURLOPT_USERAGENT, $user_agent);
 
         if ($method === 'post') {
             curl_setopt($curl_handle, CURLOPT_POST, true);
