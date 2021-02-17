@@ -81,7 +81,17 @@ class Fetch
             $response = \SpiderBits\Response::fromText($cached_response);
         } else {
             // ... or via HTTP
-            $response = $this->http->get($url);
+            $options = [];
+            if ($this->isTwitter($url)) {
+                // If we fetch Twitter, we need to alter our user agent to get
+                // server-side rendered content.
+                // @see https://stackoverflow.com/a/64332370
+                $options = [
+                    'user_agent' => $this->http->user_agent . ' (compatible; Googlebot/2.1)',
+                ];
+            }
+            $response = $this->http->get($url, [], $options);
+
             // that we add to cache
             $this->cache->save($url_hash, (string)$response);
         }
@@ -111,6 +121,18 @@ class Fetch
             $info['title'] = $title;
         }
 
+        if ($title && $this->isTwitter($url)) {
+            // For Twitter, it's better to concatenate description. Title
+            // should be "[account] on Twitter" while description is the tweet
+            // content.
+            $description = \SpiderBits\DomExtractor::description($dom);
+            if ($description) {
+                // we rebuild the title to translate it
+                $twitter_account = utils\Belt::stripsEnd($title, ' on Twitter');
+                $info['title'] = vsprintf(_('%s on Twitter: %s'), [$twitter_account, $description]);
+            }
+        }
+
         // And roughly estimate the reading time
         $content = \SpiderBits\DomExtractor::content($dom);
         $words = array_filter(explode(' ', $content));
@@ -124,5 +146,20 @@ class Fetch
         }
 
         return $info;
+    }
+
+    /**
+     * Return true if the url is pointing to Twitter
+     *
+     * @param string $url
+     *
+     * @return boolean
+     */
+    private function isTwitter($url)
+    {
+        return (
+            utils\Belt::startsWith($url, 'https://twitter.com/') ||
+            utils\Belt::startsWith($url, 'https://mobile.twitter.com/')
+        );
     }
 }

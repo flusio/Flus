@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-02-16 16:08+0100\n"
-"PO-Revision-Date: 2021-02-16 16:08+0100\n"
+"POT-Creation-Date: 2021-02-17 14:24+0100\n"
+"PO-Revision-Date: 2021-02-17 14:24+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: Collections.php:118 Collections.php:305 Collections.php:502
 #: Collections.php:549 LinkMessages.php:70 Links.php:176
 #: NewsLinkRemovals.php:127 NewsLinks.php:119 NewsLinks.php:181
-#: Registrations.php:93 Sessions.php:82 my/Account.php:169 my/Account.php:240
+#: Registrations.php:93 Sessions.php:82 my/Account.php:169 my/Account.php:249
 #: my/Profile.php:83 my/Security.php:78 my/Security.php:138
 #: my/Subscription.php:73
 msgid "A security verification failed: you should retry to submit the form."
@@ -75,7 +75,7 @@ msgstr "Vous devez accepter les conditions générales d’utilisation."
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: Sessions.php:106 my/Account.php:248 my/Security.php:145
+#: Sessions.php:106 my/Account.php:257 my/Security.php:145
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -204,31 +204,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:399
+#: models/User.php:413
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:401
+#: models/User.php:415
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:403
+#: models/User.php:417
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:405
+#: models/User.php:419
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:407
+#: models/User.php:421
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:409
+#: models/User.php:423
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:411
+#: models/User.php:425
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -240,7 +240,7 @@ msgstr "Le token n’existe pas."
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: my/Account.php:256
+#: my/Account.php:265
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
@@ -261,6 +261,11 @@ msgid "An error occured while logging you, please contact the support."
 msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
+
+#: services/Fetch.php:132
+#, php-format
+msgid "%s on Twitter: %s"
+msgstr "%s sur Twitter : %s"
 
 #: services/PocketError.php:15
 #, php-format

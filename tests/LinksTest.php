@@ -902,6 +902,28 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_title, $link->title);
     }
 
+    public function testFetchFetchesTwitterCorrectly()
+    {
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => 'https://twitter.com/flus_fr/status/1272070701193797634',
+            'title' => 'https://twitter.com/flus_fr/status/1272070701193797634',
+        ]);
+        $expected_title = 'Flus on Twitter: “Parce que s’informer est un acte politique'
+                        . ' essentiel, il est important de disposer des bons outils pour cela.'
+                        . " Je développe #Flus, un média social citoyen.\nhttps://t.co/zDFwWVmaiD”";
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $link = models\Link::find($link_id);
+        $this->assertSame($expected_title, $link->title);
+        $this->assertSame(200, $link->fetched_code);
+    }
+
     public function testFetchDownloadsOpenGraphIllustration()
     {
         $user = $this->login();
