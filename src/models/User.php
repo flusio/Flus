@@ -355,6 +355,20 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return whether the user should be blocked or not (email not validated or
+     * subscription overdue)
+     *
+     * @return boolean
+     */
+    public function isBlocked()
+    {
+        $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        $must_validate = $this->mustValidateEmail();
+        $must_renew = $subscriptions_enabled && $this->isSubscriptionOverdue();
+        return $must_validate || $must_renew;
+    }
+
+    /**
      * @param string $email
      * @return boolean
      */

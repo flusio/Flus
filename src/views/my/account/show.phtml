@@ -61,7 +61,7 @@
                 </li>
             <?php endif; ?>
 
-            <?php if ($pocket_enabled): ?>
+            <?php if ($pocket_enabled && !$current_user->isBlocked()): ?>
                 <li class="groupnav__item groupnav__item--import">
                     <a class="groupnav__anchor" href="<?= url('pocket') ?>">
                         <?= _('Import your data from Pocket') ?>
