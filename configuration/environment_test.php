@@ -30,6 +30,7 @@ return [
     'application' => [
         'brand' => 'flusio',
         'version' => trim(@file_get_contents($app_path . '/VERSION.txt')),
+        'tmp_path' => $temporary_directory,
         'cache_path' => $cache_directory,
         'media_path' => $media_directory,
         'demo' => false,

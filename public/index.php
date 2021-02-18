@@ -17,7 +17,7 @@ include $app_path . '/autoload.php';
 $request_method = strtolower($_SERVER['REQUEST_METHOD']);
 $http_method = $request_method === 'head' ? 'get' : $request_method;
 $http_uri = $_SERVER['REQUEST_URI'];
-$http_parameters = array_merge($_GET, $_POST);
+$http_parameters = array_merge($_GET, $_POST, $_FILES);
 $headers = array_merge($_SERVER, [
     'COOKIE' => $_COOKIE,
 ]);

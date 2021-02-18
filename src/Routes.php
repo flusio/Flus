@@ -37,6 +37,7 @@ class Routes
         // "My" section
         $router->addRoute('get', '/my/profile', 'my/Profile#show', 'profile');
         $router->addRoute('post', '/my/profile', 'my/Profile#update', 'update profile');
+        $router->addRoute('post', '/my/profile/avatar', 'my/Profile#updateAvatar', 'update avatar');
 
         $router->addRoute('get', '/my/info.json', 'my/Profile#info', 'profile info');
 
