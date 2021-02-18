@@ -108,14 +108,13 @@
                     <div class="header__separator no-mobile"></div>
 
                     <details
-                        class="header__link header__link--secondary popup"
+                        class="header__avatar-container header__secondary popup"
                         data-controller="popup"
                         data-action="click@window->popup#close"
                     >
                         <summary class="popup__opener" title="<?= _('Open the menu') ?>">
                             <i class="icon icon--anchor icon--bars only-mobile"></i>
-                            <img class="header__image no-mobile" src="<?= url_static('default-avatar.svg') ?>" alt="" />
-
+                            <img class="header__avatar no-mobile" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
                             <span class="sr-only">
                                 <?= _('Open the menu') ?>
                             </span>
