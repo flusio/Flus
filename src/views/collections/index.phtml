@@ -33,7 +33,7 @@
         <?php foreach ($collections as $collection): ?>
             <div class="card">
                 <div class="card__body">
-                    <h2 class="card__title icon icon--collection">
+                    <h2 class="card__title">
                         <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
                             <?= $this->protect($collection->name) ?>
                         </a>
@@ -84,7 +84,7 @@
             <?php foreach ($followed_collections as $collection): ?>
                 <div class="card">
                     <div class="card__body">
-                        <h2 class="card__title icon icon--collection">
+                        <h2 class="card__title">
                             <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
                                 <?= $this->protect($collection->name) ?>
                             </a>
