@@ -72,11 +72,7 @@
                         tabindex="-1"
                         href="<?= $link->url ?>"
                     >
-                        <?php if ($link->image_filename): ?>
-                            <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
-                        <?php else: ?>
-                            <img class="card__image" alt="" src="<?= url_static('default-card.png') ?>" />
-                        <?php endif; ?>
+                        <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
                     </a>
 
                     <div class="card__body">

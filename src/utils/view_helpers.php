@@ -118,6 +118,10 @@ function url_asset($filename)
  */
 function url_link_image($type, $filename)
 {
+    if (!$filename) {
+        return url_static('default-card.png');
+    }
+
     $media_path = \Minz\Configuration::$application['media_path'];
     $filepath = "{$media_path}/{$type}/{$filename}";
     $modification_time = @filemtime($filepath);
@@ -125,7 +129,7 @@ function url_link_image($type, $filename)
     if ($modification_time) {
         return $file_url . '?' . $modification_time;
     } else {
-        return $file_url;
+        return url_static('default-card.png');
     }
 }
 

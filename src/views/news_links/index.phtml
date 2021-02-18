@@ -43,11 +43,7 @@
                         tabindex="-1"
                         href="<?= $news_link->url ?>"
                     >
-                        <?php if ($news_link->image_filename): ?>
-                            <img class="card__image" alt="" src="<?= url_link_image('cards', $news_link->image_filename) ?>" />
-                        <?php else: ?>
-                            <img class="card__image" alt="" src="<?= url_static('default-card.png') ?>" />
-                        <?php endif; ?>
+                        <img class="card__image" alt="" src="<?= url_link_image('cards', $news_link->image_filename) ?>" />
                     </a>
 
                     <div class="card__body">
