@@ -109,6 +109,14 @@
                                         <?= _('Copy the external link') ?>
                                     </button>
                                 </div>
+
+                                <form method="post" action="<?= url('mark link as read', ['id' => $link->id]) ?>">
+                                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                                    <button class="popup__item popup__item--button icon icon--check">
+                                        <?= _('Mark as read') ?>
+                                    </button>
+                                </form>
                             </nav>
                         </details>
 

@@ -453,4 +453,62 @@ class Links
 
         return Response::redirect('link', ['id' => $link->id]);
     }
+
+    /**
+     * Mark a link as read and remove it from bookmarks.
+     *
+     * @request_param string csrf
+     * @request_param string id
+     *
+     * @response 302 /login?redirect_to=/bookmarks
+     *     if not connected
+     * @response 404
+     *     if the link doesn't exist, or is not associated to the current user
+     * @response 302 /bookmarks
+     * @flash error
+     *     if CSRF is invalid
+     * @response 302 /bookmarks
+     *     on success
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function markAsRead($request)
+    {
+        $user = utils\CurrentUser::get();
+        $from = \Minz\Url::for('bookmarks');
+        $link_id = $request->param('id');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $link = $user->link($link_id);
+        if (!$link) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        // First, we make sure to mark a corresponding news link as read
+        $news_link = $user->newsLinkByUrl($link->url);
+        if (!$news_link) {
+            $news_link = models\NewsLink::initFromLink($link, $user->id);
+        }
+        $news_link->via_type = 'bookmarks';
+        $news_link->is_read = true;
+        $news_link->save();
+
+        // Then, we detach the link from the bookmarks
+        $bookmarks = $user->bookmarks();
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
+
+        return Response::found($from);
+    }
 }

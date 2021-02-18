@@ -101,6 +101,7 @@ class Routes
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');
         $router->addRoute('get', '/links/:id/fetch', 'Links#showFetch', 'show fetch link');
         $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
+        $router->addRoute('post', '/links/:id/mark-as-read', 'Links#markAsRead', 'mark link as read');
 
         // Link collections
         $router->addRoute('get', '/links/:id/collections', 'LinkCollections#index', 'link collections');

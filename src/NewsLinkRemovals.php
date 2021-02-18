@@ -185,7 +185,7 @@ class NewsLinkRemovals
     }
 
     /**
-     * Makr a news link as read and remove it from bookmarks.
+     * Mark a news link as read and remove it from bookmarks.
      *
      * @request_param string csrf
      * @request_param string id (can be "all")

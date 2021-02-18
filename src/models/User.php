@@ -169,6 +169,21 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the given news link if attached to the current user
+     *
+     * @param string $url
+     *
+     * @return \flusio\models\NewsLink|null
+     */
+    public function newsLinkByUrl($url)
+    {
+        return NewsLink::findBy([
+            'url' => $url,
+            'user_id' => $this->id,
+        ]);
+    }
+
+    /**
      * Return the user' bookmarks collection
      *
      * @return \flusio\models\Collection|null

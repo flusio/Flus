@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-02-17 16:21+0100\n"
-"PO-Revision-Date: 2021-02-17 16:21+0100\n"
+"POT-Creation-Date: 2021-02-18 15:02+0100\n"
+"PO-Revision-Date: 2021-02-18 15:02+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -31,7 +31,7 @@ msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
 #: Collections.php:380 LinkCollections.php:99 Links.php:317 Links.php:368
-#: Links.php:446 Messages.php:44 NewsLinkRemovals.php:220
+#: Links.php:446 Links.php:489 Messages.php:44 NewsLinkRemovals.php:220
 #: NewsLinkRemovals.php:290 NewsLinkRemovals.php:371 Sessions.php:187
 #: importations/Importations.php:46 importations/Pocket.php:100
 #: importations/Pocket.php:149 importations/Pocket.php:241
@@ -204,31 +204,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:413
+#: models/User.php:428
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:415
+#: models/User.php:430
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:417
+#: models/User.php:432
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:419
+#: models/User.php:434
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:421
+#: models/User.php:436
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:423
+#: models/User.php:438
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:425
+#: models/User.php:440
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -679,12 +679,12 @@ msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
 #: views/collections/show.phtml:165 views/collections/show.phtml:169
-#: views/collections/show_bookmarks.phtml:122
-#: views/collections/show_bookmarks.phtml:126
+#: views/collections/show_bookmarks.phtml:130
+#: views/collections/show_bookmarks.phtml:134
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/collections/show.phtml:180 views/collections/show_bookmarks.phtml:138
+#: views/collections/show.phtml:180 views/collections/show_bookmarks.phtml:146
 #: views/collections/show_public.phtml:115 views/links/show.phtml:39
 #: views/links/show_public.phtml:40 views/news_links/index.phtml:158
 msgid "read"
@@ -693,6 +693,10 @@ msgstr "lire"
 #: views/collections/show_bookmarks.phtml:15
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
+
+#: views/collections/show_bookmarks.phtml:117
+msgid "Mark as read"
+msgstr "Marquer comme lu"
 
 #: views/collections/show_public.phtml:8 views/links/new.phtml:7
 #: views/links/show.phtml:7 views/links/show_public.phtml:7
