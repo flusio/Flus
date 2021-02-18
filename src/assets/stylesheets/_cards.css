@@ -118,6 +118,7 @@
 .card__text {
     color: var(--color-text-secondary);
     font-size: var(--size-small);
+    overflow-wrap: anywhere;
 }
 
 .card__text--oneline {

@@ -66,6 +66,7 @@
     padding-left: var(--space-small);
 
     font-weight: bold;
+    overflow-wrap: anywhere;
 }
 
 .popup__separator {

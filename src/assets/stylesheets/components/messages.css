@@ -5,6 +5,7 @@
 .message__author {
     font-size: var(--size-small);
     font-weight: bold;
+    overflow-wrap: anywhere;
 }
 
 .message__avatar {
