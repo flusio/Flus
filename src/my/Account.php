@@ -266,6 +266,11 @@ class Account
             ]);
         }
 
+        if ($current_user->avatar_filename) {
+            $media_path = \Minz\Configuration::$application['media_path'];
+            @unlink("{$media_path}/avatars/{$current_user->avatar_filename}");
+        }
+
         models\User::delete($current_user->id);
         utils\CurrentUser::reset();
         utils\Flash::set('status', 'user_deleted');

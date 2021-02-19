@@ -11,7 +11,8 @@
 .message__avatar {
     width: 5rem;
 
-    border: 2px solid var(--color-turquoise-4);
+    background-color: var(--color-white);
+    border: 2px solid var(--color-turquoise-5);
     border-radius: 50%;
 }
 

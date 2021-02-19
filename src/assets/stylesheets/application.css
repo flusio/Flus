@@ -19,6 +19,7 @@
 @import './_variables.css';
 @import './components/collections.css';
 @import './components/collections-selector.css';
+@import './components/form-avatar.css';
 @import './components/links.css';
 @import './components/messages.css';
 @import './components/news.css';

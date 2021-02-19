@@ -19,6 +19,14 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\MailerAsserts;
 
     /**
+     * @beforeClass
+     */
+    public static function createAvatarsPath()
+    {
+        mkdir(\Minz\Configuration::$application['media_path'] . '/avatars');
+    }
+
+    /**
      * @before
      */
     public function initializeSubscriptionConfiguration()
@@ -568,6 +576,31 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertFlash('status', 'user_deleted');
         $this->assertFalse(models\User::exists($user->id));
         $this->assertNull(utils\CurrentUser::get());
+    }
+
+    public function testDeleteDeletesAvatarIfSet()
+    {
+        // we copy an existing file as an avatar file.
+        $image_path = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $media_path = \Minz\Configuration::$application['media_path'];
+        $avatar_filename = $this->fake('md5') . '.png';
+        $avatar_path = "{$media_path}/avatars/{$avatar_filename}";
+        copy($image_path, $avatar_path);
+
+        $password = $this->fake('password');
+        $user = $this->login([
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'avatar_filename' => $avatar_filename,
+        ]);
+
+        $this->assertTrue(file_exists($avatar_path));
+
+        $response = $this->appRun('post', '/my/account/deletion', [
+            'csrf' => $user->csrf,
+            'password' => $password,
+        ]);
+
+        $this->assertFalse(file_exists($avatar_path));
     }
 
     public function testDeleteRedirectsToLoginIfUserIsNotConnected()

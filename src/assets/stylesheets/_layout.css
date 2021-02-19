@@ -8,6 +8,7 @@
     bottom: 0;
 
     width: 100%;
+    height: var(--height-header);
 
     background: var(--color-turquoise-3);
     box-shadow: 0 0 5px var(--color-grey-4);
@@ -16,6 +17,8 @@
 @media (min-width: 800px) {
     .layout--connected .layout__header {
         position: static;
+
+        height: auto;
 
         background: radial-gradient(circle at top, var(--color-turquoise-3) 60%, var(--color-turquoise-4));
         box-shadow: none;
@@ -31,19 +34,12 @@
 }
 
 .layout--connected .layout__header .header__link {
-    height: var(--height-header);
     padding: var(--space-small);
 
     text-decoration: none;
 
     border-top: 0.5rem solid transparent;
     border-bottom: 0.5rem solid transparent;
-}
-
-@media (min-width: 800px) {
-    .layout--connected .layout__header .header__link {
-        height: auto;
-    }
 }
 
 .layout--connected .layout__header .header__link--icon {

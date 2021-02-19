@@ -23,6 +23,7 @@ CREATE TABLE users (
     username TEXT NOT NULL,
     password_hash TEXT NOT NULL,
     locale TEXT NOT NULL DEFAULT 'en_GB',
+    avatar_filename TEXT,
     csrf TEXT NOT NULL DEFAULT '',
     news_preferences JSON NOT NULL DEFAULT '{}',
     validated_at TIMESTAMPTZ,

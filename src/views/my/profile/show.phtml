@@ -6,18 +6,59 @@
     ]);
 ?>
 
-<div class="section">
+<div class="section section--small">
     <div class="section__title">
         <h1><?= _('Profile') ?></h1>
     </div>
 
-    <form method="post" action="<?= url('update profile') ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
+    <?php if ($error): ?>
+        <p class="form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+
+    <form
+        method="post"
+        action="<?= url('update avatar') ?>"
+        class="form-avatar"
+        data-controller="autosubmit form-avatar"
+        enctype="multipart/form-data"
+    >
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <img class="form-avatar__photo" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
+
+        <input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
+
+        <input
+            type="file"
+            name="avatar"
+            id="avatar"
+            class="form-avatar__input"
+            accept="image/png, image/jpeg"
+            data-action="autosubmit#submit"
+            data-target="form-avatar.file"
+            hidden
+        />
+
+        <?php if (isset($errors['avatar'])): ?>
+            <p class="form-group__error">
+                <?= $errors['avatar'] ?>
             </p>
         <?php endif; ?>
 
+        <p class="form-group__caption form-avatar__caption">
+            <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only, a 150x150 image is recommended.') ?>
+        </p>
+
+        <div class="form__actions">
+            <button type="button" class="button--small" data-action="form-avatar#openFile">
+                <?= _('Upload a photo') ?>
+            </button>
+        </div>
+    </form>
+
+    <form method="post" action="<?= url('update profile') ?>">
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
         <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">

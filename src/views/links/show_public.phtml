@@ -46,13 +46,14 @@
     <?php if ($messages): ?>
         <section class="subsection subsection--small" id="messages">
             <?php foreach ($messages as $message): ?>
+                <?php $user = $message->user(); ?>
                 <article class="message">
                     <header class="message__header header">
                         <div class="header__container header__container--centered">
-                            <img class="message__avatar" src="<?= url_static('default-avatar.svg') ?>" alt="" />
+                            <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
 
                             <div class="message__author">
-                                <?= $this->protect($message->user()->username) ?>
+                                <?= $this->protect($user->username) ?>
                             </div>
 
                             <div class="header__separator"></div>

@@ -134,6 +134,30 @@ function url_link_image($type, $filename)
 }
 
 /**
+ * Return the relative URL of an avatar.
+ *
+ * @param string $filename The path saved in user->avatar_filename
+ *
+ * @return string
+ */
+function url_avatar($filename)
+{
+    if (!$filename) {
+        return url_static('default-avatar.svg');
+    }
+
+    $media_path = \Minz\Configuration::$application['media_path'];
+    $filepath = "{$media_path}/avatars/{$filename}";
+    $modification_time = @filemtime($filepath);
+    if ($modification_time) {
+        $file_url = \Minz\Url::path() . "/media/avatars/{$filename}";
+        return $file_url . '?' . $modification_time;
+    } else {
+        return url_static('default-avatar.svg');
+    }
+}
+
+/**
  * Format news preferences so it's readable for humans.
  *
  * @param \flusio\models\NewsPreferences $preferences

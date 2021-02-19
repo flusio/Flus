@@ -58,6 +58,10 @@ class User extends \Minz\Model
             'validator' => '\flusio\models\User::validateLocale',
         ],
 
+        'avatar_filename' => [
+            'type' => 'string',
+        ],
+
         'csrf' => [
             'type' => 'string',
             'required' => true,
