@@ -972,6 +972,32 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('2 links', $output);
     }
 
+    public function testDiscoverRedirectsIfPageIsOutOfBound()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('sentence');
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+            'is_public' => 1,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'is_hidden' => 0,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+
+        $response = $this->appRun('get', '/collections/discover', [
+            'page' => 0,
+        ]);
+
+        $this->assertResponse($response, 302, '/collections/discover?page=1');
+    }
+
     public function testDiscoverRedirectsIfNotConnected()
     {
         $collection_name = $this->fake('sentence');

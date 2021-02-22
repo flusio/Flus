@@ -42,7 +42,7 @@ class Pagination
         } else {
             $this->number_per_page = $number_per_page;
         }
-        $this->total_pages = intval(ceil($this->number_elements / $this->number_per_page));
+        $this->total_pages = max(1, intval(ceil($this->number_elements / $this->number_per_page)));
         if ($current_page < 1) {
             $this->current_page = 1;
         } elseif ($current_page > $this->total_pages) {
@@ -51,6 +51,14 @@ class Pagination
             $this->current_page = $current_page;
         }
         $this->current_offset = $this->number_per_page * ($this->current_page - 1);
+    }
+
+    /**
+     * @return integer
+     */
+    public function totalPages()
+    {
+        return $this->total_pages;
     }
 
     /**

@@ -4,6 +4,30 @@ namespace flusio\utils;
 
 class PaginationTest extends \PHPUnit\Framework\TestCase
 {
+    public function testTotalPage()
+    {
+        $number_elements = 300;
+        $number_per_page = 30;
+        $initial_current_page = 3;
+        $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
+
+        $total_pages = $pagination->totalPages();
+
+        $this->assertSame(10, $total_pages);
+    }
+
+    public function testTotalPageIsBoundedBy1()
+    {
+        $number_elements = 0;
+        $number_per_page = 30;
+        $initial_current_page = 1;
+        $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
+
+        $total_pages = $pagination->totalPages();
+
+        $this->assertSame(1, $total_pages);
+    }
+
     public function testCurrentPage()
     {
         $number_elements = 300;
