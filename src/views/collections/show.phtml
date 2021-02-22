@@ -184,51 +184,5 @@
         <?php endfor; ?>
     </div>
 
-    <?php if ($pagination->mustPaginate()): ?>
-        <nav class="pagination">
-            <ul class="pagination__container">
-                <?php if ($pagination->isCurrentFirstPage()): ?>
-                    <li class="pagination__item pagination__item--prev pagination__item--disabled">
-                        <?= _('Previous') ?>
-                    </li>
-                <?php else: ?>
-                    <li class="pagination__item pagination__item--prev">
-                        <a class="pagination__link" href="<?= url('collection', ['id' => $collection->id, 'page' => $pagination->previousPageNumber()]) ?>">
-                            <?= _('Previous') ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
-
-                <?php foreach ($pagination->pages() as $page): ?>
-                    <?php if ($page['type'] === 'number'): ?>
-                        <li class="pagination__item pagination__item--number <?= $pagination->isPageCurrent($page['number']) ? 'pagination__item--current' : '' ?>">
-                            <a
-                                class="pagination__link"
-                                href="<?= url('collection', ['id' => $collection->id, 'page' => $page['number']]) ?>"
-                                <?= $pagination->isPageCurrent($page['number']) ? 'aria-current="page"' : '' ?>
-                            >
-                                <?= $page['number'] ?>
-                            </a>
-                        </li>
-                    <?php else: ?>
-                        <li class="pagination__item pagination__item--ellipsis">
-                            …
-                        </li>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-
-                <?php if ($pagination->isCurrentLastPage()): ?>
-                    <li class="pagination__item pagination__item--next pagination__item--disabled">
-                        <?= _('Next') ?>
-                    </li>
-                <?php else: ?>
-                    <li class="pagination__item pagination__item--next">
-                        <a class="pagination__link" href="<?= url('collection', ['id' => $collection->id, 'page' => $pagination->nextPageNumber()]) ?>">
-                            <?= _('Next') ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-    <?php endif; ?>
+    <?= $this->include('_pagination.phtml', ['pagination' => $pagination, 'url' => url('collection', ['id' => $collection->id])]) ?>
 </div>
