@@ -131,23 +131,47 @@ class Collection extends \Minz\Model
     }
 
     /**
-     * Return the list of links attached to this collection
+     * Return the list of links attached to this collection.
+     *
+     * You can pass an offset and a limit to paginate the results. It is not
+     * paginated by default.
+     *
+     * @param integer $offset
+     * @param integer|string $limit
      *
      * @return \flusio\models\Link[]
      */
-    public function links()
+    public function links($offset = 0, $limit = 'ALL')
     {
-        return Link::daoToList('listByCollectionIdWithNumberComments', $this->id);
+        return Link::daoToList(
+            'listByCollectionIdWithNumberComments',
+            $this->id,
+            false,
+            $offset,
+            $limit
+        );
     }
 
     /**
      * Return the list of not hidden links attached to this collection
      *
+     * You can pass an offset and a limit to paginate the results. It is not
+     * paginated by default.
+     *
+     * @param integer $offset
+     * @param integer|string $limit
+     *
      * @return \flusio\models\Link[]
      */
-    public function visibleLinks()
+    public function visibleLinks($offset = 0, $limit = 'ALL')
     {
-        return Link::daoToList('listVisibleByCollectionIdWithNumberComments', $this->id);
+        return Link::daoToList(
+            'listByCollectionIdWithNumberComments',
+            $this->id,
+            true,
+            $offset,
+            $limit
+        );
     }
 
     /**

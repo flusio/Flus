@@ -179,31 +179,47 @@ class Collections
         $is_owned = $is_connected && $collection && $user->id === $collection->user_id;
         $is_public = $collection && $collection->is_public;
 
-        if ($is_connected && $is_owned) {
-            $topics = $collection->topics();
-            models\Topic::sort($topics, $user->locale);
+        $dont_show = !$is_owned && !$is_public;
+        if ($dont_show && $is_connected) {
+            return Response::notFound('not_found.phtml');
+        } elseif ($dont_show) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
+            ]);
+        }
+
+        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, !$is_owned);
+        $pagination_page = intval($request->param('page', 1));
+        $pagination = new utils\Pagination($number_links, 30, $pagination_page);
+        if ($pagination_page !== $pagination->currentPage()) {
+            return Response::redirect('collection', [
+                'id' => $collection->id,
+                'page' => $pagination->currentPage(),
+            ]);
+        }
+
+        $topics = $collection->topics();
+        models\Topic::sort($topics, utils\Locale::currentLocale());
+
+        if ($is_owned) {
             return Response::ok('collections/show.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
-                'links' => $collection->links(),
+                'links' => $collection->links(
+                    $pagination->currentOffset(),
+                    $pagination->numberPerPage()
+                ),
+                'pagination' => $pagination,
             ]);
-        }
-
-        if ($is_public) {
-            $topics = $collection->topics();
-            models\Topic::sort($topics, utils\Locale::currentLocale());
+        } else {
             return Response::ok('collections/show_public.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
-                'links' => $collection->visibleLinks(),
-            ]);
-        }
-
-        if ($is_connected) {
-            return Response::notFound('not_found.phtml');
-        } else {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
+                'links' => $collection->visibleLinks(
+                    $pagination->currentOffset(),
+                    $pagination->numberPerPage()
+                ),
+                'pagination' => $pagination,
             ]);
         }
     }

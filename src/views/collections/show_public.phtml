@@ -114,6 +114,8 @@
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <?= $this->include('_pagination.phtml', ['pagination' => $pagination, 'url' => url('collection', ['id' => $collection->id])]) ?>
     <?php else: ?>
         <p class="paragraph--placeholder">
             <?= _('This collection is empty.') ?>

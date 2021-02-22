@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-02-19 17:12+0100\n"
-"PO-Revision-Date: 2021-02-19 17:12+0100\n"
+"POT-Creation-Date: 2021-02-22 15:39+0100\n"
+"PO-Revision-Date: 2021-02-22 15:39+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,8 +15,8 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Collections.php:118 Collections.php:305 Collections.php:502
-#: Collections.php:549 LinkMessages.php:70 Links.php:176
+#: Collections.php:118 Collections.php:321 Collections.php:518
+#: Collections.php:565 LinkMessages.php:70 Links.php:176
 #: NewsLinkRemovals.php:127 NewsLinks.php:119 NewsLinks.php:181
 #: Registrations.php:93 Sessions.php:82 my/Account.php:169 my/Account.php:249
 #: my/Profile.php:83 my/Security.php:78 my/Security.php:138
@@ -26,11 +26,11 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: Collections.php:130 Collections.php:318 my/Profile.php:94
+#: Collections.php:130 Collections.php:334 my/Profile.php:94
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: Collections.php:380 LinkCollections.php:99 Links.php:317 Links.php:368
+#: Collections.php:396 LinkCollections.php:99 Links.php:317 Links.php:368
 #: Links.php:446 Links.php:489 Messages.php:44 NewsLinkRemovals.php:220
 #: NewsLinkRemovals.php:290 NewsLinkRemovals.php:371 Sessions.php:187
 #: importations/Importations.php:46 importations/Pocket.php:100
@@ -38,7 +38,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: Collections.php:413
+#: Collections.php:429
 msgid ""
 "It looks like you have no “Bookmarks” collection, you should contact the "
 "support."
@@ -152,11 +152,11 @@ msgstr "[%s] Confirmer votre compte"
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:217
+#: models/Collection.php:241
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:219
+#: models/Collection.php:243
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
@@ -244,16 +244,16 @@ msgstr "Le token a expiré ou a été invalidé."
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: my/Profile.php:175
+#: my/Profile.php:169
 msgid "This file is too large."
 msgstr "Ce fichier est trop gros."
 
-#: my/Profile.php:180
+#: my/Profile.php:174
 #, php-format
 msgid "This file cannot be uploaded (error %d)."
 msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
 
-#: my/Profile.php:186
+#: my/Profile.php:180
 msgid "This file cannot be uploaded."
 msgstr "Ce fichier ne peut pas être téléversé."
 
@@ -494,6 +494,14 @@ msgstr "passer"
 msgid "finished"
 msgstr "terminé"
 
+#: views/_pagination.phtml:7 views/_pagination.phtml:12
+msgid "Previous"
+msgstr "Précédent"
+
+#: views/_pagination.phtml:37 views/_pagination.phtml:42
+msgid "Next"
+msgstr "Suivant"
+
 #: views/bad_request.phtml:3
 msgid "Bad request"
 msgstr "Mauvaise requête"
@@ -557,15 +565,7 @@ msgstr "suivie"
 msgid "see"
 msgstr "voir"
 
-#: views/collections/discover.phtml:64 views/collections/discover.phtml:69
-msgid "Previous"
-msgstr "Précédent"
-
-#: views/collections/discover.phtml:94 views/collections/discover.phtml:99
-msgid "Next"
-msgstr "Suivant"
-
-#: views/collections/discover.phtml:108
+#: views/collections/discover.phtml:62
 msgid "The community didn’t publish any collection yet. Will you be the first?"
 msgstr ""
 "La communauté n’a pas encore publié de collection. Serez-vous le ou la "
@@ -728,7 +728,7 @@ msgstr "Ne plus suivre"
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:119
+#: views/collections/show_public.phtml:121
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 

@@ -52,56 +52,86 @@ class Link extends \Minz\DatabaseModel
     /**
      * Return links within the given collection
      *
+     * You can pass an offset and a limit to paginate the results. It is not
+     * paginated by default.
+     *
      * @param string $collection_id
+     * @param boolean $visible_only
+     * @param integer $offset
+     * @param integer|string $limit
      *
      * @return array
      */
-    public function listByCollectionIdWithNumberComments($collection_id)
+    public function listByCollectionIdWithNumberComments($collection_id, $visible_only, $offset = 0, $limit = 'ALL')
     {
-        $sql = <<<'SQL'
+        $values = [
+            ':collection_id' => $collection_id,
+            ':offset' => $offset,
+        ];
+
+        $visibility_clause = '';
+        if ($visible_only) {
+            $visibility_clause = 'AND l.is_hidden = false';
+        }
+
+        $limit_clause = '';
+        if ($limit !== 'ALL') {
+            $limit_clause = 'LIMIT :limit';
+            $values[':limit'] = $limit;
+        }
+
+        $sql = <<<SQL
             SELECT l.*, (
-                SELECT COUNT(*) FROM messages m
+                SELECT COUNT(m.*) FROM messages m
                 WHERE m.link_id = l.id
             ) AS number_comments
-            FROM links l
-            WHERE l.id IN (
-                SELECT lc.link_id FROM links_to_collections lc
-                WHERE lc.collection_id = ?
-            )
+            FROM links l, links_to_collections lc
+
+            WHERE l.id = lc.link_id
+            AND lc.collection_id = :collection_id
+
+            {$visibility_clause}
+
             ORDER BY l.created_at DESC
+            OFFSET :offset
+            {$limit_clause}
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$collection_id]);
+        $statement->execute($values);
         return $statement->fetchAll();
     }
 
     /**
-     * Return not hidden links within the given collection
+     * Count links within the given collection
      *
      * @param string $collection_id
+     * @param boolean $visible_only
      *
      * @return array
      */
-    public function listVisibleByCollectionIdWithNumberComments($collection_id)
+    public function countByCollectionId($collection_id, $visible_only)
     {
-        $sql = <<<'SQL'
-            SELECT l.*, (
-                SELECT COUNT(*) FROM messages m
-                WHERE m.link_id = l.id
-            ) AS number_comments
-            FROM links l
-            WHERE l.id IN (
-                SELECT lc.link_id FROM links_to_collections lc
-                WHERE lc.collection_id = ?
-            )
-            AND l.is_hidden = false
-            ORDER BY l.created_at DESC
+        $visibility_clause = '';
+        if ($visible_only) {
+            $visibility_clause = 'AND l.is_hidden = false';
+        }
+
+        $sql = <<<SQL
+            SELECT COUNT(l.*)
+            FROM links l, links_to_collections lc
+
+            WHERE l.id = lc.link_id
+            AND lc.collection_id = :collection_id
+
+            {$visibility_clause}
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$collection_id]);
-        return $statement->fetchAll();
+        $statement->execute([
+            ':collection_id' => $collection_id,
+        ]);
+        return intval($statement->fetchColumn());
     }
 
     /**
