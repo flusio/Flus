@@ -355,6 +355,31 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString($link_title, $response->render());
     }
 
+    public function testShowRedirectsIfPageIsOutOfBound()
+    {
+        $user = $this->login();
+        $link_title = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+            'is_public' => 0,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'title' => $link_title,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}", [
+            'page' => 0,
+        ]);
+
+        $this->assertResponse($response, 302, "/collections/{$collection_id}?page=1");
+    }
+
     public function testShowRedirectsIfPrivateAndNotConnected()
     {
         $user_id = $this->create('user');

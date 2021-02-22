@@ -188,6 +188,16 @@ class Collections
             ]);
         }
 
+        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, !$is_owned);
+        $pagination_page = intval($request->param('page', 1));
+        $pagination = new utils\Pagination($number_links, 30, $pagination_page);
+        if ($pagination_page !== $pagination->currentPage()) {
+            return Response::redirect('collection', [
+                'id' => $collection->id,
+                'page' => $pagination->currentPage(),
+            ]);
+        }
+
         $topics = $collection->topics();
         models\Topic::sort($topics, utils\Locale::currentLocale());
 
@@ -195,13 +205,21 @@ class Collections
             return Response::ok('collections/show.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
-                'links' => $collection->links(),
+                'links' => $collection->links(
+                    $pagination->currentOffset(),
+                    $pagination->numberPerPage()
+                ),
+                'pagination' => $pagination,
             ]);
         } else {
             return Response::ok('collections/show_public.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
-                'links' => $collection->visibleLinks(),
+                'links' => $collection->visibleLinks(
+                    $pagination->currentOffset(),
+                    $pagination->numberPerPage()
+                ),
+                'pagination' => $pagination,
             ]);
         }
     }

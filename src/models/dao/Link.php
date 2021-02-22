@@ -52,16 +52,32 @@ class Link extends \Minz\DatabaseModel
     /**
      * Return links within the given collection
      *
+     * You can pass an offset and a limit to paginate the results. It is not
+     * paginated by default.
+     *
      * @param string $collection_id
      * @param boolean $visible_only
+     * @param integer $offset
+     * @param integer|string $limit
      *
      * @return array
      */
-    public function listByCollectionIdWithNumberComments($collection_id, $visible_only = false)
+    public function listByCollectionIdWithNumberComments($collection_id, $visible_only, $offset = 0, $limit = 'ALL')
     {
+        $values = [
+            ':collection_id' => $collection_id,
+            ':offset' => $offset,
+        ];
+
         $visibility_clause = '';
         if ($visible_only) {
             $visibility_clause = 'AND l.is_hidden = false';
+        }
+
+        $limit_clause = '';
+        if ($limit !== 'ALL') {
+            $limit_clause = 'LIMIT :limit';
+            $values[':limit'] = $limit;
         }
 
         $sql = <<<SQL
@@ -72,16 +88,50 @@ class Link extends \Minz\DatabaseModel
             FROM links l, links_to_collections lc
 
             WHERE l.id = lc.link_id
-            AND lc.collection_id = ?
+            AND lc.collection_id = :collection_id
 
             {$visibility_clause}
 
             ORDER BY l.created_at DESC
+            OFFSET :offset
+            {$limit_clause}
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$collection_id]);
+        $statement->execute($values);
         return $statement->fetchAll();
+    }
+
+    /**
+     * Count links within the given collection
+     *
+     * @param string $collection_id
+     * @param boolean $visible_only
+     *
+     * @return array
+     */
+    public function countByCollectionId($collection_id, $visible_only)
+    {
+        $visibility_clause = '';
+        if ($visible_only) {
+            $visibility_clause = 'AND l.is_hidden = false';
+        }
+
+        $sql = <<<SQL
+            SELECT COUNT(l.*)
+            FROM links l, links_to_collections lc
+
+            WHERE l.id = lc.link_id
+            AND lc.collection_id = :collection_id
+
+            {$visibility_clause}
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':collection_id' => $collection_id,
+        ]);
+        return intval($statement->fetchColumn());
     }
 
     /**
