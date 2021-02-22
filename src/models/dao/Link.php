@@ -53,49 +53,29 @@ class Link extends \Minz\DatabaseModel
      * Return links within the given collection
      *
      * @param string $collection_id
+     * @param boolean $visible_only
      *
      * @return array
      */
-    public function listByCollectionIdWithNumberComments($collection_id)
+    public function listByCollectionIdWithNumberComments($collection_id, $visible_only = false)
     {
-        $sql = <<<'SQL'
+        $visibility_clause = '';
+        if ($visible_only) {
+            $visibility_clause = 'AND l.is_hidden = false';
+        }
+
+        $sql = <<<SQL
             SELECT l.*, (
-                SELECT COUNT(*) FROM messages m
+                SELECT COUNT(m.*) FROM messages m
                 WHERE m.link_id = l.id
             ) AS number_comments
-            FROM links l
-            WHERE l.id IN (
-                SELECT lc.link_id FROM links_to_collections lc
-                WHERE lc.collection_id = ?
-            )
-            ORDER BY l.created_at DESC
-        SQL;
+            FROM links l, links_to_collections lc
 
-        $statement = $this->prepare($sql);
-        $statement->execute([$collection_id]);
-        return $statement->fetchAll();
-    }
+            WHERE l.id = lc.link_id
+            AND lc.collection_id = ?
 
-    /**
-     * Return not hidden links within the given collection
-     *
-     * @param string $collection_id
-     *
-     * @return array
-     */
-    public function listVisibleByCollectionIdWithNumberComments($collection_id)
-    {
-        $sql = <<<'SQL'
-            SELECT l.*, (
-                SELECT COUNT(*) FROM messages m
-                WHERE m.link_id = l.id
-            ) AS number_comments
-            FROM links l
-            WHERE l.id IN (
-                SELECT lc.link_id FROM links_to_collections lc
-                WHERE lc.collection_id = ?
-            )
-            AND l.is_hidden = false
+            {$visibility_clause}
+
             ORDER BY l.created_at DESC
         SQL;
 

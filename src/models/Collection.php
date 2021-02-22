@@ -137,7 +137,7 @@ class Collection extends \Minz\Model
      */
     public function links()
     {
-        return Link::daoToList('listByCollectionIdWithNumberComments', $this->id);
+        return Link::daoToList('listByCollectionIdWithNumberComments', $this->id, false);
     }
 
     /**
@@ -147,7 +147,7 @@ class Collection extends \Minz\Model
      */
     public function visibleLinks()
     {
-        return Link::daoToList('listVisibleByCollectionIdWithNumberComments', $this->id);
+        return Link::daoToList('listByCollectionIdWithNumberComments', $this->id, true);
     }
 
     /**
