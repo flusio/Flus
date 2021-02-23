@@ -100,10 +100,14 @@ class Fetch
             'status' => $response->status,
         ];
 
+        // It's dangerous out there. mb_convert_encoding makes sure data is a
+        // valid UTF-8 string.
+        $data = mb_convert_encoding($response->data, 'UTF-8', 'UTF-8');
+
         if (!$response->success) {
             // Okay, Houston, we've had a problem here. Return early, there's
             // nothing more to do.
-            $info['error'] = $response->data;
+            $info['error'] = $data;
             return $info;
         }
 
@@ -113,7 +117,7 @@ class Fetch
             return $info; // @codeCoverageIgnore
         }
 
-        $dom = \SpiderBits\Dom::fromText($response->data);
+        $dom = \SpiderBits\Dom::fromText($data);
 
         // Parse the title from the DOM
         $title = \SpiderBits\DomExtractor::title($dom);
