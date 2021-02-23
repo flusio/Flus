@@ -59,7 +59,9 @@ class Response
     public function __construct($status, $data, $raw_headers)
     {
         $this->status = $status;
-        $this->data = $data;
+        // It's dangerous out there. mb_convert_encoding makes sure data is a
+        // valid UTF-8 string.
+        $this->data = mb_convert_encoding($data, 'UTF-8', 'UTF-8');
         $this->raw_headers = trim($raw_headers);
         $this->headers = self::parseHeaders($this->raw_headers);
         $this->success = $status >= 200 && $status < 300;
