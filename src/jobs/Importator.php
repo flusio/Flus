@@ -251,5 +251,19 @@ class Importator extends Job
                 $links_to_collections_to_create
             );
         }
+
+        // Delete the collections if they are empty at the end of the
+        // importation.
+        $count_pocket_links = models\Link::daoCall('countByCollectionId', $pocket_collection->id, false);
+        if ($count_pocket_links === 0) {
+            models\Collection::delete($pocket_collection->id);
+        }
+
+        if ($options['import_favorites']) {
+            $count_favorite_links = models\Link::daoCall('countByCollectionId', $favorite_collection->id, false);
+            if ($count_favorite_links === 0) {
+                models\Collection::delete($favorite_collection->id);
+            }
+        }
     }
 }

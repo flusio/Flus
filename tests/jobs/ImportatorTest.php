@@ -116,6 +116,33 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($db_links_to_collection);
     }
 
+    public function testImportPocketItemsDoesNotKeepFavoriteCollectionIfEmpty()
+    {
+        $importator = new Importator();
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $url = $this->fake('url');
+        $items = [
+            [
+                'given_url' => $url,
+                'resolved_url' => $url,
+                'favorite' => '0',
+                'status' => '1',
+            ],
+        ];
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
+
+        $importator->importPocketItems($user, $items, $options);
+
+        $collection = models\Collection::findBy(['name' => 'Pocket favorite']);
+        $this->assertNull($collection);
+    }
+
     public function testImportPocketItemsDoesNotImportInFavoriteIfOption()
     {
         $importator = new Importator();
@@ -177,6 +204,26 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
         $this->assertNotNull($db_links_to_collection);
+    }
+
+    public function testImportPocketItemsImportDoesNotKeepDefaultCollectionIfEmpty()
+    {
+        $importator = new Importator();
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $url = $this->fake('url');
+        $items = [];
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
+
+        $importator->importPocketItems($user, $items, $options);
+
+        $collection = models\Collection::findBy(['name' => 'Pocket links']);
+        $this->assertNull($collection);
     }
 
     public function testImportPocketItemsDoesNotImportTags()
