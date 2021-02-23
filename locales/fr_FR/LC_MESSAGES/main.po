@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-02-22 15:39+0100\n"
-"PO-Revision-Date: 2021-02-22 15:39+0100\n"
+"POT-Creation-Date: 2021-02-23 13:38+0100\n"
+"PO-Revision-Date: 2021-02-23 13:39+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -795,8 +795,14 @@ msgstr ""
 
 #: views/importations/pocket/show.phtml:103
 #, php-format
-msgid "%s will import your links in collections named after your tags."
-msgstr "%s importera vos liens dans des collections nommées d’après vos tags."
+msgid ""
+"%s will import your links in a collection named “Pocket links” and in "
+"collections named after your tags (not recommended if you have a lot of "
+"tags)."
+msgstr ""
+"%s importera vos liens dans une collection nommée « Liens Pocket » et dans "
+"des collections nommées d’après vos tags (déconseillé si vous avez de "
+"nombreux tags)."
 
 #: views/importations/pocket/show.phtml:119
 msgid "Import non-archived links in your bookmarks"
