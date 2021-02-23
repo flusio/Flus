@@ -1,12 +1,44 @@
 # Changelog of flusio
 
-## 2021-xx-yy - v0.17
+## 2021-02-23 - v0.17
 
 ### Breaking changes
 
 Validation emails are now sent asynchronously by a jobs worker. First of all,
 you must make sure to have installed the `pcntl` PHP extension. Then, please
 have a look to the production documentation to learn how to setup the worker.
+
+If you want to setup the Pocket importation system, you’ll have to create a
+Pocket "consumer key". More information in the production documentation.
+
+### News
+
+- Add Pocket importations
+- Allow users to change their avatar
+- Allow to directly mark bookmarks as read
+
+### Improvements
+
+- Fetch actual content of Twitter pages
+- Reword links "Show publicly" option in "Hide in public collections"
+- Add pagination on collection page
+- Add `aria-current="page"` on concerned anchors
+- Remove icons of collections titles
+
+### Bug fixes
+
+- Fix the infinite redirection when discovering page was empty
+- Fix username length issues
+- Create validation token on "resend email" action if the token is missing
+
+### Misc
+
+- Setup an async jobs system
+- Provide a DaoConnector trait and refactor code
+- Extract the routes into a dedicated class
+- Set docker-compose project name to `flusio`
+- Update the README
+- Reorganise technical documentation
 
 ## 2021-01-27 - v0.16
 
