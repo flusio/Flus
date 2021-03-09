@@ -1,5 +1,13 @@
 # Changelog of flusio
 
+## 2021-03-xx - v0.18
+
+### Breaking changes
+
+Demo user "Abby" is now automatically created on normal setup/reset (if
+`APP_DEMO` is true). The `make reset-demo` target is removed, you must use
+`make reset` instead.
+
 ## 2021-02-23 - v0.17
 
 ### Breaking changes

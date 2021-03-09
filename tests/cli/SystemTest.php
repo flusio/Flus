@@ -47,16 +47,23 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse(file_exists($migration_file));
 
-        $response = $this->appRun('cli', '/system/setup');
+        $response_generator = $this->appRun('cli', '/system/setup');
+        $response = $response_generator->current();
 
         $this->assertResponse($response, 200, 'The system has been initialized.');
         $this->assertTrue(file_exists($migration_file));
+        $response_generator->next();
+        $response = $response_generator->current();
+        $this->assertResponse($response, 200, 'Seeds loaded.');
     }
 
     public function testSetupWhenCallingTwice()
     {
-        $this->appRun('cli', '/system/setup');
-        $response = $this->appRun('cli', '/system/setup');
+        $response_generator = $this->appRun('cli', '/system/setup');
+        $response_generator->current(); // action is not called if generator is not executed
+
+        $response_generator = $this->appRun('cli', '/system/setup');
+        $response = $response_generator->current();
 
         $this->assertResponse($response, 200, 'Your system is already up to date.');
     }
@@ -67,7 +74,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         touch($migration_file);
         \Minz\Database::create();
 
-        $response = $this->appRun('cli', '/system/setup');
+        $response_generator = $this->appRun('cli', '/system/setup');
+        $response = $response_generator->current();
 
         $this->assertResponse($response, 200);
     }
@@ -94,7 +102,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Database::create();
 
-        $response = $this->appRun('cli', '/system/setup');
+        $response_generator = $this->appRun('cli', '/system/setup');
+        $response = $response_generator->current();
 
         @unlink($failing_migration_path);
 
@@ -123,7 +132,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Database::create();
 
-        $response = $this->appRun('cli', '/system/setup');
+        $response_generator = $this->appRun('cli', '/system/setup');
+        $response = $response_generator->current();
 
         @unlink($failing_migration_path);
 

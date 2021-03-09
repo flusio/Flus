@@ -32,12 +32,24 @@ class Topic extends \Minz\Model
     ];
 
     /**
+     * Initialize the model with default values.
+     *
+     * @param mixed $values
+     */
+    public function __construct($values)
+    {
+        parent::__construct(array_merge([
+            'id' => utils\Random::hex(32),
+            'label' => '',
+        ], $values));
+    }
+
+    /**
      * @param string $label
      */
     public static function init($label)
     {
         return new self([
-            'id' => utils\Random::hex(32),
             'label' => trim($label),
         ]);
     }

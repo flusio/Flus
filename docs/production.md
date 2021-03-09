@@ -286,13 +286,13 @@ It will also consider the account with the `demo@flus.io` email as the demo
 account. The reset itself can be done with the following command:
 
 ```console
-flusio# make reset-demo NO_DOCKER=true
+flusio# make reset NO_DOCKER=true
 ```
 
 It can be configured via a cron job:
 
 ```cron
-0 2 * * * cd /path/to/flusio && make reset-demo NO_DOCKER=true >/dev/null 2>&1
+0 2 * * * cd /path/to/flusio && make reset NO_DOCKER=true >/dev/null 2>&1
 ```
 
 ## Bonus: Enable subscriptions

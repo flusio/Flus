@@ -67,9 +67,16 @@ class System
         $migrations_version_path = $data_path . '/migrations_version.txt';
 
         if (file_exists($migrations_version_path)) {
-            return $this->migrate();
+            $response = $this->migrate();
         } else {
-            return $this->init();
+            $response = $this->init();
+        }
+
+        yield $response;
+
+        $code = $response->code();
+        if ($code >= 200 && $code < 300) {
+            yield $this->loadSeeds();
         }
     }
 
@@ -160,6 +167,29 @@ class System
             $text .= "\n" . $migration . ': ' . $result;
         }
         return Response::text($has_error ? 500 : 200, $text);
+    }
+
+    /**
+     * Execute seeds code in src/seeds.php.
+     *
+     * @response 201 If seeds file don’t exist
+     * @response 500 If an error occurs during loading
+     * @response 200 On success
+     */
+    private function loadSeeds()
+    {
+        $seeds_filepath = \Minz\Configuration::$app_path . '/src/seeds.php';
+        if (!file_exists($seeds_filepath)) {
+            return Response::noContent();
+        }
+
+        try {
+            include_once($seeds_filepath);
+            return Response::text(200, 'Seeds loaded.');
+        } catch (\Exception $e) {
+            $error = (string)$e;
+            return Response::text(500, "Seeds can’t be loaded:\n{$error}");
+        }
     }
 
     /**

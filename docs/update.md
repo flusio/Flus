@@ -22,7 +22,7 @@ flusio$ git pull
 flusio# chown -R www-data:www-data .
 ```
 
-Then, apply the migrations:
+Then, apply the migrations and load seeds with:
 
 ```console
 flusio$ make update NO_DOCKER=true

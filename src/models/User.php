@@ -90,22 +90,36 @@ class User extends \Minz\Model
     ];
 
     /**
+     * Initialize the model with default values.
+     *
+     * @param mixed $values
+     */
+    public function __construct($values)
+    {
+        $expired_at = \Minz\Time::fromNow(1, 'month');
+        parent::__construct(array_merge([
+            'id' => utils\Random::hex(32),
+            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'username' => '',
+            'email' => '',
+            'password_hash' => '',
+            'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
+            'csrf' => utils\Random::hex(64),
+            'news_preferences' => '{}',
+        ], $values));
+    }
+
+    /**
      * @param string $username
      * @param string $email
      * @param string $password
      */
     public static function init($username, $email, $password)
     {
-        $expired_at = \Minz\Time::fromNow(1, 'month');
         return new self([
-            'id' => utils\Random::hex(32),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'username' => trim($username),
             'email' => utils\Email::sanitize($email),
             'password_hash' => $password ? password_hash($password, PASSWORD_BCRYPT) : '',
-            'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
-            'csrf' => utils\Random::hex(64),
-            'news_preferences' => '{}',
         ]);
     }
 
