@@ -2,6 +2,8 @@
 
 namespace flusio\cli;
 
+use flusio\utils;
+
 /**
  * This is the central class for the CLI. It is called from the cli file.
  *
@@ -34,6 +36,11 @@ class Application
      */
     public function run($request)
     {
+        $cli_locale = \Minz\Configuration::$application['cli_locale'];
+        if ($cli_locale) {
+            utils\Locale::setCurrentLocale($cli_locale);
+        }
+
         return $this->engine->run($request);
     }
 }

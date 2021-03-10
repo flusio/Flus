@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-02-23 13:38+0100\n"
-"PO-Revision-Date: 2021-02-23 13:39+0100\n"
+"POT-Creation-Date: 2021-03-10 20:05+0100\n"
+"PO-Revision-Date: 2021-03-10 20:06+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -147,7 +147,7 @@ msgstr "Tous vos favoris importés depuis Pocket."
 msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
-#: models/Collection.php:100 models/Collection.php:117
+#: models/Collection.php:100 models/Collection.php:117 seeds.php:31
 #: views/_layouts/connected.phtml:94 views/collections/show_bookmarks.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
@@ -195,40 +195,40 @@ msgstr "La durée doit se trouver entre %d et %d."
 msgid "You must select at least one option."
 msgstr "Vous devez sélectionner au moins une option."
 
-#: models/Topic.php:82
+#: models/Topic.php:94
 msgid "The label is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Topic.php:85
+#: models/Topic.php:97
 #, php-format
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:432
+#: models/User.php:446
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:434
+#: models/User.php:448
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:436
+#: models/User.php:450
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:438
+#: models/User.php:452
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:440
+#: models/User.php:454
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:442
+#: models/User.php:456
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:444
+#: models/User.php:458
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -279,7 +279,39 @@ msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
 
-#: services/Fetch.php:132
+#: seeds.php:6
+msgid "Business"
+msgstr "Business"
+
+#: seeds.php:7
+msgid "Climate"
+msgstr "Climat"
+
+#: seeds.php:8
+msgid "Culture"
+msgstr "Culture"
+
+#: seeds.php:9
+msgid "Health"
+msgstr "Santé"
+
+#: seeds.php:10
+msgid "Politics"
+msgstr "Politique"
+
+#: seeds.php:11
+msgid "Science"
+msgstr "Science"
+
+#: seeds.php:12
+msgid "Sport"
+msgstr "Sport"
+
+#: seeds.php:13
+msgid "Tech"
+msgstr "Tech"
+
+#: services/Fetch.php:136
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"

@@ -40,6 +40,7 @@ return [
         'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
         'job_adapter' => 'test',
         'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY'),
+        'cli_locale' => $dotenv->pop('CLI_LOCALE'),
     ],
 
     'database' => [

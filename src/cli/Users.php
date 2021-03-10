@@ -4,6 +4,7 @@ namespace flusio\cli;
 
 use Minz\Response;
 use flusio\models;
+use flusio\utils;
 
 /**
  * Manipulate the Users of the application from the CLI.
@@ -35,6 +36,7 @@ class Users
 
         $user = models\User::init($username, $email, $password);
         $user->validated_at = \Minz\Time::now();
+        $user->locale = utils\Locale::currentLocale();
 
         $errors = $user->validate();
         if ($errors) {

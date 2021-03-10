@@ -277,6 +277,18 @@ CLI:
 flusio# php ./cli --request /users/create -pusername=Abby -pemail=email@example.com -ppassword=secret
 ```
 
+## Bonus: Change CLI default locale
+
+You can force the locale of CLI commands by setting the `CLI_LOCALE`
+environment variable:
+
+```env
+CLI_LOCALE=fr_FR
+```
+
+Note the commands feedback are not translated. It can be used to choose the
+locale of a user created via the CLI or seeds for instance.
+
 ## Bonus: Configure a demo server
 
 If you need to configure a demo server (this is probably NOT the case), you can

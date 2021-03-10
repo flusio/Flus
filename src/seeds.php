@@ -3,14 +3,14 @@
 $environment = \Minz\Configuration::$environment;
 
 if ($environment === 'development') {
-    \flusio\models\Topic::findOrCreateBy(['label' => 'Business']);
-    \flusio\models\Topic::findOrCreateBy(['label' => 'Climate']);
-    \flusio\models\Topic::findOrCreateBy(['label' => 'Culture']);
-    \flusio\models\Topic::findOrCreateBy(['label' => 'Health']);
-    \flusio\models\Topic::findOrCreateBy(['label' => 'Politics']);
-    \flusio\models\Topic::findOrCreateBy(['label' => 'Science']);
-    \flusio\models\Topic::findOrCreateBy(['label' => 'Sport']);
-    \flusio\models\Topic::findOrCreateBy(['label' => 'Tech']);
+    \flusio\models\Topic::findOrCreateBy(['label' => _('Business')]);
+    \flusio\models\Topic::findOrCreateBy(['label' => _('Climate')]);
+    \flusio\models\Topic::findOrCreateBy(['label' => _('Culture')]);
+    \flusio\models\Topic::findOrCreateBy(['label' => _('Health')]);
+    \flusio\models\Topic::findOrCreateBy(['label' => _('Politics')]);
+    \flusio\models\Topic::findOrCreateBy(['label' => _('Science')]);
+    \flusio\models\Topic::findOrCreateBy(['label' => _('Sport')]);
+    \flusio\models\Topic::findOrCreateBy(['label' => _('Tech')]);
 }
 
 $demo = \Minz\Configuration::$application['demo'];
