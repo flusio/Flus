@@ -301,10 +301,11 @@ account. The reset itself can be done with the following command:
 flusio# make reset NO_DOCKER=true
 ```
 
-It can be configured via a cron job:
+You’ll probably need to stop the job worker first. It can be configured via a
+cron job:
 
 ```cron
-0 2 * * * cd /path/to/flusio && make reset NO_DOCKER=true >/dev/null 2>&1
+0 2 * * * systemctl stop flusio-worker && cd /path/to/flusio && make reset NO_DOCKER=true >/dev/null 2>&1 && systemctl start flusio-worker
 ```
 
 ## Bonus: Enable subscriptions
