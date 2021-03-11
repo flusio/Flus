@@ -171,8 +171,10 @@ service by creating a `/etc/systemd/system/flusio-worker.service` file.
 Description=A job worker for flusio
 
 [Service]
-Type=simple
 ExecStart=php /var/www/flusio/cli --request /jobs/watch
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 Then, reload the systemd daemon and start the service:
