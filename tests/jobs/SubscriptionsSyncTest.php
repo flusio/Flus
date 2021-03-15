@@ -1,25 +1,15 @@
 <?php
 
-namespace flusio\cli;
+namespace flusio\jobs;
 
 use flusio\models;
 use flusio\services;
 
-class SubscriptionsTest extends \PHPUnit\Framework\TestCase
+class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
-    use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\ResponseAsserts;
-
-    /**
-     * @beforeClass
-     */
-    public static function loadApplication()
-    {
-        self::$application = new \flusio\cli\Application();
-    }
 
     /**
      * @before
@@ -39,6 +29,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncUpdatesExpiredAtOfOverdueUsers()
     {
+        $subscriptions_sync_job = new SubscriptionsSync();
         $app_conf = \Minz\Configuration::$application;
         $subscriptions_service = new services\Subscriptions(
             $app_conf['subscriptions_host'],
@@ -51,9 +42,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
-        $response = $this->appRun('cli', '/subscriptions/sync');
+        $subscriptions_sync_job->perform();
 
-        $this->assertResponse($response, 200, "{$user_id}: ✅ synchronized");
         $user = models\User::find($user_id);
         $this->assertNotSame(
             $expired_at->getTimestamp(),
@@ -63,6 +53,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncUpdatesExpiredAtOfNearlyOverdueUsers()
     {
+        $subscriptions_sync_job = new SubscriptionsSync();
         $app_conf = \Minz\Configuration::$application;
         $subscriptions_service = new services\Subscriptions(
             $app_conf['subscriptions_host'],
@@ -75,9 +66,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
-        $response = $this->appRun('cli', '/subscriptions/sync');
+        $subscriptions_sync_job->perform();
 
-        $this->assertResponse($response, 200, "{$user_id}: ✅ synchronized");
         $user = models\User::find($user_id);
         $this->assertNotSame(
             $expired_at->getTimestamp(),
@@ -87,6 +77,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncUpdatesAccountIdIfMissing()
     {
+        $subscriptions_sync_job = new SubscriptionsSync();
         $app_conf = \Minz\Configuration::$application;
         $subscriptions_service = new services\Subscriptions(
             $app_conf['subscriptions_host'],
@@ -97,9 +88,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_expired_at' => $this->fake('iso8601'),
         ]);
 
-        $response = $this->appRun('cli', '/subscriptions/sync');
+        $subscriptions_sync_job->perform();
 
-        $this->assertResponse($response, 200, "{$user_id}: ✅ subscription account created");
         $user = models\User::find($user_id);
         $this->assertNotNull($user->subscription_account_id);
         $this->assertNotNull($user->subscription_expired_at);
@@ -107,6 +97,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncIgnoresUsersWithFarExpiredAt()
     {
+        $subscriptions_sync_job = new SubscriptionsSync();
         $app_conf = \Minz\Configuration::$application;
         $subscriptions_service = new services\Subscriptions(
             $app_conf['subscriptions_host'],
@@ -119,9 +110,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
-        $response = $this->appRun('cli', '/subscriptions/sync');
+        $subscriptions_sync_job->perform();
 
-        $this->assertResponse($response, 200);
         $user = models\User::find($user_id);
         $this->assertSame(
             $expired_at->getTimestamp(),
@@ -131,15 +121,15 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncFailsWithInvalidAccountId()
     {
+        $subscriptions_sync_job = new SubscriptionsSync();
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
         $user_id = $this->create('user', [
             'subscription_account_id' => 'not-an-id',
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
-        $response = $this->appRun('cli', '/subscriptions/sync');
+        $subscriptions_sync_job->perform();
 
-        $this->assertResponse($response, 200, "{$user_id}: ❌ can't get the expiration date");
         $user = models\User::find($user_id);
         $this->assertSame(
             $expired_at->getTimestamp(),
@@ -149,6 +139,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncFailsIfSubscriptionsAreDisabled()
     {
+        $subscriptions_sync_job = new SubscriptionsSync();
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
         $user_id = $this->create('user', [
@@ -158,9 +149,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
-        $response = $this->appRun('cli', '/subscriptions/sync');
+        $subscriptions_sync_job->perform();
 
-        $this->assertResponse($response, 400, 'The subscriptions are disabled.');
         $user = models\User::find($user_id);
         $this->assertSame(
             $expired_at->getTimestamp(),

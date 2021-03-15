@@ -4,9 +4,12 @@
 
 ### Breaking changes
 
-Demo user "Abby" is now automatically created on normal setup/reset (if
-`APP_DEMO` is true). The `make reset-demo` target is removed, you must use
-`make reset` instead.
+If `APP_DEMO` is true, the reset of the application is now automatically done
+via a scheduled job. The `make reset-demo` target is removed, you should remove
+your cron task if you had one.
+
+If you’ve set the subscription system, the sync cron task must be removed as
+well (a scheduled job is running every 4 hours).
 
 ## 2021-02-23 - v0.17
 

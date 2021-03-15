@@ -25,7 +25,6 @@ class System
         $usage .= '  /jobs/watch         Wait and execute jobs' . "\n";
         $usage .= '  /links/refresh      Refresh the oldest links (only illustration images)' . "\n";
         $usage .= '      [-pnumber=NUMBER] where NUMBER is the number of links to refresh (default is 10)' . "\n";
-        $usage .= '  /subscriptions/sync Synchronize the overdue subscriptions (or nearly overdue)' . "\n";
         $usage .= '  /system/rollback    Reverse the last migration' . "\n";
         $usage .= '      [-psteps=NUMBER] where NUMBER is the number of rollbacks to apply (default is 1)' . "\n";
         $usage .= '  /system/secret      Generate a secure key to be used as APP_SECRET_KEY' . "\n";

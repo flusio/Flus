@@ -15,19 +15,26 @@ if ($environment === 'development') {
 
 $demo = \Minz\Configuration::$application['demo'];
 if ($demo) {
-    $user = \flusio\models\User::findOrCreateBy([
-        'username' => 'Abby',
-        'email' => 'demo@flus.io',
-    ], [
-        'password_hash' => password_hash('demo', PASSWORD_BCRYPT),
-        'validated_at' => \Minz\Time::now(),
-        'locale' => \flusio\utils\Locale::currentLocale(),
-    ]);
+    $reset_demo_job = new \flusio\jobs\ResetDemo();
 
-    \flusio\models\Collection::findOrCreateBy([
-        'type' => 'bookmarks',
-        'user_id' => $user->id,
-    ], [
-        'name' => _('Bookmarks'),
-    ]);
+    // Remove previous ResetDemo job if any
+    $job_dao = new \flusio\models\dao\Job();
+    $job_dao->deleteByName($reset_demo_job->name);
+
+    // Then, schedule the job for everynight
+    $reset_demo_job->perform_at = \Minz\Time::relative('tomorrow 2:00');
+    $reset_demo_job->frequency = '+1 day';
+    $reset_demo_job->performLater();
+}
+
+$subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+if ($subscriptions_enabled) {
+    $subscriptions_sync_job = new \flusio\jobs\SubscriptionsSync();
+
+    // Remove previous SubscriptionsSync job if any
+    $job_dao = new \flusio\models\dao\Job();
+    $job_dao->deleteByName($subscriptions_sync_job->name);
+
+    $subscriptions_sync_job->frequency = '+4 hours';
+    $subscriptions_sync_job->performLater();
 }

@@ -12,15 +12,23 @@ use flusio\models;
  */
 class Job
 {
+    /** @var string */
+    public $name;
+
     /** @var \DateTime */
     public $perform_at;
 
+    /** @var string */
+    public $frequency;
+
     /**
-     * Initialize the job and set perform_at at "now".
+     * Initialize the job.
      */
     public function __construct()
     {
+        $this->name = get_called_class();
         $this->perform_at = \Minz\Time::now();
+        $this->frequency = '';
     }
 
     /**
@@ -45,8 +53,10 @@ class Job
 
         $job_dao = new models\dao\Job();
         return $job_dao->create([
+            'name' => $this->name,
             'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'perform_at' => $this->perform_at->format(\Minz\Model::DATETIME_FORMAT),
+            'frequency' => $this->frequency,
             'handler' => $handler,
         ]);
     }
