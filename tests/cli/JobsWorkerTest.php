@@ -241,6 +241,100 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($now->getTimestamp(), $failed_at->getTimestamp());
     }
 
+    public function testRunReschedulesJobWithFrequency()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $job_dao = new models\dao\Job();
+        $token = $this->create('token');
+        $user_id = $this->create('user', [
+            'validation_token' => $token,
+        ]);
+        $job_id = $this->create('job', [
+            'perform_at' => $now->format(\Minz\Model::DATETIME_FORMAT),
+            'frequency' => '+1 day',
+            'locked_at' => null,
+            'number_attempts' => 0,
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
+            ]),
+        ]);
+
+        $response = $this->appRun('cli', '/jobs/run');
+
+        $this->assertResponse($response, 200, "job#{$job_id}: done");
+        $this->assertSame(1, $job_dao->count());
+        $db_job = $job_dao->find($job_id);
+        $perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
+        $this->assertSame(
+            \Minz\Time::fromNow(1, 'day')->getTimestamp(),
+            $perform_at->getTimestamp(),
+        );
+    }
+
+    public function testRunReschedulesJobWithFrequencyEvenIfFailing()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $job_dao = new models\dao\Job();
+        $job_id = $this->create('job', [
+            'perform_at' => $now->format(\Minz\Model::DATETIME_FORMAT),
+            'frequency' => '+1 month',
+            'locked_at' => null,
+            'number_attempts' => 0,
+            'handler' => json_encode([
+                'job_class' => 'tests\jobs\MyFailingJob',
+                'job_args' => [],
+            ]),
+        ]);
+
+        $response = $this->appRun('cli', '/jobs/run');
+
+        $this->assertResponse($response, 500, "job#{$job_id}: failed");
+        $this->assertSame(1, $job_dao->count());
+        $db_job = $job_dao->find($job_id);
+        $perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
+        $this->assertSame(
+            \Minz\Time::fromNow(1, 'month')->getTimestamp(),
+            $perform_at->getTimestamp(),
+        );
+    }
+
+    public function testRunReschedulesJobWithTooManyAttempts()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $job_dao = new models\dao\Job();
+        $token = $this->create('token');
+        $user_id = $this->create('user', [
+            'validation_token' => $token,
+        ]);
+        $number_attempts = $this->fake('numberBetween', 26, 100);
+        $job_id = $this->create('job', [
+            'perform_at' => $now->format(\Minz\Model::DATETIME_FORMAT),
+            'frequency' => '+1 day',
+            'locked_at' => null,
+            'number_attempts' => $number_attempts,
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
+            ]),
+        ]);
+
+        $response = $this->appRun('cli', '/jobs/run');
+
+        $this->assertResponse($response, 200, "job#{$job_id}: done");
+        $this->assertSame(1, $job_dao->count());
+        $db_job = $job_dao->find($job_id);
+        $perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
+        $this->assertSame(
+            \Minz\Time::fromNow(1, 'day')->getTimestamp(),
+            $perform_at->getTimestamp(),
+        );
+        $this->assertSame($number_attempts + 1, $db_job['number_attempts']);
+    }
+
     public function testWatchRendersCorrectly()
     {
         $job_dao = new models\dao\Job();

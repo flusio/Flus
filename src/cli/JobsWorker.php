@@ -76,7 +76,12 @@ class JobsWorker
         try {
             $job = new $job_class();
             $job->perform(...$job_args);
-            $job_dao->delete($db_job['id']);
+
+            if ($db_job['frequency']) {
+                $job_dao->reschedule($db_job['id']);
+            } else {
+                $job_dao->delete($db_job['id']);
+            }
         } catch (\Exception $exception) {
             $job_dao->fail($db_job['id'], (string)$exception);
             return Response::text(500, "job#{$db_job['id']}: failed");

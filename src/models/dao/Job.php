@@ -15,9 +15,11 @@ class Job extends \Minz\DatabaseModel
     {
         parent::__construct('jobs', 'id', [
             'id',
+            'name',
             'created_at',
             'handler',
             'perform_at',
+            'frequency',
             'locked_at',
             'number_attempts',
             'last_error',
@@ -36,7 +38,7 @@ class Job extends \Minz\DatabaseModel
             SELECT * FROM jobs
             WHERE locked_at IS NULL
             AND perform_at <= ?
-            AND number_attempts <= 25
+            AND (number_attempts <= 25 OR frequency != '')
             ORDER BY created_at;
         SQL;
 
@@ -73,16 +75,41 @@ class Job extends \Minz\DatabaseModel
     }
 
     /**
+     * Reschedule perform_at for a job with frequency.
+     *
+     * @param string $job_id
+     */
+    public function reschedule($job_id)
+    {
+        $db_job = $this->find($job_id);
+        if (!$db_job['frequency']) {
+            return;
+        }
+
+        $perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
+        $perform_at->modify($db_job['frequency']);
+        $this->update($db_job['id'], [
+            'perform_at' => $perform_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+    }
+
+    /**
      * Mark a job as failed
      *
-     * @param string $db_job_id
+     * @param string $job_id
      * @param string $error
      */
-    public function fail($db_job_id, $error)
+    public function fail($job_id, $error)
     {
-        $db_job = $this->find($db_job_id);
-        $number_seconds = 5 + pow($db_job['number_attempts'], 4);
-        $new_perform_at = \Minz\Time::fromNow($number_seconds, 'seconds');
+        $db_job = $this->find($job_id);
+        if ($db_job['frequency']) {
+            $new_perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
+            $new_perform_at->modify($db_job['frequency']);
+        } else {
+            $number_seconds = 5 + pow($db_job['number_attempts'], 4);
+            $new_perform_at = \Minz\Time::fromNow($number_seconds, 'seconds');
+        }
+
         $this->update($db_job['id'], [
             'locked_at' => null,
             'perform_at' => $new_perform_at->format(\Minz\Model::DATETIME_FORMAT),

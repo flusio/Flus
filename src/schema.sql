@@ -1,8 +1,10 @@
 CREATE TABLE jobs (
     id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL DEFAULT '',
     created_at TIMESTAMPTZ NOT NULL,
     handler JSON NOT NULL,
     perform_at TIMESTAMPTZ NOT NULL,
+    frequency TEXT NOT NULL DEFAULT '',
     locked_at TIMESTAMPTZ,
     number_attempts INTEGER NOT NULL DEFAULT 0,
     last_error TEXT,
