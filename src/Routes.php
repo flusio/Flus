@@ -136,8 +136,6 @@ class Routes
         $router->addRoute('cli', '/users/create', 'cli/Users#create');
         $router->addRoute('cli', '/users/clean', 'cli/Users#clean');
 
-        $router->addRoute('cli', '/subscriptions/sync', 'cli/Subscriptions#sync');
-
         $router->addRoute('cli', '/topics', 'cli/Topics#index');
         $router->addRoute('cli', '/topics/create', 'cli/Topics#create');
         $router->addRoute('cli', '/topics/delete', 'cli/Topics#delete');

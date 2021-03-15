@@ -308,9 +308,4 @@ You can enable the subscription service by setting the `APP_SUBSCRIPTIONS_HOST`
 and `APP_SUBSCRIPTIONS_PRIVATE_KEY` environment variables. The host must run
 the code of [flusio/flus.fr](https://github.com/flusio/flus.fr).
 
-Moreover, you should setup a cron job twice a day to synchronize subscriptions
-expirations:
-
-```cron
-0 6,18 * * * php /path/to/flusio/cli --request /subscriptions/sync >/dev/null 2>&1
-```
+A scheduled job run every 4 hours to sync the subscriptions.
