@@ -119,12 +119,11 @@ class Job extends \Minz\DatabaseModel
     }
 
     /**
-     * Delete all the jobs
-     *
      * @throws \PDOException if an error occured in the SQL syntax
      */
-    public function deleteAll()
+    public function deleteByName($name)
     {
-        return $this->exec("DELETE FROM {$this->table_name}");
+        $statement = $this->prepare("DELETE FROM {$this->table_name} WHERE name = ?");
+        return $statement->execute([$name]);
     }
 }

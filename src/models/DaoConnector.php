@@ -98,6 +98,14 @@ trait DaoConnector
     }
 
     /**
+     * @see \Minz\DatabaseModel::deleteAll
+     */
+    public static function deleteAll()
+    {
+        return self::daoCall('deleteAll');
+    }
+
+    /**
      * @see \Minz\DatabaseModel::delete
      */
     public static function delete($pk_values)

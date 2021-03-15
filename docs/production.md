@@ -297,18 +297,7 @@ If you need to configure a demo server (this is probably NOT the case), you can
 simply set the `APP_DEMO` variable to `true` in the `.env` file. It will add a
 banner at the top of the screen to warn users that data are reset every night.
 It will also consider the account with the `demo@flus.io` email as the demo
-account. The reset itself can be done with the following command:
-
-```console
-flusio# make reset NO_DOCKER=true
-```
-
-You’ll probably need to stop the job worker first. It can be configured via a
-cron job:
-
-```cron
-0 2 * * * systemctl stop flusio-worker && cd /path/to/flusio && make reset NO_DOCKER=true >/dev/null 2>&1 && systemctl start flusio-worker
-```
+account. The reset is done through a scheduled job managed by flusio.
 
 ## Bonus: Enable subscriptions
 
