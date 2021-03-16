@@ -14,7 +14,7 @@ class Collection extends \Minz\Model
 {
     use DaoConnector;
 
-    public const VALID_TYPES = ['bookmarks', 'collection'];
+    public const VALID_TYPES = ['bookmarks', 'collection', 'feed'];
 
     public const PROPERTIES = [
         'id' => [
@@ -54,6 +54,26 @@ class Collection extends \Minz\Model
             'type' => 'integer',
             'computed' => true,
         ],
+
+        'feed_url' => [
+            'type' => 'string',
+        ],
+
+        'feed_site_url' => [
+            'type' => 'string',
+        ],
+
+        'feed_fetched_code' => [
+            'type' => 'integer',
+        ],
+
+        'feed_fetched_at' => [
+            'type' => 'datetime',
+        ],
+
+        'feed_fetched_error' => [
+            'type' => 'string',
+        ],
     ];
 
     /**
@@ -68,6 +88,7 @@ class Collection extends \Minz\Model
             'description' => '',
             'type' => 'collection',
             'is_public' => false,
+            'feed_fetched_code' => 0,
         ], $values));
     }
 
