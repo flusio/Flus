@@ -447,9 +447,8 @@ class Links
             ]);
         }
 
-        $fetch_service = new services\Fetch();
+        $fetch_service = new services\LinkFetcher();
         $fetch_service->fetch($link);
-        $link->save();
 
         return Response::redirect('link', ['id' => $link->id]);
     }

@@ -11,7 +11,7 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Fetch
+class LinkFetcher
 {
     /** @var \SpiderBits\Cache */
     private $cache;
@@ -32,7 +32,7 @@ class Fetch
     }
 
     /**
-     * Fetch a link and set its properties
+     * Fetch a link, set its properties and save it
      *
      * @param \flusio\models\Link
      */
@@ -57,6 +57,8 @@ class Fetch
             $image_filename = $image_service->generatePreviews($info['url_illustration']);
             $link->image_filename = $image_filename;
         }
+
+        $link->save();
     }
 
     /**
