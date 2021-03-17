@@ -306,6 +306,38 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($db_links_to_collection2);
     }
 
+    public function testImportPocketItemsUsesTimeAddedIfItExists()
+    {
+        $importator = new Importator();
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $bookmarks_id = $this->create('collection', [
+            'type' => 'bookmarks',
+            'user_id' => $user->id,
+        ]);
+        $url = $this->fake('url');
+        $time_added = $this->fake('dateTime');
+        $items = [
+            [
+                'given_url' => $url,
+                'resolved_url' => $url,
+                'favorite' => '0',
+                'status' => '0',
+                'time_added' => $time_added->getTimestamp(),
+            ],
+        ];
+        $options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
+
+        $importator->importPocketItems($user, $items, $options);
+
+        $link = models\Link::findBy(['url' => $url]);
+        $this->assertSame($time_added->getTimestamp(), $link->created_at->getTimestamp());
+    }
+
     public function testImportPocketItemsDoesNotDuplicateAGivenUrlAlreadyThere()
     {
         $importator = new Importator();

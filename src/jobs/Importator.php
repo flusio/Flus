@@ -199,7 +199,17 @@ class Importator extends Job
                 // In normal cases, created_at is set on save() call. Since we
                 // add links via the bulkInsert call, we have to set created_at
                 // first, or it would fail because of the not-null constraint.
-                $link->created_at = \Minz\Time::now();
+                // If time_added is set (not documented), we use it to set the
+                // property in order to keep the order from Pocket. It defaults
+                // to "now".
+                $created_at = \Minz\Time::now();
+                if (isset($item['time_added'])) {
+                    $timestamp = intval($item['time_added']);
+                    if ($timestamp > 0) {
+                        $created_at->setTimestamp($timestamp);
+                    }
+                }
+                $link->created_at = $created_at;
 
                 // Then, add the link properties values to the list
                 $db_link = $link->toValues();
