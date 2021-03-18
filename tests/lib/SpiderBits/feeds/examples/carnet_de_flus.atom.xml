@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>carnet de flus</title><subtitle>Le blog de Flus</subtitle><link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml"/><link href="https://flus.fr/carnet/" rel="alternate" type="text/html"/><id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id><updated>2021-03-11T10:40:00+01:00</updated><link href="https://websub.flus.io/" rel="hub"/><entry><title>Récap #1 : lancement de mon activité, ouverture du service et découverte de WebSub</title><id>urn:uuid:7e0b078e-c996-5c76-a529-c420d03672d2</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/recap-1.html" rel="alternate" type="text/html"/><published>2019-12-14T11:30:00+01:00</published><updated>2019-12-14T11:30:00+01:00</updated><content type="html">&lt;p&gt;J’ai démarré mon activité de micro-entrepreneur début novembre et, comme je
+fonctionne par cycles de six semaines, j’arrive à la fin d’une première étape.
+&lt;strong&gt;C’est l’occasion de faire le point sur ce que j’ai fait ces derniers temps.&lt;/strong&gt;
+Cet article est le premier de ce qui deviendra peut-être une série si je tiens
+sur la durée.&lt;/p&gt;
+&lt;h2&gt;Le 04 novembre, début officiel de mon activité&lt;/h2&gt;
+&lt;p&gt;On m’a posé la question plusieurs fois de savoir comment s’était passé les
+démarches administratives pour ouvrir ma micro-entreprise. J’avais eu
+personnellement des retours comme quoi cela se faisait facilement, et je peux
+globalement confirmer.&lt;/p&gt;
+&lt;p&gt;J’ai fait les démarches dès que je suis rentré de mon voyage en Bretagne, aux
+alentours du 15 octobre. J’ai rempli le formulaire &lt;a href="https://www.guichet-entreprises.fr/fr/article/demarches-en-ligne/#Immatriculer"&gt;sur guichet-entreprises.fr&lt;/a&gt;
+(et non celui de l’Urssaf qui est une horreur). J’y avais déjà jeté un œil au
+préalable et m’étais renseigné auprès de la &lt;abbr&gt;CCI&lt;/abbr&gt; pour les options
+dont je n’étais pas sûr. Je pense que je l’ai complété en moins de 30 minutes.
+J’ai commencé à recevoir des papiers officiels le sur-lendemain de ma
+déclaration et tout était en place en moins de 2 semaines.&lt;/p&gt;
+&lt;p&gt;Il y a eu un petit couac avec la banque, et un plus gros avec mon prestataire
+de paiement initial ce qui a repoussé l’ouverture officielle. Rien de bien
+méchant, mais j’étais un peu fâché du délai supplémentaire. J’ai &lt;a href="micro-entrepreneur-banque-et-prestataire.html"&gt;raconté tout
+ça ici&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Lancement public du service le 28 novembre&lt;/h2&gt;
+&lt;p&gt;Si j’avais ouvert les inscriptions quelques jours auparavant, je n’ai
+annoncé &lt;a href="ouverture.html"&gt;l’ouverture de Flus&lt;/a&gt; que le 28 novembre, soit presque
+4 semaines après le début de mon activité.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;La réception a été bonne, quoique assez limitée.&lt;/strong&gt; Je suis un peu mitigé sur le
+résultat : 75 comptes créés, et 8 personnes qui ont déjà commencé à payer
+(certaines avant la fin de l’échéance du premier mois gratuit, un grand merci à
+vous !) C’est pas forcément énorme, mais ça reste au-dessus de mes prévisions
+initiales. Ça représente plus de 200 € de chiffre d’affaires et ça compense mes
+différents frais sur ce premier mois. Je ne peux pas me plaindre, pourtant
+j’espérais quand même un peu plus (forcément 😊).&lt;/p&gt;
+&lt;p&gt;Je réalise concrètement que réussir à vivre de cette activité ne va pas être
+une mince affaire. Je le savais déjà avant, bien sûr, mais c’est encore autre
+chose en ayant les mains dans le cambouis. Je relève ce défi avec plaisir bien
+évidemment et je m’éclate vraiment au quotidien, je découvre et apprend des tas
+de choses. Si je pars de ma semaine-type :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Le lundi c’est administratif, j’organise ma petite entreprise, j’archive les
+  papiers, je réponds ou relance les organismes, etc. Toute une organisation
+  que je n’avais pas.&lt;/li&gt;
+&lt;li&gt;Le mardi, administration système : j’améliore mes outils existants, j’en mets
+  en place de nouveaux, je fais le point sur les performances, l’espace disque
+  restant (je suis large), etc. Ce que je faisais auparavant en amateur, je
+  l’applique à un autre niveau désormais.&lt;/li&gt;
+&lt;li&gt;Le mercredi, je développe. Pour l’instant beaucoup sur des outils qui me
+  seront utiles et assez peu pour la communauté, mais ça devrait s’inverser et
+  j’ai hâte !&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Jeudi passion communication, sans doute là où j’ai le plus à apprendre.&lt;/strong&gt;
+  J’essaye de publier un article ce jour-là (éventuellement écrit la veille),
+  mais c’est insuffisant si je veux faire parler de moi. J’ai des pistes
+  d’amélioration sans tomber dans du « &lt;em&gt;forcing&lt;/em&gt; », il faut que je les
+  travaille encore.&lt;/li&gt;
+&lt;li&gt;Le vendredi ça dépend, mais j’essaye de faire un tour dans &lt;a href="https://github.com/FreshRSS/FreshRSS/issues"&gt;les tickets de
+  FreshRSS&lt;/a&gt; voir s’il y a besoin
+  d’un coup de main sur de petites tâches ou sur des choses qui trainent.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Je n’ai pas cité le support car je réponds aux demandes aussitôt que l’on me
+pose une question (en tout cas dès que je suis disponible). On ne m’a pas
+encore trop sollicité, mais je reste vigilant.&lt;/p&gt;
+&lt;h2&gt;Dernière semaine chargée : découverte de WebSub&lt;/h2&gt;
+&lt;p&gt;Comme je l’ai indiqué en début d’article, je fonctionne par cycle de 6
+semaines. J’adopte un rythme prédéterminé lors des 5 premières (la semaine-type
+détaillée ci-dessus), et j’utilise la sixième pour travailler à fond sur un
+sujet donné. &lt;strong&gt;Cette semaine, c’était &lt;a href="https://www.w3.org/TR/websub/"&gt;le protocole WebSub&lt;/a&gt;.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Pour comprendre ce protocole, il faut savoir qu’habituellement, un agrégateur
+de flux &lt;abbr&gt;RSS&lt;/abbr&gt; comme Flus / FreshRSS va questionner à intervalle
+régulier (par exemple toutes les heures) les serveurs publiant du contenu, même
+si rien de neuf n’a été publié. Cela induit du trafic inutile et un temps de
+latence entre la publication et la réception de l’article par un lecteur.
+WebSub vient se greffer au milieu de tout ça : les auteurs indiquent aux
+lecteurs un serveur (hub) auquel s’abonner. Lors de la publication d’un
+article, l’auteur notifie le hub, qui va lui-même envoyer ce contenu aux
+lecteurs qui s’y sont abonnés.&lt;/p&gt;
+&lt;p&gt;FreshRSS supporte WebSub depuis des années (il se trouve du côté « lecteur » du
+protocole), grâce au travail d’&lt;a href="https://github.com/Alkarex"&gt;Alkarex&lt;/a&gt;, mais je
+n’y avais jamais trop touché. Bien que je comprisse le fonctionnement global,
+tout ça restait assez nébuleux pour moi. Pourtant, il me semble qu’il s’agit de
+quelque chose d’assez prometteur et j’avais envie d’en savoir plus. &lt;strong&gt;Quoi de
+mieux alors que de se jeter tête baissée dans la lecture des spécifications et
+le développement d’un nouveau hub ?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;J’avais différents objectifs avec ce projet :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;apprendre WebSub dans le détail ;&lt;/li&gt;
+&lt;li&gt;améliorer mon niveau en &lt;abbr&gt;PHP&lt;/abbr&gt; (je me sentais rouillé et pas du
+  tout à la page, en particulier concernant les tests) ;&lt;/li&gt;
+&lt;li&gt;bidouiller un framework web de zéro (parce que pourquoi faire simple quand on
+  peut faire compliqué ?)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Concernant le dernier point, j’en reparlerai peut-être un de ces jours, plus
+probablement sur mon site personnel.&lt;/p&gt;
+&lt;p&gt;Au bout d’une semaine assez intense, &lt;strong&gt;le résultat est &lt;a href="https://github.com/flusio/Webubbub"&gt;Webubbub&lt;/a&gt;&lt;/strong&gt;
+(il s’agit de lignes de code, ne cliquez pas si ça ne vous intéresse pas).
+Le travail n’est pas loin d’être terminé pour avoir un hub fonctionnel et je
+m’en occuperai rapidement. Concernant mes objectifs, chacun a été rempli haut
+la main. J’entrevois même des usages de WebSub que je n’imaginais pas avant
+(reste à trouver des cas utiles !) Il s’agit d’une technologie vraiment
+intéressante pour corriger certaines limites de &lt;abbr&gt;RSS&lt;/abbr&gt; et Atom &lt;strong&gt;et
+facile à mettre en place.&lt;/strong&gt; Elle me permet également d’imaginer une piste
+supplémentaire pour ma stratégie de communication.&lt;/p&gt;
+&lt;h2&gt;Le récap’&lt;/h2&gt;
+&lt;p&gt;En résumé de cet article, je peux dire que je suis très content d’avoir démarré
+mon activité. Toutes les étapes de préparation faites en amont m’ont permis de
+ne pas trop me planter pour l’instant, les quelques couacs initiaux n’étaient
+pas critiques. Bref, &lt;strong&gt;ça se passe bien.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Le plus important reste que je suis à mon compte : je gère mon emploi du temps,
+mes priorités, ma communication, mon travail comme et quand je l’entends. Je
+peux donner un sens aux lignes de code que j’écris au quotidien, en sachant
+qu’elles seront directement utiles à d’autres. Et puis j’apprends des
+palanquées de nouvelles choses, c’est stimulant !&lt;/p&gt;</content></entry><entry><title>Bien démarrer avec Flus</title><id>urn:uuid:0f6e92a3-0eae-5025-8136-7309c9bd8258</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/bien-demarrer-avec-flus.html" rel="alternate" type="text/html"/><published>2019-12-05T18:15:00+01:00</published><updated>2019-12-05T18:15:00+01:00</updated><content type="html">&lt;p&gt;Alors ça y est, vous venez de vous inscrire sur Flus suite &lt;a href="ouverture.html"&gt;à mon dernier
+article&lt;/a&gt; ? Je vous souhaite la bienvenue et vous adresse un
+grand merci pour votre confiance ! Vous voici donc devant un écran bien vide,
+ou tout au mieux avec quelques articles venant de ce « &lt;a href="https://flus.io/carnet"&gt;carnet de flus&lt;/a&gt; ».
+Vous vous demandez peut-être par où commencer pour utiliser ce nouveau service
+au mieux ? &lt;strong&gt;Cet article est là pour vous mettre le pied à l’étrier.&lt;/strong&gt;&lt;/p&gt;
+&lt;figure&gt;
+    &lt;img alt="Capture d’écran de la page principale de Flus" src="images/flus-main-page.png" /&gt;
+    &lt;figcaption&gt;Il n’y a pas grand-chose à lire par défaut…&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;h2&gt;Première étape : listez les sites que vous avez l’habitude de lire&lt;/h2&gt;
+&lt;p&gt;Le principe de Flus est d’agréger l’actualité des sites sur lesquels vous vous
+rendez en un seul et unique endroit. Les articles publiés par ces sites seront
+tous visibles à la suite les uns des autres dans Flus.&lt;/p&gt;
+&lt;p&gt;Vous avez peut-être l’habitude de vous rendre sur un certain nombre de journaux
+en ligne. Sans préjuger de la qualité ni du contenu de ces journaux, certains
+des plus connus sont par exemple Le Figaro, Le Monde, L’Obs et L’Express. Bien
+entendu, la liste ne s’arrête pas là et je vous invite fortement à varier vos
+sources pour profiter de différents points de vue.&lt;/p&gt;
+&lt;p&gt;Vous allez peut-être également régulièrement sur des sites et blogs liés à une
+ou plusieurs de vos passions : sport, cuisine, culture ou encore politique ; la
+liste peut être longue. Listez tous ces sites, par exemple en les notant sur un
+papier dans un premier temps. Les podcasts sont également de très bons
+candidats pour votre liste !&lt;/p&gt;
+&lt;h2&gt;Deuxième étape : ajoutez les sites dans Flus&lt;/h2&gt;
+&lt;p&gt;Une fois votre liste faite, rendez-vous sur &lt;a href="https://flus.io"&gt;flus.io&lt;/a&gt;,
+connectez-vous et cliquez sur le bouton « Gestion des abonnements ». Ici, vous
+verrez des catégories (une seule au début, mais vous pouvez en créer autant que
+vous voulez). Tout en haut se trouve un champ permettant d’ajouter un flux
+&lt;abbr&gt;RSS&lt;/abbr&gt; ; c’est lui qui nous intéresse ici.&lt;/p&gt;
+&lt;p&gt;Contrairement à ce qu’il pourrait laisser penser, vous pouvez la plupart du
+temps &lt;strong&gt;ajouter directement l’&lt;abbr&gt;URL&lt;/abbr&gt; des sites qui vous intéressent&lt;/strong&gt;
+(celle dans la barre tout en haut de votre navigateur). Flus est en effet
+capable de trouver le flux &lt;abbr&gt;RSS&lt;/abbr&gt; associé à condition que le site
+soit correctement configuré.&lt;/p&gt;
+&lt;p&gt;Vous n’avez plus qu’à aller sur chacun des sites que vous avez listés lors de
+la précédente étape, copier-coller leur adresse dans le champ « Ajouter un flux
+RSS » et valider en cliquant sur le bouton « + ». Si tout se passe bien, vous
+devriez voir apparaître un panneau permettant de configurer la source. Vous
+pouvez le fermer pour l’instant en cliquant à l’extérieur, et passer au site
+suivant dans votre liste. En cas d’erreur, pas de panique, c’est l’objet des
+parties suivantes.&lt;/p&gt;
+&lt;figure&gt;
+    &lt;img alt="Capture d’écran de la page de configuration d’une source" src="images/flus-subscription.png" /&gt;
+    &lt;figcaption&gt;
+        Le panneau de configuration est très complet, mais vous aurez rarement
+        besoin d’y toucher. Contentez-vous de cliquer dans la zone à gauche
+        pour le fermer.
+    &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;h2&gt;Troisième étape : trouvez les flux des sites mal configurés&lt;/h2&gt;
+&lt;p&gt;Lors de vos tentatives d’ajouts, il y a de fortes chances que Flus vous ait
+indiqué qu’il n’était pas capable d’ajouter certains sites. Cela signifie soit
+qu’ils sont mal configurés (il va falloir trouver les adresses des flux), soit
+qu’ils ne possèdent pas du tout de flux &lt;abbr&gt;RSS&lt;/abbr&gt;.&lt;/p&gt;
+&lt;p&gt;La première chose à faire est de rechercher sur le site concerné : il est
+possible qu’il y ait un lien quelque part indiquant où trouver le flux
+&lt;abbr&gt;RSS&lt;/abbr&gt;. Si vous ne trouvez pas de lien en un clin d’œil, vous pouvez
+utiliser la fonction « Rechercher » de votre navigateur Internet
+(le fameux raccourci &lt;kbd&gt;ctrl&lt;/kbd&gt; + &lt;kbd&gt;f&lt;/kbd&gt;). Si vraiment rien n’y
+fait, recherchez dans votre moteur de recherche préféré le nom du site, suivi
+du terme « RSS ». Si une telle page existe, elle devrait apparaître. Si tel
+n’est pas le cas alors je suis désolé, mais je ne peux pas y faire
+grand-chose ! 😞 Dans le doute, vous pouvez toujours essayer de contacter les
+personnes gérant le site.&lt;/p&gt;
+&lt;p&gt;Dans certains cas, les sites peuvent proposer plusieurs flux &lt;abbr&gt;RSS&lt;/abbr&gt;
+différents, organisés par thème (c’est souvent le cas pour les journaux en
+ligne). C’est à vous de choisir en fonction de vos goûts. Cela peut être
+pratique pour ne pas être bombardé par de nombreux articles chaque jour.&lt;/p&gt;
+&lt;p&gt;Une fois l’&lt;abbr&gt;URL&lt;/abbr&gt; du flux &lt;abbr&gt;RSS&lt;/abbr&gt; en votre possession, vous
+n’avez plus qu’à l’ajouter dans Flus, comme précédemment.&lt;/p&gt;
+&lt;h2&gt;Quatrième étape : corrigez ou remontez les dernières erreurs&lt;/h2&gt;
+&lt;p&gt;Malgré vos tentatives, certains flux peuvent être récalcitrants et Flus
+refusera de les prendre en compte. C’est le cas de quelques sites mal
+configurés. Il est parfois possible de les ajouter en rajoutant à la fin de
+l’&lt;abbr&gt;URL&lt;/abbr&gt; la chaîne &lt;code&gt;#force_feed&lt;/code&gt;. Ce qui donne par exemple :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;https://flus.io/carnet/feeds/all.atom.xml#force_feed&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Il faut néanmoins attendre un petit peu après une tentative échouée – de
+l’ordre des 15 ou 30 minutes – afin que le cache se vide (ce sera sans doute
+amélioré un de ces jours).&lt;/p&gt;
+&lt;p&gt;Si rien n’y fait, alors vous pouvez au choix :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;m’écrire &lt;a href="mailto:support@flus.io"&gt;sur le support&lt;/a&gt; en m’indiquant les sites qui ne
+  fonctionnent pas, j’essayerai d’investiguer de mon côté ;&lt;/li&gt;
+&lt;li&gt;vérifier que le flux est valide en le testant sur &lt;a href="https://validator.w3.org/feed/"&gt;le site du &lt;abbr&gt;W3C&lt;/abbr&gt;&lt;/a&gt; ;&lt;/li&gt;
+&lt;li&gt;si vous êtes un peu plus aventureux, ouvrir &lt;a href="https://github.com/FreshRSS/FreshRSS/issues"&gt;un ticket sur le gestionnaire de
+  bugs de FreshRSS&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Sachez tout de même qu’il y a de très fortes chances que le problème vienne du
+site en face.&lt;/p&gt;
+&lt;h2&gt;Dernière étape : profitez&lt;/h2&gt;
+&lt;p&gt;Lorsque vous aurez terminé d’ajouter tous les sites qui vous intéressent, vous
+n’aurez plus qu’une chose à faire : lire !&lt;/p&gt;
+&lt;p&gt;Dans un premier temps, la liste des articles non lus risque d’être très longue
+et je vous recommande de tous les marquer comme lus dans un premier temps. Si
+vous souhaitez en lire certains plus tard, n’hésitez pas à les ajouter à vos
+favoris (la petite étoile à gauche) : ils s’ajouteront dans le menu « Favoris »
+à gauche et vous pourrez ainsi les retrouver plus facilement.&lt;/p&gt;
+&lt;p&gt;Enfin, vous n’aurez plus qu’à revenir régulièrement sur &lt;a href="https://flus.io"&gt;flus.io&lt;/a&gt;
+pour lire les articles qui auront été publiés par les différents sites que vous
+suivez. Vous n’avez désormais plus besoin de naviguer de site en site et vous
+ne raterez plus aucun article important : &lt;strong&gt;tout se passe dans Flus
+maintenant !&lt;/strong&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Si vous trouvez tout cela fastidieux, je serai ravi d’avoir vos retours,
+&lt;a href="mailto:marien@flus.io"&gt;écrivez-moi !&lt;/a&gt;&lt;br /&gt;
+En prenant un abonnement à Flus, vous m’aidez à vivre de mon travail et m’encouragez à améliorer un logiciel libre et communautaire : &lt;a href="https://freshrss.org"&gt;FreshRSS&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;</content></entry><entry><title>Ouverture de Flus, un service d’agrégation de l’actualité</title><id>urn:uuid:9b6c0c23-6ed1-5ffa-8863-e324bd8f423c</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/ouverture.html" rel="alternate" type="text/html"/><published>2019-11-28T11:30:00+01:00</published><updated>2019-11-28T11:30:00+01:00</updated><content type="html">&lt;p&gt;J’ai le plaisir d’annoncer aujourd’hui publiquement &lt;strong&gt;l’ouverture de &lt;a href="https://flus.io"&gt;ma
+plateforme d’agrégation de l’actualité, Flus&lt;/a&gt;.&lt;/strong&gt; En vous y
+créant un compte, vous pourrez suivre la grande majorité des sites d’actualité,
+blogs et podcasts existants.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Capture d’écran de la page principale de Flus" src="images/flus-screenshot.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Voilà quelques années que j’ai réalisé que l’information n’est pas une donnée
+objective. Elle est toujours perçue, analysée, comprise, synthétisée puis
+présentée par une personne ayant un vécu, des émotions et des sensibilités
+différentes des nôtres. Alors ajoutez à cela une plateforme qui concentre, trie
+et choisit pour vous quelles informations doivent vous parvenir, et vous voilà
+bien parti pour vous enfermer dans une bulle de filtres conçue sur-mesure.
+C’est le fonctionnement notamment de Twitter qui, en &lt;strong&gt;personnalisant toujours
+plus ce que vous voyez, vous enferme dans votre propre vision du monde.&lt;/strong&gt; Il
+vous devient ainsi plus compliqué d’adopter le point de vue d’autres personnes.
+Couplé à une instantanéité d’échanges courts, vous obtenez un cocktail
+détonnant pour exacerber des tensions artificiellement, et tout cela au profit
+d’une société privée.&lt;/p&gt;
+&lt;p&gt;On comprend dès lors l’importance de pouvoir s’informer de manière calme et
+plus « éclairée », en restant maître·sse de l’information qui nous parvient.
+Des solutions existent déjà depuis des années, basées sur des technologies
+reconnues et libres de « syndication » telles que les formats &lt;abbr&gt;RSS&lt;/abbr&gt;
+et Atom. Leur principe est simple : plutôt que de passer par un intermédiaire
+pour récupérer et trier le contenu pour vous, vous accédez à la source même où
+il est produit.&lt;/p&gt;
+&lt;p&gt;Le problème de ces technologies est qu’elles sont bien souvent méconnues du
+public, ou bien délaissées car considérées comme désuètes face aux nouveaux
+usages instantanés qu’ont imposé des mastodontes tels que Twitter et Facebook.
+Ce serait confondre technologies et usages : il est possible – et
+indispensable – d’améliorer et de compléter les outils existants basés sur
+&lt;abbr&gt;RSS&lt;/abbr&gt; et Atom afin de revoir notre rapport à l’information et,
+&lt;em lang="la"&gt;in fine&lt;/em&gt;, notre rapport au monde.&lt;/p&gt;
+&lt;h2&gt;Consacrer son énergie à améliorer un bien commun&lt;/h2&gt;
+&lt;p&gt;Flus ne sera sans doute pas au niveau de Twitter dans l’immédiat, mais cela ne
+signifie pas que le service est naze, loin de là ! Je ne suis sans doute pas
+très objectif en disant cela – j’en suis le développeur initial – mais
+&lt;a href="https://freshrss.org"&gt;FreshRSS, le logiciel derrière le service&lt;/a&gt;, est sans
+doute l’un des meilleurs agrégateurs d’actualités existants aujourd’hui. Les
+retours qui sont faits à la communauté depuis des années sont très
+encourageants. Toutes les fonctionnalités de base que l’on peut espérer d’un
+tel outil sont là, et certaines existent rarement ailleurs (au hasard, la
+génération dynamique de flux &lt;abbr&gt;RSS&lt;/abbr&gt; basée sur une recherche par
+exemple). &lt;strong&gt;En utilisant Flus, vous aurez à disposition un outil véritablement
+puissant et qui marche bien.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Cela ne m’empêche pas d’avoir conscience que certaines fonctionnalités
+mériteraient d’être améliorées et c’est l’intérêt de proposer un service
+payant. Le logiciel libre n’est jamais totalement gratuit : il s’agit de
+développeurs et développeuses qui offrent de leur temps. Or, le temps est
+quelque chose de compliqué à trouver pour une large majorité d’entre nous car
+il faut bien se nourrir également. Mon envie est simple : faire en sorte que le
+temps que je passe à améliorer FreshRSS (et donc Flus) me permette de me loger
+et de me nourrir. Ce temps ainsi libéré me permettra donc de travailler sur
+FreshRSS. J’ai déjà une belle liste d’idées de fonctionnalités à améliorer ou
+ajouter, dont certaines que l’on ne trouve nul par ailleurs. Bien entendu, cela
+se fera en accord avec la communauté et je serai très vigilant à toujours
+travailler main dans la main avec elle.&lt;/p&gt;
+&lt;p&gt;Ce que je trouve le plus enthousiasmant dans ce modèle, c’est le fait de
+pouvoir vivre de mes contributions à un bien commun. J’ai toujours été attiré
+par le libre pour une raison très simple : il s’agit de quelque chose de
+désintéressé qui nous dépasse toutes et tous. En développant ce type de
+logiciel, nous contribuons à un bien qui pourra être réutilisé ensuite par
+n’importe qui.&lt;/p&gt;
+&lt;h2&gt;Proposer une plateforme de confiance et ouverte ? Chiche !&lt;/h2&gt;
+&lt;p&gt;Twitter est un outil fantastique : il est pratique, léché, confortable. Mais
+tout cocon technologique soit-il, n’êtes-vous pas gêné par cette petite voix
+qui vous pousse à revenir sans cesse alimenter une gigantesque base de données
+privée sur laquelle vous n’avez aucun contrôle ? Ne vous y trompez pas, cette
+petite voix est tout à fait artificielle : elle est conçue, taillée et orientée
+pour vous inciter à revenir encore et encore.&lt;/p&gt;
+&lt;p&gt;Flus n’a pas pour objectif de rivaliser avec cet outil d’un point de vue
+confort d’utilisation. En revanche, je lui prête ma voix. Lorsque vous lisez
+« je » sur &lt;a href="https://flus.io"&gt;la page d’accueil&lt;/a&gt;, ou dans un article de ce
+carnet, cela se réfère à ma personne, &lt;a href="https://marienfressinaud.fr"&gt;Marien Fressinaud&lt;/a&gt;.
+En utilisant Flus, vous avez une personne en face de vous que vous pouvez
+interpeler par courriel, ou proposer d’aller manger un bout pour discuter si
+vous êtes vers Grenoble. Il ne s’agit pas d’un « je » artificiel qui a pour but
+de cacher la dernière startup à la mode ; c’est pour moi un véritable gage de
+transparence vis-à-vis de vous. Quelque chose vous gêne sur le service ?
+discutons-en ! Aussi, jamais cette « voix » ne tentera de vous manipuler pour
+vous pousser à utiliser le service sauf à être moi-même manipulateur !&lt;/p&gt;
+&lt;p&gt;Flus possède non seulement ma voix, mais ses rouages sont visibles. En basant
+le service sur le logiciel libre FreshRSS, vous avez là une condition
+nécessaire pour vérifier que je ne fais rien dans votre dos. Le logiciel étant
+communautaire, vous avez également la possibilité d’influer sur la direction
+qu’il doit prendre : &lt;strong&gt;le code est bel et bien au service des utilisateurs et
+des utilisatrices.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Cela est-il suffisant pour que vous m’accordiez votre confiance ? À partir du
+moment où vous confiez vos données à un tiers, il me semble qu’il existe
+toujours un risque pour vous. Qui vous assure que je ne serai pas racheté dans
+quelques années par une société dans laquelle vous aurez légitimement moins
+confiance ? C’est pour cela qu’il est important que vous puissiez quitter le
+service à n’importe quel moment avec vos propres données. C’est une
+fonctionnalité importante de Flus : il vous est possible d’exporter vos
+abonnements et vos articles pour les récupérer sur un autre serveur que le
+mien. Ainsi, vos données vous appartiennent véritablement !&lt;/p&gt;
+&lt;h2&gt;Face aux grandes surfaces « digitales », s’assumer petit producteur du numérique&lt;/h2&gt;
+&lt;p&gt;En ouvrant Flus, je n’ai à aucun moment l’intention de rivaliser avec des
+géants déjà bien installés, le risque est bien trop grand de se perdre en
+route. Le chemin que je compte emprunter est tout autre.&lt;/p&gt;
+&lt;p&gt;Ces dernières années, les &lt;a href="https://fr.wikipedia.org/wiki/GAFAM"&gt;&lt;abbr&gt;GAFAM&lt;/abbr&gt;&lt;/a&gt;
+(acronyme pour Google Amazon Facebook Apple et Microsoft) ont imposé une
+certaine vision du web : de grosses plateformes confortables et « gratuites »,
+semblant répondre parfaitement aux attentes de leurs usagers. En participant à
+l’association Framasoft, j’ai toutefois aidé à démontrer les dangers et enjeux
+que posent ces géants, notamment &lt;a href="https://degooglisons-internet.org/fr/#enjeux"&gt;à travers la campagne « Dégooglisons
+Internet »&lt;/a&gt;. Ce n’est pas le web
+dont je rêve.&lt;/p&gt;
+&lt;p&gt;J’ai grandi dans un milieu agricole : mes parents cultivent des vergers de
+petits fruits rouges ; ma mère vend en direct, sur les marchés, ou dans des
+magasins de producteurs. Voir ses client·es discuter avec elle a toujours été
+quelque chose de normal et d’attendu pour moi. J’ai mis du temps avant de
+constater le gouffre de mentalité que cela implique avec la « norme » des
+grandes surfaces. Je trouve malheureusement que le parallèle est compliqué à
+faire avec Internet : seules les grandes enseignes sont visibles et
+véritablement connues. Je crois néanmoins qu’&lt;strong&gt;il est temps de faire
+(re-)émerger les petits producteurs du numérique face aux grandes surfaces
+« digitales ».&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Il n’est plus question de faire pareil mais en mieux : il faut proposer de
+réfléchir différemment ; redonner de la place aux petits acteurs indépendants
+et coopérant ; rappeler qu’il y a des humain·es derrière chacun des outils que
+nous utilisons ; replacer la confiance et les échanges au centre de nos vies
+numériques. Il s’agit là de la vision à laquelle j’ai envie de participer.&lt;/p&gt;
+&lt;p&gt;Avec Flus, je propose cela : &lt;strong&gt;une plateforme d’agrégation de l’actualité,
+transparente et de confiance qui assume sa part d’humanité tout en proposant un
+service « utile ».&lt;/strong&gt; J’espère que les promesses faites dans cet article, ainsi
+que les fonctionnalités de Flus, saurons vous convaincre de soutenir
+financièrement la plateforme. L’enjeu principal pour moi tout au long de
+l’année à venir va être de prouver que mon modèle est viable, voire qu’il
+s’agit de l’un des chemins les plus agréables à emprunter pour celles et ceux
+qui voudraient vivre de logiciel libre.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://flus.io"&gt;&lt;strong&gt;Je vous donne rendez-vous sur flus.io pour la suite de l’aventure !&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;</content></entry><entry><title>Le micro-entrepreneur, la banque et le prestataire de paiement</title><id>urn:uuid:1d00b170-6f94-52f1-a5c3-874e792369f5</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/micro-entrepreneur-banque-et-prestataire.html" rel="alternate" type="text/html"/><published>2019-11-21T10:30:00+01:00</published><updated>2019-11-21T10:30:00+01:00</updated><content type="html">&lt;p&gt;Voilà deux mois que je n’ai pas donné de nouvelles sur ce carnet. Lors &lt;a href="6-semaines-plus-tard.html"&gt;du
+dernier épisode&lt;/a&gt;, j’expliquais pourtant qu’il ne me
+restait quasiment plus qu’à ouvrir les inscriptions de Flus, mais qu’avant ça
+je m’éclipsais pour environ un mois de vacances. Une fois &lt;a href="https://marienfressinaud.fr/bretagne-le-retour.html"&gt;rentré&lt;/a&gt;,
+tout ne s’est néanmoins pas passé comme je l’espérais.&lt;/p&gt;
+&lt;p&gt;Cet article a pour but d’expliquer pourquoi je n’ai toujours pas annoncé
+publiquement l’ouverture de &lt;a href="https://flus.io"&gt;Flus&lt;/a&gt;. Il permet également
+d’illustrer comment nous restons dépendant·es des autres : le retard peut
+s’accumuler malgré des démarches réalisées dans les temps. Je ne suis toutefois
+pas à plaindre, la situation n’est pas si pire 😉&lt;/p&gt;
+&lt;p&gt;La première chose que je voulais faire avant d’écrire un nouvel article,
+était de démarrer mon activité de micro-entrepreneur. J’ai fait les démarches
+directement en rentrant de vacances, pour une ouverture quelques semaines plus
+tard, le 4 novembre. Cela devait me laisser le temps de contacter également une
+banque pour ouvrir un compte (dossier rempli le 22 octobre, déposé à la Poste
+le lendemain) et configurer le système de renouvellement à travers &lt;a href="https://www.payplug.com/"&gt;le
+prestataire de paiement PayPlug&lt;/a&gt; (ce qui était fait
+&lt;a href="https://github.com/flusio/xExtension-Flus/commit/66e1c1b0ec1007bd7443c6c079bfa4ecddcdf8da"&gt;le 31 octobre&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Bref, un plan bien rôdé qui ne devait souffrir d’aucun accroc… ou presque !&lt;/p&gt;
+&lt;p&gt;La première chose que je n’avais pas prévu, c’est que mon dossier pour la
+banque allait se perdre dans les tuyaux. Notez l’exploit puisque je l’ai déposé
+à la Poste à destination de la Banque Postale. Je ne me suis pas inquiété
+immédiatement de la non-réponse de la banque, me disant que cela prenait
+légitimement du temps. Problème : en appelant le 4 novembre il s’est révélé que
+mes documents n’étaient pas arrivés. Une très sympathique personne (merci à
+elle !) m’a filé une adresse courriel pour tout de même envoyer mon dossier par
+voie numérique afin de me débloquer, quitte à devoir renvoyer des documents par
+courrier. Cela a encore pris une semaine, mais j’ai fini par recevoir la
+confirmation que tout était bon (mon chèque envoyé initialement par la Poste a
+même été encaissé, tiens tiens 😏).&lt;/p&gt;
+&lt;p&gt;Cela m’a permis de terminer mon dossier pour PayPlug le 14 novembre. Mais vous
+vous en doutez, un second contre-temps a pointé le bout de son nez puisque dès
+le lendemain je recevais leur réponse : « Votre compte PayPlug a été
+désactivé ». Ah. Ici, pas moyen d’avoir une réponse précise sur la raison de
+ce refus et ma relance pour vérifier qu’il ne s’agissait pas d’une erreur a
+reçu une fin de non-recevoir.&lt;/p&gt;
+&lt;p&gt;Après avoir un peu ronchonné sur Mastodon, on m’a conseillé deux solutions :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;passer par &lt;a href="https://stripe.com/fr"&gt;Stripe&lt;/a&gt;, ce à quoi j’avais déjà pensé,
+  mais je voulais privilégier une boite française (et PayPlug semblait au
+  niveau) ;&lt;/li&gt;
+&lt;li&gt;utiliser un terminal de paiement virtuel, en m’adressant directement à ma
+  banque.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Après avoir contacté ma banque, il se trouve qu’il me faudra encore ajouter
+deux semaines de délais, payer 300 € supplémentaires de frais de mise en
+service et remplir un dossier de 40 pages. Du côté de Stripe, j’en aurai pour
+environ une journée de travail pour permettre les paiements. Les coûts par
+transaction sont toutefois un peu plus élevés, mais en fait moins que ce
+que j’avais provisionné initialement.&lt;/p&gt;
+&lt;p&gt;En conclusion, je vais donc d’abord partir sur Stripe pour pouvoir ouvrir les
+portes de Flus en grand rapidement, puis j’intégrerai peut-être plus tard la
+solution de ma banque pour m’éviter un intermédiaire.&lt;/p&gt;
+&lt;p&gt;Et concernant ce carnet, je vais reprendre le rythme hebdomadaire pour sortir
+des articles. À la semaine prochaine !&lt;/p&gt;</content></entry><entry><title>6 semaines plus tard</title><id>urn:uuid:c1ca4046-ba8e-5b8b-99cc-61e6cfbadb00</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/6-semaines-plus-tard.html" rel="alternate" type="text/html"/><published>2019-09-19T17:30:00+02:00</published><updated>2019-09-19T17:30:00+02:00</updated><content type="html">&lt;p&gt;On est quasiment à un mois &lt;a href="sortir-en-6-semaines.html"&gt;de mon article qui fixait quelques-uns de mes
+objectifs à court terme&lt;/a&gt;, voyons où j’en suis dès
+aujourd’hui.&lt;/p&gt;
+&lt;p&gt;D’un point de vue administratif, il me reste à déclarer la micro-entreprise et
+faire les démarches qui en découlent (ouverture d’un compte en banque,
+mutuelle, etc.). Je me suis tout de même renseigné auprès de la
+&lt;abbr&gt;CCI&lt;/abbr&gt; pour obtenir toutes les informations qui me posaient problème,
+tel que le choix du domaine d’activité. Y’a plus qu’à, mais je ne l’ai pas
+encore fait pour la raison que je donne en fin d’article.&lt;/p&gt;
+&lt;p&gt;J’ai également rédigé et intégré les premières versions des &lt;a href="https://flus.io/i/?a=about"&gt;mentions légales&lt;/a&gt;,
+&lt;a href="https://flus.io/i/?a=tos"&gt;&lt;abbr&gt;CGU&lt;/abbr&gt;&lt;/a&gt; et &lt;a href="https://flus.io/i/?a=cgv"&gt;&lt;abbr&gt;CGV&lt;/abbr&gt;&lt;/a&gt;.
+Il y aura sans doute une seconde passe, mais j’ai déjà fait de mon mieux pour
+les rendre lisibles… ce qui avait la lourde implication de m’empêcher de
+recopier ce qui existe ailleurs (j’ai tout de même tiré des choses &lt;a href="https://framasoft.org/fr/cgu/"&gt;des
+&lt;abbr&gt;CGU&lt;/abbr&gt; de Framasoft&lt;/a&gt; ainsi que de &lt;a href="https://chatons.org/charte"&gt;la
+charte des CHATONS&lt;/a&gt;). À terme j’aimerais bien
+placer ces documents sous une licence libre mais je ne sais pas si c’est
+pertinent.&lt;/p&gt;
+&lt;p&gt;D’un point de vue développement pour la communauté, j’ai fait un peu plus que
+ce que j’avais prévu en :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;permettant de récupérer et valider des adresses email ;&lt;/li&gt;
+&lt;li&gt;ajoutant de la configuration pour lancer un environnement de développement
+  facilement ;&lt;/li&gt;
+&lt;li&gt;permettant aux administrateurs de configurer les flux par défaut des nouveaux
+  utilisateurs et utilisatrices ;&lt;/li&gt;
+&lt;li&gt;ajoutant la gestion des conditions générales d’utilisation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;L’ensemble de mes &lt;i lang="en"&gt;pull requests&lt;/i&gt; (i.e. des demandes
+d’améliorations) sont visibles &lt;a href="https://github.com/FreshRSS/FreshRSS/pulls?q=is%3Apr+author%3Amarienfressinaud"&gt;sur GitHub&lt;/a&gt;.
+À cela s’ajoute le développement &lt;a href="https://github.com/flusio/xExtension-Flus"&gt;de l’extension&lt;/a&gt;
+propre à Flus, ainsi &lt;a href="https://github.com/flusio/xTheme-Flus"&gt;qu’un nouveau thème&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Tout est installé et configuré sur un serveur, &lt;strong&gt;il ne me reste quasiment plus
+qu’à ouvrir les inscriptions&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Le programme pour les prochains jours va toutefois être un silence complet de
+ma part. Je vais profiter de &lt;a href="https://marienfressinaud.fr/bretagne.html"&gt;quelques semaines déconnectées en Bretagne&lt;/a&gt;,
+du 23 septembre au 23 octobre (environ). Un mois entier avant de commencer à
+ouvrir les portes, sans doute d’abord aux personnes qui ont eu la gentillesse
+de répondre à &lt;a href="https://marienfressinaud.fr/questionnaire-agregateurs-dactualite.html"&gt;mon questionnaire&lt;/a&gt;
+en juin dernier, puis rapidement à tout le monde.&lt;/p&gt;</content></entry><entry><title>Tarification : viser juste</title><id>urn:uuid:d914272c-ba64-537c-9075-d615b49bab75</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/tarification-viser-juste.html" rel="alternate" type="text/html"/><published>2019-09-10T16:45:00+02:00</published><updated>2019-09-10T16:45:00+02:00</updated><content type="html">&lt;p&gt;J’avais &lt;a href="https://marienfressinaud.fr/mon-futur-service-de-veille.html"&gt;annoncé&lt;/a&gt;
+sur mon blog personnel que je voulais être transparent concernant le choix
+de la tarification pour Flus. J’ai désormais eu les regards extérieurs que je
+souhaitais sur mes prévisions et je peux donc arrêter les prix :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;un abonnement à &lt;strong&gt;3 € par mois&lt;/strong&gt; ;&lt;/li&gt;
+&lt;li&gt;un abonnement à &lt;strong&gt;30 € par an&lt;/strong&gt; (soit 2 mois gratuits) ;&lt;/li&gt;
+&lt;li&gt;la période d’essai sera d’un mois.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Une large majorité de personnes ayant répondues à mon sondage privilégiait un
+abonnement à 1 ou 2 € par mois (plus de 50 %). J’ai longuement hésité à faire
+le choix du 2 € mais plusieurs arguments m’ont fait préférer augmenter d’un euro.&lt;/p&gt;
+&lt;h2&gt;Calcul d’un objectif de chiffre d’affaires&lt;/h2&gt;
+&lt;p&gt;Les charges, tout d’abord, ne sont pas bien élevées. Il faut compter le coût
+mensuel des serveurs, les frais des prestataires pour le paiement, les coûts de
+la banque, de la mutuelle et d’une assurance. Comptez pour tout ça entre 200 et
+300 € par mois ; il s’agira de mes dépenses principales. On peut également
+ajouter les différentes cotisations et taxes, mais je bénéficierai d’aides
+importantes la première année et le cumul ne devrait s’élever à guère plus de
+200 € sur l’année. Je n’ai pas compté l’impôt sur le revenu dans cette
+équation : ajoutez quand même environ 1 000 €. Bien sûr tout cela est en
+fonction de mon chiffre d’affaires (&lt;abbr&gt;CA&lt;/abbr&gt;) donc je pourrais avoir à
+débourser plus, mais il s’agira alors d’un « bon » problème.&lt;/p&gt;
+&lt;p&gt;Je prévois également deux dépenses importantes pour la première année : la
+création d’un logo et l’achat d’un ordinateur portable (2 500 € pour
+l’ensemble, c’est un peu gonflé mais pas tant).&lt;/p&gt;
+&lt;p&gt;Enfin, je vise une rémunération de 3 500 € la première année. C’est très peu
+mais je bénéficierai encore des aides Pôle Emploi qui viendront compenser en
+partie.&lt;/p&gt;
+&lt;p&gt;Tous ces chiffres additionnés m’amènent à un &lt;abbr&gt;CA&lt;/abbr&gt; d’&lt;strong&gt;environ
+10 000 € à réaliser la première année&lt;/strong&gt; tout en ayant un résultat positif.
+J’aime bien : c’est rond, facile à retenir et ça semble atteignable.&lt;/p&gt;
+&lt;h2&gt;Calcul d’un objectif de clientèle&lt;/h2&gt;
+&lt;p&gt;10 000 € de &lt;abbr&gt;CA&lt;/abbr&gt;, ça correspond à quoi en termes de clients ? Pour
+mes calculs, j’ai fait deux hypothèses :&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;60 % des personnes privilégieront l’abonnement mensuel contre 40 % l’annuel
+   (cette répartition est tirée des réponses à &lt;a href="https://marienfressinaud.fr/questionnaire-agregateurs-dactualite.html"&gt;mon questionnaire&lt;/a&gt;) ;&lt;/li&gt;
+&lt;li&gt;la croissance sera linéaire tout au long de l’année (là c’est &lt;strong&gt;très&lt;/strong&gt;
+   théorique, mais ça simplifie grandement les calculs).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;L’application de quelques formules de math pas forcément très compliquées mais
+suffisamment pour que je m’y arrache quelques cheveux me donne les répartitions
+suivantes en fonction du prix de l’abonnement. Notez que lorsque je parle de
+« +5 nouveaux abonnements par mois », il faut comprendre que le nombre de
+nouveaux abonnements augmente de 5 chaque mois (donc +5 le premier mois, +10 le
+second mois, +15, etc.)&lt;/p&gt;
+&lt;p&gt;Abonnements 1 € mensuel – 10 € annuel :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;+13 nouveaux abonnements mensuels par mois&lt;/li&gt;
+&lt;li&gt;+9 nouveaux abonnements annuels par mois&lt;/li&gt;
+&lt;li&gt;soit un total d’environ &lt;strong&gt;1 500 client·es à la fin de l’année&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Abonnements 2 € mensuel – 20 € annuel :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;+7 nouveaux abonnements mensuels par mois&lt;/li&gt;
+&lt;li&gt;+5 nouveaux abonnements annuels par mois&lt;/li&gt;
+&lt;li&gt;soit un total d’environ &lt;strong&gt;800 client·es à la fin de l’année&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Abonnements 3 € mensuel – 30 € annuel :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;+5 nouveaux abonnements mensuels par mois&lt;/li&gt;
+&lt;li&gt;+3 nouveaux abonnements annuels par mois&lt;/li&gt;
+&lt;li&gt;soit un total d’environ &lt;strong&gt;500 client·es à la fin de l’année&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Avec ces chiffres, je pourrais me contenter d’estimer ce qui me semble le plus
+probable de pouvoir atteindre. Évidemment, 500 client·es sont plus faciles à
+atteindre que 800, mais est-ce que les 800 ne semblent pas tout aussi
+atteignables ?&lt;/p&gt;
+&lt;h2&gt;Choix d’une tarification viable pour le service&lt;/h2&gt;
+&lt;p&gt;En cantonnant ma réflexion aux éléments ci-dessus, j’aurais plutôt opté pour
+2 € par mois mais il ne faut pas oublier que :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;je bénéficierai d’aides importantes la première année, notamment une forte
+  exonération de mes cotisations sociales qui s’établiront progressivement à
+  22 % de mon &lt;abbr&gt;CA&lt;/abbr&gt; tant que je serai en micro-entreprise ;&lt;/li&gt;
+&lt;li&gt;je ne pourrai pas encore me payer convenablement cette première année et mes
+  allocations chômage toucheront ensuite à leur fin ;&lt;/li&gt;
+&lt;li&gt;je serai assujetti à la &lt;abbr&gt;TVA&lt;/abbr&gt; à partir de 33 200 € de &lt;abbr&gt;CA&lt;/abbr&gt;,
+  donc au-delà il faudra que je divise mes prix &lt;abbr&gt;TTC&lt;/abbr&gt; par 1,2 pour
+  correspondre à ce que je toucherai réellement.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;J’ai donc fait une projection de mes résultats prévisionnels sur trois ans pour
+prendre en compte une hausse de mes cotisations et taxes, une augmentation de
+mon salaire jusqu’à 1 600 € par mois et la prise en compte de la
+&lt;abbr&gt;TVA&lt;/abbr&gt;. Cela m’amène à &lt;strong&gt;viser environ 2 000 clients la troisième
+année&lt;/strong&gt; avec un abonnement à 3 € &lt;abbr&gt;TTC&lt;/abbr&gt; par mois. Ça tombe bien : ça
+correspond à la limite que je me fixais implicitement pour pouvoir gérer le
+support correctement sans être noyé sous les demandes. Si je fais un abonnement
+moins cher, il me faudra accueillir plus de monde pour pouvoir rentrer dans mes
+frais ; ce n’est pas ce que je souhaite.&lt;/p&gt;
+&lt;p&gt;Évidemment, cela me rassure car je peux me fixer des objectifs plus facilement
+atteignables. Si je suis confiant dans le fait qu’il y ait un minimum de
+demande, le marché que je vise dans un premier temps est déjà saturé par les
+personnes qui s’auto-hébergent ou utilisant déjà un service gratuit de flux
+&lt;abbr&gt;RSS&lt;/abbr&gt;. Plus je viserai « bas » plus je serai donc en mesure
+d’atteindre mes objectifs mais tout cela reste pour moi un pari.&lt;/p&gt;
+&lt;p&gt;Enfin, ce prix ne prend pas en compte mon envie de transformer à terme la
+micro-entreprise en une autre structure capable d’embaucher pour pouvoir
+assurer la pérennité du service. J’ai le temps de voir venir d’ici là.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;J’ai fait un certain nombre de raccourcis dans cet article et omis quelques
+détails de calcul. Si vous avez des questions ou des remarques, j’ai mis en
+place une page ou vous trouverez &lt;a href="https://flus.fr/contact"&gt;le moyen de me contacter&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;</content></entry><entry><title>Standards ouverts</title><id>urn:uuid:e79fcef8-6574-5f7d-a331-fb1ee0806b8b</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/standards-ouverts.html" rel="alternate" type="text/html"/><published>2019-09-03T16:50:00+02:00</published><updated>2019-09-03T16:50:00+02:00</updated><content type="html">&lt;p&gt;En basant mon service de suivi de l’actualité sur &lt;a href="https://freshrss.org"&gt;FreshRSS&lt;/a&gt;,
+je fais le choix de technologies standardisées et ouvertes, à savoir les
+formats &lt;a href="https://fr.wikipedia.org/wiki/RSS"&gt;&lt;abbr title="Really Simple Syndication"&gt;RSS&lt;/abbr&gt;&lt;/a&gt;
+et &lt;a href="https://fr.wikipedia.org/wiki/Atom_Syndication_Format"&gt;Atom&lt;/a&gt;. Ce choix
+n’est pas anodin.&lt;/p&gt;
+&lt;p&gt;Déjà parce qu’il traduit une vision de la société numérique qui est la mienne
+et que je défends. &lt;abbr&gt;RSS&lt;/abbr&gt; et Atom sont de formidables portes d’entrée
+sur les blogs et les sites d’actualités en permettant d’accéder aux listes des
+articles sous des formats connus (ce sont des standards libres et documentés),
+répandus (on en trouve partout), ouverts (pas besoin de système
+d’authentification) et neutres (aucun filtre n’est appliqué dessus par un
+tiers). Chacun·e peut construire un outil qui ira « consommer » un flux
+&lt;abbr&gt;RSS&lt;/abbr&gt; d’une manière différente de celle de son ou sa voisine, selon
+ses propres besoins.&lt;/p&gt;
+&lt;p&gt;En construisant Flus, j’espère également montrer que l’on peut vivre d’un
+service autour de l’actualité qui ne se base pas sur la captation et la
+manipulation des données. Je me pose fondamentalement en opposition des
+plateformes telles que Facebook et Twitter qui, sous couvert d’« expérience
+utilisateur améliorée », enferment leurs utilisateurs et utilisatrices dans des
+bulles créées par des intelligences plus qu’artificielles. Je crois que
+&lt;strong&gt;la transparence des algorithmes est fondamentale pour ne pas se sentir
+manipulé·e&lt;/strong&gt; (à défaut de l’être).&lt;/p&gt;
+&lt;p&gt;Ces choix rendent évidemment mon entreprise plus fragile puisque je ne peux pas
+enfermer mes utilisateurs et utilisatrices dans un énorme silo. Mais je crois
+que c’est surtout l’assurance que je ferai toujours de mon mieux pour
+construire un service honnête, véritablement au service de ma clientèle.&lt;/p&gt;
+&lt;p&gt;Je suis convaincu que le web s’est démocratisé essentiellement grâce à ses
+fondations ouvertes. Flus se placera dans cette lignée et fera de son mieux
+pour redorer le blason de ces technologies (&lt;abbr&gt;RSS&lt;/abbr&gt; et Atom, vous
+avez suivi) que certains disent sur le déclin. Il me semble qu’il s’agit de
+briques fondamentales pour un web en bonne santé.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Point d’étape sur l’ouverture du service : j’ai rendez-vous avec la CCI ce
+jeudi 5 septembre pour faire le point. Cela devrait me débloquer quelques
+points administratifs et me permettra d’y voir plus clair quant à la suite des
+évènements.&lt;/em&gt;&lt;/p&gt;</content></entry><entry><title>Contributions communautaires</title><id>urn:uuid:ce3be582-e832-580d-b583-42e6802afbd3</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/contributions-communautaires.html" rel="alternate" type="text/html"/><published>2019-08-28T17:50:00+02:00</published><updated>2019-08-28T17:50:00+02:00</updated><content type="html">&lt;p&gt;Flus se base(ra) sur un logiciel libre ET communautaire : &lt;a href="https://freshrss.org/"&gt;FreshRSS&lt;/a&gt;.
+En me basant sur un logiciel construit par d’autres, je décide de jouer le jeu
+et de reverser le maximum de mes améliorations de code au pot commun. Bien sûr,
+je suis un peu biaisé puisque j’ai moi-même &lt;a href="https://marienfressinaud.fr/freshrss-un-agregateur-simple-et-leger.html"&gt;initié&lt;/a&gt;
+FreshRSS : ce pot commun a longtemps été mon propre pot. Je réalise toutefois
+aujourd’hui que celui-ci est désormais bel et bien possédé par une communauté.&lt;/p&gt;
+&lt;p&gt;J’ai le souvenir que mes précédentes contributions étaient facilement
+intégrées, sans forcément de longues revues de code. C’était à la fois
+confortable et dangereux pour la stabilité du logiciel. Ce confort je le
+retrouve sur la plupart de mes projets libres, notamment &lt;a href="https://lessy.io/"&gt;Lessy&lt;/a&gt;
+que je développe grandement seul (quand je prends le temps de le faire). Je me
+rends compte que j’y ai pris goût.&lt;/p&gt;
+&lt;p&gt;C’est pourquoi mes deux dernières contributions importantes à FreshRSS m’ont
+questionné. La première consistait à ajouter l’ajout de &lt;a href="https://github.com/FreshRSS/FreshRSS/pull/2481"&gt;la validation des
+adresses emails&lt;/a&gt; ; la seconde à
+ajouter une configuration pour &lt;a href="https://github.com/FreshRSS/FreshRSS/pull/2492"&gt;lancer aisément un environnement de
+développement&lt;/a&gt;. Ces deux
+« &lt;em lang="en"&gt;pull requests&lt;/em&gt; » ont généré pas mal de commentaires et de
+suggestions d’amélioration auxquelles je ne m’attendais pas. L’intégration à la
+branche principale a donc pris plus de temps que je ne le pensais.&lt;/p&gt;
+&lt;p&gt;Les remarques et suggestions étaient tout à fait pertinentes et je suis
+extrêmement reconnaissant aux personnes qui ont pris le temps de relire mon
+code de les avoir faites : il y a une véritable addition des idées et
+connaissances pour arriver à un « mieux ». J’avais adoré ce travail d’équipe
+lorsque j’étais salarié et je prends toujours du plaisir à ce genre
+d’expérience aujourd’hui. Je me pose toutefois la question du long terme :
+&lt;strong&gt;aurai-je toujours l’énergie de proposer mes améliorations à la branche
+communautaire ?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;La question n’est pas si différente de celle du travail au sein d’une équipe
+en entreprise. Elle diffère pourtant sur un point essentiel : en entreprise,
+une équipe possède des membres bien identifiés avec des temporalités communes
+(i.e. ils et elles bossent « en même temps »). On peut donc s’améliorer et
+avancer véritablement ensemble. Une communauté est par essence plus volatile et
+avec des temporalités complètement différentes ; l’exercice n’est donc pas le
+même pour ce qui est de la communication et du travail « ensemble ».&lt;/p&gt;
+&lt;p&gt;Il n’est absolument pas question de comparer qualitativement ces deux
+fonctionnements. Simplement, les contributions communautaires me questionnent
+dans le cadre d’une entreprise qui devra, à terme, me permettre de vivre.
+Comment gérer les « urgences » auxquelles je risque d’être confronté ?&lt;/p&gt;
+&lt;p&gt;Évidemment, des solutions existent. Flus fonctionnera notamment sur une branche
+spécifique sur laquelle je pourrai intégrer des fonctionnalités qui n’existent
+pas encore dans la version communautaire (mais attention, le code sera toujours
+&lt;a href="https://github.com/flusio/FreshRSS/tree/master-flus"&gt;ouvert&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;La réflexion à laquelle ce questionnement me mène plutôt, c’est que l’urgence
+ne peut plus devenir une norme. En contribuant à une communauté qui ne possède
+pas les mêmes attentes et la même temporalité que moi, je m’impose des
+garde-fous. En jouant la carte de la communauté, je suis forcé de travailler
+différemment de si j’avais gardé le code pour moi. Est-ce que ce sera mieux ?
+Je le crois et l’espère.&lt;/p&gt;
+&lt;p&gt;J’ai hâte de savoir ce que ça donnera sur du plus long terme.&lt;/p&gt;</content></entry><entry><title>Sortir en 6 semaines</title><id>urn:uuid:db2d5441-8a43-5f81-9f57-8080a30f0c4c</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/sortir-en-6-semaines.html" rel="alternate" type="text/html"/><published>2019-08-21T11:30:00+02:00</published><updated>2019-08-21T11:30:00+02:00</updated><content type="html">&lt;p&gt;Je me suis donné comme objectif de monter mon service de veille d’actualités,
+&lt;a href="https://flus.io"&gt;Flus&lt;/a&gt;, en l’espace de 6 semaines. Je préviens tout de suite :
+je ne pense pas tenir ce délai et le service n’ouvrira pas le lundi 23
+septembre. Cet objectif n’est pas tout à fait réaliste, mais il permet de
+commencer à se poser les bonnes questions et notamment « &lt;strong&gt;De quoi ai-je
+absolument besoin pour faire tourner le service ?&lt;/strong&gt; »&lt;/p&gt;
+&lt;p&gt;J’ai commencé par poser au propre les idées que j’avais afin de séparer
+l’indispensable du « &lt;em lang="en"&gt;nice to have&lt;/em&gt; » (c’est-à-dire ce qu’il
+serait bien d’avoir). Un serveur ? Indispensable. Un logo ? Je peux m’en passer
+pour l’instant. Des conditions générales d’utilisation ? Indispensables. Un
+système de facturation ? Je pourrai le développer durant le premier mois
+d’ouverture (ce premier mois sera gratuit donc personne n’aura à payer avant le
+mois suivant).&lt;/p&gt;
+&lt;p&gt;Voici une liste de ce qui me semble indispensable pour ouvrir le service :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;valider mon plan d’affaire avec la &lt;abbr title="Chambre de Commerce et d’Industrie"&gt;CCI&lt;/abbr&gt; ;&lt;/li&gt;
+&lt;li&gt;déclarer mon statut de micro-entrepreneur ;&lt;/li&gt;
+&lt;li&gt;ouvrir un compte en banque ;&lt;/li&gt;
+&lt;li&gt;rédiger les &lt;abbr title="Conditions Générales d’Utilisation"&gt;CGU&lt;/abbr&gt;,
+  &lt;abbr title="Conditions Générales de Vente"&gt;CGV&lt;/abbr&gt; et mentions légales ;&lt;/li&gt;
+&lt;li&gt;louer serveur et nom de domaine (c’est fait, évidemment sinon vous ne liriez
+  pas ceci 😉) ;&lt;/li&gt;
+&lt;li&gt;installer et configurer un FreshRSS sur le serveur ;&lt;/li&gt;
+&lt;li&gt;développer une page d’accueil pour le service ;&lt;/li&gt;
+&lt;li&gt;récupérer les adresses emails des utilisateurices (FreshRSS ne disposant pas
+  de cette fonctionnalité initialement) ;&lt;/li&gt;
+&lt;li&gt;développer un début de page de facturation (sans nécessité immédiate de faire
+  payer donc) ;&lt;/li&gt;
+&lt;li&gt;configurer le système de sauvegarde des données ;&lt;/li&gt;
+&lt;li&gt;configurer une adresse email pour gérer les demandes de support.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Et c’est tout, le reste pourra venir ensuite. Alors j’aimerais vraiment
+beaucoup avoir un logo et un joli thème pour l’ouverture ; j’aimerais que les
+premiers comptes soient automatiquement inscrits à ce « carnet de flus » et que
+la connexion aux systèmes de paiement soit opérationnelle ; mais soyons
+réalistes : 6 semaines, c’est court.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Je ne bâclerai pas pour autant l’ouverture du service et je prendrai le
+temps qu’il faudra pour faire les choses correctement&lt;/strong&gt; ; 6 semaines,
+c’est court mais pas forcément réaliste pour ouvrir un service de qualité.
+6 semaines, c’est avant tout pour me donner un meilleur sens des priorités.&lt;/p&gt;
+&lt;p&gt;On fait le point le 23 septembre prochain ?&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;P.S. Une autre raison pour ne pas ouvrir le service si rapidement est que je
+compte prendre des dernières vacances à partir de fin septembre, histoire de
+souffler une dernière fois avant de me jeter dans le grand bain.&lt;/em&gt;&lt;/p&gt;</content></entry><entry><title>Bonjour le monde !</title><id>urn:uuid:923eba87-0c47-5df6-b87d-0c291c50dc19</id><author><name>Marien</name></author><link href="https://flus.fr/carnet/bonjour-le-monde.html" rel="alternate" type="text/html"/><published>2019-08-17T08:00:00+02:00</published><updated>2019-08-17T08:00:00+02:00</updated><content type="html">&lt;p&gt;Le premier article d’un blog est souvent le plus compliqué car on ne sait jamais trop quoi y raconter. Je vais donc rester court.&lt;/p&gt;
+&lt;p&gt;Ce blog sera &lt;a href="https://flus.io/i/"&gt;celui de Flus&lt;/a&gt;, un service de veille d’actualités permettant de suivre une large variété de sites et de blogs depuis un seul endroit. Pour les geeks d’entre vous, il s’agira tout simplement d’un agrégateur de flux RSS (&lt;a href="https://freshrss.org/"&gt;FreshRSS&lt;/a&gt; pour être exact).&lt;/p&gt;
+&lt;p&gt;Je tenterai de raconter ici les évolutions du service, la gestion de l’entreprise derrière, de donner des conseils d’utilisation, des liens utiles, etc. Tout cela pour un maximum de transparence et pour que vous sachiez où vous mettez les pieds. Je vise pour l’instant des publications hebdomadaires relativement courtes.&lt;/p&gt;
+&lt;p&gt;L’entreprise derrière n’est pas encore montée et le service n’est donc pas ouvert, alors n’hésitez pas à &lt;a href="abonnement.html"&gt;vous abonner au blog&lt;/a&gt; pour savoir quand tout ouvrira… en attendant de pouvoir le faire sur Flus directement ! Vous pouvez d’ores et déjà &lt;a href="https://github.com/flusio/"&gt;suivre le développement sur GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;À bientôt sur &lt;a href="https://flus.io"&gt;flus.io&lt;/a&gt; !&lt;/p&gt;</content></entry></feed>
