@@ -29,7 +29,7 @@ else
 endif
 
 .PHONY: start
-start: ## Start a development server (use Docker)
+start: .env ## Start a development server (use Docker)
 	@echo "Running webserver on http://localhost:8000"
 	docker-compose -p flusio -f docker/docker-compose.yml up
 
