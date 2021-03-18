@@ -40,7 +40,8 @@ trait DaoConnector
         if ($this->created_at) {
             self::update($this->$primary_key_name, $values);
         } else {
-            $values['created_at'] = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
+            $now = \Minz\Time::now();
+            $values['created_at'] = $now->format(\Minz\Model::DATETIME_FORMAT);
 
             // If the value is null, it most probably means the id is a serial
             // type (i.e. it will be set by the DB). However, if we pass the
@@ -53,7 +54,7 @@ trait DaoConnector
             $pk_value = self::create($values);
 
             $this->$primary_key_name = $pk_value;
-            $this->created_at = $values['created_at'];
+            $this->created_at = $now;
         }
     }
 
