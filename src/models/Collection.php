@@ -16,6 +16,8 @@ class Collection extends \Minz\Model
 
     public const VALID_TYPES = ['bookmarks', 'collection', 'feed'];
 
+    public const NAME_MAX_LENGTH = 100;
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'string',
@@ -121,6 +123,23 @@ class Collection extends \Minz\Model
             'name' => _('Bookmarks'),
             'type' => 'bookmarks',
             'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * @param string $user_id
+     *
+     * @return \flusio\models\Collection
+     */
+    public static function initFeed($user_id, $feed_url)
+    {
+        $feed_url = \SpiderBits\Url::sanitize($feed_url);
+        return new self([
+            'name' => substr($feed_url, 0, self::NAME_MAX_LENGTH),
+            'feed_url' => $feed_url,
+            'type' => 'feed',
+            'user_id' => $user_id,
+            'is_public' => true,
         ]);
     }
 
@@ -256,7 +275,7 @@ class Collection extends \Minz\Model
      */
     public static function validateName($name)
     {
-        return strlen($name) <= 100;
+        return strlen($name) <= self::NAME_MAX_LENGTH;
     }
 
     /**
