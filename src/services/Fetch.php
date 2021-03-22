@@ -102,7 +102,8 @@ class Fetch
 
         // It's dangerous out there. mb_convert_encoding makes sure data is a
         // valid UTF-8 string.
-        $data = mb_convert_encoding($response->data, 'UTF-8', 'UTF-8');
+        $encodings = mb_list_encodings();
+        $data = mb_convert_encoding($response->data, 'UTF-8', $encodings);
 
         if (!$response->success) {
             // Okay, Houston, we've had a problem here. Return early, there's

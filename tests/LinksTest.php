@@ -924,6 +924,52 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $link->fetched_code);
     }
 
+    public function testFetchHandlesIso8859()
+    {
+        $fixtures_path = \Minz\Configuration::$app_path . '/tests/fixtures';
+        $user = $this->login();
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+            'title' => $url,
+        ]);
+        $hash = \SpiderBits\Cache::hash($url);
+        $raw_response = file_get_contents($fixtures_path . '/responses/test_iso_8859_1');
+        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $cache->save($hash, $raw_response);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $link = models\Link::find($link_id);
+        $this->assertSame('Test ëéàçï', $link->title);
+    }
+
+    public function testFetchHandlesBadEncoding()
+    {
+        $fixtures_path = \Minz\Configuration::$app_path . '/tests/fixtures';
+        $user = $this->login();
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+            'title' => $url,
+        ]);
+        $hash = \SpiderBits\Cache::hash($url);
+        $raw_response = file_get_contents($fixtures_path . '/responses/test_bad_encoding');
+        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $cache->save($hash, $raw_response);
+
+        $response = $this->appRun('post', "/links/{$link_id}/fetch", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $link = models\Link::find($link_id);
+        $this->assertSame(410, $link->fetched_code);
+    }
+
     public function testFetchDownloadsOpenGraphIllustration()
     {
         $user = $this->login();
