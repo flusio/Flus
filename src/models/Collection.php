@@ -239,6 +239,16 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return the feed site URL to be displayed
+     *
+     * @return string
+     */
+    public function feedWebsite()
+    {
+        return \flusio\utils\Belt::host($this->feed_site_url);
+    }
+
+    /**
      * Sort collections based on given locale
      *
      * @param \flusio\models\Collection[] $collections

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-03-25 11:39+0100\n"
-"PO-Revision-Date: 2021-03-25 11:39+0100\n"
+"POT-Creation-Date: 2021-04-07 15:51+0200\n"
+"PO-Revision-Date: 2021-04-07 15:51+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -38,8 +38,8 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:120 controllers/Collections.php:335
-#: controllers/Collections.php:532 controllers/Collections.php:579
+#: controllers/Collections.php:120 controllers/Collections.php:336
+#: controllers/Collections.php:533 controllers/Collections.php:580
 #: controllers/LinkMessages.php:72 controllers/Links.php:177
 #: controllers/NewsLinkRemovals.php:129 controllers/NewsLinks.php:122
 #: controllers/NewsLinks.php:184 controllers/Registrations.php:100
@@ -52,12 +52,12 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:132 controllers/Collections.php:348
+#: controllers/Collections.php:132 controllers/Collections.php:349
 #: controllers/my/Profile.php:94
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:410 controllers/LinkCollections.php:101
+#: controllers/Collections.php:411 controllers/LinkCollections.php:101
 #: controllers/Links.php:318 controllers/Links.php:369
 #: controllers/Links.php:447 controllers/Links.php:489
 #: controllers/Messages.php:46 controllers/NewsLinkRemovals.php:222
@@ -69,7 +69,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: controllers/Collections.php:443
+#: controllers/Collections.php:444
 msgid ""
 "It looks like you have no “Bookmarks” collection, you should contact the "
 "support."
@@ -168,7 +168,7 @@ msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
 
-#: jobs/Importator.php:33
+#: jobs/Importator.php:39
 msgid ""
 "We tried to import from Pocket, but pocket_consumer_key is missing (please "
 "contact the support)."
@@ -176,7 +176,7 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais il manque la "
 "clépocket_consumer_key (merci de contacter le support)."
 
-#: jobs/Importator.php:41
+#: jobs/Importator.php:47
 msgid ""
 "We tried to import from Pocket, but you didn’t authorize us to access your "
 "Pocket data."
@@ -184,19 +184,19 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais vous n’avez pas autorisé "
 "l’accès à vos données Pocket."
 
-#: jobs/Importator.php:108
+#: jobs/Importator.php:114
 msgid "Pocket links"
 msgstr "Liens Pocket"
 
-#: jobs/Importator.php:111
+#: jobs/Importator.php:117
 msgid "All your links imported from Pocket."
 msgstr "Tous vos liens importés depuis Pocket."
 
-#: jobs/Importator.php:115
+#: jobs/Importator.php:121
 msgid "Pocket favorite"
 msgstr "Favoris Pocket"
 
-#: jobs/Importator.php:118
+#: jobs/Importator.php:124
 msgid "All your favorites imported from Pocket."
 msgstr "Tous vos favoris importés depuis Pocket."
 
@@ -205,36 +205,36 @@ msgstr "Tous vos favoris importés depuis Pocket."
 msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
-#: models/Collection.php:100 models/Collection.php:117
+#: models/Collection.php:123 models/Collection.php:157
 #: views/_layouts/connected.phtml:101 views/collections/show_bookmarks.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:255
+#: models/Collection.php:305
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:257
+#: models/Collection.php:307
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:196
+#: models/Link.php:204
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:198
+#: models/Link.php:206
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:217
+#: models/Link.php:225
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:222
+#: models/Link.php:230
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:226
+#: models/Link.php:234
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -290,35 +290,35 @@ msgstr "La langue est obligatoire."
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
-#: seeds.php:9
+#: seeds.php:16
 msgid "Business"
 msgstr "Business"
 
-#: seeds.php:10
+#: seeds.php:17
 msgid "Climate"
 msgstr "Climat"
 
-#: seeds.php:11
+#: seeds.php:18
 msgid "Culture"
 msgstr "Culture"
 
-#: seeds.php:12
+#: seeds.php:19
 msgid "Health"
 msgstr "Santé"
 
-#: seeds.php:13
+#: seeds.php:20
 msgid "Politics"
 msgstr "Politique"
 
-#: seeds.php:14
+#: seeds.php:21
 msgid "Science"
 msgstr "Science"
 
-#: seeds.php:15
+#: seeds.php:22
 msgid "Sport"
 msgstr "Sport"
 
-#: seeds.php:16
+#: seeds.php:23
 msgid "Tech"
 msgstr "Tech"
 
@@ -593,7 +593,7 @@ msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
 #: views/collections/discover.phtml:39 views/collections/index.phtml:100
-#: views/collections/show_public.phtml:48
+#: views/collections/show_public.phtml:59
 #, php-format
 msgid "created by %s"
 msgstr "créée par %s"
@@ -737,7 +737,7 @@ msgid "Edit"
 msgstr "Modifier"
 
 #: views/collections/show.phtml:105 views/collections/show_bookmarks.phtml:64
-#: views/collections/show_public.phtml:110 views/news_links/index.phtml:85
+#: views/collections/show_public.phtml:123 views/news_links/index.phtml:85
 #, php-format
 msgid "%d comment"
 msgid_plural "%d comments"
@@ -759,7 +759,7 @@ msgid "Manage collections"
 msgstr "Gérer les collections"
 
 #: views/collections/show.phtml:180 views/collections/show_bookmarks.phtml:142
-#: views/collections/show_public.phtml:124 views/links/show.phtml:43
+#: views/collections/show_public.phtml:138 views/links/show.phtml:43
 #: views/links/show_public.phtml:56 views/news_links/index.phtml:154
 msgid "read"
 msgstr "lire"
@@ -782,15 +782,26 @@ msgstr "Une collection créée par %s sur %s."
 msgid "Back"
 msgstr "Retour"
 
-#: views/collections/show_public.phtml:58
+#: views/collections/show_public.phtml:50
+#, php-format
+msgid ""
+"Feed <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
+msgstr ""
+"Flux <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
+
+#: views/collections/show_public.phtml:52
+msgid "Feed"
+msgstr "Flux"
+
+#: views/collections/show_public.phtml:70
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:65
+#: views/collections/show_public.phtml:77
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:134
+#: views/collections/show_public.phtml:148
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 

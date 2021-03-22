@@ -43,11 +43,23 @@
     <?php endif; ?>
 
     <div class="collection__meta">
-        <div class="collection__details">
-            <p class="collection__owner">
-                <?= _f('created by %s', protect($owner->username)) ?>
-            </p>
-        </div>
+        <?php if ($collection->type === 'feed'): ?>
+            <div class="collection__details">
+                <p class="collection__feed icon icon--feed">
+                    <?php if ($collection->feed_site_url): ?>
+                        <?= _f('Feed <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', protect($collection->feed_site_url), protect($collection->feedWebsite())) ?>
+                    <?php else: ?>
+                        <?= _('Feed') ?>
+                    <?php endif; ?>
+                </p>
+            </div>
+        <?php else: ?>
+            <div class="collection__details">
+                <p class="collection__owner">
+                    <?= _f('created by %s', protect($owner->username)) ?>
+                </p>
+            </div>
+        <?php endif; ?>
 
         <div class="collection__actions">
             <?php if ($current_user): ?>
@@ -105,11 +117,13 @@
                             <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                         </p>
 
-                        <p class="card__text">
-                            <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $link->id]) ?>">
-                                <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
-                            </a>
-                        </p>
+                        <?php if ($collection->type !== 'feed'): ?>
+                            <p class="card__text">
+                                <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $link->id]) ?>">
+                                    <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
+                                </a>
+                            </p>
+                        <?php endif; ?>
                     </div>
 
                     <div class="card__footer">
