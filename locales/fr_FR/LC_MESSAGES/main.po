@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-03-10 20:05+0100\n"
-"PO-Revision-Date: 2021-03-10 20:06+0100\n"
+"POT-Creation-Date: 2021-03-24 10:01+0100\n"
+"PO-Revision-Date: 2021-03-24 10:02+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,8 +15,8 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Collections.php:118 Collections.php:321 Collections.php:518
-#: Collections.php:565 LinkMessages.php:70 Links.php:176
+#: Collections.php:118 Collections.php:333 Collections.php:530
+#: Collections.php:577 LinkMessages.php:70 Links.php:176
 #: NewsLinkRemovals.php:127 NewsLinks.php:119 NewsLinks.php:181
 #: Registrations.php:93 Sessions.php:82 my/Account.php:169 my/Account.php:249
 #: my/Profile.php:83 my/Security.php:78 my/Security.php:138
@@ -26,19 +26,19 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: Collections.php:130 Collections.php:334 my/Profile.php:94
+#: Collections.php:130 Collections.php:346 my/Profile.php:94
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: Collections.php:396 LinkCollections.php:99 Links.php:317 Links.php:368
-#: Links.php:446 Links.php:489 Messages.php:44 NewsLinkRemovals.php:220
+#: Collections.php:408 LinkCollections.php:99 Links.php:317 Links.php:368
+#: Links.php:446 Links.php:488 Messages.php:44 NewsLinkRemovals.php:220
 #: NewsLinkRemovals.php:290 NewsLinkRemovals.php:371 Sessions.php:187
 #: importations/Importations.php:46 importations/Pocket.php:100
 #: importations/Pocket.php:149 importations/Pocket.php:241 my/Profile.php:159
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: Collections.php:429
+#: Collections.php:441
 msgid ""
 "It looks like you have no “Bookmarks” collection, you should contact the "
 "support."
@@ -58,7 +58,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
-#: Onboarding.php:46
+#: Onboarding.php:46 views/collections/feed.atom.xml.phtml:30
 #, php-format
 msgid "“%s”"
 msgstr "« %s »"
@@ -147,36 +147,36 @@ msgstr "Tous vos favoris importés depuis Pocket."
 msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
-#: models/Collection.php:100 models/Collection.php:117 seeds.php:31
-#: views/_layouts/connected.phtml:94 views/collections/show_bookmarks.phtml:3
+#: models/Collection.php:100 models/Collection.php:117
+#: views/_layouts/connected.phtml:98 views/collections/show_bookmarks.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:241
+#: models/Collection.php:255
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:243
+#: models/Collection.php:257
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:182
+#: models/Link.php:196
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:184
+#: models/Link.php:198
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:203
+#: models/Link.php:217
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:208
+#: models/Link.php:222
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:212
+#: models/Link.php:226
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -204,31 +204,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:446
+#: models/User.php:464
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:448
+#: models/User.php:466
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:450
+#: models/User.php:468
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:452
+#: models/User.php:470
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:454
+#: models/User.php:472
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:456
+#: models/User.php:474
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:458
+#: models/User.php:476
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -279,39 +279,39 @@ msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
 
-#: seeds.php:6
+#: seeds.php:9
 msgid "Business"
 msgstr "Business"
 
-#: seeds.php:7
+#: seeds.php:10
 msgid "Climate"
 msgstr "Climat"
 
-#: seeds.php:8
+#: seeds.php:11
 msgid "Culture"
 msgstr "Culture"
 
-#: seeds.php:9
+#: seeds.php:12
 msgid "Health"
 msgstr "Santé"
 
-#: seeds.php:10
+#: seeds.php:13
 msgid "Politics"
 msgstr "Politique"
 
-#: seeds.php:11
+#: seeds.php:14
 msgid "Science"
 msgstr "Science"
 
-#: seeds.php:12
+#: seeds.php:15
 msgid "Sport"
 msgstr "Sport"
 
-#: seeds.php:13
+#: seeds.php:16
 msgid "Tech"
 msgstr "Tech"
 
-#: services/Fetch.php:136
+#: services/LinkFetcher.php:137
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -398,58 +398,58 @@ msgstr[1] "%d&nbsp;heures"
 msgid "%d&nbsp;h&nbsp;%d"
 msgstr "%d&nbsp;h&nbsp;%d"
 
-#: views/_layouts/connected.phtml:46 views/_layouts/connected_blocked.phtml:46
-#: views/_layouts/not_connected.phtml:46 views/_layouts/onboarding.phtml:39
+#: views/_layouts/connected.phtml:50 views/_layouts/connected_blocked.phtml:46
+#: views/_layouts/not_connected.phtml:50 views/_layouts/onboarding.phtml:39
 msgid "Skip to main content"
 msgstr "Sauter au contenu"
 
-#: views/_layouts/connected.phtml:53 views/_layouts/connected_blocked.phtml:53
-#: views/_layouts/not_connected.phtml:53 views/_layouts/onboarding.phtml:46
+#: views/_layouts/connected.phtml:57 views/_layouts/connected_blocked.phtml:53
+#: views/_layouts/not_connected.phtml:57 views/_layouts/onboarding.phtml:46
 #, php-format
 msgid "You need to activate JavaScript in order to use %s."
 msgstr "Vous devez activer JavaScript pour utiliser %s."
 
-#: views/_layouts/connected.phtml:61 views/_layouts/connected_blocked.phtml:61
-#: views/_layouts/not_connected.phtml:61
+#: views/_layouts/connected.phtml:65 views/_layouts/connected_blocked.phtml:61
+#: views/_layouts/not_connected.phtml:65
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
 msgstr ""
 "Vous utilisez une version de démo de %s, les données sont réinitialisées "
 "chaque nuit."
 
-#: views/_layouts/connected.phtml:69 views/_layouts/connected_blocked.phtml:69
+#: views/_layouts/connected.phtml:73 views/_layouts/connected_blocked.phtml:69
 msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
-#: views/_layouts/connected.phtml:84 views/news_link_removals/adding.phtml:8
+#: views/_layouts/connected.phtml:88 views/news_link_removals/adding.phtml:8
 #: views/news_links/index.phtml:3 views/news_links/index.phtml:11
 #: views/news_links/preferences.phtml:7
 msgid "News"
 msgstr "Journal"
 
-#: views/_layouts/connected.phtml:104 views/collections/index.phtml:3
+#: views/_layouts/connected.phtml:108 views/collections/index.phtml:3
 #: views/collections/index.phtml:11 views/collections/new.phtml:7
 #: views/link_collections/index.phtml:26 views/links/new.phtml:54
 #: views/news_link_removals/adding.phtml:32
 msgid "Collections"
 msgstr "Collections"
 
-#: views/_layouts/connected.phtml:115 views/_layouts/connected.phtml:119
+#: views/_layouts/connected.phtml:119 views/_layouts/connected.phtml:123
 #: views/_layouts/connected_blocked.phtml:92
-#: views/_layouts/connected_blocked.phtml:96 views/collections/show.phtml:119
-#: views/collections/show.phtml:123 views/collections/show_bookmarks.phtml:76
+#: views/_layouts/connected_blocked.phtml:96 views/collections/show.phtml:123
+#: views/collections/show.phtml:127 views/collections/show_bookmarks.phtml:76
 #: views/collections/show_bookmarks.phtml:80 views/links/show.phtml:68
 #: views/links/show.phtml:72
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
-#: views/_layouts/connected.phtml:131
+#: views/_layouts/connected.phtml:135
 #: views/_layouts/connected_blocked.phtml:108 views/my/profile/show.phtml:3
 #: views/my/profile/show.phtml:11
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:139
+#: views/_layouts/connected.phtml:143
 #: views/_layouts/connected_blocked.phtml:116
 #: views/my/security/show_confirmed.phtml:3
 #: views/my/security/show_confirmed.phtml:10
@@ -458,13 +458,13 @@ msgstr "Profil"
 msgid "Login & security"
 msgstr "Identifiants & sécurité"
 
-#: views/_layouts/connected.phtml:148
+#: views/_layouts/connected.phtml:152
 #: views/_layouts/connected_blocked.phtml:125 views/my/account/show.phtml:3
 #: views/my/account/show.phtml:10
 msgid "Account & subscription"
 msgstr "Compte & abonnement"
 
-#: views/_layouts/connected.phtml:156
+#: views/_layouts/connected.phtml:160
 #: views/_layouts/connected_blocked.phtml:133
 #: views/importations/pocket/authorization.phtml:6
 #: views/importations/pocket/show.phtml:6 views/my/account/deletion.phtml:6
@@ -473,21 +473,21 @@ msgstr "Compte & abonnement"
 msgid "Account"
 msgstr "Compte"
 
-#: views/_layouts/connected.phtml:165
+#: views/_layouts/connected.phtml:169
 #: views/_layouts/connected_blocked.phtml:142
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:175 views/_layouts/connected.phtml:178
-#: views/collections/show.phtml:66 views/collections/show_bookmarks.phtml:29
+#: views/_layouts/connected.phtml:179 views/_layouts/connected.phtml:182
+#: views/collections/show.phtml:70 views/collections/show_bookmarks.phtml:29
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/_layouts/connected.phtml:235
+#: views/_layouts/connected.phtml:239
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:236
+#: views/_layouts/connected.phtml:240
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -495,20 +495,20 @@ msgstr "Fermer cette fenêtre"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:81 views/registrations/new.phtml:3
+#: views/_layouts/not_connected.phtml:85 views/registrations/new.phtml:3
 #: views/registrations/new.phtml:10 views/registrations/new.phtml:135
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:85 views/sessions/new.phtml:84
+#: views/_layouts/not_connected.phtml:89 views/sessions/new.phtml:84
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/_layouts/not_connected.phtml:103 views/onboarding/step1.phtml:25
+#: views/_layouts/not_connected.phtml:107 views/onboarding/step1.phtml:25
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:156
+#: views/_layouts/not_connected.phtml:160
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
@@ -557,7 +557,7 @@ msgstr "Retour à la page d’accueil"
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
-#: views/collections/discover.phtml:7 views/collections/show.phtml:8
+#: views/collections/discover.phtml:7 views/collections/show.phtml:12
 msgid "Your collections"
 msgstr "Vos collections"
 
@@ -583,7 +583,7 @@ msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
 #: views/collections/discover.phtml:39 views/collections/index.phtml:100
-#: views/collections/show_public.phtml:35
+#: views/collections/show_public.phtml:39
 #, php-format
 msgid "created by %s"
 msgstr "créée par %s"
@@ -650,6 +650,16 @@ msgstr ""
 msgid "Delete the collection"
 msgstr "Supprimer la collection"
 
+#: views/collections/feed.atom.xml.phtml:31
+#, php-format
+msgid "Read this on <a href=\"%s\">%s</a>."
+msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
+
+#: views/collections/feed.atom.xml.phtml:32
+#, php-format
+msgid "My comments on <a href=\"%s\">%s</a>."
+msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
+
 #: views/collections/index.phtml:15
 msgid ""
 "Collections allow to group links by topics, find them later and share them "
@@ -662,7 +672,7 @@ msgstr ""
 msgid "Create a collection"
 msgstr "Créer une collection"
 
-#: views/collections/index.phtml:51 views/collections/show.phtml:29
+#: views/collections/index.phtml:51 views/collections/show.phtml:33
 msgid "public"
 msgstr "public"
 
@@ -702,39 +712,44 @@ msgstr "Quelles thématiques seront abordées ?"
 msgid "Create the collection"
 msgstr "Créer la collection"
 
-#: views/collections/show.phtml:33
+#: views/collections/show.phtml:8 views/collections/show_public.phtml:8
+#, php-format
+msgid "Syndication feed of %s"
+msgstr "Flux de syndication de %s"
+
+#: views/collections/show.phtml:37
 msgid "created by you"
 msgstr "créée par vous"
 
-#: views/collections/show.phtml:46 views/collections/show.phtml:137
+#: views/collections/show.phtml:50 views/collections/show.phtml:141
 #: views/collections/show_bookmarks.phtml:94
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/collections/show.phtml:101 views/collections/show_bookmarks.phtml:64
-#: views/collections/show_public.phtml:97 views/news_links/index.phtml:85
+#: views/collections/show.phtml:105 views/collections/show_bookmarks.phtml:64
+#: views/collections/show_public.phtml:101 views/news_links/index.phtml:85
 #, php-format
 msgid "%d comment"
 msgid_plural "%d comments"
 msgstr[0] "%d commentaire"
 msgstr[1] "%d commentaires"
 
-#: views/collections/show.phtml:106
+#: views/collections/show.phtml:110
 msgid "hidden"
 msgstr "masqué"
 
-#: views/collections/show.phtml:148 views/collections/show_bookmarks.phtml:105
+#: views/collections/show.phtml:152 views/collections/show_bookmarks.phtml:105
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/collections/show.phtml:161 views/collections/show.phtml:165
+#: views/collections/show.phtml:165 views/collections/show.phtml:169
 #: views/collections/show_bookmarks.phtml:126
 #: views/collections/show_bookmarks.phtml:130
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/collections/show.phtml:176 views/collections/show_bookmarks.phtml:142
-#: views/collections/show_public.phtml:111 views/links/show.phtml:39
+#: views/collections/show.phtml:180 views/collections/show_bookmarks.phtml:142
+#: views/collections/show_public.phtml:115 views/links/show.phtml:39
 #: views/links/show_public.phtml:40 views/news_links/index.phtml:154
 msgid "read"
 msgstr "lire"
@@ -747,20 +762,20 @@ msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/collections/show_public.phtml:8 views/links/new.phtml:7
+#: views/collections/show_public.phtml:12 views/links/new.phtml:7
 #: views/links/show.phtml:7 views/links/show_public.phtml:7
 msgid "Back"
 msgstr "Retour"
 
-#: views/collections/show_public.phtml:45
+#: views/collections/show_public.phtml:49
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:52
+#: views/collections/show_public.phtml:56
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:121
+#: views/collections/show_public.phtml:125
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 

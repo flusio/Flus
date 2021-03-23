@@ -105,6 +105,7 @@ class Application
             'current_tab' => null,
             'current_page' => null,
             'styles' => [],
+            'feed' => [],
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
             'no_layout' => $request->header('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest',
             'subscriptions_enabled' => $app_conf['subscriptions_enabled'],

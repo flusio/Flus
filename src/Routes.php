@@ -85,6 +85,7 @@ class Routes
         $router->addRoute('post', '/collections/new', 'Collections#create', 'create collection');
         $router->addRoute('get', '/collections/discover', 'Collections#discover', 'discover collections');
         $router->addRoute('get', '/collections/:id', 'Collections#show', 'collection');
+        $router->addRoute('get', '/collections/:id/feed.atom.xml', 'Collections#show', 'collection feed');
         $router->addRoute('get', '/collections/:id/edit', 'Collections#edit', 'edit collection');
         $router->addRoute('post', '/collections/:id/edit', 'Collections#update', 'update collection');
         $router->addRoute('post', '/collections/:id/delete', 'Collections#delete', 'delete collection');

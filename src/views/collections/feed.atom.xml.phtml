@@ -1,0 +1,36 @@
+<?= '<?xml version="1.0" encoding="UTF-8" ?>' . "\n" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title><?= $this->protect($collection->name) ?></title>
+    <link href="<?= url_full('collection', ['id' => $collection->id]) ?>" rel="alternate" type="text/html" />
+    <link href="<?= url_full('collection feed', ['id' => $collection->id]) ?>" rel="self" type="application/atom+xml" />
+    <id><?= $collection->tagUri() ?></id>
+    <author>
+        <name><?= $this->protect($collection->owner()->username) ?></name>
+    </author>
+    <generator><?= $user_agent ?></generator>
+    <?php if (isset($links[0])): ?>
+        <updated><?= $links[0]->created_at->format(\DateTimeInterface::ATOM) ?></updated>
+    <?php else: ?>
+        <updated><?= \Minz\Time::now()->format(\DateTimeInterface::ATOM) ?></updated>
+    <?php endif; ?>
+
+    <?php foreach ($topics as $topic): ?>
+        <category term="<?= $this->protect($topic->label) ?>"></category>
+    <?php endforeach; ?>
+
+    <?php foreach ($links as $link): ?>
+        <entry>
+            <title><?= $this->protect($link->title) ?></title>
+            <id><?= $link->tagUri() ?></id>
+            <link href="<?= $link->url ?>" rel="alternate" type="text/html" />
+            <link href="<?= url_full('link', ['id' => $link->id]) ?>" rel="replies" type="text/html" />
+            <published><?= $link->created_at->format(\DateTimeInterface::ATOM) ?></published>
+            <updated><?= $link->created_at->format(\DateTimeInterface::ATOM) ?></updated>
+            <content type="html"><![CDATA[
+                <p><?= _f('“%s”', $this->protect($link->title)) ?></p>
+                <p><?= _f('Read this on <a href="%s">%s</a>.', $link->url, $this->protect($link->host())) ?></p>
+                <p><?= _f('My comments on <a href="%s">%s</a>.', url_full('link', ['id' => $link->id]), $brand) ?></p>
+            ]]></content>
+        </entry>
+    <?php endforeach; ?>
+</feed>

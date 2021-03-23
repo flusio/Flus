@@ -185,6 +185,20 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return a tag URI that can be used as Atom id
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc4151.txt
+     *
+     * @return string
+     */
+    public function tagUri()
+    {
+        $host = \Minz\Configuration::$url_options['host'];
+        $date = $this->created_at->format('Y-m-d');
+        return "tag:{$host},{$date}:collections/{$this->id}";
+    }
+
+    /**
      * Sort collections based on given locale
      *
      * @param \flusio\models\Collection[] $collections

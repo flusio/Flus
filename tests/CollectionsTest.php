@@ -280,6 +280,33 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'collections/show.phtml');
     }
 
+    public function testShowRendersFeedCorrectly()
+    {
+        $user = $this->login();
+        $link_title = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'title' => $link_title,
+            'is_hidden' => 0,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/feed.atom.xml");
+
+        $this->assertResponse($response, 200, $link_title);
+        $this->assertPointer($response, 'collections/feed.atom.xml.phtml');
+        $content_type = $response->headers(true)['Content-Type'];
+        $this->assertSame('application/atom+xml;charset=UTF-8', $content_type);
+    }
+
     public function testShowRendersCorrectlyIfPublicAndNotConnected()
     {
         $user_id = $this->create('user');

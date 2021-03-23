@@ -201,7 +201,19 @@ class Collections
         $topics = $collection->topics();
         models\Topic::sort($topics, utils\Locale::currentLocale());
 
-        if ($is_owned) {
+        $is_atom_feed = utils\Belt::endsWith($request->path(), 'feed.atom.xml');
+        if ($is_atom_feed) {
+            $locale = $collection->owner()->locale;
+            utils\Locale::setCurrentLocale($locale);
+            $response = Response::ok('collections/feed.atom.xml.phtml', [
+                'collection' => $collection,
+                'topics' => $topics,
+                'links' => $collection->visibleLinks(),
+                'user_agent' => \Minz\Configuration::$application['user_agent'],
+            ]);
+            $response->setHeader('Content-Type', 'application/atom+xml;charset=UTF-8');
+            return $response;
+        } elseif ($is_owned) {
             return Response::ok('collections/show.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,

@@ -3,6 +3,10 @@
         'title' => $collection->name,
         'canonical' => url('collection', ['id' => $collection->id]),
         'current_tab' => 'collections',
+        'feed' => [
+            'url' => url('collection feed', ['id' => $collection->id]),
+            'title' => _f('Syndication feed of %s', $collection->name),
+        ],
         'back' => [
             'href' => url('collections'),
             'label' => _('Your collections'),
