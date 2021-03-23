@@ -5,6 +5,13 @@ $environment = \Minz\Configuration::$environment;
 // Make sure to initiaze the support user
 \flusio\models\User::supportUser();
 
+$job_dao = new \flusio\models\dao\Job();
+
+$feeds_sync_job = new \flusio\jobs\scheduled\FeedsSync();
+if (!$job_dao->findBy(['name' => $feeds_sync_job->name])) {
+    $feeds_sync_job->performLater();
+}
+
 if ($environment === 'development') {
     \flusio\models\Topic::findOrCreateBy(['label' => _('Business')]);
     \flusio\models\Topic::findOrCreateBy(['label' => _('Climate')]);
@@ -19,7 +26,6 @@ if ($environment === 'development') {
 $demo = \Minz\Configuration::$application['demo'];
 if ($demo) {
     $reset_demo_job = new \flusio\jobs\scheduled\ResetDemo();
-    $job_dao = new \flusio\models\dao\Job();
     if (!$job_dao->findBy(['name' => $reset_demo_job->name])) {
         $reset_demo_job->performLater();
     }
@@ -28,7 +34,6 @@ if ($demo) {
 $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
 if ($subscriptions_enabled) {
     $subscriptions_sync_job = new \flusio\jobs\scheduled\SubscriptionsSync();
-    $job_dao = new \flusio\models\dao\Job();
     if (!$job_dao->findBy(['name' => $subscriptions_sync_job->name])) {
         $subscriptions_sync_job->performLater();
     }
