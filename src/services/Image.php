@@ -22,10 +22,8 @@ class Image
 
     public function __construct()
     {
-        $php_os = PHP_OS;
-        $flusio_version = \Minz\Configuration::$application['version'];
         $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = "flusio/{$flusio_version} ({$php_os}; https://github.com/flusio/flusio)";
+        $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
         $this->http->timeout = 5;
 
         $media_path = \Minz\Configuration::$application['media_path'];

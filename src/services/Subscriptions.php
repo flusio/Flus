@@ -26,10 +26,8 @@ class Subscriptions
         $this->host = $host;
         $this->private_key = $private_key;
 
-        $php_os = PHP_OS;
-        $flusio_version = \Minz\Configuration::$application['version'];
         $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = "flusio/{$flusio_version} ({$php_os}; https://github.com/flusio/flusio)";
+        $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
         $this->http->timeout = 5;
     }
 

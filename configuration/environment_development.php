@@ -6,6 +6,9 @@ $db_name = 'flusio_development';
 
 $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 
+$php_os = PHP_OS;
+$flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt'));
+
 return [
     'app_name' => 'flusio',
 
@@ -22,7 +25,8 @@ return [
     'application' => [
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
         'brand' => $dotenv->pop('APP_BRAND', 'flusio'),
-        'version' => trim(@file_get_contents($app_path . '/VERSION.txt')),
+        'version' => $flusio_version,
+        'user_agent' => "flusio/{$flusio_version} ({$php_os}; https://github.com/flusio/flusio)",
         'cache_path' => $dotenv->pop('APP_CACHE_PATH', $app_path . '/cache'),
         'media_path' => $dotenv->pop('APP_MEDIA_PATH', $app_path . '/public/media'),
         'demo' => filter_var($dotenv->pop('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN),

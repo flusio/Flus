@@ -23,14 +23,12 @@ class Pocket
     {
         $this->consumer_key = $consumer_key;
 
-        $php_os = PHP_OS;
-        $flusio_version = \Minz\Configuration::$application['version'];
         $this->http = new \SpiderBits\Http();
         $this->http->headers = [
             'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF8',
             'X-Accept' => 'application/json',
         ];
-        $this->http->user_agent = "flusio/{$flusio_version} ({$php_os}; https://github.com/flusio/flusio)";
+        $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
         $this->http->timeout = 5;
     }
 
