@@ -98,6 +98,7 @@ class Routes
         $router->addRoute('get', '/links/new', 'Links#new', 'new link');
         $router->addRoute('post', '/links/new', 'Links#create', 'create link');
         $router->addRoute('get', '/links/:id', 'Links#show', 'link');
+        $router->addRoute('get', '/links/:id/feed.atom.xml', 'Links#show', 'link feed');
         $router->addRoute('get', '/links/:id/edit', 'Links#edit', 'edit link');
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');

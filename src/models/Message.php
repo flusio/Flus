@@ -64,6 +64,20 @@ class Message extends \Minz\Model
     }
 
     /**
+     * Return a tag URI that can be used as Atom id
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc4151.txt
+     *
+     * @return string
+     */
+    public function tagUri()
+    {
+        $host = \Minz\Configuration::$url_options['host'];
+        $date = $this->created_at->format('Y-m-d');
+        return "tag:{$host},{$date}:messages/{$this->id}";
+    }
+
+    /**
      * Return a list of errors (if any). The array keys indicated the concerned
      * property.
      *

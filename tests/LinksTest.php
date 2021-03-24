@@ -57,6 +57,30 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, nl2br($content));
     }
 
+    public function testShowRendersFeedCorrectly()
+    {
+        $title = $this->fake('words', 3, true);
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'fetched_at' => $this->fake('iso8601'),
+            'title' => $title,
+            'is_hidden' => 0,
+        ]);
+        $content = $this->fake('paragraphs', 3, true);
+        $this->create('message', [
+            'link_id' => $link_id,
+            'content' => $content,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/feed.atom.xml");
+
+        $this->assertResponse($response, 200, nl2br($content));
+        $this->assertPointer($response, 'links/feed.atom.xml.phtml');
+        $content_type = $response->headers(true)['Content-Type'];
+        $this->assertSame('application/atom+xml;charset=UTF-8', $content_type);
+    }
+
     public function testShowRendersCorrectlyIfNotHiddenAndNotConnected()
     {
         $title = $this->fake('words', 3, true);

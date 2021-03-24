@@ -35,19 +35,31 @@ class Links
         $link_id = $request->param('id');
         $link = models\Link::find($link_id);
 
-        // We must show the link in 3 main cases:
-        // 1. the visitor is connected and owns the link
-        // 2. the visitor is connected and the link is not hidden
-        // 3. the visitor is not connected and the link is not hidden
-
-        // The first thing to do is to calculate the 3 boolean variables which
-        // will allow us to handle these different cases.
         $is_connected = $user !== null;
         $is_owned = $is_connected && $link && $user->id === $link->user_id;
         $is_hidden = $link && $link->is_hidden;
 
-        // This branch handles case 1
-        if ($is_connected && $is_owned) {
+        $dont_show = (!$is_owned && $is_hidden) || !$link;
+        if ($dont_show && $is_connected) {
+            return Response::notFound('not_found.phtml');
+        } elseif ($dont_show) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('link', ['id' => $link_id]),
+            ]);
+        }
+
+        $is_atom_feed = utils\Belt::endsWith($request->path(), 'feed.atom.xml');
+        if ($is_atom_feed) {
+            $locale = $link->owner()->locale;
+            utils\Locale::setCurrentLocale($locale);
+            $response = Response::ok('links/feed.atom.xml.phtml', [
+                'link' => $link,
+                'messages' => $link->messages(),
+                'user_agent' => \Minz\Configuration::$application['user_agent'],
+            ]);
+            $response->setHeader('Content-Type', 'application/atom+xml;charset=UTF-8');
+            return $response;
+        } elseif ($is_owned) {
             if (!$link->fetched_at) {
                 return Response::redirect('show fetch link', [
                     'id' => $link->id,
@@ -63,24 +75,10 @@ class Links
                 'messages' => $link->messages(),
                 'comment' => '',
             ]);
-        }
-
-        // This branch handles cases 2 and 3
-        if ($link && !$is_hidden) {
+        } else {
             return Response::ok('links/show_public.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
-            ]);
-        }
-
-        // At this point, we know we don't want to give (direct) access to the
-        // link. The response still depends on wether the user is connected or
-        // not.
-        if ($is_connected) {
-            return Response::notFound('not_found.phtml');
-        } else {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('link', ['id' => $link_id]),
             ]);
         }
     }

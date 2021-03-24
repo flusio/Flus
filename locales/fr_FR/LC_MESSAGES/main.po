@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-03-24 10:01+0100\n"
-"PO-Revision-Date: 2021-03-24 10:02+0100\n"
+"POT-Creation-Date: 2021-03-24 10:31+0100\n"
+"PO-Revision-Date: 2021-03-24 10:31+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Collections.php:118 Collections.php:333 Collections.php:530
-#: Collections.php:577 LinkMessages.php:70 Links.php:176
+#: Collections.php:577 LinkMessages.php:70 Links.php:174
 #: NewsLinkRemovals.php:127 NewsLinks.php:119 NewsLinks.php:181
 #: Registrations.php:93 Sessions.php:82 my/Account.php:169 my/Account.php:249
 #: my/Profile.php:83 my/Security.php:78 my/Security.php:138
@@ -30,8 +30,8 @@ msgstr ""
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: Collections.php:408 LinkCollections.php:99 Links.php:317 Links.php:368
-#: Links.php:446 Links.php:488 Messages.php:44 NewsLinkRemovals.php:220
+#: Collections.php:408 LinkCollections.php:99 Links.php:315 Links.php:366
+#: Links.php:444 Links.php:486 Messages.php:44 NewsLinkRemovals.php:220
 #: NewsLinkRemovals.php:290 NewsLinkRemovals.php:371 Sessions.php:187
 #: importations/Importations.php:46 importations/Pocket.php:100
 #: importations/Pocket.php:149 importations/Pocket.php:241 my/Profile.php:159
@@ -46,11 +46,11 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: LinkCollections.php:93 Links.php:211 NewsLinkRemovals.php:154
+#: LinkCollections.php:93 Links.php:209 NewsLinkRemovals.php:154
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: Links.php:199 NewsLinkRemovals.php:140
+#: Links.php:197 NewsLinkRemovals.php:140
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
@@ -182,7 +182,7 @@ msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
 "sensible."
 
-#: models/Message.php:80
+#: models/Message.php:94
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
@@ -438,8 +438,8 @@ msgstr "Collections"
 #: views/_layouts/connected_blocked.phtml:92
 #: views/_layouts/connected_blocked.phtml:96 views/collections/show.phtml:123
 #: views/collections/show.phtml:127 views/collections/show_bookmarks.phtml:76
-#: views/collections/show_bookmarks.phtml:80 views/links/show.phtml:68
-#: views/links/show.phtml:72
+#: views/collections/show_bookmarks.phtml:80 views/links/show.phtml:72
+#: views/links/show.phtml:76
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
@@ -749,8 +749,8 @@ msgid "Manage collections"
 msgstr "Gérer les collections"
 
 #: views/collections/show.phtml:180 views/collections/show_bookmarks.phtml:142
-#: views/collections/show_public.phtml:115 views/links/show.phtml:39
-#: views/links/show_public.phtml:40 views/news_links/index.phtml:154
+#: views/collections/show_public.phtml:115 views/links/show.phtml:43
+#: views/links/show_public.phtml:44 views/news_links/index.phtml:154
 msgid "read"
 msgstr "lire"
 
@@ -763,7 +763,7 @@ msgid "Mark as read"
 msgstr "Marquer comme lu"
 
 #: views/collections/show_public.phtml:12 views/links/new.phtml:7
-#: views/links/show.phtml:7 views/links/show_public.phtml:7
+#: views/links/show.phtml:11 views/links/show_public.phtml:11
 msgid "Back"
 msgstr "Retour"
 
@@ -940,6 +940,16 @@ msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
 msgid "Delete the link"
 msgstr "Supprimer le lien"
 
+#: views/links/feed.atom.xml.phtml:3
+#, php-format
+msgid "Comments on %s"
+msgstr "Commentaires sur %s"
+
+#: views/links/feed.atom.xml.phtml:19
+#, php-format
+msgid "Comment by %s"
+msgstr "Commentaire par %s"
+
 #: views/links/new.phtml:3 views/links/new.phtml:15
 msgid "New link"
 msgstr "Nouveau lien"
@@ -968,27 +978,32 @@ msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
 msgid "or"
 msgstr "ou"
 
-#: views/links/show.phtml:83
+#: views/links/show.phtml:7 views/links/show_public.phtml:7
+#, php-format
+msgid "Syndication feed of comments on %s"
+msgstr "Flux de syndication de commentaires sur %s"
+
+#: views/links/show.phtml:87
 msgid "Are you sure that you want to delete this message?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
 
-#: views/links/show.phtml:89
+#: views/links/show.phtml:93
 msgid "Delete"
 msgstr "Supprimer"
 
-#: views/links/show.phtml:115 views/news_link_removals/adding.phtml:73
+#: views/links/show.phtml:119 views/news_link_removals/adding.phtml:73
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
-#: views/links/show.phtml:117
+#: views/links/show.phtml:121
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:136
+#: views/links/show.phtml:140
 msgid "Comment"
 msgstr "Commenter"
 
-#: views/links/show.phtml:143
+#: views/links/show.phtml:147
 msgid "This link being hidden, the comments are private."
 msgstr "Ce lien étant masqué, les commentaires sont privés."
 
@@ -1017,7 +1032,7 @@ msgstr "Récupérer les informations du lien"
 msgid "Please wait while we’re collecting information…"
 msgstr "Merci de patienter pendant que nous recueillons les informations…"
 
-#: views/links/show_public.phtml:75
+#: views/links/show_public.phtml:79
 #, php-format
 msgid "%s didn’t comment on this link."
 msgstr "%s n’a pas commenté ce lien."

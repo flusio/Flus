@@ -2,6 +2,10 @@
     $this->layout('base.phtml', [
         'title' => $link->title,
         'canonical' => url_full('link', ['id' => $link->id]),
+        'feed' => [
+            'url' => url('link feed', ['id' => $link->id]),
+            'title' => _f('Syndication feed of comments on %s', $link->title),
+        ],
         'back' => [
             'href' => url('home'),
             'label' => _('Back'),
@@ -47,7 +51,7 @@
         <section class="subsection subsection--small" id="messages">
             <?php foreach ($messages as $message): ?>
                 <?php $user = $message->user(); ?>
-                <article class="message">
+                <article class="message" id="message-<?= $message->id ?>">
                     <header class="message__header header">
                         <div class="header__container header__container--centered">
                             <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
