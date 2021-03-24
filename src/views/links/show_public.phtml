@@ -1,4 +1,15 @@
 <?php
+    $owner = $link->owner();
+    $open_graph = [
+        'title' => _f('Shared on %s: %s', $brand, $link->title),
+        'description' => _f('A link shared by %s on %s.', $owner->username, $brand),
+        'locale' => $owner->locale,
+        'url' => url_full('link', ['id' => $link->id]),
+    ];
+    if ($link->image_filename) {
+        $open_graph['image'] = url_link_image_full('cards', $link->image_filename);
+    }
+
     $this->layout('base.phtml', [
         'title' => $link->title,
         'canonical' => url_full('link', ['id' => $link->id]),
@@ -6,6 +17,7 @@
             'url' => url('link feed', ['id' => $link->id]),
             'title' => _f('Syndication feed of comments on %s', $link->title),
         ],
+        'open_graph' => $open_graph,
         'back' => [
             'href' => url('home'),
             'label' => _('Back'),
@@ -76,7 +88,7 @@
         </section>
     <?php else: ?>
         <p class="paragraph--placeholder">
-            <?= _f('%s didn’t comment on this link.', $this->protect($link->owner()->username)) ?>
+            <?= _f('%s didn’t comment on this link.', $this->protect($owner->username)) ?>
         </p>
     <?php endif; ?>
 </div>

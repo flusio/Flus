@@ -134,6 +134,19 @@ function url_link_image($type, $filename)
 }
 
 /**
+ * Return the absolute URL for a link image
+ *
+ * @param string $type Either 'cards' or 'large'
+ * @param string $filename The URL saved in link->image_filename
+ *
+ * @return string
+ */
+function url_link_image_full($type, $filename)
+{
+    return \Minz\Url::baseUrl() . url_link_image($type, $filename);
+}
+
+/**
  * Return the relative URL of an avatar.
  *
  * @param string $filename The path saved in user->avatar_filename

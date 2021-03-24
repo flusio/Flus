@@ -1,4 +1,12 @@
 <?php
+    $owner = $collection->owner();
+    $open_graph = [
+        'title' => $collection->name,
+        'description' => _f('A collection created by %s on %s.', $owner->username, $brand),
+        'locale' => $owner->locale,
+        'url' => url_full('collection', ['id' => $collection->id]),
+    ];
+
     $this->layout('base.phtml', [
         'title' => $collection->name,
         'canonical' => url('collection', ['id' => $collection->id]),
@@ -7,6 +15,7 @@
             'url' => url('collection feed', ['id' => $collection->id]),
             'title' => _f('Syndication feed of %s', $collection->name),
         ],
+        'open_graph' => $open_graph,
         'back' => [
             'href' => url('home'),
             'label' => _('Back'),
@@ -36,7 +45,7 @@
     <div class="collection__meta">
         <div class="collection__details">
             <p class="collection__owner">
-                <?= _f('created by %s', $this->protect($collection->owner()->username)) ?>
+                <?= _f('created by %s', $this->protect($owner->username)) ?>
             </p>
         </div>
 

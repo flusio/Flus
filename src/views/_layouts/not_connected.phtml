@@ -13,6 +13,18 @@
             <link rel="alternate" type="application/atom+xml" title="<?= $this->protect($feed['title']) ?>" href="<?= $feed['url'] ?>" />
         <?php endif; ?>
 
+        <?php if ($open_graph): ?>
+            <meta property="og:title" content="<?= $this->protect($open_graph['title']) ?>" />
+            <meta property="og:type" content="website" />
+            <meta property="og:description" content="<?= $this->protect($open_graph['description']) ?>" />
+            <meta property="og:locale" content="<?= $open_graph['locale'] ?>" />
+            <meta property="og:url" content="<?= $open_graph['url'] ?>" />
+            <meta name="twitter:card" content="summary">
+            <?php if (isset($open_graph['image'])): ?>
+                <meta property="og:image" content="<?= $open_graph['image'] ?>" />
+            <?php endif; ?>
+        <?php endif; ?>
+
         <meta name="application-name" content="<?= $brand ?>">
         <meta name="theme-color" content="#00d0ad">
         <link rel="manifest" href="<?= url('webmanifest') ?>">

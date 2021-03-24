@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-03-24 10:31+0100\n"
-"PO-Revision-Date: 2021-03-24 10:31+0100\n"
+"POT-Creation-Date: 2021-03-24 18:46+0100\n"
+"PO-Revision-Date: 2021-03-24 18:47+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -358,59 +358,59 @@ msgstr "< 1 min"
 msgid "%d&nbsp;min"
 msgstr "%d&nbsp;min"
 
-#: utils/view_helpers.php:172
+#: utils/view_helpers.php:185
 msgid "bookmarks"
 msgstr "signets"
 
-#: utils/view_helpers.php:175
+#: utils/view_helpers.php:188
 msgid "followed collections"
 msgstr "collections suivies"
 
-#: utils/view_helpers.php:178
+#: utils/view_helpers.php:191
 msgid "points of interest"
 msgstr "centres d’intérêt"
 
-#: utils/view_helpers.php:180 views/onboarding/step4.phtml:43
+#: utils/view_helpers.php:193 views/onboarding/step4.phtml:43
 msgid " and "
 msgstr " et "
 
-#: utils/view_helpers.php:182
+#: utils/view_helpers.php:195
 #, php-format
 msgid "Get about %s of reading from your %s."
 msgstr "Obtenez environ %s de lecture depuis vos %s."
 
-#: utils/view_helpers.php:199
+#: utils/view_helpers.php:212
 #, php-format
 msgid "%d&nbsp;minute"
 msgid_plural "%d&nbsp;minutes"
 msgstr[0] "%d&nbsp;minute"
 msgstr[1] "%d&nbsp;minutes"
 
-#: utils/view_helpers.php:203
+#: utils/view_helpers.php:216
 #, php-format
 msgid "%d&nbsp;hour"
 msgid_plural "%d&nbsp;hours"
 msgstr[0] "%d&nbsp;heure"
 msgstr[1] "%d&nbsp;heures"
 
-#: utils/view_helpers.php:206
+#: utils/view_helpers.php:219
 #, php-format
 msgid "%d&nbsp;h&nbsp;%d"
 msgstr "%d&nbsp;h&nbsp;%d"
 
 #: views/_layouts/connected.phtml:50 views/_layouts/connected_blocked.phtml:46
-#: views/_layouts/not_connected.phtml:50 views/_layouts/onboarding.phtml:39
+#: views/_layouts/not_connected.phtml:62 views/_layouts/onboarding.phtml:39
 msgid "Skip to main content"
 msgstr "Sauter au contenu"
 
 #: views/_layouts/connected.phtml:57 views/_layouts/connected_blocked.phtml:53
-#: views/_layouts/not_connected.phtml:57 views/_layouts/onboarding.phtml:46
+#: views/_layouts/not_connected.phtml:69 views/_layouts/onboarding.phtml:46
 #, php-format
 msgid "You need to activate JavaScript in order to use %s."
 msgstr "Vous devez activer JavaScript pour utiliser %s."
 
 #: views/_layouts/connected.phtml:65 views/_layouts/connected_blocked.phtml:61
-#: views/_layouts/not_connected.phtml:65
+#: views/_layouts/not_connected.phtml:77
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
 msgstr ""
@@ -495,20 +495,20 @@ msgstr "Fermer cette fenêtre"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:85 views/registrations/new.phtml:3
+#: views/_layouts/not_connected.phtml:97 views/registrations/new.phtml:3
 #: views/registrations/new.phtml:10 views/registrations/new.phtml:135
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:89 views/sessions/new.phtml:84
+#: views/_layouts/not_connected.phtml:101 views/sessions/new.phtml:84
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/_layouts/not_connected.phtml:107 views/onboarding/step1.phtml:25
+#: views/_layouts/not_connected.phtml:119 views/onboarding/step1.phtml:25
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:160
+#: views/_layouts/not_connected.phtml:172
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
@@ -583,7 +583,7 @@ msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
 #: views/collections/discover.phtml:39 views/collections/index.phtml:100
-#: views/collections/show_public.phtml:39
+#: views/collections/show_public.phtml:48
 #, php-format
 msgid "created by %s"
 msgstr "créée par %s"
@@ -712,7 +712,7 @@ msgstr "Quelles thématiques seront abordées ?"
 msgid "Create the collection"
 msgstr "Créer la collection"
 
-#: views/collections/show.phtml:8 views/collections/show_public.phtml:8
+#: views/collections/show.phtml:8 views/collections/show_public.phtml:16
 #, php-format
 msgid "Syndication feed of %s"
 msgstr "Flux de syndication de %s"
@@ -727,7 +727,7 @@ msgid "Edit"
 msgstr "Modifier"
 
 #: views/collections/show.phtml:105 views/collections/show_bookmarks.phtml:64
-#: views/collections/show_public.phtml:101 views/news_links/index.phtml:85
+#: views/collections/show_public.phtml:110 views/news_links/index.phtml:85
 #, php-format
 msgid "%d comment"
 msgid_plural "%d comments"
@@ -749,8 +749,8 @@ msgid "Manage collections"
 msgstr "Gérer les collections"
 
 #: views/collections/show.phtml:180 views/collections/show_bookmarks.phtml:142
-#: views/collections/show_public.phtml:115 views/links/show.phtml:43
-#: views/links/show_public.phtml:44 views/news_links/index.phtml:154
+#: views/collections/show_public.phtml:124 views/links/show.phtml:43
+#: views/links/show_public.phtml:56 views/news_links/index.phtml:154
 msgid "read"
 msgstr "lire"
 
@@ -762,20 +762,25 @@ msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/collections/show_public.phtml:12 views/links/new.phtml:7
-#: views/links/show.phtml:11 views/links/show_public.phtml:11
+#: views/collections/show_public.phtml:5
+#, php-format
+msgid "A collection created by %s on %s."
+msgstr "Une collection créée par %s sur %s."
+
+#: views/collections/show_public.phtml:21 views/links/new.phtml:7
+#: views/links/show.phtml:11 views/links/show_public.phtml:23
 msgid "Back"
 msgstr "Retour"
 
-#: views/collections/show_public.phtml:49
+#: views/collections/show_public.phtml:58
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:56
+#: views/collections/show_public.phtml:65
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:125
+#: views/collections/show_public.phtml:134
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -978,7 +983,7 @@ msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
 msgid "or"
 msgstr "ou"
 
-#: views/links/show.phtml:7 views/links/show_public.phtml:7
+#: views/links/show.phtml:7 views/links/show_public.phtml:18
 #, php-format
 msgid "Syndication feed of comments on %s"
 msgstr "Flux de syndication de commentaires sur %s"
@@ -1032,7 +1037,17 @@ msgstr "Récupérer les informations du lien"
 msgid "Please wait while we’re collecting information…"
 msgstr "Merci de patienter pendant que nous recueillons les informations…"
 
-#: views/links/show_public.phtml:79
+#: views/links/show_public.phtml:4
+#, php-format
+msgid "Shared on %s: %s"
+msgstr "Partagé par %s : %s"
+
+#: views/links/show_public.phtml:5
+#, php-format
+msgid "A link shared by %s on %s."
+msgstr "Un lien partagé par %s sur %s."
+
+#: views/links/show_public.phtml:91
 #, php-format
 msgid "%s didn’t comment on this link."
 msgstr "%s n’a pas commenté ce lien."
