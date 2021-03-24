@@ -118,13 +118,4 @@ class Job extends \Minz\DatabaseModel
             'failed_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
         ]);
     }
-
-    /**
-     * @throws \PDOException if an error occured in the SQL syntax
-     */
-    public function deleteByName($name)
-    {
-        $statement = $this->prepare("DELETE FROM {$this->table_name} WHERE name = ?");
-        return $statement->execute([$name]);
-    }
 }
