@@ -97,7 +97,7 @@ endif
 
 .PHONY: tree
 tree:  ## Display the structure of the application
-	tree -I 'Minz|vendor|node_modules|coverage' --dirsfirst -CA
+	tree -I 'Minz|vendor|node_modules|coverage|cache|dev_assets|media' --dirsfirst -CA
 
 .PHONY: help
 help:

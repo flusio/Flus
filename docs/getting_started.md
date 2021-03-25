@@ -12,7 +12,8 @@ $ make tree
 ```
 
 It will show you all the folders and files of the project, except the
-dependencies including the Minz library (which is under [the `lib/` folder](/lib/)).
+dependencies like the Minz library (which is under [the `lib/` folder](/lib/)).
+It will also hide cache files or downloaded medias.
 
 Then, you should know that the entrypoint for the browser is the [`public/index.php`
 file](/public/index.php). In fact, a correctly configured Web server must
