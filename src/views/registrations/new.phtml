@@ -70,7 +70,7 @@
         </div>
 
         <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
-            <label for="password">
+            <label for="new-password">
                 <?= _('And a password') ?>
             </label>
 
@@ -80,12 +80,13 @@
 
             <div class="form-group__stack" data-controller="input-password">
                 <input
-                    id="password"
+                    id="new-password"
                     name="password"
                     type="password"
                     value="<?= $password ?>"
                     required
                     data-target="input-password.input"
+                    autocomplete="new-password"
                 />
 
                 <button

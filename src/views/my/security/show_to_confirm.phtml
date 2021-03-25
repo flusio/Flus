@@ -24,17 +24,18 @@
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
         <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
-            <label for="password">
+            <label for="current-password">
                 <?= _('Your current password') ?>
             </label>
 
             <div class="form-group__stack" data-controller="input-password">
                 <input
-                    id="password"
+                    id="current-password"
                     name="password"
                     type="password"
                     required
                     data-target="input-password.input"
+                    autocomplete="current-password"
                 />
 
                 <button

@@ -18,6 +18,7 @@ class Routes
         $router->addRoute('get', '/', 'Pages#home', 'home');
         $router->addRoute('get', '/terms', 'Pages#terms', 'terms');
         $router->addRoute('get', '/app.webmanifest', 'Pages#webmanifest', 'webmanifest');
+        $router->addRoute('get', '/.well-known/change-password', 'WellKnown#changePassword');
 
         // Registration
         $router->addRoute('get', '/registration', 'Registrations#new', 'registration');

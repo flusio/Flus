@@ -38,6 +38,7 @@
                 value="<?= $email ?>"
                 required
                 autofocus
+                autocomplete="username"
             />
 
             <?php if (isset($errors['email'])): ?>
@@ -48,18 +49,19 @@
         </div>
 
         <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
-            <label for="password">
+            <label for="current-password">
                 <?= _('Password') ?>
             </label>
 
             <div class="form-group__stack" data-controller="input-password">
                 <input
-                    id="password"
+                    id="current-password"
                     name="password"
                     type="password"
                     value="<?= $password ?>"
                     required
                     data-target="input-password.input"
+                    autocomplete="current-password"
                 />
 
                 <button
