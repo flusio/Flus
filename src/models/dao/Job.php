@@ -104,6 +104,8 @@ class Job extends \Minz\DatabaseModel
         }
         $this->update($db_job['id'], [
             'locked_at' => null,
+            'last_error' => null,
+            'failed_at' => null,
             'perform_at' => $perform_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
     }
