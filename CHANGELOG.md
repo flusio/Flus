@@ -1,6 +1,6 @@
 # Changelog of flusio
 
-## 2021-03-xx - v0.18
+## 2021-03-25 - v0.18
 
 ### Migration notes
 
@@ -18,6 +18,41 @@ Itâ€™s used to create a default user. Make sure to set it to a user that doesnâ€
 exist since feeds are attached to it.
 
 See production documentation for more information.
+
+### News
+
+- Provide an Atom feed for links comments and collections
+- Add OpenGraph tags on public links/collections
+
+### Improvements
+
+- Display info about pricing during registration
+- Facilitate password managers operations
+- Keep order during Pocket importation
+- Remove Pocket collections if empty
+- Clarify the impact of Pocket tags importation
+
+### Bug fixes
+
+- Handle iso-8859-1 and bad encoding during link fetching
+- Correctly initialize `created_at` on saving
+- Fix account icon if subscriptions are off
+
+### Misc
+
+- Add scheduled jobs
+- Add data seeds on system setup
+- Add jobs queue
+- Fix documentation about systemd service file
+- Move controllers under their own folder
+- Fix ubuntu version on CI
+- Allow to set CLI default locale
+- Load registration CSRF token with JavaScript
+- Add device-width to HTML viewport tag
+- Initialize a user to handle support
+- Rename Fetch service in LinkFetcher
+- Initialize `.env` file on `make start`
+- Ignore more folders on make tree
 
 ## 2021-02-23 - v0.17
 
