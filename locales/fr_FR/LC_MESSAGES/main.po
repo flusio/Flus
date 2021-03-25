@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-03-24 18:46+0100\n"
-"PO-Revision-Date: 2021-03-24 18:47+0100\n"
+"POT-Creation-Date: 2021-03-25 10:22+0100\n"
+"PO-Revision-Date: 2021-03-25 10:23+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: Collections.php:118 Collections.php:333 Collections.php:530
 #: Collections.php:577 LinkMessages.php:70 Links.php:174
 #: NewsLinkRemovals.php:127 NewsLinks.php:119 NewsLinks.php:181
-#: Registrations.php:93 Sessions.php:82 my/Account.php:169 my/Account.php:249
+#: Registrations.php:95 Sessions.php:82 my/Account.php:169 my/Account.php:249
 #: my/Profile.php:83 my/Security.php:78 my/Security.php:138
 #: my/Subscription.php:73
 msgid "A security verification failed: you should retry to submit the form."
@@ -63,11 +63,11 @@ msgstr "Le lien n’existe pas."
 msgid "“%s”"
 msgstr "« %s »"
 
-#: Registrations.php:118 my/Security.php:90
+#: Registrations.php:120 my/Security.php:90
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: Registrations.php:130
+#: Registrations.php:132
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
@@ -96,9 +96,9 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:28
-#: views/my/account/deletion.phtml:54 views/my/security/show_confirmed.phtml:73
-#: views/my/security/show_to_confirm.phtml:46 views/registrations/new.phtml:97
-#: views/sessions/new.phtml:71
+#: views/my/account/deletion.phtml:54 views/my/security/show_confirmed.phtml:74
+#: views/my/security/show_to_confirm.phtml:47 views/registrations/new.phtml:102
+#: views/sessions/new.phtml:73
 msgid "Show"
 msgstr "Afficher"
 
@@ -148,7 +148,7 @@ msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
 #: models/Collection.php:100 models/Collection.php:117
-#: views/_layouts/connected.phtml:98 views/collections/show_bookmarks.phtml:3
+#: views/_layouts/connected.phtml:101 views/collections/show_bookmarks.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
@@ -398,59 +398,59 @@ msgstr[1] "%d&nbsp;heures"
 msgid "%d&nbsp;h&nbsp;%d"
 msgstr "%d&nbsp;h&nbsp;%d"
 
-#: views/_layouts/connected.phtml:50 views/_layouts/connected_blocked.phtml:46
-#: views/_layouts/not_connected.phtml:62 views/_layouts/onboarding.phtml:39
+#: views/_layouts/connected.phtml:53 views/_layouts/connected_blocked.phtml:49
+#: views/_layouts/not_connected.phtml:65 views/_layouts/onboarding.phtml:42
 msgid "Skip to main content"
 msgstr "Sauter au contenu"
 
-#: views/_layouts/connected.phtml:57 views/_layouts/connected_blocked.phtml:53
-#: views/_layouts/not_connected.phtml:69 views/_layouts/onboarding.phtml:46
+#: views/_layouts/connected.phtml:60 views/_layouts/connected_blocked.phtml:56
+#: views/_layouts/not_connected.phtml:72 views/_layouts/onboarding.phtml:49
 #, php-format
 msgid "You need to activate JavaScript in order to use %s."
 msgstr "Vous devez activer JavaScript pour utiliser %s."
 
-#: views/_layouts/connected.phtml:65 views/_layouts/connected_blocked.phtml:61
-#: views/_layouts/not_connected.phtml:77
+#: views/_layouts/connected.phtml:68 views/_layouts/connected_blocked.phtml:64
+#: views/_layouts/not_connected.phtml:80
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
 msgstr ""
 "Vous utilisez une version de démo de %s, les données sont réinitialisées "
 "chaque nuit."
 
-#: views/_layouts/connected.phtml:73 views/_layouts/connected_blocked.phtml:69
+#: views/_layouts/connected.phtml:76 views/_layouts/connected_blocked.phtml:72
 msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
-#: views/_layouts/connected.phtml:88 views/news_link_removals/adding.phtml:8
+#: views/_layouts/connected.phtml:91 views/news_link_removals/adding.phtml:8
 #: views/news_links/index.phtml:3 views/news_links/index.phtml:11
 #: views/news_links/preferences.phtml:7
 msgid "News"
 msgstr "Journal"
 
-#: views/_layouts/connected.phtml:108 views/collections/index.phtml:3
+#: views/_layouts/connected.phtml:111 views/collections/index.phtml:3
 #: views/collections/index.phtml:11 views/collections/new.phtml:7
 #: views/link_collections/index.phtml:26 views/links/new.phtml:54
 #: views/news_link_removals/adding.phtml:32
 msgid "Collections"
 msgstr "Collections"
 
-#: views/_layouts/connected.phtml:119 views/_layouts/connected.phtml:123
-#: views/_layouts/connected_blocked.phtml:92
-#: views/_layouts/connected_blocked.phtml:96 views/collections/show.phtml:123
+#: views/_layouts/connected.phtml:122 views/_layouts/connected.phtml:126
+#: views/_layouts/connected_blocked.phtml:95
+#: views/_layouts/connected_blocked.phtml:99 views/collections/show.phtml:123
 #: views/collections/show.phtml:127 views/collections/show_bookmarks.phtml:76
 #: views/collections/show_bookmarks.phtml:80 views/links/show.phtml:72
 #: views/links/show.phtml:76
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
 
-#: views/_layouts/connected.phtml:135
-#: views/_layouts/connected_blocked.phtml:108 views/my/profile/show.phtml:3
+#: views/_layouts/connected.phtml:138
+#: views/_layouts/connected_blocked.phtml:111 views/my/profile/show.phtml:3
 #: views/my/profile/show.phtml:11
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:143
-#: views/_layouts/connected_blocked.phtml:116
+#: views/_layouts/connected.phtml:146
+#: views/_layouts/connected_blocked.phtml:119
 #: views/my/security/show_confirmed.phtml:3
 #: views/my/security/show_confirmed.phtml:10
 #: views/my/security/show_to_confirm.phtml:3
@@ -458,14 +458,14 @@ msgstr "Profil"
 msgid "Login & security"
 msgstr "Identifiants & sécurité"
 
-#: views/_layouts/connected.phtml:152
-#: views/_layouts/connected_blocked.phtml:125 views/my/account/show.phtml:3
+#: views/_layouts/connected.phtml:155
+#: views/_layouts/connected_blocked.phtml:128 views/my/account/show.phtml:3
 #: views/my/account/show.phtml:10
 msgid "Account & subscription"
 msgstr "Compte & abonnement"
 
-#: views/_layouts/connected.phtml:160
-#: views/_layouts/connected_blocked.phtml:133
+#: views/_layouts/connected.phtml:163
+#: views/_layouts/connected_blocked.phtml:136
 #: views/importations/pocket/authorization.phtml:6
 #: views/importations/pocket/show.phtml:6 views/my/account/deletion.phtml:6
 #: views/my/account/show.phtml:3 views/my/account/show.phtml:10
@@ -473,21 +473,21 @@ msgstr "Compte & abonnement"
 msgid "Account"
 msgstr "Compte"
 
-#: views/_layouts/connected.phtml:169
-#: views/_layouts/connected_blocked.phtml:142
+#: views/_layouts/connected.phtml:172
+#: views/_layouts/connected_blocked.phtml:145
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:179 views/_layouts/connected.phtml:182
+#: views/_layouts/connected.phtml:182 views/_layouts/connected.phtml:185
 #: views/collections/show.phtml:70 views/collections/show_bookmarks.phtml:29
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/_layouts/connected.phtml:239
+#: views/_layouts/connected.phtml:242
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:240
+#: views/_layouts/connected.phtml:243
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -495,34 +495,33 @@ msgstr "Fermer cette fenêtre"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:97 views/registrations/new.phtml:3
-#: views/registrations/new.phtml:10 views/registrations/new.phtml:135
+#: views/_layouts/not_connected.phtml:100 views/registrations/new.phtml:140
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:101 views/sessions/new.phtml:84
+#: views/_layouts/not_connected.phtml:104 views/sessions/new.phtml:86
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/_layouts/not_connected.phtml:119 views/onboarding/step1.phtml:25
+#: views/_layouts/not_connected.phtml:122 views/onboarding/step1.phtml:25
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:172
+#: views/_layouts/not_connected.phtml:175
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
 
-#: views/_layouts/onboarding.phtml:65
+#: views/_layouts/onboarding.phtml:68
 #, php-format
 msgid "Step %d on %d"
 msgstr "Étape %d sur %d"
 
-#: views/_layouts/onboarding.phtml:67
+#: views/_layouts/onboarding.phtml:70
 msgid "skip"
 msgstr "passer"
 
-#: views/_layouts/onboarding.phtml:69
+#: views/_layouts/onboarding.phtml:72
 msgid "finished"
 msgstr "terminé"
 
@@ -634,7 +633,7 @@ msgstr "Afficher la collection publiquement"
 
 #: views/collections/edit.phtml:114 views/link_collections/index.phtml:67
 #: views/links/edit.phtml:68 views/my/profile/show.phtml:145
-#: views/my/security/show_confirmed.phtml:86
+#: views/my/security/show_confirmed.phtml:87
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -1094,9 +1093,9 @@ msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/my/account/deletion.phtml:52 views/my/security/show_confirmed.phtml:71
-#: views/my/security/show_to_confirm.phtml:44 views/registrations/new.phtml:95
-#: views/sessions/new.phtml:69
+#: views/my/account/deletion.phtml:52 views/my/security/show_confirmed.phtml:72
+#: views/my/security/show_to_confirm.phtml:45 views/registrations/new.phtml:100
+#: views/sessions/new.phtml:71
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
@@ -1198,7 +1197,7 @@ msgstr "Téléverser une photo"
 msgid "Your name"
 msgstr "Votre nom"
 
-#: views/my/profile/show.phtml:70 views/registrations/new.phtml:28
+#: views/my/profile/show.phtml:70 views/registrations/new.phtml:32
 msgid "Your username must not be longer than 50 characters."
 msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
@@ -1214,11 +1213,11 @@ msgstr "Votre langue"
 msgid "You can change your login details here."
 msgstr "Vous pouvez changer vos identifiants de connexion ici."
 
-#: views/my/security/show_confirmed.phtml:28 views/registrations/new.phtml:50
+#: views/my/security/show_confirmed.phtml:28 views/registrations/new.phtml:54
 msgid "Your email address"
 msgstr "Votre adresse courriel"
 
-#: views/my/security/show_confirmed.phtml:32 views/registrations/new.phtml:54
+#: views/my/security/show_confirmed.phtml:32 views/registrations/new.phtml:58
 msgid ""
 "We only send emails necessary for the operation of the service, or in the "
 "event of a problem with your account."
@@ -1247,7 +1246,7 @@ msgstr ""
 msgid "Your current password"
 msgstr "Votre mot de passe actuel"
 
-#: views/my/security/show_to_confirm.phtml:59
+#: views/my/security/show_to_confirm.phtml:60
 msgid "Confirm your password"
 msgstr "Confirmer votre mot de passe"
 
@@ -1646,19 +1645,30 @@ msgstr "Conditions générales d’utilisation"
 msgid "back to the registration"
 msgstr "retour à l’inscription"
 
-#: views/registrations/new.phtml:24
+#: views/registrations/new.phtml:3 views/registrations/new.phtml:10
+msgid "Registration"
+msgstr "Inscription"
+
+#: views/registrations/new.phtml:15
+#, php-format
+msgid "First month is free. <a href=\"%s\">Learn more about pricing.</a>"
+msgstr ""
+"Le premier mois est gratuit. <a href=\"%s\">En savoir plus sur les tarifs.</"
+"a>"
+
+#: views/registrations/new.phtml:28
 msgid "How should we name you?"
 msgstr "Comment devons-nous vous appeler ?"
 
-#: views/registrations/new.phtml:74
+#: views/registrations/new.phtml:78
 msgid "And a password"
 msgstr "Et un mot de passe"
 
-#: views/registrations/new.phtml:78
+#: views/registrations/new.phtml:82
 msgid "A strong password is at least 8 characters long."
 msgstr "Un mot de passe robuste fait au moins 8 caractères."
 
-#: views/registrations/new.phtml:111
+#: views/registrations/new.phtml:116
 #, php-format
 msgid ""
 "Before going any further, please read <a href=\"%s\" target=\"_blank\">the "
@@ -1668,17 +1678,17 @@ msgstr ""
 "\"_blank\">les conditions générales d’utilisation</a> pour vous assurer que "
 "celles-ci vous conviennent."
 
-#: views/registrations/new.phtml:122
+#: views/registrations/new.phtml:127
 msgid "Accept the terms of service"
 msgstr "Accepter les conditions générales d’utilisation"
 
-#: views/registrations/new.phtml:142
+#: views/registrations/new.phtml:147
 msgid "Already an account? Sign in"
 msgstr "Déjà un compte ? Se connecter"
 
 #: views/sessions/new.phtml:3 views/sessions/new.phtml:10
 msgid "Log in"
-msgstr "Se connecter"
+msgstr "Connexion"
 
 #: views/sessions/new.phtml:15
 msgid "Your account and your data are now deleted."
@@ -1688,11 +1698,11 @@ msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
 msgid "Email address"
 msgstr "Adresse courriel"
 
-#: views/sessions/new.phtml:52
+#: views/sessions/new.phtml:53
 msgid "Password"
 msgstr "Mot de passe"
 
-#: views/sessions/new.phtml:92
+#: views/sessions/new.phtml:94
 msgid "No account yet? Sign up"
 msgstr "Pas encore de compte ? S’inscrire"
 

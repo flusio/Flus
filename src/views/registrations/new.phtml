@@ -1,14 +1,20 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('Sign up'),
+        'title' => _('Registration'),
         'current_page' => 'registration',
     ]);
 ?>
 
 <div class="section section--small">
     <div class="section__title">
-        <h1><?= _('Sign up') ?></h1>
+        <h1><?= _('Registration') ?></h1>
     </div>
+
+    <?php if ($subscriptions_enabled): ?>
+        <p class="section__intro">
+            <?= _f('First month is free. <a href="%s">Learn more about pricing.</a>', $subscriptions_host . '/tarifs') ?>
+        </p>
+    <?php endif; ?>
 
     <form method="post" action="<?= url('create user') ?>" data-controller="registration-form">
         <?php if ($error): ?>

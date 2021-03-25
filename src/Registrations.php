@@ -27,7 +27,8 @@ class Registrations
             return Response::redirect('home');
         }
 
-        if (!\Minz\Configuration::$application['registrations_opened']) {
+        $app_conf = \Minz\Configuration::$application;
+        if (!$app_conf['registrations_opened']) {
             return Response::redirect('login');
         }
 
@@ -40,6 +41,7 @@ class Registrations
             'username' => '',
             'email' => '',
             'password' => '',
+            'subscriptions_host' => $app_conf['subscriptions_host'],
         ]);
     }
 
@@ -70,7 +72,8 @@ class Registrations
             return Response::redirect('home');
         }
 
-        if (!\Minz\Configuration::$application['registrations_opened']) {
+        $app_conf = \Minz\Configuration::$application;
+        if (!$app_conf['registrations_opened']) {
             return Response::redirect('login');
         }
 
@@ -90,6 +93,7 @@ class Registrations
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
+                'subscriptions_host' => $app_conf['subscriptions_host'],
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
@@ -104,6 +108,7 @@ class Registrations
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
+                'subscriptions_host' => $app_conf['subscriptions_host'],
                 'errors' => $errors,
             ]);
         }
@@ -114,6 +119,7 @@ class Registrations
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
+                'subscriptions_host' => $app_conf['subscriptions_host'],
                 'errors' => [
                     'email' => _('An account already exists with this email address.'),
                 ],
@@ -126,6 +132,7 @@ class Registrations
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
+                'subscriptions_host' => $app_conf['subscriptions_host'],
                 'errors' => [
                     'accept_terms' => _('You must accept the terms of service.'),
                 ],
