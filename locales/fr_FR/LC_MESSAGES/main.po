@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-03-25 10:22+0100\n"
-"PO-Revision-Date: 2021-03-25 10:23+0100\n"
+"POT-Creation-Date: 2021-03-25 11:39+0100\n"
+"PO-Revision-Date: 2021-03-25 11:39+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -14,70 +14,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
-
-#: Collections.php:118 Collections.php:333 Collections.php:530
-#: Collections.php:577 LinkMessages.php:70 Links.php:174
-#: NewsLinkRemovals.php:127 NewsLinks.php:119 NewsLinks.php:181
-#: Registrations.php:95 Sessions.php:82 my/Account.php:169 my/Account.php:249
-#: my/Profile.php:83 my/Security.php:78 my/Security.php:138
-#: my/Subscription.php:73
-msgid "A security verification failed: you should retry to submit the form."
-msgstr ""
-"Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
-"le formulaire."
-
-#: Collections.php:130 Collections.php:346 my/Profile.php:94
-msgid "One of the associated topic doesn’t exist."
-msgstr "L’une des thématiques associées n’existe pas."
-
-#: Collections.php:408 LinkCollections.php:99 Links.php:315 Links.php:366
-#: Links.php:444 Links.php:486 Messages.php:44 NewsLinkRemovals.php:220
-#: NewsLinkRemovals.php:290 NewsLinkRemovals.php:371 Sessions.php:187
-#: importations/Importations.php:46 importations/Pocket.php:100
-#: importations/Pocket.php:149 importations/Pocket.php:241 my/Profile.php:159
-msgid "A security verification failed."
-msgstr "Une vérification de sécurité a échoué."
-
-#: Collections.php:441
-msgid ""
-"It looks like you have no “Bookmarks” collection, you should contact the "
-"support."
-msgstr ""
-"Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
-"contacter le support."
-
-#: LinkCollections.php:93 Links.php:209 NewsLinkRemovals.php:154
-msgid "One of the associated collection doesn’t exist."
-msgstr "L’une des collections associées n’existe pas."
-
-#: Links.php:197 NewsLinkRemovals.php:140
-msgid "The link must be associated to a collection."
-msgstr "Le lien doit être associé à une collection."
-
-#: NewsLinkRemovals.php:229 NewsLinkRemovals.php:299 NewsLinkRemovals.php:365
-msgid "The link doesn’t exist."
-msgstr "Le lien n’existe pas."
-
-#: Onboarding.php:46 views/collections/feed.atom.xml.phtml:30
-#, php-format
-msgid "“%s”"
-msgstr "« %s »"
-
-#: Registrations.php:120 my/Security.php:90
-msgid "An account already exists with this email address."
-msgstr "Un compte existe déjà avec cette adresse courriel."
-
-#: Registrations.php:132
-msgid "You must accept the terms of service."
-msgstr "Vous devez accepter les conditions générales d’utilisation."
-
-#: Sessions.php:95
-msgid "We can’t find any account with this email address."
-msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
-
-#: Sessions.php:106 my/Account.php:257 my/Security.php:145
-msgid "The password is incorrect."
-msgstr "Le mot de passe est incorrect."
 
 #: assets/javascripts/controllers/collections_selector_controller.js:98
 msgid "Unselect this collection"
@@ -102,13 +38,135 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: importations/Pocket.php:85
+#: controllers/Collections.php:120 controllers/Collections.php:335
+#: controllers/Collections.php:532 controllers/Collections.php:579
+#: controllers/LinkMessages.php:72 controllers/Links.php:177
+#: controllers/NewsLinkRemovals.php:129 controllers/NewsLinks.php:122
+#: controllers/NewsLinks.php:184 controllers/Registrations.php:100
+#: controllers/Sessions.php:84 controllers/my/Account.php:169
+#: controllers/my/Account.php:249 controllers/my/Profile.php:83
+#: controllers/my/Security.php:78 controllers/my/Security.php:138
+#: controllers/my/Subscription.php:73
+msgid "A security verification failed: you should retry to submit the form."
+msgstr ""
+"Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
+"le formulaire."
+
+#: controllers/Collections.php:132 controllers/Collections.php:348
+#: controllers/my/Profile.php:94
+msgid "One of the associated topic doesn’t exist."
+msgstr "L’une des thématiques associées n’existe pas."
+
+#: controllers/Collections.php:410 controllers/LinkCollections.php:101
+#: controllers/Links.php:318 controllers/Links.php:369
+#: controllers/Links.php:447 controllers/Links.php:489
+#: controllers/Messages.php:46 controllers/NewsLinkRemovals.php:222
+#: controllers/NewsLinkRemovals.php:292 controllers/NewsLinkRemovals.php:373
+#: controllers/Sessions.php:189 controllers/importations/Importations.php:46
+#: controllers/importations/Pocket.php:100
+#: controllers/importations/Pocket.php:149
+#: controllers/importations/Pocket.php:241 controllers/my/Profile.php:159
+msgid "A security verification failed."
+msgstr "Une vérification de sécurité a échoué."
+
+#: controllers/Collections.php:443
+msgid ""
+"It looks like you have no “Bookmarks” collection, you should contact the "
+"support."
+msgstr ""
+"Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
+"contacter le support."
+
+#: controllers/LinkCollections.php:95 controllers/Links.php:212
+#: controllers/NewsLinkRemovals.php:156
+msgid "One of the associated collection doesn’t exist."
+msgstr "L’une des collections associées n’existe pas."
+
+#: controllers/Links.php:200 controllers/NewsLinkRemovals.php:142
+msgid "The link must be associated to a collection."
+msgstr "Le lien doit être associé à une collection."
+
+#: controllers/NewsLinkRemovals.php:231 controllers/NewsLinkRemovals.php:301
+#: controllers/NewsLinkRemovals.php:367
+msgid "The link doesn’t exist."
+msgstr "Le lien n’existe pas."
+
+#: controllers/Onboarding.php:48 views/collections/feed.atom.xml.phtml:30
+#, php-format
+msgid "“%s”"
+msgstr "« %s »"
+
+#: controllers/Registrations.php:127 controllers/my/Security.php:90
+msgid "An account already exists with this email address."
+msgstr "Un compte existe déjà avec cette adresse courriel."
+
+#: controllers/Registrations.php:140
+msgid "You must accept the terms of service."
+msgstr "Vous devez accepter les conditions générales d’utilisation."
+
+#: controllers/Sessions.php:97
+msgid "We can’t find any account with this email address."
+msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
+
+#: controllers/Sessions.php:108 controllers/my/Account.php:257
+#: controllers/my/Security.php:145
+msgid "The password is incorrect."
+msgstr "Le mot de passe est incorrect."
+
+#: controllers/importations/Pocket.php:85
 msgid "You already have an ongoing Pocket importation."
 msgstr "Vous avez déjà une importation Pocket en cours."
 
-#: importations/Pocket.php:92
+#: controllers/importations/Pocket.php:92
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
+
+#: controllers/my/Account.php:95 controllers/my/Account.php:108
+msgid "The token doesn’t exist."
+msgstr "Le token n’existe pas."
+
+#: controllers/my/Account.php:101
+msgid "The token has expired or has been invalidated."
+msgstr "Le token a expiré ou a été invalidé."
+
+#: controllers/my/Account.php:265
+msgid "Sorry but you cannot delete the demo account 😉"
+msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
+
+#: controllers/my/Profile.php:169
+msgid "This file is too large."
+msgstr "Ce fichier est trop gros."
+
+#: controllers/my/Profile.php:174
+#, php-format
+msgid "This file cannot be uploaded (error %d)."
+msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
+
+#: controllers/my/Profile.php:180
+msgid "This file cannot be uploaded."
+msgstr "Ce fichier ne peut pas être téléversé."
+
+#: controllers/my/Profile.php:199
+msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
+msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
+
+#: controllers/my/Security.php:67
+msgid "You must confirm your password."
+msgstr "Vous devez confirmer votre mot de passe."
+
+#: controllers/my/Subscription.php:82
+msgid ""
+"An error occured when getting you a subscription account, please contact the "
+"support."
+msgstr ""
+"Une erreur est survenue pendant que nous récupérions les informations de "
+"votre compte, merci de contacter le support."
+
+#: controllers/my/Subscription.php:130
+msgid "An error occured while logging you, please contact the support."
+msgstr ""
+"Une erreur est survenue pendant que nous vous connections, merci de "
+"contacter le support."
 
 #: jobs/Importator.php:33
 msgid ""
@@ -231,53 +289,6 @@ msgstr "La langue est obligatoire."
 #: models/User.php:476
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
-
-#: my/Account.php:95 my/Account.php:108
-msgid "The token doesn’t exist."
-msgstr "Le token n’existe pas."
-
-#: my/Account.php:101
-msgid "The token has expired or has been invalidated."
-msgstr "Le token a expiré ou a été invalidé."
-
-#: my/Account.php:265
-msgid "Sorry but you cannot delete the demo account 😉"
-msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
-
-#: my/Profile.php:169
-msgid "This file is too large."
-msgstr "Ce fichier est trop gros."
-
-#: my/Profile.php:174
-#, php-format
-msgid "This file cannot be uploaded (error %d)."
-msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
-
-#: my/Profile.php:180
-msgid "This file cannot be uploaded."
-msgstr "Ce fichier ne peut pas être téléversé."
-
-#: my/Profile.php:199
-msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
-msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
-
-#: my/Security.php:67
-msgid "You must confirm your password."
-msgstr "Vous devez confirmer votre mot de passe."
-
-#: my/Subscription.php:82
-msgid ""
-"An error occured when getting you a subscription account, please contact the "
-"support."
-msgstr ""
-"Une erreur est survenue pendant que nous récupérions les informations de "
-"votre compte, merci de contacter le support."
-
-#: my/Subscription.php:130
-msgid "An error occured while logging you, please contact the support."
-msgstr ""
-"Une erreur est survenue pendant que nous vous connections, merci de "
-"contacter le support."
 
 #: seeds.php:9
 msgid "Business"

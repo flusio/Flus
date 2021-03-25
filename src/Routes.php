@@ -129,26 +129,26 @@ class Routes
      */
     public static function loadCli($router)
     {
-        $router->addRoute('cli', '/', 'cli/System#usage');
+        $router->addRoute('cli', '/', 'System#usage');
 
-        $router->addRoute('cli', '/system/secret', 'cli/System#secret');
-        $router->addRoute('cli', '/system/setup', 'cli/System#setup');
-        $router->addRoute('cli', '/system/rollback', 'cli/System#rollback');
-        $router->addRoute('cli', '/database/status', 'cli/Database#status');
+        $router->addRoute('cli', '/system/secret', 'System#secret');
+        $router->addRoute('cli', '/system/setup', 'System#setup');
+        $router->addRoute('cli', '/system/rollback', 'System#rollback');
+        $router->addRoute('cli', '/database/status', 'Database#status');
 
-        $router->addRoute('cli', '/users/create', 'cli/Users#create');
-        $router->addRoute('cli', '/users/clean', 'cli/Users#clean');
+        $router->addRoute('cli', '/users/create', 'Users#create');
+        $router->addRoute('cli', '/users/clean', 'Users#clean');
 
-        $router->addRoute('cli', '/topics', 'cli/Topics#index');
-        $router->addRoute('cli', '/topics/create', 'cli/Topics#create');
-        $router->addRoute('cli', '/topics/delete', 'cli/Topics#delete');
+        $router->addRoute('cli', '/topics', 'Topics#index');
+        $router->addRoute('cli', '/topics/create', 'Topics#create');
+        $router->addRoute('cli', '/topics/delete', 'Topics#delete');
 
-        $router->addRoute('cli', '/links/refresh', 'cli/Links#refresh');
+        $router->addRoute('cli', '/links/refresh', 'Links#refresh');
 
-        $router->addRoute('cli', '/jobs', 'cli/JobsWorker#index');
-        $router->addRoute('cli', '/jobs/run', 'cli/JobsWorker#run');
-        $router->addRoute('cli', '/jobs/watch', 'cli/JobsWorker#watch');
-        $router->addRoute('cli', '/jobs/clear', 'cli/JobsWorker#clear');
+        $router->addRoute('cli', '/jobs', 'JobsWorker#index');
+        $router->addRoute('cli', '/jobs/run', 'JobsWorker#run');
+        $router->addRoute('cli', '/jobs/watch', 'JobsWorker#watch');
+        $router->addRoute('cli', '/jobs/clear', 'JobsWorker#clear');
 
         self::load($router);
     }

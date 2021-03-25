@@ -29,7 +29,7 @@ are:
 
 The `Application` passes the `Request` to an `Engine` which is able to execute
 the correct action based on the routes. Actions are methods in controllers,
-which are declared under [the `src/` folder](/src) as well.
+which are declared under [the `src/controllers` folder](/src/controllers).
 
 To understand routing, just take this example:
 

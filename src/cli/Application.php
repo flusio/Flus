@@ -41,6 +41,8 @@ class Application
             utils\Locale::setCurrentLocale($cli_locale);
         }
 
-        return $this->engine->run($request);
+        return $this->engine->run($request, [
+            'controller_namespace' => '\\flusio\\cli',
+        ]);
     }
 }
