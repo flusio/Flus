@@ -10,14 +10,12 @@
         <h1><?= _('Sign up') ?></h1>
     </div>
 
-    <form method="post" action="<?= url('create user') ?>">
+    <form method="post" action="<?= url('create user') ?>" data-controller="registration-form">
         <?php if ($error): ?>
             <p class="form__error">
                 <?= $error ?>
             </p>
         <?php endif; ?>
-
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
         <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">
             <label for="username">

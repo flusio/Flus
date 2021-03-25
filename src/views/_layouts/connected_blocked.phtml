@@ -31,6 +31,9 @@
         </script>
         <script src="<?= url_asset('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
 
+        <meta name="csrf-param" content="csrf" />
+        <meta name="csrf-token" content="<?= csrf_token() ?>" />
+
         <title><?php if ($environment === 'development'): ?>[devmode] <?php endif; ?><?= $title ?></title>
     </head>
 
