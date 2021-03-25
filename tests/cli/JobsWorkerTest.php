@@ -138,6 +138,48 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $job_dao->count());
     }
 
+    public function testRunSelectsOnlyJobsWithGivenQueue()
+    {
+        $job_dao = new models\dao\Job();
+        $token = $this->create('token');
+        $user_id = $this->create('user', [
+            'validation_token' => $token,
+        ]);
+        $queue_1 = $this->fakeUnique('word');
+        $queue_2 = $this->fakeUnique('word');
+        $job_id_1 = $this->create('job', [
+            'perform_at' => \Minz\Time::ago(10, 'seconds')->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => null,
+            'number_attempts' => $this->fake('numberBetween', 0, 25),
+            'queue' => $queue_1,
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
+            ]),
+        ]);
+        $job_id_2 = $this->create('job', [
+            'perform_at' => \Minz\Time::ago(5, 'seconds')->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => null,
+            'number_attempts' => $this->fake('numberBetween', 0, 25),
+            'queue' => $queue_2,
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
+            ]),
+        ]);
+
+        $this->assertEmailsCount(0);
+        $this->assertSame(2, $job_dao->count());
+
+        $response = $this->appRun('cli', '/jobs/run', [
+            'queue' => $queue_2,
+        ]);
+
+        $this->assertResponse($response, 200, "job#{$job_id_2}: done");
+        $this->assertSame(1, $job_dao->count());
+        $this->assertTrue($job_dao->exists($job_id_1));
+    }
+
     public function testRunDoesNotSelectJobToBeExecutedLater()
     {
         $job_dao = new models\dao\Job();
@@ -392,13 +434,13 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response_generator = $this->appRun('cli', '/jobs/watch');
 
         $response = $response_generator->current();
-        $this->assertResponse($response, 200, '[Job worker started]');
+        $this->assertResponse($response, 200, '[Job worker (all) started]');
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponse($response, 200, "job#{$job_id}: done");
         $response_generator->next();
         $response = $response_generator->current();
-        $this->assertResponse($response, 200, '[Job worker stopped]');
+        $this->assertResponse($response, 200, '[Job worker (all) stopped]');
         $this->assertEmailsCount(1);
         $this->assertSame(0, $job_dao->count());
     }

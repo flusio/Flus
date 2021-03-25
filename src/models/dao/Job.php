@@ -29,24 +29,35 @@ class Job extends \Minz\DatabaseModel
     }
 
     /**
-     * Return the next available job (i.e. to perform and not locked)
+     * Return the next available job (i.e. to perform and not locked) in the
+     * given queue. If queue is equal to 'all', it looks for all queues.
+     *
+     * @param string queue
      *
      * @return array
      */
-    public function findNextJob()
+    public function findNextJob($queue)
     {
-        $sql = <<<'SQL'
+        $now = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
+        $values = [$now];
+        $queue_placeholder = '';
+        if ($queue !== 'all') {
+            $queue_placeholder = 'AND queue = ?';
+            $values[] = $queue;
+        }
+
+        $sql = <<<SQL
             SELECT * FROM jobs
             WHERE locked_at IS NULL
             AND perform_at <= ?
             AND (number_attempts <= 25 OR frequency != '')
+            {$queue_placeholder}
             ORDER BY created_at;
         SQL;
 
-        $now = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
 
         $statement = $this->prepare($sql);
-        $statement->execute([$now]);
+        $statement->execute($values);
         return $statement->fetch();
     }
 
