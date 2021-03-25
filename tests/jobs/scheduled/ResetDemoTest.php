@@ -1,13 +1,37 @@
 <?php
 
-namespace flusio\jobs;
+namespace flusio\jobs\scheduled;
 
 use flusio\models;
 
 class ResetDemoTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\TimeHelper;
+
+    public function testQueue()
+    {
+        $reset_demo_job = new ResetDemo();
+
+        $this->assertSame('default', $reset_demo_job->queue);
+    }
+
+    public function testSchedule()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+
+        $reset_demo_job = new ResetDemo();
+
+        $expected_perform_at = \Minz\Time::relative('tomorrow 2:00');
+        $this->assertSame(
+            $expected_perform_at->getTimestamp(),
+            $reset_demo_job->perform_at->getTimestamp()
+        );
+        $this->assertSame('+1 day', $reset_demo_job->frequency);
+    }
 
     public function testPerform()
     {

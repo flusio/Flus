@@ -14,6 +14,12 @@ use flusio\utils;
  */
 class Importator extends Job
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->queue = 'importators';
+    }
+
     /**
      * @param string $importation_id
      */

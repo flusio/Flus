@@ -1,7 +1,8 @@
 <?php
 
-namespace flusio\jobs;
+namespace flusio\jobs\scheduled;
 
+use flusio\jobs;
 use flusio\models;
 use flusio\utils;
 
@@ -11,8 +12,15 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class ResetDemo extends Job
+class ResetDemo extends jobs\Job
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->perform_at = \Minz\Time::relative('tomorrow 2:00');
+        $this->frequency = '+1 day';
+    }
+
     public function perform()
     {
         // with these two delete, the other tables should be deleted in cascade

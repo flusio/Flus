@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\jobs;
+namespace flusio\jobs\scheduled;
 
 use flusio\models;
 use flusio\services;
@@ -25,6 +25,20 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
     public static function resetSubscriptionConfiguration()
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
+    }
+
+    public function testQueue()
+    {
+        $subscriptions_sync_job = new SubscriptionsSync();
+
+        $this->assertSame('default', $subscriptions_sync_job->queue);
+    }
+
+    public function testSchedule()
+    {
+        $subscriptions_sync_job = new SubscriptionsSync();
+
+        $this->assertSame('+4 hours', $subscriptions_sync_job->frequency);
     }
 
     public function testSyncUpdatesExpiredAtOfOverdueUsers()

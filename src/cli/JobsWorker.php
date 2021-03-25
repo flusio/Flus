@@ -53,6 +53,8 @@ class JobsWorker
     /**
      * Find an available job and run it.
      *
+     * @request_param string $queue Selects job in the given queue (default: all)
+     *
      * @response 204 If no job to run
      * @response 500 If we took a job but we can't lock it
      * @response 200
@@ -60,7 +62,8 @@ class JobsWorker
     public function run($request)
     {
         $job_dao = new models\dao\Job();
-        $db_job = $job_dao->findNextJob();
+        $queue = $request->param('queue', 'all');
+        $db_job = $job_dao->findNextJob($queue);
         if (!$db_job) {
             return Response::noContent();
         }
@@ -96,6 +99,8 @@ class JobsWorker
      *
      * Responses are yield during the lifetime of the action.
      *
+     * @request_param string $queue Selects job in the given queue (default: all)
+     *
      * @response 204 If no job to run
      * @response 500 If we took a job but we can't lock it
      * @response 200
@@ -108,7 +113,8 @@ class JobsWorker
         \pcntl_signal(SIGALRM, [$this, 'stopWatch']); // used for tests
         $this->exit_watch = false;
 
-        yield Response::text(200, '[Job worker started]');
+        $queue = $request->param('queue', 'all');
+        yield Response::text(200, "[Job worker ({$queue}) started]");
 
         while (true) {
             yield $this->run($request);
@@ -124,7 +130,7 @@ class JobsWorker
             }
         }
 
-        yield Response::text(200, '[Job worker stopped]');
+        yield Response::text(200, "[Job worker ({$queue}) stopped]");
     }
 
     /**

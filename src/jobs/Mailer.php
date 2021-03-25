@@ -10,6 +10,12 @@ namespace flusio\jobs;
  */
 class Mailer extends Job
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->queue = 'mailers';
+    }
+
     /**
      * Execute the given mailer action.
      *

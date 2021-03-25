@@ -2,7 +2,9 @@
 
 ## 2021-03-xx - v0.18
 
-### Breaking changes
+### Migration notes
+
+Jobs worker services can now be dedicated to queues.
 
 If `APP_DEMO` is true, the reset of the application is now automatically done
 via a scheduled job. The `make reset-demo` target is removed, you should remove
@@ -14,6 +16,8 @@ well (a scheduled job is running every 4 hours).
 A new environment variable must be set in your `.env` file: `APP_SUPPORT_EMAIL`.
 It’s used to create a default user. Make sure to set it to a user that doesn’t
 exist since feeds are attached to it.
+
+See production documentation for more information.
 
 ## 2021-02-23 - v0.17
 

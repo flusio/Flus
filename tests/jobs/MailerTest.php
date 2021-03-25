@@ -17,6 +17,13 @@ class MailerTest extends \PHPUnit\Framework\TestCase
         self::$application = new \flusio\cli\Application();
     }
 
+    public function testQueue()
+    {
+        $mailer_job = new Mailer();
+
+        $this->assertSame('mailers', $mailer_job->queue);
+    }
+
     public function testPerform()
     {
         $mailer_job = new Mailer();

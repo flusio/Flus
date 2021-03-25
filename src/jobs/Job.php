@@ -21,6 +21,9 @@ class Job
     /** @var string */
     public $frequency;
 
+    /** @var string */
+    public $queue;
+
     /**
      * Initialize the job.
      */
@@ -29,6 +32,7 @@ class Job
         $this->name = get_called_class();
         $this->perform_at = \Minz\Time::now();
         $this->frequency = '';
+        $this->queue = 'default';
     }
 
     /**
@@ -57,6 +61,7 @@ class Job
             'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'perform_at' => $this->perform_at->format(\Minz\Model::DATETIME_FORMAT),
             'frequency' => $this->frequency,
+            'queue' => $this->queue,
             'handler' => $handler,
         ]);
     }

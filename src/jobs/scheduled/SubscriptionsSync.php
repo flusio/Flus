@@ -1,7 +1,8 @@
 <?php
 
-namespace flusio\jobs;
+namespace flusio\jobs\scheduled;
 
+use flusio\jobs;
 use flusio\models;
 use flusio\services;
 use flusio\utils;
@@ -12,8 +13,14 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class SubscriptionsSync extends Job
+class SubscriptionsSync extends jobs\Job
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->frequency = '+4 hours';
+    }
+
     public function perform()
     {
         $app_conf = \Minz\Configuration::$application;

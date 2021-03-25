@@ -14,6 +14,12 @@ use flusio\utils;
  */
 class UserLinksFetcher extends Job
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->queue = 'fetchers';
+    }
+
     /**
      * @param string $user_id
      */
