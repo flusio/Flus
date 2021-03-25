@@ -5,6 +5,7 @@ CREATE TABLE jobs (
     handler JSON NOT NULL,
     perform_at TIMESTAMPTZ NOT NULL,
     frequency TEXT NOT NULL DEFAULT '',
+    queue TEXT NOT NULL DEFAULT 'default',
     locked_at TIMESTAMPTZ,
     number_attempts INTEGER NOT NULL DEFAULT 0,
     last_error TEXT,

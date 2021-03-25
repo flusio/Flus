@@ -27,6 +27,13 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
     }
 
+    public function testQueue()
+    {
+        $subscriptions_sync_job = new SubscriptionsSync();
+
+        $this->assertSame('default', $subscriptions_sync_job->queue);
+    }
+
     public function testSchedule()
     {
         $subscriptions_sync_job = new SubscriptionsSync();

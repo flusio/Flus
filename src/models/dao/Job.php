@@ -20,6 +20,7 @@ class Job extends \Minz\DatabaseModel
             'handler',
             'perform_at',
             'frequency',
+            'queue',
             'locked_at',
             'number_attempts',
             'last_error',

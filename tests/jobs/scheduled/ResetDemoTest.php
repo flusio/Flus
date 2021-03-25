@@ -11,6 +11,13 @@ class ResetDemoTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
 
+    public function testQueue()
+    {
+        $reset_demo_job = new ResetDemo();
+
+        $this->assertSame('default', $reset_demo_job->queue);
+    }
+
     public function testSchedule()
     {
         $now = $this->fake('dateTime');

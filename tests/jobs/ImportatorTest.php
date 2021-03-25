@@ -10,6 +10,13 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
 
+    public function testQueue()
+    {
+        $importator_job = new Importator();
+
+        $this->assertSame('importators', $importator_job->queue);
+    }
+
     public function testImportPocketItemsImportInBookmarks()
     {
         $importator = new Importator();

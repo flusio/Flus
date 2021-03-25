@@ -323,5 +323,8 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'perform_at' => function () use ($faker) {
             return $faker->iso8601;
         },
+        'queue' => function () use ($faker) {
+            return $faker->word;
+        },
     ]
 );
