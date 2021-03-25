@@ -98,10 +98,7 @@ class Job extends \Minz\DatabaseModel
             return;
         }
 
-        $perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
-        while ($perform_at <= \Minz\Time::now()) {
-            $perform_at->modify($db_job['frequency']);
-        }
+        $perform_at = $this->rescheduledPerformAt($db_job['perform_at'], $db_job['frequency']);
         $this->update($db_job['id'], [
             'locked_at' => null,
             'last_error' => null,
@@ -120,8 +117,7 @@ class Job extends \Minz\DatabaseModel
     {
         $db_job = $this->find($job_id);
         if ($db_job['frequency']) {
-            $new_perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
-            $new_perform_at->modify($db_job['frequency']);
+            $new_perform_at = $this->rescheduledPerformAt($db_job['perform_at'], $db_job['frequency']);
         } else {
             $number_seconds = 5 + pow($db_job['number_attempts'], 4);
             $new_perform_at = \Minz\Time::fromNow($number_seconds, 'seconds');
@@ -133,5 +129,23 @@ class Job extends \Minz\DatabaseModel
             'last_error' => $error,
             'failed_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
         ]);
+    }
+
+    /**
+     * Return a new perform_at, based on a frequency. It always return a date
+     * in the future.
+     *
+     * @param string $current_perform_at
+     * @param string $frequency
+     *
+     * @return \DateTime
+     */
+    private function rescheduledPerformAt($current_perform_at, $frequency)
+    {
+        $date = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $current_perform_at);
+        while ($date <= \Minz\Time::now()) {
+            $date->modify($frequency);
+        }
+        return $date;
     }
 }
