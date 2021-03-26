@@ -12,7 +12,7 @@
         'canonical' => url('collection', ['id' => $collection->id]),
         'current_tab' => 'collections',
         'feed' => [
-            'url' => url('collection feed', ['id' => $collection->id]),
+            'url' => url_full('collection feed', ['id' => $collection->id]),
             'title' => _f('Syndication feed of %s', $collection->name),
         ],
         'open_graph' => $open_graph,
