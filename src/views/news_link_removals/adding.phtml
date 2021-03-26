@@ -16,7 +16,7 @@
     </div>
 
     <p class="section__intro">
-        <?= $this->protect($news_link->title) ?>
+        <?= protect($news_link->title) ?>
     </p>
 
     <form method="post" action="<?= url('add news', ['id' => $news_link->id]) ?>">
@@ -49,7 +49,7 @@
                 >
                     <?php foreach ($collections as $collection): ?>
                         <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
-                            <?= $this->protect($collection->name()) ?>
+                            <?= protect($collection->name()) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

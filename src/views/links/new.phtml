@@ -71,7 +71,7 @@
                 >
                     <?php foreach ($collections as $collection): ?>
                         <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
-                            <?= $this->protect($collection->name()) ?>
+                            <?= protect($collection->name()) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

@@ -16,7 +16,7 @@
 
 <div class="section" data-controller="back-storage" data-back-storage-type="link">
     <div class="section__title">
-        <h1><?= $this->protect($collection->name) ?></h1>
+        <h1><?= protect($collection->name) ?></h1>
     </div>
 
     <?php if ($topics): ?>
@@ -53,7 +53,7 @@
     </div>
 
     <p class="collection__description">
-        <?= nl2br($this->protect($collection->description)) ?>
+        <?= nl2br(protect($collection->description)) ?>
     </p>
 
     <div class="cards">
@@ -78,7 +78,7 @@
                     target="_blank"
                     rel="noopener noreferrer"
                     tabindex="-1"
-                    href="<?= $link->url ?>"
+                    href="<?= protect($link->url) ?>"
                 >
                     <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
                 </a>
@@ -90,14 +90,14 @@
                             target="_blank"
                             rel="noopener noreferrer"
                             tabindex="-1"
-                            href="<?= $link->url ?>"
+                            href="<?= protect($link->url) ?>"
                         >
-                            <?= $this->protect($link->title) ?>
+                            <?= protect($link->title) ?>
                         </a>
                     </h2>
 
                     <p class="card__text card__text--oneline">
-                        <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                        <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                     </p>
 
                     <p class="card__text">
@@ -142,7 +142,7 @@
                                 </button>
 
                                 <div data-controller="copy-to-clipboard">
-                                    <input type="hidden" value="<?= $link->url ?>" data-target="copy-to-clipboard.copyable" />
+                                    <input type="hidden" value="<?= protect($link->url) ?>" data-target="copy-to-clipboard.copyable" />
 
                                     <button
                                         class="popup__item popup__item--button share__button icon icon--copy-to-clipboard"
@@ -175,7 +175,7 @@
                         class="anchor--action icon icon--anchor icon--pop-out"
                         target="_blank"
                         rel="noopener noreferrer"
-                        href="<?= $link->url ?>"
+                        href="<?= protect($link->url) ?>"
                     >
                         <?= _('read') ?>
                     </a>

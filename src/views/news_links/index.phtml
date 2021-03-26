@@ -41,7 +41,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         tabindex="-1"
-                        href="<?= $news_link->url ?>"
+                        href="<?= protect($news_link->url) ?>"
                     >
                         <img class="card__image" alt="" src="<?= url_link_image('cards', $news_link->image_filename) ?>" />
                     </a>
@@ -53,14 +53,14 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 tabindex="-1"
-                                href="<?= $news_link->url ?>"
+                                href="<?= protect($news_link->url) ?>"
                             >
-                                <?= $this->protect($news_link->title) ?>
+                                <?= protect($news_link->title) ?>
                             </a>
                         </h2>
 
                         <p class="card__text card__text--oneline">
-                            <span class="card__ellipsis"><?= $this->protect($news_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
+                            <span class="card__ellipsis"><?= protect($news_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
                         </p>
 
                         <p class="card__text news__via">
@@ -68,12 +68,12 @@
                                 <?= _('via your <strong>bookmarks</strong>') ?>
                             <?php elseif ($news_link->via_type === 'topics' && $news_link->via_link_id): ?>
                                 <?php $via_link = $news_link->viaLink(); ?>
-                                <?= _f('via your <strong>points of interest</strong>, added by %s', $this->protect($via_link->owner()->username)) ?>
+                                <?= _f('via your <strong>points of interest</strong>, added by %s', protect($via_link->owner()->username)) ?>
                             <?php elseif ($news_link->via_type === 'topics'): ?>
                                 <?= _('via your <strong>points of interest</strong>') ?>
                             <?php elseif ($news_link->via_type === 'followed' && $news_link->via_collection_id): ?>
                                 <?php $via_collection = $news_link->viaCollection(); ?>
-                                <?= _f('via <strong>%s</strong> by %s', $this->protect($via_collection->name()), $this->protect($via_collection->owner()->username)) ?>
+                                <?= _f('via <strong>%s</strong> by %s', protect($via_collection->name()), protect($via_collection->owner()->username)) ?>
                             <?php elseif ($news_link->via_type === 'followed'): ?>
                                 <?= _('via a <strong>followed collection</strong> (now deleted)') ?>
                             <?php endif; ?>
@@ -149,7 +149,7 @@
                             class="anchor--action icon icon--anchor icon--pop-out"
                             target="_blank"
                             rel="noopener noreferrer"
-                            href="<?= $news_link->url ?>"
+                            href="<?= protect($news_link->url) ?>"
                         >
                             <?= _('read') ?>
                         </a>

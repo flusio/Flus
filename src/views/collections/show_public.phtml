@@ -27,7 +27,7 @@
 
 <div class="section" data-controller="back-storage" data-back-storage-type="link">
     <div class="section__title">
-        <h1><?= $this->protect($collection->name) ?></h1>
+        <h1><?= protect($collection->name) ?></h1>
     </div>
 
     <?php if ($error): ?>
@@ -45,7 +45,7 @@
     <div class="collection__meta">
         <div class="collection__details">
             <p class="collection__owner">
-                <?= _f('created by %s', $this->protect($owner->username)) ?>
+                <?= _f('created by %s', protect($owner->username)) ?>
             </p>
         </div>
 
@@ -71,7 +71,7 @@
     </div>
 
     <p class="collection__description">
-        <?= nl2br($this->protect($collection->description)) ?>
+        <?= nl2br(protect($collection->description)) ?>
     </p>
 
     <?php if ($links): ?>
@@ -83,7 +83,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         tabindex="-1"
-                        href="<?= $link->url ?>"
+                        href="<?= protect($link->url) ?>"
                     >
                         <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
                     </a>
@@ -95,14 +95,14 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 tabindex="-1"
-                                href="<?= $link->url ?>"
+                                href="<?= protect($link->url) ?>"
                             >
-                                <?= $this->protect($link->title) ?>
+                                <?= protect($link->title) ?>
                             </a>
                         </h2>
 
                         <p class="card__text card__text--oneline">
-                            <span class="card__ellipsis"><?= $this->protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                            <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                         </p>
 
                         <p class="card__text">
@@ -119,7 +119,7 @@
                             class="anchor--action icon icon--anchor icon--pop-out"
                             target="_blank"
                             rel="noopener noreferrer"
-                            href="<?= $link->url ?>"
+                            href="<?= protect($link->url) ?>"
                         >
                             <?= _('read') ?>
                         </a>

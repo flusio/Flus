@@ -24,12 +24,12 @@
     <?php endif; ?>
 
     <div class="section__title">
-        <h1><?= $this->protect($link->title) ?></h1>
+        <h1><?= protect($link->title) ?></h1>
     </div>
 
     <section class="link__meta">
         <p class="link__details">
-            <?= $this->protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+            <?= protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
         </p>
 
         <ul class="link__actions">
@@ -38,7 +38,7 @@
                     class="anchor--action icon icon--anchor icon--pop-out"
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="<?= $link->url ?>"
+                    href="<?= protect($link->url) ?>"
                 >
                     <?= _('read') ?>
                 </a>
@@ -55,7 +55,7 @@
                         <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
 
                         <div class="message__author">
-                            <?= $this->protect($user->username) ?>
+                            <?= protect($user->username) ?>
                         </div>
 
                         <div class="header__separator"></div>
@@ -99,7 +99,7 @@
                 </header>
 
                 <div class="message__content">
-                    <?= nl2br($this->protect($message->content)) ?>
+                    <?= nl2br(protect($message->content)) ?>
                 </div>
             </article>
         <?php endforeach; ?>

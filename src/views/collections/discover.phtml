@@ -25,7 +25,7 @@
                     <div class="card__body">
                         <h2 class="card__title">
                             <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                                <?= $this->protect($collection->name) ?>
+                                <?= protect($collection->name) ?>
                             </a>
                         </h2>
 
@@ -36,7 +36,7 @@
                                 <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
                             <?php endif; ?>
 
-                            · <?= _f('created by %s', $this->protect($collection->owner()->username)) ?>
+                            · <?= _f('created by %s', protect($collection->owner()->username)) ?>
 
                             <?php if ($current_user->isFollowing($collection->id)): ?>
                                 <span class="sticker sticker--right"><?= _('followed') ?></span>

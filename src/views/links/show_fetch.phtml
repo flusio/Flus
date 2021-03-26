@@ -11,12 +11,12 @@
     </div>
 
     <p class="section__intro">
-        <?= $this->protect($link->url) ?>
+        <?= protect($link->url) ?>
     </p>
 
     <?php if ($link->fetched_at): ?>
         <p class="paragraph--featured">
-            <?= _f('The link title will be “<em>%s</em>”.', $this->protect($link->title)) ?>
+            <?= _f('The link title will be “<em>%s</em>”.', protect($link->title)) ?>
         </p>
 
         <p class="paragraph--centered">

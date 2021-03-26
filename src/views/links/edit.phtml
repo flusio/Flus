@@ -15,7 +15,7 @@
     </div>
 
     <p class="section__intro">
-        <?= $this->protect($link->title) ?>
+        <?= protect($link->title) ?>
     </p>
 
     <form method="post" action="<?= url('update link', ['id' => $link->id]) ?>">

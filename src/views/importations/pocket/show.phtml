@@ -63,7 +63,7 @@
         </p>
 
         <p class="paragraph--centered">
-            <?= $this->protect($importation->error) ?>
+            <?= protect($importation->error) ?>
         </p>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
@@ -164,7 +164,7 @@
 
         <p class="paragraph--centered paragraph--secondary">
             <small>
-                <?= _f('connected with account <em>%s</em>', $this->protect($current_user->pocket_username)) ?>
+                <?= _f('connected with account <em>%s</em>', protect($current_user->pocket_username)) ?>
             </small>
         </p>
     <?php else: ?>
