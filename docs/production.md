@@ -52,7 +52,7 @@ correctly.
 You can check the database is correctly configured with:
 
 ```console
-flusio# php ./cli --request /database/status
+flusio# sudu -u www-data php ./cli --request /database/status
 Database status: OK
 ```
 
@@ -84,9 +84,9 @@ flusio# chmod 400 .env
 You must now load the SQL schema to your database. You can do it with:
 
 ```console
-flusio# su - www-data -s /bin/bash -c 'php ./cli --request /system/setup'
+flusio# sudo -u www-data php ./cli --request /system/setup
 flusio# # OR via make
-flusio# su - www-data -s /bin/bash -c 'NO_DOCKER=true make setup'
+flusio# sudo -u www-data make setup NO_DOCKER=true
 ```
 
 If the permissions are correct, you should have a message to tell you the
@@ -172,6 +172,8 @@ Description=A job worker for flusio
 
 [Service]
 ExecStart=php /var/www/flusio/cli --request /jobs/watch
+User=www-data
+Group=www-data
 
 [Install]
 WantedBy=multi-user.target
@@ -196,6 +198,8 @@ Description=A job worker for flusio (queue %i)
 
 [Service]
 ExecStart=php /var/www/flusio/cli --request /jobs/watch -pqueue=%i
+User=www-data
+Group=www-data
 
 [Install]
 WantedBy=multi-user.target
@@ -207,17 +211,16 @@ Then enable/start services:
 # systemctl start flusio-worker@default
 # systemctl start flusio-worker@mailers
 # systemctl start flusio-worker@fetchers
+# # This one is a fallback worker, it's not required
 # systemctl start flusio-worker@all
 ```
-
-The last one allow to have a fallback worker.
 
 You should obviously adapt the service files to your needs. Also, you might not
 have permission on your server to create a new service. An alternative is to
 setup a cron task:
 
 ```cron
-* * * * * php /var/www/flusio/cli --request /jobs/run >/dev/null 2>&1
+* * * * * www-data php /var/www/flusio/cli --request /jobs/run >/dev/null 2>&1
 ```
 
 It will find and run a single job every minute. It’s less efficient than a
@@ -229,21 +232,21 @@ Topics are used to categorize collections. They only can be created by the
 administrator with the CLI for now:
 
 ```console
-flusio# php ./cli --request /topics/create -plabel=LABEL
+flusio# sudo -u www-data php ./cli --request /topics/create -plabel=LABEL
 ```
 
 You must change `LABEL` by the name of your topic (e.g. economics, politics,
 health). If you’ve made a mistake, you can delete a topic with:
 
 ```console
-flusio# php ./cli --request /topics/delete -pid=ID
+flusio# sudo -u www-data php ./cli --request /topics/delete -pid=ID
 ```
 
 You must change `ID` by the id of an existing topic. You can find topic ids by
 listing them:
 
 ```console
-flusio# php ./cli --request /topics
+flusio# sudo -u www-data php ./cli --request /topics
 ```
 
 ## Bonus: Configure Pocket
@@ -303,7 +306,7 @@ friends or family on your instance, you’ll have to create their account via th
 CLI:
 
 ```console
-flusio# php ./cli --request /users/create -pusername=Abby -pemail=email@example.com -ppassword=secret
+flusio# sudo -u www-data php ./cli --request /users/create -pusername=Abby -pemail=email@example.com -ppassword=secret
 ```
 
 ## Bonus: Change CLI default locale

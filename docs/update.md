@@ -1,7 +1,7 @@
 # How to update flusio
 
 This is quite simple, but there are some important things to note. First,
-ALWAYS check if there are some migration notes in the [changelog](/CHANGELOG.md).
+ALWAYS check if there are migration notes in the [changelog](/CHANGELOG.md).
 This is critical: you might miss important tasks to do otherwise and
 potentially lose your data. Also, always make a backup of your data before
 performing an update.
@@ -25,7 +25,7 @@ flusio# chown -R www-data:www-data .
 Then, apply the migrations and load seeds with:
 
 ```console
-flusio$ make update NO_DOCKER=true
+flusio$ sudo -u www-data make update NO_DOCKER=true
 ```
 
 Finally, you might need to restart PHP so it detects localization changes:
@@ -34,7 +34,8 @@ Finally, you might need to restart PHP so it detects localization changes:
 flusio$ sudo systemctl restart php
 ```
 
-In development, just stop and restart the `make start` command.
+**In development,** don’t prefix commands with `sudo -u www-data`. To restart
+php, just stop and restart the `make start` command.
 
 That’s all!
 
@@ -47,7 +48,7 @@ If at any time something goes wrong and you need to reset the application to
 its previous state, you should start by reverse the migrations with:
 
 ```console
-flusio$ make rollback STEP=1 NO_DOCKER=true
+flusio$ sudo -u www-data make rollback STEP=1 NO_DOCKER=true
 ```
 
 You can increase `STEP` to rollback more migrations (its default value is `1`
@@ -60,7 +61,7 @@ flusio$ git checkout PREVIOUS_TAG
 If something goes really wrong with the database, you can use the joker command:
 
 ```console
-flusio$ make reset NO_DOCKER=true
+flusio$ sudo -u www-data make reset NO_DOCKER=true
 ```
 
 It will reset the database and reload the schema. **Obviously, you should avoid
