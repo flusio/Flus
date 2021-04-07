@@ -139,6 +139,8 @@ class Collection extends \Minz\DatabaseModel
 
             AND c.user_id != :user_id
 
+            AND c.type != 'feed'
+
             GROUP BY c.id
 
             ORDER BY c.name
@@ -175,6 +177,8 @@ class Collection extends \Minz\DatabaseModel
             AND c.is_public = true
 
             AND c.user_id != :user_id
+
+            AND c.type != 'feed'
         SQL;
 
         $statement = $this->prepare($sql);

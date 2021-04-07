@@ -907,6 +907,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('sentence');
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
+            'type' => 'collection',
             'user_id' => $other_user_id,
             'name' => $collection_name,
             'is_public' => 1,
@@ -931,6 +932,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection_name = $this->fake('sentence');
         $collection_id = $this->create('collection', [
+            'type' => 'collection',
             'user_id' => $user->id,
             'name' => $collection_name,
             'is_public' => 1,
@@ -956,6 +958,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('sentence');
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
+            'type' => 'collection',
             'user_id' => $other_user_id,
             'name' => $collection_name,
             'is_public' => 1,
@@ -973,9 +976,36 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('sentence');
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
+            'type' => 'collection',
             'user_id' => $other_user_id,
             'name' => $collection_name,
             'is_public' => 0,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'is_hidden' => 0,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+
+        $response = $this->appRun('get', '/collections/discover');
+
+        $output = $response->render();
+        $this->assertStringNotContainsString($collection_name, $output);
+    }
+
+    public function testDiscoverDoesNotListFeedCollections()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('sentence');
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+            'is_public' => 1,
         ]);
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
@@ -998,6 +1028,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('sentence');
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
+            'type' => 'collection',
             'user_id' => $other_user_id,
             'name' => $collection_name,
             'is_public' => 1,
@@ -1032,6 +1063,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('sentence');
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
+            'type' => 'collection',
             'user_id' => $other_user_id,
             'name' => $collection_name,
             'is_public' => 1,
@@ -1057,6 +1089,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('sentence');
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
+            'type' => 'collection',
             'user_id' => $other_user_id,
             'name' => $collection_name,
             'is_public' => 1,
