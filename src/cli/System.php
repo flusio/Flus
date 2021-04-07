@@ -22,6 +22,9 @@ class System
         $usage .= '  /feeds              List the feeds' . "\n";
         $usage .= '  /feeds/add          Add a feed' . "\n";
         $usage .= '      -purl=URL       where URL is the link to the feed' . "\n";
+        $usage .= '  /feeds/sync         Synchronize a feed' . "\n";
+        $usage .= '      -pid=ID         where ID is the id of the feed' . "\n";
+        $usage .= '      [-pnocache=BOOL] Indicates if the cache should be ignored (default is false)' . "\n";
         $usage .= '  /jobs               List the jobs' . "\n";
         $usage .= '  /jobs/clear         Delete all the jobs' . "\n";
         $usage .= '  /jobs/run           Execute one waiting job' . "\n";

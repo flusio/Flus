@@ -141,6 +141,7 @@ class Routes
 
         $router->addRoute('cli', '/feeds', 'Feeds#index');
         $router->addRoute('cli', '/feeds/add', 'Feeds#add');
+        $router->addRoute('cli', '/feeds/sync', 'Feeds#sync');
 
         $router->addRoute('cli', '/topics', 'Topics#index');
         $router->addRoute('cli', '/topics/create', 'Topics#create');

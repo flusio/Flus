@@ -17,7 +17,13 @@ class FeedFetcher
     /** @var \SpiderBits\Http */
     private $http;
 
-    public function __construct()
+    /** @var boolean */
+    private $no_cache;
+
+    /**
+     * @param boolean $no_cache Indicates if FeedFetcher should ignore the cache
+     */
+    public function __construct($no_cache = false)
     {
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $this->cache = new \SpiderBits\Cache($cache_path);
@@ -25,6 +31,8 @@ class FeedFetcher
         $this->http = new \SpiderBits\Http();
         $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
         $this->http->timeout = 5;
+
+        $this->no_cache = $no_cache;
     }
 
     /**
@@ -134,7 +142,7 @@ class FeedFetcher
         // First, we "GET" the URL...
         $url_hash = \SpiderBits\Cache::hash($url);
         $cached_response = $this->cache->get($url_hash, 60 * 60);
-        if ($cached_response) {
+        if (!$this->no_cache && $cached_response) {
             // ... via the cache
             $response = \SpiderBits\Response::fromText($cached_response);
         } else {
