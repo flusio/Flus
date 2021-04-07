@@ -19,6 +19,7 @@ class System
         $usage .= 'REQUEST can be one of the following:' . "\n";
         $usage .= '  /                   Show this help' . "\n";
         $usage .= '  /database/status    Return the status of the DB connection' . "\n";
+        $usage .= '  /feeds              List the feeds' . "\n";
         $usage .= '  /feeds/add          Add a feed' . "\n";
         $usage .= '      -purl=URL       where URL is the link to the feed' . "\n";
         $usage .= '  /jobs               List the jobs' . "\n";

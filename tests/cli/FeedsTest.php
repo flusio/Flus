@@ -6,6 +6,7 @@ use flusio\models;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
@@ -36,6 +37,35 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public static function changeJobAdapterToTest()
     {
         \Minz\Configuration::$application['job_adapter'] = 'test';
+    }
+
+    public function testIndexRendersCorrectly()
+    {
+        $feed_url_1 = $this->fake('url');
+        $feed_url_2 = $this->fake('url');
+        $feed_id_1 = $this->create('collection', [
+            'type' => 'feed',
+            'feed_url' => $feed_url_1,
+        ]);
+        $feed_id_2 = $this->create('collection', [
+            'type' => 'feed',
+            'feed_url' => $feed_url_2,
+        ]);
+
+        $response = $this->appRun('cli', '/feeds');
+
+        $expected_output = <<<TEXT
+        {$feed_id_1} {$feed_url_1}
+        {$feed_id_2} {$feed_url_2}
+        TEXT;
+        $this->assertResponse($response, 200, $expected_output);
+    }
+
+    public function testIndexRendersCorrectlyWhenNoFeed()
+    {
+        $response = $this->appRun('cli', '/feeds');
+
+        $this->assertResponse($response, 200, 'No feeds to list.');
     }
 
     public function testAddCreatesCollectionAndLinksAndRendersCorrectly()

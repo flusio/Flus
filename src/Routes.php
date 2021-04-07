@@ -139,6 +139,7 @@ class Routes
         $router->addRoute('cli', '/users/create', 'Users#create');
         $router->addRoute('cli', '/users/clean', 'Users#clean');
 
+        $router->addRoute('cli', '/feeds', 'Feeds#index');
         $router->addRoute('cli', '/feeds/add', 'Feeds#add');
 
         $router->addRoute('cli', '/topics', 'Topics#index');

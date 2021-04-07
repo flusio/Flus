@@ -15,6 +15,28 @@ use flusio\utils;
 class Feeds
 {
     /**
+     * List the feeds.
+     *
+     * @response 200
+     */
+    public function index($request)
+    {
+        $collections = models\Collection::daoToList('listBy', [
+            'type' => 'feed',
+        ]);
+        $feeds_as_text = [];
+        foreach ($collections as $collection) {
+            $feeds_as_text[] = "{$collection->id} {$collection->feed_url}";
+        }
+
+        if (!$feeds_as_text) {
+            $feeds_as_text[] = 'No feeds to list.';
+        }
+
+        return Response::text(200, implode("\n", $feeds_as_text));
+    }
+
+    /**
      * Add a feed to the system.
      *
      * @request_param string url
