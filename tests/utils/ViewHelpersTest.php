@@ -1,6 +1,6 @@
 <?php
 
-// phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+// phpcs:ignore PSR1.Classes.ClassDeclaration.MissingNamespace
 class ViewHelpersTest extends \PHPUnit\Framework\TestCase
 {
     /**
