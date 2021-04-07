@@ -211,3 +211,8 @@
 .icon--link::before {
     background-image: url("../icons/technology/link-line.svg");
 }
+
+/* Custom */
+.icon--feed::before {
+    background-image: url("../icons/custom/feed.svg");
+}

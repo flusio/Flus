@@ -14,7 +14,9 @@ class Collection extends \Minz\Model
 {
     use DaoConnector;
 
-    public const VALID_TYPES = ['bookmarks', 'collection'];
+    public const VALID_TYPES = ['bookmarks', 'collection', 'feed'];
+
+    public const NAME_MAX_LENGTH = 100;
 
     public const PROPERTIES = [
         'id' => [
@@ -54,6 +56,26 @@ class Collection extends \Minz\Model
             'type' => 'integer',
             'computed' => true,
         ],
+
+        'feed_url' => [
+            'type' => 'string',
+        ],
+
+        'feed_site_url' => [
+            'type' => 'string',
+        ],
+
+        'feed_fetched_code' => [
+            'type' => 'integer',
+        ],
+
+        'feed_fetched_at' => [
+            'type' => 'datetime',
+        ],
+
+        'feed_fetched_error' => [
+            'type' => 'string',
+        ],
     ];
 
     /**
@@ -68,6 +90,7 @@ class Collection extends \Minz\Model
             'description' => '',
             'type' => 'collection',
             'is_public' => false,
+            'feed_fetched_code' => 0,
         ], $values));
     }
 
@@ -100,6 +123,23 @@ class Collection extends \Minz\Model
             'name' => _('Bookmarks'),
             'type' => 'bookmarks',
             'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * @param string $user_id
+     *
+     * @return \flusio\models\Collection
+     */
+    public static function initFeed($user_id, $feed_url)
+    {
+        $feed_url = \SpiderBits\Url::sanitize($feed_url);
+        return new self([
+            'name' => substr($feed_url, 0, self::NAME_MAX_LENGTH),
+            'feed_url' => $feed_url,
+            'type' => 'feed',
+            'user_id' => $user_id,
+            'is_public' => true,
         ]);
     }
 
@@ -199,6 +239,16 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return the feed site URL to be displayed
+     *
+     * @return string
+     */
+    public function feedWebsite()
+    {
+        return \flusio\utils\Belt::host($this->feed_site_url);
+    }
+
+    /**
      * Sort collections based on given locale
      *
      * @param \flusio\models\Collection[] $collections
@@ -235,7 +285,7 @@ class Collection extends \Minz\Model
      */
     public static function validateName($name)
     {
-        return strlen($name) <= 100;
+        return strlen($name) <= self::NAME_MAX_LENGTH;
     }
 
     /**
