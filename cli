@@ -40,7 +40,7 @@ if (isset($options['p'])) {
             die("Parameters must be in the form key=value ({$parameter}).\n");
         }
 
-        list($key, $value) = explode('=', $parameter);
+        list($key, $value) = explode('=', $parameter, 2);
         $parameters[$key] = $value;
     }
 }
