@@ -192,7 +192,8 @@ class Collections
 
         $number_links = models\Link::daoCall('countByCollectionId', $collection->id, !$is_owned);
         $pagination_page = intval($request->param('page', 1));
-        $pagination = new utils\Pagination($number_links, 30, $pagination_page);
+        $number_per_page = $is_owned ? 29 : 30; // the button to add a link counts for 1!
+        $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
         if ($pagination_page !== $pagination->currentPage()) {
             return Response::redirect('collection', [
                 'id' => $collection->id,
