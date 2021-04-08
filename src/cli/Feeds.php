@@ -15,6 +15,28 @@ use flusio\utils;
 class Feeds
 {
     /**
+     * List the feeds.
+     *
+     * @response 200
+     */
+    public function index($request)
+    {
+        $collections = models\Collection::daoToList('listBy', [
+            'type' => 'feed',
+        ]);
+        $feeds_as_text = [];
+        foreach ($collections as $collection) {
+            $feeds_as_text[] = "{$collection->id} {$collection->feed_url}";
+        }
+
+        if (!$feeds_as_text) {
+            $feeds_as_text[] = 'No feeds to list.';
+        }
+
+        return Response::text(200, implode("\n", $feeds_as_text));
+    }
+
+    /**
      * Add a feed to the system.
      *
      * @request_param string url
@@ -59,5 +81,37 @@ class Feeds
         $fetcher_job->performLater($user->id);
 
         return Response::text(200, "Feed {$collection->feed_url} ({$collection->name}) has been added.");
+    }
+
+    /**
+     * Synchronize a feed.
+     *
+     * @request_param string id
+     * @request_param boolean nocache
+     *
+     * @response 404
+     *     if the id doesn't exist
+     * @response 200
+     */
+    public function sync($request)
+    {
+        $id = $request->param('id');
+        $no_cache = filter_var($request->param('nocache', false), FILTER_VALIDATE_BOOLEAN);
+        $collection = models\Collection::findBy([
+            'type' => 'feed',
+            'id' => $id,
+        ]);
+        if (!$collection) {
+            return Response::text(404, "Feed id `{$id}` does not exist.");
+        }
+
+        $feed_fetcher_service = new services\FeedFetcher($no_cache);
+        $feed_fetcher_service->fetch($collection);
+
+        $user = models\User::supportUser();
+        $links_fetcher_job = new jobs\UserLinksFetcher();
+        $links_fetcher_job->performLater($user->id);
+
+        return Response::text(200, "Feed {$id} ({$collection->feed_url}) has been synchronized.");
     }
 }

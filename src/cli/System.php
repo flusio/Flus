@@ -19,8 +19,12 @@ class System
         $usage .= 'REQUEST can be one of the following:' . "\n";
         $usage .= '  /                   Show this help' . "\n";
         $usage .= '  /database/status    Return the status of the DB connection' . "\n";
+        $usage .= '  /feeds              List the feeds' . "\n";
         $usage .= '  /feeds/add          Add a feed' . "\n";
         $usage .= '      -purl=URL       where URL is the link to the feed' . "\n";
+        $usage .= '  /feeds/sync         Synchronize a feed' . "\n";
+        $usage .= '      -pid=ID         where ID is the id of the feed' . "\n";
+        $usage .= '      [-pnocache=BOOL] Indicates if the cache should be ignored (default is false)' . "\n";
         $usage .= '  /jobs               List the jobs' . "\n";
         $usage .= '  /jobs/clear         Delete all the jobs' . "\n";
         $usage .= '  /jobs/run           Execute one waiting job' . "\n";
