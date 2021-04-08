@@ -43,17 +43,24 @@ class LinkFetcher
         if (isset($info['error'])) {
             $link->fetched_error = $info['error'];
         }
+
         // we set the title only if it wasn't changed yet
         if ($link->title === $link->url && isset($info['title'])) {
             $link->title = $info['title'];
         }
+
         if (isset($info['reading_time'])) {
             $link->reading_time = $info['reading_time'];
         }
+
         if (isset($info['url_illustration'])) {
             $image_service = new Image();
             $image_filename = $image_service->generatePreviews($info['url_illustration']);
             $link->image_filename = $image_filename;
+        }
+
+        if ($info['url_feeds']) {
+            $link->url_feeds = json_encode($info['url_feeds']);
         }
 
         $link->save();
@@ -70,6 +77,7 @@ class LinkFetcher
      *     - title
      *     - reading_time
      *     - url_illustration
+     *     - url_feeds
      */
     public function fetchUrl($url)
     {
@@ -148,6 +156,14 @@ class LinkFetcher
         $url_illustration = \SpiderBits\Url::sanitize($url_illustration);
         if ($url_illustration) {
             $info['url_illustration'] = $url_illustration;
+        }
+
+        $url_feeds = \SpiderBits\DomExtractor::feeds($dom);
+        $info['url_feeds'] = [];
+        foreach ($url_feeds as $url_feed) {
+            $url_feed = \SpiderBits\Url::absolutize($url_feed, $url);
+            $url_feed = \SpiderBits\Url::sanitize($url_feed);
+            $info['url_feeds'][] = $url_feed;
         }
 
         return $info;

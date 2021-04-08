@@ -98,6 +98,16 @@ class Dom
     }
 
     /**
+     * Return the selected nodes.
+     *
+     * @return \DOMNodeList|null
+     */
+    public function list()
+    {
+        return $this->nodes_selected;
+    }
+
+    /**
      * Return the content of the current selected node(s) as a string
      *
      * @return string

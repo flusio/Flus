@@ -5,6 +5,16 @@ namespace SpiderBits;
 class UrlTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * @dataProvider absolutizeProvider
+     */
+    public function testAbsolutize($base_url, $url, $expected)
+    {
+        $absolutized_url = Url::absolutize($url, $base_url);
+
+        $this->assertSame($expected, $absolutized_url);
+    }
+
+    /**
      * @dataProvider sanitizeProvider
      */
     public function testSanitize($input, $expected)
@@ -12,6 +22,30 @@ class UrlTest extends \PHPUnit\Framework\TestCase
         $sanitized_url = Url::sanitize($input);
 
         $this->assertSame($expected, $sanitized_url);
+    }
+
+    public function absolutizeProvider()
+    {
+        return [
+            ['https://host', '/path', 'https://host/path'],
+            ['https://host', 'path', 'https://host/path'],
+            ['https://host', 'https://example.com/path', 'https://example.com/path'],
+            ['https://host/', 'path', 'https://host/path'],
+            ['https://host/', '/path', 'https://host/path'],
+            ['https://host/', '/path?foo', 'https://host/path?foo'],
+            ['https://host/foo', '/path', 'https://host/path'],
+            ['https://host/foo', 'path', 'https://host/foo/path'],
+            ['https://host/foo/', '/path', 'https://host/path'],
+            ['https://host/foo/', 'path', 'https://host/foo/path'],
+            ['https://host/foo?bar', '/path', 'https://host/path'],
+            ['https://host/foo?bar', 'path', 'https://host/foo/path'],
+            ['https://host:443/', '/path', 'https://host:443/path'],
+            ['ftp://host', '//example.com/path', 'ftp://example.com/path'],
+            ['//host', '//example.com/path', 'http://example.com/path'],
+            ['', '/path', '/path'],
+            ['http:///example.com', '/path', '/path'],
+            ['http://:80', '/path', '/path'],
+        ];
     }
 
     public function sanitizeProvider()

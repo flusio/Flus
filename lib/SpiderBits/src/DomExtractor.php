@@ -139,4 +139,27 @@ class DomExtractor
 
         return $main_node->text();
     }
+
+    /**
+     * Return the autodiscovered feeds URLs (RSS and Atom).
+     *
+     * @param \SpiderBits\Dom $dom
+     *
+     * @return string[]
+     */
+    public static function feeds($dom)
+    {
+        $xpath_query = '//link[@type = "application/rss+xml" or @type = "application/atom+xml"]';
+
+        $nodes = $dom->select($xpath_query);
+        if (!$nodes) {
+            return [];
+        }
+
+        $feeds = [];
+        foreach ($nodes->list() as $node) {
+            $feeds[] = $node->getAttribute('href');
+        }
+        return $feeds;
+    }
 }

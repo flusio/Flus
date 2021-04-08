@@ -112,7 +112,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://flus.fr/carnet/';
 
         $this->assertSame(0, models\Link::count());
 
@@ -123,10 +123,10 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $encoded_url = urlencode($url);
         $this->assertResponse($response, 302, "/links/search?url={$encoded_url}");
-        $this->assertSame(1, models\Link::count());
         $link = models\Link::findBy(['url' => $url]);
         $this->assertSame($support_user->id, $link->user_id);
-        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertSame('carnet de flus', $link->title);
+        $this->assertSame(['https://flus.fr/carnet/feeds/all.atom.xml'], $link->feedUrls());
         $this->assertSame(200, $link->fetched_code);
     }
 

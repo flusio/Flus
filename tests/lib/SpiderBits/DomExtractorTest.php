@@ -278,4 +278,36 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('This is main', $content);
     }
+
+    public function testFeeds()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <head>
+                    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss" />
+                    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom" />
+                </head>
+            </html>
+        HTML);
+
+        $feeds = DomExtractor::feeds($dom);
+
+        $this->assertSame(2, count($feeds));
+        $this->assertSame('/rss', $feeds[0]);
+        $this->assertSame('/atom', $feeds[1]);
+    }
+
+    public function testFeedsWithNoLinks()
+    {
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <head>
+                </head>
+            </html>
+        HTML);
+
+        $feeds = DomExtractor::feeds($dom);
+
+        $this->assertSame(0, count($feeds));
+    }
 }
