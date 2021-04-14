@@ -70,15 +70,15 @@ class Routes
         $router->addRoute('post', '/pocket/auth', 'importations/Pocket#authorize', 'authorize pocket');
 
         // News page
-        $router->addRoute('get', '/news', 'NewsLinks#index', 'news');
-        $router->addRoute('post', '/news', 'NewsLinks#fill', 'fill news');
-        $router->addRoute('get', '/news/preferences', 'NewsLinks#preferences', 'news preferences');
-        $router->addRoute('post', '/news/preferences', 'NewsLinks#updatePreferences', 'update news preferences');
-        $router->addRoute('get', '/news/:id/add', 'NewsLinkRemovals#adding', 'adding news');
-        $router->addRoute('post', '/news/:id/add', 'NewsLinkRemovals#add', 'add news');
-        $router->addRoute('post', '/news/:id/mark-as-read', 'NewsLinkRemovals#markAsRead', 'mark news as read');
-        $router->addRoute('post', '/news/:id/read-later', 'NewsLinkRemovals#readLater', 'read news later');
-        $router->addRoute('post', '/news/:id/remove', 'NewsLinkRemovals#remove', 'remove news');
+        $router->addRoute('get', '/news', 'News#show', 'news');
+        $router->addRoute('post', '/news', 'News#create', 'fill news');
+        $router->addRoute('get', '/news/preferences', 'news/Preferences#show', 'news preferences');
+        $router->addRoute('post', '/news/preferences', 'news/Preferences#update', 'update news preferences');
+        $router->addRoute('get', '/news/:id/add', 'news/Links#new', 'adding news');
+        $router->addRoute('post', '/news/:id/add', 'news/Links#create', 'add news');
+        $router->addRoute('post', '/news/:id/mark-as-read', 'news/Links#markAsRead', 'mark news as read');
+        $router->addRoute('post', '/news/:id/read-later', 'news/Links#readLater', 'read news later');
+        $router->addRoute('post', '/news/:id/remove', 'news/Links#delete', 'remove news');
 
         // Collections
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');

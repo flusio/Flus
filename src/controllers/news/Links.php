@@ -1,18 +1,16 @@
 <?php
 
-namespace flusio\controllers;
+namespace flusio\controllers\news;
 
 use Minz\Response;
 use flusio\models;
 use flusio\utils;
 
 /**
- * Handle the requests related to the news.
- *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class NewsLinkRemovals
+class Links
 {
     /**
      * Allow to add a link from a news_link (which is mark as read). If a link
@@ -26,12 +24,8 @@ class NewsLinkRemovals
      *     if the link doesn't exist, or is not associated to the current user
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
-    public function adding($request)
+    public function new($request)
     {
         $user = utils\CurrentUser::get();
         $news_link_id = $request->param('id');
@@ -60,7 +54,7 @@ class NewsLinkRemovals
             $collection_ids = [];
         }
 
-        return Response::ok('news_link_removals/adding.phtml', [
+        return Response::ok('news/links/new.phtml', [
             'news_link' => $news_link,
             'is_hidden' => $is_hidden,
             'collection_ids' => $collection_ids,
@@ -87,12 +81,8 @@ class NewsLinkRemovals
      *     if CSRF is invalid, if collection_ids is empty or contains inexisting ids
      * @response 302 /news
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
-    public function add($request)
+    public function create($request)
     {
         $user = utils\CurrentUser::get();
         $news_link_id = $request->param('id');
@@ -119,7 +109,7 @@ class NewsLinkRemovals
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('news_link_removals/adding.phtml', [
+            return Response::badRequest('news/links/new.phtml', [
                 'news_link' => $news_link,
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
@@ -131,7 +121,7 @@ class NewsLinkRemovals
         }
 
         if (empty($collection_ids)) {
-            return Response::badRequest('news_link_removals/adding.phtml', [
+            return Response::badRequest('news/links/new.phtml', [
                 'news_link' => $news_link,
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
@@ -145,7 +135,7 @@ class NewsLinkRemovals
         }
 
         if (!models\Collection::daoCall('existForUser', $user->id, $collection_ids)) {
-            return Response::badRequest('news_link_removals/adding.phtml', [
+            return Response::badRequest('news/links/new.phtml', [
                 'news_link' => $news_link,
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
@@ -202,10 +192,6 @@ class NewsLinkRemovals
      *     if CSRF is invalid
      * @response 302 /news
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function markAsRead($request)
     {
@@ -272,10 +258,6 @@ class NewsLinkRemovals
      *     if CSRF is invalid
      * @response 302 /news
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function readLater($request)
     {
@@ -347,12 +329,8 @@ class NewsLinkRemovals
      *     if CSRF is invalid
      * @response 302 /news
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
-    public function remove($request)
+    public function delete($request)
     {
         $user = utils\CurrentUser::get();
         $from = \Minz\Url::for('news');
