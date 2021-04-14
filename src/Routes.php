@@ -38,20 +38,20 @@ class Routes
         // "My" section
         $router->addRoute('get', '/my/profile', 'my/Profile#show', 'profile');
         $router->addRoute('post', '/my/profile', 'my/Profile#update', 'update profile');
-        $router->addRoute('post', '/my/profile/avatar', 'my/Profile#updateAvatar', 'update avatar');
+        $router->addRoute('post', '/my/profile/avatar', 'my/Avatar#update', 'update avatar');
 
-        $router->addRoute('get', '/my/info.json', 'my/Profile#info', 'profile info');
+        $router->addRoute('get', '/my/info.json', 'my/Info#show', 'profile info');
 
         $router->addRoute('get', '/my/security', 'my/Security#show', 'security');
         $router->addRoute('post', '/my/security', 'my/Security#update', 'update security');
         $router->addRoute('post', '/my/security/confirm', 'my/Security#confirmPassword', 'confirm password');
 
         $router->addRoute('get', '/my/account', 'my/Account#show', 'account');
-        $router->addRoute('get', '/my/account/validation', 'my/Account#validation', 'account validation');
+        $router->addRoute('get', '/my/account/validation', 'my/Validation#show', 'account validation');
         $router->addRoute(
             'post',
             '/my/account/validation/email',
-            'my/Account#resendValidationEmail',
+            'my/Validation#resendEmail',
             'resend validation email'
         );
         $router->addRoute('get', '/my/account/deletion', 'my/Account#deletion', 'account deletion');
@@ -70,30 +70,30 @@ class Routes
         $router->addRoute('post', '/pocket/auth', 'importations/Pocket#authorize', 'authorize pocket');
 
         // News page
-        $router->addRoute('get', '/news', 'NewsLinks#index', 'news');
-        $router->addRoute('post', '/news', 'NewsLinks#fill', 'fill news');
-        $router->addRoute('get', '/news/preferences', 'NewsLinks#preferences', 'news preferences');
-        $router->addRoute('post', '/news/preferences', 'NewsLinks#updatePreferences', 'update news preferences');
-        $router->addRoute('get', '/news/:id/add', 'NewsLinkRemovals#adding', 'adding news');
-        $router->addRoute('post', '/news/:id/add', 'NewsLinkRemovals#add', 'add news');
-        $router->addRoute('post', '/news/:id/mark-as-read', 'NewsLinkRemovals#markAsRead', 'mark news as read');
-        $router->addRoute('post', '/news/:id/read-later', 'NewsLinkRemovals#readLater', 'read news later');
-        $router->addRoute('post', '/news/:id/remove', 'NewsLinkRemovals#remove', 'remove news');
+        $router->addRoute('get', '/news', 'News#show', 'news');
+        $router->addRoute('post', '/news', 'News#create', 'fill news');
+        $router->addRoute('get', '/news/preferences', 'news/Preferences#show', 'news preferences');
+        $router->addRoute('post', '/news/preferences', 'news/Preferences#update', 'update news preferences');
+        $router->addRoute('get', '/news/:id/add', 'news/Links#new', 'adding news');
+        $router->addRoute('post', '/news/:id/add', 'news/Links#create', 'add news');
+        $router->addRoute('post', '/news/:id/mark-as-read', 'news/Links#markAsRead', 'mark news as read');
+        $router->addRoute('post', '/news/:id/read-later', 'news/Links#readLater', 'read news later');
+        $router->addRoute('post', '/news/:id/remove', 'news/Links#delete', 'remove news');
 
         // Collections
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');
         $router->addRoute('get', '/collections/new', 'Collections#new', 'new collection');
         $router->addRoute('post', '/collections/new', 'Collections#create', 'create collection');
-        $router->addRoute('get', '/collections/discover', 'Collections#discover', 'discover collections');
+        $router->addRoute('get', '/collections/discover', 'collections/Discovery#show', 'discover collections');
         $router->addRoute('get', '/collections/:id', 'Collections#show', 'collection');
         $router->addRoute('get', '/collections/:id/feed.atom.xml', 'Collections#show', 'collection feed');
         $router->addRoute('get', '/collections/:id/edit', 'Collections#edit', 'edit collection');
         $router->addRoute('post', '/collections/:id/edit', 'Collections#update', 'update collection');
         $router->addRoute('post', '/collections/:id/delete', 'Collections#delete', 'delete collection');
-        $router->addRoute('post', '/collections/:id/follow', 'Collections#follow', 'follow collection');
-        $router->addRoute('post', '/collections/:id/unfollow', 'Collections#unfollow', 'unfollow collection');
+        $router->addRoute('post', '/collections/:id/follow', 'collections/Followers#create', 'follow collection');
+        $router->addRoute('post', '/collections/:id/unfollow', 'collections/Followers#delete', 'unfollow collection');
 
-        $router->addRoute('get', '/bookmarks', 'Collections#showBookmarks', 'bookmarks');
+        $router->addRoute('get', '/bookmarks', 'collections/Bookmarks#show', 'bookmarks');
 
         // Links
         $router->addRoute('get', '/links/new', 'Links#new', 'new link');
@@ -103,17 +103,17 @@ class Routes
         $router->addRoute('get', '/links/:id/edit', 'Links#edit', 'edit link');
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');
-        $router->addRoute('get', '/links/:id/fetch', 'Links#showFetch', 'show fetch link');
-        $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
+        $router->addRoute('get', '/links/:id/fetch', 'links/Fetches#show', 'show fetch link');
+        $router->addRoute('post', '/links/:id/fetch', 'links/Fetches#create', 'fetch link');
         $router->addRoute('post', '/links/:id/mark-as-read', 'Links#markAsRead', 'mark link as read');
 
         // Link collections
-        $router->addRoute('get', '/links/:id/collections', 'LinkCollections#index', 'link collections');
-        $router->addRoute('post', '/links/:id/collections', 'LinkCollections#update', 'update link collections');
+        $router->addRoute('get', '/links/:id/collections', 'links/Collections#index', 'link collections');
+        $router->addRoute('post', '/links/:id/collections', 'links/Collections#update', 'update link collections');
 
         // Messages
-        $router->addRoute('get', '/links/:link_id/messages', 'LinkMessages#index', 'links/messages');
-        $router->addRoute('post', '/links/:link_id/messages', 'LinkMessages#create', 'links/create message');
+        $router->addRoute('get', '/links/:link_id/messages', 'links/Messages#index', 'links/messages');
+        $router->addRoute('post', '/links/:link_id/messages', 'links/Messages#create', 'links/create message');
         $router->addRoute('post', '/messages/:id/delete', 'Messages#delete', 'delete message');
 
         // This should be used only for source mapping

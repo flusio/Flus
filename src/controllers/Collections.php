@@ -19,10 +19,6 @@ class Collections
      *
      * @response 302 /login?redirect_to=/collections if not connected
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function index()
     {
@@ -49,10 +45,6 @@ class Collections
      *
      * @response 302 /login?redirect_to=/collections/new if not connected
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function new()
     {
@@ -87,10 +79,6 @@ class Collections
      * @response 302 /login?redirect_to=/collections/new if not connected
      * @response 400 if csrf, name or topic_ids are invalid
      * @response 302 /collections/:new
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function create($request)
     {
@@ -166,10 +154,6 @@ class Collections
      * @response 404
      *     if the collection doesn’t exist or is inaccessible to the current user
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function show($request)
     {
@@ -247,10 +231,6 @@ class Collections
      * @response 302 /login?redirect_to=/collection/:id/edit if not connected
      * @response 404 if the collection doesn’t exist or user hasn't access
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function edit($request)
     {
@@ -295,10 +275,6 @@ class Collections
      * @response 404 if the collection doesn’t exist or user hasn't access
      * @response 400 if csrf, name or topic_ids are invalid
      * @response 302 /collections/:id
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function update($request)
     {
@@ -384,10 +360,6 @@ class Collections
      * @response 404 if the collection doesn’t exist or user hasn't access
      * @response 302 :from if csrf is invalid
      * @response 302 /collections
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function delete($request)
     {
@@ -415,177 +387,5 @@ class Collections
         models\Collection::delete($collection->id);
 
         return Response::redirect('collections');
-    }
-
-    /**
-     * Show the bookmarks page
-     *
-     * @response 302 /login?redirect_to=/bookmarks if not connected
-     * @response 404 if the collection doesn’t exist or user hasn't access
-     * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function showBookmarks()
-    {
-        $user = utils\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('bookmarks'),
-            ]);
-        }
-
-        $bookmarks = $user->bookmarks();
-        if (!$bookmarks) {
-            \Minz\Log::error("User {$user->id} has no Bookmarks collection.");
-            return Response::notFound('not_found.phtml', [
-                'details' => _('It looks like you have no “Bookmarks” collection, you should contact the support.'),
-            ]);
-        }
-
-        return Response::ok('collections/show_bookmarks.phtml', [
-            'collection' => $bookmarks,
-            'links' => $bookmarks->links(),
-        ]);
-    }
-
-    /**
-     * Show the discovering page
-     *
-     * @request_param integer page
-     *
-     * @response 302 /login?redirect_to=/collections/discover if not connected
-     * @response 302 /collections/discover?page=:bounded_page if :page is invalid
-     * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function discover($request)
-    {
-        $user = utils\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('discover collections'),
-            ]);
-        }
-
-        $number_collections = models\Collection::daoCall('countForDiscovering', $user->id);
-
-        $pagination_page = intval($request->param('page', 1));
-        $pagination = new utils\Pagination($number_collections, 30, $pagination_page);
-        if ($pagination_page !== $pagination->currentPage()) {
-            return Response::redirect('discover collections', ['page' => $pagination->currentPage()]);
-        }
-
-        $collections = models\Collection::daoToList(
-            'listForDiscovering',
-            $user->id,
-            $pagination->currentOffset(),
-            $pagination->numberPerPage()
-        );
-        models\Collection::sort($collections, $user->locale);
-
-        return Response::ok('collections/discover.phtml', [
-            'collections' => $collections,
-            'pagination' => $pagination,
-        ]);
-    }
-
-    /**
-     * Make the current user following the given collection
-     *
-     * @request_param string id
-     *
-     * @response 302 /login?redirect_to=/collections/:id
-     *     if not connected
-     * @response 404
-     *     if the collection doesn’t exist or user hasn't access
-     * @response 302 /collections/:id
-     *     if CSRF is invalid
-     * @response 302 /collections/:id
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function follow($request)
-    {
-        $user = utils\CurrentUser::get();
-        $collection_id = $request->param('id');
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
-            ]);
-        }
-
-        $collection = models\Collection::find($collection_id);
-        if (!$collection || !$collection->is_public) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
-            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
-            return Response::redirect('collection', ['id' => $collection->id]);
-        }
-
-        $is_following = $user->isFollowing($collection->id);
-        if (!$is_following) {
-            $user->follow($collection->id);
-        }
-
-        return Response::redirect('collection', ['id' => $collection->id]);
-    }
-
-    /**
-     * Make the current user following the given collection
-     *
-     * @request_param string id
-     *
-     * @response 302 /login?redirect_to=/collections/:id
-     *     if not connected
-     * @response 404
-     *     if the collection doesn’t exist or user hasn't access
-     * @response 302 /collections/:id
-     *     if CSRF is invalid
-     * @response 302 /collections/:id
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function unfollow($request)
-    {
-        $user = utils\CurrentUser::get();
-        $collection_id = $request->param('id');
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
-            ]);
-        }
-
-        $collection = models\Collection::find($collection_id);
-        if (!$collection || !$collection->is_public) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
-            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
-            return Response::redirect('collection', ['id' => $collection->id]);
-        }
-
-        $is_following = $user->isFollowing($collection->id);
-        if ($is_following) {
-            $user->unfollow($collection->id);
-        }
-
-        return Response::redirect('collection', ['id' => $collection->id]);
     }
 }

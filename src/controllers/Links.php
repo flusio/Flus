@@ -4,7 +4,6 @@ namespace flusio\controllers;
 
 use Minz\Response;
 use flusio\models;
-use flusio\services;
 use flusio\utils;
 
 /**
@@ -27,10 +26,6 @@ class Links
      * @response 302 /links/:id/fetch
      *     if the link is owned by the current user and is not fetched yet
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function show($request)
     {
@@ -94,10 +89,6 @@ class Links
      *
      * @response 302 /login?redirect_to=/links/new if not connected
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function new($request)
     {
@@ -146,10 +137,6 @@ class Links
      * @response 400 if CSRF or the url is invalid, of if one collection id
      *               doesn't exist or parameter is missing/empty
      * @response 302 /links/:id on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function create($request)
     {
@@ -246,10 +233,6 @@ class Links
      * @response 302 /login?redirect_to=/links/:id/edit if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function edit($request)
     {
@@ -289,10 +272,6 @@ class Links
      * @response 404 if the link doesn't exist or not associated to the current user
      * @response 302 :from if csrf token or title are invalid
      * @response 302 :from
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function update($request)
     {
@@ -343,10 +322,6 @@ class Links
      * @response 404 if the link doesn’t exist or user hasn't access
      * @response 302 :from if csrf is invalid
      * @response 302 :redirect_to on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function delete($request)
     {
@@ -376,85 +351,6 @@ class Links
     }
 
     /**
-     * Show the fetch link page.
-     *
-     * @request_param string id
-     *
-     * @response 302 /login?redirect_to=/links/:id/fetch
-     * @response 404 if the link doesn't exist or not associated to the current user
-     * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function showFetch($request)
-    {
-        $user = utils\CurrentUser::get();
-        $link_id = $request->param('id');
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show fetch link', ['id' => $link_id]),
-            ]);
-        }
-
-        $link = $user->link($link_id);
-        if ($link) {
-            return Response::ok('links/show_fetch.phtml', [
-                'link' => $link,
-            ]);
-        } else {
-            return Response::notFound('not_found.phtml');
-        }
-    }
-
-    /**
-     * Fetch information about a link.
-     *
-     * @request_param string csrf
-     * @request_param string id
-     *
-     * @response 302 /login?redirect_to=/links/:id/fetch
-     * @response 404 if the link doesn't exist or not associated to the current user
-     * @response 400 if csrf token is invalid
-     * @response 302 /links/:id
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function fetch($request)
-    {
-        $user = utils\CurrentUser::get();
-        $link_id = $request->param('id');
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show fetch link', ['id' => $link_id]),
-            ]);
-        }
-
-        $link = $user->link($link_id);
-        if (!$link) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
-            return Response::badRequest('links/show_fetch.phtml', [
-                'link' => $link,
-                'error' => _('A security verification failed.'),
-            ]);
-        }
-
-        $fetch_service = new services\LinkFetcher();
-        $fetch_service->fetch($link);
-
-        return Response::redirect('link', ['id' => $link->id]);
-    }
-
-    /**
      * Mark a link as read and remove it from bookmarks.
      *
      * @request_param string csrf
@@ -469,10 +365,6 @@ class Links
      *     if CSRF is invalid
      * @response 302 /bookmarks
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function markAsRead($request)
     {

@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\controllers;
+namespace flusio\controllers\news;
 
 use flusio\models;
 
-class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
+class LinksTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
@@ -14,7 +14,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testAddingRendersCorrectly()
+    public function testNewRendersCorrectly()
     {
         $user = $this->login();
         $title = $this->fake('sentence');
@@ -26,10 +26,10 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', "/news/{$news_link_id}/add");
 
         $this->assertResponse($response, 200, $title);
-        $this->assertPointer($response, 'news_link_removals/adding.phtml');
+        $this->assertPointer($response, 'news/links/new.phtml');
     }
 
-    public function testAddingAdaptsSubmitButtonIfTheLinkIsAlreadyPartOfCollections()
+    public function testNewAdaptsSubmitButtonIfTheLinkIsAlreadyPartOfCollections()
     {
         $user = $this->login();
         $url = $this->fake('url');
@@ -47,7 +47,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, 'Save and mark as read');
     }
 
-    public function testAddingRedirectsIfNotConnected()
+    public function testNewRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
         $title = $this->fake('sentence');
@@ -61,7 +61,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, "/login?redirect_to=%2Fnews%2F{$news_link_id}%2Fadd");
     }
 
-    public function testAddingFailsIfLinkIsNotOwned()
+    public function testNewFailsIfLinkIsNotOwned()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
@@ -76,7 +76,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404);
     }
 
-    public function testAddCreatesALinkAndRedirects()
+    public function testCreateCreatesALinkAndRedirects()
     {
         $user = $this->login();
         $links_to_collections_dao = new models\dao\LinksToCollections();
@@ -119,7 +119,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection_id, $db_link_to_collection['collection_id']);
     }
 
-    public function testAddUpdatesExistingLinks()
+    public function testCreateUpdatesExistingLinks()
     {
         $user = $this->login();
         $links_to_collections_dao = new models\dao\LinksToCollections();
@@ -167,7 +167,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_collection_id, $new_db_link_to_collection['collection_id']);
     }
 
-    public function testAddRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected()
     {
         $user_id = $this->create('user', [
             'csrf' => 'a token',
@@ -193,7 +193,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testAddFailsIfUserDoesNotOwnTheNewsLink()
+    public function testCreateFailsIfUserDoesNotOwnTheNewsLink()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
@@ -218,7 +218,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testAddFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
@@ -242,7 +242,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testAddFailsIfCollectionIdsIsEmpty()
+    public function testCreateFailsIfCollectionIdsIsEmpty()
     {
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
@@ -266,7 +266,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testAddFailsIfCollectionIdsContainsNotOwnedId()
+    public function testCreateFailsIfCollectionIdsContainsNotOwnedId()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
@@ -703,7 +703,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($news_link->is_read, 'The news link should not be read.');
     }
 
-    public function testRemoveRemovesLinkFromNewsAndRedirects()
+    public function testDeleteRemovesLinkFromNewsAndRedirects()
     {
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
@@ -721,7 +721,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($news_link->is_removed, 'The news link should be removed.');
     }
 
-    public function testRemoveRemovesFromBookmarksIfCorrespondingUrlInLinks()
+    public function testDeleteRemovesFromBookmarksIfCorrespondingUrlInLinks()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user = $this->login();
@@ -752,7 +752,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($exists_in_bookmarks, 'The link should no longer be in bookmarks.');
     }
 
-    public function testRemoveRedirectsToLoginIfNotConnected()
+    public function testDeleteRedirectsToLoginIfNotConnected()
     {
         $user_id = $this->create('user', [
             'csrf' => 'a token',
@@ -772,7 +772,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
     }
 
-    public function testRemoveFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
         $news_link_id = $this->create('news_link', [
@@ -791,7 +791,7 @@ class NewsLinkRemovalsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
     }
 
-    public function testRemoveFailsIfUserDoesNotOwnTheLink()
+    public function testDeleteFailsIfUserDoesNotOwnTheLink()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');

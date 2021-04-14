@@ -5,7 +5,7 @@ namespace flusio\controllers;
 use flusio\models;
 use flusio\utils;
 
-class NewsLinksTest extends \PHPUnit\Framework\TestCase
+class NewsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
@@ -15,7 +15,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRendersNewsLinksCorrectly()
+    public function testShowRendersNewsLinksCorrectly()
     {
         $user = $this->login();
         $title_news = $this->fake('sentence');
@@ -49,7 +49,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString($title_not_news_2, $response_output);
     }
 
-    public function testIndexShowsIfViaBookmarks()
+    public function testShowShowsIfViaBookmarks()
     {
         $user = $this->login();
         $url = $this->fake('url');
@@ -80,7 +80,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('via your <strong>bookmarks</strong>', $response_output);
     }
 
-    public function testIndexRendersIfViaFollowedCollections()
+    public function testShowRendersIfViaFollowedCollections()
     {
         $user = $this->login();
         $url = $this->fake('url');
@@ -128,7 +128,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testIndexRendersIfViaTopics()
+    public function testShowRendersIfViaTopics()
     {
         $user = $this->login();
         $url = $this->fake('url');
@@ -178,7 +178,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testIndexRendersTipsIfNoNewsFlash()
+    public function testShowRendersTipsIfNoNewsFlash()
     {
         $user = $this->login();
         utils\Flash::set('no_news', true);
@@ -189,7 +189,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('We found no relevant news for you, what can you do?', $response_output);
     }
 
-    public function testIndexHidesAddToCollectionsIfUserHasNoCollections()
+    public function testShowHidesAddToCollectionsIfUserHasNoCollections()
     {
         $user = $this->login();
         $this->create('news_link', [
@@ -205,235 +205,14 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('Add to collections', $response_output);
     }
 
-    public function testIndexRedirectsIfNotConnected()
+    public function testShowRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/news');
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
     }
 
-    public function testPreferencesRendersCorrectly()
-    {
-        $preferences = models\NewsPreferences::init(666, true, true, true);
-        $user = $this->login([
-            'news_preferences' => $preferences->toJson(),
-        ]);
-
-        $response = $this->appRun('get', '/news/preferences');
-
-        $this->assertResponse($response, 200, 666);
-        $this->assertPointer($response, 'news_links/preferences.phtml');
-    }
-
-    public function testPreferencesRedirectsIfNotConnected()
-    {
-        $preferences = models\NewsPreferences::init(666, true, true, true);
-        $user_id = $this->create('user', [
-            'news_preferences' => $preferences->toJson(),
-        ]);
-
-        $response = $this->appRun('get', '/news/preferences');
-
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews%2Fpreferences');
-    }
-
-    public function testUpdatePreferencesSavesUserNewsPreferencesAndRedirects()
-    {
-        $min_duration = models\NewsPreferences::MIN_DURATION;
-        $max_duration = models\NewsPreferences::MAX_DURATION;
-        $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
-        $new_duration = $this->fake('numberBetween', $min_duration, $max_duration);
-        $old_from_bookmarks = $this->fake('boolean');
-        $new_from_bookmarks = true;
-        $old_from_followed = $this->fake('boolean');
-        $new_from_followed = true;
-        $old_from_topics = $this->fake('boolean');
-        $new_from_topics = true;
-        $preferences = models\NewsPreferences::init(
-            $old_duration,
-            $old_from_bookmarks,
-            $old_from_followed,
-            $old_from_topics
-        );
-        $user = $this->login([
-            'news_preferences' => $preferences->toJson(),
-        ]);
-
-        $response = $this->appRun('post', '/news/preferences', [
-            'csrf' => $user->csrf,
-            'duration' => $new_duration,
-            'from_bookmarks' => $new_from_bookmarks,
-            'from_followed' => $new_from_followed,
-            'from_topics' => $new_from_topics,
-        ]);
-
-        $this->assertResponse($response, 302, '/news');
-        $user = models\User::find($user->id);
-        $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
-        $this->assertSame($new_duration, $news_preferences->duration);
-        $this->assertSame($new_from_bookmarks, $news_preferences->from_bookmarks);
-        $this->assertSame($new_from_followed, $news_preferences->from_followed);
-        $this->assertSame($new_from_topics, $news_preferences->from_topics);
-    }
-
-    public function testUpdatePreferencesRedirectsIfNotConnected()
-    {
-        $min_duration = models\NewsPreferences::MIN_DURATION;
-        $max_duration = models\NewsPreferences::MAX_DURATION;
-        $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
-        $new_duration = $this->fake('numberBetween', $min_duration, $max_duration);
-        $old_from_bookmarks = $this->fake('boolean');
-        $new_from_bookmarks = true;
-        $old_from_followed = $this->fake('boolean');
-        $new_from_followed = true;
-        $old_from_topics = $this->fake('boolean');
-        $new_from_topics = true;
-        $preferences = models\NewsPreferences::init(
-            $old_duration,
-            $old_from_bookmarks,
-            $old_from_followed,
-            $old_from_topics
-        );
-        $user_id = $this->create('user', [
-            'csrf' => 'a token',
-            'news_preferences' => $preferences->toJson(),
-        ]);
-
-        $response = $this->appRun('post', '/news/preferences', [
-            'csrf' => 'a token',
-            'duration' => $new_duration,
-            'from_bookmarks' => $new_from_bookmarks,
-            'from_followed' => $new_from_followed,
-            'from_topics' => $new_from_topics,
-        ]);
-
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews%2Fpreferences');
-        $user = models\User::find($user_id);
-        $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
-        $this->assertSame($old_duration, $news_preferences->duration);
-        $this->assertSame($old_from_bookmarks, $news_preferences->from_bookmarks);
-        $this->assertSame($old_from_followed, $news_preferences->from_followed);
-        $this->assertSame($old_from_topics, $news_preferences->from_topics);
-    }
-
-    public function testUpdatePreferencesFailsIfCsrfIsInvalid()
-    {
-        $min_duration = models\NewsPreferences::MIN_DURATION;
-        $max_duration = models\NewsPreferences::MAX_DURATION;
-        $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
-        $new_duration = $this->fake('numberBetween', $min_duration, $max_duration);
-        $old_from_bookmarks = $this->fake('boolean');
-        $new_from_bookmarks = true;
-        $old_from_followed = $this->fake('boolean');
-        $new_from_followed = true;
-        $old_from_topics = $this->fake('boolean');
-        $new_from_topics = true;
-        $preferences = models\NewsPreferences::init(
-            $old_duration,
-            $old_from_bookmarks,
-            $old_from_followed,
-            $old_from_topics
-        );
-        $user = $this->login([
-            'news_preferences' => $preferences->toJson(),
-        ]);
-
-        $response = $this->appRun('post', '/news/preferences', [
-            'csrf' => 'not the token',
-            'duration' => $new_duration,
-            'from_bookmarks' => $new_from_bookmarks,
-            'from_followed' => $new_from_followed,
-            'from_topics' => $new_from_topics,
-        ]);
-
-        $this->assertResponse($response, 400, 'A security verification failed');
-        $user = models\User::find($user->id);
-        $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
-        $this->assertSame($old_duration, $news_preferences->duration);
-        $this->assertSame($old_from_bookmarks, $news_preferences->from_bookmarks);
-        $this->assertSame($old_from_followed, $news_preferences->from_followed);
-        $this->assertSame($old_from_topics, $news_preferences->from_topics);
-    }
-
-    public function testUpdatePreferencesFailsIfDurationIsInvalid()
-    {
-        $min_duration = models\NewsPreferences::MIN_DURATION;
-        $max_duration = models\NewsPreferences::MAX_DURATION;
-        $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
-        $new_duration = $this->fake('randomNumber') * -1;
-        $old_from_bookmarks = $this->fake('boolean');
-        $new_from_bookmarks = true;
-        $old_from_followed = $this->fake('boolean');
-        $new_from_followed = true;
-        $old_from_topics = $this->fake('boolean');
-        $new_from_topics = true;
-        $preferences = models\NewsPreferences::init(
-            $old_duration,
-            $old_from_bookmarks,
-            $old_from_followed,
-            $old_from_topics
-        );
-        $user = $this->login([
-            'news_preferences' => $preferences->toJson(),
-        ]);
-
-        $response = $this->appRun('post', '/news/preferences', [
-            'csrf' => $user->csrf,
-            'duration' => $new_duration,
-            'from_bookmarks' => $new_from_bookmarks,
-            'from_followed' => $new_from_followed,
-            'from_topics' => $new_from_topics,
-        ]);
-
-        $this->assertResponse($response, 400, "The duration must be between {$min_duration} and {$max_duration}");
-        $user = models\User::find($user->id);
-        $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
-        $this->assertSame($old_duration, $news_preferences->duration);
-        $this->assertSame($old_from_bookmarks, $news_preferences->from_bookmarks);
-        $this->assertSame($old_from_followed, $news_preferences->from_followed);
-        $this->assertSame($old_from_topics, $news_preferences->from_topics);
-    }
-
-    public function testUpdatePreferencesFailsIfNoFromIsSelected()
-    {
-        $min_duration = models\NewsPreferences::MIN_DURATION;
-        $max_duration = models\NewsPreferences::MAX_DURATION;
-        $old_duration = $this->fake('numberBetween', $min_duration, $max_duration);
-        $new_duration = $this->fake('numberBetween', $min_duration, $max_duration);
-        $old_from_bookmarks = $this->fake('boolean');
-        $new_from_bookmarks = false;
-        $old_from_followed = $this->fake('boolean');
-        $new_from_followed = false;
-        $old_from_topics = $this->fake('boolean');
-        $new_from_topics = false;
-        $preferences = models\NewsPreferences::init(
-            $old_duration,
-            $old_from_bookmarks,
-            $old_from_followed,
-            $old_from_topics
-        );
-        $user = $this->login([
-            'news_preferences' => $preferences->toJson(),
-        ]);
-
-        $response = $this->appRun('post', '/news/preferences', [
-            'csrf' => $user->csrf,
-            'duration' => $new_duration,
-            'from_bookmarks' => $new_from_bookmarks,
-            'from_followed' => $new_from_followed,
-            'from_topics' => $new_from_topics,
-        ]);
-
-        $this->assertResponse($response, 400, 'You must select at least one option');
-        $user = models\User::find($user->id);
-        $news_preferences = models\NewsPreferences::fromJson($user->news_preferences);
-        $this->assertSame($old_duration, $news_preferences->duration);
-        $this->assertSame($old_from_bookmarks, $news_preferences->from_bookmarks);
-        $this->assertSame($old_from_followed, $news_preferences->from_followed);
-        $this->assertSame($old_from_topics, $news_preferences->from_topics);
-    }
-
-    public function testFillSelectsLinksFromBookmarksAndRedirects()
+    public function testCreateSelectsLinksFromBookmarksAndRedirects()
     {
         $user = $this->login();
         $link_url = $this->fake('url');
@@ -462,7 +241,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_id, $news_link->via_link_id);
     }
 
-    public function testFillSelectsLinksFromFollowedCollections()
+    public function testCreateSelectsLinksFromFollowedCollections()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
@@ -500,7 +279,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_id, $news_link->via_link_id);
     }
 
-    public function testFillSelectsLinksFromTopics()
+    public function testCreateSelectsLinksFromTopics()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
@@ -543,7 +322,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_id, $news_link->via_link_id);
     }
 
-    public function testFillSelectsLinksUpToAbout30MinutesByDefault()
+    public function testCreateSelectsLinksUpToAbout30MinutesByDefault()
     {
         $user = $this->login();
         $link_url_1 = $this->fake('url');
@@ -593,7 +372,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($news_link_3);
     }
 
-    public function testFillDoesNotSelectTooLongLinks()
+    public function testCreateDoesNotSelectTooLongLinks()
     {
         $user = $this->login();
         $link_url = $this->fake('url');
@@ -619,7 +398,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($news_link);
     }
 
-    public function testFillDoesNotSelectNotBookmarkedLinks()
+    public function testCreateDoesNotSelectNotBookmarkedLinks()
     {
         $user = $this->login();
         $link_url = $this->fake('url');
@@ -641,7 +420,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($news_link);
     }
 
-    public function testFillSetsFlashNoNewsIfNoSuggestions()
+    public function testCreateSetsFlashNoNewsIfNoSuggestions()
     {
         $user = $this->login();
 
@@ -652,7 +431,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFlash('no_news', true);
     }
 
-    public function testFillRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected()
     {
         $user_id = $this->create('user', [
             'csrf' => 'a token',
@@ -681,7 +460,7 @@ class NewsLinksTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($news_link);
     }
 
-    public function testFillFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
         $link_url = $this->fake('url');
