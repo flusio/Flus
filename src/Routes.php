@@ -84,16 +84,16 @@ class Routes
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');
         $router->addRoute('get', '/collections/new', 'Collections#new', 'new collection');
         $router->addRoute('post', '/collections/new', 'Collections#create', 'create collection');
-        $router->addRoute('get', '/collections/discover', 'Collections#discover', 'discover collections');
+        $router->addRoute('get', '/collections/discover', 'collections/Discovery#show', 'discover collections');
         $router->addRoute('get', '/collections/:id', 'Collections#show', 'collection');
         $router->addRoute('get', '/collections/:id/feed.atom.xml', 'Collections#show', 'collection feed');
         $router->addRoute('get', '/collections/:id/edit', 'Collections#edit', 'edit collection');
         $router->addRoute('post', '/collections/:id/edit', 'Collections#update', 'update collection');
         $router->addRoute('post', '/collections/:id/delete', 'Collections#delete', 'delete collection');
-        $router->addRoute('post', '/collections/:id/follow', 'Collections#follow', 'follow collection');
-        $router->addRoute('post', '/collections/:id/unfollow', 'Collections#unfollow', 'unfollow collection');
+        $router->addRoute('post', '/collections/:id/follow', 'collections/Followers#create', 'follow collection');
+        $router->addRoute('post', '/collections/:id/unfollow', 'collections/Followers#delete', 'unfollow collection');
 
-        $router->addRoute('get', '/bookmarks', 'Collections#showBookmarks', 'bookmarks');
+        $router->addRoute('get', '/bookmarks', 'collections/Bookmarks#show', 'bookmarks');
 
         // Links
         $router->addRoute('get', '/links/new', 'Links#new', 'new link');
