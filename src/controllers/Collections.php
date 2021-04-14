@@ -3,6 +3,7 @@
 namespace flusio\controllers;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -29,8 +30,8 @@ class Collections
             ]);
         }
 
-        $collections = $user->collectionsWithNumberLinks();
-        $followed_collections = $user->followedCollectionsWithNumberLinks();
+        $collections = models\Collection::daoToList('listWithNumberLinksForUser', $user->id);
+        $followed_collections = models\Collection::daoToList('listFollowedWithNumberLinksForUser', $user->id);
         models\Collection::sort($collections, $user->locale);
         models\Collection::sort($followed_collections, $user->locale);
 
@@ -161,22 +162,19 @@ class Collections
         $collection_id = $request->param('id');
         $collection = models\Collection::find($collection_id);
 
-        $is_connected = $user !== null;
-        $is_owned = $is_connected && $collection && $user->id === $collection->user_id;
-        $is_public = $collection && $collection->is_public;
-
-        $dont_show = !$is_owned && !$is_public;
-        if ($dont_show && $is_connected) {
+        $can_view = auth\CollectionsAccess::canView($user, $collection);
+        $can_update = auth\CollectionsAccess::canUpdate($user, $collection);
+        if (!$can_view && $user) {
             return Response::notFound('not_found.phtml');
-        } elseif ($dont_show) {
+        } elseif (!$can_view) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
             ]);
         }
 
-        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, !$is_owned);
+        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, !$can_update);
         $pagination_page = intval($request->param('page', 1));
-        $number_per_page = $is_owned ? 29 : 30; // the button to add a link counts for 1!
+        $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!
         $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
         if ($pagination_page !== $pagination->currentPage()) {
             return Response::redirect('collection', [
@@ -200,7 +198,7 @@ class Collections
             ]);
             $response->setHeader('Content-Type', 'application/atom+xml;charset=UTF-8');
             return $response;
-        } elseif ($is_owned) {
+        } elseif ($can_update) {
             return Response::ok('collections/show.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
@@ -243,8 +241,8 @@ class Collections
             ]);
         }
 
-        $collection = $user->collection($collection_id);
-        if ($collection) {
+        $collection = models\Collection::find($collection_id);
+        if (auth\CollectionsAccess::canUpdate($user, $collection)) {
             $topics = models\Topic::listAll();
             models\Topic::sort($topics, $user->locale);
 
@@ -287,8 +285,8 @@ class Collections
             ]);
         }
 
-        $collection = $user->collection($collection_id);
-        if (!$collection) {
+        $collection = models\Collection::find($collection_id);
+        if (!auth\CollectionsAccess::canUpdate($user, $collection)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -373,8 +371,8 @@ class Collections
             ]);
         }
 
-        $collection = $user->collection($collection_id);
-        if (!$collection) {
+        $collection = models\Collection::find($collection_id);
+        if (!auth\CollectionsAccess::canDelete($user, $collection)) {
             return Response::notFound('not_found.phtml');
         }
 

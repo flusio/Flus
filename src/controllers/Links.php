@@ -3,6 +3,7 @@
 namespace flusio\controllers;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -33,14 +34,11 @@ class Links
         $link_id = $request->param('id');
         $link = models\Link::find($link_id);
 
-        $is_connected = $user !== null;
-        $is_owned = $is_connected && $link && $user->id === $link->user_id;
-        $is_hidden = $link && $link->is_hidden;
-
-        $dont_show = (!$is_owned && $is_hidden) || !$link;
-        if ($dont_show && $is_connected) {
+        $can_view = auth\LinksAccess::canView($user, $link);
+        $can_update = auth\LinksAccess::canUpdate($user, $link);
+        if (!$can_view && $user) {
             return Response::notFound('not_found.phtml');
-        } elseif ($dont_show) {
+        } elseif (!$can_view) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('link', ['id' => $link_id]),
             ]);
@@ -57,7 +55,7 @@ class Links
             ]);
             $response->setHeader('Content-Type', 'application/atom+xml;charset=UTF-8');
             return $response;
-        } elseif ($is_owned) {
+        } elseif ($can_update) {
             if (!$link->fetched_at) {
                 return Response::redirect('show fetch link', [
                     'id' => $link->id,
@@ -246,8 +244,8 @@ class Links
             ]);
         }
 
-        $link = $user->link($link_id);
-        if ($link) {
+        $link = models\Link::find($link_id);
+        if (auth\LinksAccess::canUpdate($user, $link)) {
             return Response::ok('links/edit.phtml', [
                 'link' => $link,
                 'title' => $link->title,
@@ -287,8 +285,8 @@ class Links
             ]);
         }
 
-        $link = $user->link($link_id);
-        if (!$link) {
+        $link = models\Link::find($link_id);
+        if (!auth\LinksAccess::canUpdate($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -334,8 +332,8 @@ class Links
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        $link = $user->link($link_id);
-        if (!$link) {
+        $link = models\Link::find($link_id);
+        if (!auth\LinksAccess::canDelete($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -382,13 +380,16 @@ class Links
             return Response::found($from);
         }
 
-        $link = $user->link($link_id);
-        if (!$link) {
+        $link = models\Link::find($link_id);
+        if (!auth\LinksAccess::canUpdate($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
         // First, we make sure to mark a corresponding news link as read
-        $news_link = $user->newsLinkByUrl($link->url);
+        $news_link = models\NewsLink::findBy([
+            'url' => $link->url,
+            'user_id' => $user->id,
+        ]);
         if (!$news_link) {
             $news_link = models\NewsLink::initFromLink($link, $user->id);
         }

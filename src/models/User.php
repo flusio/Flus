@@ -152,74 +152,6 @@ class User extends \Minz\Model
     }
 
     /**
-     * Return the given link if attached to the current user
-     *
-     * @param string $id
-     *
-     * @return \flusio\models\Link|null
-     */
-    public function link($link_id)
-    {
-        return Link::findBy([
-            'id' => $link_id,
-            'user_id' => $this->id,
-        ]);
-    }
-
-    /**
-     * Return the given link if attached to the current user
-     *
-     * @param string $url
-     *
-     * @return \flusio\models\Link|null
-     */
-    public function linkByUrl($link_url)
-    {
-        return Link::findBy([
-            'url' => $link_url,
-            'user_id' => $this->id,
-        ]);
-    }
-
-    /**
-     * Return the given news link if attached to the current user
-     *
-     * @return \flusio\models\NewsLink|null
-     */
-    public function newsLink($news_link_id)
-    {
-        return NewsLink::findBy([
-            'id' => $news_link_id,
-            'user_id' => $this->id,
-        ]);
-    }
-
-    /**
-     * Return the user' news links
-     *
-     * @return \flusio\models\NewsLink[]
-     */
-    public function newsLinks()
-    {
-        return NewsLink::daoToList('listComputedByUserId', $this->id);
-    }
-
-    /**
-     * Return the given news link if attached to the current user
-     *
-     * @param string $url
-     *
-     * @return \flusio\models\NewsLink|null
-     */
-    public function newsLinkByUrl($url)
-    {
-        return NewsLink::findBy([
-            'url' => $url,
-            'user_id' => $this->id,
-        ]);
-    }
-
-    /**
      * Return the user' bookmarks collection
      *
      * @return \flusio\models\Collection|null
@@ -229,20 +161,6 @@ class User extends \Minz\Model
         return Collection::findBy([
             'user_id' => $this->id,
             'type' => 'bookmarks',
-        ]);
-    }
-
-    /**
-     * Return the given collection if attached to the current user
-     *
-     * @return \flusio\models\Collection|null
-     */
-    public function collection($collection_id)
-    {
-        return Collection::findBy([
-            'id' => $collection_id,
-            'user_id' => $this->id,
-            'type' => 'collection',
         ]);
     }
 
@@ -265,26 +183,6 @@ class User extends \Minz\Model
                 'user_id' => $this->id,
             ]);
         }
-    }
-
-    /**
-     * Return the list of collections created by the user
-     *
-     * @return \flusio\models\Collection[]
-     */
-    public function collectionsWithNumberLinks()
-    {
-        return Collection::daoToList('listWithNumberLinksForUser', $this->id);
-    }
-
-    /**
-     * Return the list of collections followed by the user
-     *
-     * @return \flusio\models\Collection[]
-     */
-    public function followedCollectionsWithNumberLinks()
-    {
-        return Collection::daoToList('listFollowedWithNumberLinksForUser', $this->id);
     }
 
     /**

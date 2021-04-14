@@ -3,6 +3,7 @@
 namespace flusio\controllers\news;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -36,15 +37,18 @@ class Links
             ]);
         }
 
-        $news_link = $user->newsLink($news_link_id);
-        if (!$news_link) {
+        $news_link = models\NewsLink::find($news_link_id);
+        if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
             return Response::notFound('not_found.phtml');
         }
 
         $collections = $user->collections(true);
         models\Collection::sort($collections, $user->locale);
 
-        $existing_link = $user->linkByUrl($news_link->url);
+        $existing_link = models\Link::findBy([
+            'url' => $news_link->url,
+            'user_id' => $user->id,
+        ]);
         if ($existing_link) {
             $is_hidden = $existing_link->is_hidden;
             $existing_collections = $existing_link->collections();
@@ -93,15 +97,18 @@ class Links
             ]);
         }
 
-        $news_link = $user->newsLink($news_link_id);
-        if (!$news_link) {
+        $news_link = models\NewsLink::find($news_link_id);
+        if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
             return Response::notFound('not_found.phtml');
         }
 
         $collections = $user->collections(true);
         models\Collection::sort($collections, $user->locale);
 
-        $existing_link = $user->linkByUrl($news_link->url);
+        $existing_link = models\Link::findBy([
+            'url' => $news_link->url,
+            'user_id' => $user->id,
+        ]);
 
         $is_hidden = $request->param('is_hidden', false);
         $collection_ids = $request->param('collection_ids', []);
@@ -210,10 +217,10 @@ class Links
         }
 
         if ($news_link_id === 'all') {
-            $news_links = $user->newsLinks();
+            $news_links = models\NewsLink::daoToList('listComputedByUserId', $user->id);
         } else {
-            $news_link = $user->newsLink($news_link_id);
-            if (!$news_link) {
+            $news_link = models\NewsLink::find($news_link_id);
+            if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
                 utils\Flash::set('error', _('The link doesn’t exist.'));
                 return Response::found($from);
             }
@@ -229,7 +236,10 @@ class Links
 
             // Then, we try to find a link with corresponding URL in order to
             // remove it from bookmarks.
-            $link = $user->linkByUrl($news_link->url);
+            $link = models\Link::findBy([
+                'url' => $news_link->url,
+                'user_id' => $user->id,
+            ]);
             if ($link) {
                 $actual_collection_ids = array_column($link->collections(), 'id');
                 if (in_array($bookmarks->id, $actual_collection_ids)) {
@@ -276,10 +286,10 @@ class Links
         }
 
         if ($news_link_id === 'all') {
-            $news_links = $user->newsLinks();
+            $news_links = models\NewsLink::daoToList('listComputedByUserId', $user->id);
         } else {
-            $news_link = $user->newsLink($news_link_id);
-            if (!$news_link) {
+            $news_link = models\NewsLink::find($news_link_id);
+            if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
                 utils\Flash::set('error', _('The link doesn’t exist.'));
                 return Response::found($from);
             }
@@ -292,7 +302,10 @@ class Links
             // First, we want the link with corresponding URL to exist for the
             // current user (or it would be impossible to bookmark it correctly).
             // If it doesn't exist, let's create it in DB from the $news_link variable.
-            $link = $user->linkByUrl($news_link->url);
+            $link = models\Link::findBy([
+                'url' => $news_link->url,
+                'user_id' => $user->id,
+            ]);
             if (!$link) {
                 $link = models\Link::initFromNews($news_link, $user->id);
                 $link->save();
@@ -340,8 +353,8 @@ class Links
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        $news_link = $user->newsLink($news_link_id);
-        if (!$news_link) {
+        $news_link = models\NewsLink::find($news_link_id);
+        if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
             utils\Flash::set('error', _('The link doesn’t exist.'));
             return Response::found($from);
         }
@@ -360,7 +373,10 @@ class Links
 
         // Then, we try to find a link with corresponding URL in order to
         // remove it from bookmarks.
-        $link = $user->linkByUrl($news_link->url);
+        $link = models\Link::findBy([
+            'url' => $news_link->url,
+            'user_id' => $user->id,
+        ]);
         if ($link) {
             $bookmarks = $user->bookmarks();
             $actual_collection_ids = array_column($link->collections(), 'id');

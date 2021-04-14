@@ -3,6 +3,7 @@
 namespace flusio\controllers\links;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -55,8 +56,8 @@ class Messages
             return Response::redirect('link', ['id' => $link_id]);
         }
 
-        $link = $user->link($link_id);
-        if (!$link) {
+        $link = models\Link::find($link_id);
+        if (!auth\LinksAccess::canUpdate($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 

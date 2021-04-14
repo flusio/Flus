@@ -3,6 +3,8 @@
 namespace flusio\controllers\links;
 
 use Minz\Response;
+use flusio\auth;
+use flusio\models;
 use flusio\services;
 use flusio\utils;
 
@@ -32,8 +34,8 @@ class Fetches
             ]);
         }
 
-        $link = $user->link($link_id);
-        if ($link) {
+        $link = models\Link::find($link_id);
+        if (auth\LinksAccess::canUpdate($user, $link)) {
             return Response::ok('links/fetches/show.phtml', [
                 'link' => $link,
             ]);
@@ -64,8 +66,8 @@ class Fetches
             ]);
         }
 
-        $link = $user->link($link_id);
-        if (!$link) {
+        $link = models\Link::find($link_id);
+        if (!auth\LinksAccess::canUpdate($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 

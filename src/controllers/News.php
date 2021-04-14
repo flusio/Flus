@@ -31,7 +31,7 @@ class News
             ]);
         }
 
-        $news_links = $user->newsLinks();
+        $news_links = models\NewsLink::daoToList('listComputedByUserId', $user->id);
 
         return Response::ok('news/show.phtml', [
             'news_links' => $news_links,
