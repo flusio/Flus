@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers;
+namespace flusio\controllers\links;
 
 use Minz\Response;
 use flusio\models;
@@ -12,7 +12,7 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class LinkCollections
+class Collections
 {
     /**
      * Show the page to update the link collections
@@ -48,7 +48,7 @@ class LinkCollections
         $collections = $user->collections();
         models\Collection::sort($collections, $user->locale);
 
-        return Response::ok('link_collections/index.phtml', [
+        return Response::ok('links/collections/index.phtml', [
             'link' => $link,
             'collection_ids' => array_column($link->collections(), 'id'),
             'collections' => $collections,

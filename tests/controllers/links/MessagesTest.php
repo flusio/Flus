@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\controllers;
+namespace flusio\controllers\links;
 
 use flusio\models;
 
-class LinkMessagesTest extends \PHPUnit\Framework\TestCase
+class MessagesTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;

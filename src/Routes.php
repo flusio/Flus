@@ -103,17 +103,17 @@ class Routes
         $router->addRoute('get', '/links/:id/edit', 'Links#edit', 'edit link');
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');
-        $router->addRoute('get', '/links/:id/fetch', 'Links#showFetch', 'show fetch link');
-        $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
+        $router->addRoute('get', '/links/:id/fetch', 'links/Fetches#show', 'show fetch link');
+        $router->addRoute('post', '/links/:id/fetch', 'links/Fetches#create', 'fetch link');
         $router->addRoute('post', '/links/:id/mark-as-read', 'Links#markAsRead', 'mark link as read');
 
         // Link collections
-        $router->addRoute('get', '/links/:id/collections', 'LinkCollections#index', 'link collections');
-        $router->addRoute('post', '/links/:id/collections', 'LinkCollections#update', 'update link collections');
+        $router->addRoute('get', '/links/:id/collections', 'links/Collections#index', 'link collections');
+        $router->addRoute('post', '/links/:id/collections', 'links/Collections#update', 'update link collections');
 
         // Messages
-        $router->addRoute('get', '/links/:link_id/messages', 'LinkMessages#index', 'links/messages');
-        $router->addRoute('post', '/links/:link_id/messages', 'LinkMessages#create', 'links/create message');
+        $router->addRoute('get', '/links/:link_id/messages', 'links/Messages#index', 'links/messages');
+        $router->addRoute('post', '/links/:link_id/messages', 'links/Messages#create', 'links/create message');
         $router->addRoute('post', '/messages/:id/delete', 'Messages#delete', 'delete message');
 
         // This should be used only for source mapping

@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\controllers;
+namespace flusio\controllers\links;
 
 use flusio\models;
 
-class LinkCollectionsTest extends \PHPUnit\Framework\TestCase
+class CollectionsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
@@ -42,7 +42,7 @@ class LinkCollectionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', "/links/{$link_id}/collections");
 
         $this->assertResponse($response, 200, $collection_name);
-        $this->assertPointer($response, 'link_collections/index.phtml');
+        $this->assertPointer($response, 'links/collections/index.phtml');
     }
 
     public function testIndexRedirectsIfNotConnected()
