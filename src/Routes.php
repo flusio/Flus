@@ -47,11 +47,11 @@ class Routes
         $router->addRoute('post', '/my/security/confirm', 'my/Security#confirmPassword', 'confirm password');
 
         $router->addRoute('get', '/my/account', 'my/Account#show', 'account');
-        $router->addRoute('get', '/my/account/validation', 'my/Account#validation', 'account validation');
+        $router->addRoute('get', '/my/account/validation', 'my/Validation#show', 'account validation');
         $router->addRoute(
             'post',
             '/my/account/validation/email',
-            'my/Account#resendValidationEmail',
+            'my/Validation#resendEmail',
             'resend validation email'
         );
         $router->addRoute('get', '/my/account/deletion', 'my/Account#deletion', 'account deletion');
