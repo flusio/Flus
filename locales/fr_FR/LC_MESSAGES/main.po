@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-04-14 14:11+0200\n"
-"PO-Revision-Date: 2021-04-14 14:11+0200\n"
+"POT-Creation-Date: 2021-04-15 11:26+0200\n"
+"PO-Revision-Date: 2021-04-15 11:26+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -38,66 +38,66 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:108 controllers/Collections.php:312
-#: controllers/Links.php:164 controllers/News.php:72
-#: controllers/Registrations.php:100 controllers/Sessions.php:84
-#: controllers/collections/Followers.php:46
-#: controllers/collections/Followers.php:89 controllers/links/Messages.php:72
-#: controllers/my/Account.php:99 controllers/my/Profile.php:83
-#: controllers/my/Security.php:78 controllers/my/Security.php:138
-#: controllers/my/Subscription.php:73 controllers/my/Validation.php:131
-#: controllers/news/Links.php:119 controllers/news/Preferences.php:81
+#: controllers/Collections.php:109 controllers/Collections.php:310
+#: controllers/Links.php:162 controllers/News.php:73
+#: controllers/Registrations.php:101 controllers/Sessions.php:85
+#: controllers/collections/Followers.php:47
+#: controllers/collections/Followers.php:90 controllers/links/Messages.php:72
+#: controllers/my/Account.php:100 controllers/my/Profile.php:84
+#: controllers/my/Security.php:79 controllers/my/Security.php:139
+#: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
+#: controllers/news/Links.php:126 controllers/news/Preferences.php:81
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:120 controllers/Collections.php:325
-#: controllers/my/Profile.php:94
+#: controllers/Collections.php:121 controllers/Collections.php:323
+#: controllers/my/Profile.php:95
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:383 controllers/Links.php:297
-#: controllers/Links.php:344 controllers/Links.php:381
-#: controllers/Messages.php:46 controllers/Sessions.php:189
-#: controllers/importations/Importations.php:46
-#: controllers/importations/Pocket.php:100
-#: controllers/importations/Pocket.php:149
-#: controllers/importations/Pocket.php:241
-#: controllers/links/Collections.php:101 controllers/links/Fetches.php:76
-#: controllers/my/Avatar.php:40 controllers/news/Links.php:208
-#: controllers/news/Links.php:274 controllers/news/Links.php:351
+#: controllers/Collections.php:381 controllers/Links.php:295
+#: controllers/Links.php:342 controllers/Links.php:379
+#: controllers/Messages.php:47 controllers/Sessions.php:190
+#: controllers/importations/Importations.php:47
+#: controllers/importations/Pocket.php:101
+#: controllers/importations/Pocket.php:150
+#: controllers/importations/Pocket.php:242
+#: controllers/links/Collections.php:102 controllers/links/Fetches.php:77
+#: controllers/my/Avatar.php:41 controllers/news/Links.php:215
+#: controllers/news/Links.php:284 controllers/news/Links.php:364
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: controllers/Links.php:187 controllers/news/Links.php:132
+#: controllers/Links.php:185 controllers/news/Links.php:139
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:199 controllers/links/Collections.php:95
-#: controllers/news/Links.php:146
+#: controllers/Links.php:197 controllers/links/Collections.php:96
+#: controllers/news/Links.php:153
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Onboarding.php:48 views/collections/feed.atom.xml.phtml:30
+#: controllers/Onboarding.php:49 views/collections/feed.atom.xml.phtml:30
 #, php-format
 msgid "“%s”"
 msgstr "« %s »"
 
-#: controllers/Registrations.php:127 controllers/my/Security.php:90
+#: controllers/Registrations.php:128 controllers/my/Security.php:91
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: controllers/Registrations.php:140
+#: controllers/Registrations.php:141
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
-#: controllers/Sessions.php:97
+#: controllers/Sessions.php:98
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: controllers/Sessions.php:108 controllers/my/Account.php:107
-#: controllers/my/Security.php:145
+#: controllers/Sessions.php:109 controllers/my/Account.php:108
+#: controllers/my/Security.php:146
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -109,40 +109,40 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
-#: controllers/importations/Pocket.php:85
+#: controllers/importations/Pocket.php:86
 msgid "You already have an ongoing Pocket importation."
 msgstr "Vous avez déjà une importation Pocket en cours."
 
-#: controllers/importations/Pocket.php:92
+#: controllers/importations/Pocket.php:93
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
-#: controllers/my/Account.php:115
+#: controllers/my/Account.php:116
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: controllers/my/Avatar.php:50
+#: controllers/my/Avatar.php:51
 msgid "This file is too large."
 msgstr "Ce fichier est trop gros."
 
-#: controllers/my/Avatar.php:55
+#: controllers/my/Avatar.php:56
 #, php-format
 msgid "This file cannot be uploaded (error %d)."
 msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
 
-#: controllers/my/Avatar.php:61
+#: controllers/my/Avatar.php:62
 msgid "This file cannot be uploaded."
 msgstr "Ce fichier ne peut pas être téléversé."
 
-#: controllers/my/Avatar.php:80
+#: controllers/my/Avatar.php:81
 msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
 msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
 
-#: controllers/my/Security.php:67
+#: controllers/my/Security.php:68
 msgid "You must confirm your password."
 msgstr "Vous devez confirmer votre mot de passe."
 
-#: controllers/my/Subscription.php:82
+#: controllers/my/Subscription.php:83
 msgid ""
 "An error occured when getting you a subscription account, please contact the "
 "support."
@@ -150,22 +150,22 @@ msgstr ""
 "Une erreur est survenue pendant que nous récupérions les informations de "
 "votre compte, merci de contacter le support."
 
-#: controllers/my/Subscription.php:130
+#: controllers/my/Subscription.php:131
 msgid "An error occured while logging you, please contact the support."
 msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
 
-#: controllers/my/Validation.php:57 controllers/my/Validation.php:70
+#: controllers/my/Validation.php:58 controllers/my/Validation.php:71
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: controllers/my/Validation.php:63
+#: controllers/my/Validation.php:64
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: controllers/news/Links.php:217 controllers/news/Links.php:283
-#: controllers/news/Links.php:345
+#: controllers/news/Links.php:224 controllers/news/Links.php:293
+#: controllers/news/Links.php:358
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -263,31 +263,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:464
+#: models/User.php:362
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:466
+#: models/User.php:364
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:468
+#: models/User.php:366
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:470
+#: models/User.php:368
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:472
+#: models/User.php:370
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:474
+#: models/User.php:372
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:476
+#: models/User.php:374
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
