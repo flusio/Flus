@@ -30,7 +30,7 @@ class Links
      */
     public function show($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $link = models\Link::find($link_id);
 
@@ -90,7 +90,7 @@ class Links
      */
     public function new($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $default_url = $request->param('url', '');
 
         if (!$user) {
@@ -138,7 +138,7 @@ class Links
      */
     public function create($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $url = $request->param('url', '');
         $is_hidden = $request->param('is_hidden', false);
         $collection_ids = $request->param('collection_ids', []);
@@ -234,7 +234,7 @@ class Links
      */
     public function edit($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
 
@@ -273,7 +273,7 @@ class Links
      */
     public function update($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $new_title = $request->param('title');
         $is_hidden = $request->param('is_hidden', false);
@@ -323,7 +323,7 @@ class Links
      */
     public function delete($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
@@ -366,7 +366,7 @@ class Links
      */
     public function markAsRead($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('bookmarks');
         $link_id = $request->param('id');
 

@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\my;
 
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -48,7 +49,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200);
         $this->assertPointer($response, 'my/profile/show.phtml');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($new_username, $user->username);
         $this->assertSame('fr_FR', $user->locale);
     }
@@ -85,7 +86,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'topic_ids' => [$new_topic_id],
         ]);
 
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $topic_ids = array_column($user->topics(), 'id');
         $this->assertSame([$new_topic_id], $topic_ids);
     }
@@ -127,7 +128,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);
     }
@@ -148,7 +149,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The username must be less than 50 characters');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);
     }
@@ -167,7 +168,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The username is required');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);
     }
@@ -187,7 +188,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The locale is required');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);
     }
@@ -208,7 +209,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The locale is invalid');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);
     }
@@ -230,7 +231,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'One of the associated topic doesn’t exist.');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $topic_ids = array_column($user->topics(), 'id');
         $this->assertSame([$old_topic_id], $topic_ids);
     }

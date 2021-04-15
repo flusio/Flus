@@ -3,6 +3,7 @@
 namespace flusio\controllers\my;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\services;
 use flusio\utils;
@@ -53,7 +54,7 @@ class Subscription
             return Response::notFound('not_found.phtml');
         }
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('account'),
@@ -110,7 +111,7 @@ class Subscription
             return Response::notFound('not_found.phtml');
         }
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('account'),

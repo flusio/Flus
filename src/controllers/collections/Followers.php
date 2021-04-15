@@ -3,6 +3,7 @@
 namespace flusio\controllers\collections;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -27,7 +28,7 @@ class Followers
      */
     public function create($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
 
         if (!$user) {
@@ -70,7 +71,7 @@ class Followers
      */
     public function delete($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
 
         if (!$user) {

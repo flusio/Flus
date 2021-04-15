@@ -2,8 +2,8 @@
 
 namespace flusio\controllers;
 
+use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 class RegistrationsTest extends \PHPUnit\Framework\TestCase
 {
@@ -105,7 +105,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     {
         $email = $this->fake('email');
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNull($user);
         $this->assertSame(0, models\Session::count());
 
@@ -116,7 +116,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertSame($email, $user->email);
         $this->assertSame(1, models\Session::count());
     }
@@ -186,7 +186,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/onboarding');
         $this->assertSame(1, models\Collection::count());
         $collection = models\Collection::take();
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertSame('bookmarks', $collection->type);
         $this->assertSame($user->id, $collection->user_id);
     }

@@ -3,6 +3,7 @@
 namespace flusio\controllers\my;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\services;
 use flusio\utils;
@@ -23,7 +24,7 @@ class Account
      */
     public function show()
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('account'),
@@ -60,7 +61,7 @@ class Account
      */
     public function deletion()
     {
-        if (!utils\CurrentUser::get()) {
+        if (!auth\CurrentUser::get()) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('account deletion'),
             ]);
@@ -86,7 +87,7 @@ class Account
      */
     public function delete($request)
     {
-        $current_user = utils\CurrentUser::get();
+        $current_user = auth\CurrentUser::get();
         if (!$current_user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('account deletion'),
@@ -122,7 +123,7 @@ class Account
         }
 
         models\User::delete($current_user->id);
-        utils\CurrentUser::reset();
+        auth\CurrentUser::reset();
         utils\Flash::set('status', 'user_deleted');
         return Response::redirect('login');
     }

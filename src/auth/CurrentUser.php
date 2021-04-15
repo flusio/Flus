@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\utils;
+namespace flusio\auth;
 
 use flusio\models;
 

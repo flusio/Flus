@@ -3,6 +3,7 @@
 namespace flusio\controllers\my;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\jobs;
 use flusio\models;
 use flusio\services;
@@ -38,7 +39,7 @@ class Validation
     public function show($request)
     {
         $token = $request->param('t');
-        $current_user = utils\CurrentUser::get();
+        $current_user = auth\CurrentUser::get();
         if (!$token) {
             if (!$current_user) {
                 return Response::redirect('login', [
@@ -121,7 +122,7 @@ class Validation
     {
         $from = $request->param('from', \Minz\Url::for('home'));
         $csrf = new \Minz\CSRF();
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);

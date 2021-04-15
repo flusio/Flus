@@ -3,6 +3,7 @@
 namespace flusio\controllers;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\services;
 use flusio\utils;
@@ -24,7 +25,7 @@ class News
      */
     public function show()
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('news'),
@@ -55,7 +56,7 @@ class News
      */
     public function create($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('news'),

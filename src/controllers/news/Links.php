@@ -28,7 +28,7 @@ class Links
      */
     public function new($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $news_link_id = $request->param('id');
 
         if (!$user) {
@@ -88,7 +88,7 @@ class Links
      */
     public function create($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $news_link_id = $request->param('id');
 
         if (!$user) {
@@ -202,7 +202,7 @@ class Links
      */
     public function markAsRead($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('news');
         $news_link_id = $request->param('id');
 
@@ -271,7 +271,7 @@ class Links
      */
     public function readLater($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('news');
         $news_link_id = $request->param('id');
 
@@ -345,7 +345,7 @@ class Links
      */
     public function delete($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('news');
         $news_link_id = $request->param('id');
 

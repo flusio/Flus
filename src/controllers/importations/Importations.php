@@ -3,6 +3,7 @@
 namespace flusio\controllers\importations;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -25,7 +26,7 @@ class Importations
      */
     public function delete($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $importation_id = $request->param('id');
         $from = $request->param('from');
 

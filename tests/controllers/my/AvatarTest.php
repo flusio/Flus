@@ -2,8 +2,8 @@
 
 namespace flusio\controllers\my;
 
+use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 // In PHP, this function verifies a file has been uploaded via HTTP POST. We
 // want it for security reasons. Unfortunately, it prevents us to test the file
@@ -53,7 +53,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($user->id . '.png', $user->avatar_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
         $avatar_path = "{$media_path}/avatars/{$user->avatar_filename}";
@@ -90,7 +90,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($user->id . '.png', $user->avatar_filename);
         $avatar_path = "{$media_path}/avatars/{$user->avatar_filename}";
         $this->assertTrue(file_exists($avatar_path));
@@ -141,7 +141,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/my/profile');
         $this->assertFlash('error', 'A security verification failed.');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
     }
 
@@ -169,7 +169,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/my/profile');
         $this->assertFlash('error', 'The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>.');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
     }
 
@@ -192,7 +192,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/my/profile');
         $this->assertFlash('error', 'This file cannot be uploaded.');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
     }
 
@@ -219,7 +219,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/my/profile');
         $this->assertFlash('error', 'This file is too large.');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
     }
 
@@ -246,7 +246,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/my/profile');
         $this->assertFlash('error', "This file cannot be uploaded (error {$error}).");
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
     }
 

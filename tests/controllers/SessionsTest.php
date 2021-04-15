@@ -2,8 +2,8 @@
 
 namespace flusio\controllers;
 
+use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 class SessionsTest extends \PHPUnit\Framework\TestCase
 {
@@ -63,7 +63,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNull($user);
 
         $response = $this->appRun('post', '/login', [
@@ -73,7 +73,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/');
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertSame($user_id, $user->id);
     }
 
@@ -180,7 +180,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNull($user);
 
         $response = $this->appRun('post', '/login', [
@@ -190,7 +190,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/');
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertSame($user_id, $user->id);
     }
 
@@ -264,7 +264,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/');
         $this->assertSame(0, models\Session::count());
-        $this->assertNull(\flusio\utils\CurrentUser::get());
+        $this->assertNull(auth\CurrentUser::get());
     }
 
     public function testDeleteReturnsACookie()

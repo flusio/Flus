@@ -3,7 +3,7 @@
 namespace flusio\controllers;
 
 use Minz\Response;
-use flusio\utils;
+use flusio\auth;
 
 /**
  * Handle the requests to the static pages of the application.
@@ -23,7 +23,7 @@ class Pages
      */
     public function home()
     {
-        if (utils\CurrentUser::get()) {
+        if (auth\CurrentUser::get()) {
             return Response::redirect('news');
         } else {
             return Response::redirect('login');

@@ -48,10 +48,10 @@ class Application
      */
     public function run($request)
     {
-        if (!utils\CurrentUser::sessionToken()) {
-            utils\CurrentUser::setSessionToken($request->cookie('flusio_session_token'));
+        if (!auth\CurrentUser::sessionToken()) {
+            auth\CurrentUser::setSessionToken($request->cookie('flusio_session_token'));
         }
-        $current_user = utils\CurrentUser::get();
+        $current_user = auth\CurrentUser::get();
 
         // Redirect the user if she didn't validated its account after the
         // first day.

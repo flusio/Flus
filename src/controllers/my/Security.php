@@ -3,6 +3,7 @@
 namespace flusio\controllers\my;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -20,14 +21,14 @@ class Security
      */
     public function show()
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('security'),
             ]);
         }
 
-        $session = utils\CurrentUser::session();
+        $session = auth\CurrentUser::session();
         if ($session->isPasswordConfirmed()) {
             return Response::ok('my/security/show_confirmed.phtml', [
                 'email' => $user->email,
@@ -54,14 +55,14 @@ class Security
      */
     public function update($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('security'),
             ]);
         }
 
-        $session = utils\CurrentUser::session();
+        $session = auth\CurrentUser::session();
         if (!$session->isPasswordConfirmed()) {
             return Response::badRequest('my/security/show_to_confirm.phtml', [
                 'error' => _('You must confirm your password.'),
@@ -126,7 +127,7 @@ class Security
      */
     public function confirmPassword($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('security'),
@@ -147,7 +148,7 @@ class Security
             return Response::redirect('security');
         }
 
-        $session = utils\CurrentUser::session();
+        $session = auth\CurrentUser::session();
         $session->confirmed_password_at = \Minz\Time::now();
         $session->save();
 

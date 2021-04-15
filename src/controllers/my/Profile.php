@@ -3,6 +3,7 @@
 namespace flusio\controllers\my;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -24,7 +25,7 @@ class Profile
      */
     public function show()
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('profile'),
@@ -63,7 +64,7 @@ class Profile
         $locale = $request->param('locale');
         $topic_ids = $request->param('topic_ids', []);
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('profile'),

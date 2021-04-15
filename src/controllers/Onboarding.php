@@ -3,6 +3,7 @@
 namespace flusio\controllers;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -26,7 +27,7 @@ class Onboarding
      */
     public function show($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('onboarding'),
@@ -76,7 +77,7 @@ class Onboarding
         $csrf = new \Minz\CSRF();
         $locale = $request->param('locale');
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('onboarding'),
@@ -115,7 +116,7 @@ class Onboarding
     {
         $topic_ids = $request->param('topic_ids', []);
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('onboarding', ['step' => 4]),

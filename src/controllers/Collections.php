@@ -23,7 +23,7 @@ class Collections
      */
     public function index()
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('collections'),
@@ -49,7 +49,7 @@ class Collections
      */
     public function new()
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('new collection'),
@@ -83,7 +83,7 @@ class Collections
      */
     public function create($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('new collection'),
@@ -158,7 +158,7 @@ class Collections
      */
     public function show($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
         $collection = models\Collection::find($collection_id);
 
@@ -232,7 +232,7 @@ class Collections
      */
     public function edit($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
 
         if (!$user) {
@@ -276,7 +276,7 @@ class Collections
      */
     public function update($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
 
         if (!$user) {
@@ -361,7 +361,7 @@ class Collections
      */
     public function delete($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
         $from = $request->param('from', \Minz\Url::for('edit collection', ['id' => $collection_id]));
 

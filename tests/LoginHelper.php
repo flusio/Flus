@@ -37,8 +37,8 @@ trait LoginHelper
         $session_values['user_id'] = $user_id;
         $session_factory->create($session_values);
 
-        \flusio\utils\CurrentUser::setSessionToken($token);
-        return \flusio\utils\CurrentUser::get();
+        \flusio\auth\CurrentUser::setSessionToken($token);
+        return \flusio\auth\CurrentUser::get();
     }
 
     /**
@@ -49,6 +49,6 @@ trait LoginHelper
      */
     public function logout()
     {
-        \flusio\utils\CurrentUser::reset();
+        \flusio\auth\CurrentUser::reset();
     }
 }

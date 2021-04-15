@@ -62,7 +62,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
             'token' => $token,
         ]);
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNull($user);
 
         $request = new \Minz\Request('GET', '/', [], [
@@ -73,7 +73,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $application = new Application();
         $response = $application->run($request);
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertSame($user_id, $user->id);
     }
 

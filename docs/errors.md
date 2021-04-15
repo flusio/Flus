@@ -28,7 +28,7 @@ If the route accepts both `GET` and `POST`, the default response should be a
 redirection to the login page with a `redirect_to` param:
 
 ```php
-$user = utils\CurrentUser::get();
+$user = auth\CurrentUser::get();
 if (!$user) {
     return Response::redirect('login', [
         'redirect_to' => \Minz\Url::for('the current route'),

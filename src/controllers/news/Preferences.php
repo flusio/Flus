@@ -3,8 +3,8 @@
 namespace flusio\controllers\news;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -21,7 +21,7 @@ class Preferences
      */
     public function show()
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('news preferences'),
@@ -57,7 +57,7 @@ class Preferences
      */
     public function update($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('news preferences'),

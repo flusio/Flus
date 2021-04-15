@@ -3,6 +3,7 @@
 namespace flusio\controllers;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -25,7 +26,7 @@ class Messages
      */
     public function delete($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $message_id = $request->param('id');
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
 

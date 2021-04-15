@@ -5,7 +5,6 @@ namespace flusio\controllers\links;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 /**
  * Handle the requests related to the messages.
@@ -48,7 +47,7 @@ class Messages
      */
     public function create($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $link_id = $request->param('link_id');
         $content = $request->param('content');
 

@@ -2,9 +2,9 @@
 
 namespace flusio\controllers\my;
 
+use flusio\auth;
 use flusio\models;
 use flusio\services;
-use flusio\utils;
 
 class AccountTest extends \PHPUnit\Framework\TestCase
 {
@@ -175,7 +175,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login');
         $this->assertFlash('status', 'user_deleted');
         $this->assertFalse(models\User::exists($user->id));
-        $this->assertNull(utils\CurrentUser::get());
+        $this->assertNull(auth\CurrentUser::get());
     }
 
     public function testDeleteDeletesAvatarIfSet()

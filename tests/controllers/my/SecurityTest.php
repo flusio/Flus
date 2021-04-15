@@ -2,8 +2,8 @@
 
 namespace flusio\controllers\my;
 
+use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 class SecurityTest extends \PHPUnit\Framework\TestCase
 {
@@ -84,7 +84,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200);
         $this->assertPointer($response, 'my/security/show_confirmed.phtml');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($new_email, $user->email);
         $this->assertTrue($user->verifyPassword($new_password));
     }
@@ -107,7 +107,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => '',
         ]);
 
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
@@ -130,7 +130,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertNull($user);
         $user = models\User::find($user_id);
         $this->assertSame($old_email, $user->email);
@@ -158,7 +158,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 400, 'You must confirm your password');
         $this->assertPointer($response, 'my/security/show_to_confirm.phtml');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
@@ -184,7 +184,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 400, 'A security verification failed');
         $this->assertPointer($response, 'my/security/show_confirmed.phtml');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
@@ -213,7 +213,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 400, 'An account already exists with this email address');
         $this->assertPointer($response, 'my/security/show_confirmed.phtml');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
@@ -239,7 +239,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 400, 'The address email is invalid');
         $this->assertPointer($response, 'my/security/show_confirmed.phtml');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
@@ -264,7 +264,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 400, 'The address email is required');
         $this->assertPointer($response, 'my/security/show_confirmed.phtml');
-        $user = utils\CurrentUser::reload();
+        $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
@@ -285,7 +285,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/my/security');
-        $session = utils\CurrentUser::session();
+        $session = auth\CurrentUser::session();
         $now = \Minz\Time::now();
         $this->assertSame($now->getTimestamp(), $session->confirmed_password_at->getTimestamp());
     }
@@ -322,7 +322,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/my/security');
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
-        $session = utils\CurrentUser::session();
+        $session = auth\CurrentUser::session();
         $this->assertNull($session->confirmed_password_at);
     }
 
@@ -344,7 +344,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertFlash('errors', [
             'password_hash' => 'The password is incorrect.',
         ]);
-        $session = utils\CurrentUser::session();
+        $session = auth\CurrentUser::session();
         $this->assertNull($session->confirmed_password_at);
     }
 }

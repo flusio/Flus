@@ -3,6 +3,7 @@
 namespace flusio\controllers\importations;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\jobs;
 use flusio\models;
 use flusio\services;
@@ -29,7 +30,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('pocket'),
@@ -68,7 +69,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('pocket'),
@@ -137,7 +138,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('pocket'),
@@ -186,7 +187,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('pocket auth'),
@@ -224,7 +225,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('pocket auth'),

@@ -3,7 +3,7 @@
 namespace flusio\controllers\my;
 
 use Minz\Response;
-use flusio\utils;
+use flusio\auth;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -21,7 +21,7 @@ class Info
      */
     public function show($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('profile info'),

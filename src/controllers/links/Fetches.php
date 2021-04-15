@@ -6,7 +6,6 @@ use Minz\Response;
 use flusio\auth;
 use flusio\models;
 use flusio\services;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -25,7 +24,7 @@ class Fetches
      */
     public function show($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
 
         if (!$user) {
@@ -57,7 +56,7 @@ class Fetches
      */
     public function create($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
 
         if (!$user) {

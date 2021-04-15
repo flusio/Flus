@@ -3,6 +3,7 @@
 namespace flusio\controllers;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\models;
 use flusio\utils;
 
@@ -29,7 +30,7 @@ class Sessions
     public function new($request)
     {
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
-        if (utils\CurrentUser::get()) {
+        if (auth\CurrentUser::get()) {
             return Response::found($redirect_to);
         }
 
@@ -68,7 +69,7 @@ class Sessions
     public function create($request)
     {
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
-        if (utils\CurrentUser::get()) {
+        if (auth\CurrentUser::get()) {
             return Response::found($redirect_to);
         }
 
@@ -122,7 +123,7 @@ class Sessions
         $session->token = $token->token;
         $session->save();
 
-        utils\CurrentUser::setSessionToken($token->token);
+        auth\CurrentUser::setSessionToken($token->token);
 
         $response = Response::found($redirect_to);
         $response->setCookie('flusio_session_token', $token->token, [
@@ -179,7 +180,7 @@ class Sessions
      */
     public function delete($request)
     {
-        $current_user = utils\CurrentUser::get();
+        $current_user = auth\CurrentUser::get();
         if (!$current_user) {
             return Response::redirect('home');
         }
@@ -190,10 +191,10 @@ class Sessions
             return Response::redirect('home');
         }
 
-        $current_session_token = utils\CurrentUser::sessionToken();
+        $current_session_token = auth\CurrentUser::sessionToken();
         $session = models\Session::findBy(['token' => $current_session_token]);
         models\Session::delete($session->id);
-        utils\CurrentUser::reset();
+        auth\CurrentUser::reset();
 
         $response = Response::redirect('home');
         $response->removeCookie('flusio_session_token');

@@ -3,6 +3,7 @@
 namespace flusio\controllers;
 
 use Minz\Response;
+use flusio\auth;
 use flusio\jobs;
 use flusio\models;
 use flusio\utils;
@@ -26,7 +27,7 @@ class Registrations
      */
     public function new()
     {
-        if (utils\CurrentUser::get()) {
+        if (auth\CurrentUser::get()) {
             return Response::redirect('home');
         }
 
@@ -71,7 +72,7 @@ class Registrations
      */
     public function create($request)
     {
-        if (utils\CurrentUser::get()) {
+        if (auth\CurrentUser::get()) {
             return Response::redirect('home');
         }
 
@@ -163,7 +164,7 @@ class Registrations
         $session->token = $session_token->token;
         $session->save();
 
-        utils\CurrentUser::setSessionToken($session_token->token);
+        auth\CurrentUser::setSessionToken($session_token->token);
 
         $mailer_job = new jobs\Mailer();
         $mailer_job->performLater('Users', 'sendAccountValidationEmail', $user->id);

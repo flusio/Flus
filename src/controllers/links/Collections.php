@@ -31,7 +31,7 @@ class Collections
      */
     public function index($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
 
@@ -76,7 +76,7 @@ class Collections
      */
     public function update($request)
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $new_collection_ids = $request->param('collection_ids', []);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
