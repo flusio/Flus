@@ -1,0 +1,155 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('New link'),
+        'current_page' => 'search link',
+    ]);
+?>
+
+<div class="section" data-controller="back-storage" data-back-storage-type="link">
+    <div class="section__title">
+        <h1 id="modal-title"><?= _('New link') ?></h1>
+    </div>
+
+    <form method="post" action="<?= url('search link') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
+            <label for="url">
+                <?= _('What’s the <abbr>URL</abbr> of the link?') ?>
+            </label>
+
+            <input
+                id="url"
+                name="url"
+                type="url"
+                required
+                value="<?= $url ?>"
+                autocomplete="off"
+                autofocus
+            />
+
+            <?php if (isset($errors['url'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['url'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Search') ?>
+            </button>
+        </div>
+    </form>
+
+    <?php if ($existing_link || $default_link): ?>
+        <div class="cards cards--centered">
+            <?php if ($existing_link): ?>
+                <div class="card">
+                    <a
+                        class="anchor--hidden"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        tabindex="-1"
+                        href="<?= protect($existing_link->url) ?>"
+                    >
+                        <img class="card__image" alt="" src="<?= url_link_image('cards', $existing_link->image_filename) ?>" />
+                    </a>
+
+                    <div class="card__body">
+                        <h2 class="card__title">
+                            <a
+                                class="anchor--hidden"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                tabindex="-1"
+                                href="<?= protect($existing_link->url) ?>"
+                            >
+                                <?= protect($existing_link->title) ?>
+                            </a>
+                        </h2>
+
+                        <p class="card__text card__text--oneline">
+                            <span class="card__ellipsis"><?= protect($existing_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($existing_link->reading_time) ?>
+                        </p>
+
+                        <p class="card__text">
+                            <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $existing_link->id]) ?>">
+                                <?= _nf('%d comment', '%d comments', $existing_link->number_comments, $existing_link->number_comments) ?>
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="card__footer card__footer--centered">
+                        <button
+                            class="icon icon--collection"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href="<?= url('link collections', ['id' => $existing_link->id, 'from' => url('show search link', ['url' => $existing_link->url])]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                        >
+                            <?= _('Edit') ?>
+                        </button>
+                    </div>
+                </div>
+            <?php elseif ($default_link): ?>
+                <div class="card">
+                    <a
+                        class="anchor--hidden"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        tabindex="-1"
+                        href="<?= protect($default_link->url) ?>"
+                    >
+                        <img class="card__image" alt="" src="<?= url_link_image('cards', $default_link->image_filename) ?>" />
+                    </a>
+
+                    <div class="card__body">
+                        <h2 class="card__title">
+                            <a
+                                class="anchor--hidden"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                tabindex="-1"
+                                href="<?= protect($default_link->url) ?>"
+                            >
+                                <?= protect($default_link->title) ?>
+                            </a>
+                        </h2>
+
+                        <p class="card__text card__text--oneline">
+                            <span class="card__ellipsis"><?= protect($default_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($default_link->reading_time) ?>
+                        </p>
+                    </div>
+
+                    <div class="card__footer card__footer--centered">
+                        <button
+                            class="icon icon--collection"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href="<?= url('obtaining link', ['id' => $default_link->id, 'from' => url('show search link', ['url' => $default_link->url])]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                        >
+                            <?= _('Add') ?>
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php else: ?>
+        <img
+            class="illustration illustration--centered"
+            alt=""
+            src="<?= url_static('illustrations/search.svg') ?>"
+            height="250"
+        />
+    <?php endif; ?>
+</div>

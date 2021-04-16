@@ -22,25 +22,33 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return link with given id, with computed number_comments
+     * Return link with computed number_comments
      *
-     * @param string $link_id
+     * @param array $values
      *
      * @return array
      */
-    public function findWithNumberComments($link_id)
+    public function findByWithNumberComments($values)
     {
-        $sql = <<<'SQL'
+        $parameters = [];
+        $where_statement_as_array = [];
+        foreach ($values as $property => $parameter) {
+            $parameters[] = $parameter;
+            $where_statement_as_array[] = "{$property} = ?";
+        }
+        $where_statement = implode(' AND ', $where_statement_as_array);
+
+        $sql = <<<SQL
             SELECT l.*, (
                 SELECT COUNT(*) FROM messages m
                 WHERE m.link_id = l.id
             ) AS number_comments
             FROM links l
-            WHERE l.id = ?
+            WHERE {$where_statement}
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$link_id]);
+        $statement->execute($parameters);
         $result = $statement->fetch();
         if ($result) {
             return $result;
