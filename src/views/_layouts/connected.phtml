@@ -114,6 +114,16 @@
 
                     <div class="header__separator no-mobile"></div>
 
+                    <a
+                        class="header__action icon icon--anchor icon--plus"
+                        <?= $current_page === 'search link' ? 'aria-current="page"' : '' ?>
+                        href="<?= url('show search link') ?>"
+                    >
+                        <span class="no-mobile">
+                            <?= _('New link') ?>
+                        </span>
+                    </a>
+
                     <details
                         class="header__avatar-container header__secondary popup"
                         data-controller="popup"
@@ -174,17 +184,6 @@
                             </form>
                         </nav>
                     </details>
-
-                    <a
-                        class="header__link header__link--featured header__link--icon icon icon--anchor icon--plus-circle"
-                        <?= $current_page === 'search link' ? 'aria-current="page"' : '' ?>
-                        href="<?= url('show search link') ?>"
-                        title="<?= _('New link') ?>"
-                    >
-                        <span class="sr-only">
-                            <?= _('New link') ?>
-                        </span>
-                    </a>
                 </nav>
             </header>
 

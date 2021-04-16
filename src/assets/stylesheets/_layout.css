@@ -52,24 +52,6 @@
     border-bottom-color: var(--color-body);
 }
 
-.layout--connected .layout__header .header__link--featured {
-    display: flex;
-
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    background-color: var(--color-turquoise-4);
-    border: none;
-    border-left: var(--border-width) solid var(--color-body);
-}
-
-@media (min-width: 800px) {
-    .layout--connected .layout__header .header__link--featured {
-        border-right: var(--border-width) solid var(--color-body);
-    }
-}
-
 .layout__main {
     max-width: var(--content-width);
     min-height: 60vh;
