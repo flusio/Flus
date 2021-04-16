@@ -134,6 +134,29 @@ class Link extends \Minz\Model
     }
 
     /**
+     * Copy a Link to the given user.
+     *
+     * @param \flusio\models\Link $link
+     * @param string $user_id
+     *
+     * @return \flusio\models\Link
+     */
+    public static function copy($link, $user_id)
+    {
+        return new self([
+            'id' => utils\Random::timebased(),
+            'title' => $link->title,
+            'url' => $link->url,
+            'image_filename' => $link->image_filename,
+            'is_hidden' => false,
+            'reading_time' => $link->reading_time,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 200,
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
      * Return the owner of the link.
      *
      * @return \flusio\models\User

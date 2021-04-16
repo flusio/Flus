@@ -98,6 +98,8 @@ class Routes
         // Links
         $router->addRoute('get', '/links/new', 'Links#new', 'new link');
         $router->addRoute('post', '/links/new', 'Links#create', 'create link');
+        $router->addRoute('get', '/links/search', 'links/Searches#show', 'show search link');
+        $router->addRoute('post', '/links/search', 'links/Searches#create', 'search link');
         $router->addRoute('get', '/links/:id', 'Links#show', 'link');
         $router->addRoute('get', '/links/:id/feed.atom.xml', 'Links#show', 'link feed');
         $router->addRoute('get', '/links/:id/edit', 'Links#edit', 'edit link');
@@ -105,6 +107,8 @@ class Routes
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');
         $router->addRoute('get', '/links/:id/fetch', 'links/Fetches#show', 'show fetch link');
         $router->addRoute('post', '/links/:id/fetch', 'links/Fetches#create', 'fetch link');
+        $router->addRoute('get', '/links/:id/obtain', 'links/Obtentions#new', 'obtaining link');
+        $router->addRoute('post', '/links/:id/obtain', 'links/Obtentions#create', 'obtain link');
         $router->addRoute('post', '/links/:id/mark-as-read', 'Links#markAsRead', 'mark link as read');
 
         // Link collections
