@@ -33,6 +33,10 @@ class Locale
      */
     public static function currentLocale()
     {
+        if (!self::$is_initialized) {
+            self::init();
+        }
+
         // we want to remove the '.UTF8' part
         return substr(setlocale(LC_ALL, 0), 0, -5);
     }
@@ -160,5 +164,6 @@ class Locale
         bindtextdomain('main', self::localesPath());
         textdomain('main');
         self::$is_initialized = true;
+        self::setCurrentLocale(self::DEFAULT_LOCALE);
     }
 }
