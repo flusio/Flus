@@ -140,6 +140,7 @@ class Routes
         $router->addRoute('cli', '/system/rollback', 'System#rollback');
         $router->addRoute('cli', '/database/status', 'Database#status');
 
+        $router->addRoute('cli', '/users', 'Users#index');
         $router->addRoute('cli', '/users/create', 'Users#create');
         $router->addRoute('cli', '/users/clean', 'Users#clean');
 

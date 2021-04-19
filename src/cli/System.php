@@ -40,6 +40,7 @@ class System
         $usage .= '      -plabel=TEXT    where TEXT is a 21-chars max string' . "\n";
         $usage .= '  /topics/delete      Delete a topic' . "\n";
         $usage .= '      -pid=ID         where ID is the id of the topic to delete' . "\n";
+        $usage .= '  /users              List all the users' . "\n";
         $usage .= '  /users/clean        Clean not validated users created NUMBER months ago' . "\n";
         $usage .= '      [-psince=NUMBER] where NUMBER is the number of months, greater than 0 (default is 1)' . "\n";
         $usage .= '  /users/create       Create a user' . "\n";

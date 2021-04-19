@@ -15,6 +15,39 @@ use flusio\utils;
 class Users
 {
     /**
+     * List all the users ordered by created_at.
+     *
+     * @response 200
+     */
+    public function index($request)
+    {
+        $users = models\User::listAll();
+        usort($users, function ($user1, $user2) {
+            if ($user1->created_at == $user2->created_at) {
+                return 0;
+            }
+
+            return $user1->created_at < $user2->created_at ? -1 : 1;
+        });
+
+        $output = [];
+        foreach ($users as $user) {
+            $created_at = $user->created_at->format('Y-m-d');
+            $validated_label = '';
+            if (!$user->validated_at) {
+                $validated_label = ' (not validated)';
+            }
+            $output[] = "{$user->id} {$created_at} {$user->email}{$validated_label}";
+        }
+
+        if (!$output) {
+            $output[] = 'No users';
+        }
+
+        return Response::text(200, implode("\n", $output));
+    }
+
+    /**
      * Create a user.
      *
      * @request_param username
@@ -23,10 +56,6 @@ class Users
      *
      * @response 400 if one of the param is invalid
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function create($request)
     {
@@ -59,8 +88,6 @@ class Users
      *
      * @response 200
      * @response 400 If since parameter is not a number or less than 1
-     *
-     * @return \Minz\Response
      */
     public function clean($request)
     {

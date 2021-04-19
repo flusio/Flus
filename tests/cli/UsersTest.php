@@ -21,6 +21,46 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         self::$application = new \flusio\cli\Application();
     }
 
+    public function testIndexListsUsers()
+    {
+        $created_at_1 = $this->fake('dateTime');
+        $validated_at_1 = $this->fake('dateTime');
+        $email_1 = $this->fake('email');
+        $user_id_1 = $this->create('user', [
+            'created_at' => $created_at_1->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $validated_at_1->format(\Minz\Model::DATETIME_FORMAT),
+            'email' => $email_1,
+        ]);
+        $created_at_2 = clone $created_at_1;
+        $created_at_2->modify('+1 hour');
+        $email_2 = $this->fake('email');
+        $user_id_2 = $this->create('user', [
+            'created_at' => $created_at_2->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => null,
+            'email' => $email_2,
+        ]);
+
+        $response = $this->appRun('cli', '/users');
+
+        $this->assertResponse($response, 200);
+        $expected_output = <<<TEXT
+        {$user_id_1} {$created_at_1->format('Y-m-d')} {$email_1}
+        {$user_id_2} {$created_at_2->format('Y-m-d')} {$email_2} (not validated)
+        TEXT;
+        $output = $response->render();
+        $this->assertSame($expected_output, $output);
+    }
+
+    public function testIndexShowsIfNoUsers()
+    {
+        $response = $this->appRun('cli', '/users');
+
+        $this->assertResponse($response, 200);
+        $expected_output = 'No users';
+        $output = $response->render();
+        $this->assertSame($expected_output, $output);
+    }
+
     public function testCreateCreatesAValidatedUser()
     {
         $username = $this->fake('name');
