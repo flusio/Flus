@@ -144,6 +144,11 @@ class Routes
         $router->addRoute('cli', '/users/create', 'Users#create');
         $router->addRoute('cli', '/users/clean', 'Users#clean');
 
+        $router->addRoute('cli', '/features', 'FeatureFlags#index');
+        $router->addRoute('cli', '/features/flags', 'FeatureFlags#flags');
+        $router->addRoute('cli', '/features/enable', 'FeatureFlags#enable');
+        $router->addRoute('cli', '/features/disable', 'FeatureFlags#disable');
+
         $router->addRoute('cli', '/feeds', 'Feeds#index');
         $router->addRoute('cli', '/feeds/add', 'Feeds#add');
         $router->addRoute('cli', '/feeds/sync', 'Feeds#sync');

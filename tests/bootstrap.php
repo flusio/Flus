@@ -328,3 +328,20 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
     ]
 );
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'feature_flag',
+    '\flusio\models\dao\FeatureFlag',
+    [
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'type' => function () use ($faker) {
+            return $faker->randomElement(\flusio\models\FeatureFlag::VALID_TYPES);
+        },
+        'user_id' => function () {
+            $user_factory = new \Minz\Tests\DatabaseFactory('user');
+            return $user_factory->create();
+        },
+    ]
+);

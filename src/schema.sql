@@ -44,6 +44,15 @@ CREATE TABLE users (
 
 CREATE INDEX idx_users_email ON users(email);
 
+CREATE TABLE feature_flags (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    type TEXT NOT NULL,
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_feature_flags_type_user_id ON feature_flags(type, user_id);
+
 CREATE TABLE sessions (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,

@@ -21,6 +21,15 @@ class System
         $usage .= "\n";
         $usage .= "  /database/status         Return the status of the DB connection\n";
         $usage .= "\n";
+        $usage .= "  /features                List the available features types\n";
+        $usage .= "  /features/flags          List the enabled feature flags\n";
+        $usage .= "  /features/enable         Enable a feature flag for a user\n";
+        $usage .= "      -ptype=TEXT          where TEXT is the feature flag type\n";
+        $usage .= "      -puser_id=ID         where ID is the user’s id\n";
+        $usage .= "  /features/disable        Disable a feature flag for a user\n";
+        $usage .= "      -ptype=TEXT          where TEXT is the feature flag type\n";
+        $usage .= "      -puser_id=ID         where ID is the user’s id\n";
+        $usage .= "\n";
         $usage .= "  /feeds                   List the feeds\n";
         $usage .= "  /feeds/add               Add a feed\n";
         $usage .= "      -purl=URL            where URL is the link to the feed\n";
