@@ -23,14 +23,16 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => 1,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $this->assertSame(0, $followed_collection_dao->count());
 
         $response = $this->appRun('post', "/collections/{$collection_id}/follow", [
             'csrf' => $user->csrf,
+            'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, "/collections/{$collection_id}");
+        $this->assertResponse($response, 302, $from);
         $this->assertSame(1, $followed_collection_dao->count());
         $db_followed_collection = $followed_collection_dao->listAll()[0];
         $this->assertSame($user->id, $db_followed_collection['user_id']);
@@ -46,12 +48,15 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => 1,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/follow", [
             'csrf' => 'a token',
+            'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}");
+        $from_encoded = urlencode($from);
+        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
         $this->assertSame(0, $followed_collection_dao->count());
     }
 
@@ -65,9 +70,11 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => 1,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', '/collections/unknown/follow', [
             'csrf' => $user->csrf,
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 404);
@@ -84,9 +91,11 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => 0,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/follow", [
             'csrf' => $user->csrf,
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 404);
@@ -103,12 +112,14 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => 1,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/follow", [
             'csrf' => 'not the token',
+            'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, "/collections/{$collection_id}");
+        $this->assertResponse($response, 302, $from);
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $this->assertSame(0, $followed_collection_dao->count());
     }
@@ -127,12 +138,14 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection_id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/unfollow", [
             'csrf' => $user->csrf,
+            'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, "/collections/{$collection_id}");
+        $this->assertResponse($response, 302, $from);
         $this->assertSame(0, $followed_collection_dao->count());
     }
 
@@ -150,12 +163,15 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user_id,
             'collection_id' => $collection_id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/unfollow", [
             'csrf' => 'a token',
+            'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}");
+        $from_encoded = urlencode($from);
+        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
         $this->assertSame(1, $followed_collection_dao->count());
     }
 
@@ -173,9 +189,11 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection_id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', '/collections/unknown/unfollow', [
             'csrf' => $user->csrf,
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 404);
@@ -196,9 +214,11 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection_id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/unfollow", [
             'csrf' => $user->csrf,
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 404);
@@ -219,12 +239,14 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection_id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/unfollow", [
             'csrf' => 'not the token',
+            'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, "/collections/{$collection_id}");
+        $this->assertResponse($response, 302, $from);
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $this->assertSame(1, $followed_collection_dao->count());
     }

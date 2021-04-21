@@ -17,24 +17,24 @@ class Followers
      * Make the current user following the given collection
      *
      * @request_param string id
+     * @request_param string from
      *
-     * @response 302 /login?redirect_to=/collections/:id
+     * @response 302 /login?redirect_to=:from
      *     if not connected
      * @response 404
      *     if the collection doesn’t exist or user hasn't access
-     * @response 302 /collections/:id
+     * @response 302 :from
      *     if CSRF is invalid
-     * @response 302 /collections/:id
+     * @response 302 :from
      */
     public function create($request)
     {
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
+        $from = $request->param('from');
 
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collection = models\Collection::find($collection_id);
@@ -45,7 +45,7 @@ class Followers
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
-            return Response::redirect('collection', ['id' => $collection->id]);
+            return Response::found($from);
         }
 
         $is_following = $user->isFollowing($collection->id);
@@ -53,31 +53,31 @@ class Followers
             $user->follow($collection->id);
         }
 
-        return Response::redirect('collection', ['id' => $collection->id]);
+        return Response::found($from);
     }
 
     /**
      * Make the current user following the given collection
      *
      * @request_param string id
+     * @request_param string from
      *
-     * @response 302 /login?redirect_to=/collections/:id
+     * @response 302 /login?redirect_to=:from
      *     if not connected
      * @response 404
      *     if the collection doesn’t exist or user hasn't access
-     * @response 302 /collections/:id
+     * @response 302 :from
      *     if CSRF is invalid
-     * @response 302 /collections/:id
+     * @response 302 :from
      */
     public function delete($request)
     {
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
+        $from = $request->param('from');
 
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('collection', ['id' => $collection_id]),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collection = models\Collection::find($collection_id);
@@ -88,7 +88,7 @@ class Followers
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
-            return Response::redirect('collection', ['id' => $collection->id]);
+            return Response::found($from);
         }
 
         $is_following = $user->isFollowing($collection->id);
@@ -96,6 +96,6 @@ class Followers
             $user->unfollow($collection->id);
         }
 
-        return Response::redirect('collection', ['id' => $collection->id]);
+        return Response::found($from);
     }
 }
