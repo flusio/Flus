@@ -47,10 +47,14 @@ class Pocket
     public function retrieve($access_token, $parameters = [])
     {
         $endpoint = self::HOST . '/v3/get';
-        $response = $this->http->post($endpoint, array_merge($parameters, [
-            'consumer_key' => $this->consumer_key,
-            'access_token' => $access_token,
-        ]));
+        try {
+            $response = $this->http->post($endpoint, array_merge($parameters, [
+                'consumer_key' => $this->consumer_key,
+                'access_token' => $access_token,
+            ]));
+        } catch (\SpiderBits\HttpError $e) {
+            throw new PocketError(42, $e->getMessage());
+        }
 
         if ($response->success) {
             $json = json_decode($response->data, true);
@@ -72,10 +76,14 @@ class Pocket
     public function requestToken($redirect_uri)
     {
         $endpoint = self::HOST . '/v3/oauth/request';
-        $response = $this->http->post($endpoint, [
-            'consumer_key' => $this->consumer_key,
-            'redirect_uri' => $redirect_uri,
-        ]);
+        try {
+            $response = $this->http->post($endpoint, [
+                'consumer_key' => $this->consumer_key,
+                'redirect_uri' => $redirect_uri,
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            throw new PocketError(42, $e->getMessage());
+        }
 
         if ($response->success) {
             $json = json_decode($response->data);
@@ -115,10 +123,15 @@ class Pocket
     public function accessToken($request_token)
     {
         $endpoint = self::HOST . '/v3/oauth/authorize';
-        $response = $this->http->post($endpoint, [
-            'consumer_key' => $this->consumer_key,
-            'code' => $request_token,
-        ]);
+        try {
+            $response = $this->http->post($endpoint, [
+                'consumer_key' => $this->consumer_key,
+                'code' => $request_token,
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            throw new PocketError(42, $e->getMessage());
+        }
+
         if ($response->success) {
             $json = json_decode($response->data);
             return [$json->access_token, $json->username];

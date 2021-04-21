@@ -41,11 +41,17 @@ class Subscriptions
      */
     public function account($email)
     {
-        $response = $this->http->get($this->host . '/api/account', [
-            'email' => $email,
-        ], [
-            'auth_basic' => $this->private_key . ':',
-        ]);
+        try {
+            $response = $this->http->get($this->host . '/api/account', [
+                'email' => $email,
+            ], [
+                'auth_basic' => $this->private_key . ':',
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            \Minz\Log::error("Error while requesting a subscription account: {$e->getMessage()}");
+            return null;
+        }
+
         if ($response->success) {
             $data = json_decode($response->data, true);
             $data['expired_at'] = date_create_from_format(
@@ -67,12 +73,18 @@ class Subscriptions
      */
     public function loginUrl($account_id)
     {
-        $response = $this->http->get($this->host . '/api/account/login-url', [
-            'account_id' => $account_id,
-            'service' => 'flusio',
-        ], [
-            'auth_basic' => $this->private_key . ':',
-        ]);
+        try {
+            $response = $this->http->get($this->host . '/api/account/login-url', [
+                'account_id' => $account_id,
+                'service' => 'flusio',
+            ], [
+                'auth_basic' => $this->private_key . ':',
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            \Minz\Log::error("Error while requesting a subscription login URL: {$e->getMessage()}");
+            return null;
+        }
+
         if ($response->success) {
             $data = json_decode($response->data, true);
             return $data['url'];
@@ -90,11 +102,17 @@ class Subscriptions
      */
     public function expiredAt($account_id)
     {
-        $response = $this->http->get($this->host . '/api/account/expired-at', [
-            'account_id' => $account_id,
-        ], [
-            'auth_basic' => $this->private_key . ':',
-        ]);
+        try {
+            $response = $this->http->get($this->host . '/api/account/expired-at', [
+                'account_id' => $account_id,
+            ], [
+                'auth_basic' => $this->private_key . ':',
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            \Minz\Log::error("Error while requesting a subscription expiration date: {$e->getMessage()}");
+            return null;
+        }
+
         if ($response->success) {
             $data = json_decode($response->data, true);
             return date_create_from_format(

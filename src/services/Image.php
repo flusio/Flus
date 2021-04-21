@@ -57,7 +57,12 @@ class Image
             return basename($card_file_exists[0]);
         }
 
-        $response = $this->http->get($image_url);
+        try {
+            $response = $this->http->get($image_url);
+        } catch (\SpiderBits\HttpError $e) {
+            return '';
+        }
+
         if (!$response->success) {
             return '';
         }

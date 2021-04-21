@@ -120,6 +120,16 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user_agent, $data['headers']['User-Agent']);
     }
 
+    public function testGetFailing()
+    {
+        $this->expectException(HttpError::class);
+        $this->expectExceptionMessage('Could not resolve host: not-a-host');
+
+        $http = new Http();
+
+        $http->get('not-a-host');
+    }
+
     /**
      * @dataProvider postProvider
      */
@@ -177,12 +187,6 @@ class HttpTest extends \PHPUnit\Framework\TestCase
                 'Flus, média social de veille',
                 ['content-type' => 'text/html;charset=UTF-8'],
             ],
-            [
-                'not a url',
-                0,
-                '',
-                [],
-            ],
         ];
     }
 
@@ -194,12 +198,6 @@ class HttpTest extends \PHPUnit\Framework\TestCase
                 200,
                 self::TESTS_HOST,
                 ['content-type' => 'application/json'],
-            ],
-            [
-                'not a url',
-                0,
-                '',
-                [],
             ],
         ];
     }

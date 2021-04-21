@@ -147,7 +147,14 @@ class FeedFetcher
             $response = \SpiderBits\Response::fromText($cached_response);
         } else {
             // ... or via HTTP
-            $response = $this->http->get($url);
+            try {
+                $response = $this->http->get($url);
+            } catch (\SpiderBits\HttpError $e) {
+                return [
+                    'status' => 0,
+                    'error' => $e->getMessage(),
+                ];
+            }
 
             // that we add to cache
             $this->cache->save($url_hash, (string)$response);

@@ -26,6 +26,8 @@ class Http
      * @param array $parameters
      * @param array $options
      *
+     * @throws \SpiderBits\HttpError
+     *
      * @return \SpiderBits\Response
      */
     public function get($url, $parameters = [], $options = [])
@@ -49,6 +51,8 @@ class Http
      * @param array $parameters
      * @param array $options
      *
+     * @throws \SpiderBits\HttpError
+     *
      * @return \SpiderBits\Response
      */
     public function post($url, $parameters = [], $options = [])
@@ -63,6 +67,8 @@ class Http
      * @param string $url
      * @param array $parameters
      * @param array $options
+     *
+     * @throws \SpiderBits\HttpError
      *
      * @return \SpiderBits\Response
      */
@@ -128,11 +134,16 @@ class Http
         $data = curl_exec($curl_handle);
         $status = curl_getinfo($curl_handle, CURLINFO_RESPONSE_CODE);
 
+        $error = null;
         if ($data === false) {
-            $data = curl_error($curl_handle);
+            $error = curl_error($curl_handle);
         }
 
         curl_close($curl_handle);
+
+        if ($error) {
+            throw new HttpError($error);
+        }
 
         return new Response($status, $data, $headers);
     }

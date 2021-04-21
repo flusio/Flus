@@ -59,7 +59,7 @@ class LinkFetcher
             $link->image_filename = $image_filename;
         }
 
-        if ($info['url_feeds']) {
+        if (isset($info['url_feeds'])) {
             $link->url_feeds = json_encode($info['url_feeds']);
         }
 
@@ -98,7 +98,15 @@ class LinkFetcher
                     'user_agent' => $this->http->user_agent . ' (compatible; Googlebot/2.1)',
                 ];
             }
-            $response = $this->http->get($url, [], $options);
+
+            try {
+                $response = $this->http->get($url, [], $options);
+            } catch (\SpiderBits\HttpError $e) {
+                return [
+                    'status' => 0,
+                    'error' => $e->getMessage(),
+                ];
+            }
 
             // that we add to cache
             $this->cache->save($url_hash, (string)$response);
