@@ -40,9 +40,5 @@ class FeedsSync extends jobs\Job
         foreach ($collections as $collection) {
             $feed_fetcher_service->fetch($collection);
         }
-
-        $user = models\User::supportUser();
-        $links_fetcher_job = new jobs\UserLinksFetcher();
-        $links_fetcher_job->performLater($user->id);
     }
 }

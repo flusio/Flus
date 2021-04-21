@@ -90,12 +90,6 @@ class Importator extends Job
             $importation->finish();
         }
         $importation->save();
-
-        if ($imported_count > 0) {
-            // we now register a job to fetch the links
-            $fetcher_job = new UserLinksFetcher();
-            $fetcher_job->performLater($user->id);
-        }
     }
 
     /**

@@ -77,9 +77,6 @@ class Feeds
             return Response::text(400, "Feed {$collection->feed_url} has been added but cannot be fetched: {$error}.");
         }
 
-        $fetcher_job = new jobs\UserLinksFetcher();
-        $fetcher_job->performLater($user->id);
-
         return Response::text(200, "Feed {$collection->feed_url} ({$collection->name}) has been added.");
     }
 
@@ -107,10 +104,6 @@ class Feeds
 
         $feed_fetcher_service = new services\FeedFetcher($no_cache);
         $feed_fetcher_service->fetch($collection);
-
-        $user = models\User::supportUser();
-        $links_fetcher_job = new jobs\UserLinksFetcher();
-        $links_fetcher_job->performLater($user->id);
 
         return Response::text(200, "Feed {$id} ({$collection->feed_url}) has been synchronized.");
     }

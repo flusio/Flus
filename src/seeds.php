@@ -12,6 +12,11 @@ if (!$job_dao->findBy(['name' => $feeds_sync_job->name])) {
     $feeds_sync_job->performLater();
 }
 
+$links_fetcher_job = new \flusio\jobs\scheduled\LinksFetcher();
+if (!$job_dao->findBy(['name' => $links_fetcher_job->name])) {
+    $links_fetcher_job->performLater();
+}
+
 if ($environment === 'development') {
     \flusio\models\Topic::findOrCreateBy(['label' => _('Business')]);
     \flusio\models\Topic::findOrCreateBy(['label' => _('Climate')]);

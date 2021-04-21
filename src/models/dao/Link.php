@@ -306,45 +306,23 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return a list of links to fetch (fetched_at = null) of the given user
+     * Return a list of links to fetch (fetched_at = null)
      *
-     * @param string $user_id
      * @param integer $number
      *
      * @return array
      */
-    public function listToFetch($user_id, $number)
+    public function listToFetch($number)
     {
         $sql = <<<SQL
              SELECT * FROM links
              WHERE fetched_at IS NULL
-             AND user_id = ?
-             ORDER BY created_at DESC
+             ORDER BY created_at
              LIMIT ?
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$user_id, $number]);
+        $statement->execute([$number]);
         return $statement->fetchAll();
-    }
-
-    /**
-     * Return the number of links to fetch (fetched_at = null) of the given user
-     *
-     * @param string $user_id
-     *
-     * @return integer
-     */
-    public function countToFetch($user_id)
-    {
-        $sql = <<<SQL
-             SELECT COUNT(*) FROM links
-             WHERE fetched_at IS NULL
-             AND user_id = ?
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([$user_id]);
-        return intval($statement->fetchColumn());
     }
 }
