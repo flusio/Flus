@@ -106,6 +106,7 @@ class LinkFetcher
 
         $info = [
             'status' => $response->status,
+            'url_feeds' => [],
         ];
 
         // It's dangerous out there. mb_convert_encoding makes sure data is a
@@ -121,6 +122,16 @@ class LinkFetcher
         }
 
         $content_type = $response->header('content-type');
+        if (
+            \SpiderBits\feeds\Feed::isFeedContentType($content_type) &&
+            \SpiderBits\feeds\Feed::isFeed($data)
+        ) {
+            // If we detect a feed, we add the URL to the list of feeds and
+            // return directly since we operate on HTML only.
+            $info['url_feeds'][] = $url;
+            return $info;
+        }
+
         if (!utils\Belt::contains($content_type, 'text/html')) {
             // We operate on HTML only
             return $info; // @codeCoverageIgnore
@@ -159,7 +170,6 @@ class LinkFetcher
         }
 
         $url_feeds = \SpiderBits\DomExtractor::feeds($dom);
-        $info['url_feeds'] = [];
         foreach ($url_feeds as $url_feed) {
             $url_feed = \SpiderBits\Url::absolutize($url_feed, $url);
             $url_feed = \SpiderBits\Url::sanitize($url_feed);

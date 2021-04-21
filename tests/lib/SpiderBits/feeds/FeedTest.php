@@ -122,4 +122,80 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 
         Feed::fromText('<not><a><standard /></a></not>');
     }
+
+    public function testIsFeedWithRssReturnsTrue()
+    {
+        $result = Feed::isFeed('<rss></rss>');
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsFeedWithAtomReturnsTrue()
+    {
+        $result = Feed::isFeed('<feed></feed>');
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsFeedWithEmptyStringReturnsFalse()
+    {
+        $result = Feed::isFeed('');
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsFeedWithNotXmlStringReturnsFalse()
+    {
+        $result = Feed::isFeed('not xml');
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsFeedWithNotSupportedStandardReturnsFalse()
+    {
+        $result = Feed::isFeed('<not><a><standard /></a></not>');
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @dataProvider validContentType
+     */
+    public function testIsFeedContentTypeWithValidContentTypeReturnsTrue($content_type)
+    {
+        $result = Feed::isFeedContentType($content_type);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @dataProvider invalidContentType
+     */
+    public function testIsFeedContentTypeWithInvalidContentTypeReturnsTrue($content_type)
+    {
+        $result = Feed::isFeedContentType($content_type);
+
+        $this->assertFalse($result);
+    }
+
+    public function validContentType()
+    {
+        return [
+            ['application/atom+xml'],
+            ['application/rss+xml'],
+            ['application/rdf+xml'],
+            ['application/xml'],
+            ['text/xml'],
+            ['text/plain'],
+        ];
+    }
+
+    public function invalidContentType()
+    {
+        return [
+            [''],
+            ['some text'],
+            ['text/html'],
+        ];
+    }
 }

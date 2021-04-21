@@ -181,6 +181,29 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($collection->is_public);
     }
 
+    public function testCreateHandlesFeedUrl()
+    {
+        $user = $this->login();
+        $support_user = models\User::supportUser();
+        $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+
+        $response = $this->appRun('post', '/links/search', [
+            'csrf' => $user->csrf,
+            'url' => $url,
+        ]);
+
+        $link = models\Link::findBy(['url' => $url]);
+        $this->assertSame($support_user->id, $link->user_id);
+        $this->assertSame($url, $link->title);
+        $this->assertSame([$url], $link->feedUrls());
+        $collection = models\Collection::findBy(['feed_url' => $url]);
+        $this->assertSame($support_user->id, $collection->user_id);
+        $this->assertSame('feed', $collection->type);
+        $this->assertSame('carnet de flus', $collection->name);
+        $this->assertSame(200, $collection->feed_fetched_code);
+        $this->assertTrue($collection->is_public);
+    }
+
     public function testCreateUpdatesDefaultLinkIfItExists()
     {
         $user = $this->login();
