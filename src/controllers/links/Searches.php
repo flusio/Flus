@@ -48,7 +48,7 @@ class Searches
         ]);
 
         $feeds = [];
-        if ($default_link) {
+        if (models\FeatureFlag::isEnabled('feeds', $user->id) && $default_link) {
             $feeds = models\Collection::daoToList(
                 'listFeedsWithNumberLinks',
                 $support_user->id,

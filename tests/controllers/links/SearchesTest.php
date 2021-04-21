@@ -75,7 +75,41 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString($default_title, $output);
     }
 
-    public function testShowDisplaysFeedCollections()
+    public function testShowDisplaysFeedCollectionsIfFeatureFlag()
+    {
+        $user = $this->login();
+        $support_user = models\User::supportUser();
+        $name = $this->fake('sentence');
+        $feed_url = $this->fake('url');
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'user_id' => $support_user->id,
+            'is_public' => 1,
+            'name' => $name,
+            'feed_url' => $feed_url,
+        ]);
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $support_user->id,
+            'url' => $url,
+            'is_hidden' => 0,
+            'url_feeds' => "[\"{$feed_url}\"]",
+        ]);
+        $this->create('feature_flag', [
+            'type' => 'feeds',
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('get', '/links/search', [
+            'url' => $url,
+        ]);
+
+        $this->assertResponse($response, 200);
+        $output = $response->render();
+        $this->assertStringContainsString($name, $output);
+    }
+
+    public function testShowDoesNotDisplayFeedCollectionsIfNoFeatureFlag()
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
@@ -100,7 +134,9 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 200, $name);
+        $this->assertResponse($response, 200);
+        $output = $response->render();
+        $this->assertStringNotContainsString($name, $output);
     }
 
     public function testShowDoesNotDisplaysHiddenDefaultLink()
