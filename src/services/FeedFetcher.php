@@ -168,14 +168,7 @@ class FeedFetcher
         }
 
         $content_type = $response->header('content-type');
-        if (
-            !utils\Belt::contains($content_type, 'application/atom+xml') &&
-            !utils\Belt::contains($content_type, 'application/rss+xml') &&
-            !utils\Belt::contains($content_type, 'application/rdf+xml') &&
-            !utils\Belt::contains($content_type, 'application/xml') &&
-            !utils\Belt::contains($content_type, 'text/xml') &&
-            !utils\Belt::contains($content_type, 'text/plain')
-        ) {
+        if (!\SpiderBits\feeds\Feed::isFeedContentType($content_type)) {
             $info['error'] = "Invalid content type: {$content_type}";
             return $info; // @codeCoverageIgnore
         }

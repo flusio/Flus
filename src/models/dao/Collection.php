@@ -68,6 +68,41 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
+     * Returns the list of feed collections for the given user id and feed URLs.
+     * The number of links of each collection is added.
+     *
+     * @param string $user_id
+     * @param string[] $feed_urls
+     *
+     * @return array
+     */
+    public function listFeedsWithNumberLinks($user_id, $feed_urls)
+    {
+        if (!$feed_urls) {
+            return [];
+        }
+
+        $urls_as_question_marks = array_fill(0, count($feed_urls), '?');
+        $urls_where_statement = implode(', ', $urls_as_question_marks);
+
+        $sql = <<<SQL
+            SELECT c.*, (
+                SELECT COUNT(*) FROM links_to_collections l
+                WHERE c.id = l.collection_id
+            ) AS number_links
+            FROM collections c
+            WHERE user_id = ?
+            AND type = 'feed'
+            AND feed_url IN ({$urls_where_statement})
+            AND is_public = true
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute(array_merge([$user_id], $feed_urls));
+        return $statement->fetchAll();
+    }
+
+    /**
      * Returns the list of followed collections for the given user id. The
      * number of links of each collection is added.
      *

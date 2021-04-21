@@ -144,7 +144,61 @@
                 </div>
             <?php endif; ?>
         </div>
-    <?php else: ?>
+    <?php endif; ?>
+
+    <?php if ($feeds): ?>
+        <div class="cards cards--centered">
+            <?php foreach ($feeds as $feed): ?>
+                <div class="card">
+                    <div class="card__body">
+                        <h2 class="card__title">
+                            <a class="anchor--hidden" href="<?= url('collection', ['id' => $feed->id]) ?>" tabindex="-1">
+                                <?= protect($feed->name) ?>
+                            </a>
+                        </h2>
+
+                        <p class="card__text">
+                            <?= _f('Feed from %s', $default_link->host()) ?>
+                        </p>
+
+                        <p class="card__text">
+                            <?php if ($feed->number_links === 0): ?>
+                                <?= _('no links') ?>
+                            <?php else: ?>
+                                <?= _nf('%d link', '%d links', $feed->number_links, $feed->number_links) ?>
+                            <?php endif; ?>
+                        </p>
+                    </div>
+
+                    <div class="card__footer">
+                        <?php if ($current_user->isFollowing($feed->id)): ?>
+                            <form method="post" action="<?= url('unfollow collection', ['id' => $feed->id]) ?>">
+                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                <input type="hidden" name="from" value="<?= url('show search link', ['url' => $default_link->url]) ?>" />
+                                <button class="button--small">
+                                    <?= _('Unfollow') ?>
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            <form method="post" action="<?= url('follow collection', ['id' => $feed->id]) ?>">
+                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                <input type="hidden" name="from" value="<?= url('show search link', ['url' => $default_link->url]) ?>" />
+                                <button class="button--small">
+                                    <?= _('Follow') ?>
+                                </button>
+                            </form>
+                        <?php endif; ?>
+
+                        <a class="anchor--action" href="<?= url('collection', ['id' => $feed->id]) ?>">
+                            <?= _('see') ?>
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$existing_link && !$default_link && !$feeds): ?>
         <img
             class="illustration illustration--centered"
             alt=""

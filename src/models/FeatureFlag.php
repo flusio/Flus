@@ -44,6 +44,22 @@ class FeatureFlag extends \Minz\Model
     }
 
     /**
+     * Return whether a flag is enabled for the given user
+     *
+     * @param string $type
+     * @param string $user_id
+     *
+     * @return boolean
+     */
+    public static function isEnabled($type, $user_id)
+    {
+        return self::findBy([
+            'type' => $type,
+            'user_id' => $user_id,
+        ]) !== null;
+    }
+
+    /**
      * @param string $type
      *
      * @return boolean

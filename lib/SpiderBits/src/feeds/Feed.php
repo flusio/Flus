@@ -49,4 +49,40 @@ class Feed
 
         throw new \DomainException('Given string is not a supported standard.');
     }
+
+    /**
+     * Returns whether a string is a valid feed.
+     *
+     * @param string $feed_as_string
+     *
+     * @return boolean
+     */
+    public static function isFeed($feed_as_string)
+    {
+        try {
+            self::fromText($feed_as_string);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Return whether a string is a valid feed content type.
+     *
+     * @param string $content_type
+     *
+     * @return boolean
+     */
+    public static function isFeedContentType($content_type)
+    {
+        return (
+            strpos($content_type, 'application/atom+xml') !== false ||
+            strpos($content_type, 'application/rss+xml') !== false ||
+            strpos($content_type, 'application/rdf+xml') !== false ||
+            strpos($content_type, 'application/xml') !== false ||
+            strpos($content_type, 'text/xml') !== false ||
+            strpos($content_type, 'text/plain') !== false
+        );
+    }
 }

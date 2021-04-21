@@ -98,6 +98,7 @@ CREATE TABLE links (
     created_at TIMESTAMPTZ NOT NULL,
     title TEXT NOT NULL,
     url TEXT NOT NULL,
+    url_feeds JSON NOT NULL DEFAULT '[]',
     is_hidden BOOLEAN NOT NULL DEFAULT false,
     reading_time INTEGER NOT NULL DEFAULT 0,
     image_filename TEXT,

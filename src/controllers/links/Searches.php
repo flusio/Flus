@@ -47,10 +47,20 @@ class Searches
             'is_hidden' => 0,
         ]);
 
+        $feeds = [];
+        if (models\FeatureFlag::isEnabled('feeds', $user->id) && $default_link) {
+            $feeds = models\Collection::daoToList(
+                'listFeedsWithNumberLinks',
+                $support_user->id,
+                $default_link->feedUrls()
+            );
+        }
+
         return Response::ok('links/searches/show.phtml', [
             'url' => $url,
             'default_link' => $default_link,
             'existing_link' => $existing_link,
+            'feeds' => $feeds,
         ]);
     }
 
@@ -83,16 +93,9 @@ class Searches
                 'url' => $url,
                 'default_link' => null,
                 'existing_link' => null,
+                'feeds' => [],
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
-        }
-
-        $existing_link = models\Link::daoToModel('findByWithNumberComments', [
-            'url' => $url,
-            'user_id' => $user->id,
-        ]);
-        if ($existing_link) {
-            return Response::redirect('show search link', ['url' => $url]);
         }
 
         $default_link = models\Link::findBy([
@@ -109,12 +112,28 @@ class Searches
                 'url' => $url,
                 'default_link' => null,
                 'existing_link' => null,
+                'feeds' => [],
                 'errors' => $errors,
             ]);
         }
 
-        $fetch_service = new services\LinkFetcher();
-        $fetch_service->fetch($default_link);
+        $link_fetcher_service = new services\LinkFetcher();
+        $link_fetcher_service->fetch($default_link);
+
+        $feed_fetcher_service = new services\FeedFetcher();
+        foreach ($default_link->feedUrls() as $feed_url) {
+            $existing_feed = models\Collection::findBy([
+                'type' => 'feed',
+                'feed_url' => $feed_url,
+                'user_id' => $support_user->id,
+            ]);
+            if ($existing_feed) {
+                continue;
+            }
+
+            $collection = models\Collection::initFeed($support_user->id, $feed_url);
+            $feed_fetcher_service->fetch($collection);
+        }
 
         return Response::redirect('show search link', ['url' => $url]);
     }

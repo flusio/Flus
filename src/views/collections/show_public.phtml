@@ -66,6 +66,8 @@
                 <?php if ($current_user->isFollowing($collection->id)): ?>
                     <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
+
                         <button class="button--small">
                             <?= _('Unfollow') ?>
                         </button>
@@ -73,6 +75,7 @@
                 <?php else: ?>
                     <form method="post" action="<?= url('follow collection', ['id' => $collection->id]) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
                         <button class="button--small">
                             <?= _('Follow') ?>
                         </button>

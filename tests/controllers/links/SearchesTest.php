@@ -75,6 +75,70 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString($default_title, $output);
     }
 
+    public function testShowDisplaysFeedCollectionsIfFeatureFlag()
+    {
+        $user = $this->login();
+        $support_user = models\User::supportUser();
+        $name = $this->fake('sentence');
+        $feed_url = $this->fake('url');
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'user_id' => $support_user->id,
+            'is_public' => 1,
+            'name' => $name,
+            'feed_url' => $feed_url,
+        ]);
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $support_user->id,
+            'url' => $url,
+            'is_hidden' => 0,
+            'url_feeds' => "[\"{$feed_url}\"]",
+        ]);
+        $this->create('feature_flag', [
+            'type' => 'feeds',
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('get', '/links/search', [
+            'url' => $url,
+        ]);
+
+        $this->assertResponse($response, 200);
+        $output = $response->render();
+        $this->assertStringContainsString($name, $output);
+    }
+
+    public function testShowDoesNotDisplayFeedCollectionsIfNoFeatureFlag()
+    {
+        $user = $this->login();
+        $support_user = models\User::supportUser();
+        $name = $this->fake('sentence');
+        $feed_url = $this->fake('url');
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'user_id' => $support_user->id,
+            'is_public' => 1,
+            'name' => $name,
+            'feed_url' => $feed_url,
+        ]);
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $support_user->id,
+            'url' => $url,
+            'is_hidden' => 0,
+            'url_feeds' => "[\"{$feed_url}\"]",
+        ]);
+
+        $response = $this->appRun('get', '/links/search', [
+            'url' => $url,
+        ]);
+
+        $this->assertResponse($response, 200);
+        $output = $response->render();
+        $this->assertStringNotContainsString($name, $output);
+    }
+
     public function testShowDoesNotDisplaysHiddenDefaultLink()
     {
         $user = $this->login();
@@ -112,7 +176,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://flus.fr/carnet/';
 
         $this->assertSame(0, models\Link::count());
 
@@ -123,11 +187,57 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $encoded_url = urlencode($url);
         $this->assertResponse($response, 302, "/links/search?url={$encoded_url}");
-        $this->assertSame(1, models\Link::count());
         $link = models\Link::findBy(['url' => $url]);
         $this->assertSame($support_user->id, $link->user_id);
-        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertSame('carnet de flus', $link->title);
+        $this->assertSame(['https://flus.fr/carnet/feeds/all.atom.xml'], $link->feedUrls());
         $this->assertSame(200, $link->fetched_code);
+    }
+
+    public function testCreateCreatesFeedCollections()
+    {
+        $user = $this->login();
+        $support_user = models\User::supportUser();
+        $url = 'https://flus.fr/carnet/';
+        $url_feed = 'https://flus.fr/carnet/feeds/all.atom.xml';
+
+        $this->assertSame(0, models\Collection::count());
+
+        $response = $this->appRun('post', '/links/search', [
+            'csrf' => $user->csrf,
+            'url' => $url,
+        ]);
+
+        $this->assertSame(1, models\Collection::count());
+        $collection = models\Collection::findBy(['feed_url' => $url_feed]);
+        $this->assertSame($support_user->id, $collection->user_id);
+        $this->assertSame('feed', $collection->type);
+        $this->assertSame('carnet de flus', $collection->name);
+        $this->assertSame(200, $collection->feed_fetched_code);
+        $this->assertTrue($collection->is_public);
+    }
+
+    public function testCreateHandlesFeedUrl()
+    {
+        $user = $this->login();
+        $support_user = models\User::supportUser();
+        $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+
+        $response = $this->appRun('post', '/links/search', [
+            'csrf' => $user->csrf,
+            'url' => $url,
+        ]);
+
+        $link = models\Link::findBy(['url' => $url]);
+        $this->assertSame($support_user->id, $link->user_id);
+        $this->assertSame($url, $link->title);
+        $this->assertSame([$url], $link->feedUrls());
+        $collection = models\Collection::findBy(['feed_url' => $url]);
+        $this->assertSame($support_user->id, $collection->user_id);
+        $this->assertSame('feed', $collection->type);
+        $this->assertSame('carnet de flus', $collection->name);
+        $this->assertSame(200, $collection->feed_fetched_code);
+        $this->assertTrue($collection->is_public);
     }
 
     public function testCreateUpdatesDefaultLinkIfItExists()
@@ -155,29 +265,30 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $link->fetched_code);
     }
 
-    public function testCreateDoesNothingIfUserHasLink()
+    public function testCreateDoesNotUpdateFeedIfItExists()
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
-        $url = 'https://github.com/flusio/flusio';
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'url' => $url,
-            'title' => $url,
-            'fetched_code' => 0,
+        $url = 'https://flus.fr/carnet/';
+        $url_feed = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $name = $this->fake('sentence');
+        $this->create('collection', [
+            'type' => 'feed',
+            'feed_url' => $url_feed,
+            'user_id' => $support_user->id,
+            'name' => $name,
         ]);
 
-        $this->assertSame(1, models\Link::count());
+        $this->assertSame(1, models\Collection::count());
 
         $response = $this->appRun('post', '/links/search', [
             'csrf' => $user->csrf,
             'url' => $url,
         ]);
 
-        $this->assertSame(1, models\Link::count());
-        $link = models\Link::find($link_id);
-        $this->assertSame($url, $link->title);
-        $this->assertSame(0, $link->fetched_code);
+        $this->assertSame(1, models\Collection::count());
+        $collection = models\Collection::findBy(['feed_url' => $url_feed]);
+        $this->assertSame($name, $collection->name);
     }
 
     public function testCreateRedirectsIfNotConnected()

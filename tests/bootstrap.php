@@ -165,6 +165,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'url' => function () use ($faker) {
             return $faker->url;
         },
+        'url_feeds' => function () {
+            return '[]';
+        },
         'is_hidden' => function () use ($faker) {
             return (int)$faker->boolean;
         },

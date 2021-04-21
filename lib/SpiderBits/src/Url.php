@@ -9,6 +9,71 @@ namespace SpiderBits;
 class Url
 {
     /**
+     * Make an URL absolute.
+     *
+     * If the URL is already absolute, it’s returned as it is. Otherwise, it’s
+     * appended to a base URL. You must make sure to pass a valid base or the
+     * URL will be returned directly.
+     *
+     * @param string $url
+     * @param string $base_url
+     *
+     * @return string
+     */
+    public static function absolutize($url, $base_url)
+    {
+        $parsed_url = parse_url(trim($url));
+        if (isset($parsed_url['scheme'])) {
+            // The initial URL is already absolute, return as it is.
+            return $url;
+        }
+
+        $parsed_base_url = parse_url(trim($base_url));
+        if (!isset($parsed_base_url['host'])) {
+            // If there is no host in the base URL, we can’t do anything.
+            // Return the URL as it is
+            return $url;
+        }
+
+        if (!isset($parsed_base_url['scheme'])) {
+            // Base URL should always be absolute, but in case it’s not, we
+            // rely on a default scheme
+            $parsed_base_url['scheme'] = 'http';
+        }
+
+        if (!isset($parsed_base_url['path'])) {
+            $parsed_base_url['path'] = '';
+        }
+
+        if (strpos($url, '//') === 0) {
+            // The initial URL protocol is relative to the base URL, but the
+            // rest of the URL is already absolute.
+            return $parsed_base_url['scheme'] . ':' . $url;
+        }
+
+        $absolute_url = $parsed_base_url['scheme'] . '://';
+        $absolute_url .= $parsed_base_url['host'];
+        if (isset($parsed_base_url['port'])) {
+            $absolute_url .= ':' . $parsed_base_url['port'];
+        }
+
+        if (strpos($url, '/') === 0) {
+            // If initial URL starts with a slash, it’s an absolute path
+            $absolute_url .= $url;
+        } else {
+            // Else, it’s a relative path, rebuild a path by taking care of the
+            // slashes
+            $base_path = trim($parsed_base_url['path'], '/');
+            if ($base_path) {
+                $base_path = '/' . $base_path;
+            }
+            $absolute_url .= $base_path . '/' . $url;
+        }
+
+        return $absolute_url;
+    }
+
+    /**
      * Return the given URL as a sanitized string. It allows to compute a
      * canonical URL.
      *

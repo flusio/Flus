@@ -31,6 +31,11 @@ class Link extends \Minz\Model
             'validator' => '\flusio\models\Link::validateUrl',
         ],
 
+        'url_feeds' => [
+            'type' => 'string',
+            'required' => true,
+        ],
+
         'is_hidden' => [
             'type' => 'boolean',
             'required' => true,
@@ -105,6 +110,7 @@ class Link extends \Minz\Model
             'id' => utils\Random::timebased(),
             'title' => $url,
             'url' => $url,
+            'url_feeds' => '[]',
             'is_hidden' => filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN),
             'user_id' => $user_id,
             'reading_time' => 0,
@@ -124,6 +130,7 @@ class Link extends \Minz\Model
             'id' => utils\Random::timebased(),
             'title' => $news_link->title,
             'url' => $news_link->url,
+            'url_feeds' => '[]',
             'image_filename' => $news_link->image_filename,
             'is_hidden' => false,
             'reading_time' => $news_link->reading_time,
@@ -147,6 +154,7 @@ class Link extends \Minz\Model
             'id' => utils\Random::timebased(),
             'title' => $link->title,
             'url' => $link->url,
+            'url_feeds' => $link->url_feeds,
             'image_filename' => $link->image_filename,
             'is_hidden' => false,
             'reading_time' => $link->reading_time,
@@ -186,6 +194,16 @@ class Link extends \Minz\Model
         return Message::listBy([
             'link_id' => $this->id,
         ]);
+    }
+
+    /**
+     * Return the list of feeds URLs if any
+     *
+     * @return string[]
+     */
+    public function feedUrls()
+    {
+        return json_decode($this->url_feeds, true);
     }
 
     /**
