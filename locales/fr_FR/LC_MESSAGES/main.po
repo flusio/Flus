@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-04-16 17:02+0200\n"
-"PO-Revision-Date: 2021-04-16 17:02+0200\n"
+"POT-Creation-Date: 2021-04-21 13:42+0200\n"
+"PO-Revision-Date: 2021-04-21 13:42+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -43,7 +43,7 @@ msgstr "Afficher"
 #: controllers/Registrations.php:101 controllers/Sessions.php:85
 #: controllers/collections/Followers.php:47
 #: controllers/collections/Followers.php:90 controllers/links/Messages.php:72
-#: controllers/links/Obtentions.php:125 controllers/links/Searches.php:86
+#: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
 #: controllers/my/Account.php:100 controllers/my/Profile.php:84
 #: controllers/my/Security.php:79 controllers/my/Security.php:139
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
@@ -221,23 +221,23 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:227
+#: models/Link.php:245
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:229
+#: models/Link.php:247
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:248
+#: models/Link.php:266
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:253
+#: models/Link.php:271
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:257
+#: models/Link.php:275
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -325,7 +325,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:137
+#: services/LinkFetcher.php:156
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -576,7 +576,7 @@ msgid "Add a link"
 msgstr "Ajouter un lien"
 
 #: views/collections/bookmarks/show.phtml:64 views/collections/show.phtml:105
-#: views/collections/show_public.phtml:123 views/links/searches/show.phtml:84
+#: views/collections/show_public.phtml:126 views/links/searches/show.phtml:84
 #: views/news/show.phtml:85
 #, php-format
 msgid "%d comment"
@@ -604,7 +604,7 @@ msgid "Manage collections"
 msgstr "Gérer les collections"
 
 #: views/collections/bookmarks/show.phtml:142 views/collections/show.phtml:180
-#: views/collections/show_public.phtml:138 views/links/show.phtml:43
+#: views/collections/show_public.phtml:141 views/links/show.phtml:43
 #: views/links/show_public.phtml:56 views/news/show.phtml:154
 msgid "read"
 msgstr "lire"
@@ -628,12 +628,12 @@ msgstr ""
 "intéressent."
 
 #: views/collections/discovery/show.phtml:34 views/collections/index.phtml:44
-#: views/collections/index.phtml:95
+#: views/collections/index.phtml:95 views/links/searches/show.phtml:166
 msgid "no links"
 msgstr "aucun lien"
 
 #: views/collections/discovery/show.phtml:36 views/collections/index.phtml:46
-#: views/collections/index.phtml:97
+#: views/collections/index.phtml:97 views/links/searches/show.phtml:168
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
@@ -651,7 +651,7 @@ msgid "followed"
 msgstr "suivie"
 
 #: views/collections/discovery/show.phtml:52 views/collections/index.phtml:61
-#: views/collections/index.phtml:108
+#: views/collections/index.phtml:108 views/links/searches/show.phtml:193
 msgid "see"
 msgstr "voir"
 
@@ -805,15 +805,15 @@ msgstr ""
 msgid "Feed"
 msgstr "Flux"
 
-#: views/collections/show_public.phtml:70
+#: views/collections/show_public.phtml:72 views/links/searches/show.phtml:179
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:77
+#: views/collections/show_public.phtml:80 views/links/searches/show.phtml:187
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:148
+#: views/collections/show_public.phtml:151
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -1054,6 +1054,11 @@ msgstr "Ajouter"
 #: views/links/searches/show.phtml:46
 msgid "Search"
 msgstr "Rechercher"
+
+#: views/links/searches/show.phtml:161
+#, php-format
+msgid "Feed from %s"
+msgstr "Flux issu de %s"
 
 #: views/links/show.phtml:7 views/links/show_public.phtml:18
 #, php-format
