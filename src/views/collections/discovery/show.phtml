@@ -29,14 +29,22 @@
                             </a>
                         </h2>
 
+                        <?php if ($collection->type === 'feed'): ?>
+                            <p class="card__text">
+                                <?= _f('Feed from %s', protect($collection->feedWebsite())) ?>
+                            </p>
+                        <?php elseif ($collection->type === 'collection'): ?>
+                            <p class="card__text">
+                                <?= _f('Created by %s', protect($collection->owner()->username)) ?>
+                            </p>
+                        <?php endif; ?>
+
                         <p class="card__text">
                             <?php if ($collection->number_links === 0): ?>
                                 <?= _('no links') ?>
                             <?php else: ?>
                                 <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
                             <?php endif; ?>
-
-                            · <?= _f('created by %s', protect($collection->owner()->username)) ?>
 
                             <?php if ($current_user->isFollowing($collection->id)): ?>
                                 <span class="sticker sticker--right"><?= _('followed') ?></span>

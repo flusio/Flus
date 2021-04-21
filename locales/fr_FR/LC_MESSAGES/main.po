@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-04-21 13:42+0200\n"
-"PO-Revision-Date: 2021-04-21 13:42+0200\n"
+"POT-Creation-Date: 2021-04-21 16:07+0200\n"
+"PO-Revision-Date: 2021-04-21 16:07+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -610,7 +610,7 @@ msgid "read"
 msgstr "lire"
 
 #: views/collections/discovery/show.phtml:3
-#: views/collections/discovery/show.phtml:14 views/collections/index.phtml:125
+#: views/collections/discovery/show.phtml:14 views/collections/index.phtml:133
 #: views/news/show.phtml:236
 msgid "Discover collections"
 msgstr "Découvrir des collections"
@@ -627,35 +627,41 @@ msgstr ""
 "Découvrez les collections créées par la communauté et suivez celles qui vous "
 "intéressent."
 
-#: views/collections/discovery/show.phtml:34 views/collections/index.phtml:44
-#: views/collections/index.phtml:95 views/links/searches/show.phtml:166
+#: views/collections/discovery/show.phtml:34 views/collections/index.phtml:95
+#: views/links/searches/show.phtml:161
+#, php-format
+msgid "Feed from %s"
+msgstr "Flux issu de %s"
+
+#: views/collections/discovery/show.phtml:38 views/collections/index.phtml:99
+#: views/collections/show_public.phtml:59
+#, php-format
+msgid "Created by %s"
+msgstr "Créée par %s"
+
+#: views/collections/discovery/show.phtml:44 views/collections/index.phtml:44
+#: views/collections/index.phtml:105 views/links/searches/show.phtml:166
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/discovery/show.phtml:36 views/collections/index.phtml:46
-#: views/collections/index.phtml:97 views/links/searches/show.phtml:168
+#: views/collections/discovery/show.phtml:46 views/collections/index.phtml:46
+#: views/collections/index.phtml:107 views/links/searches/show.phtml:168
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/discovery/show.phtml:39 views/collections/index.phtml:100
-#: views/collections/show_public.phtml:59
-#, php-format
-msgid "created by %s"
-msgstr "créée par %s"
-
-#: views/collections/discovery/show.phtml:42
+#: views/collections/discovery/show.phtml:50
 msgid "followed"
 msgstr "suivie"
 
-#: views/collections/discovery/show.phtml:52 views/collections/index.phtml:61
-#: views/collections/index.phtml:108 views/links/searches/show.phtml:193
+#: views/collections/discovery/show.phtml:60 views/collections/index.phtml:61
+#: views/collections/index.phtml:116 views/links/searches/show.phtml:193
 msgid "see"
 msgstr "voir"
 
-#: views/collections/discovery/show.phtml:62
+#: views/collections/discovery/show.phtml:70
 msgid "The community didn’t publish any collection yet. Will you be the first?"
 msgstr ""
 "La communauté n’a pas encore publié de collection. Serez-vous le ou la "
@@ -742,7 +748,7 @@ msgstr "Collections suivies"
 msgid "Discover more collections"
 msgstr "Découvrir plus de collections"
 
-#: views/collections/index.phtml:120
+#: views/collections/index.phtml:128
 msgid ""
 "You don’t follow any collection. Start by discovering collections created by "
 "the community."
@@ -797,9 +803,10 @@ msgstr "Retour"
 #: views/collections/show_public.phtml:50
 #, php-format
 msgid ""
-"Feed <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
+"Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
 msgstr ""
-"Flux <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
+"Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
+"%s</a>"
 
 #: views/collections/show_public.phtml:52
 msgid "Feed"
@@ -1054,11 +1061,6 @@ msgstr "Ajouter"
 #: views/links/searches/show.phtml:46
 msgid "Search"
 msgstr "Rechercher"
-
-#: views/links/searches/show.phtml:161
-#, php-format
-msgid "Feed from %s"
-msgstr "Flux issu de %s"
 
 #: views/links/show.phtml:7 views/links/show_public.phtml:18
 #, php-format
