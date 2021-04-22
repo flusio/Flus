@@ -40,7 +40,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             $now->getTimestamp(),
             $links_fetcher_job->perform_at->getTimestamp()
         );
-        $this->assertSame('+5 seconds', $links_fetcher_job->frequency);
+        $this->assertSame('+15 seconds', $links_fetcher_job->frequency);
     }
 
     public function testPerform()

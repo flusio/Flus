@@ -18,7 +18,7 @@ class LinksFetcher extends jobs\Job
     public function __construct()
     {
         parent::__construct();
-        $this->frequency = '+5 seconds';
+        $this->frequency = '+15 seconds';
         $this->queue = 'fetchers';
     }
 

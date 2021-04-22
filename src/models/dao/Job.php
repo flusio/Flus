@@ -52,13 +52,18 @@ class Job extends \Minz\DatabaseModel
             AND perform_at <= ?
             AND (number_attempts <= 25 OR frequency != '')
             {$queue_placeholder}
-            ORDER BY created_at;
+            ORDER BY frequency, created_at;
         SQL;
 
 
         $statement = $this->prepare($sql);
         $statement->execute($values);
-        return $statement->fetch();
+        $result = $statement->fetch();
+        if ($result !== false) {
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
