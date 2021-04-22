@@ -1,5 +1,38 @@
 # Changelog of flusio
 
+## 2021-04-22 - v0.19
+
+### News
+
+- Add support for syndication feeds (behind a feature flag)
+- Replace new link page by a search page
+- Autodiscover feeds on search page
+
+### Improvements
+
+- Improve look of "New link" anchor (header)
+- Use absolute URLs for atom links
+
+### Bug fixes
+
+- Adapt the number of links on owned collections pages
+- Make sure to initialize locale with the default one
+- Accept CLI parameters containing `=` char
+- Add html entities protection on URLs
+
+### Misc
+
+- Add flag system for experimental features
+- Add CLI commands to list users and manipulate feeds
+- Improve the look of CLI usage command
+- Improve jobs priority
+- Raise exceptions on Curl errors
+- Change `UserLinksFetcher` to a global `LinksFetcher` scheduled job
+- Move `CurrentUser` under `flusio\auth\` namespace
+- Refactor resources access permissions
+- Split and reorganize controllers
+- Ignore specific lines with PHP linter
+
 ## 2021-03-25 - v0.18
 
 ### Migration notes
