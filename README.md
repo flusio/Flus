@@ -27,6 +27,18 @@ flusio is licensed under [AGPL 3](/LICENSE.txt).
 
 ![Screenshot of the news page with 3 links](/public/static/screenshot.jpg)
 
+## Credits
+
+flusio is built upon the work of many other people:
+
+- the user experience and interface have been designed with the help of [Maiwann](https://www.maiwann.net/);
+- the logo has been made by [Clara Chambon](https://www.clara-chambon.fr/);
+- the font [Comfortaa](https://fonts.google.com/specimen/Comfortaa), by Johan Aakerlund;
+- the font [Open Sans](https://fonts.google.com/specimen/Open+Sans), by Steve Matteson;
+- the icons are from [the Clarity project](https://clarity.design/);
+- the illustrations are from [the unDraw project](https://undraw.co), by [Katerina Limpitsouni](https://twitter.com/ninaLimpi);
+- default cards illustrations are from [SVGBackgrounds](https://www.svgbackgrounds.com/).
+
 ## How to contribute?
 
 I sincerely appreciate if you want to contribute. Here’s a few things you can
