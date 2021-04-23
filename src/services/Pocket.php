@@ -29,7 +29,7 @@ class Pocket
             'X-Accept' => 'application/json',
         ];
         $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
-        $this->http->timeout = 5;
+        $this->http->timeout = 20;
     }
 
     /**

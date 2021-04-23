@@ -120,7 +120,7 @@ class Searches
         $link_fetcher_service = new services\LinkFetcher();
         $link_fetcher_service->fetch($default_link);
 
-        $feed_fetcher_service = new services\FeedFetcher();
+        $feed_fetcher_service = new services\FeedFetcher(false, 10);
         foreach ($default_link->feedUrls() as $feed_url) {
             $existing_feed = models\Collection::findBy([
                 'type' => 'feed',

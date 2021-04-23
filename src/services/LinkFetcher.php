@@ -26,7 +26,7 @@ class LinkFetcher
 
         $this->http = new \SpiderBits\Http();
         $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
-        $this->http->timeout = 5;
+        $this->http->timeout = 10;
     }
 
     /**
@@ -40,6 +40,7 @@ class LinkFetcher
 
         $link->fetched_at = \Minz\Time::now();
         $link->fetched_code = $info['status'];
+        $link->fetched_error = '';
         if (isset($info['error'])) {
             $link->fetched_error = $info['error'];
         }

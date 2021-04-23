@@ -24,7 +24,7 @@ class Image
     {
         $this->http = new \SpiderBits\Http();
         $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
-        $this->http->timeout = 5;
+        $this->http->timeout = 10;
 
         $media_path = \Minz\Configuration::$application['media_path'];
         $this->path_cards = "{$media_path}/cards";

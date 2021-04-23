@@ -22,15 +22,16 @@ class FeedFetcher
 
     /**
      * @param boolean $no_cache Indicates if FeedFetcher should ignore the cache
+     * @param boolean $timeout Timeout of GET requests (default is 20)
      */
-    public function __construct($no_cache = false)
+    public function __construct($no_cache = false, $timeout = 20)
     {
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $this->cache = new \SpiderBits\Cache($cache_path);
 
         $this->http = new \SpiderBits\Http();
         $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
-        $this->http->timeout = 5;
+        $this->http->timeout = $timeout;
 
         $this->no_cache = $no_cache;
     }
@@ -46,6 +47,7 @@ class FeedFetcher
 
         $collection->feed_fetched_at = \Minz\Time::now();
         $collection->feed_fetched_code = $info['status'];
+        $collection->feed_fetched_error = '';
         if (isset($info['error'])) {
             $collection->feed_fetched_error = $info['error'];
             $collection->save();
