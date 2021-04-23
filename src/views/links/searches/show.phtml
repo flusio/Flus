@@ -149,13 +149,17 @@
                     </div>
                 </div>
             <?php endif; ?>
-        </div>
-    <?php endif; ?>
 
-    <?php if ($feeds): ?>
-        <div class="cards cards--centered">
             <?php foreach ($feeds as $feed): ?>
                 <div class="card">
+                    <a
+                        class="anchor--hidden"
+                        href="<?= url('collection', ['id' => $feed->id]) ?>"
+                        tabindex="-1"
+                    >
+                        <img class="card__image" alt="" src="<?= url_static('feed-card.png') ?>" />
+                    </a>
+
                     <div class="card__body">
                         <h2 class="card__title">
                             <a class="anchor--hidden" href="<?= url('collection', ['id' => $feed->id]) ?>" tabindex="-1">
