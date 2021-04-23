@@ -86,7 +86,10 @@ class FeedFetcher
                 $link_id = $link_ids_by_urls[$url];
             } else {
                 $link = models\Link::init($url, $user_id, false);
-                $link->title = $entry->title;
+                $entry_title = trim($entry->title);
+                if ($entry_title) {
+                    $link->title = $entry_title;
+                }
                 $link->created_at = \Minz\Time::now();
                 $link->feed_entry_id = $entry->id;
                 if ($entry->published_at) {
