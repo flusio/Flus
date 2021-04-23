@@ -69,14 +69,15 @@ class Collection extends \Minz\DatabaseModel
 
     /**
      * Returns the list of feed collections for the given user id and feed URLs.
-     * The number of links of each collection is added.
+     * The number of links of each collection is added. The feeds with no
+     * associated links are not returned.
      *
      * @param string $user_id
      * @param string[] $feed_urls
      *
      * @return array
      */
-    public function listFeedsWithNumberLinks($user_id, $feed_urls)
+    public function listNonEmptyFeedsWithNumberLinks($user_id, $feed_urls)
     {
         if (!$feed_urls) {
             return [];
@@ -86,15 +87,17 @@ class Collection extends \Minz\DatabaseModel
         $urls_where_statement = implode(', ', $urls_as_question_marks);
 
         $sql = <<<SQL
-            SELECT c.*, (
-                SELECT COUNT(*) FROM links_to_collections l
-                WHERE c.id = l.collection_id
-            ) AS number_links
-            FROM collections c
-            WHERE user_id = ?
-            AND type = 'feed'
-            AND feed_url IN ({$urls_where_statement})
-            AND is_public = true
+            SELECT c.*, COUNT(lc.id) AS number_links
+            FROM collections c, links_to_collections lc
+
+            WHERE c.id = lc.collection_id
+
+            AND c.user_id = ?
+            AND c.type = 'feed'
+            AND c.feed_url IN ({$urls_where_statement})
+            AND c.is_public = true
+
+            GROUP BY c.id
         SQL;
 
         $statement = $this->prepare($sql);
