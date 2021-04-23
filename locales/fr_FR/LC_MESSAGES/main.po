@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-04-21 16:07+0200\n"
-"PO-Revision-Date: 2021-04-21 16:07+0200\n"
+"POT-Creation-Date: 2021-04-23 15:16+0200\n"
+"PO-Revision-Date: 2021-04-23 15:16+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -187,19 +187,19 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais vous n’avez pas autorisé "
 "l’accès à vos données Pocket."
 
-#: jobs/Importator.php:114
+#: jobs/Importator.php:108
 msgid "Pocket links"
 msgstr "Liens Pocket"
 
-#: jobs/Importator.php:117
+#: jobs/Importator.php:111
 msgid "All your links imported from Pocket."
 msgstr "Tous vos liens importés depuis Pocket."
 
-#: jobs/Importator.php:121
+#: jobs/Importator.php:115
 msgid "Pocket favorite"
 msgstr "Favoris Pocket"
 
-#: jobs/Importator.php:124
+#: jobs/Importator.php:118
 msgid "All your favorites imported from Pocket."
 msgstr "Tous vos favoris importés depuis Pocket."
 
@@ -293,39 +293,39 @@ msgstr "La langue est obligatoire."
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
-#: seeds.php:16
+#: seeds.php:21
 msgid "Business"
 msgstr "Business"
 
-#: seeds.php:17
+#: seeds.php:22
 msgid "Climate"
 msgstr "Climat"
 
-#: seeds.php:18
+#: seeds.php:23
 msgid "Culture"
 msgstr "Culture"
 
-#: seeds.php:19
+#: seeds.php:24
 msgid "Health"
 msgstr "Santé"
 
-#: seeds.php:20
+#: seeds.php:25
 msgid "Politics"
 msgstr "Politique"
 
-#: seeds.php:21
+#: seeds.php:26
 msgid "Science"
 msgstr "Science"
 
-#: seeds.php:22
+#: seeds.php:27
 msgid "Sport"
 msgstr "Sport"
 
-#: seeds.php:23
+#: seeds.php:28
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:156
+#: services/LinkFetcher.php:165
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -458,8 +458,8 @@ msgstr "Nouveau lien"
 #: views/_layouts/connected_blocked.phtml:95
 #: views/_layouts/connected_blocked.phtml:99
 #: views/collections/bookmarks/show.phtml:76
-#: views/collections/bookmarks/show.phtml:80 views/collections/show.phtml:123
-#: views/collections/show.phtml:127 views/links/show.phtml:72
+#: views/collections/bookmarks/show.phtml:80 views/collections/show.phtml:132
+#: views/collections/show.phtml:136 views/links/show.phtml:72
 #: views/links/show.phtml:76
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
@@ -571,12 +571,12 @@ msgstr "Retour à la page d’accueil"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/collections/bookmarks/show.phtml:29 views/collections/show.phtml:70
+#: views/collections/bookmarks/show.phtml:29 views/collections/show.phtml:79
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/collections/bookmarks/show.phtml:64 views/collections/show.phtml:105
-#: views/collections/show_public.phtml:126 views/links/searches/show.phtml:84
+#: views/collections/bookmarks/show.phtml:64 views/collections/show.phtml:114
+#: views/collections/show_public.phtml:143 views/links/searches/show.phtml:84
 #: views/news/show.phtml:85
 #, php-format
 msgid "%d comment"
@@ -584,12 +584,12 @@ msgid_plural "%d comments"
 msgstr[0] "%d commentaire"
 msgstr[1] "%d commentaires"
 
-#: views/collections/bookmarks/show.phtml:94 views/collections/show.phtml:50
-#: views/collections/show.phtml:141 views/links/searches/show.phtml:98
+#: views/collections/bookmarks/show.phtml:94 views/collections/show.phtml:59
+#: views/collections/show.phtml:150 views/links/searches/show.phtml:98
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/collections/bookmarks/show.phtml:105 views/collections/show.phtml:152
+#: views/collections/bookmarks/show.phtml:105 views/collections/show.phtml:161
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
@@ -598,13 +598,13 @@ msgid "Mark as read"
 msgstr "Marquer comme lu"
 
 #: views/collections/bookmarks/show.phtml:126
-#: views/collections/bookmarks/show.phtml:130 views/collections/show.phtml:165
-#: views/collections/show.phtml:169
+#: views/collections/bookmarks/show.phtml:130 views/collections/show.phtml:174
+#: views/collections/show.phtml:178
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/collections/bookmarks/show.phtml:142 views/collections/show.phtml:180
-#: views/collections/show_public.phtml:141 views/links/show.phtml:43
+#: views/collections/bookmarks/show.phtml:142 views/collections/show.phtml:189
+#: views/collections/show_public.phtml:158 views/links/show.phtml:43
 #: views/links/show_public.phtml:56 views/news/show.phtml:154
 msgid "read"
 msgstr "lire"
@@ -615,7 +615,7 @@ msgstr "lire"
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
-#: views/collections/discovery/show.phtml:7 views/collections/show.phtml:12
+#: views/collections/discovery/show.phtml:7 views/collections/show.phtml:21
 msgid "Your collections"
 msgstr "Vos collections"
 
@@ -634,7 +634,7 @@ msgid "Feed from %s"
 msgstr "Flux issu de %s"
 
 #: views/collections/discovery/show.phtml:38 views/collections/index.phtml:99
-#: views/collections/show_public.phtml:59
+#: views/collections/show_public.phtml:76
 #, php-format
 msgid "Created by %s"
 msgstr "Créée par %s"
@@ -736,7 +736,7 @@ msgstr ""
 msgid "Create a collection"
 msgstr "Créer une collection"
 
-#: views/collections/index.phtml:51 views/collections/show.phtml:33
+#: views/collections/index.phtml:51 views/collections/show.phtml:42
 msgid "public"
 msgstr "public"
 
@@ -776,31 +776,38 @@ msgstr "Quelles thématiques seront abordées ?"
 msgid "Create the collection"
 msgstr "Créer la collection"
 
-#: views/collections/show.phtml:8 views/collections/show_public.phtml:16
+#: views/collections/show.phtml:5 views/collections/show.phtml:10
+#: views/collections/show_public.phtml:14
+#: views/collections/show_public.phtml:26
 #, php-format
 msgid "Syndication feed of %s"
 msgstr "Flux de syndication de %s"
 
-#: views/collections/show.phtml:37
+#: views/collections/show.phtml:46
 msgid "created by you"
 msgstr "créée par vous"
 
-#: views/collections/show.phtml:110
+#: views/collections/show.phtml:119
 msgid "hidden"
 msgstr "masqué"
 
-#: views/collections/show_public.phtml:5
+#: views/collections/show_public.phtml:7
+#, php-format
+msgid "A feed from %s, on %s."
+msgstr "Un flux issu de %s, sur %s."
+
+#: views/collections/show_public.phtml:19
 #, php-format
 msgid "A collection created by %s on %s."
 msgstr "Une collection créée par %s sur %s."
 
-#: views/collections/show_public.phtml:21 views/links/new.phtml:7
+#: views/collections/show_public.phtml:38 views/links/new.phtml:7
 #: views/links/obtentions/new.phtml:7 views/links/show.phtml:11
 #: views/links/show_public.phtml:23
 msgid "Back"
 msgstr "Retour"
 
-#: views/collections/show_public.phtml:50
+#: views/collections/show_public.phtml:67
 #, php-format
 msgid ""
 "Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
@@ -808,19 +815,19 @@ msgstr ""
 "Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
 "%s</a>"
 
-#: views/collections/show_public.phtml:52
+#: views/collections/show_public.phtml:69
 msgid "Feed"
 msgstr "Flux"
 
-#: views/collections/show_public.phtml:72 views/links/searches/show.phtml:179
+#: views/collections/show_public.phtml:89 views/links/searches/show.phtml:179
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:80 views/links/searches/show.phtml:187
+#: views/collections/show_public.phtml:97 views/links/searches/show.phtml:187
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:151
+#: views/collections/show_public.phtml:168
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 

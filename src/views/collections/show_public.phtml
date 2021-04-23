@@ -1,20 +1,37 @@
 <?php
     $owner = $collection->owner();
-    $open_graph = [
-        'title' => $collection->name,
-        'description' => _f('A collection created by %s on %s.', $owner->username, $brand),
-        'locale' => $owner->locale,
-        'url' => url_full('collection', ['id' => $collection->id]),
-    ];
+
+    if ($collection->type === 'feed') {
+        $open_graph = [
+            'title' => $collection->name,
+            'description' => _f('A feed from %s, on %s.', protect($collection->feedWebsite()), $brand),
+            'locale' => $owner->locale,
+            'url' => url_full('collection', ['id' => $collection->id]),
+        ];
+
+        $feed = [
+            'url' => $collection->feed_url,
+            'title' => _f('Syndication feed of %s', $collection->name),
+        ];
+    } else {
+        $open_graph = [
+            'title' => $collection->name,
+            'description' => _f('A collection created by %s on %s.', $owner->username, $brand),
+            'locale' => $owner->locale,
+            'url' => url_full('collection', ['id' => $collection->id]),
+        ];
+
+        $feed = [
+            'url' => url_full('collection feed', ['id' => $collection->id]),
+            'title' => _f('Syndication feed of %s', $collection->name),
+        ];
+    }
 
     $this->layout('base.phtml', [
         'title' => $collection->name,
         'canonical' => url('collection', ['id' => $collection->id]),
         'current_tab' => 'collections',
-        'feed' => [
-            'url' => url_full('collection feed', ['id' => $collection->id]),
-            'title' => _f('Syndication feed of %s', $collection->name),
-        ],
+        'feed' => $feed,
         'open_graph' => $open_graph,
         'back' => [
             'href' => url('home'),

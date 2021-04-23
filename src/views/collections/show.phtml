@@ -1,12 +1,21 @@
 <?php
+    if ($collection->type === 'feed') {
+        $feed = [
+            'url' => $collection->feed_url,
+            'title' => _f('Syndication feed of %s', $collection->name),
+        ];
+    } else {
+        $feed = [
+            'url' => url_full('collection feed', ['id' => $collection->id]),
+            'title' => _f('Syndication feed of %s', $collection->name),
+        ];
+    }
+
     $this->layout('base.phtml', [
         'title' => $collection->name,
         'canonical' => url('collection', ['id' => $collection->id]),
         'current_tab' => 'collections',
-        'feed' => [
-            'url' => url_full('collection feed', ['id' => $collection->id]),
-            'title' => _f('Syndication feed of %s', $collection->name),
-        ],
+        'feed' => $feed,
         'back' => [
             'href' => url('collections'),
             'label' => _('Your collections'),
