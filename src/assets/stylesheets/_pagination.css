@@ -19,7 +19,7 @@
     visibility: hidden;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 799px) {
     .pagination__item--number:not(.pagination__item--current),
     .pagination__item--ellipsis {
         display: none;

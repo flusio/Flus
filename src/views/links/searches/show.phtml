@@ -24,15 +24,21 @@
                 <?= _('What’s the <abbr>URL</abbr> of the link?') ?>
             </label>
 
-            <input
-                id="url"
-                name="url"
-                type="url"
-                required
-                value="<?= $url ?>"
-                autocomplete="off"
-                autofocus
-            />
+            <div class="form-group__stack">
+                <input
+                    id="url"
+                    name="url"
+                    type="url"
+                    required
+                    value="<?= $url ?>"
+                    autocomplete="off"
+                    autofocus
+                />
+
+                <button type="submit" class="button--primary no-mobile">
+                    <?= _('Search') ?>
+                </button>
+            </div>
 
             <?php if (isset($errors['url'])): ?>
                 <p class="form-group__error">
@@ -41,7 +47,7 @@
             <?php endif; ?>
         </div>
 
-        <div class="form__actions">
+        <div class="form__actions only-mobile">
             <button type="submit" class="button--primary">
                 <?= _('Search') ?>
             </button>

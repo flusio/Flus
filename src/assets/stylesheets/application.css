@@ -62,7 +62,7 @@ body {
     display: none;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 799px) {
     .no-mobile {
         display: none;
     }
