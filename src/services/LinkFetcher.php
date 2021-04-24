@@ -60,8 +60,10 @@ class LinkFetcher
             $link->image_filename = $image_filename;
         }
 
-        if (isset($info['url_feeds'])) {
+        if (!empty($info['url_feeds'])) {
             $link->url_feeds = json_encode($info['url_feeds']);
+        } elseif ($this->isYoutube($link->url)) {
+            $link->url_feeds = json_encode($this->urlToYoutubeFeeds($link->url));
         }
 
         $link->save();
@@ -201,5 +203,66 @@ class LinkFetcher
             utils\Belt::startsWith($url, 'https://twitter.com/') ||
             utils\Belt::startsWith($url, 'https://mobile.twitter.com/')
         );
+    }
+
+    /**
+     * Return true if the url is pointing to Youtube
+     *
+     * @param string $url
+     *
+     * @return boolean
+     */
+    private function isYoutube($url)
+    {
+        $parsed_url = parse_url($url);
+        return isset($parsed_url['host']) && $parsed_url['host'] === 'www.youtube.com';
+    }
+
+    /**
+     * Return feed URL corresponding to a Youtube URL
+     *
+     * @see https://github.com/kevinpapst/freshrss-youtube/
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    private function urlToYoutubeFeeds($url)
+    {
+        $parsed_url = parse_url($url);
+        if (!isset($parsed_url['host']) || $parsed_url['host'] !== 'www.youtube.com') {
+            return [];
+        }
+
+        if (isset($parsed_url['path'])) {
+            $path = $parsed_url['path'];
+        } else {
+            $path = '';
+        }
+
+        if (isset($parsed_url['query'])) {
+            parse_str($parsed_url['query'], $query);
+        } else {
+            $query = [];
+        }
+
+        $feeds = [];
+
+        // I didn’t succeed to find a channel or user page which doesn’t
+        // display an autodiscovered feed <link>, so these two regex MIGHT be
+        // useless, but I prefer to keep them for now.
+        if (preg_match('#^/channel/([0-9a-zA-Z_-]{6,36})#', $path, $matches) === 1) {
+            $feeds[] = 'https://www.youtube.com/feeds/videos.xml?channel_id=' . $matches[1];
+        }
+        if (preg_match('#^/user/([0-9a-zA-Z_-]{6,36})#', $path, $matches) === 1) {
+            $feeds[] = 'https://www.youtube.com/feeds/videos.xml?user=' . $matches[1];
+        }
+
+        // However, Youtube doesn’t display <link> for playlists.
+        if (isset($query['list'])) {
+            $feeds[] = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' . $query['list'];
+        }
+
+        return $feeds;
     }
 }

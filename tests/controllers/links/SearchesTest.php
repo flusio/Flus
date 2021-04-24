@@ -284,6 +284,25 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($collection->is_public);
     }
 
+    public function testCreateDiscoversYoutubePlaylistFeed()
+    {
+        $user = $this->login();
+        $support_user = models\User::supportUser();
+        $url = 'https://www.youtube.com/playlist?list=PLdhqndoLhA_7mQKanRpMGscqEgejpEWaJ';
+
+        $response = $this->appRun('post', '/links/search', [
+            'csrf' => $user->csrf,
+            'url' => $url,
+        ]);
+
+        $collection = models\Collection::take();
+        $this->assertSame(200, $collection->feed_fetched_code);
+        $this->assertSame(
+            'https://www.youtube.com/feeds/videos.xml?playlist_id=PLdhqndoLhA_7mQKanRpMGscqEgejpEWaJ',
+            $collection->feed_url
+        );
+    }
+
     public function testCreateUpdatesDefaultLinkIfItExists()
     {
         $user = $this->login();
