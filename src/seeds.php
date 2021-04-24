@@ -17,6 +17,11 @@ if (!$job_dao->findBy(['name' => $links_fetcher_job->name])) {
     $links_fetcher_job->performLater();
 }
 
+$cache_cleaner_job = new \flusio\jobs\scheduled\CacheCleaner();
+if (!$job_dao->findBy(['name' => $cache_cleaner_job->name])) {
+    $cache_cleaner_job->performLater();
+}
+
 if ($environment === 'development') {
     \flusio\models\Topic::findOrCreateBy(['label' => _('Business')]);
     \flusio\models\Topic::findOrCreateBy(['label' => _('Climate')]);

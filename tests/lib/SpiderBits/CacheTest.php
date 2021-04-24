@@ -109,4 +109,34 @@ class CacheTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069', $hash);
     }
+
+    public function testClean()
+    {
+        $cache = new Cache(self::$cache_path);
+        $filepath = self::$cache_path . '/foo';
+        $validity_interval = 7 * 24 * 60 * 60;
+        $modification_time = time() - $validity_interval;
+        touch($filepath, $modification_time);
+
+        $this->assertTrue(file_exists($filepath));
+
+        $cache->clean($validity_interval);
+
+        $this->assertFalse(file_exists($filepath));
+    }
+
+    public function testCleanKeepsFilesWithinValidityInterval()
+    {
+        $cache = new Cache(self::$cache_path);
+        $filepath = self::$cache_path . '/foo';
+        $validity_interval = 7 * 24 * 60 * 60;
+        $modification_time = time() - $validity_interval + 1;
+        touch($filepath, $modification_time);
+
+        $this->assertTrue(file_exists($filepath));
+
+        $cache->clean($validity_interval);
+
+        $this->assertTrue(file_exists($filepath));
+    }
 }

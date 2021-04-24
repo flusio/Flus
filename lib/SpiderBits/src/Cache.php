@@ -89,4 +89,26 @@ class Cache
     {
         return hash('sha256', $string);
     }
+
+    /**
+     * Clean the cache
+     *
+     * @param integer $validity_interval
+     *     How many seconds the cache is valid, default is 7 days
+     */
+    public function clean($validity_interval = 7 * 24 * 60 * 60)
+    {
+        $files = scandir($this->path);
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+
+            $filepath = $this->path . '/' . $file;
+            $mtime = @filemtime($filepath);
+            if ($mtime === false || $mtime <= (time() - $validity_interval)) {
+                @unlink($filepath);
+            }
+        }
+    }
 }
