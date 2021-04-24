@@ -66,7 +66,7 @@
                     <?php if ($collection->feed_site_url): ?>
                         <?= _f('Feed from <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', protect($collection->feed_site_url), protect($collection->feedWebsite())) ?>
                     <?php else: ?>
-                        <?= _('Feed') ?>
+                        <?= _f('Feed from <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', protect($collection->feed_url), protect($collection->feedWebsite())) ?>
                     <?php endif; ?>
                 </p>
             </div>

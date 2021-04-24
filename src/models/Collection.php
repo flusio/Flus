@@ -245,7 +245,11 @@ class Collection extends \Minz\Model
      */
     public function feedWebsite()
     {
-        return \flusio\utils\Belt::host($this->feed_site_url);
+        if ($this->feed_site_url) {
+            return \flusio\utils\Belt::host($this->feed_site_url);
+        } else {
+            return \flusio\utils\Belt::host($this->feed_url);
+        }
     }
 
     /**

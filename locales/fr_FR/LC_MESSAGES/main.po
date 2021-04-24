@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-04-23 15:16+0200\n"
-"PO-Revision-Date: 2021-04-23 15:16+0200\n"
+"POT-Creation-Date: 2021-04-24 11:18+0200\n"
+"PO-Revision-Date: 2021-04-24 11:18+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -213,11 +213,11 @@ msgstr "[%s] Confirmer votre compte"
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:305
+#: models/Collection.php:309
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:307
+#: models/Collection.php:311
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
@@ -293,39 +293,39 @@ msgstr "La langue est obligatoire."
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
-#: seeds.php:21
+#: seeds.php:26
 msgid "Business"
 msgstr "Business"
 
-#: seeds.php:22
+#: seeds.php:27
 msgid "Climate"
 msgstr "Climat"
 
-#: seeds.php:23
+#: seeds.php:28
 msgid "Culture"
 msgstr "Culture"
 
-#: seeds.php:24
+#: seeds.php:29
 msgid "Health"
 msgstr "Santé"
 
-#: seeds.php:25
+#: seeds.php:30
 msgid "Politics"
 msgstr "Politique"
 
-#: seeds.php:26
+#: seeds.php:31
 msgid "Science"
 msgstr "Science"
 
-#: seeds.php:27
+#: seeds.php:32
 msgid "Sport"
 msgstr "Sport"
 
-#: seeds.php:28
+#: seeds.php:33
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:165
+#: services/LinkFetcher.php:167
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -576,7 +576,7 @@ msgid "Add a link"
 msgstr "Ajouter un lien"
 
 #: views/collections/bookmarks/show.phtml:64 views/collections/show.phtml:114
-#: views/collections/show_public.phtml:143 views/links/searches/show.phtml:84
+#: views/collections/show_public.phtml:143 views/links/searches/show.phtml:90
 #: views/news/show.phtml:85
 #, php-format
 msgid "%d comment"
@@ -585,7 +585,7 @@ msgstr[0] "%d commentaire"
 msgstr[1] "%d commentaires"
 
 #: views/collections/bookmarks/show.phtml:94 views/collections/show.phtml:59
-#: views/collections/show.phtml:150 views/links/searches/show.phtml:98
+#: views/collections/show.phtml:150 views/links/searches/show.phtml:104
 msgid "Edit"
 msgstr "Modifier"
 
@@ -628,7 +628,7 @@ msgstr ""
 "intéressent."
 
 #: views/collections/discovery/show.phtml:34 views/collections/index.phtml:95
-#: views/links/searches/show.phtml:161
+#: views/links/searches/show.phtml:171
 #, php-format
 msgid "Feed from %s"
 msgstr "Flux issu de %s"
@@ -640,12 +640,12 @@ msgid "Created by %s"
 msgstr "Créée par %s"
 
 #: views/collections/discovery/show.phtml:44 views/collections/index.phtml:44
-#: views/collections/index.phtml:105 views/links/searches/show.phtml:166
+#: views/collections/index.phtml:105 views/links/searches/show.phtml:176
 msgid "no links"
 msgstr "aucun lien"
 
 #: views/collections/discovery/show.phtml:46 views/collections/index.phtml:46
-#: views/collections/index.phtml:107 views/links/searches/show.phtml:168
+#: views/collections/index.phtml:107 views/links/searches/show.phtml:178
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
@@ -657,7 +657,7 @@ msgid "followed"
 msgstr "suivie"
 
 #: views/collections/discovery/show.phtml:60 views/collections/index.phtml:61
-#: views/collections/index.phtml:116 views/links/searches/show.phtml:193
+#: views/collections/index.phtml:116 views/links/searches/show.phtml:203
 msgid "see"
 msgstr "voir"
 
@@ -808,6 +808,7 @@ msgid "Back"
 msgstr "Retour"
 
 #: views/collections/show_public.phtml:67
+#: views/collections/show_public.phtml:69
 #, php-format
 msgid ""
 "Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
@@ -815,15 +816,11 @@ msgstr ""
 "Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
 "%s</a>"
 
-#: views/collections/show_public.phtml:69
-msgid "Feed"
-msgstr "Flux"
-
-#: views/collections/show_public.phtml:89 views/links/searches/show.phtml:179
+#: views/collections/show_public.phtml:89 views/links/searches/show.phtml:189
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:97 views/links/searches/show.phtml:187
+#: views/collections/show_public.phtml:97 views/links/searches/show.phtml:197
 msgid "Follow"
 msgstr "Suivre"
 
@@ -1061,11 +1058,11 @@ msgstr "Ajouter à vos collections"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: views/links/obtentions/new.phtml:91 views/links/searches/show.phtml:141
+#: views/links/obtentions/new.phtml:91 views/links/searches/show.phtml:147
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/links/searches/show.phtml:46
+#: views/links/searches/show.phtml:39 views/links/searches/show.phtml:52
 msgid "Search"
 msgstr "Rechercher"
 
