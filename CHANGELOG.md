@@ -1,5 +1,28 @@
 # Changelog of flusio
 
+## 2021-04-24 - v0.20
+
+### Improvements
+
+- Tell Chrome to don’t track users (WTF‽)
+- Improve look of feeds cards on search page
+- Move search button on desktop
+- Don’t list empty feeds on search
+- Add feeds autodiscovery for Youtube
+- Adapt meta tags for feed collections
+- Change the default-card.png file
+
+### Bug fixes
+
+- Don’t set link title if entry title is empty
+- Handle feeds with no `feed_site_url` correctly
+
+### Misc
+
+- Increase HTTP timeouts
+- Provide a scheduled job to clean the cache
+- Add credits to the README
+
 ## 2021-04-22 - v0.19
 
 ### News
