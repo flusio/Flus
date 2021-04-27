@@ -69,6 +69,9 @@ class Routes
         $router->addRoute('get', '/pocket/auth', 'importations/Pocket#authorization', 'pocket auth');
         $router->addRoute('post', '/pocket/auth', 'importations/Pocket#authorize', 'authorize pocket');
 
+        $router->addRoute('get', '/opml', 'importations/Opml#show', 'opml');
+        $router->addRoute('post', '/opml', 'importations/Opml#import', 'import opml');
+
         // News page
         $router->addRoute('get', '/news', 'News#show', 'news');
         $router->addRoute('post', '/news', 'News#create', 'fill news');

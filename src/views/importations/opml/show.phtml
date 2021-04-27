@@ -1,0 +1,111 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Importation from an OPML file'),
+        'back' => [
+            'href' => url('account'),
+            'label' => _('Account'),
+        ],
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _('Importation from an <abbr>OPML</abbr> file') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('<abbr>OPML</abbr> enables you to import your feeds from another software.') ?>
+    </p>
+
+    <?php if ($error): ?>
+        <p class="form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+
+    <?php if ($importation && $importation->status === 'ongoing'): ?>
+        <p class="paragraph--featured">
+            <?= _('We’re importing your data…') ?>
+        </p>
+
+        <div class="spinner"></div>
+
+        <form
+             method="get"
+             action="<?= url('opml') ?>"
+             data-controller="autosubmit"
+             data-autosubmit-mode="timeout"
+             data-autosubmit-timeout="4000"
+        >
+        </form>
+    <?php elseif ($importation && $importation->status === 'finished'): ?>
+        <p class="paragraph--featured">
+            <?= _('We’ve imported your data from your <abbr>OPML</abbr> file.') ?>
+        </p>
+
+        <p class="paragraph--centered">
+            <?= _('We’re now going to fetch their links in background.') ?>
+        </p>
+
+        <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="from" value="<?= url('opml') ?>" />
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Ok!') ?>
+                </button>
+            </div>
+        </form>
+    <?php elseif ($importation && $importation->status === 'error'): ?>
+        <p class="paragraph--featured">
+            <?= _('Oops, a problem occured during your importation.') ?>
+        </p>
+
+        <p class="paragraph--centered">
+            <?= protect($importation->error) ?>
+        </p>
+
+        <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="from" value="<?= url('opml') ?>" />
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Ok!') ?>
+                </button>
+            </div>
+        </form>
+    <?php else: ?>
+        <form
+            method="post"
+            action="<?= url('import opml') ?>"
+            data-controller="autosubmit form-file"
+            enctype="multipart/form-data"
+        >
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+            <input
+                type="file"
+                name="opml"
+                id="opml"
+                accept="application/xml, text/xml, text/x-opml"
+                data-action="autosubmit#submit"
+                data-target="form-file.file"
+                hidden
+            />
+
+            <?php if (isset($errors['opml'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['opml'] ?>
+                </p>
+            <?php endif; ?>
+
+            <div class="form__actions">
+                <button type="button" class="button--primary" data-action="form-file#openFile">
+                    <?= _('Import a file') ?>
+                </button>
+            </div>
+        </form>
+    <?php endif; ?>
+</div>
