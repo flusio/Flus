@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<opml version="1.0">
+    <head>
+        <title>null subscriptions in feedly Cloud</title>
+    </head>
+    <body>
+        <outline text="Blogs" title="Blogs">
+            <outline type="rss" text="Framablog" title="Framablog" xmlUrl="http://www.framablog.org/index.php/feed/atom" htmlUrl="https://framablog.org"/>
+            <outline type="rss" text="carnet de flus" title="carnet de flus" xmlUrl="https://flus.fr/carnet/feeds/all.atom.xml" htmlUrl="https://flus.fr/carnet/"/>
+            <outline type="rss" text="Marien Fressinaud" title="Marien Fressinaud" xmlUrl="https://marienfressinaud.fr/feeds/all.atom.xml" htmlUrl="https://marienfressinaud.fr/"/>
+        </outline>
+    </body>
+</opml>
