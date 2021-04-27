@@ -10,6 +10,22 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
 
+    /**
+     * @beforeClass
+     */
+    public static function setJobAdapterToDatabase()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+    }
+
+    /**
+     * @afterClass
+     */
+    public static function setJobAdapterToTest()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+    }
+
     public function testQueue()
     {
         $importator_job = new OpmlImportator();
@@ -84,6 +100,33 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->perform($importation_id);
 
         $this->assertFalse(file_exists($opml_filepath));
+    }
+
+    public function testPerformRegistersAFeedsFetcherJob()
+    {
+        $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_path = \Minz\Configuration::$application['tmp_path'];
+        $tmp_filename = $this->fakeUnique('md5') . '.xml';
+        $opml_filepath = $tmp_path . '/' . $tmp_filename;
+        copy($example_filepath, $opml_filepath);
+
+        $followed_collections_dao = new models\dao\FollowedCollection();
+        $importator = new OpmlImportator();
+        $user_id = $this->create('user');
+        $support_user = models\User::supportUser();
+        $user = models\User::find($user_id);
+        $importation_id = $this->create('importation', [
+            'type' => 'opml',
+            'user_id' => $user->id,
+            'options' => json_encode(['opml_filepath' => $opml_filepath]),
+        ]);
+
+        $importator->perform($importation_id);
+
+        $job_dao = new models\dao\Job();
+        $db_job = $job_dao->listAll()[0];
+        $handler = json_decode($db_job['handler'], true);
+        $this->assertSame('flusio\\jobs\\FeedsFetcher', $handler['job_class']);
     }
 
     public function testPerformDoesNotCreateExistingFeed()
