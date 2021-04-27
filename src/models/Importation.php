@@ -10,7 +10,7 @@ class Importation extends \Minz\Model
 {
     use DaoConnector;
 
-    public const VALID_TYPES = ['pocket'];
+    public const VALID_TYPES = ['pocket', 'opml'];
     public const VALID_STATUSES = ['ongoing', 'finished', 'error'];
 
     public const PROPERTIES = [
