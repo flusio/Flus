@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-04-24 11:18+0200\n"
-"PO-Revision-Date: 2021-04-24 11:18+0200\n"
+"POT-Creation-Date: 2021-04-27 18:34+0200\n"
+"PO-Revision-Date: 2021-04-27 18:34+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -44,7 +44,7 @@ msgstr "Afficher"
 #: controllers/collections/Followers.php:47
 #: controllers/collections/Followers.php:90 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
-#: controllers/my/Account.php:100 controllers/my/Profile.php:84
+#: controllers/my/Account.php:101 controllers/my/Profile.php:84
 #: controllers/my/Security.php:79 controllers/my/Security.php:139
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
 #: controllers/news/Links.php:126 controllers/news/Preferences.php:81
@@ -62,7 +62,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Links.php:342 controllers/Links.php:379
 #: controllers/Messages.php:47 controllers/Sessions.php:190
 #: controllers/importations/Importations.php:47
-#: controllers/importations/Pocket.php:101
+#: controllers/importations/Opml.php:88 controllers/importations/Pocket.php:101
 #: controllers/importations/Pocket.php:150
 #: controllers/importations/Pocket.php:242
 #: controllers/links/Collections.php:102 controllers/links/Fetches.php:77
@@ -98,7 +98,7 @@ msgstr "Vous devez accepter les conditions générales d’utilisation."
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: controllers/Sessions.php:109 controllers/my/Account.php:108
+#: controllers/Sessions.php:109 controllers/my/Account.php:109
 #: controllers/my/Security.php:146
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
@@ -111,6 +111,27 @@ msgstr ""
 "Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
 "contacter le support."
 
+#: controllers/importations/Opml.php:80
+msgid "You already have an ongoing OPML importation."
+msgstr "Vous avez déjà une importation OPML en cours."
+
+#: controllers/importations/Opml.php:97
+msgid "The file is required."
+msgstr "Le fichier est obligatoire."
+
+#: controllers/importations/Opml.php:110 controllers/my/Avatar.php:51
+msgid "This file is too large."
+msgstr "Ce fichier est trop gros."
+
+#: controllers/importations/Opml.php:117 controllers/my/Avatar.php:56
+#, php-format
+msgid "This file cannot be uploaded (error %d)."
+msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
+
+#: controllers/importations/Opml.php:133 controllers/my/Avatar.php:62
+msgid "This file cannot be uploaded."
+msgstr "Ce fichier ne peut pas être téléversé."
+
 #: controllers/importations/Pocket.php:86
 msgid "You already have an ongoing Pocket importation."
 msgstr "Vous avez déjà une importation Pocket en cours."
@@ -119,22 +140,9 @@ msgstr "Vous avez déjà une importation Pocket en cours."
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
-#: controllers/my/Account.php:116
+#: controllers/my/Account.php:117
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
-
-#: controllers/my/Avatar.php:51
-msgid "This file is too large."
-msgstr "Ce fichier est trop gros."
-
-#: controllers/my/Avatar.php:56
-#, php-format
-msgid "This file cannot be uploaded (error %d)."
-msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
-
-#: controllers/my/Avatar.php:62
-msgid "This file cannot be uploaded."
-msgstr "Ce fichier ne peut pas être téléversé."
 
 #: controllers/my/Avatar.php:81
 msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
@@ -171,7 +179,7 @@ msgstr "Le token a expiré ou a été invalidé."
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
-#: jobs/Importator.php:39
+#: jobs/PocketImportator.php:39
 msgid ""
 "We tried to import from Pocket, but pocket_consumer_key is missing (please "
 "contact the support)."
@@ -179,7 +187,7 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais il manque la "
 "clépocket_consumer_key (merci de contacter le support)."
 
-#: jobs/Importator.php:47
+#: jobs/PocketImportator.php:47
 msgid ""
 "We tried to import from Pocket, but you didn’t authorize us to access your "
 "Pocket data."
@@ -187,19 +195,19 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais vous n’avez pas autorisé "
 "l’accès à vos données Pocket."
 
-#: jobs/Importator.php:108
+#: jobs/PocketImportator.php:108
 msgid "Pocket links"
 msgstr "Liens Pocket"
 
-#: jobs/Importator.php:111
+#: jobs/PocketImportator.php:111
 msgid "All your links imported from Pocket."
 msgstr "Tous vos liens importés depuis Pocket."
 
-#: jobs/Importator.php:115
+#: jobs/PocketImportator.php:115
 msgid "Pocket favorite"
 msgstr "Favoris Pocket"
 
-#: jobs/Importator.php:118
+#: jobs/PocketImportator.php:118
 msgid "All your favorites imported from Pocket."
 msgstr "Tous vos favoris importés depuis Pocket."
 
@@ -487,6 +495,7 @@ msgstr "Compte & abonnement"
 
 #: views/_layouts/connected.phtml:173
 #: views/_layouts/connected_blocked.phtml:136
+#: views/importations/opml/show.phtml:6
 #: views/importations/pocket/authorization.phtml:6
 #: views/importations/pocket/show.phtml:6 views/my/account/deletion.phtml:6
 #: views/my/account/show.phtml:3 views/my/account/show.phtml:10
@@ -828,6 +837,48 @@ msgstr "Suivre"
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
+#: views/importations/opml/show.phtml:3
+msgid "Importation from an OPML file"
+msgstr "Importation depuis un fichier OPML"
+
+#: views/importations/opml/show.phtml:13
+msgid "Importation from an <abbr>OPML</abbr> file"
+msgstr "Importation depuis un fichier <abbr>OPML</abbr>"
+
+#: views/importations/opml/show.phtml:17
+msgid ""
+"<abbr>OPML</abbr> enables you to import your feeds from another software."
+msgstr ""
+"<abbr>OPML</abbr> vous permet d’importer vos flux depuis un autre logiciel."
+
+#: views/importations/opml/show.phtml:28
+msgid "We’re importing your data…"
+msgstr "Nous importons vos données…"
+
+#: views/importations/opml/show.phtml:43
+msgid "We’ve imported your data from your <abbr>OPML</abbr> file."
+msgstr ""
+"Nous venons d’importer vos données depuis votre fichier <abbr>OPML</abbr>."
+
+#: views/importations/opml/show.phtml:47
+msgid "We’re now going to fetch their links in background."
+msgstr "Nous allons désormais télécharger leurs liens en tâche de fond."
+
+#: views/importations/opml/show.phtml:56 views/importations/opml/show.phtml:75
+#: views/importations/pocket/show.phtml:56
+#: views/importations/pocket/show.phtml:75
+msgid "Ok!"
+msgstr "Ok !"
+
+#: views/importations/opml/show.phtml:62
+#: views/importations/pocket/show.phtml:62
+msgid "Oops, a problem occured during your importation."
+msgstr "Oups, un problème est survenu durant l’importation."
+
+#: views/importations/opml/show.phtml:106
+msgid "Import a file"
+msgstr "Importer un fichier"
+
 #: views/importations/pocket/authorization.phtml:3
 #: views/importations/pocket/authorization.phtml:13
 msgid "Pocket authorization"
@@ -866,15 +917,6 @@ msgid ""
 msgstr ""
 "Vous devriez voir de nouveaux liens dans vos collections et/ou signets. Nous "
 "allons télécharger leurs illustrations en tâche de fond."
-
-#: views/importations/pocket/show.phtml:56
-#: views/importations/pocket/show.phtml:75
-msgid "Ok!"
-msgstr "Ok !"
-
-#: views/importations/pocket/show.phtml:62
-msgid "Oops, a problem occured during your importation."
-msgstr "Oups, un problème est survenu durant l’importation."
 
 #: views/importations/pocket/show.phtml:94
 msgid "Import your links by ignoring the tags"
@@ -1200,7 +1242,11 @@ msgstr "Créer votre compte de paiement"
 msgid "Import your data from Pocket"
 msgstr "Importer vos données depuis Pocket"
 
-#: views/my/account/show.phtml:74
+#: views/my/account/show.phtml:75
+msgid "Import your data from an <abbr>OPML</abbr> file"
+msgstr "Importer vos données depuis un fichier <abbr>OPML</abbr>"
+
+#: views/my/account/show.phtml:82
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 
