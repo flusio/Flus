@@ -47,7 +47,7 @@ class Pocket
     }
 
     /**
-     * Initialize a new Pocket importation and register an Importator job.
+     * Initialize a new Pocket importation and register a PocketImportator job.
      *
      * @request_param string $csrf
      * @request_param boolean $ignore_tags
@@ -110,7 +110,7 @@ class Pocket
 
         $importation = models\Importation::init('pocket', $user->id, $options);
         $importation->save();
-        $importator_job = new jobs\Importator();
+        $importator_job = new jobs\PocketImportator();
         $importator_job->performLater($importation->id);
 
         return Response::ok('importations/pocket/show.phtml', [

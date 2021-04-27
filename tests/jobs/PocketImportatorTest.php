@@ -4,7 +4,7 @@ namespace flusio\jobs;
 
 use flusio\models;
 
-class ImportatorTest extends \PHPUnit\Framework\TestCase
+class PocketImportatorTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
@@ -12,14 +12,14 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testQueue()
     {
-        $importator_job = new Importator();
+        $importator_job = new PocketImportator();
 
         $this->assertSame('importators', $importator_job->queue);
     }
 
     public function testImportPocketItemsImportInBookmarks()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -55,7 +55,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsDoesNotImportInBookmarksIfOption()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -91,7 +91,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsImportInFavorite()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -125,7 +125,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsDoesNotKeepFavoriteCollectionIfEmpty()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -152,7 +152,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsDoesNotImportInFavoriteIfOption()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -181,7 +181,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsImportInDefaultCollection()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -215,7 +215,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsImportDoesNotKeepDefaultCollectionIfEmpty()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -235,7 +235,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsDoesNotImportTags()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -268,7 +268,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsImportTagsIfOption()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -315,7 +315,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsUsesTimeAddedIfItExists()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $bookmarks_id = $this->create('collection', [
@@ -347,7 +347,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsDoesNotDuplicateAGivenUrlAlreadyThere()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -393,7 +393,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsDoesNotDuplicateAResolvedUrlAlreadyThere()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
@@ -439,7 +439,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsSetsResolvedTitle()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -467,7 +467,7 @@ class ImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testImportPocketItemsSetsGivenTitle()
     {
-        $importator = new Importator();
+        $importator = new PocketImportator();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
