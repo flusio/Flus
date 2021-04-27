@@ -21,7 +21,7 @@
         method="post"
         action="<?= url('update avatar') ?>"
         class="form-avatar"
-        data-controller="autosubmit form-avatar"
+        data-controller="autosubmit form-file"
         enctype="multipart/form-data"
     >
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
@@ -37,7 +37,7 @@
             class="form-avatar__input"
             accept="image/png, image/jpeg"
             data-action="autosubmit#submit"
-            data-target="form-avatar.file"
+            data-target="form-file.file"
             hidden
         />
 
@@ -52,7 +52,7 @@
         </p>
 
         <div class="form__actions">
-            <button type="button" class="button--small" data-action="form-avatar#openFile">
+            <button type="button" class="button--small" data-action="form-file#openFile">
                 <?= _('Upload a photo') ?>
             </button>
         </div>
