@@ -50,6 +50,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $this->create('importation', [
+            'type' => 'pocket',
             'user_id' => $user->id,
             'status' => 'ongoing',
         ]);
@@ -63,6 +64,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $this->create('importation', [
+            'type' => 'pocket',
             'user_id' => $user->id,
             'status' => 'finished',
         ]);
@@ -77,6 +79,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $error = $this->fake('sentence');
         $this->create('importation', [
+            'type' => 'pocket',
             'user_id' => $user->id,
             'status' => 'error',
             'error' => $error,
