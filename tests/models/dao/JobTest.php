@@ -130,7 +130,7 @@ class JobTest extends \PHPUnit\Framework\TestCase
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $minutes_from_now = $this->fake('randomNumber');
+        $minutes_from_now = $this->fake('numberBetween', 1, 9000);
         $number_attempts = $this->fake('numberBetween', 0, 25);
         $job_dao = new Job();
         $job_id = $this->create('job', [
