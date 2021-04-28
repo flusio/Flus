@@ -1,5 +1,14 @@
 # Changelog of flusio
 
+## 2021-xx-yy - v0.21
+
+### Migration notes
+
+The `data/` directory can now contain big files (OPML importations). You can
+move it to a different location by setting the `APP_DATA_PATH` variable in your
+`.env` file. **Make sure to move the `data/migrations\_version.txt` file as
+well!**
+
 ## 2021-04-24 - v0.20
 
 ### Improvements

@@ -50,6 +50,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $this->create('importation', [
+            'type' => 'pocket',
             'user_id' => $user->id,
             'status' => 'ongoing',
         ]);
@@ -63,6 +64,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $this->create('importation', [
+            'type' => 'pocket',
             'user_id' => $user->id,
             'status' => 'finished',
         ]);
@@ -77,6 +79,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $error = $this->fake('sentence');
         $this->create('importation', [
+            'type' => 'pocket',
             'user_id' => $user->id,
             'status' => 'error',
             'error' => $error,
@@ -104,7 +107,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404);
     }
 
-    public function testImportRegistersAnImportatorJobAndRendersCorrectly()
+    public function testImportRegistersAPocketImportatorJobAndRendersCorrectly()
     {
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
@@ -129,7 +132,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $importation = models\Importation::take();
         $db_job = $job_dao->listAll()[0];
         $handler = json_decode($db_job['handler'], true);
-        $this->assertSame('flusio\\jobs\\Importator', $handler['job_class']);
+        $this->assertSame('flusio\\jobs\\PocketImportator', $handler['job_class']);
         $this->assertSame([$importation->id], $handler['job_args']);
     }
 

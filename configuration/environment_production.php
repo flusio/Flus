@@ -23,6 +23,8 @@ return [
         'port' => intval($dotenv->pop('APP_PORT', '443')),
     ],
 
+    'data_path' => $dotenv->pop('APP_DATA_PATH', $app_path . '/data'),
+
     'application' => [
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
         'brand' => $dotenv->pop('APP_BRAND', 'flusio'),
