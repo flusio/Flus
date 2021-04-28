@@ -39,6 +39,8 @@ return [
         'cli_locale' => $dotenv->pop('CLI_LOCALE'),
     ],
 
+    'data_path' => $dotenv->pop('APP_DATA_PATH', $app_path . '/data'),
+
     'database' => [
         'dsn' => "pgsql:host={$db_host};port={$db_port};dbname={$db_name}",
         'username' => $dotenv->pop('DB_USERNAME'),
