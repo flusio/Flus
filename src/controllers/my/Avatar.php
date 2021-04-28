@@ -43,6 +43,11 @@ class Avatar
         }
 
         $uploaded_file = $request->param('avatar');
+        if (!isset($uploaded_file['error'])) {
+            utils\Flash::set('error', _('The file is required.'));
+            return Response::redirect('profile');
+        }
+
         $error_status = $uploaded_file['error'];
         if (
             $error_status === UPLOAD_ERR_INI_SIZE ||

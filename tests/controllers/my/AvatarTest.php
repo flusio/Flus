@@ -145,6 +145,22 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->avatar_filename);
     }
 
+    public function testUpdateFailsIfFileIsMissing()
+    {
+        $user = $this->login([
+            'avatar_filename' => null,
+        ]);
+
+        $response = $this->appRun('post', '/my/profile/avatar', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/my/profile');
+        $this->assertFlash('error', 'The file is required.');
+        $user = auth\CurrentUser::reload();
+        $this->assertNull($user->avatar_filename);
+    }
+
     public function testUpdateFailsIfWrongFileType()
     {
         // we copy an existing file as a tmp file to simulate an image upload
