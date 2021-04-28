@@ -145,4 +145,57 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $links_number = count($collection->links());
         $this->assertSame(0, $links_number);
     }
+
+    public function testPerformUpdatesLinkFeedInfo()
+    {
+        $support_user = models\User::supportUser();
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'user_id' => $support_user->id,
+            'feed_url' => $feed_url,
+            'feed_fetched_at' => \Minz\Time::ago(2, 'hours')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $link_url = 'https://flus.fr/carnet/nouveautes-mars-2021.html';
+        $link_entry_id = 'urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d';
+        $link_published = '2021-03-30T09:26:00+00:00';
+        $link_id = $this->create('link', [
+            'url' => $link_url,
+            'user_id' => $support_user->id,
+            'feed_entry_id' => null,
+            'feed_published_at' => null,
+        ]);
+        $hash = \SpiderBits\Cache::hash($feed_url);
+        $raw_response = <<<XML
+        HTTP/2 200 OK
+        Content-Type: application/xml
+
+        <?xml version='1.0' encoding='UTF-8'?>
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <title>carnet de flus</title>
+            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
+            <updated>2021-03-30T11:26:00+02:00</updated>
+            <entry>
+                <title>Les nouveautés de mars 2021</title>
+                <id>{$link_entry_id}</id>
+                <author><name>Marien</name></author>
+                <link href="{$link_url}" rel="alternate" type="text/html" />
+                <published>{$link_published}</published>
+                <updated>2021-03-30T11:26:00+02:00</updated>
+                <content type="html"></content>
+            </entry>
+        </feed>
+        XML;
+        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $cache->save($hash, $raw_response);
+        $feeds_sync_job = new FeedsSync();
+
+        $feeds_sync_job->perform();
+
+        $link = models\Link::find($link_id);
+        $this->assertSame($link_entry_id, $link->feed_entry_id);
+        $this->assertSame($link_published, $link->feed_published_at->format(\DateTimeInterface::ATOM));
+    }
 }

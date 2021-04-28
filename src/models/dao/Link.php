@@ -306,6 +306,36 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return the list of ids that needs to be synced (i.e. feed_published_at
+     * is null)
+     *
+     * The ids are set as values AND keys of the returned array.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listIdsToFeedSync($user_id)
+    {
+        $sql = <<<SQL
+            SELECT id FROM links
+            WHERE user_id = :user_id
+            AND feed_published_at IS NULL
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
+
+        $ids = [];
+        foreach ($statement->fetchAll() as $row) {
+            $ids[$row['id']] = $row['id'];
+        }
+        return $ids;
+    }
+
+    /**
      * Return a list of links to fetch (fetched_at = null)
      *
      * @param integer $number

@@ -75,6 +75,7 @@ class FeedFetcher
 
         $user_id = $collection->user_id;
         $link_ids_by_urls = models\Link::daoCall('listIdsByUrls', $user_id);
+        $link_ids_to_sync = models\Link::daoCall('listIdsToFeedSync', $user_id);
 
         $links_columns = [];
         $links_to_create = [];
@@ -82,6 +83,13 @@ class FeedFetcher
 
         foreach ($feed->entries as $entry) {
             $url = \SpiderBits\Url::sanitize($entry->link);
+
+            if ($entry->published_at) {
+                $feed_published_at = $entry->published_at;
+            } else {
+                $feed_published_at = \Minz\Time::now();
+            }
+
             if (isset($link_ids_by_urls[$url])) {
                 $link_id = $link_ids_by_urls[$url];
             } else {
@@ -92,11 +100,7 @@ class FeedFetcher
                 }
                 $link->created_at = \Minz\Time::now();
                 $link->feed_entry_id = $entry->id;
-                if ($entry->published_at) {
-                    $link->feed_published_at = $entry->published_at;
-                } else {
-                    $link->feed_published_at = \Minz\Time::now();
-                }
+                $link->feed_published_at = $feed_published_at;
 
                 $db_link = $link->toValues();
                 $links_to_create = array_merge(
@@ -109,6 +113,20 @@ class FeedFetcher
 
                 $link_ids_by_urls[$link->url] = $link->id;
                 $link_id = $link->id;
+            }
+
+            if (isset($link_ids_to_sync[$link_id])) {
+                // This can happen if the URL already exists but wasn't added
+                // via a feed sync (i.e. feed_published_at is null). In this
+                // case, we want to sync its publication date to get correct
+                // order. We don’t do bulk update because it’s complicated.
+                // Hopefully, it doesn’t happen often: max once per link and
+                // probably less since most of the links are added via the
+                // feeds sync.
+                models\Link::update($link_id, [
+                    'feed_entry_id' => $entry->id,
+                    'feed_published_at' => $feed_published_at->format(\Minz\Model::DATETIME_FORMAT),
+                ]);
             }
 
             $links_to_collections_to_create[] = $link_id;
