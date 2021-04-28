@@ -89,6 +89,26 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1554818042, $entry->published_at->getTimestamp());
     }
 
+    public function testFromTextWithOatmeal()
+    {
+        $feed_as_string = file_get_contents(self::$examples_path . '/oatmeal.rdf.xml');
+
+        $feed = Feed::fromText($feed_as_string);
+
+        $this->assertSame('The Oatmeal - Comics, Quizzes, & Stories', $feed->title);
+        $this->assertSame(
+            'The oatmeal tastes better than stale skittles found under the couch cushions',
+            $feed->description
+        );
+        $this->assertSame('http://theoatmeal.com/', $feed->link);
+        $this->assertSame(9, count($feed->entries));
+        $entry = $feed->entries[0];
+        $this->assertSame('A Little Wordy', $entry->title);
+        $this->assertSame('http://expktns.co/OatmealALW', $entry->link);
+        $this->assertSame('http://expktns.co/OatmealALW', $entry->id);
+        $this->assertSame(1618335907, $entry->published_at->getTimestamp());
+    }
+
     public function testFromTextWithEmptyRss()
     {
         $feed = Feed::fromText('<rss></rss>');

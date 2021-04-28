@@ -47,6 +47,10 @@ class Feed
             return RssParser::parse($dom_document);
         }
 
+        if (RdfParser::canHandle($dom_document)) {
+            return RdfParser::parse($dom_document);
+        }
+
         throw new \DomainException('Given string is not a supported standard.');
     }
 

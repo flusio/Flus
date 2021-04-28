@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- generator="FeedCreator 1.7.2" -->
+<rdf:RDF
+    xmlns="http://purl.org/rss/1.0/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel rdf:about="http://theoatmeal.com/feed/rss">
+        <title>The Oatmeal - Comics, Quizzes, &amp; Stories</title>
+        <description>The oatmeal tastes better than stale skittles found under the couch cushions</description>
+        <link>http://theoatmeal.com/</link>
+       <dc:date>2021-04-28T11:19:49+01:00</dc:date>
+        <items>
+            <rdf:Seq>
+                <rdf:li rdf:resource="http://expktns.co/OatmealALW"/>
+                <rdf:li rdf:resource="http://theoatmeal.com/comics/chess_cat"/>
+                <rdf:li rdf:resource="http://theoatmeal.com/comics/perseverance"/>
+                <rdf:li rdf:resource="http://theoatmeal.com/blog/free_game"/>
+                <rdf:li rdf:resource="http://theoatmeal.com/comics/nobody_listening"/>
+                <rdf:li rdf:resource="http://theoatmeal.com/comics/celestial_events"/>
+                <rdf:li rdf:resource="http://expktns.co/OatCAM"/>
+                <rdf:li rdf:resource="http://theoatmeal.com/comics/oracle_disappointment"/>
+                <rdf:li rdf:resource="http://theoatmeal.com/comics/oracle_compliments"/>
+            </rdf:Seq>
+        </items>
+    </channel>
+    <item rdf:about="http://expktns.co/OatmealALW">
+        <dc:format>text/html</dc:format>
+        <dc:date>2021-04-13T18:45:07+01:00</dc:date>
+        <dc:source>http://theoatmeal.com</dc:source>
+        <dc:creator>Matthew Inman</dc:creator>
+        <title>A Little Wordy</title>
+        <link>http://expktns.co/OatmealALW</link>
+        <description>&lt;a href=&quot;http://expktns.co/OatmealALW&quot;&gt;&lt;img width=&quot;600&quot; src=&quot;https://s3.amazonaws.com/theoatmeal-img/thumbnails/wordy_big.png&quot; alt=&quot;A Little Wordy&quot; class=&quot;border0&quot; /&gt;&lt;/a&gt;&lt;p&gt;It's like Scrabble meets Clue.&lt;/p&gt;&lt;a href=&quot;http://expktns.co/OatmealALW&quot;&gt;View on my website&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;</description>
+    </item>
+    <item rdf:about="http://theoatmeal.com/comics/chess_cat">
+        <dc:format>text/html</dc:format>
+        <dc:date>2021-03-16T16:49:00+01:00</dc:date>
+        <dc:source>http://theoatmeal.com</dc:source>
+        <dc:creator>Matthew Inman</dc:creator>
+        <title>Chess Cat</title>
+        <link>http://theoatmeal.com/comics/chess_cat</link>
+        <description>&lt;a href=&quot;http://theoatmeal.com/comics/chess_cat&quot;&gt;&lt;img width=&quot;600&quot; src=&quot;https://s3.amazonaws.com/theoatmeal-img/thumbnails/chess_cat_big.png&quot; alt=&quot;Chess Cat&quot; class=&quot;border0&quot; /&gt;&lt;/a&gt;&lt;p&gt;&lt;/p&gt;&lt;a href=&quot;http://theoatmeal.com/comics/chess_cat&quot;&gt;View on my website&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;</description>
+    </item>
+    <item rdf:about="http://theoatmeal.com/comics/perseverance">
+        <dc:format>text/html</dc:format>
+        <dc:date>2021-02-22T23:21:03+01:00</dc:date>
+        <dc:source>http://theoatmeal.com</dc:source>
+        <dc:creator>Matthew Inman</dc:creator>
+        <title>Five things worth knowing about the Mars Perseverance Rover</title>
+        <link>http://theoatmeal.com/comics/perseverance</link>
+        <description>&lt;a href=&quot;http://theoatmeal.com/comics/perseverance&quot;&gt;&lt;img width=&quot;600&quot; src=&quot;https://s3.amazonaws.com/theoatmeal-img/thumbnails/perseverance_big.png&quot; alt=&quot;Five things worth knowing about the Mars Perseverance Rover&quot; class=&quot;border0&quot; /&gt;&lt;/a&gt;&lt;p&gt;&lt;/p&gt;&lt;a href=&quot;http://theoatmeal.com/comics/perseverance&quot;&gt;View on my website&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;</description>
+    </item>
+    <item rdf:about="http://theoatmeal.com/blog/free_game">
+        <dc:format>text/html</dc:format>
+        <dc:date>2021-02-10T17:00:00+01:00</dc:date>
+        <dc:source>http://theoatmeal.com</dc:source>
+        <dc:creator>Matthew Inman</dc:creator>
+        <title>I have a free game for you - Kitty Letter</title>
+        <link>http://theoatmeal.com/blog/free_game</link>
+        <description>&lt;a href=&quot;http://theoatmeal.com/blog/free_game&quot;&gt;&lt;img width=&quot;600&quot; src=&quot;https://s3.amazonaws.com/theoatmeal-img/thumbnails/free_game_big.png&quot; alt=&quot;I have a free game for you - Kitty Letter&quot; class=&quot;border0&quot; /&gt;&lt;/a&gt;&lt;p&gt;Kitty Letter is a word-unscrambling game from the creators of Exploding Kittens. &lt;/p&gt;&lt;a href=&quot;http://theoatmeal.com/blog/free_game&quot;&gt;View on my website&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;</description>
+    </item>
+    <item rdf:about="http://theoatmeal.com/comics/nobody_listening">
+        <dc:format>text/html</dc:format>
+        <dc:date>2021-01-30T20:23:52+01:00</dc:date>
+        <dc:source>http://theoatmeal.com</dc:source>
+        <dc:creator>Matthew Inman</dc:creator>
+        <title>Nobody is listening</title>
+        <link>http://theoatmeal.com/comics/nobody_listening</link>
+        <description>&lt;a href=&quot;http://theoatmeal.com/comics/nobody_listening&quot;&gt;&lt;img width=&quot;600&quot; src=&quot;https://s3.amazonaws.com/theoatmeal-img/thumbnails/nobody_listening_big.png&quot; alt=&quot;Nobody is listening&quot; class=&quot;border0&quot; /&gt;&lt;/a&gt;&lt;p&gt;A comic about video calls.&lt;/p&gt;&lt;a href=&quot;http://theoatmeal.com/comics/nobody_listening&quot;&gt;View on my website&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;</description>
+    </item>
+    <item rdf:about="http://theoatmeal.com/comics/celestial_events">
+        <dc:format>text/html</dc:format>
+        <dc:date>2021-01-30T20:23:47+01:00</dc:date>
+        <dc:source>http://theoatmeal.com</dc:source>
+        <dc:creator>Matthew Inman</dc:creator>
+        <title>Celestial events</title>
+        <link>http://theoatmeal.com/comics/celestial_events</link>
+        <description>&lt;a href=&quot;http://theoatmeal.com/comics/celestial_events&quot;&gt;&lt;img width=&quot;600&quot; src=&quot;https://s3.amazonaws.com/theoatmeal-img/thumbnails/celestial_events_big.png&quot; alt=&quot;Celestial events&quot; class=&quot;border0&quot; /&gt;&lt;/a&gt;&lt;p&gt;A comic about meteor showers, eclipses, and other celestial events.&lt;/p&gt;&lt;a href=&quot;http://theoatmeal.com/comics/celestial_events&quot;&gt;View on my website&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;</description>
+    </item>
+    <item rdf:about="http://expktns.co/OatCAM">
+        <dc:format>text/html</dc:format>
+        <dc:date>2020-10-12T16:18:23+01:00</dc:date>
+        <dc:source>http://theoatmeal.com</dc:source>
+        <dc:creator>Matthew Inman</dc:creator>
+        <title>A Game of Cat and Mouth</title>
+        <link>http://expktns.co/OatCAM</link>
+        <description>&lt;a href=&quot;http://expktns.co/OatCAM&quot;&gt;&lt;img width=&quot;600&quot; src=&quot;https://s3.amazonaws.com/theoatmeal-img/thumbnails/cat_and_mouth_big.png&quot; alt=&quot;A Game of Cat and Mouth&quot; class=&quot;border0&quot; /&gt;&lt;/a&gt;&lt;p&gt;A magnet-powered, fiercely competitive, pinball(ish) game. &lt;/p&gt;&lt;a href=&quot;http://expktns.co/OatCAM&quot;&gt;View on my website&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;</description>
+    </item>
+    <item rdf:about="http://theoatmeal.com/comics/oracle_disappointment">
+        <dc:format>text/html</dc:format>
+        <dc:date>2020-09-25T19:17:54+01:00</dc:date>
+        <dc:source>http://theoatmeal.com</dc:source>
+        <dc:creator>Matthew Inman</dc:creator>
+        <title>Disappointment</title>
+        <link>http://theoatmeal.com/comics/oracle_disappointment</link>
+        <description>&lt;a href=&quot;http://theoatmeal.com/comics/oracle_disappointment&quot;&gt;&lt;img width=&quot;600&quot; src=&quot;https://s3.amazonaws.com/theoatmeal-img/thumbnails/oracle_disappointment_big.png&quot; alt=&quot;Disappointment&quot; class=&quot;border0&quot; /&gt;&lt;/a&gt;&lt;p&gt;The Oracle offers some insight.&lt;/p&gt;&lt;a href=&quot;http://theoatmeal.com/comics/oracle_disappointment&quot;&gt;View on my website&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;</description>
+    </item>
+    <item rdf:about="http://theoatmeal.com/comics/oracle_compliments">
+        <dc:format>text/html</dc:format>
+        <dc:date>2020-05-26T20:53:46+01:00</dc:date>
+        <dc:source>http://theoatmeal.com</dc:source>
+        <dc:creator>Matthew Inman</dc:creator>
+        <title>I have a hard time taking compliments</title>
+        <link>http://theoatmeal.com/comics/oracle_compliments</link>
+        <description>&lt;a href=&quot;http://theoatmeal.com/comics/oracle_compliments&quot;&gt;&lt;img width=&quot;600&quot; src=&quot;https://s3.amazonaws.com/theoatmeal-img/thumbnails/oracle_compliments_big.png&quot; alt=&quot;I have a hard time taking compliments&quot; class=&quot;border0&quot; /&gt;&lt;/a&gt;&lt;p&gt;A comic about taking compliments.&lt;/p&gt;&lt;a href=&quot;http://theoatmeal.com/comics/oracle_compliments&quot;&gt;View on my website&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;</description>
+    </item>
+</rdf:RDF>
