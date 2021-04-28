@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-04-27 18:34+0200\n"
-"PO-Revision-Date: 2021-04-27 18:34+0200\n"
+"POT-Creation-Date: 2021-04-28 11:25+0200\n"
+"PO-Revision-Date: 2021-04-28 11:25+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -586,7 +586,7 @@ msgstr "Ajouter un lien"
 
 #: views/collections/bookmarks/show.phtml:64 views/collections/show.phtml:114
 #: views/collections/show_public.phtml:143 views/links/searches/show.phtml:90
-#: views/news/show.phtml:85
+#: views/news/show.phtml:89
 #, php-format
 msgid "%d comment"
 msgid_plural "%d comments"
@@ -614,13 +614,13 @@ msgstr "Gérer les collections"
 
 #: views/collections/bookmarks/show.phtml:142 views/collections/show.phtml:189
 #: views/collections/show_public.phtml:158 views/links/show.phtml:43
-#: views/links/show_public.phtml:56 views/news/show.phtml:154
+#: views/links/show_public.phtml:56 views/news/show.phtml:158
 msgid "read"
 msgstr "lire"
 
 #: views/collections/discovery/show.phtml:3
 #: views/collections/discovery/show.phtml:14 views/collections/index.phtml:133
-#: views/news/show.phtml:236
+#: views/news/show.phtml:240
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
@@ -628,7 +628,7 @@ msgstr "Découvrir des collections"
 msgid "Your collections"
 msgstr "Vos collections"
 
-#: views/collections/discovery/show.phtml:18 views/news/show.phtml:231
+#: views/collections/discovery/show.phtml:18 views/news/show.phtml:235
 msgid ""
 "Discover collections created by the community and follow the ones you are "
 "interested in."
@@ -1387,7 +1387,7 @@ msgstr "Vos signets"
 msgid "The collections you follow"
 msgstr "Vos collections suivies"
 
-#: views/news/show.phtml:27 views/news/show.phtml:138 views/news/show.phtml:142
+#: views/news/show.phtml:27 views/news/show.phtml:142 views/news/show.phtml:146
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
@@ -1408,40 +1408,45 @@ msgstr "via vos <strong>centres d’intérêt</strong>, ajouté par %s"
 msgid "via your <strong>points of interest</strong>"
 msgstr "via vos <strong>centres d’intérêt</strong>"
 
-#: views/news/show.phtml:76
+#: views/news/show.phtml:77
 #, php-format
 msgid "via <strong>%s</strong> by %s"
 msgstr "via <strong>%s</strong> de %s"
 
-#: views/news/show.phtml:78
+#: views/news/show.phtml:79
+#, php-format
+msgid "via <strong>%s</strong>"
+msgstr "via <strong>%s</strong>"
+
+#: views/news/show.phtml:82
 msgid "via a <strong>followed collection</strong> (now deleted)"
 msgstr "via une <strong>collection suivie</strong> (maintenant supprimée)"
 
-#: views/news/show.phtml:98 views/news/show.phtml:102
+#: views/news/show.phtml:102 views/news/show.phtml:106
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/news/show.phtml:109
+#: views/news/show.phtml:113
 msgid "Remove from the news…"
 msgstr "Retirer du journal…"
 
-#: views/news/show.phtml:116
+#: views/news/show.phtml:120
 msgid "and mark as read"
 msgstr "et marquer comme lu"
 
-#: views/news/show.phtml:124
+#: views/news/show.phtml:128
 msgid "and read later"
 msgstr "et lire plus tard"
 
-#: views/news/show.phtml:163
+#: views/news/show.phtml:167
 msgid "Did you read everything? Or do you want to postpone your reading?"
 msgstr "Avez-vous tout lu ? Ou voulez-vous finir de lire plus tard ?"
 
-#: views/news/show.phtml:173
+#: views/news/show.phtml:177
 msgid "Recycle the news"
 msgstr "Recycler le journal"
 
-#: views/news/show.phtml:183
+#: views/news/show.phtml:187
 msgid ""
 "You’ll mark all the news links as read, this action cannot be canceled. Are "
 "you sure?"
@@ -1449,20 +1454,20 @@ msgstr ""
 "Vous allez marquer tous les liens du journal comme lus, cette action ne peut "
 "pas être annulée. Confirmez-vous ?"
 
-#: views/news/show.phtml:188
+#: views/news/show.phtml:192
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/news/show.phtml:196
+#: views/news/show.phtml:200
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/show.phtml:205
+#: views/news/show.phtml:209
 msgid "We found no relevant news for you, what can you do?"
 msgstr ""
 "Nous n’avons rien trouvé d’intéressant pour vous, que pouvez-vous faire ?"
 
-#: views/news/show.phtml:211
+#: views/news/show.phtml:215
 msgid ""
 "As you’re navigating on the Internet, bookmark the links you would like to "
 "read later."
@@ -1470,18 +1475,18 @@ msgstr ""
 "Lorsque vous naviguez sur Internet, placez les liens que vous aimeriez lire "
 "plus tard dans vos signets."
 
-#: views/news/show.phtml:216 views/news/show.phtml:226
+#: views/news/show.phtml:220 views/news/show.phtml:230
 msgid "Ok, fine"
 msgstr "Ok, c’est noté"
 
-#: views/news/show.phtml:221
+#: views/news/show.phtml:225
 msgid ""
 "Take a break, disconnect from Internet and go for a walk; news can wait."
 msgstr ""
 "Prenez une pause, déconnectez d’Internet et allez vous balader ; l’actualité "
 "peut attendre."
 
-#: views/news/show.phtml:252
+#: views/news/show.phtml:256
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 

@@ -73,7 +73,11 @@
                                 <?= _('via your <strong>points of interest</strong>') ?>
                             <?php elseif ($news_link->via_type === 'followed' && $news_link->via_collection_id): ?>
                                 <?php $via_collection = $news_link->viaCollection(); ?>
-                                <?= _f('via <strong>%s</strong> by %s', protect($via_collection->name()), protect($via_collection->owner()->username)) ?>
+                                <?php if ($via_collection->type === 'collection'): ?>
+                                    <?= _f('via <strong>%s</strong> by %s', protect($via_collection->name()), protect($via_collection->owner()->username)) ?>
+                                <?php else: ?>
+                                    <?= _f('via <strong>%s</strong>', protect($via_collection->name())) ?>
+                                <?php endif; ?>
                             <?php elseif ($news_link->via_type === 'followed'): ?>
                                 <?= _('via a <strong>followed collection</strong> (now deleted)') ?>
                             <?php endif; ?>
