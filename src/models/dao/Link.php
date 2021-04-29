@@ -345,10 +345,10 @@ class Link extends \Minz\DatabaseModel
     public function listToFetch($number)
     {
         $sql = <<<SQL
-             SELECT * FROM links
-             WHERE fetched_at IS NULL
-             ORDER BY created_at
-             LIMIT ?
+            SELECT * FROM links
+            WHERE fetched_at IS NULL
+            ORDER BY random()
+            LIMIT ?
         SQL;
 
         $statement = $this->prepare($sql);
