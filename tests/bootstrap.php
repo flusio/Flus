@@ -348,3 +348,21 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
     ]
 );
+
+\Minz\Tests\DatabaseFactory::addFactory(
+    'fetch_log',
+    '\flusio\models\dao\FetchLog',
+    [
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'url' => function () use ($faker) {
+            return $faker->url;
+        },
+        'host' => function () use ($faker) {
+            $url = $faker->url;
+            $parsed_url = parse_url($url);
+            return $parsed_url['host'];
+        },
+    ]
+);

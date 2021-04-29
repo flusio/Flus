@@ -120,4 +120,33 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::find($link_id);
         $this->assertSame($expected_title, $link->title);
     }
+
+    public function testPerformSkipsFetchIfReachedRateLimit()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $url = 'https://github.com/flusio/flusio';
+        $host = 'github.com';
+        foreach (range(1, 25) as $i) {
+            $seconds = $this->fake('numberBetween', 0, 60);
+            $created_at = \Minz\Time::ago($seconds, 'seconds');
+            $this->create('fetch_log', [
+                'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+                'url' => $url,
+                'host' => $host,
+            ]);
+        }
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'title' => $url,
+        ]);
+        $links_fetcher_job = new LinksFetcher();
+
+        $links_fetcher_job->perform();
+
+        $link = models\Link::find($link_id);
+        $this->assertSame($url, $link->title);
+        $this->assertSame(0, $link->fetched_code);
+        $this->assertNull($link->fetched_at);
+    }
 }

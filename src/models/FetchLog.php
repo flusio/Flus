@@ -44,4 +44,23 @@ class FetchLog extends \Minz\Model
         ]);
         $fetch_log->save();
     }
+
+    /**
+     * Determine if we reached the rate limit for the URL host.
+     *
+     * It returns true if there were more than 25 requests to the host within
+     * 1 minute.
+     *
+     * @param string $url
+     *
+     * @return boolean
+     */
+    public static function hasReachedRateLimit($url)
+    {
+        $host = \flusio\utils\Belt::host($url);
+        $since = \Minz\Time::ago(1, 'minute');
+        $count_limit = 25;
+        $count = self::daoCall('countFetchesToHost', $host, $since);
+        return $count >= $count_limit;
+    }
 }
