@@ -1,13 +1,32 @@
 # Changelog of flusio
 
-## 2021-xx-yy - v0.21
+## 2021-04-29 - v0.21
 
 ### Migration notes
 
 The `data/` directory can now contain big files (OPML importations). You can
 move it to a different location by setting the `APP_DATA_PATH` variable in your
-`.env` file. **Make sure to move the `data/migrations\_version.txt` file as
+`.env` file. **Make sure to move the `data/migrations_version.txt` file as
 well!**
+
+### News
+
+- Provide OPML importation
+- Add support for RDF feed (RSS 0.90)
+
+### Improvements
+
+- Adapt feeds look in news
+
+### Bug fixes
+
+- Fix order in feeds for existing links
+- Fix a test in Job DAO
+- Handle avatar upload with no files
+
+### Misc
+
+- Add rate limits on links and feeds fetching
 
 ## 2021-04-24 - v0.20
 
