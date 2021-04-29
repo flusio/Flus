@@ -2,6 +2,7 @@
 
 namespace flusio\services;
 
+use flusio\models;
 use flusio\utils;
 
 /**
@@ -102,6 +103,7 @@ class LinkFetcher
                 ];
             }
 
+            models\FetchLog::log($url);
             try {
                 $response = $this->http->get($url, [], $options);
             } catch (\SpiderBits\HttpError $e) {

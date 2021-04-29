@@ -57,6 +57,7 @@ class Image
             return basename($card_file_exists[0]);
         }
 
+        models\FetchLog::log($image_url);
         try {
             $response = $this->http->get($image_url);
         } catch (\SpiderBits\HttpError $e) {

@@ -62,6 +62,27 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertGreaterThan(0, $links_number);
     }
 
+    public function testPerformLogsFetch()
+    {
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'name' => $this->fake('sentence'),
+            'feed_url' => $feed_url,
+            'feed_fetched_at' => \Minz\Time::ago(2, 'hours')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $feeds_sync_job = new FeedsSync();
+
+        $this->assertSame(0, models\FetchLog::count());
+
+        $feeds_sync_job->perform();
+
+        $this->assertSame(1, models\FetchLog::count());
+        $fetch_log = models\FetchLog::take();
+        $this->assertSame($feed_url, $fetch_log->url);
+        $this->assertSame('flus.fr', $fetch_log->host);
+    }
+
     public function testPerformSavesResponseInCache()
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';

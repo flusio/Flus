@@ -170,6 +170,7 @@ class FeedFetcher
             $response = \SpiderBits\Response::fromText($cached_response);
         } else {
             // ... or via HTTP
+            models\FetchLog::log($url);
             try {
                 $response = $this->http->get($url);
             } catch (\SpiderBits\HttpError $e) {
