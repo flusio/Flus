@@ -2,6 +2,7 @@
 
 namespace flusio\services;
 
+use flusio\models;
 use flusio\utils;
 
 /**
@@ -13,6 +14,9 @@ use flusio\utils;
  */
 class LinkFetcher
 {
+    public const ERROR_RATE_LIMIT = -1;
+    public const ERROR_UNKNOWN = 0;
+
     /** @var \SpiderBits\Cache */
     private $cache;
 
@@ -37,6 +41,12 @@ class LinkFetcher
     public function fetch($link)
     {
         $info = $this->fetchUrl($link->url);
+
+        if ($info['status'] === self::ERROR_RATE_LIMIT) {
+            // In case of a rate limit error, skip the link so it can be
+            // fetched later.
+            return;
+        }
 
         $link->fetched_at = \Minz\Time::now();
         $link->fetched_code = $info['status'];
@@ -90,7 +100,7 @@ class LinkFetcher
         if ($cached_response) {
             // ... via the cache
             $response = \SpiderBits\Response::fromText($cached_response);
-        } else {
+        } elseif (!models\FetchLog::hasReachedRateLimit($url)) {
             // ... or via HTTP
             $options = [];
             if ($this->isTwitter($url)) {
@@ -102,17 +112,23 @@ class LinkFetcher
                 ];
             }
 
+            models\FetchLog::log($url);
             try {
                 $response = $this->http->get($url, [], $options);
             } catch (\SpiderBits\HttpError $e) {
                 return [
-                    'status' => 0,
+                    'status' => self::ERROR_UNKNOWN,
                     'error' => $e->getMessage(),
                 ];
             }
 
             // that we add to cache
             $this->cache->save($url_hash, (string)$response);
+        } else {
+            return [
+                'status' => self::ERROR_RATE_LIMIT,
+                'error' => 'Reached rate limit',
+            ];
         }
 
         $info = [

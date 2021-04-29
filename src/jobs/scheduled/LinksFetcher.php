@@ -24,7 +24,7 @@ class LinksFetcher extends jobs\Job
 
     public function perform()
     {
-        $links = models\Link::daoToList('listToFetch', 25);
+        $links = models\Link::daoToList('listToFetch', 100);
         if (!$links) {
             // nope, nothing to do
             return;

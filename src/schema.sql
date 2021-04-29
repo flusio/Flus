@@ -75,6 +75,13 @@ CREATE TABLE importations (
     user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE fetch_logs (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    url TEXT NOT NULL,
+    host TEXT NOT NULL
+);
+
 CREATE TABLE collections (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
