@@ -62,6 +62,10 @@ class Link extends \Minz\Model
             'type' => 'string',
         ],
 
+        'fetched_count' => [
+            'type' => 'integer',
+        ],
+
         'user_id' => [
             'type' => 'string',
             'required' => true,
@@ -115,6 +119,7 @@ class Link extends \Minz\Model
             'user_id' => $user_id,
             'reading_time' => 0,
             'fetched_code' => 0,
+            'fetched_count' => 0,
         ]);
     }
 
@@ -136,6 +141,7 @@ class Link extends \Minz\Model
             'reading_time' => $news_link->reading_time,
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 200,
+            'fetched_count' => 1,
             'user_id' => $user_id,
         ]);
     }
@@ -158,8 +164,9 @@ class Link extends \Minz\Model
             'image_filename' => $link->image_filename,
             'is_hidden' => false,
             'reading_time' => $link->reading_time,
-            'fetched_at' => \Minz\Time::now(),
-            'fetched_code' => 200,
+            'fetched_at' => $link->fetched_at,
+            'fetched_code' => $link->fetched_code,
+            'fetched_count' => $link->fetched_count,
             'user_id' => $user_id,
         ]);
     }

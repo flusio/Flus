@@ -50,7 +50,8 @@ class LinkFetcher
 
         $link->fetched_at = \Minz\Time::now();
         $link->fetched_code = $info['status'];
-        $link->fetched_error = '';
+        $link->fetched_error = null;
+        $link->fetched_count = $link->fetched_count + 1;
         if (isset($info['error'])) {
             $link->fetched_error = $info['error'];
         }

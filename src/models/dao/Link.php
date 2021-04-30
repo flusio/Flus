@@ -336,23 +336,37 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return a list of links to fetch (fetched_at = null)
+     * Return a list of links to fetch (fetched_at is null, or fetched_error is
+     * not null).
      *
-     * @param integer $number
+     * Links in error are not returned if their fetched_count is greater than
+     * 25 or if fetched_at is too close (a number of seconds depending on the
+     * fetched_count value).
+     *
+     * @param integer $max_number
      *
      * @return array
      */
-    public function listToFetch($number)
+    public function listToFetch($max_number)
     {
         $sql = <<<SQL
             SELECT * FROM links
             WHERE fetched_at IS NULL
+            OR (
+                fetched_error IS NOT NULL
+                AND fetched_count <= 25
+                AND fetched_at < (?::timestamptz - interval '1 second' * (5 + pow(fetched_count, 4)))
+            )
             ORDER BY random()
             LIMIT ?
         SQL;
 
+        $now = \Minz\Time::now();
         $statement = $this->prepare($sql);
-        $statement->execute([$number]);
+        $statement->execute([
+            $now->format(\Minz\Model::DATETIME_FORMAT),
+            $max_number,
+        ]);
         return $statement->fetchAll();
     }
 }

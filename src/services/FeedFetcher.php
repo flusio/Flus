@@ -47,7 +47,7 @@ class FeedFetcher
 
         $collection->feed_fetched_at = \Minz\Time::now();
         $collection->feed_fetched_code = $info['status'];
-        $collection->feed_fetched_error = '';
+        $collection->feed_fetched_error = null;
         if (isset($info['error'])) {
             $collection->feed_fetched_error = $info['error'];
             $collection->save();

@@ -48,6 +48,9 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'url' => 'https://github.com/flusio/flusio',
             'title' => 'https://github.com/flusio/flusio',
+            'fetched_at' => null,
+            'fetched_code' => 0,
+            'fetched_count' => 0,
         ]);
         $links_fetcher_job = new LinksFetcher();
 
@@ -55,7 +58,9 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::find($link_id);
         $this->assertSame('flusio/flusio', $link->title);
+        $this->assertNotNull($link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
+        $this->assertSame(1, $link->fetched_count);
     }
 
     public function testPerformLogsFetch()
@@ -63,6 +68,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'url' => 'https://github.com/flusio/flusio',
             'title' => 'https://github.com/flusio/flusio',
+            'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksFetcher();
 
@@ -82,6 +88,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $url,
+            'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksFetcher();
 
@@ -98,6 +105,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $url,
+            'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksFetcher();
         $expected_title = $this->fake('sentence');
@@ -139,6 +147,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $url,
+            'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksFetcher();
 
@@ -148,5 +157,88 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($url, $link->title);
         $this->assertSame(0, $link->fetched_code);
         $this->assertNull($link->fetched_at);
+    }
+
+    public function testPerformFetchesLinksInError()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $fetched_count = $this->fake('numberBetween', 1, 25);
+        $interval_to_wait = 5 + pow($fetched_count, 4);
+        $seconds = $this->fake('numberBetween', $interval_to_wait + 1, $interval_to_wait + 9000);
+        $fetched_at = \Minz\Time::ago($seconds, 'seconds');
+        $link_id = $this->create('link', [
+            'url' => 'https://github.com/flusio/flusio',
+            'title' => 'https://github.com/flusio/flusio',
+            'fetched_at' => $fetched_at->format(\Minz\Model::DATETIME_FORMAT),
+            'fetched_code' => 404,
+            'fetched_error' => 'not found',
+            'fetched_count' => $fetched_count,
+        ]);
+        $links_fetcher_job = new LinksFetcher();
+
+        $links_fetcher_job->perform();
+
+        $link = models\Link::find($link_id);
+        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertNotSame($fetched_at->getTimestamp(), $link->fetched_at->getTimestamp());
+        $this->assertSame(200, $link->fetched_code);
+        $this->assertNull($link->fetched_error);
+        $this->assertSame($fetched_count + 1, $link->fetched_count);
+    }
+
+    public function testPerformDoesNotFetchLinksInErrorIfFetchedCountIsGreaterThan25()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $fetched_count = $this->fake('numberBetween', 26, 42);
+        $interval_to_wait = 5 + pow($fetched_count, 4);
+        $seconds = $this->fake('numberBetween', $interval_to_wait + 1, $interval_to_wait + 9000);
+        $fetched_at = \Minz\Time::ago($seconds, 'seconds');
+        $link_id = $this->create('link', [
+            'url' => 'https://github.com/flusio/flusio',
+            'title' => 'https://github.com/flusio/flusio',
+            'fetched_at' => $fetched_at->format(\Minz\Model::DATETIME_FORMAT),
+            'fetched_code' => 404,
+            'fetched_error' => 'not found',
+            'fetched_count' => $fetched_count,
+        ]);
+        $links_fetcher_job = new LinksFetcher();
+
+        $links_fetcher_job->perform();
+
+        $link = models\Link::find($link_id);
+        $this->assertSame('https://github.com/flusio/flusio', $link->title);
+        $this->assertSame($fetched_at->getTimestamp(), $link->fetched_at->getTimestamp());
+        $this->assertSame(404, $link->fetched_code);
+        $this->assertSame($fetched_count, $link->fetched_count);
+    }
+
+    public function testPerformDoesNotFetchLinksInErrorIfFetchedAtIsWithinIntervalToWait()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $fetched_count = $this->fake('numberBetween', 1, 25);
+        $seconds = $this->fake('numberBetween', 0, 4 * 60);
+        $interval_to_wait = 5 + pow($fetched_count, 4);
+        $seconds = $this->fake('numberBetween', 0, $interval_to_wait);
+        $fetched_at = \Minz\Time::ago($seconds, 'seconds');
+        $link_id = $this->create('link', [
+            'url' => 'https://github.com/flusio/flusio',
+            'title' => 'https://github.com/flusio/flusio',
+            'fetched_at' => $fetched_at->format(\Minz\Model::DATETIME_FORMAT),
+            'fetched_code' => 404,
+            'fetched_error' => 'not found',
+            'fetched_count' => $fetched_count,
+        ]);
+        $links_fetcher_job = new LinksFetcher();
+
+        $links_fetcher_job->perform();
+
+        $link = models\Link::find($link_id);
+        $this->assertSame('https://github.com/flusio/flusio', $link->title);
+        $this->assertSame($fetched_at->getTimestamp(), $link->fetched_at->getTimestamp());
+        $this->assertSame(404, $link->fetched_code);
+        $this->assertSame($fetched_count, $link->fetched_count);
     }
 }
