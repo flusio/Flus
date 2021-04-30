@@ -1,6 +1,7 @@
 import { Controller } from 'stimulus';
 
 import _ from 'js/l10n.js';
+import icon from 'js/icon.js';
 
 export default class extends Controller {
     static get targets () {
@@ -71,7 +72,7 @@ export default class extends Controller {
     detach (event) {
         event.preventDefault();
 
-        const value = event.target.getAttribute('data-value');
+        const value = event.currentTarget.getAttribute('data-value');
         for (const option of this.dataTarget.selectedOptions) {
             if (option.value === value) {
                 option.selected = false;
@@ -98,7 +99,7 @@ export default class extends Controller {
                     title="${_('Unselect this collection')}"
                     aria-label="${_('Unselect')}"
                 >
-                    <i class="icon icon--only icon--times"></i>
+                    ${icon('times')}
                 </button>
             </li>
         `;

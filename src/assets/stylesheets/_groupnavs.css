@@ -72,19 +72,19 @@
 
 .groupnav__item--validate .groupnav__anchor,
 .groupnav__item--create .groupnav__button {
-    background-image: url("../icons/core/check-line.svg");
+    background-image: url("../icons/check.svg");
 }
 
 .groupnav__item--subscription .groupnav__anchor {
-    background-image: url("../icons/essential/pop-out-line.svg");
+    background-image: url("../icons/pop-out.svg");
 }
 
 .groupnav__item--import .groupnav__anchor {
-    background-image: url("../icons/technology/backup-line.svg");
+    background-image: url("../icons/backup.svg");
 }
 
 .groupnav__item--delete .groupnav__anchor {
-    background-image: url("../icons/essential/trash-line.svg");
+    background-image: url("../icons/trash.svg");
 }
 
 .groupnav__item:first-child,

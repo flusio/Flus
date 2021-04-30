@@ -62,7 +62,8 @@
     <div class="collection__meta">
         <?php if ($collection->type === 'feed'): ?>
             <div class="collection__details">
-                <p class="collection__feed icon icon--feed">
+                <p class="collection__feed">
+                    <?= icon('feed') ?>
                     <?php if ($collection->feed_site_url): ?>
                         <?= _f('Feed from <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', protect($collection->feed_site_url), protect($collection->feedWebsite())) ?>
                     <?php else: ?>
@@ -139,7 +140,8 @@
 
                         <?php if ($collection->type !== 'feed'): ?>
                             <p class="card__text">
-                                <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $link->id]) ?>">
+                                <a href="<?= url('link', ['id' => $link->id]) ?>">
+                                    <?= icon('comment') ?>
                                     <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
                                 </a>
                             </p>
@@ -150,11 +152,12 @@
                         <div></div>
 
                         <a
-                            class="anchor--action icon icon--anchor icon--pop-out"
+                            class="anchor--action"
                             target="_blank"
                             rel="noopener noreferrer"
                             href="<?= protect($link->url) ?>"
                         >
+                            <?= icon('pop-out') ?>
                             <?= _('read') ?>
                         </a>
                     </div>

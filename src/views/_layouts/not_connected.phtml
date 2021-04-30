@@ -119,7 +119,8 @@
                         <?php endif; ?>
 
                         <div class="form-group">
-                            <label for="locale" class="icon icon--language" aria-label="<?= _('Choose your language') ?>">
+                            <label for="locale" aria-label="<?= _('Choose your language') ?>">
+                                <?= icon('language') ?>
                                 <select
                                     id="locale"
                                     name="locale"
@@ -145,7 +146,6 @@
                     <nav class="layout__back">
                         <?php if (isset($back['js-back-anchor-type'])): ?>
                             <a
-                                class="icon icon--anchor icon--left icon--arrow"
                                 href="<?= $back['href'] ?>"
                                 data-controller="back-anchor"
                                 data-back-anchor-type="<?= $back['js-back-anchor-type'] ?>"
@@ -154,10 +154,12 @@
                                     data-back-anchor-mode="<?= $back['js-back-anchor-mode'] ?>"
                                 <?php endif; ?>
                             >
+                                <?= icon('arrow-left') ?>
                                 <?= $back['label'] ?>
                             </a>
                         <?php else: ?>
-                            <a class="icon icon--anchor icon--left icon--arrow" href="<?= $back['href'] ?>">
+                            <a href="<?= $back['href'] ?>">
+                                <?= icon('arrow-left') ?>
                                 <?= $back['label'] ?>
                             </a>
                         <?php endif; ?>

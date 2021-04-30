@@ -48,11 +48,12 @@
         <ul class="link__actions">
             <li class="link__action">
                 <a
-                    class="anchor--action icon icon--anchor icon--pop-out"
+                    class="anchor--action"
                     target="_blank"
                     rel="noopener noreferrer"
                     href="<?= protect($link->url) ?>"
                 >
+                    <?= icon('pop-out') ?>
                     <?= _('read') ?>
                 </a>
             </li>

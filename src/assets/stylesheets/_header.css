@@ -32,7 +32,7 @@
 
 .header__avatar {
     display: block;
-    max-height: 5rem;
+    height: 5rem;
 
     background-color: var(--color-white);
     border: 2px solid var(--color-turquoise-5);
@@ -47,30 +47,14 @@
     padding: var(--space-medium) var(--space-large);
 }
 
-.header__link--icon {
-    padding-left: 2.4em;
-}
-
-.header__link--icon.icon::before {
-    left: 0.75em;
-}
-
-@media (min-width: 800px) {
-    .header__link--icon.icon::before {
-        left: 0.65em;
-    }
-}
-
 .header__action {
-    height: 4rem;
-    margin-top: var(--space-smaller);
-    margin-right: var(--space-smaller);
-    margin-bottom: var(--space-smaller);
-    padding: var(--space-smaller);
+    margin: var(--space-smaller);
+    padding: var(--space-small);
 
     align-self: center;
 
     font-size: var(--size-small);
+    text-align: center;
     text-decoration: none;
 
     background-color: var(--color-turquoise-4);
@@ -78,17 +62,11 @@
     border-radius: var(--border-button-radius);
 }
 
-.header__action.icon::before {
-    left: 0.55em;
-}
-
 @media (min-width: 800px) {
     .header__action {
-        padding-right: var(--space-small);
-    }
-
-    .header__action.icon::before {
-        background-size: 1.25em;
+        width: auto;
+        padding-top: var(--space-smaller);
+        padding-bottom: var(--space-smaller);
     }
 }
 

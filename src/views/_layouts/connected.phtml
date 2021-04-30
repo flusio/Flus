@@ -83,30 +83,33 @@
                     <div class="header__separator"></div>
 
                     <a
-                        class="header__link header__link--icon icon icon--anchor icon--tree <?= $current_tab === 'news' ? 'header__link--active' : '' ?>"
+                        class="header__link <?= $current_tab === 'news' ? 'header__link--active' : '' ?>"
                         <?= $current_page === 'news' ? 'aria-current="page"' : '' ?>
                         href="<?= url('news') ?>"
                     >
+                        <?= icon('news') ?>
                         <span class="no-mobile">
                             <?= _('News') ?>
                         </span>
                     </a>
 
                     <a
-                        class="header__link header__link--icon icon icon--anchor icon--bookmark <?= $current_tab === 'bookmarks' ? 'header__link--active' : '' ?>"
+                        class="header__link <?= $current_tab === 'bookmarks' ? 'header__link--active' : '' ?>"
                         <?= $current_page === 'bookmarks' ? 'aria-current="page"' : '' ?>
                         href="<?= url('bookmarks') ?>"
                     >
+                        <?= icon('bookmark') ?>
                         <span class="no-mobile">
                             <?= _('Bookmarks') ?>
                         </span>
                     </a>
 
                     <a
-                        class="header__link header__link--icon icon icon--anchor icon--collection <?= $current_tab === 'collections' ? 'header__link--active' : '' ?>"
+                        class="header__link <?= $current_tab === 'collections' ? 'header__link--active' : '' ?>"
                         <?= $current_page === 'collections' ? 'aria-current="page"' : '' ?>
                         href="<?= url('collections') ?>"
                     >
+                        <?= icon('collection') ?>
                         <span class="no-mobile">
                             <?= _('Collections') ?>
                         </span>
@@ -115,10 +118,11 @@
                     <div class="header__separator no-mobile"></div>
 
                     <a
-                        class="header__action icon icon--anchor icon--plus"
+                        class="header__action"
                         <?= $current_page === 'search link' ? 'aria-current="page"' : '' ?>
                         href="<?= url('show search link') ?>"
                     >
+                        <?= icon('plus') ?>
                         <span class="no-mobile">
                             <?= _('New link') ?>
                         </span>
@@ -130,8 +134,7 @@
                         data-action="click@window->popup#close"
                     >
                         <summary class="popup__opener" title="<?= _('Open the menu') ?>">
-                            <i class="icon icon--anchor icon--bars only-mobile"></i>
-                            <img class="header__avatar no-mobile" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
+                            <img class="header__avatar" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
                             <span class="sr-only">
                                 <?= _('Open the menu') ?>
                             </span>
@@ -141,35 +144,39 @@
                             <div class="popup__title"><?= protect($current_user->username) ?></div>
 
                             <a
-                                class="popup__item popup__item--link icon icon--avatar"
+                                class="popup__item popup__item--link"
                                 <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('profile') ?>"
                             >
+                                <?= icon('avatar') ?>
                                 <?= _('Profile') ?>
                             </a>
 
                             <a
-                                class="popup__item popup__item--link icon icon--key"
+                                class="popup__item popup__item--link"
                                 <?= $current_page === 'security' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('security') ?>"
                             >
+                                <?= icon('key') ?>
                                 <?= _('Login & security') ?>
                             </a>
 
                             <?php if ($subscriptions_enabled): ?>
                                 <a
-                                    class="popup__item popup__item--link icon icon--credit-card"
+                                    class="popup__item popup__item--link"
                                     <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
                                     href="<?= url('account') ?>"
                                 >
+                                    <?= icon('credit-card') ?>
                                     <?= _('Account & subscription') ?>
                                 </a>
                             <?php else: ?>
                                 <a
-                                    class="popup__item popup__item--link icon icon--details"
+                                    class="popup__item popup__item--link"
                                     <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
                                     href="<?= url('account') ?>"
                                 >
+                                    <?= icon('details') ?>
                                     <?= _('Account') ?>
                                 </a>
                             <?php endif; ?>
@@ -178,7 +185,8 @@
 
                             <form method="post" action="<?= url('logout') ?>">
                                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                                <button type="submit" class="popup__item popup__item--button icon icon--logout">
+                                <button type="submit" class="popup__item popup__item--button">
+                                    <?= icon('logout') ?>
                                     <?= _('Log out') ?>
                                 </button>
                             </form>
@@ -192,7 +200,6 @@
                     <nav class="layout__back">
                         <?php if (isset($back['js-back-anchor-type'])): ?>
                             <a
-                                class="icon icon--anchor icon--left icon--arrow"
                                 href="<?= $back['href'] ?>"
                                 data-controller="back-anchor"
                                 data-back-anchor-type="<?= $back['js-back-anchor-type'] ?>"
@@ -201,10 +208,12 @@
                                     data-back-anchor-mode="<?= $back['js-back-anchor-mode'] ?>"
                                 <?php endif; ?>
                             >
+                                <?= icon('arrow-left') ?>
                                 <?= $back['label'] ?>
                             </a>
                         <?php else: ?>
-                            <a class="icon icon--anchor icon--left icon--arrow" href="<?= $back['href'] ?>">
+                            <a href="<?= $back['href'] ?>">
+                                <?= icon('arrow-left') ?>
                                 <?= $back['label'] ?>
                             </a>
                         <?php endif; ?>
@@ -241,7 +250,7 @@
                         aria-label="<?= _('Close') ?>"
                         title="<?= _('Close this window') ?>"
                     >
-                        <i class="icon icon--only icon--times"></i>
+                        <?= icon('times') ?>
                     </button>
                 </header>
 

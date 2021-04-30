@@ -85,7 +85,8 @@
 
                         <?php if ($news_link->via_link_id): ?>
                             <p class="card__text">
-                                <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $news_link->via_link_id]) ?>">
+                                <a href="<?= url('link', ['id' => $news_link->via_link_id]) ?>">
+                                    <?= icon('comment') ?>
                                     <?= _nf('%d comment', '%d comments', $news_link->number_comments, $news_link->number_comments) ?>
                                 </a>
                             </p>
@@ -101,7 +102,7 @@
                             >
                                 <summary class="popup__opener" title="<?= _('Remove from the news page') ?>" tabindex="-1">
                                     <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
-                                        <i class="icon icon--only icon--ellipsis-horizontal"></i>
+                                        <?= icon('menu') ?>
                                         <span class="sr-only">
                                             <?= _('Remove from the news page') ?>
                                         </span>
@@ -116,7 +117,8 @@
                                     <form method="post" action="<?= url('mark news as read', ['id' => $news_link->id]) ?>">
                                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
-                                        <button class="popup__item popup__item--button icon icon--check">
+                                        <button class="popup__item popup__item--button">
+                                            <?= icon('check') ?>
                                             <?= _('and mark as read') ?>
                                         </button>
                                     </form>
@@ -124,7 +126,8 @@
                                     <form method="post" action="<?= url('read news later', ['id' => $news_link->id]) ?>">
                                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
-                                        <button class="popup__item popup__item--button icon icon--bookmark">
+                                        <button class="popup__item popup__item--button">
+                                            <?= icon('bookmark') ?>
                                             <?= _('and read later') ?>
                                         </button>
                                     </form>
@@ -141,7 +144,7 @@
                                     aria-controls="modal"
                                     title="<?= _('Add to collections') ?>"
                                 >
-                                    <i class="icon icon--only icon--collection"></i>
+                                    <?= icon('collection') ?>
                                     <span class="sr-only">
                                         <?= _('Add to collections') ?>
                                     </span>
@@ -150,11 +153,12 @@
                         </div>
 
                         <a
-                            class="anchor--action icon icon--anchor icon--pop-out"
+                            class="anchor--action"
                             target="_blank"
                             rel="noopener noreferrer"
                             href="<?= protect($news_link->url) ?>"
                         >
+                            <?= icon('pop-out') ?>
                             <?= _('read') ?>
                         </a>
                     </div>
@@ -173,7 +177,8 @@
                 data-action="click@window->popup#close"
             >
                 <summary class="popup__opener" tabindex="-1">
-                    <button class="news__postpone-button icon icon--recycle" type="button" data-action="popup#toggle">
+                    <button class="news__postpone-button" type="button" data-action="popup#toggle">
+                        <?= icon('recycle') ?>
                         <?= _('Recycle the news') ?>
                     </button>
                 </summary>
@@ -188,7 +193,8 @@
                     >
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
-                        <button class="popup__item popup__item--button icon icon--check">
+                        <button class="popup__item popup__item--button">
+                            <?= icon('check') ?>
                             <?= _('Mark all as read') ?>
                         </button>
                     </form>
@@ -196,7 +202,8 @@
                     <form method="post" action="<?= url('read news later', ['id' => 'all']) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
-                        <button class="popup__item popup__item--button icon icon--bookmark">
+                        <button class="popup__item popup__item--button">
+                            <?= icon('bookmark') ?>
                             <?= _('Read the links later') ?>
                         </button>
                     </form>

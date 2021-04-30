@@ -1,6 +1,7 @@
 import { Controller } from 'stimulus';
 
 import _ from 'js/l10n.js';
+import icon from 'js/icon.js';
 
 export default class extends Controller {
     static get targets () {
@@ -16,14 +17,12 @@ export default class extends Controller {
         }
 
         navigator.clipboard.writeText(text);
-        this.element.classList.add('copy--success');
 
-        const oldFeedbackTargetText = this.feedbackTarget.textContent;
-        this.feedbackTarget.textContent = _('Copied');
+        const oldFeedbackTargetText = this.feedbackTarget.innerHTML;
+        this.feedbackTarget.innerHTML = icon('check') + ' ' + _('Copied');
 
         setTimeout(() => {
-            this.element.classList.remove('copy--success');
-            this.feedbackTarget.textContent = oldFeedbackTargetText;
+            this.feedbackTarget.innerHTML = oldFeedbackTargetText;
         }, 2000);
     }
 };

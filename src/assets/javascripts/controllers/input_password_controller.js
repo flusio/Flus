@@ -1,10 +1,11 @@
 import { Controller } from 'stimulus';
 
 import _ from 'js/l10n.js';
+import icon from 'js/icon.js';
 
 export default class extends Controller {
     static get targets () {
-        return ['input'];
+        return ['input', 'button'];
     }
 
     connect () {
@@ -18,14 +19,10 @@ export default class extends Controller {
         const currentType = this.inputTarget.type;
         if (currentType === 'password') {
             this.inputTarget.type = 'text';
-            e.target.classList.remove('icon--eye');
-            e.target.classList.add('icon--eye-hide');
-            e.target.innerHTML = _('Hide');
+            this.buttonTarget.innerHTML = icon('eye-hide') + ' ' + _('Hide');
         } else {
             this.inputTarget.type = 'password';
-            e.target.classList.add('icon--eye');
-            e.target.classList.remove('icon--eye-hide');
-            e.target.innerHTML = _('Show');
+            this.buttonTarget.innerHTML = icon('eye') + ' ' + _('Show');
         }
     }
 };

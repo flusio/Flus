@@ -171,6 +171,16 @@ function url_avatar($filename)
 }
 
 /**
+ * Return a SVG icon
+ *
+ * @see \flusio\utils\Icon::get
+ */
+function icon($icon_name)
+{
+    return \flusio\utils\Icon::get($icon_name);
+}
+
+/**
  * Format news preferences so it's readable for humans.
  *
  * @param \flusio\models\NewsPreferences $preferences

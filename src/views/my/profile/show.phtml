@@ -118,7 +118,8 @@
         <?php endif; ?>
 
         <div class="form-group <?= isset($errors['locale']) ? 'form-group--invalid' : '' ?>">
-            <label for="locale" class="icon icon--language">
+            <label for="locale">
+                <?= icon('language') ?>
                 <?= _('Your language') ?>
             </label>
 

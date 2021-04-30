@@ -34,16 +34,20 @@
 }
 
 .layout--connected .layout__header .header__link {
+    width: 5.5rem;
     padding: var(--space-small);
 
+    text-align: center;
     text-decoration: none;
 
     border-top: 0.5rem solid transparent;
     border-bottom: 0.5rem solid transparent;
 }
 
-.layout--connected .layout__header .header__link--icon {
-    padding-left: 2.4em;
+@media (min-width: 800px) {
+    .layout--connected .layout__header .header__link {
+        width: auto;
+    }
 }
 
 .layout--connected .layout__header .header__link--active {

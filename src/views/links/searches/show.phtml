@@ -86,7 +86,8 @@
                         </p>
 
                         <p class="card__text">
-                            <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $existing_link->id]) ?>">
+                            <a href="<?= url('link', ['id' => $existing_link->id]) ?>">
+                                <?= icon('comment') ?>
                                 <?= _nf('%d comment', '%d comments', $existing_link->number_comments, $existing_link->number_comments) ?>
                             </a>
                         </p>
@@ -94,13 +95,13 @@
 
                     <div class="card__footer card__footer--centered">
                         <button
-                            class="icon icon--collection"
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
                             data-modal-opener-href="<?= url('link collections', ['id' => $existing_link->id, 'from' => url('show search link', ['url' => $existing_link->url])]) ?>"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                         >
+                            <?= icon('collection') ?>
                             <?= _('Edit') ?>
                         </button>
                     </div>
@@ -137,13 +138,13 @@
 
                     <div class="card__footer card__footer--centered">
                         <button
-                            class="icon icon--collection"
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
                             data-modal-opener-href="<?= url('obtaining link', ['id' => $default_link->id, 'from' => url('show search link', ['url' => $default_link->url])]) ?>"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                         >
+                            <?= icon('collection') ?>
                             <?= _('Add') ?>
                         </button>
                     </div>

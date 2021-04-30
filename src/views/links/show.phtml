@@ -35,11 +35,12 @@
         <ul class="link__actions">
             <li class="link__action">
                 <a
-                    class="anchor--action icon icon--anchor icon--pop-out"
+                    class="anchor--action"
                     target="_blank"
                     rel="noopener noreferrer"
                     href="<?= protect($link->url) ?>"
                 >
+                    <?= icon('pop-out') ?>
                     <?= _('read') ?>
                 </a>
             </li>
@@ -71,7 +72,7 @@
                         >
                             <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
                                 <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
-                                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
+                                    <?= icon('menu') ?>
                                     <span class="sr-only">
                                         <?= _('Open the menu') ?>
                                     </span>
@@ -89,7 +90,8 @@
                                     <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                                     <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />
 
-                                    <button type="submit" class="popup__item popup__item--button icon icon--trash">
+                                    <button type="submit" class="popup__item popup__item--button">
+                                        <?= icon('trash') ?>
                                         <?= _('Delete') ?>
                                     </button>
                                 </form>

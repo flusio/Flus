@@ -93,8 +93,7 @@
                         data-action="click@window->popup#close"
                     >
                         <summary class="popup__opener" title="<?= _('Open the menu') ?>">
-                            <i class="icon icon--anchor icon--bars only-mobile"></i>
-                            <img class="header__avatar no-mobile" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
+                            <img class="header__avatar" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
                             <span class="sr-only">
                                 <?= _('Open the menu') ?>
                             </span>
@@ -104,35 +103,39 @@
                             <div class="popup__title"><?= protect($current_user->username) ?></div>
 
                             <a
-                                class="popup__item popup__item--link icon icon--avatar"
+                                class="popup__item popup__item--link"
                                 <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('profile') ?>"
                             >
+                                <?= icon('avatar') ?>
                                 <?= _('Profile') ?>
                             </a>
 
                             <a
-                                class="popup__item popup__item--link icon icon--key"
+                                class="popup__item popup__item--link"
                                 <?= $current_page === 'security' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('security') ?>"
                             >
+                                <?= icon('key') ?>
                                 <?= _('Login & security') ?>
                             </a>
 
                             <?php if ($subscriptions_enabled): ?>
                                 <a
-                                    class="popup__item popup__item--link icon icon--credit-card"
+                                    class="popup__item popup__item--link"
                                     <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
                                     href="<?= url('account') ?>"
                                 >
+                                    <?= icon('credit-card') ?>
                                     <?= _('Account & subscription') ?>
                                 </a>
                             <?php else: ?>
                                 <a
-                                    class="popup__item popup__item--link icon icon--details"
+                                    class="popup__item popup__item--link"
                                     <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
                                     href="<?= url('account') ?>"
                                 >
+                                    <?= icon('details') ?>
                                     <?= _('Account') ?>
                                 </a>
                             <?php endif; ?>
@@ -141,7 +144,8 @@
 
                             <form method="post" action="<?= url('logout') ?>">
                                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                                <button type="submit" class="popup__item popup__item--button icon icon--logout">
+                                <button type="submit" class="popup__item popup__item--button">
+                                    <?= icon('logout') ?>
                                     <?= _('Log out') ?>
                                 </button>
                             </form>
@@ -155,7 +159,6 @@
                     <nav class="layout__back">
                         <?php if (isset($back['js-back-anchor-type'])): ?>
                             <a
-                                class="icon icon--anchor icon--left icon--arrow"
                                 href="<?= $back['href'] ?>"
                                 data-controller="back-anchor"
                                 data-back-anchor-type="<?= $back['js-back-anchor-type'] ?>"
@@ -164,10 +167,12 @@
                                     data-back-anchor-mode="<?= $back['js-back-anchor-mode'] ?>"
                                 <?php endif; ?>
                             >
+                                <?= icon('arrow-left') ?>
                                 <?= $back['label'] ?>
                             </a>
                         <?php else: ?>
-                            <a class="icon icon--anchor icon--left icon--arrow" href="<?= $back['href'] ?>">
+                            <a href="<?= $back['href'] ?>">
+                                <?= icon('arrow-left') ?>
                                 <?= $back['label'] ?>
                             </a>
                         <?php endif; ?>

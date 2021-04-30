@@ -18,7 +18,3 @@
 .share__text {
     flex: 1;
 }
-
-.copy--success .share__button::before {
-    background-image: url("../../icons/core/check-line.svg");
-}

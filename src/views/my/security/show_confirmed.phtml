@@ -67,10 +67,12 @@
 
                 <button
                     type="button"
-                    class="icon icon--eye no-mobile js-only"
+                    class="no-mobile js-only"
                     data-action="input-password#toggle"
+                    data-target="input-password.button"
                     aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
                 >
+                    <?= icon('eye') ?>
                     <?= _('Show') ?>
                 </button>
             </div>

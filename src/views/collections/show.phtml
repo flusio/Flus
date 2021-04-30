@@ -75,7 +75,7 @@
                 aria-haspopup="dialog"
                 aria-controls="modal"
             >
-                <i class="icon icon--only icon--plus-circle"></i><br />
+                <?= icon('plus-circle') ?><br />
                 <?= _('Add a link') ?>
             </button>
         </div>
@@ -110,7 +110,8 @@
                     </p>
 
                     <p class="card__text">
-                        <a class="icon icon--inline icon--ghost icon--anchor icon--comments" href="<?= url('link', ['id' => $link->id]) ?>">
+                        <a href="<?= url('link', ['id' => $link->id]) ?>">
+                            <?= icon('comment') ?>
                             <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
                         </a>
 
@@ -131,7 +132,7 @@
                         >
                             <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
                                 <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
-                                    <i class="icon icon--only icon--ellipsis-horizontal"></i>
+                                    <?= icon('menu') ?>
                                     <span class="sr-only">
                                         <?= _('Open the menu') ?>
                                     </span>
@@ -140,13 +141,14 @@
 
                             <nav class="popup__container popup__container--over">
                                 <button
-                                    class="popup__item popup__item--button icon icon--pencil"
+                                    class="popup__item popup__item--button"
                                     data-controller="modal-opener"
                                     data-action="modal-opener#fetch"
                                     data-modal-opener-href="<?= url('edit link', ['id' => $link->id, 'from' => url('collection', ['id' => $collection->id])]) ?>"
                                     aria-haspopup="dialog"
                                     aria-controls="modal"
                                 >
+                                    <?= icon('pencil') ?>
                                     <?= _('Edit') ?>
                                 </button>
 
@@ -154,10 +156,11 @@
                                     <input type="hidden" value="<?= protect($link->url) ?>" data-target="copy-to-clipboard.copyable" />
 
                                     <button
-                                        class="popup__item popup__item--button share__button icon icon--copy-to-clipboard"
+                                        class="popup__item popup__item--button share__button"
                                         data-action="copy-to-clipboard#copy"
                                         data-target="copy-to-clipboard.feedback"
                                     >
+                                        <?= icon('copy-to-clipboard') ?>
                                         <?= _('Copy the external link') ?>
                                     </button>
                                 </div>
@@ -173,7 +176,7 @@
                             aria-controls="modal"
                             title="<?= _('Manage collections') ?>"
                         >
-                            <i class="icon icon--only icon--collection"></i>
+                            <?= icon('collection') ?>
                             <span class="sr-only">
                                 <?= _('Manage collections') ?>
                             </span>
@@ -181,11 +184,12 @@
                     </div>
 
                     <a
-                        class="anchor--action icon icon--anchor icon--pop-out"
+                        class="anchor--action"
                         target="_blank"
                         rel="noopener noreferrer"
                         href="<?= protect($link->url) ?>"
                     >
+                        <?= icon('pop-out') ?>
                         <?= _('read') ?>
                     </a>
                 </div>
