@@ -48,6 +48,8 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'url' => 'https://github.com/flusio/flusio',
             'title' => 'https://github.com/flusio/flusio',
+            'fetched_code' => 0,
+            'fetched_count' => 0,
         ]);
         $links_fetcher_job = new LinksFetcher();
 
@@ -56,6 +58,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::find($link_id);
         $this->assertSame('flusio/flusio', $link->title);
         $this->assertSame(200, $link->fetched_code);
+        $this->assertSame(1, $link->fetched_count);
     }
 
     public function testPerformLogsFetch()
