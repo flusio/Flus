@@ -108,8 +108,7 @@ class Routes
         $router->addRoute('get', '/links/:id/edit', 'Links#edit', 'edit link');
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');
-        $router->addRoute('get', '/links/:id/fetch', 'links/Fetches#show', 'show fetch link');
-        $router->addRoute('post', '/links/:id/fetch', 'links/Fetches#create', 'fetch link');
+        $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
         $router->addRoute('get', '/links/:id/obtain', 'links/Obtentions#new', 'obtaining link');
         $router->addRoute('post', '/links/:id/obtain', 'links/Obtentions#create', 'obtain link');
         $router->addRoute('post', '/links/:id/mark-as-read', 'Links#markAsRead', 'mark link as read');
