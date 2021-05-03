@@ -170,8 +170,8 @@ class JobTest extends \PHPUnit\Framework\TestCase
         $this->freeze($now);
         $minutes_ago = $this->fake('randomNumber');
         $number_attempts = $this->fake('numberBetween', 0, 25);
-        $queue_job = $this->fake('word');
-        $queue_requested = $this->fake('word');
+        $queue_job = $this->fakeUnique('word');
+        $queue_requested = $this->fakeUnique('word');
         $job_dao = new Job();
         $job_id = $this->create('job', [
             'perform_at' => \Minz\Time::ago($minutes_ago, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
