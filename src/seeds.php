@@ -17,9 +17,9 @@ if (!$job_dao->findBy(['name' => $links_fetcher_job->name])) {
     $links_fetcher_job->performLater();
 }
 
-$cache_cleaner_job = new \flusio\jobs\scheduled\CacheCleaner();
-if (!$job_dao->findBy(['name' => $cache_cleaner_job->name])) {
-    $cache_cleaner_job->performLater();
+$cleaner_job = new \flusio\jobs\scheduled\Cleaner();
+if (!$job_dao->findBy(['name' => $cleaner_job->name])) {
+    $cleaner_job->performLater();
 }
 
 if ($environment === 'development') {
@@ -31,14 +31,6 @@ if ($environment === 'development') {
     \flusio\models\Topic::findOrCreateBy(['label' => _('Science')]);
     \flusio\models\Topic::findOrCreateBy(['label' => _('Sport')]);
     \flusio\models\Topic::findOrCreateBy(['label' => _('Tech')]);
-}
-
-$demo = \Minz\Configuration::$application['demo'];
-if ($demo) {
-    $reset_demo_job = new \flusio\jobs\scheduled\ResetDemo();
-    if (!$job_dao->findBy(['name' => $reset_demo_job->name])) {
-        $reset_demo_job->performLater();
-    }
 }
 
 $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];

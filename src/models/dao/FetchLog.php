@@ -39,4 +39,24 @@ class FetchLog extends \Minz\DatabaseModel
         $statement->execute([$host, $since]);
         return intval($statement->fetchColumn());
     }
+
+    /**
+     * Delete logs older than the given date
+     *
+     * @param \DateTime $date
+     *
+     * @return boolean True on success
+     */
+    public function deleteOlderThan($date)
+    {
+        $sql = <<<SQL
+            DELETE FROM fetch_logs
+            WHERE created_at < ?
+        SQL;
+
+        $statement = $this->prepare($sql);
+        return $statement->execute([
+            $date->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+    }
 }
