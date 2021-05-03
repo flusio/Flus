@@ -60,6 +60,11 @@ class FetchLog extends \Minz\Model
         $host = \flusio\utils\Belt::host($url);
         $since = \Minz\Time::ago(1, 'minute');
         $count_limit = 25;
+
+        if ($host === 'youtube.com') {
+            $count_limit = 10;
+        }
+
         $count = self::daoCall('countFetchesToHost', $host, $since);
         return $count >= $count_limit;
     }
