@@ -14,6 +14,17 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
+    /**
+     * @before
+     */
+    public function emptyCachePath()
+    {
+        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
+    }
+
     public function testShowRendersCorrectly()
     {
         $title = $this->fake('words', 3, true);
@@ -103,19 +114,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200, $title);
         $this->assertPointer($response, 'links/show_public.phtml');
-    }
-
-    public function testShowRedirectsIfNotFetched()
-    {
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'fetched_at' => null,
-        ]);
-
-        $response = $this->appRun('get', "/links/{$link_id}");
-
-        $this->assertResponse($response, 302, "/links/{$link_id}/fetch");
     }
 
     public function testShowRedirectsIfHiddenAndNotConnected()
@@ -240,7 +238,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
-        $url = $this->fake('url');
+        $url = 'https://github.com/flusio/flusio';
 
         $this->assertSame(0, models\Link::count());
         $this->assertSame(0, $links_to_collections_dao->count());
@@ -257,6 +255,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::take();
         $this->assertResponse($response, 302, "/links/{$link->id}");
         $this->assertSame($url, $link->url);
+        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertSame(200, $link->fetched_code);
         $this->assertSame($user->id, $link->user_id);
         $this->assertContains($collection_id, array_column($link->collections(), 'id'));
         $this->assertFalse($link->is_hidden);
@@ -271,7 +271,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => $user->csrf,
-            'url' => $this->fake('url'),
+            'url' => 'https://github.com/flusio/flusio',
             'collection_ids' => [$collection_id],
             'is_hidden' => true,
         ]);
@@ -285,7 +285,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
-        $url = $this->fake('url');
+        $url = 'https://github.com/flusio/flusio';
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
@@ -316,7 +316,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $user = $this->login();
         $another_user_id = $this->create('user');
-        $url = $this->fake('url');
+        $url = 'https://github.com/flusio/flusio';
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
@@ -346,7 +346,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         $user = $this->login();
-        $url = $this->fake('url');
+        $url = 'https://github.com/flusio/flusio';
         $collection_id_1 = $this->create('collection', [
             'user_id' => $user->id,
         ]);
@@ -385,7 +385,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user_id,
         ]);
-        $url = $this->fake('url');
+        $url = 'https://github.com/flusio/flusio';
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -412,7 +412,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => 'not the token',
-            'url' => $this->fake('url'),
+            'url' => 'https://github.com/flusio/flusio',
             'collection_ids' => [$collection_id],
         ]);
 
@@ -463,7 +463,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => $user->csrf,
-            'url' => $this->fake('url'),
+            'url' => 'https://github.com/flusio/flusio',
             'collection_ids' => [$collection_id],
         ]);
 
@@ -477,7 +477,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => $user->csrf,
-            'url' => $this->fake('url'),
+            'url' => 'https://github.com/flusio/flusio',
             'collection_ids' => [],
         ]);
 

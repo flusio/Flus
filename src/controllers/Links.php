@@ -5,6 +5,7 @@ namespace flusio\controllers;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
+use flusio\services;
 use flusio\utils;
 
 /**
@@ -24,8 +25,6 @@ class Links
      *     if user is not connected and the link is not public
      * @response 404
      *     if the link doesn't exist or is inaccessible to current user
-     * @response 302 /links/:id/fetch
-     *     if the link is owned by the current user and is not fetched yet
      * @response 200
      */
     public function show($request)
@@ -56,12 +55,6 @@ class Links
             $response->setHeader('Content-Type', 'application/atom+xml;charset=UTF-8');
             return $response;
         } elseif ($can_update) {
-            if (!$link->fetched_at) {
-                return Response::redirect('show fetch link', [
-                    'id' => $link->id,
-                ]);
-            }
-
             $collections = $link->collections();
             models\Collection::sort($collections, $user->locale);
 
@@ -206,7 +199,11 @@ class Links
         if ($existing_link) {
             $link = $existing_link;
         } else {
-            $link->save();
+            $link_fetcher_service = new services\LinkFetcher([
+                'timeout' => 10,
+                'rate_limit' => false,
+            ]);
+            $link_fetcher_service->fetch($link);
         }
 
         $existing_collections = $link->collections();
@@ -403,5 +400,15 @@ class Links
         $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
 
         return Response::found($from);
+    }
+
+    /**
+     * Do nothing, it handles webextension requests on the removed fetch endpoint.
+     *
+     * @response 200
+     */
+    public function fetch()
+    {
+        return \Minz\Response::ok();
     }
 }
