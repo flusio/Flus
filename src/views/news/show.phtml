@@ -35,6 +35,12 @@
     <?php if ($news_links): ?>
         <div class="cards cards--centered">
             <?php foreach ($news_links as $news_link): ?>
+                <?php
+                    $via_collection = null;
+                    if ($news_link->via_collection_id) {
+                        $via_collection = $news_link->viaCollection();
+                    }
+                ?>
                 <div class="card">
                     <a
                         class="anchor--hidden"
@@ -71,8 +77,7 @@
                                 <?= _f('via your <strong>points of interest</strong>, added by %s', protect($via_link->owner()->username)) ?>
                             <?php elseif ($news_link->via_type === 'topics'): ?>
                                 <?= _('via your <strong>points of interest</strong>') ?>
-                            <?php elseif ($news_link->via_type === 'followed' && $news_link->via_collection_id): ?>
-                                <?php $via_collection = $news_link->viaCollection(); ?>
+                            <?php elseif ($news_link->via_type === 'followed' && $via_collection): ?>
                                 <?php if ($via_collection->type === 'collection'): ?>
                                     <?= _f('via <strong>%s</strong> by %s', protect($via_collection->name()), protect($via_collection->owner()->username)) ?>
                                 <?php else: ?>
@@ -83,7 +88,7 @@
                             <?php endif; ?>
                         </p>
 
-                        <?php if ($news_link->via_link_id): ?>
+                        <?php if ($news_link->via_link_id && !($via_collection && $via_collection->type === 'feed')): ?>
                             <p class="card__text">
                                 <a href="<?= url('link', ['id' => $news_link->via_link_id]) ?>">
                                     <?= icon('comment') ?>
