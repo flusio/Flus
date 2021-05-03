@@ -16,4 +16,20 @@ class Session extends \Minz\DatabaseModel
         $properties = array_keys(\flusio\models\Session::PROPERTIES);
         parent::__construct('sessions', 'id', $properties);
     }
+
+    /**
+     * Delete sessions that have expired (no token).
+     *
+     * @return boolean True on success
+     */
+    public function deleteExpired()
+    {
+        $sql = <<<SQL
+            DELETE FROM sessions
+            WHERE token IS NULL
+        SQL;
+
+        $statement = $this->prepare($sql);
+        return $statement->execute();
+    }
 }

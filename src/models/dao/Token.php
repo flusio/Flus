@@ -16,4 +16,22 @@ class Token extends \Minz\DatabaseModel
         $properties = array_keys(\flusio\models\Token::PROPERTIES);
         parent::__construct('tokens', 'token', $properties);
     }
+
+    /**
+     * Delete tokens that have expired.
+     *
+     * @return boolean True on success
+     */
+    public function deleteExpired()
+    {
+        $sql = <<<SQL
+            DELETE FROM tokens
+            WHERE expired_at <= ?
+        SQL;
+
+        $statement = $this->prepare($sql);
+        return $statement->execute([
+            \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+    }
 }

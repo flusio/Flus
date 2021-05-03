@@ -93,11 +93,51 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\FetchLog::exists($fetch_log_id));
     }
 
+    public function testPerformDeletesExpiredSession()
+    {
+        $cleaner_job = new Cleaner();
+        $days = $this->fake('numberBetween', 0, 9000);
+        $expired_at = \Minz\Time::ago($days, 'days');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $session_id = $this->create('session', [
+            'token' => $token,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertFalse(models\Session::exists($session_id));
+        $this->assertFalse(models\Token::exists($token));
+    }
+
+    public function testPerformKeepsCurrentSession()
+    {
+        $cleaner_job = new Cleaner();
+        $days = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($days, 'days');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $session_id = $this->create('session', [
+            'token' => $token,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\Session::exists($session_id));
+        $this->assertTrue(models\Token::exists($token));
+    }
+
     public function testPerformDeletesDataIfDemoIsEnabled()
     {
         \Minz\Configuration::$application['demo'] = true;
         $cleaner_job = new Cleaner();
-        $token = $this->create('token');
+        $days = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($days, 'days');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id = $this->create('user', [
             'validation_token' => $token,
         ]);
@@ -130,7 +170,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     {
         \Minz\Configuration::$application['demo'] = false;
         $cleaner_job = new Cleaner();
-        $token = $this->create('token');
+        $days = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($days, 'days');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
         $user_id = $this->create('user', [
             'validation_token' => $token,
         ]);
