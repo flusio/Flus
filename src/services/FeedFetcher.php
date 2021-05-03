@@ -17,23 +17,30 @@ class FeedFetcher
     /** @var \SpiderBits\Http */
     private $http;
 
-    /** @var boolean */
-    private $no_cache;
+    /** @var array */
+    private $options = [
+        'timeout' => 20,
+        'rate_limit' => true,
+        'cache' => true,
+    ];
 
     /**
-     * @param boolean $no_cache Indicates if FeedFetcher should ignore the cache
-     * @param boolean $timeout Timeout of GET requests (default is 20)
+     * @param array $options
+     *     A list of options where possible keys are:
+     *     - timeout (integer)
+     *     - rate_limit (boolean)
+     *     - cache (boolean)
      */
-    public function __construct($no_cache = false, $timeout = 20)
+    public function __construct($options = [])
     {
+        $this->options = array_merge($this->options, $options);
+
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $this->cache = new \SpiderBits\Cache($cache_path);
 
         $this->http = new \SpiderBits\Http();
         $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
-        $this->http->timeout = $timeout;
-
-        $this->no_cache = $no_cache;
+        $this->http->timeout = $this->options['timeout'];
     }
 
     /**
@@ -165,11 +172,11 @@ class FeedFetcher
         // First, we "GET" the URL...
         $url_hash = \SpiderBits\Cache::hash($url);
         $cached_response = $this->cache->get($url_hash, 60 * 60);
-        if (!$this->no_cache && $cached_response) {
+        if ($this->options['cache'] && $cached_response) {
             // ... via the cache
             $response = \SpiderBits\Response::fromText($cached_response);
         } else {
-            if (models\FetchLog::hasReachedRateLimit($url)) {
+            if ($this->options['rate_limit'] && models\FetchLog::hasReachedRateLimit($url)) {
                 // We slow down the requests
                 $sleep_time = random_int(5, 10);
                 \Minz\Time::sleep($sleep_time);

@@ -93,7 +93,7 @@ class Feeds
     public function sync($request)
     {
         $id = $request->param('id');
-        $no_cache = filter_var($request->param('nocache', false), FILTER_VALIDATE_BOOLEAN);
+        $nocache = filter_var($request->param('nocache', false), FILTER_VALIDATE_BOOLEAN);
         $collection = models\Collection::findBy([
             'type' => 'feed',
             'id' => $id,
@@ -102,7 +102,9 @@ class Feeds
             return Response::text(404, "Feed id `{$id}` does not exist.");
         }
 
-        $feed_fetcher_service = new services\FeedFetcher($no_cache);
+        $feed_fetcher_service = new services\FeedFetcher([
+            'cache' => !$nocache,
+        ]);
         $feed_fetcher_service->fetch($collection);
 
         return Response::text(200, "Feed {$id} ({$collection->feed_url}) has been synchronized.");

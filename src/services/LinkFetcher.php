@@ -23,14 +23,30 @@ class LinkFetcher
     /** @var \SpiderBits\Http */
     private $http;
 
-    public function __construct()
+    /** @var array */
+    private $options = [
+        'timeout' => 10,
+        'rate_limit' => true,
+        'cache' => true,
+    ];
+
+    /**
+     * @param array $options
+     *     A list of options where possible keys are:
+     *     - timeout (integer)
+     *     - rate_limit (boolean)
+     *     - cache (boolean)
+     */
+    public function __construct($options = [])
     {
+        $this->options = array_merge($this->options, $options);
+
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $this->cache = new \SpiderBits\Cache($cache_path);
 
         $this->http = new \SpiderBits\Http();
         $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
-        $this->http->timeout = 10;
+        $this->http->timeout = $this->options['timeout'];
     }
 
     /**
@@ -98,10 +114,13 @@ class LinkFetcher
         // First, we "GET" the URL...
         $url_hash = \SpiderBits\Cache::hash($url);
         $cached_response = $this->cache->get($url_hash);
-        if ($cached_response) {
+        if ($this->options['cache'] && $cached_response) {
             // ... via the cache
             $response = \SpiderBits\Response::fromText($cached_response);
-        } elseif (!models\FetchLog::hasReachedRateLimit($url)) {
+        } elseif (
+            !$this->options['rate_limit'] ||
+            !models\FetchLog::hasReachedRateLimit($url)
+        ) {
             // ... or via HTTP
             $options = [];
             if ($this->isTwitter($url)) {

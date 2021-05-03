@@ -117,10 +117,16 @@ class Searches
             ]);
         }
 
-        $link_fetcher_service = new services\LinkFetcher();
+        $link_fetcher_service = new services\LinkFetcher([
+            'timeout' => 10,
+            'rate_limit' => false,
+        ]);
         $link_fetcher_service->fetch($default_link);
 
-        $feed_fetcher_service = new services\FeedFetcher(false, 10);
+        $feed_fetcher_service = new services\FeedFetcher([
+            'timeout' => 10,
+            'rate_limit' => false,
+        ]);
         foreach ($default_link->feedUrls() as $feed_url) {
             $existing_feed = models\Collection::findBy([
                 'type' => 'feed',
