@@ -225,8 +225,9 @@ class Collections
      * Show the edition page of a collection
      *
      * @request_param string id
+     * @request_param string from
      *
-     * @response 302 /login?redirect_to=/collection/:id/edit if not connected
+     * @response 302 /login?redirect_to=:from if not connected
      * @response 404 if the collection doesn’t exist or user hasn't access
      * @response 200
      */
@@ -234,11 +235,10 @@ class Collections
     {
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
+        $from = $request->param('from');
 
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('edit collection', ['id' => $collection_id]),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collection = models\Collection::find($collection_id);
@@ -253,6 +253,7 @@ class Collections
                 'description' => $collection->description,
                 'is_public' => $collection->is_public,
                 'topic_ids' => array_column($collection->topics(), 'id'),
+                'from' => $from,
             ]);
         } else {
             return Response::notFound('not_found.phtml');
@@ -268,21 +269,21 @@ class Collections
      * @request_param string description
      * @request_param string[] topic_ids
      * @request_param boolean is_public
+     * @request_param string from
      *
-     * @response 302 /login?redirect_to=/collection/:id/edit if not connected
+     * @response 302 /login?redirect_to=:from if not connected
      * @response 404 if the collection doesn’t exist or user hasn't access
      * @response 400 if csrf, name or topic_ids are invalid
-     * @response 302 /collections/:id
+     * @response 302 :from
      */
     public function update($request)
     {
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
+        $from = $request->param('from');
 
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('edit collection', ['id' => $collection_id]),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collection = models\Collection::find($collection_id);
@@ -307,6 +308,7 @@ class Collections
                 'description' => $description,
                 'is_public' => $is_public,
                 'topic_ids' => $topic_ids,
+                'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
@@ -319,6 +321,7 @@ class Collections
                 'description' => $description,
                 'is_public' => $is_public,
                 'topic_ids' => $topic_ids,
+                'from' => $from,
                 'errors' => [
                     'topic_ids' => _('One of the associated topic doesn’t exist.'),
                 ],
@@ -337,6 +340,7 @@ class Collections
                 'description' => $description,
                 'is_public' => $is_public,
                 'topic_ids' => $topic_ids,
+                'from' => $from,
                 'errors' => $errors,
             ]);
         }
@@ -345,14 +349,14 @@ class Collections
         $collections_to_topics_dao = new models\dao\CollectionsToTopics();
         $collections_to_topics_dao->set($collection->id, $topic_ids);
 
-        return Response::redirect('collection', ['id' => $collection->id]);
+        return Response::found($from);
     }
 
     /**
      * Delete a collection
      *
      * @request_param string id
-     * @request_param string from default is /collections/:id/edit
+     * @request_param string from
      *
      * @response 302 /login?redirect_to=:from if not connected
      * @response 404 if the collection doesn’t exist or user hasn't access
@@ -363,7 +367,7 @@ class Collections
     {
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
-        $from = $request->param('from', \Minz\Url::for('edit collection', ['id' => $collection_id]));
+        $from = $request->param('from');
 
         if (!$user) {
             return Response::redirect('login', [

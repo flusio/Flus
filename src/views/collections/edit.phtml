@@ -23,6 +23,7 @@
         <?php endif; ?>
 
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
 
         <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
             <label for="name">
@@ -125,7 +126,7 @@
         data-message="<?= _('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.') ?>"
     >
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
 
         <button type="submit" class="button--danger">
             <?= icon('trash') ?>
