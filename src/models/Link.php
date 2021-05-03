@@ -214,6 +214,17 @@ class Link extends \Minz\Model
     }
 
     /**
+     * Return whether the link URL is a feed URL.
+     *
+     * @return boolean
+     */
+    public function isFeedUrl()
+    {
+        $feed_urls = $this->feedUrls();
+        return in_array($this->url, $feed_urls);
+    }
+
+    /**
      * @return string
      */
     public function host()
