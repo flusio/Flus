@@ -27,9 +27,18 @@
         ];
     }
 
+    if ($pagination->isCurrentFirstPage()) {
+        $current_url_params = ['id' => $collection->id];
+    } else {
+        $current_url_params = [
+            'id' => $collection->id,
+            'page' => $pagination->currentPage(),
+        ];
+    }
+
     $this->layout('base.phtml', [
         'title' => $collection->name,
-        'canonical' => url('collection', ['id' => $collection->id]),
+        'canonical' => url_full('collection', $current_url_params),
         'current_tab' => 'collections',
         'feed' => $feed,
         'open_graph' => $open_graph,
@@ -84,7 +93,7 @@
                 <?php if ($current_user->isFollowing($collection->id)): ?>
                     <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
+                        <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
 
                         <button class="button--small">
                             <?= _('Unfollow') ?>
@@ -93,7 +102,7 @@
                 <?php else: ?>
                     <form method="post" action="<?= url('follow collection', ['id' => $collection->id]) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <input type="hidden" name="from" value="<?= url('collection', ['id' => $collection->id]) ?>" />
+                        <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
                         <button class="button--small">
                             <?= _('Follow') ?>
                         </button>
