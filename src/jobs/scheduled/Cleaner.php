@@ -26,6 +26,8 @@ class Cleaner extends jobs\Job
         $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
         $cache->clean();
 
+        models\FetchLog::daoCall('deleteOlderThan', \Minz\Time::ago(7, 'days'));
+
         if (\Minz\Configuration::$application['demo']) {
             // with these two delete, the other tables should be deleted in cascade
             models\Token::deleteAll();
