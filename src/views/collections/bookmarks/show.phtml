@@ -21,7 +21,7 @@
                 class="card__button card__button--link"
                 data-controller="modal-opener"
                 data-action="modal-opener#fetch"
-                data-modal-opener-href="<?= url('new link', ['collection' => $collection->id]) ?>"
+                data-modal-opener-href="<?= url('new link', ['collection' => $collection->id, 'from' => url('bookmarks')]) ?>"
                 aria-haspopup="dialog"
                 aria-controls="modal"
             >

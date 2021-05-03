@@ -77,23 +77,19 @@ class Links
      *
      * @request_param string url The URL to prefill the URL input (default is '')
      * @request_param string[] collection_ids Collection to check (default contains bookmarks id)
+     * @request_param string from The page to redirect to after creation (default is /links/new)
      *
-     * @response 302 /login?redirect_to=/links/new if not connected
+     * @response 302 /login?redirect_to=:from if not connected
      * @response 200
      */
     public function new($request)
     {
         $user = auth\CurrentUser::get();
         $default_url = $request->param('url', '');
+        $from = $request->param('from', \Minz\Url::for('new link'));
 
         if (!$user) {
-            if ($default_url) {
-                $redirect_to = \Minz\Url::for('new link', ['url' => $default_url]);
-            } else {
-                $redirect_to = \Minz\Url::for('new link');
-            }
-
-            return Response::redirect('login', ['redirect_to' => $redirect_to]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collections = $user->collections();
@@ -112,6 +108,7 @@ class Links
             'is_hidden' => false,
             'collection_ids' => $default_collection_ids,
             'collections' => $collections,
+            'from' => $from,
         ]);
     }
 
@@ -123,11 +120,12 @@ class Links
      * @request_param boolean is_hidden
      * @request_param string[] collection_ids It must contain at least one
      *                                        collection id
+     * @request_param string from The page to redirect to after creation (default is /links/new)
      *
-     * @response 302 /login?redirect_to=/links/new if not connected
+     * @response 302 /login?redirect_to=:from if not connected
      * @response 400 if CSRF or the url is invalid, of if one collection id
      *               doesn't exist or parameter is missing/empty
-     * @response 302 /links/:id on success
+     * @response 302 :from on success
      */
     public function create($request)
     {
@@ -135,11 +133,10 @@ class Links
         $url = $request->param('url', '');
         $is_hidden = $request->param('is_hidden', false);
         $collection_ids = $request->param('collection_ids', []);
+        $from = $request->param('from', \Minz\Url::for('new link', ['url' => $url]));
 
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('new link', ['url' => $url]),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collections = $user->collections();
@@ -152,6 +149,7 @@ class Links
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
@@ -164,6 +162,7 @@ class Links
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'from' => $from,
                 'errors' => $errors,
             ]);
         }
@@ -174,6 +173,7 @@ class Links
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'from' => $from,
                 'errors' => [
                     'collection_ids' => _('The link must be associated to a collection.'),
                 ],
@@ -186,6 +186,7 @@ class Links
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'from' => $from,
                 'errors' => [
                     'collection_ids' => _('One of the associated collection doesn’t exist.'),
                 ],
@@ -214,9 +215,7 @@ class Links
             $links_to_collections_dao->attach($link->id, $collection_ids);
         }
 
-        return Response::redirect('link', [
-            'id' => $link->id,
-        ]);
+        return Response::found($from);
     }
 
     /**

@@ -163,8 +163,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('get', '/links/new');
+        $response = $this->appRun('get', '/links/new', [
+            'from' => $from,
+        ]);
 
         $this->assertResponse($response, 200, 'New link');
         $this->assertPointer($response, 'links/new.phtml');
@@ -180,9 +183,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'type' => 'bookmarks',
         ]);
         $url = $this->fake('url');
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('get', '/links/new', [
             'url' => $url,
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 200, $url);
@@ -199,9 +204,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('get', '/links/new', [
             'collection' => $collection_id,
+            'from' => $from,
         ]);
 
         $variables = $response->output()->variables();
@@ -210,35 +217,25 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRedirectsIfNotConnected()
     {
-        $response = $this->appRun('get', '/links/new');
-
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Flinks%2Fnew');
-    }
-
-    public function testNewRedirectsIfNotConnectedAndKeepsUrl()
-    {
-        $url = $this->fake('url');
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('get', '/links/new', [
-            'url' => $url
+            'from' => $from,
         ]);
 
-        $this->assertResponse(
-            $response,
-            302,
-            '/login?redirect_to=%2Flinks%2Fnew%3Furl%3D' . urlencode(urlencode($url))
-        );
+        $from_encoded = urlencode($from);
+        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
     public function testCreateCreatesLinkAndRedirects()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
         $url = 'https://github.com/flusio/flusio';
+        $from = \Minz\Url::for('bookmarks');
 
         $this->assertSame(0, models\Link::count());
         $this->assertSame(0, $links_to_collections_dao->count());
@@ -247,13 +244,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'url' => $url,
             'collection_ids' => [$collection_id],
+            'from' => $from,
         ]);
 
         $this->assertSame(1, models\Link::count());
         $this->assertSame(1, $links_to_collections_dao->count());
 
         $link = models\Link::take();
-        $this->assertResponse($response, 302, "/links/{$link->id}");
+        $this->assertResponse($response, 302, $from);
         $this->assertSame($url, $link->url);
         $this->assertSame('flusio/flusio', $link->title);
         $this->assertSame(200, $link->fetched_code);
@@ -268,12 +266,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => $user->csrf,
             'url' => 'https://github.com/flusio/flusio',
             'collection_ids' => [$collection_id],
             'is_hidden' => true,
+            'from' => $from,
         ]);
 
         $link = models\Link::take();
@@ -283,7 +283,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateDoesNotCreateLinkIfItExists()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user = $this->login();
         $url = 'https://github.com/flusio/flusio';
         $collection_id = $this->create('collection', [
@@ -293,6 +292,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $url,
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
         $this->assertSame(1, models\Link::count());
         $this->assertSame(0, $links_to_collections_dao->count());
@@ -301,6 +301,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'url' => $url,
             'collection_ids' => [$collection_id],
+            'from' => $from,
         ]);
 
         $this->assertSame(1, models\Link::count());
@@ -313,7 +314,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateCreatesLinkIfItExistsForAnotherUser()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user = $this->login();
         $another_user_id = $this->create('user');
         $url = 'https://github.com/flusio/flusio';
@@ -324,6 +324,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $another_user_id,
             'url' => $url,
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
         $this->assertSame(1, models\Link::count());
         $this->assertSame(0, $links_to_collections_dao->count());
@@ -332,6 +333,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'url' => $url,
             'collection_ids' => [$collection_id],
+            'from' => $from,
         ]);
 
         $this->assertSame(2, models\Link::count());
@@ -344,7 +346,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateHandlesMultipleCollections()
     {
         $links_to_collections_dao = new models\dao\LinksToCollections();
-
         $user = $this->login();
         $url = 'https://github.com/flusio/flusio';
         $collection_id_1 = $this->create('collection', [
@@ -361,6 +362,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'link_id' => $link_id,
             'collection_id' => $collection_id_1,
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
         $this->assertSame(1, models\Link::count());
         $this->assertSame(1, $links_to_collections_dao->count());
@@ -369,6 +371,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'url' => $url,
             'collection_ids' => [$collection_id_1, $collection_id_2],
+            'from' => $from,
         ]);
 
         $this->assertSame(1, models\Link::count());
@@ -386,18 +389,17 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user_id,
         ]);
         $url = 'https://github.com/flusio/flusio';
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'url' => $url,
             'collection_ids' => [$collection_id],
+            'from' => $from,
         ]);
 
-        $this->assertResponse(
-            $response,
-            302,
-            '/login?redirect_to=%2Flinks%2Fnew%3Furl%3D' . urlencode(urlencode($url))
-        );
+        $from_encoded = urlencode($from);
+        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
         $this->assertSame(0, models\Link::count());
     }
 
@@ -409,11 +411,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => 'not the token',
             'url' => 'https://github.com/flusio/flusio',
             'collection_ids' => [$collection_id],
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
@@ -426,11 +430,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => $user->csrf,
             'url' => 'ftp://' . $this->fake('domainName'),
             'collection_ids' => [$collection_id],
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 400, 'Link scheme must be either http or https.');
@@ -443,10 +449,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => $user->csrf,
             'collection_ids' => [$collection_id],
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 400, 'The link is required.');
@@ -460,11 +468,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
         ]);
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => $user->csrf,
             'url' => 'https://github.com/flusio/flusio',
             'collection_ids' => [$collection_id],
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
@@ -474,11 +484,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCollectionIsMissing()
     {
         $user = $this->login();
+        $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', '/links/new', [
             'csrf' => $user->csrf,
             'url' => 'https://github.com/flusio/flusio',
             'collection_ids' => [],
+            'from' => $from,
         ]);
 
         $this->assertResponse($response, 400, 'The link must be associated to a collection.');
