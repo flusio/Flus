@@ -1,5 +1,30 @@
 # Changelog of flusio
 
+## 2021-05-04 - v0.22
+
+### Improvements
+
+- Improve UX when adding a link to a collection (directly fetch the link +
+  redirect to the collection)
+- Ignore rate limits on search page
+- Decrease rate limit for Youtube
+- Always display feed website on search page
+- Hide link if url is a feed URL on search page
+- Hide comments on news via feed
+
+### Bug fixes
+
+- Order links by id when `created_at` are identical
+- Redirect to paginated page on collections actions
+- List only OPML/XML files when uploading OPML
+
+### Misc
+
+- Refresh links in error
+- Dedicate a job to clean system data
+- Fix data in dao Job test failing randomly
+- Change the icon system (include SVG directly in the HTML)
+
 ## 2021-04-29 - v0.21
 
 ### Migration notes
