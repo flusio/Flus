@@ -106,7 +106,7 @@
                         </button>
                     </div>
                 </div>
-            <?php elseif ($default_link && !$default_link->isFeedUrl()): ?>
+            <?php elseif ($default_link && !($default_link->isFeedUrl() && $feeds)): ?>
                 <div class="card">
                     <a
                         class="anchor--hidden"
