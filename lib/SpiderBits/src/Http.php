@@ -98,6 +98,10 @@ class Http
             curl_setopt($curl_handle, CURLOPT_USERPWD, $options['auth_basic']);
         }
 
+        if (isset($options['force_ipv4']) && $options['force_ipv4']) {
+            curl_setopt($curl_handle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        }
+
         if (isset($options['headers'])) {
             $request_headers = array_merge($this->headers, $options['headers']);
         } else {

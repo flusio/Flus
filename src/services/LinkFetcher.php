@@ -127,9 +127,13 @@ class LinkFetcher
                 // If we fetch Twitter, we need to alter our user agent to get
                 // server-side rendered content.
                 // @see https://stackoverflow.com/a/64332370
-                $options = [
-                    'user_agent' => $this->http->user_agent . ' (compatible; Googlebot/2.1)',
-                ];
+                $options['user_agent'] = $this->http->user_agent . ' (compatible; Googlebot/2.1)';
+            }
+
+            if ($this->isYoutube($url)) {
+                // Apparently there’s lower risk to be blocked by Youtube if we
+                // fetch pages with IPv4, so be it.
+                $options['force_ipv4'] = true;
             }
 
             models\FetchLog::log($url);
