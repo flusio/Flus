@@ -193,8 +193,10 @@ class FeedFetcher
                 ];
             }
 
-            // that we add to cache
-            $this->cache->save($url_hash, (string)$response);
+            // that we add to cache on success
+            if ($response->success) {
+                $this->cache->save($url_hash, (string)$response);
+            }
         }
 
         $info = [

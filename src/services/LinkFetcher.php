@@ -142,8 +142,10 @@ class LinkFetcher
                 ];
             }
 
-            // that we add to cache
-            $this->cache->save($url_hash, (string)$response);
+            // that we add to cache on success
+            if ($response->success) {
+                $this->cache->save($url_hash, (string)$response);
+            }
         } else {
             return [
                 'status' => self::ERROR_RATE_LIMIT,

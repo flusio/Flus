@@ -169,6 +169,23 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
+    public function testFetchDoesNotSaveResponseInCacheIfResponseIsInError()
+    {
+        $link_fetcher_service = new LinkFetcher();
+        $url = 'https://github.com/flusio/flusio/not-a-valid-url';
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'title' => $url,
+        ]);
+        $link = models\Link::find($link_id);
+
+        $link_fetcher_service->fetch($link);
+
+        $hash = \SpiderBits\Cache::hash($url);
+        $cache_filepath = \Minz\Configuration::$application['cache_path'] . '/' . $hash;
+        $this->assertFalse(file_exists($cache_filepath));
+    }
+
     public function testFetchDoesNotChangeTitleIfAlreadySet()
     {
         $link_fetcher_service = new LinkFetcher();
