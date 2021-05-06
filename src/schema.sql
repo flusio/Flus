@@ -114,9 +114,7 @@ CREATE TABLE links (
     fetched_error TEXT,
     fetched_count INTEGER NOT NULL DEFAULT 0,
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
-
-    feed_entry_id TEXT,
-    feed_published_at TIMESTAMPTZ
+    feed_entry_id TEXT
 );
 
 CREATE UNIQUE INDEX idx_links_user_id_url ON links(user_id, url);

@@ -90,11 +90,14 @@ class FeedFetcher
 
         foreach ($feed->entries as $entry) {
             $url = \SpiderBits\Url::sanitize($entry->link);
+            if (!$url) {
+                continue;
+            }
 
             if ($entry->published_at) {
-                $feed_published_at = $entry->published_at;
+                $created_at = $entry->published_at;
             } else {
-                $feed_published_at = \Minz\Time::now();
+                $created_at = \Minz\Time::now();
             }
 
             if (isset($link_ids_by_urls[$url])) {
@@ -105,9 +108,12 @@ class FeedFetcher
                 if ($entry_title) {
                     $link->title = $entry_title;
                 }
-                $link->created_at = \Minz\Time::now();
-                $link->feed_entry_id = $entry->id;
-                $link->feed_published_at = $feed_published_at;
+                $link->created_at = $created_at;
+                if ($entry->id) {
+                    $link->feed_entry_id = $entry->id;
+                } else {
+                    $link->feed_entry_id = $url;
+                }
 
                 $db_link = $link->toValues();
                 $links_to_create = array_merge(
@@ -124,7 +130,7 @@ class FeedFetcher
 
             if (isset($link_ids_to_sync[$link_id])) {
                 // This can happen if the URL already exists but wasn't added
-                // via a feed sync (i.e. feed_published_at is null). In this
+                // via a feed sync (i.e. feed_entry_id is null). In this
                 // case, we want to sync its publication date to get correct
                 // order. We don’t do bulk update because it’s complicated.
                 // Hopefully, it doesn’t happen often: max once per link and
@@ -132,7 +138,7 @@ class FeedFetcher
                 // feeds sync.
                 models\Link::update($link_id, [
                     'feed_entry_id' => $entry->id,
-                    'feed_published_at' => $feed_published_at->format(\Minz\Model::DATETIME_FORMAT),
+                    'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
                 ]);
             }
 

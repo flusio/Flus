@@ -75,10 +75,6 @@ class Link extends \Minz\Model
             'type' => 'string',
         ],
 
-        'feed_published_at' => [
-            'type' => 'datetime',
-        ],
-
         'number_comments' => [
             'type' => 'integer',
             'computed' => true,

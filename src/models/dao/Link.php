@@ -100,7 +100,7 @@ class Link extends \Minz\DatabaseModel
 
             {$visibility_clause}
 
-            ORDER BY l.feed_published_at DESC, l.created_at DESC, l.id
+            ORDER BY l.created_at DESC, l.id
             OFFSET :offset
             {$limit_clause}
         SQL;
@@ -306,8 +306,7 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return the list of ids that needs to be synced (i.e. feed_published_at
-     * is null)
+     * Return the list of ids that needs to be synced (i.e. feed_entry_id is null)
      *
      * The ids are set as values AND keys of the returned array.
      *
@@ -320,7 +319,7 @@ class Link extends \Minz\DatabaseModel
         $sql = <<<SQL
             SELECT id FROM links
             WHERE user_id = :user_id
-            AND feed_published_at IS NULL
+            AND feed_entry_id IS NULL
         SQL;
 
         $statement = $this->prepare($sql);
