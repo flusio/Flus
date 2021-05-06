@@ -90,6 +90,9 @@ class FeedFetcher
 
         foreach ($feed->entries as $entry) {
             $url = \SpiderBits\Url::sanitize($entry->link);
+            if (!$url) {
+                continue;
+            }
 
             if ($entry->published_at) {
                 $feed_published_at = $entry->published_at;
@@ -106,7 +109,11 @@ class FeedFetcher
                     $link->title = $entry_title;
                 }
                 $link->created_at = \Minz\Time::now();
-                $link->feed_entry_id = $entry->id;
+                if ($entry->id) {
+                    $link->feed_entry_id = $entry->id;
+                } else {
+                    $link->feed_entry_id = $url;
+                }
                 $link->feed_published_at = $feed_published_at;
 
                 $db_link = $link->toValues();
@@ -124,7 +131,7 @@ class FeedFetcher
 
             if (isset($link_ids_to_sync[$link_id])) {
                 // This can happen if the URL already exists but wasn't added
-                // via a feed sync (i.e. feed_published_at is null). In this
+                // via a feed sync (i.e. feed_entry_id is null). In this
                 // case, we want to sync its publication date to get correct
                 // order. We don’t do bulk update because it’s complicated.
                 // Hopefully, it doesn’t happen often: max once per link and
