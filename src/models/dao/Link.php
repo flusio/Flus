@@ -100,7 +100,7 @@ class Link extends \Minz\DatabaseModel
 
             {$visibility_clause}
 
-            ORDER BY l.feed_published_at DESC, l.created_at DESC, l.id
+            ORDER BY l.created_at DESC, l.id
             OFFSET :offset
             {$limit_clause}
         SQL;

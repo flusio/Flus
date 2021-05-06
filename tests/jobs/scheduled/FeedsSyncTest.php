@@ -184,7 +184,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
             'user_id' => $support_user->id,
             'feed_entry_id' => null,
-            'feed_published_at' => null,
+            'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
         ]);
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
@@ -217,7 +217,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::find($link_id);
         $this->assertSame($link_entry_id, $link->feed_entry_id);
-        $this->assertSame($link_published, $link->feed_published_at->format(\DateTimeInterface::ATOM));
+        $this->assertSame($link_published, $link->created_at->format(\DateTimeInterface::ATOM));
     }
 
     public function testPerformSlowsDownFetchIfReachedRateLimit()
