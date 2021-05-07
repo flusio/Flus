@@ -209,3 +209,26 @@ function human_implode($array, $separator, $last_separator)
     }
     return $string;
 }
+
+/**
+ * Return a random sentence to display when there are no news.
+ *
+ * @return string
+ */
+function random_no_news_sentence()
+{
+    $discover_url = url('discover collections');
+    $sentences = [
+        _('Gently advice: add links to your bookmarks to read them later.'),
+        _f('Gently advice: explore <a href="%s">public collections</a> to discover new content.', $discover_url),
+        _('Gently advice: be curious!'),
+        _('Gently advice: ad blockers protect you on Internet.'),
+        _('Gently advice: remember to drink water regularly.'),
+        _('Gently advice: it might be time for a break?'),
+        _('Gently advice: you don’t have to follow all the advices we give you here.'),
+        _('For your entertainment, a choupisson : 🦔'),
+    ];
+
+    $key = array_rand($sentences);
+    return $sentences[$key];
+}

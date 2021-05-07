@@ -192,13 +192,16 @@
             </details>
         </div>
     <?php else: ?>
-        <p class="section__intro">
-            <?php if ($no_news): ?>
-                <?= _('We haven’t found any relevant links for the moment. For your entertainment: a choupisson 🦔') ?>
-            <?php else: ?>
+        <?php if ($no_news): ?>
+            <div class="section__intro">
+                <p><?= _('We haven’t found any relevant links for the moment.') ?></p>
+                <p class="text--secondary"><small><?= random_no_news_sentence() ?></small></p>
+            </div>
+        <?php else: ?>
+            <p class="section__intro">
                 <?= _('Fill the news with…') ?>
-            <?php endif; ?>
-        </p>
+            </p>
+        <?php endif; ?>
 
         <form method="post" action="<?= url('fill news') ?>">
             <?php if ($error): ?>
