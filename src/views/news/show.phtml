@@ -11,27 +11,6 @@
         <h1><?= _('News') ?></h1>
     </div>
 
-    <?php if (!$links): ?>
-        <div class="section__intro">
-            <p>
-                <?= format_news_preferences($news_preferences) ?>
-            </p>
-
-            <p>
-                <button
-                    data-controller="modal-opener"
-                    data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('news preferences') ?>"
-                    aria-haspopup="dialog"
-                    aria-controls="modal"
-                    title="<?= _('Add to collections') ?>"
-                >
-                    <?= _('Configure') ?>
-                </button>
-            </p>
-        </div>
-    <?php endif; ?>
-
     <?php if ($links): ?>
         <div class="cards cards--centered">
             <?php foreach ($links as $link): ?>
@@ -74,10 +53,6 @@
                         <p class="card__text news__via">
                             <?php if ($news_link->via_type === 'bookmarks'): ?>
                                 <?= _('via your <strong>bookmarks</strong>') ?>
-                            <?php elseif ($news_link->via_type === 'topics'): ?>
-                                <?= _f('via your <strong>points of interest</strong>, added by %s', protect($link->owner()->username)) ?>
-                            <?php elseif ($news_link->via_type === 'topics'): ?>
-                                <?= _('via your <strong>points of interest</strong>') ?>
                             <?php elseif ($news_link->via_type === 'followed' && $via_collection): ?>
                                 <?php if ($via_collection->type === 'collection'): ?>
                                     <?= _f('via <strong>%s</strong> by %s', protect($via_collection->name()), protect($via_collection->owner()->username)) ?>
@@ -218,65 +193,68 @@
         </div>
     <?php else: ?>
         <?php if ($no_news): ?>
-            <p class="paragraph--centered">
-                <em><?= _('We found no relevant news for you, what can you do?') ?></em>
+            <div class="section__intro">
+                <p><?= _('We haven’t found any relevant links for the moment.') ?></p>
+                <p class="text--secondary"><small><?= random_no_news_sentence() ?></small></p>
+            </div>
+        <?php else: ?>
+            <p class="section__intro">
+                <?= _('Fill the news with…') ?>
             </p>
+        <?php endif; ?>
 
-            <?php $tip_number = random_int(0, 2); ?>
-            <?php if ($tip_number === 0): ?>
-                <p class="paragraph--centered">
-                    <strong><?= _('As you’re navigating on the Internet, bookmark the links you would like to read later.') ?></strong>
-                </p>
-
-                <p class="paragraph--centered">
-                    <a href="<?= url('news') ?>">
-                        <?= _('Ok, fine') ?>
-                    </a>
-                </p>
-            <?php elseif ($tip_number === 1): ?>
-                <p class="paragraph--centered">
-                    <strong><?= _('Take a break, disconnect from Internet and go for a walk; news can wait.') ?></strong>
-                </p>
-
-                <p class="paragraph--centered">
-                    <a href="<?= url('news') ?>">
-                        <?= _('Ok, fine') ?>
-                    </a>
-                </p>
-            <?php else: ?>
-                <p class="paragraph--centered">
-                    <strong><?= _('Discover collections created by the community and follow the ones you are interested in.') ?></strong>
-                </p>
-
-                <p class="paragraph--centered">
-                    <a class="anchor--action" href="<?= url('discover collections') ?>">
-                        <?= _('Discover collections') ?>
-                    </a>
+        <form method="post" action="<?= url('fill news') ?>">
+            <?php if ($error): ?>
+                <p class="form__error">
+                    <?= $error ?>
                 </p>
             <?php endif; ?>
-        <?php else: ?>
-            <form class="form--centered" method="post" action="<?= url('fill news') ?>">
-                <?php if ($error): ?>
-                    <p class="form__error">
-                        <?= $error ?>
-                    </p>
-                <?php endif; ?>
 
-                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
-                <div class="form__actions">
-                    <button type="submit" class="button--primary">
-                        <?= _('Get new suggestions') ?>
+            <div class="cards cards--centered">
+                <div class="card card--action">
+                    <button class="card__button" name="type" value="newsfeed">
+                        <img
+                            class="card__image"
+                            alt=""
+                            src="<?= url_static('illustrations/newspaper.svg') ?>"
+                            height="200"
+                        />
+
+                        <strong class="news-selection__title"><?= _('the latest publications') ?></strong>
+                        <small class="text--secondary"><?= _('from your followed collections') ?></small>
                     </button>
                 </div>
-            </form>
 
-            <img
-                class="illustration illustration--centered"
-                alt=""
-                src="<?= url_static('illustrations/reading.svg') ?>"
-                height="250"
-            />
-        <?php endif; ?>
+                <div class="card card--action">
+                    <button class="card__button" name="type" value="short">
+                        <img
+                            class="card__image"
+                            alt=""
+                            src="<?= url_static('illustrations/reading.svg') ?>"
+                            height="200"
+                        />
+
+                        <strong class="news-selection__title"><?= _('3 links of -10 minutes') ?></strong>
+                        <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+                    </button>
+                </div>
+
+                <div class="card card--action">
+                    <button class="card__button" name="type" value="long">
+                        <img
+                            class="card__image"
+                            alt=""
+                            src="<?= url_static('illustrations/cup-of-tea.svg') ?>"
+                            height="200"
+                        />
+
+                        <strong class="news-selection__title"><?= _('1 link of +10 minutes') ?></strong>
+                        <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+                    </button>
+                </div>
+            </div>
+        </form>
     <?php endif; ?>
 </div>

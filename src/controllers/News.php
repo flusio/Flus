@@ -36,7 +36,6 @@ class News
 
         return Response::ok('news/show.phtml', [
             'links' => $links,
-            'news_preferences' => models\NewsPreferences::fromJson($user->news_preferences),
             'has_collections' => count($user->collections(true)) > 0,
             'no_news' => utils\Flash::pop('no_news'),
         ]);
@@ -47,6 +46,7 @@ class News
      * collections)
      *
      * @request_param string csrf
+     * @request_param string type
      *
      * @response 302 /login?redirect_to=/news
      *     if not connected
@@ -67,16 +67,35 @@ class News
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('news/show.phtml', [
                 'links' => [],
-                'news_preferences' => models\NewsPreferences::fromJson($user->news_preferences),
                 'has_collections' => count($user->collections(true)) > 0,
                 'no_news' => false,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $news_picker = new services\NewsPicker($user);
-        $db_links = $news_picker->pick();
+        $type = $request->param('type');
+        if ($type === 'newsfeed') {
+            $options = [
+                'number_links' => 9,
+                'until' => \Minz\Time::ago(3, 'days'),
+                'from' => 'followed',
+            ];
+        } elseif ($type === 'short') {
+            $options = [
+                'number_links' => 3,
+                'max_duration' => 10,
+                'from' => 'bookmarks',
+            ];
+        } else {
+            $options = [
+                'number_links' => 1,
+                'min_duration' => 10,
+                'from' => 'bookmarks',
+            ];
+        }
 
+        $news_picker = new services\NewsPicker($user, $options);
+        $db_links = $news_picker->pick();
         foreach ($db_links as $db_link) {
             $link = new models\Link($db_link);
             $news_link = models\NewsLink::initFromLink($link, $user->id);

@@ -75,8 +75,6 @@ class Routes
         // News page
         $router->addRoute('get', '/news', 'News#show', 'news');
         $router->addRoute('post', '/news', 'News#create', 'fill news');
-        $router->addRoute('get', '/news/preferences', 'news/Preferences#show', 'news preferences');
-        $router->addRoute('post', '/news/preferences', 'news/Preferences#update', 'update news preferences');
         $router->addRoute('get', '/news/:id/add', 'news/Links#new', 'adding news');
         $router->addRoute('post', '/news/:id/add', 'news/Links#create', 'add news');
         $router->addRoute('post', '/news/:id/mark-as-read', 'news/Links#markAsRead', 'mark news as read');

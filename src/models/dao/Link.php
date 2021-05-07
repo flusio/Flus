@@ -179,12 +179,35 @@ class Link extends \Minz\DatabaseModel
      * Return links listed in bookmarks of the given user, ordered randomly.
      *
      * @param string $user_id
+     * @param integer|null $min_duration
+     * @param integer|null $max_duration
+     * @param \DateTime|null $until
      *
      * @return array
      */
-    public function listFromBookmarksForNews($user_id)
+    public function listFromBookmarksForNews($user_id, $min_duration, $max_duration, $until)
     {
-        $sql = <<<'SQL'
+        $where_placeholder = '';
+        $values = [
+            ':user_id' => $user_id,
+        ];
+
+        if ($min_duration !== null) {
+            $where_placeholder .= 'AND l.reading_time >= :min_duration ';
+            $values[':min_duration'] = $min_duration;
+        }
+
+        if ($max_duration !== null) {
+            $where_placeholder .= 'AND l.reading_time < :max_duration ';
+            $values[':max_duration'] = $max_duration;
+        }
+
+        if ($until !== null) {
+            $where_placeholder .= 'AND l.created_at >= :until ';
+            $values[':until'] = $until->format(\Minz\Model::DATETIME_FORMAT);
+        }
+
+        $sql = <<<SQL
             SELECT l.*, 'bookmarks' AS news_via_type
             FROM links l, collections c, links_to_collections lc
 
@@ -196,29 +219,52 @@ class Link extends \Minz\DatabaseModel
 
             AND c.type = 'bookmarks'
 
+            {$where_placeholder}
+
             GROUP BY l.id
 
             ORDER BY random()
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([
-            ':user_id' => $user_id,
-        ]);
+        $statement->execute($values);
         return $statement->fetchAll();
     }
 
     /**
      * Return public links listed in followed collections of the given user,
-     * ordered randomly. Links with a matching url in news_links are not
+     * ordered by created_at. Links with a matching url in news_links are not
      * returned.
      *
      * @param string $user_id
+     * @param integer|null $min_duration
+     * @param integer|null $max_duration
+     * @param \DateTime|null $until
      *
      * @return array
      */
-    public function listFromFollowedCollectionsForNews($user_id)
+    public function listFromFollowedCollectionsForNews($user_id, $min_duration, $max_duration, $until)
     {
+        $where_placeholder = '';
+        $values = [
+            ':user_id' => $user_id,
+        ];
+
+        if ($min_duration !== null) {
+            $where_placeholder .= 'AND l.reading_time >= :min_duration ';
+            $values[':min_duration'] = $min_duration;
+        }
+
+        if ($max_duration !== null) {
+            $where_placeholder .= 'AND l.reading_time < :max_duration ';
+            $values[':max_duration'] = $max_duration;
+        }
+
+        if ($until !== null) {
+            $where_placeholder .= 'AND l.created_at >= :until ';
+            $values[':until'] = $until->format(\Minz\Model::DATETIME_FORMAT);
+        }
+
         $sql = <<<SQL
             SELECT l.*, 'followed' AS news_via_type, c.id AS news_via_collection_id
             FROM links l, collections c, links_to_collections lc, followed_collections fc
@@ -236,59 +282,27 @@ class Link extends \Minz\DatabaseModel
                 SELECT nl.url FROM news_links nl
                 WHERE nl.user_id = :user_id
             )
+            AND l.url NOT IN (
+                SELECT bl.url
+                FROM links bl, collections bc, links_to_collections blc
+
+                WHERE bc.user_id = :user_id
+                AND bc.type = 'bookmarks'
+
+                AND blc.link_id = bl.id
+                AND blc.collection_id = bc.id
+            )
+
+            {$where_placeholder}
 
             GROUP BY l.id, c.id
 
-            ORDER BY random()
-            LIMIT 500
+            ORDER BY l.created_at DESC, l.id
+            LIMIT 30
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([
-            ':user_id' => $user_id,
-        ]);
-        return $statement->fetchAll();
-    }
-
-    /**
-     * Return public links based on interests of the given user, ordered
-     * randomly. Links with a matching url in news_links are not returned.
-     *
-     * @param string $user_id
-     *
-     * @return array
-     */
-    public function listFromTopicsForNews($user_id)
-    {
-        $sql = <<<SQL
-            SELECT l.*, 'topics' AS news_via_type, ct.collection_id AS news_via_collection_id
-            FROM links l, links_to_collections lc, collections_to_topics ct
-
-            WHERE ct.topic_id IN (
-                SELECT ut.topic_id FROM users_to_topics ut
-                WHERE ut.user_id = :user_id
-            )
-
-            AND ct.collection_id = lc.collection_id
-            AND lc.link_id = l.id
-
-            AND l.is_hidden = false
-            AND l.user_id != :user_id
-            AND l.url NOT IN (
-                SELECT nl.url FROM news_links nl
-                WHERE nl.user_id = :user_id
-            )
-
-            GROUP BY l.id, ct.collection_id
-
-            ORDER BY random()
-            LIMIT 500
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([
-            ':user_id' => $user_id,
-        ]);
+        $statement->execute($values);
         return $statement->fetchAll();
     }
 

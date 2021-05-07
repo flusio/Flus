@@ -181,55 +181,6 @@ function icon($icon_name)
 }
 
 /**
- * Format news preferences so it's readable for humans.
- *
- * @param \flusio\models\NewsPreferences $preferences
- *
- * @return string
- */
-function format_news_preferences($preferences)
-{
-    $duration = format_news_duration($preferences->duration);
-    $froms = [];
-    if ($preferences->from_bookmarks) {
-        $froms[] = _('bookmarks');
-    }
-    if ($preferences->from_followed) {
-        $froms[] = _('followed collections');
-    }
-    if ($preferences->from_topics) {
-        $froms[] = _('points of interest');
-    }
-    $from = human_implode($froms, ', ', _(' and '));
-
-    return _f('Get about %s of reading from your %s.', $duration, $from);
-}
-
-/**
- * Return a duration (in minutes) as a formatted string (only suitable for news
- * preferences).
- *
- * @param integer $duration
- *
- * @return string
- */
-function format_news_duration($duration)
-{
-    $hours = floor($duration / 60);
-    $minutes = $duration % 60;
-
-    if ($hours === 0.0) {
-        return _nf('%d&nbsp;minute', '%d&nbsp;minutes', $minutes, $minutes);
-    }
-
-    if ($minutes === 0) {
-        return _nf('%d&nbsp;hour', '%d&nbsp;hours', $hours, $hours);
-    }
-
-    return _f('%d&nbsp;h&nbsp;%d', $hours, $minutes);
-}
-
-/**
  * Join items from a list, allowing to change the last separator to make it
  * more natural for humans.
  *
@@ -257,4 +208,27 @@ function human_implode($array, $separator, $last_separator)
         }
     }
     return $string;
+}
+
+/**
+ * Return a random sentence to display when there are no news.
+ *
+ * @return string
+ */
+function random_no_news_sentence()
+{
+    $discover_url = url('discover collections');
+    $sentences = [
+        _('Gently advice: add links to your bookmarks to read them later.'),
+        _f('Gently advice: explore <a href="%s">public collections</a> to discover new content.', $discover_url),
+        _('Gently advice: be curious!'),
+        _('Gently advice: ad blockers protect you on Internet.'),
+        _('Gently advice: remember to drink water regularly.'),
+        _('Gently advice: it might be time for a break?'),
+        _('Gently advice: you don’t have to follow all the advices we give you here.'),
+        _('For your entertainment, a choupisson : 🦔'),
+    ];
+
+    $key = array_rand($sentences);
+    return $sentences[$key];
 }
