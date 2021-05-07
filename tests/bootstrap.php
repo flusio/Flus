@@ -233,6 +233,12 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'is_removed' => function () use ($faker) {
             return (int)$faker->boolean;
         },
+        'link_id' => function () {
+            $link_factory = new \Minz\Tests\DatabaseFactory('link');
+            return $link_factory->create([
+                'is_hidden' => 0,
+            ]);
+        },
         'user_id' => function () use ($faker) {
             $user_factory = new \Minz\Tests\DatabaseFactory('user');
             return $user_factory->create();

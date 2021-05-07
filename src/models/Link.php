@@ -80,6 +80,11 @@ class Link extends \Minz\Model
             'computed' => true,
         ],
 
+        'news_link_id' => [
+            'type' => 'string',
+            'computed' => true,
+        ],
+
         'news_via_type' => [
             'type' => 'string',
             'computed' => true,
@@ -116,29 +121,6 @@ class Link extends \Minz\Model
             'reading_time' => 0,
             'fetched_code' => 0,
             'fetched_count' => 0,
-        ]);
-    }
-
-    /**
-     * @param \flusio\models\NewsLink $news_link
-     * @param string $user_id
-     *
-     * @return \flusio\models\Link
-     */
-    public static function initFromNews($news_link, $user_id)
-    {
-        return new self([
-            'id' => utils\Random::timebased(),
-            'title' => $news_link->title,
-            'url' => $news_link->url,
-            'url_feeds' => '[]',
-            'image_filename' => $news_link->image_filename,
-            'is_hidden' => false,
-            'reading_time' => $news_link->reading_time,
-            'fetched_at' => \Minz\Time::now(),
-            'fetched_code' => 200,
-            'fetched_count' => 1,
-            'user_id' => $user_id,
         ]);
     }
 
@@ -197,6 +179,16 @@ class Link extends \Minz\Model
         return Message::listBy([
             'link_id' => $this->id,
         ]);
+    }
+
+    /**
+     * Return the news link associated to the link (only if news_link_id is set)
+     *
+     * @return \flusio\models\NewsLink
+     */
+    public function newsLink()
+    {
+        return NewsLink::find($this->news_link_id);
     }
 
     /**

@@ -18,25 +18,49 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersNewsLinksCorrectly()
     {
         $user = $this->login();
-        $title_news = $this->fake('sentence');
-        $title_not_news_1 = $this->fake('sentence');
-        $title_not_news_2 = $this->fake('sentence');
+        $title_news = $this->fakeUnique('sentence');
+        $title_not_news_1 = $this->fakeUnique('sentence');
+        $title_not_news_2 = $this->fakeUnique('sentence');
+        $title_not_news_3 = $this->fakeUnique('sentence');
+        $link_news_id = $this->create('link', [
+            'title' => $title_news,
+            'user_id' => $user->id,
+        ]);
         $this->create('news_link', [
             'user_id' => $user->id,
-            'title' => $title_news,
+            'link_id' => $link_news_id,
             'is_read' => 0,
             'is_removed' => 0,
         ]);
-        $this->create('news_link', [
-            'user_id' => $user->id,
+        $link_not_news_id_1 = $this->create('link', [
             'title' => $title_not_news_1,
-            'is_read' => 0,
-            'is_removed' => 1,
+            'user_id' => $user->id,
         ]);
         $this->create('news_link', [
             'user_id' => $user->id,
+            'link_id' => $link_not_news_id_1,
+            'is_read' => 0,
+            'is_removed' => 1,
+        ]);
+        $link_not_news_id_2 = $this->create('link', [
             'title' => $title_not_news_2,
+            'user_id' => $user->id,
+        ]);
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'link_id' => $link_not_news_id_2,
             'is_read' => 1,
+            'is_removed' => 0,
+        ]);
+        $link_not_news_id_3 = $this->create('link', [
+            'title' => $title_not_news_3,
+            'user_id' => $this->create('user'),
+            'is_hidden' => 1,
+        ]);
+        $this->create('news_link', [
+            'user_id' => $user->id,
+            'link_id' => $link_not_news_id_3,
+            'is_read' => 0,
             'is_removed' => 0,
         ]);
 
@@ -47,6 +71,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString($title_news, $response_output);
         $this->assertStringNotContainsString($title_not_news_1, $response_output);
         $this->assertStringNotContainsString($title_not_news_2, $response_output);
+        $this->assertStringNotContainsString($title_not_news_3, $response_output);
     }
 
     public function testShowShowsIfViaBookmarks()
@@ -192,9 +217,12 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     public function testShowHidesAddToCollectionsIfUserHasNoCollections()
     {
         $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
         $this->create('news_link', [
             'user_id' => $user->id,
-            'title' => $this->fake('sentence'),
+            'link_id' => $link_id,
             'is_read' => 0,
             'is_removed' => 0,
         ]);

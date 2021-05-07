@@ -11,7 +11,7 @@
         <h1><?= _('News') ?></h1>
     </div>
 
-    <?php if (!$news_links): ?>
+    <?php if (!$links): ?>
         <div class="section__intro">
             <p>
                 <?= format_news_preferences($news_preferences) ?>
@@ -32,14 +32,12 @@
         </div>
     <?php endif; ?>
 
-    <?php if ($news_links): ?>
+    <?php if ($links): ?>
         <div class="cards cards--centered">
-            <?php foreach ($news_links as $news_link): ?>
+            <?php foreach ($links as $link): ?>
                 <?php
-                    $via_collection = null;
-                    if ($news_link->via_collection_id) {
-                        $via_collection = $news_link->viaCollection();
-                    }
+                    $news_link = $link->newsLink();
+                    $via_collection = $news_link->viaCollection();
                 ?>
                 <div class="card">
                     <a
@@ -47,9 +45,9 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         tabindex="-1"
-                        href="<?= protect($news_link->url) ?>"
+                        href="<?= protect($link->url) ?>"
                     >
-                        <img class="card__image" alt="" src="<?= url_link_image('cards', $news_link->image_filename) ?>" />
+                        <img class="card__image" alt="" src="<?= url_link_image('cards', $link->image_filename) ?>" />
                     </a>
 
                     <div class="card__body">
@@ -59,21 +57,20 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 tabindex="-1"
-                                href="<?= protect($news_link->url) ?>"
+                                href="<?= protect($link->url) ?>"
                             >
-                                <?= protect($news_link->title) ?>
+                                <?= protect($link->title) ?>
                             </a>
                         </h2>
 
                         <p class="card__text card__text--oneline">
-                            <span class="card__ellipsis"><?= protect($news_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($news_link->reading_time) ?>
+                            <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                         </p>
 
                         <p class="card__text news__via">
                             <?php if ($news_link->via_type === 'bookmarks'): ?>
                                 <?= _('via your <strong>bookmarks</strong>') ?>
-                            <?php elseif ($news_link->via_type === 'topics' && $news_link->link_id): ?>
-                                <?php $link = $news_link->link(); ?>
+                            <?php elseif ($news_link->via_type === 'topics'): ?>
                                 <?= _f('via your <strong>points of interest</strong>, added by %s', protect($link->owner()->username)) ?>
                             <?php elseif ($news_link->via_type === 'topics'): ?>
                                 <?= _('via your <strong>points of interest</strong>') ?>
@@ -88,11 +85,11 @@
                             <?php endif; ?>
                         </p>
 
-                        <?php if ($news_link->link_id && !($via_collection && $via_collection->type === 'feed')): ?>
+                        <?php if (!$via_collection || $via_collection->type !== 'feed'): ?>
                             <p class="card__text">
-                                <a href="<?= url('link', ['id' => $news_link->link_id]) ?>">
+                                <a href="<?= url('link', ['id' => $link->id]) ?>">
                                     <?= icon('comment') ?>
-                                    <?= _nf('%d comment', '%d comments', $news_link->number_comments, $news_link->number_comments) ?>
+                                    <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
                                 </a>
                             </p>
                         <?php endif; ?>
@@ -119,7 +116,7 @@
                                         <?= _('Remove from the news…') ?>
                                     </div>
 
-                                    <form method="post" action="<?= url('mark news as read', ['id' => $news_link->id]) ?>">
+                                    <form method="post" action="<?= url('mark news as read', ['id' => $link->news_link_id]) ?>">
                                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                                         <button class="popup__item popup__item--button">
@@ -128,7 +125,7 @@
                                         </button>
                                     </form>
 
-                                    <form method="post" action="<?= url('read news later', ['id' => $news_link->id]) ?>">
+                                    <form method="post" action="<?= url('read news later', ['id' => $link->news_link_id]) ?>">
                                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                                         <button class="popup__item popup__item--button">
@@ -144,7 +141,7 @@
                                     class="button--ghost button--smaller"
                                     data-controller="modal-opener"
                                     data-action="modal-opener#fetch"
-                                    data-modal-opener-href="<?= url('add news', ['id' => $news_link->id]) ?>"
+                                    data-modal-opener-href="<?= url('add news', ['id' => $link->news_link_id]) ?>"
                                     aria-haspopup="dialog"
                                     aria-controls="modal"
                                     title="<?= _('Add to collections') ?>"
@@ -161,7 +158,7 @@
                             class="anchor--action"
                             target="_blank"
                             rel="noopener noreferrer"
-                            href="<?= protect($news_link->url) ?>"
+                            href="<?= protect($link->url) ?>"
                         >
                             <?= icon('pop-out') ?>
                             <?= _('read') ?>

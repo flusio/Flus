@@ -159,8 +159,11 @@ class Links
         // this link and optionally change its is_hidden status)
         if ($existing_link) {
             $link = $existing_link;
+        } elseif ($news_link->link_id) {
+            $associated_link = models\Link::find($news_link->link_id);
+            $link = models\Link::copy($associated_link, $user->id);
         } else {
-            $link = models\Link::initFromNews($news_link, $user->id);
+            $link = models\Link::init($news_link->url, $user->id, false);
         }
         $link->is_hidden = filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN);
         $link->save();
@@ -217,7 +220,7 @@ class Links
         }
 
         if ($news_link_id === 'all') {
-            $news_links = models\NewsLink::daoToList('listComputedByUserId', $user->id);
+            $news_links = models\NewsLink::daoToList('listCurrentNews', $user->id);
         } else {
             $news_link = models\NewsLink::find($news_link_id);
             if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
@@ -286,7 +289,7 @@ class Links
         }
 
         if ($news_link_id === 'all') {
-            $news_links = models\NewsLink::daoToList('listComputedByUserId', $user->id);
+            $news_links = models\NewsLink::daoToList('listCurrentNews', $user->id);
         } else {
             $news_link = models\NewsLink::find($news_link_id);
             if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
@@ -306,8 +309,12 @@ class Links
                 'url' => $news_link->url,
                 'user_id' => $user->id,
             ]);
-            if (!$link) {
-                $link = models\Link::initFromNews($news_link, $user->id);
+            if (!$link && $news_link->link_id) {
+                $associated_link = models\Link::find($news_link->link_id);
+                $link = models\Link::copy($associated_link, $user->id);
+                $link->save();
+            } elseif (!$link) {
+                $link = models\Link::init($news_link->url, $user->id, false);
                 $link->save();
             }
 

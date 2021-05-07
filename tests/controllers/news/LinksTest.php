@@ -18,9 +18,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $title = $this->fake('sentence');
+        $link_id = $this->create('link', [
+            'title' => $title,
+        ]);
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
-            'title' => $title,
+            'link_id' => $link_id,
         ]);
 
         $response = $this->appRun('get', "/news/{$news_link_id}/add");
@@ -50,10 +53,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testNewRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
-        $title = $this->fake('sentence');
         $news_link_id = $this->create('news_link', [
             'user_id' => $user_id,
-            'title' => $title,
         ]);
 
         $response = $this->appRun('get', "/news/{$news_link_id}/add");
@@ -65,10 +66,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $title = $this->fake('sentence');
         $news_link_id = $this->create('news_link', [
             'user_id' => $other_user_id,
-            'title' => $title,
         ]);
 
         $response = $this->appRun('get', "/news/{$news_link_id}/add");
@@ -80,8 +79,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $links_to_collections_dao = new models\dao\LinksToCollections();
+        $url = $this->fake('url');
+        $title = $this->fake('sentence');
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'title' => $title,
+        ]);
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
+            'link_id' => $link_id,
+            'url' => $url,
             'is_read' => 0,
             'is_removed' => 0,
         ]);
@@ -92,7 +99,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $comment = $this->fake('sentence');
         $collection_ids = [$collection_id];
 
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
@@ -101,18 +108,17 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'comment' => $comment,
         ]);
 
-        $this->assertSame(1, models\Link::count());
-
         $this->assertResponse($response, 302, '/news');
-        $link = models\Link::take();
+        $this->assertSame(2, models\Link::count());
+        $link = models\Link::findBy(['user_id' => $user->id]);
         $news_link = models\NewsLink::find($news_link_id);
         $message = $link->messages()[0];
         $db_link_to_collection = $links_to_collections_dao->listAll()[0];
         $this->assertTrue($news_link->is_read);
         $this->assertFalse($news_link->is_removed);
         $this->assertSame($user->id, $link->user_id);
-        $this->assertSame($news_link->title, $link->title);
-        $this->assertSame($news_link->url, $link->url);
+        $this->assertSame($title, $link->title);
+        $this->assertSame($url, $link->url);
         $this->assertTrue($link->is_hidden);
         $this->assertSame($comment, $message->content);
         $this->assertSame($link->id, $db_link_to_collection['link_id']);
@@ -147,7 +153,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $comment = $this->fake('sentence');
         $collection_ids = [$new_collection_id];
 
-        $this->assertSame(1, models\Link::count());
+        $this->assertSame(2, models\Link::count());
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
@@ -156,7 +162,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'comment' => $comment,
         ]);
 
-        $this->assertSame(1, models\Link::count());
+        $this->assertSame(2, models\Link::count());
 
         $this->assertResponse($response, 302, '/news');
         $link = models\Link::find($link_id);
@@ -190,7 +196,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/login?redirect_to=%2Fnews%2F{$news_link_id}%2Fadd");
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testCreateFailsIfUserDoesNotOwnTheNewsLink()
@@ -215,7 +221,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid()
@@ -239,7 +245,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testCreateFailsIfCollectionIdsIsEmpty()
@@ -263,7 +269,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The link must be associated to a collection.');
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testCreateFailsIfCollectionIdsContainsNotOwnedId()
@@ -288,7 +294,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testReadLaterRemovesLinkFromNewsAndAddsToBookmarksAndRedirects()
@@ -328,13 +334,20 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testReadLaterCreatesTheLinkIfItDoesNotExistForCurrentUser()
     {
         $user = $this->login();
+        $other_user_id = $this->create('user');
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
+        $link_id = $this->create('link', [
+            'url' => $link_url,
+            'user_id' => $other_user_id,
+            'is_hidden' => 0,
+        ]);
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
+            'link_id' => $link_id,
             'url' => $link_url,
             'is_read' => 0,
             'is_removed' => 0,
@@ -344,7 +357,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $link = models\Link::findBy(['url' => $link_url]);
+        $link = models\Link::findBy([
+            'url' => $link_url,
+            'user_id' => $user->id,
+        ]);
         $this->assertNotNull($link, 'The link should exist.');
     }
 

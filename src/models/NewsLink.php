@@ -103,18 +103,17 @@ class NewsLink extends \Minz\Model
     }
 
     /**
-     * @return \flusio\models\Link|null
-     */
-    public function link()
-    {
-        return Link::find($this->link_id);
-    }
-
-    /**
+     * Return the title of associated link, or url if link no longer exists.
+     *
      * @return string
      */
-    public function host()
+    public function title()
     {
-        return \flusio\utils\Belt::host($this->url);
+        $link = Link::find($this->link_id);
+        if ($link) {
+            return $link->title;
+        } else {
+            return $this->url;
+        }
     }
 }
