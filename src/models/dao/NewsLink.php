@@ -30,8 +30,8 @@ class NewsLink extends \Minz\DatabaseModel
     {
         $sql = <<<'SQL'
             SELECT * FROM news_links
-            WHERE is_removed = false
-            AND is_read = false
+            WHERE removed_at IS NULL
+            AND read_at IS NULL
             AND user_id = :user_id
         SQL;
 

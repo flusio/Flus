@@ -825,7 +825,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNotNull($news_link);
         $this->assertSame('bookmarks', $news_link->via_type);
-        $this->assertTrue($news_link->is_read);
+        $this->assertNotNull($news_link->read_at);
     }
 
     public function testMarkAsReadDoesNotCreateNewsLinkIfExisting()
@@ -848,7 +848,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $url,
             'via_type' => 'followed',
-            'is_read' => 0,
+            'read_at' => null,
         ]);
 
         $this->assertSame(1, models\NewsLink::count());
@@ -862,7 +862,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\NewsLink::count());
         $news_link = models\NewsLink::find($news_link_id);
         $this->assertSame('bookmarks', $news_link->via_type);
-        $this->assertTrue($news_link->is_read);
+        $this->assertNotNull($news_link->read_at);
     }
 
     public function testMarkAsReadWorksEvenIfNotInBookmarks()
@@ -889,7 +889,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNotNull($news_link);
         $this->assertSame('bookmarks', $news_link->via_type);
-        $this->assertTrue($news_link->is_read);
+        $this->assertNotNull($news_link->read_at);
     }
 
     public function testMarkAsReadRedirectsToLoginIfNotConnected()

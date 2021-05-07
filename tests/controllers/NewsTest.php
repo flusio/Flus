@@ -29,8 +29,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'link_id' => $link_news_id,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
         $link_not_news_id_1 = $this->create('link', [
             'title' => $title_not_news_1,
@@ -39,8 +39,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'link_id' => $link_not_news_id_1,
-            'is_read' => 0,
-            'is_removed' => 1,
+            'read_at' => null,
+            'removed_at' => $this->fake('iso8601'),
         ]);
         $link_not_news_id_2 = $this->create('link', [
             'title' => $title_not_news_2,
@@ -49,8 +49,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'link_id' => $link_not_news_id_2,
-            'is_read' => 1,
-            'is_removed' => 0,
+            'read_at' => $this->fake('iso8601'),
+            'removed_at' => null,
         ]);
         $link_not_news_id_3 = $this->create('link', [
             'title' => $title_not_news_3,
@@ -60,8 +60,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'link_id' => $link_not_news_id_3,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('get', '/news');
@@ -93,8 +93,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $url,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
             'link_id' => $link_id,
             'via_type' => 'bookmarks',
         ]);
@@ -135,8 +135,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->create('news_link', [
             'user_id' => $user->id,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
             'url' => $url,
             'link_id' => $link_id,
             'via_type' => 'followed',
@@ -186,8 +186,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->create('news_link', [
             'user_id' => $user->id,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
             'url' => $url,
             'link_id' => $link_id,
             'via_type' => 'topics',
@@ -223,8 +223,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->create('news_link', [
             'user_id' => $user->id,
             'link_id' => $link_id,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('get', '/news');

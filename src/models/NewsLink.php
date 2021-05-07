@@ -37,14 +37,12 @@ class NewsLink extends \Minz\Model
             'type' => 'string',
         ],
 
-        'is_read' => [
-            'type' => 'boolean',
-            'required' => true,
+        'read_at' => [
+            'type' => 'datetime',
         ],
 
-        'is_removed' => [
-            'type' => 'boolean',
-            'required' => true,
+        'removed_at' => [
+            'type' => 'datetime',
         ],
 
         'user_id' => [
@@ -67,8 +65,6 @@ class NewsLink extends \Minz\Model
             'link_id' => $link->id,
             'via_type' => $link->news_via_type,
             'via_collection_id' => $link->news_via_collection_id,
-            'is_read' => false,
-            'is_removed' => false,
         ]);
     }
 

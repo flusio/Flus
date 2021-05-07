@@ -180,7 +180,7 @@ class Links
         }
 
         // Finally, mark the news_link as read.
-        $news_link->is_read = true;
+        $news_link->read_at = \Minz\Time::now();
         $news_link->save();
 
         return Response::redirect('news');
@@ -234,7 +234,7 @@ class Links
 
         foreach ($news_links as $news_link) {
             // First, we mark the news link as read
-            $news_link->is_read = true;
+            $news_link->read_at = \Minz\Time::now();
             $news_link->save();
 
             // Then, we try to find a link with corresponding URL in order to
@@ -325,7 +325,7 @@ class Links
                 $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
             }
 
-            // Then, delete the news (we don't set the is_removed or it would no
+            // Then, delete the news (we don't set removed_at or it would no
             // longer be suggested to the user).
             models\NewsLink::delete($news_link->id);
         }
@@ -375,7 +375,7 @@ class Links
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         // First, remove the link from the news.
-        $news_link->is_removed = true;
+        $news_link->removed_at = \Minz\Time::now();
         $news_link->save();
 
         // Then, we try to find a link with corresponding URL in order to

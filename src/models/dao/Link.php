@@ -161,8 +161,8 @@ class Link extends \Minz\DatabaseModel
             WHERE l.id = nl.link_id
 
             AND nl.user_id = :user_id
-            AND nl.is_removed = false
-            AND nl.is_read = false
+            AND nl.removed_at IS NULL
+            AND nl.read_at IS NULL
             AND (l.is_hidden = false OR l.user_id = :user_id)
 
             ORDER BY l.created_at DESC, l.id
