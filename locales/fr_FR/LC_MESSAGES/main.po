@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-03 18:10+0200\n"
-"PO-Revision-Date: 2021-05-03 18:10+0200\n"
+"POT-Creation-Date: 2021-05-07 12:04+0200\n"
+"PO-Revision-Date: 2021-05-07 12:04+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -66,8 +66,8 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/importations/Pocket.php:150
 #: controllers/importations/Pocket.php:242
 #: controllers/links/Collections.php:102 controllers/my/Avatar.php:41
-#: controllers/news/Links.php:215 controllers/news/Links.php:284
-#: controllers/news/Links.php:364
+#: controllers/news/Links.php:218 controllers/news/Links.php:287
+#: controllers/news/Links.php:371
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -174,8 +174,8 @@ msgstr "Le token n’existe pas."
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: controllers/news/Links.php:224 controllers/news/Links.php:293
-#: controllers/news/Links.php:358
+#: controllers/news/Links.php:227 controllers/news/Links.php:296
+#: controllers/news/Links.php:365
 msgid "The link doesn’t exist."
 msgstr "Le lien n’existe pas."
 
@@ -229,23 +229,23 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:263
+#: models/Link.php:251
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:265
+#: models/Link.php:253
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:284
+#: models/Link.php:272
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:289
+#: models/Link.php:277
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:293
+#: models/Link.php:281
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -333,7 +333,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:203
+#: services/LinkFetcher.php:209
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -586,7 +586,7 @@ msgstr "Ajouter un lien"
 
 #: views/collections/bookmarks/show.phtml:65 views/collections/show.phtml:124
 #: views/collections/show_public.phtml:154 views/links/searches/show.phtml:91
-#: views/news/show.phtml:95
+#: views/news/show.phtml:92
 #, php-format
 msgid "%d comment"
 msgid_plural "%d comments"
@@ -614,13 +614,13 @@ msgstr "Gérer les collections"
 
 #: views/collections/bookmarks/show.phtml:147 views/collections/show.phtml:202
 #: views/collections/show_public.phtml:170 views/links/show.phtml:44
-#: views/links/show_public.phtml:57 views/news/show.phtml:167
+#: views/links/show_public.phtml:57 views/news/show.phtml:164
 msgid "read"
 msgstr "lire"
 
 #: views/collections/discovery/show.phtml:3
 #: views/collections/discovery/show.phtml:14 views/collections/index.phtml:133
-#: views/news/show.phtml:252
+#: views/news/show.phtml:249
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
@@ -628,7 +628,7 @@ msgstr "Découvrir des collections"
 msgid "Your collections"
 msgstr "Vos collections"
 
-#: views/collections/discovery/show.phtml:18 views/news/show.phtml:247
+#: views/collections/discovery/show.phtml:18 views/news/show.phtml:244
 msgid ""
 "Discover collections created by the community and follow the ones you are "
 "interested in."
@@ -1362,7 +1362,7 @@ msgstr "Vos signets"
 msgid "The collections you follow"
 msgstr "Vos collections suivies"
 
-#: views/news/show.phtml:27 views/news/show.phtml:150 views/news/show.phtml:154
+#: views/news/show.phtml:27 views/news/show.phtml:147 views/news/show.phtml:151
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
@@ -1370,58 +1370,58 @@ msgstr "Ajouter aux collections"
 msgid "Configure"
 msgstr "Configurer"
 
-#: views/news/show.phtml:74
+#: views/news/show.phtml:72
 msgid "via your <strong>bookmarks</strong>"
 msgstr "via vos <strong>signets</strong>"
 
-#: views/news/show.phtml:77
+#: views/news/show.phtml:74
 #, php-format
 msgid "via your <strong>points of interest</strong>, added by %s"
 msgstr "via vos <strong>centres d’intérêt</strong>, ajouté par %s"
 
-#: views/news/show.phtml:79
+#: views/news/show.phtml:76
 msgid "via your <strong>points of interest</strong>"
 msgstr "via vos <strong>centres d’intérêt</strong>"
 
-#: views/news/show.phtml:82
+#: views/news/show.phtml:79
 #, php-format
 msgid "via <strong>%s</strong> by %s"
 msgstr "via <strong>%s</strong> de %s"
 
-#: views/news/show.phtml:84
+#: views/news/show.phtml:81
 #, php-format
 msgid "via <strong>%s</strong>"
 msgstr "via <strong>%s</strong>"
 
-#: views/news/show.phtml:87
+#: views/news/show.phtml:84
 msgid "via a <strong>followed collection</strong> (now deleted)"
 msgstr "via une <strong>collection suivie</strong> (maintenant supprimée)"
 
-#: views/news/show.phtml:108 views/news/show.phtml:112
+#: views/news/show.phtml:105 views/news/show.phtml:109
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/news/show.phtml:119
+#: views/news/show.phtml:116
 msgid "Remove from the news…"
 msgstr "Retirer du journal…"
 
-#: views/news/show.phtml:127
+#: views/news/show.phtml:124
 msgid "and mark as read"
 msgstr "et marquer comme lu"
 
-#: views/news/show.phtml:136
+#: views/news/show.phtml:133
 msgid "and read later"
 msgstr "et lire plus tard"
 
-#: views/news/show.phtml:176
+#: views/news/show.phtml:173
 msgid "Did you read everything? Or do you want to postpone your reading?"
 msgstr "Avez-vous tout lu ? Ou voulez-vous finir de lire plus tard ?"
 
-#: views/news/show.phtml:187
+#: views/news/show.phtml:184
 msgid "Recycle the news"
 msgstr "Recycler le journal"
 
-#: views/news/show.phtml:197
+#: views/news/show.phtml:194
 msgid ""
 "You’ll mark all the news links as read, this action cannot be canceled. Are "
 "you sure?"
@@ -1429,20 +1429,20 @@ msgstr ""
 "Vous allez marquer tous les liens du journal comme lus, cette action ne peut "
 "pas être annulée. Confirmez-vous ?"
 
-#: views/news/show.phtml:203
+#: views/news/show.phtml:200
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/news/show.phtml:212
+#: views/news/show.phtml:209
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/show.phtml:221
+#: views/news/show.phtml:218
 msgid "We found no relevant news for you, what can you do?"
 msgstr ""
 "Nous n’avons rien trouvé d’intéressant pour vous, que pouvez-vous faire ?"
 
-#: views/news/show.phtml:227
+#: views/news/show.phtml:224
 msgid ""
 "As you’re navigating on the Internet, bookmark the links you would like to "
 "read later."
@@ -1450,18 +1450,18 @@ msgstr ""
 "Lorsque vous naviguez sur Internet, placez les liens que vous aimeriez lire "
 "plus tard dans vos signets."
 
-#: views/news/show.phtml:232 views/news/show.phtml:242
+#: views/news/show.phtml:229 views/news/show.phtml:239
 msgid "Ok, fine"
 msgstr "Ok, c’est noté"
 
-#: views/news/show.phtml:237
+#: views/news/show.phtml:234
 msgid ""
 "Take a break, disconnect from Internet and go for a walk; news can wait."
 msgstr ""
 "Prenez une pause, déconnectez d’Internet et allez vous balader ; l’actualité "
 "peut attendre."
 
-#: views/news/show.phtml:268
+#: views/news/show.phtml:265
 msgid "Get new suggestions"
 msgstr "Obtenir des suggestions"
 
