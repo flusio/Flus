@@ -103,7 +103,7 @@
     display: block;
     padding: var(--space-small);
 
-    border: 1px solid transparent;
+    border: var(--border-width) solid transparent;
     border-radius: var(--border-radius);
 
     transition:

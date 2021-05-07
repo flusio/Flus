@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-07 16:28+0200\n"
-"PO-Revision-Date: 2021-05-07 16:28+0200\n"
+"POT-Creation-Date: 2021-05-10 09:33+0200\n"
+"PO-Revision-Date: 2021-05-10 09:34+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.4.3\n"
 "X-Poedit-Basepath: ../../../src\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
@@ -1366,15 +1366,11 @@ msgstr "et lire plus tard"
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/news/show.phtml:152
-msgid "Did you read everything? Or do you want to postpone your reading?"
-msgstr "Avez-vous tout lu ? Ou voulez-vous finir de lire plus tard ?"
+#: views/news/show.phtml:159
+msgid "Empty the news"
+msgstr "Vider le journal"
 
-#: views/news/show.phtml:163
-msgid "Recycle the news"
-msgstr "Recycler le journal"
-
-#: views/news/show.phtml:173
+#: views/news/show.phtml:169
 msgid ""
 "You’ll mark all the news links as read, this action cannot be canceled. Are "
 "you sure?"
@@ -1382,39 +1378,39 @@ msgstr ""
 "Vous allez marquer tous les liens du journal comme lus, cette action ne peut "
 "pas être annulée. Confirmez-vous ?"
 
-#: views/news/show.phtml:179
+#: views/news/show.phtml:175
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/news/show.phtml:188
+#: views/news/show.phtml:184
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/show.phtml:197
+#: views/news/show.phtml:193
 msgid "We haven’t found any relevant links for the moment."
 msgstr "Nous n’avons trouvé aucun lien pertinent pour le moment."
 
-#: views/news/show.phtml:202
+#: views/news/show.phtml:198
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/show.phtml:225
+#: views/news/show.phtml:221
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/show.phtml:226
+#: views/news/show.phtml:222
 msgid "from your followed collections"
 msgstr "depuis vos collections suivies"
 
-#: views/news/show.phtml:239
+#: views/news/show.phtml:235
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
-#: views/news/show.phtml:240 views/news/show.phtml:254
+#: views/news/show.phtml:236 views/news/show.phtml:250
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/show.phtml:253
+#: views/news/show.phtml:249
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 

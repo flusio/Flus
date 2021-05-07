@@ -15,10 +15,6 @@
     padding: var(--space-medium);
 
     text-align: center;
-
-    background: radial-gradient(circle at top, var(--color-purple-1) 80%, var(--color-purple-2));
-    box-shadow: 0 1px 4px 1px var(--color-purple-2);
-    border-radius: var(--border-radius);
 }
 
 @media (min-width: 800px) {
@@ -38,7 +34,8 @@
 }
 
 .news__postpone-button {
-    font-size: 1.1em;
+    font-size: 1.2em;
 
-    border-color: var(--color-purple-3);
+    background-color: var(--color-purple-1);
+    border-color: var(--color-purple-4);
 }
