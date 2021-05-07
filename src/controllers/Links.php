@@ -390,7 +390,7 @@ class Links
             $news_link = models\NewsLink::initFromLink($link, $user->id);
         }
         $news_link->via_type = 'bookmarks';
-        $news_link->is_read = true;
+        $news_link->read_at = \Minz\Time::now();
         $news_link->save();
 
         // Then, we detach the link from the bookmarks

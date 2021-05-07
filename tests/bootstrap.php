@@ -218,20 +218,14 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
         },
-        'title' => function () use ($faker) {
-            return $faker->words(3, true);
-        },
         'url' => function () use ($faker) {
             return $faker->url;
         },
-        'reading_time' => function () use ($faker) {
-            return $faker->randomDigit;
-        },
-        'is_read' => function () use ($faker) {
-            return (int)$faker->boolean;
-        },
-        'is_removed' => function () use ($faker) {
-            return (int)$faker->boolean;
+        'link_id' => function () {
+            $link_factory = new \Minz\Tests\DatabaseFactory('link');
+            return $link_factory->create([
+                'is_hidden' => 0,
+            ]);
         },
         'user_id' => function () use ($faker) {
             $user_factory = new \Minz\Tests\DatabaseFactory('user');

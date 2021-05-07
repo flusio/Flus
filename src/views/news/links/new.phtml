@@ -16,7 +16,7 @@
     </div>
 
     <p class="section__intro">
-        <?= protect($news_link->title) ?>
+        <?= protect($news_link->title()) ?>
     </p>
 
     <form method="post" action="<?= url('add news', ['id' => $news_link->id]) ?>">

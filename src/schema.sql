@@ -140,15 +140,12 @@ CREATE UNIQUE INDEX idx_followed_collections ON followed_collections(user_id, co
 CREATE TABLE news_links (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
-    title TEXT NOT NULL,
     url TEXT NOT NULL,
-    reading_time INTEGER NOT NULL DEFAULT 0,
-    image_filename TEXT,
+    link_id TEXT REFERENCES links ON DELETE SET NULL ON UPDATE CASCADE,
     via_type TEXT NOT NULL DEFAULT '',
-    via_link_id TEXT REFERENCES links ON DELETE SET NULL ON UPDATE CASCADE,
     via_collection_id TEXT REFERENCES collections ON DELETE SET NULL ON UPDATE CASCADE,
-    is_read BOOLEAN NOT NULL DEFAULT false,
-    is_removed BOOLEAN NOT NULL DEFAULT false,
+    read_at TIMESTAMPTZ,
+    removed_at TIMESTAMPTZ,
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 

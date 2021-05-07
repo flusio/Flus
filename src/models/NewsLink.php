@@ -19,24 +19,10 @@ class NewsLink extends \Minz\Model
             'type' => 'datetime',
         ],
 
-        'title' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-
         'url' => [
             'type' => 'string',
             'required' => true,
             'validator' => '\flusio\models\Link::validateUrl',
-        ],
-
-        'reading_time' => [
-            'type' => 'integer',
-            'required' => true,
-        ],
-
-        'image_filename' => [
-            'type' => 'string',
         ],
 
         'via_type' => [
@@ -47,28 +33,21 @@ class NewsLink extends \Minz\Model
             'type' => 'string',
         ],
 
-        'via_link_id' => [
+        'link_id' => [
             'type' => 'string',
         ],
 
-        'is_read' => [
-            'type' => 'boolean',
-            'required' => true,
+        'read_at' => [
+            'type' => 'datetime',
         ],
 
-        'is_removed' => [
-            'type' => 'boolean',
-            'required' => true,
+        'removed_at' => [
+            'type' => 'datetime',
         ],
 
         'user_id' => [
             'type' => 'string',
             'required' => true,
-        ],
-
-        'number_comments' => [
-            'type' => 'integer',
-            'computed' => true,
         ],
     ];
 
@@ -81,16 +60,11 @@ class NewsLink extends \Minz\Model
     public static function initFromLink($link, $user_id)
     {
         return new self([
-            'title' => $link->title,
             'url' => $link->url,
-            'reading_time' => $link->reading_time,
-            'image_filename' => $link->image_filename,
             'user_id' => $user_id,
+            'link_id' => $link->id,
             'via_type' => $link->news_via_type,
-            'via_link_id' => $link->id,
             'via_collection_id' => $link->news_via_collection_id,
-            'is_read' => false,
-            'is_removed' => false,
         ]);
     }
 
@@ -103,18 +77,17 @@ class NewsLink extends \Minz\Model
     }
 
     /**
-     * @return \flusio\models\Link|null
-     */
-    public function viaLink()
-    {
-        return Link::find($this->via_link_id);
-    }
-
-    /**
+     * Return the title of associated link, or url if link no longer exists.
+     *
      * @return string
      */
-    public function host()
+    public function title()
     {
-        return \flusio\utils\Belt::host($this->url);
+        $link = Link::find($this->link_id);
+        if ($link) {
+            return $link->title;
+        } else {
+            return $this->url;
+        }
     }
 }

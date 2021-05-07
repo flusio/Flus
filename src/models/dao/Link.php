@@ -143,6 +143,39 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return links associated to news_links of the given user
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listForNews($user_id)
+    {
+        $sql = <<<SQL
+            SELECT l.*, nl.id AS news_link_id, (
+                SELECT COUNT(m.*) FROM messages m
+                WHERE m.link_id = l.id
+            ) AS number_comments
+            FROM links l, news_links nl
+
+            WHERE l.id = nl.link_id
+
+            AND nl.user_id = :user_id
+            AND nl.removed_at IS NULL
+            AND nl.read_at IS NULL
+            AND (l.is_hidden = false OR l.user_id = :user_id)
+
+            ORDER BY l.created_at DESC, l.id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Return links listed in bookmarks of the given user, ordered randomly.
      *
      * @param string $user_id

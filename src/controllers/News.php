@@ -32,10 +32,10 @@ class News
             ]);
         }
 
-        $news_links = models\NewsLink::daoToList('listComputedByUserId', $user->id);
+        $links = models\Link::daoToList('listForNews', $user->id);
 
         return Response::ok('news/show.phtml', [
-            'news_links' => $news_links,
+            'links' => $links,
             'news_preferences' => models\NewsPreferences::fromJson($user->news_preferences),
             'has_collections' => count($user->collections(true)) > 0,
             'no_news' => utils\Flash::pop('no_news'),
@@ -66,7 +66,7 @@ class News
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('news/show.phtml', [
-                'news_links' => [],
+                'links' => [],
                 'news_preferences' => models\NewsPreferences::fromJson($user->news_preferences),
                 'has_collections' => count($user->collections(true)) > 0,
                 'no_news' => false,

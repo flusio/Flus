@@ -18,9 +18,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $title = $this->fake('sentence');
+        $link_id = $this->create('link', [
+            'title' => $title,
+        ]);
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
-            'title' => $title,
+            'link_id' => $link_id,
         ]);
 
         $response = $this->appRun('get', "/news/{$news_link_id}/add");
@@ -50,10 +53,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testNewRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
-        $title = $this->fake('sentence');
         $news_link_id = $this->create('news_link', [
             'user_id' => $user_id,
-            'title' => $title,
         ]);
 
         $response = $this->appRun('get', "/news/{$news_link_id}/add");
@@ -65,10 +66,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $title = $this->fake('sentence');
         $news_link_id = $this->create('news_link', [
             'user_id' => $other_user_id,
-            'title' => $title,
         ]);
 
         $response = $this->appRun('get', "/news/{$news_link_id}/add");
@@ -80,10 +79,18 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $links_to_collections_dao = new models\dao\LinksToCollections();
+        $url = $this->fake('url');
+        $title = $this->fake('sentence');
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'title' => $title,
+        ]);
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'link_id' => $link_id,
+            'url' => $url,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
@@ -92,7 +99,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $comment = $this->fake('sentence');
         $collection_ids = [$collection_id];
 
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
@@ -101,18 +108,17 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'comment' => $comment,
         ]);
 
-        $this->assertSame(1, models\Link::count());
-
         $this->assertResponse($response, 302, '/news');
-        $link = models\Link::take();
+        $this->assertSame(2, models\Link::count());
+        $link = models\Link::findBy(['user_id' => $user->id]);
         $news_link = models\NewsLink::find($news_link_id);
         $message = $link->messages()[0];
         $db_link_to_collection = $links_to_collections_dao->listAll()[0];
-        $this->assertTrue($news_link->is_read);
-        $this->assertFalse($news_link->is_removed);
+        $this->assertNotNull($news_link->read_at);
+        $this->assertNull($news_link->removed_at);
         $this->assertSame($user->id, $link->user_id);
-        $this->assertSame($news_link->title, $link->title);
-        $this->assertSame($news_link->url, $link->url);
+        $this->assertSame($title, $link->title);
+        $this->assertSame($url, $link->url);
         $this->assertTrue($link->is_hidden);
         $this->assertSame($comment, $message->content);
         $this->assertSame($link->id, $db_link_to_collection['link_id']);
@@ -147,7 +153,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $comment = $this->fake('sentence');
         $collection_ids = [$new_collection_id];
 
-        $this->assertSame(1, models\Link::count());
+        $this->assertSame(2, models\Link::count());
 
         $response = $this->appRun('post', "/news/{$news_link_id}/add", [
             'csrf' => $user->csrf,
@@ -156,7 +162,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'comment' => $comment,
         ]);
 
-        $this->assertSame(1, models\Link::count());
+        $this->assertSame(2, models\Link::count());
 
         $this->assertResponse($response, 302, '/news');
         $link = models\Link::find($link_id);
@@ -190,7 +196,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, "/login?redirect_to=%2Fnews%2F{$news_link_id}%2Fadd");
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testCreateFailsIfUserDoesNotOwnTheNewsLink()
@@ -215,7 +221,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid()
@@ -239,7 +245,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testCreateFailsIfCollectionIdsIsEmpty()
@@ -263,7 +269,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The link must be associated to a collection.');
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testCreateFailsIfCollectionIdsContainsNotOwnedId()
@@ -288,7 +294,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
-        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Link::count());
     }
 
     public function testReadLaterRemovesLinkFromNewsAndAddsToBookmarksAndRedirects()
@@ -307,8 +313,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
@@ -328,23 +334,33 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testReadLaterCreatesTheLinkIfItDoesNotExistForCurrentUser()
     {
         $user = $this->login();
+        $other_user_id = $this->create('user');
         $link_url = $this->fake('url');
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
+        $link_id = $this->create('link', [
+            'url' => $link_url,
+            'user_id' => $other_user_id,
+            'is_hidden' => 0,
+        ]);
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
+            'link_id' => $link_id,
             'url' => $link_url,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
             'csrf' => $user->csrf,
         ]);
 
-        $link = models\Link::findBy(['url' => $link_url]);
+        $link = models\Link::findBy([
+            'url' => $link_url,
+            'user_id' => $user->id,
+        ]);
         $this->assertNotNull($link, 'The link should exist.');
     }
 
@@ -402,14 +418,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id_1 = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url_1,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
         $news_link_id_2 = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url_2,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id_2,
@@ -450,8 +466,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user_id,
             'url' => $link_url,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
@@ -476,8 +492,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
@@ -503,8 +519,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', '/news/-1/read-later', [
@@ -531,8 +547,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $other_user_id,
             'url' => $link_url,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/read-later", [
@@ -553,8 +569,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $this->fake('url'),
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
@@ -563,7 +579,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $news_link = models\NewsLink::find($news_link_id);
-        $this->assertTrue($news_link->is_read, 'The news link should be read.');
+        $this->assertNotNull($news_link->read_at, 'The news link should be read.');
     }
 
     public function testMarkAsReadRemovesFromBookmarksIfCorrespondingUrlInLinks()
@@ -586,8 +602,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
@@ -618,14 +634,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id_1 = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
         $news_link_id_2 = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $this->fake('url'),
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', '/news/all/mark-as-read', [
@@ -635,8 +651,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/news');
         $news_link_1 = models\NewsLink::find($news_link_id_1);
         $news_link_2 = models\NewsLink::find($news_link_id_2);
-        $this->assertTrue($news_link_1->is_read, 'The news link should be read.');
-        $this->assertTrue($news_link_2->is_read, 'The news link should be read.');
+        $this->assertNotNull($news_link_1->read_at, 'The news link should be read.');
+        $this->assertNotNull($news_link_2->read_at, 'The news link should be read.');
         $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_collection_id);
         $this->assertFalse($exists_in_bookmarks, 'The link should no longer be in bookmarks.');
     }
@@ -649,8 +665,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user_id,
             'url' => $this->fake('url'),
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
@@ -659,7 +675,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
         $news_link = models\NewsLink::find($news_link_id);
-        $this->assertFalse($news_link->is_read, 'The news link should not be read.');
+        $this->assertNull($news_link->read_at, 'The news link should not be read.');
     }
 
     public function testMarkAsReadFailsIfCsrfIsInvalid()
@@ -668,8 +684,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $this->fake('url'),
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
@@ -679,7 +695,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
         $news_link = models\NewsLink::find($news_link_id);
-        $this->assertFalse($news_link->is_read, 'The news link should not be read.');
+        $this->assertNull($news_link->read_at, 'The news link should not be read.');
     }
 
     public function testMarkAsReadFailsIfUserDoesNotOwnTheLink()
@@ -689,8 +705,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $other_user_id,
             'url' => $this->fake('url'),
-            'is_read' => 0,
-            'is_removed' => 0,
+            'read_at' => null,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/mark-as-read", [
@@ -700,7 +716,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'The link doesn’t exist.');
         $news_link = models\NewsLink::find($news_link_id);
-        $this->assertFalse($news_link->is_read, 'The news link should not be read.');
+        $this->assertNull($news_link->read_at, 'The news link should not be read.');
     }
 
     public function testDeleteRemovesLinkFromNewsAndRedirects()
@@ -709,7 +725,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $this->fake('url'),
-            'is_removed' => 0,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
@@ -718,7 +734,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $news_link = models\NewsLink::find($news_link_id);
-        $this->assertTrue($news_link->is_removed, 'The news link should be removed.');
+        $this->assertNotNull($news_link->removed_at, 'The news link should be removed.');
     }
 
     public function testDeleteRemovesFromBookmarksIfCorrespondingUrlInLinks()
@@ -741,7 +757,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $link_url,
-            'is_removed' => 0,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
@@ -760,7 +776,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user_id,
             'url' => $this->fake('url'),
-            'is_removed' => 0,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
@@ -769,7 +785,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
         $news_link = models\NewsLink::find($news_link_id);
-        $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
+        $this->assertNull($news_link->removed_at, 'The news link should not be removed.');
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
@@ -778,7 +794,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $user->id,
             'url' => $this->fake('url'),
-            'is_removed' => 0,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
@@ -788,7 +804,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
         $news_link = models\NewsLink::find($news_link_id);
-        $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
+        $this->assertNull($news_link->removed_at, 'The news link should not be removed.');
     }
 
     public function testDeleteFailsIfUserDoesNotOwnTheLink()
@@ -798,7 +814,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $news_link_id = $this->create('news_link', [
             'user_id' => $other_user_id,
             'url' => $this->fake('url'),
-            'is_removed' => 0,
+            'removed_at' => null,
         ]);
 
         $response = $this->appRun('post', "/news/{$news_link_id}/remove", [
@@ -808,6 +824,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'The link doesn’t exist.');
         $news_link = models\NewsLink::find($news_link_id);
-        $this->assertFalse($news_link->is_removed, 'The news link should not be removed.');
+        $this->assertNull($news_link->removed_at, 'The news link should not be removed.');
     }
 }

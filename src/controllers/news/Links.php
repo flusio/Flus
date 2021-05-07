@@ -159,8 +159,11 @@ class Links
         // this link and optionally change its is_hidden status)
         if ($existing_link) {
             $link = $existing_link;
+        } elseif ($news_link->link_id) {
+            $associated_link = models\Link::find($news_link->link_id);
+            $link = models\Link::copy($associated_link, $user->id);
         } else {
-            $link = models\Link::initFromNews($news_link, $user->id);
+            $link = models\Link::init($news_link->url, $user->id, false);
         }
         $link->is_hidden = filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN);
         $link->save();
@@ -177,7 +180,7 @@ class Links
         }
 
         // Finally, mark the news_link as read.
-        $news_link->is_read = true;
+        $news_link->read_at = \Minz\Time::now();
         $news_link->save();
 
         return Response::redirect('news');
@@ -217,7 +220,7 @@ class Links
         }
 
         if ($news_link_id === 'all') {
-            $news_links = models\NewsLink::daoToList('listComputedByUserId', $user->id);
+            $news_links = models\NewsLink::daoToList('listCurrentNews', $user->id);
         } else {
             $news_link = models\NewsLink::find($news_link_id);
             if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
@@ -231,7 +234,7 @@ class Links
 
         foreach ($news_links as $news_link) {
             // First, we mark the news link as read
-            $news_link->is_read = true;
+            $news_link->read_at = \Minz\Time::now();
             $news_link->save();
 
             // Then, we try to find a link with corresponding URL in order to
@@ -286,7 +289,7 @@ class Links
         }
 
         if ($news_link_id === 'all') {
-            $news_links = models\NewsLink::daoToList('listComputedByUserId', $user->id);
+            $news_links = models\NewsLink::daoToList('listCurrentNews', $user->id);
         } else {
             $news_link = models\NewsLink::find($news_link_id);
             if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
@@ -306,8 +309,12 @@ class Links
                 'url' => $news_link->url,
                 'user_id' => $user->id,
             ]);
-            if (!$link) {
-                $link = models\Link::initFromNews($news_link, $user->id);
+            if (!$link && $news_link->link_id) {
+                $associated_link = models\Link::find($news_link->link_id);
+                $link = models\Link::copy($associated_link, $user->id);
+                $link->save();
+            } elseif (!$link) {
+                $link = models\Link::init($news_link->url, $user->id, false);
                 $link->save();
             }
 
@@ -318,7 +325,7 @@ class Links
                 $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
             }
 
-            // Then, delete the news (we don't set the is_removed or it would no
+            // Then, delete the news (we don't set removed_at or it would no
             // longer be suggested to the user).
             models\NewsLink::delete($news_link->id);
         }
@@ -368,7 +375,7 @@ class Links
         $links_to_collections_dao = new models\dao\LinksToCollections();
 
         // First, remove the link from the news.
-        $news_link->is_removed = true;
+        $news_link->removed_at = \Minz\Time::now();
         $news_link->save();
 
         // Then, we try to find a link with corresponding URL in order to
