@@ -62,7 +62,7 @@ class FetchLog extends \Minz\Model
         $count_limit = 25;
 
         if ($host === 'youtube.com') {
-            $count_limit = 5;
+            $count_limit = 1;
         }
 
         $count = self::daoCall('countFetchesToHost', $host, $since);
