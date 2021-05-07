@@ -19,24 +19,10 @@ class NewsLink extends \Minz\Model
             'type' => 'datetime',
         ],
 
-        'title' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-
         'url' => [
             'type' => 'string',
             'required' => true,
             'validator' => '\flusio\models\Link::validateUrl',
-        ],
-
-        'reading_time' => [
-            'type' => 'integer',
-            'required' => true,
-        ],
-
-        'image_filename' => [
-            'type' => 'string',
         ],
 
         'via_type' => [
@@ -65,11 +51,6 @@ class NewsLink extends \Minz\Model
             'type' => 'string',
             'required' => true,
         ],
-
-        'number_comments' => [
-            'type' => 'integer',
-            'computed' => true,
-        ],
     ];
 
     /**
@@ -81,13 +62,10 @@ class NewsLink extends \Minz\Model
     public static function initFromLink($link, $user_id)
     {
         return new self([
-            'title' => $link->title,
             'url' => $link->url,
-            'reading_time' => $link->reading_time,
-            'image_filename' => $link->image_filename,
             'user_id' => $user_id,
-            'via_type' => $link->news_via_type,
             'link_id' => $link->id,
+            'via_type' => $link->news_via_type,
             'via_collection_id' => $link->news_via_collection_id,
             'is_read' => false,
             'is_removed' => false,

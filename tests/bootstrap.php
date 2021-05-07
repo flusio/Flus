@@ -218,14 +218,8 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
         },
-        'title' => function () use ($faker) {
-            return $faker->words(3, true);
-        },
         'url' => function () use ($faker) {
             return $faker->url;
-        },
-        'reading_time' => function () use ($faker) {
-            return $faker->randomDigit;
         },
         'is_read' => function () use ($faker) {
             return (int)$faker->boolean;
