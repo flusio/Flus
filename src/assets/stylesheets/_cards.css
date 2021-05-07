@@ -86,6 +86,21 @@
     min-height: 150px;
 }
 
+.card__image-overlay {
+    position: absolute;
+    top: var(--space-smaller);
+    right: var(--space-smaller);
+
+    padding: 0 var(--space-small);
+
+    font-size: var(--size-small);
+    font-style: italic;
+
+    opacity: 0.8;
+    background-color: var(--color-purple-1);
+    border-radius: var(--border-radius);
+}
+
 .card__body {
     padding: var(--space-small);
 
