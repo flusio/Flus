@@ -11,27 +11,6 @@
         <h1><?= _('News') ?></h1>
     </div>
 
-    <?php if (!$links): ?>
-        <div class="section__intro">
-            <p>
-                <?= format_news_preferences($news_preferences) ?>
-            </p>
-
-            <p>
-                <button
-                    data-controller="modal-opener"
-                    data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('news preferences') ?>"
-                    aria-haspopup="dialog"
-                    aria-controls="modal"
-                    title="<?= _('Add to collections') ?>"
-                >
-                    <?= _('Configure') ?>
-                </button>
-            </p>
-        </div>
-    <?php endif; ?>
-
     <?php if ($links): ?>
         <div class="cards cards--centered">
             <?php foreach ($links as $link): ?>

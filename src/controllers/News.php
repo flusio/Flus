@@ -36,7 +36,6 @@ class News
 
         return Response::ok('news/show.phtml', [
             'links' => $links,
-            'news_preferences' => models\NewsPreferences::fromJson($user->news_preferences),
             'has_collections' => count($user->collections(true)) > 0,
             'no_news' => utils\Flash::pop('no_news'),
         ]);
@@ -67,7 +66,6 @@ class News
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('news/show.phtml', [
                 'links' => [],
-                'news_preferences' => models\NewsPreferences::fromJson($user->news_preferences),
                 'has_collections' => count($user->collections(true)) > 0,
                 'no_news' => false,
                 'error' => _('A security verification failed: you should retry to submit the form.'),

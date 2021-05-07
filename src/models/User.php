@@ -67,11 +67,6 @@ class User extends \Minz\Model
             'required' => true,
         ],
 
-        'news_preferences' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-
         'pocket_username' => [
             'type' => 'string',
         ],
@@ -105,7 +100,6 @@ class User extends \Minz\Model
             'password_hash' => '',
             'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
             'csrf' => utils\Random::hex(64),
-            'news_preferences' => '{}',
         ], $values));
     }
 
