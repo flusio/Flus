@@ -31,7 +31,7 @@ class NewsLink extends \Minz\DatabaseModel
         $sql = <<<'SQL'
             SELECT nl.*, (
                 SELECT COUNT(*) FROM messages m
-                WHERE m.link_id = nl.via_link_id
+                WHERE m.link_id = nl.link_id
             ) AS number_comments
             FROM news_links nl
 

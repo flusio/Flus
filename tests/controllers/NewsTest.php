@@ -70,8 +70,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'is_read' => 0,
             'is_removed' => 0,
+            'link_id' => $link_id,
             'via_type' => 'bookmarks',
-            'via_link_id' => $link_id,
         ]);
 
         $response = $this->appRun('get', '/news');
@@ -113,8 +113,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'is_read' => 0,
             'is_removed' => 0,
             'url' => $url,
+            'link_id' => $link_id,
             'via_type' => 'followed',
-            'via_link_id' => $link_id,
             'via_collection_id' => $collection_id,
         ]);
 
@@ -164,8 +164,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'is_read' => 0,
             'is_removed' => 0,
             'url' => $url,
+            'link_id' => $link_id,
             'via_type' => 'topics',
-            'via_link_id' => $link_id,
         ]);
 
         $response = $this->appRun('get', '/news');
@@ -238,7 +238,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $news_link = models\NewsLink::findBy(['url' => $link_url]);
         $this->assertNotNull($news_link);
         $this->assertSame('bookmarks', $news_link->via_type);
-        $this->assertSame($link_id, $news_link->via_link_id);
+        $this->assertSame($link_id, $news_link->link_id);
     }
 
     public function testCreateSelectsLinksFromFollowedCollections()
@@ -276,7 +276,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->id, $news_link->user_id);
         $this->assertSame('followed', $news_link->via_type);
         $this->assertSame($collection_id, $news_link->via_collection_id);
-        $this->assertSame($link_id, $news_link->via_link_id);
+        $this->assertSame($link_id, $news_link->link_id);
     }
 
     public function testCreateSelectsLinksFromTopics()
@@ -319,7 +319,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->id, $news_link->user_id);
         $this->assertSame('topics', $news_link->via_type);
         $this->assertSame($collection_id, $news_link->via_collection_id);
-        $this->assertSame($link_id, $news_link->via_link_id);
+        $this->assertSame($link_id, $news_link->link_id);
     }
 
     public function testCreateSelectsLinksUpToAbout30MinutesByDefault()

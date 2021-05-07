@@ -72,9 +72,9 @@
                         <p class="card__text news__via">
                             <?php if ($news_link->via_type === 'bookmarks'): ?>
                                 <?= _('via your <strong>bookmarks</strong>') ?>
-                            <?php elseif ($news_link->via_type === 'topics' && $news_link->via_link_id): ?>
-                                <?php $via_link = $news_link->viaLink(); ?>
-                                <?= _f('via your <strong>points of interest</strong>, added by %s', protect($via_link->owner()->username)) ?>
+                            <?php elseif ($news_link->via_type === 'topics' && $news_link->link_id): ?>
+                                <?php $link = $news_link->link(); ?>
+                                <?= _f('via your <strong>points of interest</strong>, added by %s', protect($link->owner()->username)) ?>
                             <?php elseif ($news_link->via_type === 'topics'): ?>
                                 <?= _('via your <strong>points of interest</strong>') ?>
                             <?php elseif ($news_link->via_type === 'followed' && $via_collection): ?>
@@ -88,9 +88,9 @@
                             <?php endif; ?>
                         </p>
 
-                        <?php if ($news_link->via_link_id && !($via_collection && $via_collection->type === 'feed')): ?>
+                        <?php if ($news_link->link_id && !($via_collection && $via_collection->type === 'feed')): ?>
                             <p class="card__text">
-                                <a href="<?= url('link', ['id' => $news_link->via_link_id]) ?>">
+                                <a href="<?= url('link', ['id' => $news_link->link_id]) ?>">
                                     <?= icon('comment') ?>
                                     <?= _nf('%d comment', '%d comments', $news_link->number_comments, $news_link->number_comments) ?>
                                 </a>

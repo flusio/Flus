@@ -47,7 +47,7 @@ class NewsLink extends \Minz\Model
             'type' => 'string',
         ],
 
-        'via_link_id' => [
+        'link_id' => [
             'type' => 'string',
         ],
 
@@ -87,7 +87,7 @@ class NewsLink extends \Minz\Model
             'image_filename' => $link->image_filename,
             'user_id' => $user_id,
             'via_type' => $link->news_via_type,
-            'via_link_id' => $link->id,
+            'link_id' => $link->id,
             'via_collection_id' => $link->news_via_collection_id,
             'is_read' => false,
             'is_removed' => false,
@@ -105,9 +105,9 @@ class NewsLink extends \Minz\Model
     /**
      * @return \flusio\models\Link|null
      */
-    public function viaLink()
+    public function link()
     {
-        return Link::find($this->via_link_id);
+        return Link::find($this->link_id);
     }
 
     /**
