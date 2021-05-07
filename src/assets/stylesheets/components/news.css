@@ -1,3 +1,9 @@
+.news-selection__title {
+    display: block;
+    margin-top: var(--space-small);
+    margin-bottom: var(--space-small);
+}
+
 .news__via {
     margin-top: calc(var(--space-small) * -1);
 

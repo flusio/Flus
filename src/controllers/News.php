@@ -46,6 +46,7 @@ class News
      * collections)
      *
      * @request_param string csrf
+     * @request_param string type
      *
      * @response 302 /login?redirect_to=/news
      *     if not connected
@@ -72,9 +73,29 @@ class News
             ]);
         }
 
-        $news_picker = new services\NewsPicker($user);
-        $db_links = $news_picker->pick();
+        $type = $request->param('type');
+        if ($type === 'newsfeed') {
+            $options = [
+                'number_links' => 9,
+                'until' => \Minz\Time::ago(3, 'days'),
+                'from' => 'followed',
+            ];
+        } elseif ($type === 'short') {
+            $options = [
+                'number_links' => 3,
+                'max_duration' => 10,
+                'from' => 'bookmarks',
+            ];
+        } else {
+            $options = [
+                'number_links' => 1,
+                'min_duration' => 10,
+                'from' => 'bookmarks',
+            ];
+        }
 
+        $news_picker = new services\NewsPicker($user, $options);
+        $db_links = $news_picker->pick();
         foreach ($db_links as $db_link) {
             $link = new models\Link($db_link);
             $news_link = models\NewsLink::initFromLink($link, $user->id);

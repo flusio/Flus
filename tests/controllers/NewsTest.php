@@ -153,56 +153,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testShowRendersIfViaTopics()
-    {
-        $user = $this->login();
-        $url = $this->fake('url');
-        $username = $this->fake('username');
-        $other_user_id = $this->create('user', [
-            'username' => $username,
-        ]);
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'url' => $url,
-            'is_hidden' => 0,
-        ]);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'is_public' => 1,
-            'type' => 'collection',
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
-        ]);
-        $topic_id = $this->create('topic');
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
-        ]);
-        $this->create('user_to_topic', [
-            'user_id' => $user->id,
-            'topic_id' => $topic_id,
-        ]);
-        $this->create('news_link', [
-            'user_id' => $user->id,
-            'read_at' => null,
-            'removed_at' => null,
-            'url' => $url,
-            'link_id' => $link_id,
-            'via_type' => 'topics',
-        ]);
-
-        $response = $this->appRun('get', '/news');
-
-        $this->assertResponse($response, 200);
-        $response_output = $response->render();
-        $this->assertStringContainsString(
-            "via your <strong>points of interest</strong>, added by {$username}",
-            $response_output
-        );
-    }
-
     public function testShowRendersTipsIfNoNewsFlash()
     {
         $user = $this->login();
@@ -211,7 +161,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', '/news');
 
         $response_output = $response->render();
-        $this->assertStringContainsString('We found no relevant news for you, what can you do?', $response_output);
+        $this->assertStringContainsString('We haven’t found any relevant links for the moment.', $response_output);
     }
 
     public function testShowHidesAddToCollectionsIfUserHasNoCollections()
@@ -240,14 +190,15 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
     }
 
-    public function testCreateSelectsLinksFromBookmarksAndRedirects()
+    public function testCreateSelectsLinksFromBookmarksIfTypeIsShort()
     {
         $user = $this->login();
         $link_url = $this->fake('url');
+        $duration = $this->fake('numberBetween', 0, 9);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'url' => $link_url,
-            'reading_time' => 10,
+            'reading_time' => $duration,
         ]);
         $bookmarks_id = $this->create('collection', [
             'user_id' => $user->id,
@@ -260,6 +211,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/news', [
             'csrf' => $user->csrf,
+            'type' => 'short',
         ]);
 
         $this->assertResponse($response, 302, '/news');
@@ -269,15 +221,48 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_id, $news_link->link_id);
     }
 
-    public function testCreateSelectsLinksFromFollowedCollections()
+    public function testCreateSelectsLinksFromBookmarksIfTypeIsLong()
+    {
+        $user = $this->login();
+        $link_url = $this->fake('url');
+        $duration = $this->fake('numberBetween', 10, 9000);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $link_url,
+            'reading_time' => $duration,
+        ]);
+        $bookmarks_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks_id,
+        ]);
+
+        $response = $this->appRun('post', '/news', [
+            'csrf' => $user->csrf,
+            'type' => 'long',
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $news_link = models\NewsLink::findBy(['url' => $link_url]);
+        $this->assertNotNull($news_link);
+        $this->assertSame('bookmarks', $news_link->via_type);
+        $this->assertSame($link_id, $news_link->link_id);
+    }
+
+    public function testCreateSelectsLinksFromFollowedIfTypeIsNewsfeed()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
+        $days = $this->fake('numberBetween', 0, 2);
+        $created_at = \Minz\Time::ago($days, 'days');
         $link_url = $this->fake('url');
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
             'url' => $link_url,
-            'reading_time' => 10,
             'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
@@ -296,6 +281,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/news', [
             'csrf' => $user->csrf,
+            'type' => 'newsfeed',
         ]);
 
         $this->assertResponse($response, 302, '/news');
@@ -305,147 +291,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('followed', $news_link->via_type);
         $this->assertSame($collection_id, $news_link->via_collection_id);
         $this->assertSame($link_id, $news_link->link_id);
-    }
-
-    public function testCreateSelectsLinksFromTopics()
-    {
-        $user = $this->login();
-        $other_user_id = $this->create('user');
-        $link_url = $this->fake('url');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'url' => $link_url,
-            'reading_time' => 10,
-            'is_hidden' => 0,
-        ]);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'type' => 'collection',
-            'is_public' => 1,
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
-        ]);
-        $topic_id = $this->create('topic');
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
-        ]);
-        $this->create('user_to_topic', [
-            'user_id' => $user->id,
-            'topic_id' => $topic_id,
-        ]);
-
-        $response = $this->appRun('post', '/news', [
-            'csrf' => $user->csrf,
-        ]);
-
-        $this->assertResponse($response, 302, '/news');
-        $news_link = models\NewsLink::findBy(['url' => $link_url]);
-        $this->assertNotNull($news_link);
-        $this->assertSame($user->id, $news_link->user_id);
-        $this->assertSame('topics', $news_link->via_type);
-        $this->assertSame($collection_id, $news_link->via_collection_id);
-        $this->assertSame($link_id, $news_link->link_id);
-    }
-
-    public function testCreateSelectsLinksUpToAbout30MinutesByDefault()
-    {
-        $user = $this->login();
-        $link_url_1 = $this->fake('url');
-        $link_url_2 = $this->fake('url');
-        $link_url_3 = $this->fake('url');
-        $link_id_1 = $this->create('link', [
-            'user_id' => $user->id,
-            'url' => $link_url_1,
-            'reading_time' => 5,
-        ]);
-        $link_id_2 = $this->create('link', [
-            'user_id' => $user->id,
-            'url' => $link_url_2,
-            'reading_time' => 15,
-        ]);
-        $link_id_3 = $this->create('link', [
-            'user_id' => $user->id,
-            'url' => $link_url_3,
-            'reading_time' => 10,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_1,
-            'collection_id' => $bookmarks_id,
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_2,
-            'collection_id' => $bookmarks_id,
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_3,
-            'collection_id' => $bookmarks_id,
-        ]);
-
-        $response = $this->appRun('post', '/news', [
-            'csrf' => $user->csrf,
-        ]);
-
-        $news_link_1 = models\NewsLink::findBy(['url' => $link_url_1]);
-        $news_link_2 = models\NewsLink::findBy(['url' => $link_url_2]);
-        $news_link_3 = models\NewsLink::findBy(['url' => $link_url_3]);
-        $this->assertNotNull($news_link_1);
-        $this->assertNotNull($news_link_2);
-        $this->assertNotNull($news_link_3);
-    }
-
-    public function testCreateDoesNotSelectTooLongLinks()
-    {
-        $user = $this->login();
-        $link_url = $this->fake('url');
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'url' => $link_url,
-            'reading_time' => 75,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
-        ]);
-
-        $response = $this->appRun('post', '/news', [
-            'csrf' => $user->csrf,
-        ]);
-
-        $news_link = models\NewsLink::findBy(['url' => $link_url]);
-        $this->assertNull($news_link);
-    }
-
-    public function testCreateDoesNotSelectNotBookmarkedLinks()
-    {
-        $user = $this->login();
-        $link_url = $this->fake('url');
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'url' => $link_url,
-            'reading_time' => 10,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-
-        $response = $this->appRun('post', '/news', [
-            'csrf' => $user->csrf,
-        ]);
-
-        $news_link = models\NewsLink::findBy(['url' => $link_url]);
-        $this->assertNull($news_link);
     }
 
     public function testCreateSetsFlashNoNewsIfNoSuggestions()
@@ -464,11 +309,12 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
+        $duration = $this->fake('numberBetween', 0, 9);
         $link_url = $this->fake('url');
         $link_id = $this->create('link', [
             'user_id' => $user_id,
             'url' => $link_url,
-            'reading_time' => 10,
+            'reading_time' => $duration,
         ]);
         $bookmarks_id = $this->create('collection', [
             'user_id' => $user_id,
@@ -481,6 +327,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/news', [
             'csrf' => 'a token',
+            'type' => 'short',
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
@@ -492,10 +339,11 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $link_url = $this->fake('url');
+        $duration = $this->fake('numberBetween', 0, 9);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'url' => $link_url,
-            'reading_time' => 10,
+            'reading_time' => $duration,
         ]);
         $bookmarks_id = $this->create('collection', [
             'user_id' => $user->id,
@@ -508,6 +356,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/news', [
             'csrf' => 'not the token',
+            'type' => 'short',
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');

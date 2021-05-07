@@ -64,8 +64,19 @@
     background: linear-gradient(135deg, var(--color-purple-5), var(--color-turquoise-5));
 }
 
+@media (min-width: 800px) {
+    .card--action:nth-child(2) {
+        background: linear-gradient(180deg, #3d97c7, var(--color-turquoise-5));
+    }
+
+    .card--action:nth-child(3) {
+        background: linear-gradient(225deg, var(--color-purple-5), var(--color-turquoise-5));
+    }
+}
+
 .card__button {
     min-height: 150px;
+    padding: var(--space-medium);
 
     flex: 1;
 
