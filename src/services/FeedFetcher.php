@@ -100,6 +100,12 @@ class FeedFetcher
                 $created_at = \Minz\Time::now();
             }
 
+            if ($entry->id) {
+                $feed_entry_id = $entry->id;
+            } else {
+                $feed_entry_id = $url;
+            }
+
             if (isset($link_ids_by_urls[$url])) {
                 $link_id = $link_ids_by_urls[$url];
             } else {
@@ -109,11 +115,7 @@ class FeedFetcher
                     $link->title = $entry_title;
                 }
                 $link->created_at = $created_at;
-                if ($entry->id) {
-                    $link->feed_entry_id = $entry->id;
-                } else {
-                    $link->feed_entry_id = $url;
-                }
+                $link->feed_entry_id = $feed_entry_id;
 
                 $db_link = $link->toValues();
                 $links_to_create = array_merge(
@@ -137,7 +139,7 @@ class FeedFetcher
                 // probably less since most of the links are added via the
                 // feeds sync.
                 models\Link::update($link_id, [
-                    'feed_entry_id' => $entry->id,
+                    'feed_entry_id' => $feed_entry_id,
                     'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
                 ]);
             }
