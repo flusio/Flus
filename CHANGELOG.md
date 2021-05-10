@@ -1,5 +1,28 @@
 # Changelog of flusio
 
+## 2021-05-10 - v0.23
+
+### News
+
+- Replace news configuration by pre-selections
+
+### Improvements
+
+- Display publication date on news
+- Improve look of the button to empty the news
+- Remove points of interest
+- Adapt onboarding to the latest changes
+- List empty feeds on search page
+
+### Misc
+
+- Cache successful requests only
+- Decrease Youtube rate limit to 1 request per minute
+- Force IPv4 when fetching Youtube links
+- Decrease number of links to fetch at once
+- Remove duplicated info between `links` and `news_links`
+- Replace links `feed_published_at` by `created_at`
+
 ## 2021-05-04 - v0.22
 
 ### Improvements
