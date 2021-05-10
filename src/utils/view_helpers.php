@@ -218,14 +218,14 @@ function human_implode($array, $separator, $last_separator)
 function random_no_news_sentence()
 {
     $discover_url = url('discover collections');
+    $bookmarks_url = url('bookmarks');
     $sentences = [
-        _('Gently advice: add links to your bookmarks to read them later.'),
+        _f('Gently advice: add links to <a href="%s">your bookmarks</a> to read them later.', $bookmarks_url),
         _f('Gently advice: explore <a href="%s">public collections</a> to discover new content.', $discover_url),
         _('Gently advice: be curious!'),
-        _('Gently advice: ad blockers protect you on Internet.'),
+        _('Gently advice: ad blockers protect your privacy on Internet.'),
         _('Gently advice: remember to drink water regularly.'),
         _('Gently advice: it might be time for a break?'),
-        _('Gently advice: you don’t have to follow all the advices we give you here.'),
         _('For your entertainment, a choupisson : 🦔'),
     ];
 

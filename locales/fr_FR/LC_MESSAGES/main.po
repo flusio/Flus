@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-10 13:09+0200\n"
-"PO-Revision-Date: 2021-05-10 13:09+0200\n"
+"POT-Creation-Date: 2021-05-10 13:47+0200\n"
+"PO-Revision-Date: 2021-05-10 13:48+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -365,12 +365,16 @@ msgstr "< 1 min"
 msgid "%d&nbsp;min"
 msgstr "%d&nbsp;min"
 
-#: utils/view_helpers.php:222
-msgid "Gently advice: add links to your bookmarks to read them later."
-msgstr ""
-"Petit conseil : placez des liens dans vos signets pour les lire plus tard."
-
 #: utils/view_helpers.php:223
+#, php-format
+msgid ""
+"Gently advice: add links to <a href=\"%s\">your bookmarks</a> to read them "
+"later."
+msgstr ""
+"Petit conseil : placez des liens dans <a href=\"%s\">vos signets</a> pour "
+"les lire plus tard."
+
+#: utils/view_helpers.php:224
 #, php-format
 msgid ""
 "Gently advice: explore <a href=\"%s\">public collections</a> to discover new "
@@ -379,28 +383,22 @@ msgstr ""
 "Petit conseil : explorez <a href=\"%s\">les collections publiques</a> pour "
 "découvrir du nouveau contenu."
 
-#: utils/view_helpers.php:224
+#: utils/view_helpers.php:225
 msgid "Gently advice: be curious!"
 msgstr "Petit conseil : soyez curieuses et curieux !"
 
-#: utils/view_helpers.php:225
-msgid "Gently advice: ad blockers protect you on Internet."
-msgstr "Petit conseil : les bloqueurs de pub vous protègent sur Internet."
-
 #: utils/view_helpers.php:226
+msgid "Gently advice: ad blockers protect your privacy on Internet."
+msgstr ""
+"Petit conseil : les bloqueurs de pub protègent votre vie privée sur Internet."
+
+#: utils/view_helpers.php:227
 msgid "Gently advice: remember to drink water regularly."
 msgstr "Petit conseil : pensez à boire de l’eau régulièrement."
 
-#: utils/view_helpers.php:227
+#: utils/view_helpers.php:228
 msgid "Gently advice: it might be time for a break?"
 msgstr "Petit conseil : il est peut-être l’heure de prendre une pause ?"
-
-#: utils/view_helpers.php:228
-msgid ""
-"Gently advice: you don’t have to follow all the advices we give you here."
-msgstr ""
-"Petit conseil : vous n’avez pas à suivre tous les conseils que nous vous "
-"donnons ici."
 
 #: utils/view_helpers.php:229
 msgid "For your entertainment, a choupisson : 🦔"
