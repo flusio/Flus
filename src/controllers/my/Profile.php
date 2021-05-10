@@ -32,14 +32,9 @@ class Profile
             ]);
         }
 
-        $topics = models\Topic::listAll();
-        models\Topic::sort($topics, $user->locale);
-
         return Response::ok('my/profile/show.phtml', [
             'username' => $user->username,
             'locale' => $user->locale,
-            'topics' => $topics,
-            'topic_ids' => array_column($user->topics(), 'id'),
         ]);
     }
 
@@ -49,20 +44,17 @@ class Profile
      * @request_param string csrf
      * @request_param string username
      * @request_param string locale
-     * @request_param string[] topic_ids
      *
      * @response 302 /login?redirect_to=/my/profile
      *     If the user is not connected
      * @response 400
-     *     If the CSRF, username, topic_ids or locale are invalid
+     *     If the CSRF, username or locale are invalid
      * @response 200
      */
     public function update($request)
     {
-        $users_to_topics_dao = new models\dao\UsersToTopics();
         $username = $request->param('username');
         $locale = $request->param('locale');
-        $topic_ids = $request->param('topic_ids', []);
 
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -71,29 +63,12 @@ class Profile
             ]);
         }
 
-        $topics = models\Topic::listAll();
-        models\Topic::sort($topics, $user->locale);
-
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('my/profile/show.phtml', [
                 'username' => $username,
                 'locale' => $locale,
-                'topics' => $topics,
-                'topic_ids' => $topic_ids,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
-
-        if ($topic_ids && !models\Topic::exists($topic_ids)) {
-            return Response::badRequest('my/profile/show.phtml', [
-                'username' => $username,
-                'locale' => $locale,
-                'topics' => $topics,
-                'topic_ids' => $topic_ids,
-                'errors' => [
-                    'topic_ids' => _('One of the associated topic doesn’t exist.'),
-                ],
             ]);
         }
 
@@ -113,22 +88,17 @@ class Profile
             return Response::badRequest('my/profile/show.phtml', [
                 'username' => $username,
                 'locale' => $locale,
-                'topics' => $topics,
-                'topic_ids' => $topic_ids,
                 'errors' => $errors,
             ]);
         }
 
         $user->save();
         utils\Locale::setCurrentLocale($locale);
-        $users_to_topics_dao->set($user->id, $topic_ids);
 
         return Response::ok('my/profile/show.phtml', [
             'username' => $username,
             'locale' => $locale,
             'current_locale' => $locale,
-            'topics' => $topics,
-            'topic_ids' => $topic_ids,
         ]);
     }
 }
