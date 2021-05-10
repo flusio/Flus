@@ -136,16 +136,6 @@ class User extends \Minz\Model
     }
 
     /**
-     * Return the topics attached to the current user
-     *
-     * @return \flusio\models\Topic[]
-     */
-    public function topics()
-    {
-        return Topic::daoToList('listByUserId', $this->id);
-    }
-
-    /**
      * Return the user' bookmarks collection
      *
      * @return \flusio\models\Collection|null

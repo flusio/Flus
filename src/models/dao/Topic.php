@@ -35,23 +35,4 @@ class Topic extends \Minz\DatabaseModel
         $statement->execute([$collection_id]);
         return $statement->fetchAll();
     }
-
-    /**
-     * Returns the list of topics attached to the given user
-     *
-     * @param string $user_id
-     *
-     * @return array
-     */
-    public function listByUserId($user_id)
-    {
-        $sql = <<<'SQL'
-            SELECT t.* FROM topics t, users_to_topics ut
-            WHERE t.id = ut.topic_id AND ut.user_id = ?;
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([$user_id]);
-        return $statement->fetchAll();
-    }
 }
