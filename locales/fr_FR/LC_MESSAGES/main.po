@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-10 09:33+0200\n"
-"PO-Revision-Date: 2021-05-10 09:34+0200\n"
+"POT-Creation-Date: 2021-05-10 10:06+0200\n"
+"PO-Revision-Date: 2021-05-10 10:06+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -44,7 +44,7 @@ msgstr "Afficher"
 #: controllers/collections/Followers.php:47
 #: controllers/collections/Followers.php:90 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
-#: controllers/my/Account.php:101 controllers/my/Profile.php:84
+#: controllers/my/Account.php:101 controllers/my/Profile.php:71
 #: controllers/my/Security.php:79 controllers/my/Security.php:139
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
 #: controllers/news/Links.php:126
@@ -54,7 +54,6 @@ msgstr ""
 "le formulaire."
 
 #: controllers/Collections.php:121 controllers/Collections.php:326
-#: controllers/my/Profile.php:95
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
@@ -80,11 +79,6 @@ msgstr "Le lien doit être associé à une collection."
 #: controllers/links/Obtentions.php:152 controllers/news/Links.php:153
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
-
-#: controllers/Onboarding.php:49 views/collections/feed.atom.xml.phtml:30
-#, php-format
-msgid "“%s”"
-msgstr "« %s »"
 
 #: controllers/Registrations.php:128 controllers/my/Security.php:91
 msgid "An account already exists with this email address."
@@ -264,31 +258,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:356
+#: models/User.php:346
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:358
+#: models/User.php:348
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:360
+#: models/User.php:350
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:362
+#: models/User.php:352
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: models/User.php:364
+#: models/User.php:354
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:366
+#: models/User.php:356
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:368
+#: models/User.php:358
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -696,7 +690,7 @@ msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
 #: views/collections/edit.phtml:115 views/links/collections/index.phtml:67
-#: views/links/edit.phtml:68 views/my/profile/show.phtml:146
+#: views/links/edit.phtml:68 views/my/profile/show.phtml:115
 #: views/my/security/show_confirmed.phtml:89
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -712,6 +706,11 @@ msgstr ""
 #: views/collections/edit.phtml:133
 msgid "Delete the collection"
 msgstr "Supprimer la collection"
+
+#: views/collections/feed.atom.xml.phtml:30
+#, php-format
+msgid "“%s”"
+msgstr "« %s »"
 
 #: views/collections/feed.atom.xml.phtml:31
 #, php-format
@@ -1235,11 +1234,7 @@ msgstr "Votre nom"
 msgid "Your username must not be longer than 50 characters."
 msgstr "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: views/my/profile/show.phtml:91
-msgid "Your points of interest"
-msgstr "Vos centres d’intérêt"
-
-#: views/my/profile/show.phtml:123
+#: views/my/profile/show.phtml:92
 msgid "Your language"
 msgstr "Votre langue"
 
@@ -1446,8 +1441,7 @@ msgstr ""
 "introduction devrait vous prendre moins de 5 minutes."
 
 #: views/onboarding/step1.phtml:57 views/onboarding/step2.phtml:40
-#: views/onboarding/step3.phtml:79 views/onboarding/step4.phtml:52
-#: views/onboarding/step4.phtml:102
+#: views/onboarding/step3.phtml:79 views/onboarding/step4.phtml:37
 msgid "Continue"
 msgstr "Continuer"
 
@@ -1595,31 +1589,6 @@ msgid ""
 msgstr ""
 "Pas de défilement infini, ni de commentaires haineux : votre <em>sérénité</"
 "em> est ce qui compte le plus."
-
-#: views/onboarding/step4.phtml:39 views/onboarding/step4.phtml:59
-msgid ""
-"By the way, you might want to indicate your <em>points of interest</em> "
-"right away, you’ll get better suggestions then."
-msgstr ""
-"D’ailleurs vous pourriez vouloir indiquer vos <em>centres d’intérêt</em> "
-"tout de suite, cela améliorera les suggestions."
-
-#: views/onboarding/step4.phtml:43
-msgid " and "
-msgstr " et "
-
-#: views/onboarding/step4.phtml:43
-#, php-format
-msgid "You’ve selected %s."
-msgstr "Vous avez sélectionné %s."
-
-#: views/onboarding/step4.phtml:47
-msgid "You’ll be able to change those later."
-msgstr "Vous pourrez changer cela plus tard."
-
-#: views/onboarding/step4.phtml:95
-msgid "Save and continue"
-msgstr "Enregistrer et continuer"
 
 #: views/onboarding/step5.phtml:3 views/onboarding/step5.phtml:10
 msgid "Start exploring"
