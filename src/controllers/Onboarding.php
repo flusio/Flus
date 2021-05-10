@@ -39,20 +39,7 @@ class Onboarding
             return Response::notFound('not_found.phtml');
         }
 
-        // Topics are used during step 4
-        $topics = models\Topic::listAll();
-        models\Topic::sort($topics, $user->locale);
-
-        $user_topics = $user->topics();
-        models\Topic::sort($user_topics, $user->locale);
-        $user_topic_labels = array_map(function ($topic) {
-            return vsprintf(_('“%s”'), $topic->label);
-        }, $user_topics);
-
-        return Response::ok("onboarding/step{$step}.phtml", [
-            'topics' => $topics,
-            'user_topic_labels' => $user_topic_labels,
-        ]);
+        return Response::ok("onboarding/step{$step}.phtml");
     }
 
     /**
@@ -93,47 +80,5 @@ class Onboarding
         }
 
         return Response::redirect('onboarding');
-    }
-
-    /**
-     * Update the topics of the current user
-     *
-     * @request_param string csrf
-     * @request_param string[] topic_ids
-     *
-     * @response 302 /login?redirect_to=/onboarding?step=4
-     *     if the user is not connected
-     * @response 302 /onboarding?step=4
-     *     if the CSRF or topic_ids are invalid
-     * @response 302 /onboarding?step=4
-     *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
-     */
-    public function updateTopics($request)
-    {
-        $topic_ids = $request->param('topic_ids', []);
-
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('onboarding', ['step' => 4]),
-            ]);
-        }
-
-        $csrf = new \Minz\CSRF();
-        $csrf_valid = $csrf->validateToken($request->param('csrf'));
-        $topics_valid = !$topic_ids || models\Topic::exists($topic_ids);
-
-        if (!$csrf_valid || !$topics_valid) {
-            return Response::redirect('onboarding', ['step' => 4]);
-        }
-
-        $users_to_topics_dao = new models\dao\UsersToTopics();
-        $users_to_topics_dao->set($user->id, $topic_ids);
-
-        return Response::redirect('onboarding', ['step' => 5]);
     }
 }

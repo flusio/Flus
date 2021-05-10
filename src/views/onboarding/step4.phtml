@@ -32,75 +32,9 @@
         <?= _('No endless scroll, no angry comments: your <em>peace of mind</em> is what matters.') ?>
     </p>
 
-    <?php if ($user_topic_labels): ?>
-        <hr />
-
-        <p class="paragraph--centered">
-            <?= _('By the way, you might want to indicate your <em>points of interest</em> right away, you’ll get better suggestions then.') ?>
-        </p>
-
-        <p class="paragraph--centered">
-            <?= _f('You’ve selected %s.', human_implode($user_topic_labels, ', ', _(' and '))) ?>
-        </p>
-
-        <p class="paragraph--centered paragraph--secondary">
-            <i><?= _('You’ll be able to change those later.') ?></i>
-        </p>
-
-        <p class="paragraph--centered">
-            <a class="anchor--action" href="<?= url('onboarding', ['step' => 5]) ?>">
-                <?= _('Continue') ?>
-            </a>
-        </p>
-    <?php elseif ($topics): ?>
-        <hr />
-
-        <p class="paragraph--centered">
-            <?= _('By the way, you might want to indicate your <em>points of interest</em> right away, you’ll get better suggestions then.') ?>
-        </p>
-
-        <form
-            method="post"
-            action="<?= url('onboarding update topics') ?>"
-            class="form--centered"
-        >
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-            <?php if (isset($errors['topic_ids'])): ?>
-                <p class="form-group__error">
-                    <?= $errors['topic_ids'] ?>
-                </p>
-            <?php endif; ?>
-
-            <div class="topics-selector">
-                <?php foreach ($topics as $topic): ?>
-                    <div class="topics-selector__item">
-                        <input
-                            type="checkbox"
-                            id="topic-<?= $topic->id ?>"
-                            class="topics-selector__checkbox"
-                            name="topic_ids[]"
-                            value="<?= $topic->id ?>"
-                        />
-
-                        <label class="topics-selector__label" for="topic-<?= $topic->id ?>">
-                            <?= protect($topic->label) ?>
-                        </label>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="button--primary">
-                    <?= _('Save and continue') ?>
-                </button>
-            </div>
-        </form>
-    <?php else: ?>
-        <p class="paragraph--centered">
-            <a class="anchor--action" href="<?= url('onboarding', ['step' => 5]) ?>">
-                <?= _('Continue') ?>
-            </a>
-        </p>
-    <?php endif; ?>
+    <p class="paragraph--centered">
+        <a class="anchor--action" href="<?= url('onboarding', ['step' => 5]) ?>">
+            <?= _('Continue') ?>
+        </a>
+    </p>
 </div>
