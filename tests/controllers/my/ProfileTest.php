@@ -69,28 +69,6 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
     }
 
-    public function testUpdateChangesTopics()
-    {
-        $user = $this->login();
-        $old_topic_id = $this->create('topic');
-        $new_topic_id = $this->create('topic');
-        $this->create('user_to_topic', [
-            'user_id' => $user->id,
-            'topic_id' => $old_topic_id,
-        ]);
-
-        $response = $this->appRun('post', '/my/profile', [
-            'csrf' => $user->csrf,
-            'username' => $this->fake('username'),
-            'locale' => 'fr_FR',
-            'topic_ids' => [$new_topic_id],
-        ]);
-
-        $user = auth\CurrentUser::reload();
-        $topic_ids = array_column($user->topics(), 'id');
-        $this->assertSame([$new_topic_id], $topic_ids);
-    }
-
     public function testUpdateRedirectsToLoginIfUserNotConnected()
     {
         $old_username = $this->fakeUnique('username');
@@ -212,28 +190,6 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);
-    }
-
-    public function testUpdateFailsIfTopicIdsIsInvalid()
-    {
-        $user = $this->login();
-        $old_topic_id = $this->create('topic');
-        $this->create('user_to_topic', [
-            'user_id' => $user->id,
-            'topic_id' => $old_topic_id,
-        ]);
-
-        $response = $this->appRun('post', '/my/profile', [
-            'csrf' => $user->csrf,
-            'username' => $this->fake('username'),
-            'locale' => 'fr_FR',
-            'topic_ids' => ['not an id'],
-        ]);
-
-        $this->assertResponse($response, 400, 'One of the associated topic doesn’t exist.');
-        $user = auth\CurrentUser::reload();
-        $topic_ids = array_column($user->topics(), 'id');
-        $this->assertSame([$old_topic_id], $topic_ids);
     }
 
     public function testInfoRendersCorrectly()

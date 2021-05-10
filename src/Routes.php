@@ -33,7 +33,6 @@ class Routes
         // Onboarding
         $router->addRoute('get', '/onboarding', 'Onboarding#show', 'onboarding');
         $router->addRoute('post', '/onboarding/locale', 'Onboarding#updateLocale', 'onboarding update locale');
-        $router->addRoute('post', '/onboarding/topics', 'Onboarding#updateTopics', 'onboarding update topics');
 
         // "My" section
         $router->addRoute('get', '/my/profile', 'my/Profile#show', 'profile');
