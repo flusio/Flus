@@ -5,7 +5,7 @@
     ]);
 ?>
 
-<div class="section section--small">
+<div class="section section--small section--longbottom">
     <div class="section__title">
         <h1><?= _f('Welcome %s!', protect($current_user->username)) ?></h1>
     </div>
@@ -58,11 +58,11 @@
         </a>
     </p>
 
-    <hr />
-
     <p class="paragraph--centered">
-        <a href="<?= url('home') ?>">
-            <?= _('Skip the onboarding') ?>
-        </a>
+        <small>
+            <a href="<?= url('home') ?>">
+                <?= _('or skip the onboarding') ?>
+            </a>
+        </small>
     </p>
 </div>

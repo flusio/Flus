@@ -4,6 +4,10 @@
     margin-left: auto;
 }
 
+.section--longbottom {
+    padding-bottom: 15rem;
+}
+
 .section__image {
     display: block;
     width: calc(100% + 2 * var(--space-smaller));

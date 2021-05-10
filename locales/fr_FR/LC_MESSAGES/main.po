@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-10 10:06+0200\n"
-"PO-Revision-Date: 2021-05-10 10:06+0200\n"
+"POT-Creation-Date: 2021-05-10 13:09+0200\n"
+"PO-Revision-Date: 2021-05-10 13:09+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1047,11 +1047,11 @@ msgstr ""
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
-#: views/links/new.phtml:116 views/onboarding/step3.phtml:60
+#: views/links/new.phtml:116 views/onboarding/step3.phtml:56
 msgid "Make your life easier by using the Web extension on"
 msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
 
-#: views/links/new.phtml:122 views/onboarding/step3.phtml:67
+#: views/links/new.phtml:122 views/onboarding/step3.phtml:63
 msgid "or"
 msgstr "ou"
 
@@ -1389,23 +1389,24 @@ msgstr "Nous n’avons trouvé aucun lien pertinent pour le moment."
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/show.phtml:221
+#: views/news/show.phtml:221 views/onboarding/step4.phtml:30
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/show.phtml:222
+#: views/news/show.phtml:222 views/onboarding/step4.phtml:31
 msgid "from your followed collections"
 msgstr "depuis vos collections suivies"
 
-#: views/news/show.phtml:235
+#: views/news/show.phtml:235 views/onboarding/step4.phtml:42
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
 #: views/news/show.phtml:236 views/news/show.phtml:250
+#: views/onboarding/step4.phtml:43 views/onboarding/step4.phtml:55
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/show.phtml:249
+#: views/news/show.phtml:249 views/onboarding/step4.phtml:54
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 
@@ -1441,13 +1442,13 @@ msgstr ""
 "introduction devrait vous prendre moins de 5 minutes."
 
 #: views/onboarding/step1.phtml:57 views/onboarding/step2.phtml:40
-#: views/onboarding/step3.phtml:79 views/onboarding/step4.phtml:37
+#: views/onboarding/step3.phtml:75 views/onboarding/step4.phtml:65
 msgid "Continue"
 msgstr "Continuer"
 
-#: views/onboarding/step1.phtml:65
-msgid "Skip the onboarding"
-msgstr "Passer l’introduction"
+#: views/onboarding/step1.phtml:64
+msgid "or skip the onboarding"
+msgstr "ou passer l’introduction"
 
 #: views/onboarding/step2.phtml:3 views/onboarding/step2.phtml:10
 msgid "The big picture"
@@ -1463,10 +1464,11 @@ msgstr ""
 
 #: views/onboarding/step2.phtml:20
 msgid ""
-"<strong>News</strong> is where you <em>get suggestions</em> of what to read;"
+"<strong>News</strong> selects <em>suggestions of what to read</em> from your "
+"bookmarks and followed collections;"
 msgstr ""
-"Le <strong>Journal</strong> vous propose des <em>suggestions</em> de liens à "
-"lire ;"
+"Le <strong>Journal</strong> vous sélectionne des <em>suggestions de liens à "
+"lire</em> depuis vos signets et vos collections suivies ;"
 
 #: views/onboarding/step2.phtml:25
 msgid ""
@@ -1478,11 +1480,11 @@ msgstr ""
 
 #: views/onboarding/step2.phtml:30
 msgid ""
-"<strong>Collections</strong> is where you <em>organize the links</em>, they "
+"<strong>Collections</strong> is where you <em>organize your links</em> and "
 "can be followed by the community."
 msgstr ""
-"Les <strong>Collections</strong> permettent <em>d’organiser les liens</em>, "
-"elles peuvent être suivies par la communauté."
+"Les <strong>Collections</strong> permettent <em>d’organiser vos liens</em> "
+"et peuvent être suivies par la communauté."
 
 #: views/onboarding/step2.phtml:35
 msgid "Pretty simple, isn’t it?"
@@ -1509,19 +1511,10 @@ msgstr "commentez-les et partagez vos pensées avec le reste de la communauté 
 #: views/onboarding/step3.phtml:27
 msgid "discover new links based on what the other users shared."
 msgstr ""
-"découvrez de nouveaux liens à partir de ce que les autres utilisateur‧ices "
-"ont partagé."
+"découvrez de nouveaux liens à partir de ce que les autres utilisateurs et "
+"utilisatrices ont partagé."
 
-#: views/onboarding/step3.phtml:32
-#, php-format
-msgid ""
-"In %s, look for the <em>%s plus in a circle</em> icon when you want to add a "
-"link."
-msgstr ""
-"Dans %s, recherchez l’icône du <em>%s plus dans un cercle</em> lorsque vous "
-"voulez ajouter un lien."
-
-#: views/onboarding/step3.phtml:43
+#: views/onboarding/step3.phtml:39
 msgid ""
 "Note: when you’re being asked for a “<abbr>URL</abbr>”, you’re supposed to "
 "copy-paste the content of the bar at the top of your browser."
@@ -1529,7 +1522,7 @@ msgstr ""
 "Note : lorsque l’on vous demande une « <abbr>URL</abbr> », vous devez copier-"
 "coller le contenu de la barre en haut de votre navigateur Internet."
 
-#: views/onboarding/step3.phtml:48
+#: views/onboarding/step3.phtml:44
 msgid ""
 "A screenshot of the browser URL bar in Firefox, it contains “https://"
 "contributopia.org/fr/”"
@@ -1537,7 +1530,7 @@ msgstr ""
 "Une capture d’écran de la barre URL de Firefox, elle contient « https://"
 "contributopia.org/fr/ »"
 
-#: views/onboarding/step3.phtml:54
+#: views/onboarding/step3.phtml:50
 msgid ""
 "It should look like this in Firefox. In this example, the <abbr>URL</abbr> "
 "is <code>https://contributopia.org/fr/</code>"
@@ -1550,45 +1543,23 @@ msgid "Understanding the news"
 msgstr "Comprendre le journal"
 
 #: views/onboarding/step4.phtml:14
+msgid "You might have a lot to read everyday."
+msgstr "Il se peut que vous ayez beaucoup de choses à lire chaque jour."
+
+#: views/onboarding/step4.phtml:18
+msgid "The news offers you 3 ways to select links to read:"
+msgstr "Le journal vous propose 3 façons de sélectionner des liens à lire :"
+
+#: views/onboarding/step4.phtml:60
 #, php-format
 msgid ""
-"You might spend a lot of time to read the news. This is why %s gives you "
-"control on its suggestions."
+"<strong>These pre-selections keep your reading space pleasant in daily use.</"
+"strong> In %s, there is no endless scroll: your <em>peace of mind</em> is "
+"what matters most."
 msgstr ""
-"Vous risquez de passer beaucoup de temps à lire le journal. C’est pourquoi "
-"%s vous donne le contrôle sur ses suggestions."
-
-#: views/onboarding/step4.phtml:19
-msgid ""
-"Specify <em>how much time</em> you have, the suggestions of links are "
-"automatically adapted;"
-msgstr ""
-"Indiquez de <em>combien de temps</em> vous disposez, les suggestions de "
-"liens sont automatiquement adaptées ;"
-
-#: views/onboarding/step4.phtml:23
-msgid ""
-"suggestions come from your bookmarks, collections you follow and points of "
-"interest, but you can change this at any time;"
-msgstr ""
-"les suggestions viennent de vos signets, collections suivies et centres "
-"d’intérêt, mais vous pouvez changer cela à tout moment ;"
-
-#: views/onboarding/step4.phtml:27
-msgid ""
-"in the future, more options will be available to put you in charge of the "
-"algorithm."
-msgstr ""
-"dans le futur, plus d’options seront disponibles pour vous placer aux "
-"commandes de l’algorithme."
-
-#: views/onboarding/step4.phtml:32
-msgid ""
-"No endless scroll, no angry comments: your <em>peace of mind</em> is what "
-"matters."
-msgstr ""
-"Pas de défilement infini, ni de commentaires haineux : votre <em>sérénité</"
-"em> est ce qui compte le plus."
+"<strong>Ces pré-sélections gardent votre espace de lecture agréable au "
+"quotidien.</strong> Dans %s, il n’y a pas de défilement infini : votre "
+"<em>sérénité</em> est ce qui compte le plus."
 
 #: views/onboarding/step5.phtml:3 views/onboarding/step5.phtml:10
 msgid "Start exploring"
@@ -1612,17 +1583,24 @@ msgstr ""
 "régulièrement. Si vous vous sentez perdu‧e, soyez curieux ou curieuse et "
 "vous devriez vous en sortir."
 
-#: views/onboarding/step5.phtml:31
-msgid "Access the news"
-msgstr "Accéder au journal"
+#: views/onboarding/step5.phtml:29
+msgid "You can choose <em>your next destination</em>:"
+msgstr "Vous pouvez choisir votre <em>prochaine destination</em> :"
 
-#: views/onboarding/step5.phtml:38
-#, php-format
-msgid "Tip: if you use Pocket, you can import your links into %s."
+#: views/onboarding/step5.phtml:35
+msgid "Explore the collections"
+msgstr "Explorer les collections"
+
+#: views/onboarding/step5.phtml:41
+msgid "Add new links"
+msgstr "Ajouter des liens"
+
+#: views/onboarding/step5.phtml:47
+msgid "Tip: if you use Pocket, you can also import your links:"
 msgstr ""
-"Astuce : si vous utilisez Pocket, vous pouvez importer vos liens dans %s."
+"Astuce : si vous utilisez Pocket, vous pouvez aussi importer vos liens :"
 
-#: views/onboarding/step5.phtml:43
+#: views/onboarding/step5.phtml:52
 msgid "Import from Pocket"
 msgstr "Importer depuis Pocket"
 

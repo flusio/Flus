@@ -5,7 +5,7 @@
     ]);
 ?>
 
-<div class="section section--small">
+<div class="section section--longbottom">
     <div class="section__title">
         <h1><?= _('Start exploring') ?></h1>
     </div>
@@ -26,16 +26,25 @@
     </p>
 
     <p class="paragraph--centered">
-        <a class="anchor--action" href="<?= url('news') ?>">
-            <?= icon('news') ?>
-            <?= _('Access the news') ?>
-        </a>
+        <?= _('You can choose <em>your next destination</em>:') ?>
     </p>
 
-    <hr />
+    <div class="cards cards--centered">
+        <div class="card card--showcase">
+            <a class="anchor--action" href="<?= url('discover collections') ?>">
+                <?= _('Explore the collections') ?>
+            </a>
+        </div>
+
+        <div class="card card--showcase">
+            <a class="anchor--action news-selection__title" href="<?= url('show search link') ?>">
+                <?= _('Add new links') ?>
+            </a>
+        </div>
+    </div>
 
     <p class="paragraph--centered">
-        <?= _f('Tip: if you use Pocket, you can import your links into %s.', $brand) ?>
+        <?= _('Tip: if you use Pocket, you can also import your links:') ?>
     </p>
 
     <p class="paragraph--centered">

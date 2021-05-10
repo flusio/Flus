@@ -55,6 +55,17 @@
     box-shadow: none;
 }
 
+.card--showcase {
+    padding: var(--space-small);
+
+    align-items: stretch;
+    justify-content: center;
+
+    text-align: center;
+
+    box-shadow: none;
+}
+
 .card--action {
     padding: 3px;
 

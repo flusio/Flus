@@ -5,31 +5,59 @@
     ]);
 ?>
 
-<div class="section section--small">
+<div class="section section--longbottom">
     <div class="section__title">
         <h1><?= _('Understanding the news') ?></h1>
     </div>
 
     <p class="paragraph--featured">
-        <?= _f('You might spend a lot of time to read the news. This is why %s gives you control on its suggestions.', $brand) ?>
+        <?= _('You might have a lot to read everyday.') ?>
     </p>
 
-    <ul class="list--spaced">
-        <li class="list__item">
-            <?= _('Specify <em>how much time</em> you have, the suggestions of links are automatically adapted;') ?>
-        </li>
+    <p class="paragraph--centered">
+        <?= _f('The news offers you 3 ways to select links to read:', $brand) ?>
+    </p>
 
-        <li class="list__item">
-            <?= _('suggestions come from your bookmarks, collections you follow and points of interest, but you can change this at any time;') ?>
-        </li>
+    <div class="cards cards--centered">
+        <div class="card card--showcase">
+            <img
+                class="card__image"
+                alt=""
+                src="<?= url_static('illustrations/newspaper.svg') ?>"
+                height="200"
+            />
 
-        <li class="list__item">
-            <?= _('in the future, more options will be available to put you in charge of the algorithm.') ?>
-        </li>
-    </ul>
+            <span class="news-selection__title"><?= _('the latest publications') ?></span>
+            <small class="text--secondary"><?= _('from your followed collections') ?></small>
+        </div>
+
+        <div class="card card--showcase">
+            <img
+                class="card__image"
+                alt=""
+                src="<?= url_static('illustrations/reading.svg') ?>"
+                height="200"
+            />
+
+            <span class="news-selection__title"><?= _('3 links of -10 minutes') ?></span>
+            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+        </div>
+
+        <div class="card card--showcase">
+            <img
+                class="card__image"
+                alt=""
+                src="<?= url_static('illustrations/cup-of-tea.svg') ?>"
+                height="200"
+            />
+
+            <span class="news-selection__title"><?= _('1 link of +10 minutes') ?></span>
+            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+        </div>
+    </div>
 
     <p class="paragraph--centered">
-        <?= _('No endless scroll, no angry comments: your <em>peace of mind</em> is what matters.') ?>
+        <?= _f('<strong>These pre-selections keep your reading space pleasant in daily use.</strong> In %s, there is no endless scroll: your <em>peace of mind</em> is what matters most.', $brand) ?>
     </p>
 
     <p class="paragraph--centered">
