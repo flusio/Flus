@@ -102,6 +102,10 @@
     display: inline;
 }
 
+.header__locale-form .icon {
+    vertical-align: middle;
+}
+
 .header__locale-form .form-group {
     margin-top: 0;
     margin-bottom: 0;
