@@ -29,6 +29,10 @@ class Topic extends \Minz\Model
             'required' => true,
             'validator' => '\flusio\models\Topic::validateLabel',
         ],
+
+        'image_filename' => [
+            'type' => 'string',
+        ],
     ];
 
     /**

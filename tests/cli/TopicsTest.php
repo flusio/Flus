@@ -53,6 +53,26 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Topic::count());
     }
 
+    public function testCreateDownloadsImageIfPassed()
+    {
+        $label = $this->fake('word');
+        $image_url = 'https://flus.fr/carnet/card.png';
+
+        $response = $this->appRun('cli', '/topics/create', [
+            'label' => $label,
+            'image_url' => $image_url,
+        ]);
+
+        $topic = models\Topic::take();
+        $image_filename = $topic->image_filename;
+        $this->assertNotNull($image_filename);
+        $media_path = \Minz\Configuration::$application['media_path'];
+        $card_filepath = "{$media_path}/cards/{$image_filename}";
+        $large_filepath = "{$media_path}/large/{$image_filename}";
+        $this->assertTrue(file_exists($card_filepath));
+        $this->assertTrue(file_exists($large_filepath));
+    }
+
     public function testCreateFailsIfLabelIsTooLong()
     {
         $label_max_size = models\Topic::LABEL_MAX_SIZE;

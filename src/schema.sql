@@ -161,7 +161,8 @@ CREATE INDEX idx_messages_link_id ON messages(link_id);
 CREATE TABLE topics (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
-    label TEXT NOT NULL
+    label TEXT NOT NULL,
+    image_filename TEXT
 );
 
 CREATE TABLE collections_to_topics (

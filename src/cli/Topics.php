@@ -4,6 +4,7 @@ namespace flusio\cli;
 
 use Minz\Response;
 use flusio\models;
+use flusio\services;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -15,10 +16,6 @@ class Topics
      * List all the topics
      *
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function index($request)
     {
@@ -35,18 +32,22 @@ class Topics
      * Create a topic.
      *
      * @request_param label
+     * @request_param image_url An URL to an image to illustrate the topic (optional)
      *
-     * @response 400 if one of the param is invalid
+     * @response 400 if the label is invalid
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function create($request)
     {
         $label = $request->param('label');
+        $image_url = $request->param('image_url');
         $topic = models\Topic::init($label);
+
+        if ($image_url) {
+            $image_service = new services\Image();
+            $image_filename = $image_service->generatePreviews($image_url);
+            $topic->image_filename = $image_filename;
+        }
 
         $errors = $topic->validate();
         if ($errors) {
@@ -66,10 +67,6 @@ class Topics
      *
      * @response 404 if the id doesn't exist
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function delete($request)
     {
