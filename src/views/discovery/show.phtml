@@ -26,7 +26,7 @@
             <?php foreach ($topics as $topic): ?>
                 <div class="topic">
                     <a class="topic__anchor" href="<?= url('topic', ['id' => $topic->id]) ?>">
-                        <img class="topic__image" alt="" src="<?= url_link_image('cards', $topic->image_filename) ?>" />
+                        <img class="topic__image" alt="" src="<?= url_media('cards', $topic->image_filename) ?>" />
                         <span class="topic__info">
                             <span class="topic__title">
                                 <?= protect($topic->label) ?>
