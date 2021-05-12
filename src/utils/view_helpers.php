@@ -207,11 +207,11 @@ function human_implode($array, $separator, $last_separator)
  */
 function random_no_news_sentence()
 {
-    $discover_url = url('discover collections');
+    $discovery_url = url('discovery');
     $bookmarks_url = url('bookmarks');
     $sentences = [
         _f('Gently advice: add links to <a href="%s">your bookmarks</a> to read them later.', $bookmarks_url),
-        _f('Gently advice: explore <a href="%s">public collections</a> to discover new content.', $discover_url),
+        _f('Gently advice: explore <a href="%s">public collections</a> to discover new content.', $discovery_url),
         _('Gently advice: be curious!'),
         _('Gently advice: ad blockers protect your privacy on Internet.'),
         _('Gently advice: remember to drink water regularly.'),
