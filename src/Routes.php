@@ -154,6 +154,7 @@ class Routes
 
         $router->addRoute('cli', '/topics', 'Topics#index');
         $router->addRoute('cli', '/topics/create', 'Topics#create');
+        $router->addRoute('cli', '/topics/update', 'Topics#update');
         $router->addRoute('cli', '/topics/delete', 'Topics#delete');
 
         $router->addRoute('cli', '/links/refresh', 'Links#refresh');
