@@ -1,0 +1,87 @@
+<?php
+    if ($pagination->isCurrentFirstPage()) {
+        $current_url_params = ['id' => $topic->id];
+    } else {
+        $current_url_params = [
+            'id' => $topic->id,
+            'page' => $pagination->currentPage(),
+        ];
+    }
+
+    $this->layout('base.phtml', [
+        'title' => $topic->label,
+        'canonical' => url_full('topic', $current_url_params),
+        'current_tab' => 'collections',
+        'back' => [
+            'href' => url('discovery'),
+            'label' => _('Discover'),
+        ],
+    ]);
+?>
+
+<div class="section" data-controller="back-storage" data-back-storage-type="collection">
+    <?php if ($topic->image_filename): ?>
+        <img
+            class="section__image"
+            alt=""
+            src="<?= url_link_image('large', $topic->image_filename) ?>"
+        />
+    <?php endif; ?>
+
+    <div class="section__title">
+        <h1><?= protect($topic->label) ?></h1>
+    </div>
+
+    <?php if ($collections): ?>
+        <div class="cards cards--centered">
+            <?php foreach ($collections as $collection): ?>
+                <div class="card">
+                    <div class="card__body">
+                        <h2 class="card__title">
+                            <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
+                                <?= protect($collection->name) ?>
+                            </a>
+                        </h2>
+
+                        <?php if ($collection->type === 'feed'): ?>
+                            <p class="card__text">
+                                <?= _f('Feed from %s', protect($collection->feedWebsite())) ?>
+                            </p>
+                        <?php elseif ($collection->type === 'collection'): ?>
+                            <p class="card__text">
+                                <?= _f('Created by %s', protect($collection->owner()->username)) ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <p class="card__text">
+                            <?php if ($collection->number_links === 0): ?>
+                                <?= _('no links') ?>
+                            <?php else: ?>
+                                <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
+                            <?php endif; ?>
+
+                            <?php if ($current_user && $current_user->isFollowing($collection->id)): ?>
+                                <span class="sticker sticker--right"><?= _('followed') ?></span>
+                            <?php endif; ?>
+                        </p>
+
+                    </div>
+
+                    <div class="card__footer">
+                        <div></div>
+
+                        <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                            <?= _('see') ?>
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <?= $this->include('_pagination.phtml', ['pagination' => $pagination, 'url' => url('topic', ['id' => $topic->id])]) ?>
+    <?php else: ?>
+        <p class="paragraph--placeholder">
+            <?= _('The community didn’t publish any collection in this topic yet. Will you be the first?') ?>
+        </p>
+    <?php endif; ?>
+</div>

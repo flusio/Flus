@@ -73,6 +73,16 @@ class Topic extends \Minz\Model
     }
 
     /**
+     * Return the number of public collections attached to this topic
+     *
+     * @return integer
+     */
+    public function countPublicCollections()
+    {
+        return Collection::daoCall('countPublicByTopic', $this->id);
+    }
+
+    /**
      * @param string $label
      * @return boolean
      */
