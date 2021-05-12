@@ -43,7 +43,7 @@ class Topic extends \Minz\Model
     public function __construct($values)
     {
         parent::__construct(array_merge([
-            'id' => utils\Random::hex(32),
+            'id' => utils\Random::timebased(),
             'label' => '',
         ], $values));
     }
