@@ -17,12 +17,6 @@
     text-align: center;
 }
 
-@media (min-width: 800px) {
-    .news__postpone {
-        margin-bottom: calc(var(--space-larger) * 2);
-    }
-}
-
 .news__postpone-popup .popup__container {
     font-size: var(--size-normal);
 }
