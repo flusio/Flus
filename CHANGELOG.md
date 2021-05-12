@@ -1,5 +1,13 @@
 # Changelog of flusio
 
+## 2021-xx-yy - v0.24
+
+### Migration notes
+
+Now, topics can have illustrations. They appear on the new discovery page. You
+can update existing topics with CLI and provide an `image_url` to set
+illustrations.
+
 ## 2021-05-10 - v0.23
 
 ### News

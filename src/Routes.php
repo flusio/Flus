@@ -119,6 +119,11 @@ class Routes
         $router->addRoute('post', '/links/:link_id/messages', 'links/Messages#create', 'links/create message');
         $router->addRoute('post', '/messages/:id/delete', 'Messages#delete', 'delete message');
 
+        // Discovery
+        $router->addRoute('get', '/discovery', 'Discovery#show', 'discovery');
+
+        $router->addRoute('get', '/topics/:id', 'Topics#show', 'topic');
+
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');
 
@@ -154,6 +159,7 @@ class Routes
 
         $router->addRoute('cli', '/topics', 'Topics#index');
         $router->addRoute('cli', '/topics/create', 'Topics#create');
+        $router->addRoute('cli', '/topics/update', 'Topics#update');
         $router->addRoute('cli', '/topics/delete', 'Topics#delete');
 
         $router->addRoute('cli', '/links/refresh', 'Links#refresh');

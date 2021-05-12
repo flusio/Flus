@@ -109,17 +109,18 @@ function url_asset($filename)
 }
 
 /**
- * Return the relative URL for a link image
+ * Return the relative URL for a media image
  *
- * @param string $type Either 'cards' or 'large'
- * @param string $filename The URL saved in link->image_filename
+ * @param string $type Either 'cards', 'large' or 'avatars'
+ * @param string $filename The filename of the image to get
+ * @param string $default The default image to return if file doesn't exist
  *
  * @return string
  */
-function url_link_image($type, $filename)
+function url_media($type, $filename, $default = 'default-card.png')
 {
     if (!$filename) {
-        return url_static('default-card.png');
+        return url_static($default);
     }
 
     $media_path = \Minz\Configuration::$application['media_path'];
@@ -129,21 +130,22 @@ function url_link_image($type, $filename)
     if ($modification_time) {
         return $file_url . '?' . $modification_time;
     } else {
-        return url_static('default-card.png');
+        return url_static($default);
     }
 }
 
 /**
- * Return the absolute URL for a link image
+ * Return the absolute URL for a media image
  *
- * @param string $type Either 'cards' or 'large'
- * @param string $filename The URL saved in link->image_filename
+ * @param string $type Either 'cards', 'large' or 'avatars'
+ * @param string $filename The filename of the image to get
+ * @param string $default The default image to return if file doesn't exist
  *
  * @return string
  */
-function url_link_image_full($type, $filename)
+function url_media_full($type, $filename)
 {
-    return \Minz\Url::baseUrl() . url_link_image($type, $filename);
+    return \Minz\Url::baseUrl() . url_media($type, $filename);
 }
 
 /**
@@ -155,19 +157,7 @@ function url_link_image_full($type, $filename)
  */
 function url_avatar($filename)
 {
-    if (!$filename) {
-        return url_static('default-avatar.svg');
-    }
-
-    $media_path = \Minz\Configuration::$application['media_path'];
-    $filepath = "{$media_path}/avatars/{$filename}";
-    $modification_time = @filemtime($filepath);
-    if ($modification_time) {
-        $file_url = \Minz\Url::path() . "/media/avatars/{$filename}";
-        return $file_url . '?' . $modification_time;
-    } else {
-        return url_static('default-avatar.svg');
-    }
+    return url_media('avatars', $filename, 'default-avatar.svg');
 }
 
 /**

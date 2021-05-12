@@ -1,22 +1,36 @@
 <?php
+    if ($pagination->isCurrentFirstPage()) {
+        $current_url_params = ['id' => $topic->id];
+    } else {
+        $current_url_params = [
+            'id' => $topic->id,
+            'page' => $pagination->currentPage(),
+        ];
+    }
+
     $this->layout('base.phtml', [
-        'title' => _('Discover collections'),
+        'title' => $topic->label,
+        'canonical' => url_full('topic', $current_url_params),
         'current_tab' => 'collections',
         'back' => [
-            'href' => url('collections'),
-            'label' => _('Your collections'),
+            'href' => url('discovery'),
+            'label' => _('Discover'),
         ],
     ]);
 ?>
 
 <div class="section" data-controller="back-storage" data-back-storage-type="collection">
-    <div class="section__title">
-        <h1><?= _('Discover collections') ?></h1>
-    </div>
+    <?php if ($topic->image_filename): ?>
+        <img
+            class="section__image"
+            alt=""
+            src="<?= url_media('large', $topic->image_filename) ?>"
+        />
+    <?php endif; ?>
 
-    <p class="section__intro">
-        <?= _('Discover collections created by the community and follow the ones you are interested in.') ?>
-    </p>
+    <div class="section__title">
+        <h1><?= protect($topic->label) ?></h1>
+    </div>
 
     <?php if ($collections): ?>
         <div class="cards cards--centered">
@@ -46,7 +60,7 @@
                                 <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
                             <?php endif; ?>
 
-                            <?php if ($current_user->isFollowing($collection->id)): ?>
+                            <?php if ($current_user && $current_user->isFollowing($collection->id)): ?>
                                 <span class="sticker sticker--right"><?= _('followed') ?></span>
                             <?php endif; ?>
                         </p>
@@ -64,10 +78,10 @@
             <?php endforeach; ?>
         </div>
 
-        <?= $this->include('_pagination.phtml', ['pagination' => $pagination, 'url' => url('discover collections')]) ?>
+        <?= $this->include('_pagination.phtml', ['pagination' => $pagination, 'url' => url('topic', ['id' => $topic->id])]) ?>
     <?php else: ?>
         <p class="paragraph--placeholder">
-            <?= _('The community didn’t publish any collection yet. Will you be the first?') ?>
+            <?= _('The community didn’t publish any collection in this topic yet. Will you be the first?') ?>
         </p>
     <?php endif; ?>
 </div>

@@ -236,9 +236,17 @@ flusio# sudo -u www-data php ./cli --request /topics/create -plabel=LABEL
 ```
 
 You must change `LABEL` by the name of your topic (e.g. economics, politics,
-health). If you’ve made a mistake, you can delete a topic with:
+health). You can pass an `image_url` param to set an illustration:
 
 ```console
+flusio# sudo -u www-data php ./cli --request /topics/create -plabel=LABEL -pimage_url=https://flus.fr/carnet/card.png
+```
+
+If you’ve made a mistake, you can update or delete a topic with:
+
+```console
+flusio# sudo -u www-data php ./cli --request /topics/update -pid=ID -plabel=NEW_LABEL
+flusio# # OR to delete
 flusio# sudo -u www-data php ./cli --request /topics/delete -pid=ID
 ```
 

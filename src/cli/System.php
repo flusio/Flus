@@ -3,6 +3,7 @@
 namespace flusio\cli;
 
 use Minz\Response;
+use flusio\models;
 use flusio\utils;
 
 /**
@@ -15,6 +16,8 @@ class System
 {
     public function usage()
     {
+        $topic_label_max_size = models\Topic::LABEL_MAX_SIZE;
+
         $usage = "Usage: php ./cli --request REQUEST [-pKEY=VALUE]...\n\n";
         $usage .= "REQUEST can be one of the following:\n";
         $usage .= "  /                        Show this help\n";
@@ -52,9 +55,14 @@ class System
         $usage .= "\n";
         $usage .= "  /topics                  List the topics\n";
         $usage .= "  /topics/create           Create a topic\n";
-        $usage .= "      -plabel=TEXT         where TEXT is a 21-chars max string\n";
+        $usage .= "      -plabel=TEXT         where TEXT is a {$topic_label_max_size}-chars max string\n";
+        $usage .= "      [-pimage_url=URL]    where URL is an optional illustration image\n";
         $usage .= "  /topics/delete           Delete a topic\n";
         $usage .= "      -pid=ID              where ID is the id of the topic to delete\n";
+        $usage .= "  /topics/update           Update a topic\n";
+        $usage .= "      -pid=ID              where ID is the id of the topic to delete\n";
+        $usage .= "      [-plabel=TEXT]       where TEXT is a {$topic_label_max_size}-chars max string\n";
+        $usage .= "      [-pimage_url=URL]    where URL is an optional illustration image\n";
         $usage .= "\n";
         $usage .= "  /users                   List all the users\n";
         $usage .= "  /users/clean             Clean not validated users created NUMBER months ago\n";

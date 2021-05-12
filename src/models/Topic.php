@@ -29,6 +29,10 @@ class Topic extends \Minz\Model
             'required' => true,
             'validator' => '\flusio\models\Topic::validateLabel',
         ],
+
+        'image_filename' => [
+            'type' => 'string',
+        ],
     ];
 
     /**
@@ -39,7 +43,7 @@ class Topic extends \Minz\Model
     public function __construct($values)
     {
         parent::__construct(array_merge([
-            'id' => utils\Random::hex(32),
+            'id' => utils\Random::timebased(),
             'label' => '',
         ], $values));
     }
@@ -66,6 +70,16 @@ class Topic extends \Minz\Model
         usort($topics, function ($topic1, $topic2) use ($collator) {
             return $collator->compare($topic1->label, $topic2->label);
         });
+    }
+
+    /**
+     * Return the number of public collections attached to this topic
+     *
+     * @return integer
+     */
+    public function countPublicCollections()
+    {
+        return Collection::daoCall('countPublicByTopic', $this->id);
     }
 
     /**

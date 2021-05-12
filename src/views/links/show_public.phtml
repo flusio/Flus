@@ -7,7 +7,7 @@
         'url' => url_full('link', ['id' => $link->id]),
     ];
     if ($link->image_filename) {
-        $open_graph['image'] = url_link_image_full('cards', $link->image_filename);
+        $open_graph['image'] = url_media_full('cards', $link->image_filename);
     }
 
     $this->layout('base.phtml', [
@@ -32,7 +32,7 @@
         <img
             class="section__image"
             alt=""
-            src="<?= url_link_image('large', $link->image_filename) ?>"
+            src="<?= url_media('large', $link->image_filename) ?>"
         />
     <?php endif; ?>
 

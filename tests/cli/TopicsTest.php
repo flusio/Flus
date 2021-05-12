@@ -20,6 +20,17 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         self::$application = new \flusio\cli\Application();
     }
 
+    /**
+     * @before
+     */
+    public function emptyCachePath()
+    {
+        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
+    }
+
     public function testIndexRendersCorrectly()
     {
         $label1 = $this->fake('word');
@@ -53,6 +64,26 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Topic::count());
     }
 
+    public function testCreateDownloadsImageIfPassed()
+    {
+        $label = $this->fake('word');
+        $image_url = 'https://flus.fr/carnet/card.png';
+
+        $response = $this->appRun('cli', '/topics/create', [
+            'label' => $label,
+            'image_url' => $image_url,
+        ]);
+
+        $topic = models\Topic::take();
+        $image_filename = $topic->image_filename;
+        $this->assertNotNull($image_filename);
+        $media_path = \Minz\Configuration::$application['media_path'];
+        $card_filepath = "{$media_path}/cards/{$image_filename}";
+        $large_filepath = "{$media_path}/large/{$image_filename}";
+        $this->assertTrue(file_exists($card_filepath));
+        $this->assertTrue(file_exists($large_filepath));
+    }
+
     public function testCreateFailsIfLabelIsTooLong()
     {
         $label_max_size = models\Topic::LABEL_MAX_SIZE;
@@ -75,6 +106,104 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 400, "The label is required.");
         $this->assertSame(0, models\Topic::count());
+    }
+
+    public function testUpdateChangesLabelIfPassed()
+    {
+        $old_label = $this->fakeUnique('word');
+        $new_label = $this->fakeUnique('word');
+        $topic_id = $this->create('topic', [
+            'label' => $old_label,
+        ]);
+
+        $response = $this->appRun('cli', '/topics/update', [
+            'id' => $topic_id,
+            'label' => $new_label,
+        ]);
+
+        $this->assertResponse($response, 200, 'has been updated');
+        $topic = models\Topic::find($topic_id);
+        $this->assertSame($new_label, $topic->label);
+    }
+
+    public function testUpdateChangesImageFilenameIfPassed()
+    {
+        $old_image_filename = $this->fakeUnique('sha256') . '.jpg';
+        $image_url = 'https://flus.fr/carnet/card.png';
+        $topic_id = $this->create('topic', [
+            'image_filename' => $old_image_filename,
+        ]);
+
+        $response = $this->appRun('cli', '/topics/update', [
+            'id' => $topic_id,
+            'image_url' => $image_url,
+        ]);
+
+        $this->assertResponse($response, 200, 'has been updated');
+        $topic = models\Topic::find($topic_id);
+        $image_filename = $topic->image_filename;
+        $this->assertNotSame($old_image_filename, $image_filename);
+        $media_path = \Minz\Configuration::$application['media_path'];
+        $card_filepath = "{$media_path}/cards/{$image_filename}";
+        $large_filepath = "{$media_path}/large/{$image_filename}";
+        $this->assertTrue(file_exists($card_filepath));
+        $this->assertTrue(file_exists($large_filepath));
+    }
+
+    public function testUpdateDoesNothingIfLabelIsEmpty()
+    {
+        $old_label = $this->fakeUnique('word');
+        $new_label = '';
+        $topic_id = $this->create('topic', [
+            'label' => $old_label,
+        ]);
+
+        $response = $this->appRun('cli', '/topics/update', [
+            'id' => $topic_id,
+            'label' => $new_label,
+        ]);
+
+        $this->assertResponse($response, 200, 'has been updated');
+        $topic = models\Topic::find($topic_id);
+        $this->assertSame($old_label, $topic->label);
+    }
+
+    public function testUpdateFailsIfIdIsInvalid()
+    {
+        $old_label = $this->fakeUnique('word');
+        $new_label = $this->fakeUnique('word');
+        $topic_id = $this->create('topic', [
+            'label' => $old_label,
+        ]);
+
+        $response = $this->appRun('cli', '/topics/update', [
+            'id' => 'not an id',
+            'label' => $new_label,
+        ]);
+
+        $this->assertResponse($response, 404, 'Topic id `not an id` does not exist.');
+        $topic = models\Topic::find($topic_id);
+        $this->assertSame($old_label, $topic->label);
+    }
+
+    public function testUpdateFailsIfLabelIsTooLong()
+    {
+        $old_label = $this->fakeUnique('word');
+        $label_max_size = models\Topic::LABEL_MAX_SIZE;
+        $size = $label_max_size + $this->fake('randomDigitNotNull');
+        $new_label = $this->fake('regexify', "\w{{$size}}");
+        $topic_id = $this->create('topic', [
+            'label' => $old_label,
+        ]);
+
+        $response = $this->appRun('cli', '/topics/update', [
+            'id' => $topic_id,
+            'label' => $new_label,
+        ]);
+
+        $this->assertResponse($response, 400, "The label must be less than {$label_max_size} characters.");
+        $topic = models\Topic::find($topic_id);
+        $this->assertSame($old_label, $topic->label);
     }
 
     public function testDeleteDeletesTopic()

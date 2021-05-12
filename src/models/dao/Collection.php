@@ -44,6 +44,66 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
+     * Returns the list of collections attached to the given topic
+     *
+     * @param string $topic_id
+     *
+     * @return array
+     */
+    public function listPublicWithNumberLinksByTopic($topic_id)
+    {
+        $sql = <<<'SQL'
+            SELECT c.*, COUNT(lc.*) AS number_links
+            FROM collections c, collections_to_topics ct, links_to_collections lc, links l
+
+            WHERE c.id = ct.collection_id
+            AND c.id = lc.collection_id
+            AND l.id = lc.link_id
+
+            AND c.is_public = true
+            AND l.is_hidden = false
+            AND ct.topic_id = :topic_id
+
+            GROUP BY c.id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':topic_id' => $topic_id,
+        ]);
+        return $statement->fetchAll();
+    }
+
+    /**
+     * Count the collections attached to the given topic
+     *
+     * @param string $topic_id
+     *
+     * @return array
+     */
+    public function countPublicByTopic($topic_id)
+    {
+        $sql = <<<'SQL'
+            SELECT COUNT(DISTINCT c.id)
+            FROM collections c, collections_to_topics ct, links_to_collections lc, links l
+
+            WHERE c.id = ct.collection_id
+            AND c.id = lc.collection_id
+            AND l.id = lc.link_id
+
+            AND c.is_public = true
+            AND l.is_hidden = false
+            AND ct.topic_id = :topic_id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':topic_id' => $topic_id,
+        ]);
+        return intval($statement->fetchColumn());
+    }
+
+    /**
      * Returns the list of collections for the given user id. The number of
      * links of each collection is added. Bookmarks collection is not returned.
      *
