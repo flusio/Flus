@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-10 13:47+0200\n"
-"PO-Revision-Date: 2021-05-10 13:48+0200\n"
+"POT-Creation-Date: 2021-05-12 12:14+0200\n"
+"PO-Revision-Date: 2021-05-12 12:14+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -249,11 +249,11 @@ msgstr ""
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: models/Topic.php:94
+#: models/Topic.php:108
 msgid "The label is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Topic.php:97
+#: models/Topic.php:111
 #, php-format
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
@@ -601,63 +601,6 @@ msgstr "Gérer les collections"
 msgid "read"
 msgstr "lire"
 
-#: views/collections/discovery/show.phtml:3
-#: views/collections/discovery/show.phtml:14 views/collections/index.phtml:133
-msgid "Discover collections"
-msgstr "Découvrir des collections"
-
-#: views/collections/discovery/show.phtml:7 views/collections/show.phtml:30
-msgid "Your collections"
-msgstr "Vos collections"
-
-#: views/collections/discovery/show.phtml:18
-msgid ""
-"Discover collections created by the community and follow the ones you are "
-"interested in."
-msgstr ""
-"Découvrez les collections créées par la communauté et suivez celles qui vous "
-"intéressent."
-
-#: views/collections/discovery/show.phtml:34 views/collections/index.phtml:95
-#: views/links/searches/show.phtml:172
-#, php-format
-msgid "Feed from %s"
-msgstr "Flux issu de %s"
-
-#: views/collections/discovery/show.phtml:38 views/collections/index.phtml:99
-#: views/collections/show_public.phtml:86
-#, php-format
-msgid "Created by %s"
-msgstr "Créée par %s"
-
-#: views/collections/discovery/show.phtml:44 views/collections/index.phtml:44
-#: views/collections/index.phtml:105 views/links/searches/show.phtml:177
-msgid "no links"
-msgstr "aucun lien"
-
-#: views/collections/discovery/show.phtml:46 views/collections/index.phtml:46
-#: views/collections/index.phtml:107 views/links/searches/show.phtml:179
-#, php-format
-msgid "%d link"
-msgid_plural "%d links"
-msgstr[0] "%d lien"
-msgstr[1] "%d liens"
-
-#: views/collections/discovery/show.phtml:50
-msgid "followed"
-msgstr "suivie"
-
-#: views/collections/discovery/show.phtml:60 views/collections/index.phtml:61
-#: views/collections/index.phtml:116 views/links/searches/show.phtml:204
-msgid "see"
-msgstr "voir"
-
-#: views/collections/discovery/show.phtml:70
-msgid "The community didn’t publish any collection yet. Will you be the first?"
-msgstr ""
-"La communauté n’a pas encore publié de collection. Serez-vous le ou la "
-"première ?"
-
 #: views/collections/edit.phtml:3 views/collections/edit.phtml:15
 msgid "Collection edition"
 msgstr "Modification d'une collection"
@@ -732,9 +675,27 @@ msgstr ""
 msgid "Create a collection"
 msgstr "Créer une collection"
 
+#: views/collections/index.phtml:44 views/collections/index.phtml:105
+#: views/links/searches/show.phtml:177 views/topics/show.phtml:58
+msgid "no links"
+msgstr "aucun lien"
+
+#: views/collections/index.phtml:46 views/collections/index.phtml:107
+#: views/links/searches/show.phtml:179 views/topics/show.phtml:60
+#, php-format
+msgid "%d link"
+msgid_plural "%d links"
+msgstr[0] "%d lien"
+msgstr[1] "%d liens"
+
 #: views/collections/index.phtml:51 views/collections/show.phtml:51
 msgid "public"
 msgstr "public"
+
+#: views/collections/index.phtml:61 views/collections/index.phtml:116
+#: views/links/searches/show.phtml:204 views/topics/show.phtml:74
+msgid "see"
+msgstr "voir"
 
 #: views/collections/index.phtml:73
 msgid "Followed collections"
@@ -744,6 +705,18 @@ msgstr "Collections suivies"
 msgid "Discover more collections"
 msgstr "Découvrir plus de collections"
 
+#: views/collections/index.phtml:95 views/links/searches/show.phtml:172
+#: views/topics/show.phtml:48
+#, php-format
+msgid "Feed from %s"
+msgstr "Flux issu de %s"
+
+#: views/collections/index.phtml:99 views/collections/show_public.phtml:86
+#: views/topics/show.phtml:52
+#, php-format
+msgid "Created by %s"
+msgstr "Créée par %s"
+
 #: views/collections/index.phtml:128
 msgid ""
 "You don’t follow any collection. Start by discovering collections created by "
@@ -751,6 +724,11 @@ msgid ""
 msgstr ""
 "Vous ne suivez aucune collection. Commencez par découvrir les collections "
 "créées par la communauté."
+
+#: views/collections/index.phtml:133 views/discovery/show.phtml:11
+#: views/discovery/show.phtml:19
+msgid "Discover collections"
+msgstr "Découvrir des collections"
 
 #: views/collections/new.phtml:3 views/collections/new.phtml:14
 msgid "New collection"
@@ -778,6 +756,10 @@ msgstr "Créer la collection"
 #, php-format
 msgid "Syndication feed of %s"
 msgstr "Flux de syndication de %s"
+
+#: views/collections/show.phtml:30 views/discovery/show.phtml:6
+msgid "Your collections"
+msgstr "Vos collections"
 
 #: views/collections/show.phtml:55
 msgid "created by you"
@@ -823,6 +805,25 @@ msgstr "Suivre"
 #: views/collections/show_public.phtml:180
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
+
+#: views/discovery/show.phtml:23
+msgid "Choose a topic…"
+msgstr "Choisissez une thématique…"
+
+#: views/discovery/show.phtml:38
+#, php-format
+msgid "%d collection"
+msgid_plural "%d collections"
+msgstr[0] "%d collection"
+msgstr[1] "%d collections"
+
+#: views/discovery/show.phtml:40
+msgid "No collections"
+msgstr "Aucune collection"
+
+#: views/discovery/show.phtml:50
+msgid "There’s no topics to show."
+msgstr "Il n’y a aucune thématique à afficher."
 
 #: views/importations/opml/show.phtml:3
 msgid "Importation from an OPML file"
@@ -1678,6 +1679,22 @@ msgstr "Mot de passe"
 #: views/sessions/new.phtml:96
 msgid "No account yet? Sign up"
 msgstr "Pas encore de compte ? S’inscrire"
+
+#: views/topics/show.phtml:17
+msgid "Discover"
+msgstr "Découvrir"
+
+#: views/topics/show.phtml:64
+msgid "followed"
+msgstr "suivie"
+
+#: views/topics/show.phtml:84
+msgid ""
+"The community didn’t publish any collection in this topic yet. Will you be "
+"the first?"
+msgstr ""
+"La communauté n’a pas encore publié de collection dans cette thématique. "
+"Serez-vous le ou la première ?"
 
 #: views/unauthorized.phtml:3
 msgid "Unauthorized"
