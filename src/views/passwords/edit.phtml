@@ -1,0 +1,75 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Edit a password'),
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _('Edit a password') ?></h1>
+    </div>
+
+    <?php if (isset($token)): ?>
+        <p class="section__intro">
+            <?= _f('You’re changing the password of %s.', $email) ?>
+        </p>
+
+        <form method="post" action="<?= url('update password', ['t' => $token]) ?>">
+            <?php if ($error): ?>
+                <p class="form__error">
+                    <?= $error ?>
+                </p>
+            <?php endif; ?>
+
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+            <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
+                <label for="new-password">
+                    <?= _('Your new password') ?>
+                </label>
+
+                <p class="form-group__caption">
+                    <?= _('A strong password is at least 8 characters long.') ?>
+                </p>
+
+                <div class="form-group__stack" data-controller="input-password">
+                    <input
+                        id="new-password"
+                        name="password"
+                        type="password"
+                        required
+                        data-target="input-password.input"
+                        autocomplete="new-password"
+                    />
+
+                    <button
+                        type="button"
+                        class="no-mobile js-only"
+                        data-action="input-password#toggle"
+                        data-target="input-password.button"
+                        aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
+                    >
+                        <?= icon('eye') ?>
+                        <?= _('Show') ?>
+                    </button>
+                </div>
+
+                <?php if (isset($errors['password_hash'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['password_hash'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Change your password') ?>
+                </button>
+            </div>
+        </form>
+    <?php else: ?>
+        <p class="paragraph--centered form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+</div>

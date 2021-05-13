@@ -33,6 +33,10 @@ class Routes
         $router->addRoute('post', '/logout', 'Sessions#delete', 'logout');
         $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
+        // Reset password
+        $router->addRoute('get', '/password/edit', 'Passwords#edit', 'edit password');
+        $router->addRoute('post', '/password/edit', 'Passwords#update', 'update password');
+
         // Onboarding
         $router->addRoute('get', '/onboarding', 'Onboarding#show', 'onboarding');
         $router->addRoute('post', '/onboarding/locale', 'Onboarding#updateLocale', 'onboarding update locale');
