@@ -47,6 +47,7 @@ class Account
         }
 
         return Response::ok('my/account/show.phtml', [
+            'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
             'pocket_enabled' => isset($app_conf['pocket_consumer_key']),
             'opml_enabled' => models\FeatureFlag::isEnabled('feeds', $user->id),
         ]);

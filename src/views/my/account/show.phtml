@@ -1,13 +1,13 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => $subscriptions_enabled ? _('Account & subscription') : _('Account'),
+        'title' => _('Account & data'),
         'current_page' => 'account',
     ]);
 ?>
 
 <div class="section section--longbottom">
     <div class="section__title">
-        <h1><?= $subscriptions_enabled ? _('Account & subscription') : _('Account') ?></h1>
+        <h1><?= _('Account & data') ?></h1>
     </div>
 
     <p class="section__intro">
@@ -41,12 +41,7 @@
                 </li>
             <?php elseif ($subscriptions_enabled && $current_user->subscription_account_id): ?>
                 <li class="groupnav__item groupnav__item--subscription <?= $current_user->isSubscriptionOverdue() ? 'groupnav__item--featured' : '' ?>">
-                    <a
-                        class="groupnav__anchor"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="<?= url('subscription') ?>"
-                    >
+                    <a class="groupnav__anchor" href="<?= url('subscription') ?>">
                         <?= _('Manage your subscription') ?>
                     </a>
                 </li>

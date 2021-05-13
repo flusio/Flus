@@ -113,32 +113,21 @@
 
                             <a
                                 class="popup__item popup__item--link"
+                                <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
+                                href="<?= url('account') ?>"
+                            >
+                                <?= icon('cog') ?>
+                                <?= _('Account & data') ?>
+                            </a>
+
+                            <a
+                                class="popup__item popup__item--link"
                                 <?= $current_page === 'security' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('security') ?>"
                             >
                                 <?= icon('key') ?>
                                 <?= _('Login & security') ?>
                             </a>
-
-                            <?php if ($subscriptions_enabled): ?>
-                                <a
-                                    class="popup__item popup__item--link"
-                                    <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
-                                    href="<?= url('account') ?>"
-                                >
-                                    <?= icon('credit-card') ?>
-                                    <?= _('Account & subscription') ?>
-                                </a>
-                            <?php else: ?>
-                                <a
-                                    class="popup__item popup__item--link"
-                                    <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
-                                    href="<?= url('account') ?>"
-                                >
-                                    <?= icon('details') ?>
-                                    <?= _('Account') ?>
-                                </a>
-                            <?php endif; ?>
 
                             <div class="popup__separator"></div>
 

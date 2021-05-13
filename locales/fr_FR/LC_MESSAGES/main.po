@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-13 10:01+0200\n"
-"PO-Revision-Date: 2021-05-13 10:01+0200\n"
+"POT-Creation-Date: 2021-05-13 11:56+0200\n"
+"PO-Revision-Date: 2021-05-13 11:56+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -40,11 +40,11 @@ msgstr "Afficher"
 
 #: controllers/Collections.php:109 controllers/Collections.php:312
 #: controllers/Links.php:153 controllers/News.php:72
-#: controllers/Registrations.php:101 controllers/Sessions.php:85
+#: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Followers.php:47
 #: controllers/collections/Followers.php:90 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
-#: controllers/my/Account.php:101 controllers/my/Profile.php:71
+#: controllers/my/Account.php:102 controllers/my/Profile.php:71
 #: controllers/my/Security.php:79 controllers/my/Security.php:139
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
 #: controllers/news/Links.php:126
@@ -80,11 +80,11 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Registrations.php:128 controllers/my/Security.php:91
+#: controllers/Registrations.php:132 controllers/my/Security.php:91
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: controllers/Registrations.php:141
+#: controllers/Registrations.php:146
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
@@ -92,7 +92,7 @@ msgstr "Vous devez accepter les conditions générales d’utilisation."
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: controllers/Sessions.php:109 controllers/my/Account.php:109
+#: controllers/Sessions.php:109 controllers/my/Account.php:110
 #: controllers/my/Security.php:146
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
@@ -142,7 +142,7 @@ msgstr "Vous avez déjà une importation Pocket en cours."
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
-#: controllers/my/Account.php:117
+#: controllers/my/Account.php:118
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
@@ -476,7 +476,13 @@ msgid "Profile"
 msgstr "Profil"
 
 #: views/_layouts/connected.phtml:161
-#: views/_layouts/connected_blocked.phtml:120
+#: views/_layouts/connected_blocked.phtml:120 views/my/account/show.phtml:3
+#: views/my/account/show.phtml:10
+msgid "Account & data"
+msgstr "Compte & données"
+
+#: views/_layouts/connected.phtml:170
+#: views/_layouts/connected_blocked.phtml:129
 #: views/my/security/show_confirmed.phtml:3
 #: views/my/security/show_confirmed.phtml:10
 #: views/my/security/show_to_confirm.phtml:3
@@ -484,37 +490,22 @@ msgstr "Profil"
 msgid "Login & security"
 msgstr "Identifiants & sécurité"
 
-#: views/_layouts/connected.phtml:171
-#: views/_layouts/connected_blocked.phtml:130 views/my/account/show.phtml:3
-#: views/my/account/show.phtml:10
-msgid "Account & subscription"
-msgstr "Compte & abonnement"
-
-#: views/_layouts/connected.phtml:180
-#: views/_layouts/connected_blocked.phtml:139
-#: views/importations/opml/show.phtml:6
-#: views/importations/pocket/authorization.phtml:6
-#: views/importations/pocket/show.phtml:6 views/my/account/deletion.phtml:6
-#: views/my/account/show.phtml:3 views/my/account/show.phtml:10
-#: views/my/validation/show.phtml:7
-msgid "Account"
-msgstr "Compte"
-
-#: views/_layouts/connected.phtml:192 views/support/show.phtml:3
+#: views/_layouts/connected.phtml:181
+#: views/_layouts/connected_blocked.phtml:140 views/support/show.phtml:3
 #: views/support/show.phtml:10
 msgid "Support"
 msgstr "Support"
 
-#: views/_layouts/connected.phtml:199
-#: views/_layouts/connected_blocked.phtml:149
+#: views/_layouts/connected.phtml:188
+#: views/_layouts/connected_blocked.phtml:147
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:259
+#: views/_layouts/connected.phtml:248
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:260
+#: views/_layouts/connected.phtml:249
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -847,6 +838,13 @@ msgstr "Il n’y a aucune thématique à afficher."
 #: views/importations/opml/show.phtml:3
 msgid "Importation from an OPML file"
 msgstr "Importation depuis un fichier OPML"
+
+#: views/importations/opml/show.phtml:6
+#: views/importations/pocket/authorization.phtml:6
+#: views/importations/pocket/show.phtml:6 views/my/account/deletion.phtml:6
+#: views/my/validation/show.phtml:7
+msgid "Account"
+msgstr "Compte"
 
 #: views/importations/opml/show.phtml:13
 msgid "Importation from an <abbr>OPML</abbr> file"
@@ -1234,23 +1232,23 @@ msgstr "Votre abonnement expirera le <strong>%s.</strong>"
 msgid "Validate your account"
 msgstr "Valider votre compte"
 
-#: views/my/account/show.phtml:50
+#: views/my/account/show.phtml:45
 msgid "Manage your subscription"
 msgstr "Gérer votre abonnement"
 
-#: views/my/account/show.phtml:58
+#: views/my/account/show.phtml:53
 msgid "Create your payment account"
 msgstr "Créer votre compte de paiement"
 
-#: views/my/account/show.phtml:67
+#: views/my/account/show.phtml:62
 msgid "Import your data from Pocket"
 msgstr "Importer vos données depuis Pocket"
 
-#: views/my/account/show.phtml:75
+#: views/my/account/show.phtml:70
 msgid "Import your data from an <abbr>OPML</abbr> file"
 msgstr "Importer vos données depuis un fichier <abbr>OPML</abbr>"
 
-#: views/my/account/show.phtml:82
+#: views/my/account/show.phtml:77
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 
