@@ -4,7 +4,9 @@ namespace flusio\controllers;
 
 use Minz\Response;
 use flusio\auth;
+use flusio\jobs;
 use flusio\models;
+use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -12,6 +14,86 @@ use flusio\models;
  */
 class Passwords
 {
+    /**
+     * Show the form to send email to reset the password.
+     *
+     * @response 302 / If connected
+     * @response 200
+     */
+    public function forgot($request)
+    {
+        $user = auth\CurrentUser::get();
+        if ($user) {
+            return Response::redirect('home');
+        }
+
+        return Response::ok('passwords/forgot.phtml', [
+            'email' => '',
+            'email_sent' => utils\Flash::pop('email_sent'),
+        ]);
+    }
+
+    /**
+     * Send a reset email.
+     *
+     * @request_param string csrf
+     * @request_param string email
+     *
+     * @response 400
+     *     If the csrf token or email is invalid
+     * @response 302 /password/forgot
+     *     On success
+     */
+    public function reset($request)
+    {
+        $email = $request->param('email', '');
+        $email = utils\Email::sanitize($email);
+        if (!utils\Email::validate($email)) {
+            return Response::badRequest('passwords/forgot.phtml', [
+                'email' => $email,
+                'email_sent' => false,
+                'errors' => [
+                    'email' => _('The address email is invalid.'),
+                ],
+            ]);
+        }
+
+        $user = models\User::findBy([
+            'email' => $email,
+        ]);
+        if (!$user) {
+            return Response::badRequest('passwords/forgot.phtml', [
+                'email' => $email,
+                'email_sent' => false,
+                'errors' => [
+                    'email' => _('We can’t find any account with this email address.'),
+                ],
+            ]);
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($request->param('csrf'))) {
+            return Response::badRequest('passwords/forgot.phtml', [
+                'email' => $email,
+                'email_sent' => false,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        $reset_token = models\Token::init(1, 'hour', 16);
+        $reset_token->save();
+
+        $user->reset_token = $reset_token->token;
+        $user->save();
+
+        $mailer_job = new jobs\Mailer();
+        $mailer_job->performLater('Users', 'sendResetPasswordEmail', $user->id);
+
+        utils\Flash::set('email_sent', true);
+
+        return Response::redirect('forgot password');
+    }
+
     /**
      * Show the edit form to change a password.
      *

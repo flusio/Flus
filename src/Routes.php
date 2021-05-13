@@ -34,6 +34,8 @@ class Routes
         $router->addRoute('post', '/sessions/locale', 'Sessions#changeLocale', 'change locale');
 
         // Reset password
+        $router->addRoute('get', '/password/forgot', 'Passwords#forgot', 'forgot password');
+        $router->addRoute('post', '/password/forgot', 'Passwords#reset', 'reset password');
         $router->addRoute('get', '/password/edit', 'Passwords#edit', 'edit password');
         $router->addRoute('post', '/password/edit', 'Passwords#update', 'update password');
 

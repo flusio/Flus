@@ -4,14 +4,193 @@ namespace flusio\controllers;
 
 use flusio\auth;
 use flusio\models;
+use flusio\utils;
 
 class PasswordsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
+    use \tests\LoginHelper;
+    use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\TimeHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\MailerAsserts;
+
+    public function testForgotRendersCorrectly()
+    {
+        $response = $this->appRun('get', '/password/forgot');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'passwords/forgot.phtml');
+        $this->assertResponseContains($response, 'Reset your password');
+    }
+
+    public function testForgotRendersInfoIfFlashEmailSentIsTrue()
+    {
+        utils\Flash::set('email_sent', true);
+
+        $response = $this->appRun('get', '/password/forgot');
+
+        $this->assertResponseContains($response, 'We’ve sent you an email to reset your password.');
+    }
+
+    public function testForgotRedirectsIfConnected()
+    {
+        $this->login();
+
+        $response = $this->appRun('get', '/password/forgot');
+
+        $this->assertResponseCode($response, 302, '/');
+    }
+
+    public function testResetRedirectsCorrectly()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $csrf = (new \Minz\CSRF())->generateToken();
+        $email = $this->fake('email');
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'reset_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/password/forgot', [
+            'csrf' => $csrf,
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/password/forgot');
+    }
+
+    public function testResetGeneratesAToken()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $csrf = (new \Minz\CSRF())->generateToken();
+        $email = $this->fake('email');
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'reset_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/password/forgot', [
+            'csrf' => $csrf,
+            'email' => $email,
+        ]);
+
+        $user = models\User::find($user_id);
+        $this->assertNotNull($user->reset_token);
+        $token = models\Token::findBy(['token' => $user->reset_token]);
+        $this->assertEquals(\Minz\Time::fromNow(1, 'hour'), $token->expired_at);
+    }
+
+    public function testResetSendsAnEmail()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $csrf = (new \Minz\CSRF())->generateToken();
+        $email = $this->fake('email');
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'reset_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/password/forgot', [
+            'csrf' => $csrf,
+            'email' => $email,
+        ]);
+
+        $this->assertEmailsCount(1);
+        $email_sent = \Minz\Tests\Mailer::take();
+        $user = models\User::find($user_id);
+        $this->assertEmailSubject($email_sent, '[flusio] Reset your password');
+        $this->assertEmailContainsTo($email_sent, $email);
+        $this->assertEmailContainsBody($email_sent, $user->reset_token);
+    }
+
+    public function testResetSetsFlashEmailSent()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $csrf = (new \Minz\CSRF())->generateToken();
+        $email = $this->fake('email');
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'reset_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/password/forgot', [
+            'csrf' => $csrf,
+            'email' => $email,
+        ]);
+
+        $this->assertFlash('email_sent', true);
+    }
+
+    public function testResetFailsIfEmailIsEmpty()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $csrf = (new \Minz\CSRF())->generateToken();
+        $email = '';
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'reset_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/password/forgot', [
+            'csrf' => $csrf,
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'passwords/forgot.phtml');
+        $this->assertResponseContains($response, 'The address email is invalid');
+        $user = models\User::find($user_id);
+        $this->assertNull($user->reset_token);
+    }
+
+    public function testResetFailsIfEmailDoesNotMatchUserEmail()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $csrf = (new \Minz\CSRF())->generateToken();
+        $email = $this->fakeUnique('email');
+        $user_email = $this->fakeUnique('email');
+        $user_id = $this->create('user', [
+            'email' => $user_email,
+            'reset_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/password/forgot', [
+            'csrf' => $csrf,
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'passwords/forgot.phtml');
+        $this->assertResponseContains($response, 'We can’t find any account with this email address');
+        $user = models\User::find($user_id);
+        $this->assertNull($user->reset_token);
+    }
+
+    public function testResetFailsIfCsrfIsInvalid()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $csrf = (new \Minz\CSRF())->generateToken();
+        $email = $this->fake('email');
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'reset_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/password/forgot', [
+            'csrf' => 'not the token',
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'passwords/forgot.phtml');
+        $this->assertResponseContains($response, 'A security verification failed');
+        $user = models\User::find($user_id);
+        $this->assertNull($user->reset_token);
+    }
 
     public function testEditRendersCorrectly()
     {
