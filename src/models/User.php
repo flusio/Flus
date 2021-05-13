@@ -26,6 +26,8 @@ class User extends \Minz\Model
 
         'validation_token' => 'string',
 
+        'reset_token' => 'string',
+
         'subscription_account_id' => [
             'type' => 'string',
         ],
