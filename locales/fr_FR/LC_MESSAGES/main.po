@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-12 12:14+0200\n"
-"PO-Revision-Date: 2021-05-12 12:14+0200\n"
+"POT-Creation-Date: 2021-05-13 09:13+0200\n"
+"PO-Revision-Date: 2021-05-13 09:21+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -365,7 +365,7 @@ msgstr "< 1 min"
 msgid "%d&nbsp;min"
 msgstr "%d&nbsp;min"
 
-#: utils/view_helpers.php:223
+#: utils/view_helpers.php:213
 #, php-format
 msgid ""
 "Gently advice: add links to <a href=\"%s\">your bookmarks</a> to read them "
@@ -374,7 +374,7 @@ msgstr ""
 "Petit conseil : placez des liens dans <a href=\"%s\">vos signets</a> pour "
 "les lire plus tard."
 
-#: utils/view_helpers.php:224
+#: utils/view_helpers.php:214
 #, php-format
 msgid ""
 "Gently advice: explore <a href=\"%s\">public collections</a> to discover new "
@@ -383,24 +383,24 @@ msgstr ""
 "Petit conseil : explorez <a href=\"%s\">les collections publiques</a> pour "
 "découvrir du nouveau contenu."
 
-#: utils/view_helpers.php:225
+#: utils/view_helpers.php:215
 msgid "Gently advice: be curious!"
 msgstr "Petit conseil : soyez curieuses et curieux !"
 
-#: utils/view_helpers.php:226
+#: utils/view_helpers.php:216
 msgid "Gently advice: ad blockers protect your privacy on Internet."
 msgstr ""
 "Petit conseil : les bloqueurs de pub protègent votre vie privée sur Internet."
 
-#: utils/view_helpers.php:227
+#: utils/view_helpers.php:217
 msgid "Gently advice: remember to drink water regularly."
 msgstr "Petit conseil : pensez à boire de l’eau régulièrement."
 
-#: utils/view_helpers.php:228
+#: utils/view_helpers.php:218
 msgid "Gently advice: it might be time for a break?"
 msgstr "Petit conseil : il est peut-être l’heure de prendre une pause ?"
 
-#: utils/view_helpers.php:229
+#: utils/view_helpers.php:219
 msgid "For your entertainment, a choupisson : 🦔"
 msgstr "Pour vous divertir, un choupisson : 🦔"
 
@@ -1323,22 +1323,28 @@ msgid "Add and mark as read"
 msgstr "Ajouter et marquer comme lu"
 
 #: views/news/show.phtml:55
-msgid "via your <strong>bookmarks</strong>"
-msgstr "via vos <strong>signets</strong>"
+#, php-format
+msgid ""
+"via your <strong><a class=\"anchor--hidden\" href=\"%s\">bookmarks</a></"
+"strong>"
+msgstr ""
+"via vos <strong><a class=\"anchor--hidden\" href=\"%s\">signets</a></strong>"
 
 #: views/news/show.phtml:58
 #, php-format
-msgid "via <strong>%s</strong> by %s"
-msgstr "via <strong>%s</strong> de %s"
+msgid ""
+"via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> by %s"
+msgstr ""
+"via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> de %s"
 
 #: views/news/show.phtml:60
 #, php-format
-msgid "via <strong>%s</strong>"
-msgstr "via <strong>%s</strong>"
+msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
+msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
 #: views/news/show.phtml:63
-msgid "via a <strong>followed collection</strong> (now deleted)"
-msgstr "via une <strong>collection suivie</strong> (maintenant supprimée)"
+msgid "via a <strong>followed collection</strong> (deleted)"
+msgstr "via une <strong>collection suivie</strong> (supprimée)"
 
 #: views/news/show.phtml:84 views/news/show.phtml:88
 msgid "Remove from the news page"

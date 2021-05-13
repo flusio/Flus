@@ -6,7 +6,7 @@
     ]);
 ?>
 
-<div class="section section--longbottom" data-controller="back-storage" data-back-storage-type="link">
+<div class="section section--longbottom" data-controller="back-storage" data-back-storage-type="link,collection">
     <div class="section__title">
         <h1><?= _('News') ?></h1>
     </div>
@@ -52,15 +52,15 @@
 
                         <p class="card__text news__via">
                             <?php if ($news_link->via_type === 'bookmarks'): ?>
-                                <?= _('via your <strong>bookmarks</strong>') ?>
+                                <?= _f('via your <strong><a class="anchor--hidden" href="%s">bookmarks</a></strong>', url('bookmarks')) ?>
                             <?php elseif ($news_link->via_type === 'followed' && $via_collection): ?>
                                 <?php if ($via_collection->type === 'collection'): ?>
-                                    <?= _f('via <strong>%s</strong> by %s', protect($via_collection->name()), protect($via_collection->owner()->username)) ?>
+                                    <?= _f('via <strong><a class="anchor--hidden" href="%s">%s</a></strong> by %s', url('collection', ['id' => $via_collection->id]), protect($via_collection->name()), protect($via_collection->owner()->username)) ?>
                                 <?php else: ?>
-                                    <?= _f('via <strong>%s</strong>', protect($via_collection->name())) ?>
+                                    <?= _f('via <strong><a class="anchor--hidden" href="%s">%s</a></strong>', url('collection', ['id' => $via_collection->id]), protect($via_collection->name())) ?>
                                 <?php endif; ?>
                             <?php elseif ($news_link->via_type === 'followed'): ?>
-                                <?= _('via a <strong>followed collection</strong> (now deleted)') ?>
+                                <?= _('via a <strong>followed collection</strong> (deleted)') ?>
                             <?php endif; ?>
                         </p>
 

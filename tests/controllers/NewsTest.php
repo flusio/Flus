@@ -101,8 +101,9 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/news');
 
-        $response_output = $response->render();
-        $this->assertStringContainsString('via your <strong>bookmarks</strong>', $response_output);
+        $bookmarks_url = \Minz\Url::for('bookmarks');
+        $bookmarks_anchor = "<a class=\"anchor--hidden\" href=\"{$bookmarks_url}\">bookmarks</a>";
+        $this->assertResponseContains($response, "via your <strong>{$bookmarks_anchor}</strong>");
     }
 
     public function testShowRendersIfViaFollowedCollections()
@@ -145,12 +146,10 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/news');
 
-        $this->assertResponse($response, 200);
-        $response_output = $response->render();
-        $this->assertStringContainsString(
-            "via <strong>{$collection_name}</strong> by {$username}",
-            $response_output
-        );
+        $this->assertResponseCode($response, 200);
+        $collection_url = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $collection_anchor = "<a class=\"anchor--hidden\" href=\"{$collection_url}\">{$collection_name}</a>";
+        $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong> by {$username}");
     }
 
     public function testShowRendersTipsIfNoNewsFlash()
