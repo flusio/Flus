@@ -1,0 +1,80 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Support'),
+        'current_page' => 'support',
+    ]);
+?>
+
+<div class="section section--small section--longbottom">
+    <div class="section__title">
+        <h1><?= _('Support') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('If you have a question or if you’re facing an issue, you can contact me via this form.') ?>
+    </p>
+
+    <form method="post" action="<?= url('call support') ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <?php if ($message_sent): ?>
+            <p class="paragraph--success">
+                <?= _('Your message has been sent.') ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <div class="form-group <?= isset($errors['subject']) ? 'form-group--invalid' : '' ?>">
+            <label for="subject">
+                <?= _('Subject') ?>
+            </label>
+
+            <p class="form-group__caption">
+                <?= _('Concise and precise, this will allow me to understand quickly what you want to talk about.') ?>
+            </p>
+
+            <input
+                id="subject"
+                name="subject"
+                type="text"
+                value="<?= $subject ?>"
+                required
+            />
+
+            <?php if (isset($errors['subject'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['subject'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form-group <?= isset($errors['message']) ? 'form-group--invalid' : '' ?>">
+            <label for="message">
+                <?= _('Your message') ?>
+            </label>
+
+            <textarea id="message" name="message" required><?= $message ?></textarea>
+
+            <?php if (isset($errors['message'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['message'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <p class="paragraph--placeholder">
+            <?= _f('I’ll answer you at <strong>%s</strong>', protect($current_user->email)) ?>
+        </p>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Send your message') ?>
+            </button>
+        </div>
+    </form>
+</div>

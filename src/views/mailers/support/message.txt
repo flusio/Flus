@@ -1,0 +1,4 @@
+<?= _('New message from the support.') ?>
+
+
+<?= $message ?>

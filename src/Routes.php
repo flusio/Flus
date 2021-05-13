@@ -20,6 +20,9 @@ class Routes
         $router->addRoute('get', '/app.webmanifest', 'Pages#webmanifest', 'webmanifest');
         $router->addRoute('get', '/.well-known/change-password', 'WellKnown#changePassword');
 
+        $router->addRoute('get', '/support', 'Support#show', 'support');
+        $router->addRoute('post', '/support', 'Support#create', 'call support');
+
         // Registration
         $router->addRoute('get', '/registration', 'Registrations#new', 'registration');
         $router->addRoute('post', '/registration', 'Registrations#create', 'create user');

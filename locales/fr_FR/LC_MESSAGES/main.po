@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-13 09:13+0200\n"
-"PO-Revision-Date: 2021-05-13 09:21+0200\n"
+"POT-Creation-Date: 2021-05-13 10:01+0200\n"
+"PO-Revision-Date: 2021-05-13 10:01+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -41,7 +41,7 @@ msgstr "Afficher"
 #: controllers/Collections.php:109 controllers/Collections.php:312
 #: controllers/Links.php:153 controllers/News.php:72
 #: controllers/Registrations.php:101 controllers/Sessions.php:85
-#: controllers/collections/Followers.php:47
+#: controllers/Support.php:70 controllers/collections/Followers.php:47
 #: controllers/collections/Followers.php:90 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
 #: controllers/my/Account.php:101 controllers/my/Profile.php:71
@@ -96,6 +96,14 @@ msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 #: controllers/my/Security.php:146
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
+
+#: controllers/Support.php:76
+msgid "The subject is required."
+msgstr "Le sujet est obligatoire."
+
+#: controllers/Support.php:79 models/Message.php:94
+msgid "The message is required."
+msgstr "Le message est obligatoire."
 
 #: controllers/collections/Bookmarks.php:35
 msgid ""
@@ -205,6 +213,16 @@ msgstr "Favoris Pocket"
 msgid "All your favorites imported from Pocket."
 msgstr "Tous vos favoris importés depuis Pocket."
 
+#: mailers/Support.php:28
+#, php-format
+msgid "[%s] Contact: %s"
+msgstr "[%s] Contact : %s"
+
+#: mailers/Support.php:55
+#, php-format
+msgid "[%s] Your message has been sent"
+msgstr "[%s] Votre message a été envoyé"
+
 #: mailers/Users.php:35
 #, php-format
 msgid "[%s] Confirm your account"
@@ -244,10 +262,6 @@ msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
 "sensible."
-
-#: models/Message.php:94
-msgid "The message is required."
-msgstr "Le message est obligatoire."
 
 #: models/Topic.php:108
 msgid "The label is required."
@@ -486,16 +500,21 @@ msgstr "Compte & abonnement"
 msgid "Account"
 msgstr "Compte"
 
-#: views/_layouts/connected.phtml:190
+#: views/_layouts/connected.phtml:192 views/support/show.phtml:3
+#: views/support/show.phtml:10
+msgid "Support"
+msgstr "Support"
+
+#: views/_layouts/connected.phtml:199
 #: views/_layouts/connected_blocked.phtml:149
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:250
+#: views/_layouts/connected.phtml:259
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:251
+#: views/_layouts/connected.phtml:260
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -1115,6 +1134,28 @@ msgstr "Un lien partagé par %s sur %s."
 msgid "%s didn’t comment on this link."
 msgstr "%s n’a pas commenté ce lien."
 
+#: views/mailers/support/message.phtml:2
+msgid "New message from the support."
+msgstr "Nouveau message depuis le support."
+
+#: views/mailers/support/notification.phtml:2
+msgid "Hello,"
+msgstr "Bonjour,"
+
+#: views/mailers/support/notification.phtml:6
+#, php-format
+msgid ""
+"Your message named “%s” has been sent. Someone will reply to you as soon as "
+"possible!"
+msgstr ""
+"Votre message intitulé « %s » a été envoyé. Quelqu’un va vous répondre aussi "
+"rapidement que possible !"
+
+#: views/mailers/support/notification.phtml:10
+#, php-format
+msgid "Transactionally yours, the %s bot"
+msgstr "Transactionnellement vôtre, le robot %s"
+
 #: views/mailers/users/account_validation_email.phtml:2
 #, php-format
 msgid "Welcome %s,"
@@ -1685,6 +1726,43 @@ msgstr "Mot de passe"
 #: views/sessions/new.phtml:96
 msgid "No account yet? Sign up"
 msgstr "Pas encore de compte ? S’inscrire"
+
+#: views/support/show.phtml:14
+msgid ""
+"If you have a question or if you’re facing an issue, you can contact me via "
+"this form."
+msgstr ""
+"Si vous avez une question ou faites face à un souci, vous pouvez me "
+"contacter à partir de ce formulaire."
+
+#: views/support/show.phtml:26
+msgid "Your message has been sent."
+msgstr "Votre message a été envoyé."
+
+#: views/support/show.phtml:34
+msgid "Subject"
+msgstr "Sujet"
+
+#: views/support/show.phtml:38
+msgid ""
+"Concise and precise, this will allow me to understand quickly what you want "
+"to talk about."
+msgstr ""
+"Concis et précis, cela me permettra de comprendre rapidement ce dont vous "
+"voulez me parler."
+
+#: views/support/show.phtml:58
+msgid "Your message"
+msgstr "Votre message"
+
+#: views/support/show.phtml:71
+#, php-format
+msgid "I’ll answer you at <strong>%s</strong>"
+msgstr "Je vous répondrai à <strong>%s</strong>"
+
+#: views/support/show.phtml:76
+msgid "Send your message"
+msgstr "Envoyer votre message"
 
 #: views/topics/show.phtml:17
 msgid "Discover"
