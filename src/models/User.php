@@ -117,7 +117,7 @@ class User extends \Minz\Model
         return new self([
             'username' => trim($username),
             'email' => utils\Email::sanitize($email),
-            'password_hash' => $password ? password_hash($password, PASSWORD_BCRYPT) : '',
+            'password_hash' => self::passwordHash($password),
         ]);
     }
 
@@ -132,7 +132,7 @@ class User extends \Minz\Model
             'email' => utils\Email::sanitize($support_email),
         ], [
             'username' => 'flusio',
-            'password_hash' => password_hash($default_password, PASSWORD_BCRYPT),
+            'password_hash' => self::passwordHash($default_password),
             'validated_at' => \Minz\Time::now(),
         ]);
     }
@@ -244,7 +244,7 @@ class User extends \Minz\Model
     {
         $this->email = utils\Email::sanitize($email);
         if ($password) {
-            $this->password_hash = password_hash($password, PASSWORD_BCRYPT);
+            $this->password_hash = self::passwordHash($password);
         }
     }
 
@@ -308,6 +308,18 @@ class User extends \Minz\Model
         $must_validate = $this->mustValidateEmail();
         $must_renew = $subscriptions_enabled && $this->isSubscriptionOverdue();
         return $must_validate || $must_renew;
+    }
+
+    /**
+     * Return a password hash. If password is empty, password_hash will be empty as well.
+     *
+     * @param string $password
+     *
+     * @return string
+     */
+    public static function passwordHash($password)
+    {
+        return $password ? password_hash($password, PASSWORD_BCRYPT) : '';
     }
 
     /**
