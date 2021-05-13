@@ -138,14 +138,21 @@ class User extends \Minz\Model
     /**
      * Return the user' bookmarks collection
      *
-     * @return \flusio\models\Collection|null
+     * @return \flusio\models\Collection
      */
     public function bookmarks()
     {
-        return Collection::findBy([
+        $bookmarks = Collection::findBy([
             'user_id' => $this->id,
             'type' => 'bookmarks',
         ]);
+
+        if (!$bookmarks) {
+            $bookmarks = Collection::initBookmarks($this->id);
+            $bookmarks->save();
+        }
+
+        return $bookmarks;
     }
 
     /**

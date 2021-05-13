@@ -42,13 +42,4 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
     }
-
-    public function testShowBookmarksFailsIfCollectionDoesNotExist()
-    {
-        $this->login();
-
-        $response = $this->appRun('get', '/bookmarks');
-
-        $this->assertResponse($response, 404, 'It looks like you have no “Bookmarks” collection');
-    }
 }
