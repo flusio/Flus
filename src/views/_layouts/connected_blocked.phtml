@@ -142,6 +142,15 @@
 
                             <div class="popup__separator"></div>
 
+                            <a
+                                class="popup__item popup__item--link"
+                                <?= $current_page === 'support' ? 'aria-current="page"' : '' ?>
+                                href="<?= url('support') ?>"
+                            >
+                                <?= icon('help') ?>
+                                <?= _('Support') ?>
+                            </a>
+
                             <form method="post" action="<?= url('logout') ?>">
                                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                                 <button type="submit" class="popup__item popup__item--button">
