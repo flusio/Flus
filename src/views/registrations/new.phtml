@@ -16,7 +16,7 @@
         </p>
     <?php endif; ?>
 
-    <form method="post" action="<?= url('create user') ?>" data-controller="registration-form">
+    <form method="post" action="<?= url('create user') ?>" data-controller="csrf-loader">
         <?php if ($error): ?>
             <p class="form__error">
                 <?= $error ?>
