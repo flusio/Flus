@@ -70,7 +70,12 @@
 }
 
 .popup__separator {
-    height: 1.5rem;
+    height: var(--border-width);
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    background-color: var(--color-turquoise-4);
+    border-radius: var(--border-radius);
 }
 
 .popup__item--link {
@@ -80,6 +85,8 @@
 .popup__item--link:hover,
 .popup__item--link:focus {
     color: initial;
+
+    outline: 0;
 }
 
 .popup__item--button {
@@ -94,9 +101,7 @@
 }
 
 .popup__item--button:focus {
-    background-color: transparent;
-
-    outline: 1px dotted var(--color-purple-5);
+    outline: 0;
 }
 
 .popup__item {
@@ -111,7 +116,8 @@
         border-color 0.1s ease-in-out;
 }
 
-.popup__item:hover {
+.popup__item:hover,
+.popup__item:focus {
     background-color: var(--color-turquoise-2);
     border-color: var(--color-turquoise-5);
 }
