@@ -18,4 +18,24 @@ class Message extends \Minz\DatabaseModel
         $properties = array_keys(\flusio\models\Message::PROPERTIES);
         parent::__construct('messages', 'id', $properties);
     }
+
+    /**
+     * Return the link messages, orderer by creation date
+     *
+     * @param string $link_id
+     *
+     * @return array
+     */
+    public function listByLink($link_id)
+    {
+        $sql = <<<SQL
+             SELECT * FROM messages
+             WHERE link_id = ?
+             ORDER BY created_at
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([$link_id]);
+        return $statement->fetchAll();
+    }
 }

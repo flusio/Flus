@@ -171,9 +171,7 @@ class Link extends \Minz\Model
      */
     public function messages()
     {
-        return Message::listBy([
-            'link_id' => $this->id,
-        ]);
+        return Message::daoToList('listByLink', $this->id);
     }
 
     /**
