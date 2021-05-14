@@ -47,10 +47,12 @@ class Collection extends \Minz\DatabaseModel
      * Returns the list of collections attached to the given topic
      *
      * @param string $topic_id
+     * @param integer $pagination_offset
+     * @param integer $pagination_limit
      *
      * @return array
      */
-    public function listPublicWithNumberLinksByTopic($topic_id)
+    public function listPublicWithNumberLinksByTopic($topic_id, $pagination_offset, $pagination_limit)
     {
         $sql = <<<'SQL'
             SELECT c.*, COUNT(lc.*) AS number_links
@@ -65,11 +67,17 @@ class Collection extends \Minz\DatabaseModel
             AND ct.topic_id = :topic_id
 
             GROUP BY c.id
+
+            ORDER BY c.name
+            OFFSET :offset
+            LIMIT :limit
         SQL;
 
         $statement = $this->prepare($sql);
         $statement->execute([
             ':topic_id' => $topic_id,
+            ':offset' => $pagination_offset,
+            ':limit' => $pagination_limit,
         ]);
         return $statement->fetchAll();
     }
