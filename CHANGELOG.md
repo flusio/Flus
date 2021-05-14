@@ -1,12 +1,36 @@
 # Changelog of flusio
 
-## 2021-xx-yy - v0.24
+## 2021-05-14 - v0.24
 
 ### Migration notes
 
 Now, topics can have illustrations. They appear on the new discovery page. You
 can update existing topics with CLI and provide an `image_url` to set
 illustrations.
+
+### News
+
+- Add discovery by topics
+- Allow to contact the support
+
+### Improvements
+
+- Add anchors on news "via collections"
+- Change "account" to "account & data" in header
+- Improve style of popup items
+- Add section--longbottom on various sections
+
+### Bug fixes
+
+- Order links messages by creation date
+- Fix alignment of locale form icon
+- Set correctly feed entry id for links to sync
+
+### Misc
+
+- Adapt pull request template
+- Update Minz
+- Update JS dependencies
 
 ## 2021-05-10 - v0.23
 
