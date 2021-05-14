@@ -8,10 +8,21 @@
         ];
     }
 
+    $open_graph = [
+        'title' => $topic->label,
+        'description' => _f('The collections about %s, on %s.', $topic->label, $brand),
+        'locale' => $current_locale,
+        'url' => url_full('topic', $current_url_params),
+    ];
+    if ($topic->image_filename) {
+        $open_graph['image'] = url_media_full('cards', $topic->image_filename);
+    }
+
     $this->layout('base.phtml', [
         'title' => $topic->label,
         'canonical' => url_full('topic', $current_url_params),
         'current_tab' => 'collections',
+        'open_graph' => $open_graph,
         'back' => [
             'href' => url('discovery'),
             'label' => _('Discover'),

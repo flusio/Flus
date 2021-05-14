@@ -22,6 +22,8 @@
             <meta name="twitter:card" content="summary">
             <?php if (isset($open_graph['image'])): ?>
                 <meta property="og:image" content="<?= $open_graph['image'] ?>" />
+            <?php else: ?>
+                <meta property="og:image" content="<?= url_full_static('og-card.png') ?>" />
             <?php endif; ?>
         <?php endif; ?>
 

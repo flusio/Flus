@@ -10,6 +10,12 @@
     $this->layout('base.phtml', [
         'title' => _('Discover collections'),
         'current_tab' => 'collections',
+        'open_graph' => [
+            'title' => _('Discover collections'),
+            'description' => _f('Discover the public collections on %s.', $brand),
+            'locale' => $current_locale,
+            'url' => url_full('discovery'),
+        ],
         'back' => $back,
     ]);
 ?>

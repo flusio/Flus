@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-13 11:56+0200\n"
-"PO-Revision-Date: 2021-05-13 11:56+0200\n"
+"POT-Creation-Date: 2021-05-14 12:33+0200\n"
+"PO-Revision-Date: 2021-05-14 12:33+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -241,23 +241,23 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
-#: models/Link.php:246
+#: models/Link.php:244
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:248
+#: models/Link.php:246
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:267
+#: models/Link.php:265
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:272
+#: models/Link.php:270
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:276
+#: models/Link.php:274
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -419,18 +419,18 @@ msgid "For your entertainment, a choupisson : 🦔"
 msgstr "Pour vous divertir, un choupisson : 🦔"
 
 #: views/_layouts/connected.phtml:53 views/_layouts/connected_blocked.phtml:49
-#: views/_layouts/not_connected.phtml:65 views/_layouts/onboarding.phtml:42
+#: views/_layouts/not_connected.phtml:67 views/_layouts/onboarding.phtml:42
 msgid "Skip to main content"
 msgstr "Sauter au contenu"
 
 #: views/_layouts/connected.phtml:60 views/_layouts/connected_blocked.phtml:56
-#: views/_layouts/not_connected.phtml:72 views/_layouts/onboarding.phtml:49
+#: views/_layouts/not_connected.phtml:74 views/_layouts/onboarding.phtml:49
 #, php-format
 msgid "You need to activate JavaScript in order to use %s."
 msgstr "Vous devez activer JavaScript pour utiliser %s."
 
 #: views/_layouts/connected.phtml:68 views/_layouts/connected_blocked.phtml:64
-#: views/_layouts/not_connected.phtml:80
+#: views/_layouts/not_connected.phtml:82
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
 msgstr ""
@@ -513,19 +513,19 @@ msgstr "Fermer cette fenêtre"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:100 views/registrations/new.phtml:142
+#: views/_layouts/not_connected.phtml:102 views/registrations/new.phtml:142
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:104 views/sessions/new.phtml:88
+#: views/_layouts/not_connected.phtml:106 views/sessions/new.phtml:88
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/_layouts/not_connected.phtml:122 views/onboarding/step1.phtml:25
+#: views/_layouts/not_connected.phtml:124 views/onboarding/step1.phtml:25
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:177
+#: views/_layouts/not_connected.phtml:179
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
@@ -686,12 +686,12 @@ msgid "Create a collection"
 msgstr "Créer une collection"
 
 #: views/collections/index.phtml:44 views/collections/index.phtml:105
-#: views/links/searches/show.phtml:177 views/topics/show.phtml:58
+#: views/links/searches/show.phtml:177 views/topics/show.phtml:69
 msgid "no links"
 msgstr "aucun lien"
 
 #: views/collections/index.phtml:46 views/collections/index.phtml:107
-#: views/links/searches/show.phtml:179 views/topics/show.phtml:60
+#: views/links/searches/show.phtml:179 views/topics/show.phtml:71
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
@@ -703,7 +703,7 @@ msgid "public"
 msgstr "public"
 
 #: views/collections/index.phtml:61 views/collections/index.phtml:116
-#: views/links/searches/show.phtml:204 views/topics/show.phtml:74
+#: views/links/searches/show.phtml:204 views/topics/show.phtml:85
 msgid "see"
 msgstr "voir"
 
@@ -716,13 +716,13 @@ msgid "Discover more collections"
 msgstr "Découvrir plus de collections"
 
 #: views/collections/index.phtml:95 views/links/searches/show.phtml:172
-#: views/topics/show.phtml:48
+#: views/topics/show.phtml:59
 #, php-format
 msgid "Feed from %s"
 msgstr "Flux issu de %s"
 
 #: views/collections/index.phtml:99 views/collections/show_public.phtml:86
-#: views/topics/show.phtml:52
+#: views/topics/show.phtml:63
 #, php-format
 msgid "Created by %s"
 msgstr "Créée par %s"
@@ -736,7 +736,7 @@ msgstr ""
 "créées par la communauté."
 
 #: views/collections/index.phtml:133 views/discovery/show.phtml:11
-#: views/discovery/show.phtml:19
+#: views/discovery/show.phtml:14 views/discovery/show.phtml:25
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
@@ -816,22 +816,27 @@ msgstr "Suivre"
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
-#: views/discovery/show.phtml:23
+#: views/discovery/show.phtml:15
+#, php-format
+msgid "Discover the public collections on %s."
+msgstr "Découvrir les collections publiques sur %s."
+
+#: views/discovery/show.phtml:29
 msgid "Choose a topic…"
 msgstr "Choisissez une thématique…"
 
-#: views/discovery/show.phtml:38
+#: views/discovery/show.phtml:44
 #, php-format
 msgid "%d collection"
 msgid_plural "%d collections"
 msgstr[0] "%d collection"
 msgstr[1] "%d collections"
 
-#: views/discovery/show.phtml:40
+#: views/discovery/show.phtml:46
 msgid "No collections"
 msgstr "Aucune collection"
 
-#: views/discovery/show.phtml:50
+#: views/discovery/show.phtml:56
 msgid "There’s no topics to show."
 msgstr "Il n’y a aucune thématique à afficher."
 
@@ -1762,15 +1767,20 @@ msgstr "Je vous répondrai à <strong>%s</strong>"
 msgid "Send your message"
 msgstr "Envoyer votre message"
 
-#: views/topics/show.phtml:17
+#: views/topics/show.phtml:13
+#, php-format
+msgid "The collections about %s, on %s."
+msgstr "Les collection à propos de %s, sur %s."
+
+#: views/topics/show.phtml:28
 msgid "Discover"
 msgstr "Découvrir"
 
-#: views/topics/show.phtml:64
+#: views/topics/show.phtml:75
 msgid "followed"
 msgstr "suivie"
 
-#: views/topics/show.phtml:84
+#: views/topics/show.phtml:95
 msgid ""
 "The community didn’t publish any collection in this topic yet. Will you be "
 "the first?"
