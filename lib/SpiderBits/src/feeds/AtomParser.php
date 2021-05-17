@@ -86,7 +86,10 @@ class AtomParser
                 $entry->id = $node->nodeValue;
             }
 
-            if ($node->tagName === 'published') {
+            if (
+                $node->tagName === 'published' ||
+                ($node->tagName === 'updated' && !$entry->published_at)
+            ) {
                 $published_at = \DateTime::createFromFormat(
                     \DateTimeInterface::ATOM,
                     $node->nodeValue

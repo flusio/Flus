@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>Basile Simon (blog)</title>
+ <link href="https://blog.basilesimon.fr/atom.xml" rel="self"/>
+ <link href="https://blog.basilesimon.fr/"/>
+ <updated>2021-05-17T09:27:44+02:00</updated>
+ <id>https://blog.basilesimon.fr</id>
+ <author>
+   <name>Basile Simon</name>
+   <a href="https://twitter.com/basilesimon">@basilesimon</a>
+ </author>
+
+ 
+ <entry>
+   <title>Good busy and Toolkit progress - weeknotes #33</title>
+   <link href="https://blog.basilesimon.fr/2021/05/14/weeknotes-33/?utm_medium=rss"/>
+   <updated>2021-05-14T00:00:00+02:00</updated>
+   <id>https://blog.basilesimon.fr/2021/05/14/weeknotes-33</id>
+   <content type="html"></content>
+ </entry>
+ 
+ <entry>
+   <title>Full steam ahead - weeknotes #32</title>
+   <link href="https://blog.basilesimon.fr/2021/05/07/weeknotes-32/?utm_medium=rss"/>
+   <updated>2021-05-07T00:00:00+02:00</updated>
+   <id>https://blog.basilesimon.fr/2021/05/07/weeknotes-32</id>
+   <content type="html"></content>
+ </entry>
+ 
+ <entry>
+   <title>Deutsche Welle sprint - weeknotes #31</title>
+   <link href="https://blog.basilesimon.fr/2021/04/30/weeknotes-31/?utm_medium=rss"/>
+   <updated>2021-04-30T00:00:00+02:00</updated>
+   <id>https://blog.basilesimon.fr/2021/04/30/weeknotes-31</id>
+   <content type="html"></content>
+ </entry>
+ 
+ <entry>
+   <title>The new normal settles in - weeknotes #30</title>
+   <link href="https://blog.basilesimon.fr/2021/04/23/weeknotes-30/?utm_medium=rss"/>
+   <updated>2021-04-23T00:00:00+02:00</updated>
+   <id>https://blog.basilesimon.fr/2021/04/23/weeknotes-30</id>
+   <content type="html"></content>
+ </entry>
+ 
+ <entry>
+   <title>Finally moving on - weeknotes #29</title>
+   <link href="https://blog.basilesimon.fr/2021/04/16/weeknotes-29/?utm_medium=rss"/>
+   <updated>2021-04-16T00:00:00+02:00</updated>
+   <id>https://blog.basilesimon.fr/2021/04/16/weeknotes-29</id>
+   <content type="html"></content>
+ </entry>
+ 
+ <entry>
+   <title>Friday already? - weeknotes #28</title>
+   <link href="https://blog.basilesimon.fr/2021/04/09/weeknotes-28/?utm_medium=rss"/>
+   <updated>2021-04-09T00:00:00+02:00</updated>
+   <id>https://blog.basilesimon.fr/2021/04/09/weeknotes-28</id>
+   <content type="html"></content>
+ </entry>
+ 
+ <entry>
+   <title>Working from Factory - weeknotes #27</title>
+   <link href="https://blog.basilesimon.fr/2021/04/02/weeknotes-27/?utm_medium=rss"/>
+   <updated>2021-04-02T00:00:00+02:00</updated>
+   <id>https://blog.basilesimon.fr/2021/04/02/weeknotes-27</id>
+   <content type="html"></content>
+ </entry>
+ 
+ <entry>
+   <title>A bout of fever - weeknotes #26</title>
+   <link href="https://blog.basilesimon.fr/2021/03/26/weeknotes-26/?utm_medium=rss"/>
+   <updated>2021-03-26T00:00:00+01:00</updated>
+   <id>https://blog.basilesimon.fr/2021/03/26/weeknotes-26</id>
+   <content type="html"></content>
+ </entry>
+ 
+ <entry>
+   <title>New book chapter out in the Data Journalism Handbook</title>
+   <link href="https://blog.basilesimon.fr/2021/03/23/data-journalism-handbook-published/?utm_medium=rss"/>
+   <updated>2021-03-23T00:00:00+01:00</updated>
+   <id>https://blog.basilesimon.fr/2021/03/23/data-journalism-handbook-published</id>
+   <content type="html"></content>
+ </entry>
+ 
+ <entry>
+   <title>Busy busy - weeknotes #25</title>
+   <link href="https://blog.basilesimon.fr/2021/03/19/weeknotes-25/?utm_medium=rss"/>
+   <updated>2021-03-19T00:00:00+01:00</updated>
+   <id>https://blog.basilesimon.fr/2021/03/19/weeknotes-25</id>
+   <content type="html"></content>
+ </entry>
+</feed>

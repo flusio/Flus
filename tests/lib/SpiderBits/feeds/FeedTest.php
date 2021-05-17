@@ -109,6 +109,23 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1618335907, $entry->published_at->getTimestamp());
     }
 
+    public function testFromTextWithBlogBasilesimon()
+    {
+        $feed_as_string = file_get_contents(self::$examples_path . '/blog_basilesimon.atom.xml');
+
+        $feed = Feed::fromText($feed_as_string);
+
+        $this->assertSame('Basile Simon (blog)', $feed->title);
+        $this->assertSame('', $feed->description);
+        $this->assertSame('https://blog.basilesimon.fr/', $feed->link);
+        $this->assertSame(10, count($feed->entries));
+        $entry = $feed->entries[0];
+        $this->assertSame('Good busy and Toolkit progress - weeknotes #33', $entry->title);
+        $this->assertSame('https://blog.basilesimon.fr/2021/05/14/weeknotes-33/?utm_medium=rss', $entry->link);
+        $this->assertSame('https://blog.basilesimon.fr/2021/05/14/weeknotes-33', $entry->id);
+        $this->assertSame(1620943200, $entry->published_at->getTimestamp());
+    }
+
     public function testFromTextWithEmptyRss()
     {
         $feed = Feed::fromText('<rss></rss>');
