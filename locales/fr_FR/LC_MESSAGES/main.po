@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-14 12:33+0200\n"
-"PO-Revision-Date: 2021-05-14 12:33+0200\n"
+"POT-Creation-Date: 2021-05-18 16:24+0200\n"
+"PO-Revision-Date: 2021-05-18 16:24+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -33,13 +33,14 @@ msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:25
 #: views/my/account/deletion.phtml:56 views/my/security/show_confirmed.phtml:76
-#: views/my/security/show_to_confirm.phtml:49 views/registrations/new.phtml:104
-#: views/sessions/new.phtml:75
+#: views/my/security/show_to_confirm.phtml:49 views/passwords/edit.phtml:53
+#: views/registrations/new.phtml:104 views/sessions/new.phtml:75
 msgid "Show"
 msgstr "Afficher"
 
 #: controllers/Collections.php:109 controllers/Collections.php:312
 #: controllers/Links.php:153 controllers/News.php:72
+#: controllers/Passwords.php:79 controllers/Passwords.php:182
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Followers.php:47
 #: controllers/collections/Followers.php:90 controllers/links/Messages.php:72
@@ -80,6 +81,25 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
+#: controllers/Passwords.php:56 models/User.php:373
+msgid "The address email is invalid."
+msgstr "L’adresse courriel est invalide."
+
+#: controllers/Passwords.php:69 controllers/Sessions.php:98
+msgid "We can’t find any account with this email address."
+msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
+
+#: controllers/Passwords.php:114 controllers/Passwords.php:121
+#: controllers/Passwords.php:160 controllers/Passwords.php:167
+#: controllers/my/Validation.php:58 controllers/my/Validation.php:71
+msgid "The token doesn’t exist."
+msgstr "Le token n’existe pas."
+
+#: controllers/Passwords.php:127 controllers/Passwords.php:173
+msgid "The token has expired, you should reset your password again."
+msgstr ""
+"Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
+
 #: controllers/Registrations.php:132 controllers/my/Security.php:91
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
@@ -87,10 +107,6 @@ msgstr "Un compte existe déjà avec cette adresse courriel."
 #: controllers/Registrations.php:146
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
-
-#: controllers/Sessions.php:98
-msgid "We can’t find any account with this email address."
-msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
 #: controllers/Sessions.php:109 controllers/my/Account.php:110
 #: controllers/my/Security.php:146
@@ -104,14 +120,6 @@ msgstr "Le sujet est obligatoire."
 #: controllers/Support.php:79 models/Message.php:94
 msgid "The message is required."
 msgstr "Le message est obligatoire."
-
-#: controllers/collections/Bookmarks.php:35
-msgid ""
-"It looks like you have no “Bookmarks” collection, you should contact the "
-"support."
-msgstr ""
-"Il semblerait que vous n'ayez pas de collection « Signets », vous devriez "
-"contacter le support."
 
 #: controllers/importations/Opml.php:80
 msgid "You already have an ongoing OPML importation."
@@ -167,10 +175,6 @@ msgid "An error occured while logging you, please contact the support."
 msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
-
-#: controllers/my/Validation.php:58 controllers/my/Validation.php:71
-msgid "The token doesn’t exist."
-msgstr "Le token n’existe pas."
 
 #: controllers/my/Validation.php:64
 msgid "The token has expired or has been invalidated."
@@ -228,6 +232,11 @@ msgstr "[%s] Votre message a été envoyé"
 msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
+#: mailers/Users.php:68
+#, php-format
+msgid "[%s] Reset your password"
+msgstr "[%s] Réinitialisation de votre mot de passe"
+
 #: models/Collection.php:123 models/Collection.php:157
 #: views/_layouts/connected.phtml:103 views/collections/bookmarks/show.phtml:3
 msgid "Bookmarks"
@@ -272,31 +281,27 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:346
+#: models/User.php:367
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:348
+#: models/User.php:369
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:350
+#: models/User.php:371
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:352
-msgid "The address email is invalid."
-msgstr "L’adresse courriel est invalide."
-
-#: models/User.php:354
+#: models/User.php:375
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:356
+#: models/User.php:377
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:358
+#: models/User.php:379
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -1176,8 +1181,31 @@ msgstr ""
 "et tout devrait être bon ensuite :"
 
 #: views/mailers/users/account_validation_email.phtml:13
+#: views/mailers/users/reset_password_email.phtml:13
 msgid "Have a nice day!"
 msgstr "Bonne journée !"
+
+#: views/mailers/users/reset_password_email.phtml:2
+#, php-format
+msgid "Hi %s,"
+msgstr "Bonjour %s,"
+
+#: views/mailers/users/reset_password_email.phtml:6
+#, php-format
+msgid ""
+"You receive this email because you’ve asked to reset your password on %s. "
+"You just have to click on the following link and follow the instructions:"
+msgstr ""
+"Vous recevez ce courriel parce que vous avez demandé à réinitialiser votre "
+"mot de passe sur %s. Vous avez seulement à cliquer sur le lien suivant et "
+"suivre les instructions :"
+
+#: views/mailers/users/reset_password_email.phtml:17
+msgid ""
+"P.S. – If you didn’t ask to reset your password, please ignore this email."
+msgstr ""
+"P.S. – Si vous n’avez pas demandé à réinitialiser votre mot de passe, vous "
+"pouvez ignorer ce courriel."
 
 #: views/my/account/deletion.phtml:3 views/my/account/deletion.phtml:13
 msgid "Account deletion"
@@ -1202,8 +1230,8 @@ msgstr ""
 "identité."
 
 #: views/my/account/deletion.phtml:53 views/my/security/show_confirmed.phtml:73
-#: views/my/security/show_to_confirm.phtml:46 views/registrations/new.phtml:101
-#: views/sessions/new.phtml:72
+#: views/my/security/show_to_confirm.phtml:46 views/passwords/edit.phtml:50
+#: views/registrations/new.phtml:101 views/sessions/new.phtml:72
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
@@ -1669,6 +1697,53 @@ msgstr "Conditions générales d’utilisation"
 msgid "back to the registration"
 msgstr "retour à l’inscription"
 
+#: views/passwords/edit.phtml:3 views/passwords/edit.phtml:9
+msgid "Edit a password"
+msgstr "Modifier un mot de passe"
+
+#: views/passwords/edit.phtml:14
+#, php-format
+msgid "You’re changing the password of %s."
+msgstr "Vous êtes en train de modifier le mot de passe de %s."
+
+#: views/passwords/edit.phtml:28
+msgid "Your new password"
+msgstr "Votre nouveau mot de passe"
+
+#: views/passwords/edit.phtml:32 views/registrations/new.phtml:82
+msgid "A strong password is at least 8 characters long."
+msgstr "Un mot de passe robuste fait au moins 8 caractères."
+
+#: views/passwords/edit.phtml:66
+msgid "Change your password"
+msgstr "Modifier votre mot de passe"
+
+#: views/passwords/forgot.phtml:3 views/passwords/forgot.phtml:9
+msgid "Reset your password"
+msgstr "Réinitialiser votre mot de passe"
+
+#: views/passwords/forgot.phtml:13
+msgid "We’ll send you an email with a link to reset your password."
+msgstr ""
+"Nous allons vous envoyer un courriel pour réinitialiser votre mot de passe."
+
+#: views/passwords/forgot.phtml:25
+msgid "We’ve sent you an email to reset your password."
+msgstr ""
+"Nous vous avons envoyé un courriel pour réinitialiser votre mot de passe."
+
+#: views/passwords/forgot.phtml:31 views/sessions/new.phtml:31
+msgid "Email address"
+msgstr "Adresse courriel"
+
+#: views/passwords/forgot.phtml:53
+msgid "Send the reset email"
+msgstr "Envoyer le courriel de réinitialisation"
+
+#: views/passwords/forgot.phtml:60
+msgid "Remember password?"
+msgstr "Mot de passe retrouvé ?"
+
 #: views/registrations/new.phtml:3 views/registrations/new.phtml:10
 msgid "Registration"
 msgstr "Inscription"
@@ -1688,10 +1763,6 @@ msgstr "Comment devons-nous vous appeler ?"
 msgid "And a password"
 msgstr "Et un mot de passe"
 
-#: views/registrations/new.phtml:82
-msgid "A strong password is at least 8 characters long."
-msgstr "Un mot de passe robuste fait au moins 8 caractères."
-
 #: views/registrations/new.phtml:118
 #, php-format
 msgid ""
@@ -1707,8 +1778,8 @@ msgid "Accept the terms of service"
 msgstr "Accepter les conditions générales d’utilisation"
 
 #: views/registrations/new.phtml:149
-msgid "Already an account? Sign in"
-msgstr "Déjà un compte ? Se connecter"
+msgid "Already an account?"
+msgstr "Déjà un compte ?"
 
 #: views/sessions/new.phtml:3 views/sessions/new.phtml:10
 msgid "Log in"
@@ -1718,17 +1789,17 @@ msgstr "Connexion"
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
 
-#: views/sessions/new.phtml:31
-msgid "Email address"
-msgstr "Adresse courriel"
-
 #: views/sessions/new.phtml:53
 msgid "Password"
 msgstr "Mot de passe"
 
-#: views/sessions/new.phtml:96
-msgid "No account yet? Sign up"
-msgstr "Pas encore de compte ? S’inscrire"
+#: views/sessions/new.phtml:95
+msgid "Forgot password?"
+msgstr "Mot de passe oublié ?"
+
+#: views/sessions/new.phtml:102
+msgid "No account yet?"
+msgstr "Pas encore de compte ?"
 
 #: views/support/show.phtml:14
 msgid ""
