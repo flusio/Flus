@@ -1,0 +1,63 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Reset your password'),
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _('Reset your password') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('We’ll send you an email with a link to reset your password.') ?>
+    </p>
+
+    <form method="post" action="<?= url('reset password') ?>" data-controller="csrf-loader">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <?php if ($email_sent): ?>
+            <p class="paragraph--success">
+                <?= _('We’ve sent you an email to reset your password.') ?>
+            </p>
+        <?php endif; ?>
+
+        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+            <label for="email">
+                <?= _('Email address') ?>
+            </label>
+
+            <input
+                id="email"
+                name="email"
+                type="email"
+                value="<?= $email ?>"
+                required
+                autofocus
+                autocomplete="username"
+            />
+
+            <?php if (isset($errors['email'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['email'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Send the reset email') ?>
+            </button>
+        </div>
+    </form>
+
+    <p class="paragraph--centered">
+        <a href="<?= url('login') ?>">
+            <?= _('Remember password?') ?>
+        </a>
+    </p>
+</div>
