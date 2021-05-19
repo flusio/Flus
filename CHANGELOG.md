@@ -1,5 +1,20 @@
 # Changelog of flusio
 
+## 2021-05-19 - v0.25
+
+### News
+
+- Allow to reset forgotten passwords
+
+### Bug fixes
+
+- Handle Atom feeds with no published date
+
+### Misc
+
+- Make sure users always have bookmarks
+- Rename registration-form controller in csrf-loader
+
 ## 2021-05-14 - v0.24
 
 ### Migration notes
