@@ -73,10 +73,14 @@ class FeedFetcher
             $collection->description = $description;
         }
 
-        $feed_site_url = \SpiderBits\Url::sanitize($feed->link);
-        if ($feed_site_url) {
-            $collection->feed_site_url = $feed_site_url;
+        if ($feed->link) {
+            $feed_site_url = \SpiderBits\Url::absolutize($feed->link, $collection->feed_url);
+            $feed_site_url = \SpiderBits\Url::sanitize($feed_site_url);
+        } else {
+            $feed_site_url = $collection->feed_url;
         }
+
+        $collection->feed_site_url = $feed_site_url;
 
         $collection->save();
 
@@ -89,10 +93,12 @@ class FeedFetcher
         $links_to_collections_to_create = [];
 
         foreach ($feed->entries as $entry) {
-            $url = \SpiderBits\Url::sanitize($entry->link);
-            if (!$url) {
+            if (!$entry->link) {
                 continue;
             }
+
+            $url = \SpiderBits\Url::absolutize($entry->link, $collection->feed_url);
+            $url = \SpiderBits\Url::sanitize($url);
 
             if ($entry->published_at) {
                 $created_at = $entry->published_at;

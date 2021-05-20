@@ -223,4 +223,40 @@ class BeltTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('foobar', $result);
     }
+
+    public function testHost()
+    {
+        $url = 'https://flus.fr';
+
+        $host = Belt::host($url);
+
+        $this->assertSame('flus.fr', $host);
+    }
+
+    public function testHostDoesNotReturnWwwDot()
+    {
+        $url = 'https://www.flus.fr';
+
+        $host = Belt::host($url);
+
+        $this->assertSame('flus.fr', $host);
+    }
+
+    public function testHostConvertsIdnaEncodedToUnicode()
+    {
+        $url = 'https://xn--dtour-bsa.studio/';
+
+        $host = Belt::host($url);
+
+        $this->assertSame('détour.studio', $host);
+    }
+
+    public function testHostReturnsEmptyStringIfInvalid()
+    {
+        $url = 'https:///';
+
+        $host = Belt::host($url);
+
+        $this->assertSame('', $host);
+    }
 }

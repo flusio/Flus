@@ -108,6 +108,10 @@ class Belt
     public static function host($url)
     {
         $parsed_url = parse_url($url);
+        if (!isset($parsed_url['host'])) {
+            return '';
+        }
+
         $host = idn_to_utf8($parsed_url['host'], IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
         if (self::startsWith($host, 'www.')) {
             return substr($host, 4);
