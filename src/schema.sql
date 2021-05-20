@@ -82,6 +82,15 @@ CREATE TABLE fetch_logs (
     host TEXT NOT NULL
 );
 
+CREATE TABLE groups (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    name TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_groups_user_id_name ON groups(user_id, name);
+
 CREATE TABLE collections (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
@@ -90,6 +99,7 @@ CREATE TABLE collections (
     type TEXT NOT NULL,
     is_public BOOLEAN NOT NULL DEFAULT false,
     user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    group_id TEXT REFERENCES groups ON DELETE SET NULL ON UPDATE CASCADE,
 
     feed_url TEXT,
     feed_site_url TEXT,
@@ -132,7 +142,8 @@ CREATE TABLE followed_collections (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
-    collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
+    collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE,
+    group_id TEXT REFERENCES groups ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE UNIQUE INDEX idx_followed_collections ON followed_collections(user_id, collection_id);

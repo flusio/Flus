@@ -52,6 +52,10 @@ class Collection extends \Minz\Model
             'required' => true,
         ],
 
+        'group_id' => [
+            'type' => 'string',
+        ],
+
         'number_links' => [
             'type' => 'integer',
             'computed' => true,
