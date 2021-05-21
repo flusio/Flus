@@ -87,7 +87,7 @@
 
 .card__button {
     min-height: 150px;
-    padding: var(--space-medium);
+    padding: var(--space-medium) var(--space-small);
 
     flex: 1;
 

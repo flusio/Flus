@@ -2,6 +2,7 @@ button {
     padding: var(--space-small) var(--space-medium);
 
     color: var(--color-text);
+    font-family: inherit;
     font-size: var(--size-normal);
     line-height: 1.5;
 
