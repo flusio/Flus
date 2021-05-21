@@ -57,16 +57,44 @@
         </div>
 
         <div class="collection__actions">
-            <button
-                class="button--small"
-                data-controller="modal-opener"
-                data-action="modal-opener#fetch"
-                data-modal-opener-href="<?= url('edit collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
-                aria-haspopup="dialog"
-                aria-controls="modal"
+            <details
+                class="popup"
+                data-controller="popup"
+                data-action="click@window->popup#close"
             >
-                <?= _('Edit') ?>
-            </button>
+                <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
+                    <button class="button--small" type="button" data-action="popup#toggle">
+                        <?= icon('menu') ?>
+                        <?= _('Actions') ?>
+                    </button>
+                </summary>
+
+                <nav class="popup__container popup__container--left">
+                    <button
+                        class="popup__item popup__item--button"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href="<?= url('edit collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        <?= icon('pencil') ?>
+                        <?= _('Edit') ?>
+                    </button>
+
+                    <button
+                        class="popup__item popup__item--button"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        <?= icon('directory') ?>
+                        <?= _('Put in a group') ?>
+                    </button>
+                </nav>
+            </details>
         </div>
     </div>
 

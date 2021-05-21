@@ -91,19 +91,48 @@
         <div class="collection__actions">
             <?php if ($current_user): ?>
                 <?php if ($current_user->isFollowing($collection->id)): ?>
-                    <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>">
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
+                    <details
+                        class="popup"
+                        data-controller="popup"
+                        data-action="click@window->popup#close"
+                    >
+                        <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
+                            <button class="button--small" type="button" data-action="popup#toggle">
+                                <?= icon('menu') ?>
+                                <?= _('Actions') ?>
+                            </button>
+                        </summary>
 
-                        <button class="button--small">
-                            <?= _('Unfollow') ?>
-                        </button>
-                    </form>
+                        <nav class="popup__container popup__container--left">
+                            <button
+                                class="popup__item popup__item--button"
+                                data-controller="modal-opener"
+                                data-action="modal-opener#fetch"
+                                data-modal-opener-href="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                                aria-haspopup="dialog"
+                                aria-controls="modal"
+                            >
+                                <?= icon('directory') ?>
+                                <?= _('Put in a group') ?>
+                            </button>
+
+                            <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>">
+                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
+
+                                <button class="popup__item popup__item--button">
+                                    <?= icon('eye-hide') ?>
+                                    <?= _('Unfollow') ?>
+                                </button>
+                            </form>
+                        </nav>
+                    </details>
                 <?php else: ?>
                     <form method="post" action="<?= url('follow collection', ['id' => $collection->id]) ?>">
                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                         <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
                         <button class="button--small">
+                            <?= icon('eye') ?>
                             <?= _('Follow') ?>
                         </button>
                     </form>
