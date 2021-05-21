@@ -33,7 +33,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('importators', $importator_job->queue);
     }
 
-    public function testPerformCreatesNewCollectionsFromOpmlFile()
+    public function testPerformCreatesNewCollectionsAndGroupsFromOpmlFile()
     {
         $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_path = \Minz\Configuration::$application['tmp_path'];
@@ -53,6 +53,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Group::count());
         $this->assertSame(0, $followed_collections_dao->count());
 
         $importator->perform($importation_id);
@@ -69,14 +70,21 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $collection3 = models\Collection::take(2);
         $this->assertSame($support_user->id, $collection3->user_id);
         $this->assertSame('feed', $collection3->type);
+        $this->assertSame(1, models\Group::count());
+        $group = models\Group::take();
+        $this->assertSame('Blogs', $group->name);
+        $this->assertSame($user_id, $group->user_id);
         $this->assertSame(3, $followed_collections_dao->count());
         $followed_collections = $followed_collections_dao->listAll();
         $this->assertSame($user->id, $followed_collections[0]['user_id']);
         $this->assertSame($collection1->id, $followed_collections[0]['collection_id']);
+        $this->assertSame($group->id, $followed_collections[0]['group_id']);
         $this->assertSame($user->id, $followed_collections[1]['user_id']);
         $this->assertSame($collection2->id, $followed_collections[1]['collection_id']);
+        $this->assertSame($group->id, $followed_collections[1]['group_id']);
         $this->assertSame($user->id, $followed_collections[2]['user_id']);
         $this->assertSame($collection3->id, $followed_collections[2]['collection_id']);
+        $this->assertSame($group->id, $followed_collections[2]['group_id']);
     }
 
     public function testPerformRemovesFile()
