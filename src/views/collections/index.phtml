@@ -30,7 +30,7 @@
             </button>
         </div>
 
-        <?php foreach ($collections as $collection): ?>
+        <?php foreach ($no_group_collections as $collection): ?>
             <div class="card">
                 <div class="card__body">
                     <h2 class="card__title">
@@ -64,76 +64,157 @@
             </div>
         <?php endforeach; ?>
 
-        <?php for ($i = 0; $i < (3 - ((count($collections) + 1) % 3)); $i++): ?>
+        <?php for ($i = 0; $i < (3 - ((count($no_group_collections) + 1) % 3)); $i++): ?>
             <div class="card card--shadow no-mobile"></div>
         <?php endfor; ?>
     </div>
 
-    <div class="section__title">
-        <h2><?= _('Followed collections') ?></h2>
+    <div class="cards">
+        <?php foreach ($no_group_followed_collections as $collection): ?>
+            <div class="card">
+                <div class="card__body">
+                    <h2 class="card__title">
+                        <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
+                            <?= protect($collection->name) ?>
+                        </a>
+                    </h2>
+
+                    <?php if ($collection->type === 'feed'): ?>
+                        <p class="card__text">
+                            <?= _f('Feed from %s', protect($collection->feedWebsite())) ?>
+                        </p>
+                    <?php elseif ($collection->type === 'collection'): ?>
+                        <p class="card__text">
+                            <?= _f('Created by %s', protect($collection->owner()->username)) ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <p class="card__text">
+                        <?php if ($collection->number_links === 0): ?>
+                            <?= _('no links') ?>
+                        <?php else: ?>
+                            <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
+                        <?php endif; ?>
+                    </p>
+                </div>
+
+                <div class="card__footer">
+                    <div></div>
+
+                    <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                        <?= _('see') ?>
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <?php for ($i = 0; $i < (3 - (count($no_group_followed_collections) % 3)); $i++): ?>
+            <div class="card card--shadow no-mobile"></div>
+        <?php endfor; ?>
     </div>
 
-    <?php if ($followed_collections): ?>
-        <p class="paragraph--centered">
-            <a href="<?= url('discovery') ?>">
-                <?= _('Discover more collections') ?>
-            </a>
-        </p>
+    <?php foreach ($groups as $group): ?>
+        <section class="group">
+            <header class="group__header">
+                <h2 class="group__title">
+                    <?= icon('directory') ?>
+                    <?= protect($group->name) ?>
+                </h2>
 
-        <div class="cards">
-            <?php foreach ($followed_collections as $collection): ?>
-                <div class="card">
-                    <div class="card__body">
-                        <h2 class="card__title">
-                            <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                                <?= protect($collection->name) ?>
-                            </a>
-                        </h2>
+                <div class="group__separator"></div>
+            </header>
 
-                        <?php if ($collection->type === 'feed'): ?>
-                            <p class="card__text">
-                                <?= _f('Feed from %s', protect($collection->feedWebsite())) ?>
-                            </p>
-                        <?php elseif ($collection->type === 'collection'): ?>
-                            <p class="card__text">
-                                <?= _f('Created by %s', protect($collection->owner()->username)) ?>
-                            </p>
-                        <?php endif; ?>
+            <?php $collections = $group->collections(); ?>
+            <?php if ($collections): ?>
+                <div class="cards">
+                    <?php foreach ($collections as $collection): ?>
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="card__title">
+                                    <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
+                                        <?= protect($collection->name) ?>
+                                    </a>
+                                </h3>
 
-                        <p class="card__text">
-                            <?php if ($collection->number_links === 0): ?>
-                                <?= _('no links') ?>
-                            <?php else: ?>
-                                <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
-                            <?php endif; ?>
-                        </p>
-                    </div>
+                                <p class="card__text">
+                                    <?php if ($collection->number_links === 0): ?>
+                                        <?= _('no links') ?>
+                                    <?php else: ?>
+                                        <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
+                                    <?php endif; ?>
 
-                    <div class="card__footer">
-                        <div></div>
+                                    <?php if ($collection->is_public): ?>
+                                        <span class="sticker sticker--right">
+                                            <?= _('public') ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </p>
+                            </div>
 
-                        <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                            <?= _('see') ?>
-                        </a>
-                    </div>
+                            <div class="card__footer">
+                                <div></div>
+
+                                <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                                    <?= _('see') ?>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+
+                    <?php for ($i = 0; $i < (3 - (count($collections) % 3)); $i++): ?>
+                        <div class="card card--shadow no-mobile"></div>
+                    <?php endfor; ?>
                 </div>
-            <?php endforeach; ?>
+            <?php endif; ?>
 
-            <?php for ($i = 0; $i < (3 - (count($followed_collections) % 3)); $i++): ?>
-                <div class="card card--shadow no-mobile"></div>
-            <?php endfor; ?>
-        </div>
-    <?php else: ?>
-        <p class="paragraph--placeholder">
-            <?= _('You don’t follow any collection. Start by discovering collections created by the community.') ?>
-        </p>
+            <?php $followed_collections = $group->followedCollections(); ?>
+            <?php if ($followed_collections): ?>
+                <div class="cards">
+                    <?php foreach ($followed_collections as $collection): ?>
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="card__title">
+                                    <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
+                                        <?= protect($collection->name) ?>
+                                    </a>
+                                </h3>
 
-        <p class="paragraph--centered">
-            <a class="anchor--action" href="<?= url('discovery') ?>">
-                <?= _('Discover collections') ?>
-            </a>
-        </p>
-    <?php endif; ?>
+                                <?php if ($collection->type === 'feed'): ?>
+                                    <p class="card__text">
+                                        <?= _f('Feed from %s', protect($collection->feedWebsite())) ?>
+                                    </p>
+                                <?php elseif ($collection->type === 'collection'): ?>
+                                    <p class="card__text">
+                                        <?= _f('Created by %s', protect($collection->owner()->username)) ?>
+                                    </p>
+                                <?php endif; ?>
+
+                                <p class="card__text">
+                                    <?php if ($collection->number_links === 0): ?>
+                                        <?= _('no links') ?>
+                                    <?php else: ?>
+                                        <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+
+                            <div class="card__footer">
+                                <div></div>
+
+                                <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                                    <?= _('see') ?>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+
+                    <?php for ($i = 0; $i < (3 - (count($followed_collections) % 3)); $i++): ?>
+                        <div class="card card--shadow no-mobile"></div>
+                    <?php endfor; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+    <?php endforeach; ?>
 
     <img
         class="illustration illustration--centered"
