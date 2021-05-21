@@ -62,6 +62,20 @@ class Group extends \Minz\Model
     }
 
     /**
+     * Sort groups based on given locale
+     *
+     * @param \flusio\models\Group[] $groups
+     * @param string $locale
+     */
+    public static function sort(&$groups, $locale)
+    {
+        $collator = new \Collator($locale);
+        usort($groups, function ($group1, $group2) use ($collator) {
+            return $collator->compare($group1->name, $group2->name);
+        });
+    }
+
+    /**
      * @param string $name
      * @return boolean
      */

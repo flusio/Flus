@@ -219,6 +219,36 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return the group if any for a given user.
+     *
+     * If the collection is owned by the user, the group is the one directly
+     * attached to the current collection. Otherwise, the group is the one
+     * attached to a corresponding FollowedCollection.
+     *
+     * @param string $user_id
+     *
+     * @return \flusio\models\Group|null
+     */
+    public function groupForUser($user_id)
+    {
+        $group_id = null;
+        if ($this->user_id === $user_id) {
+            $group_id = $this->group_id;
+        } else {
+            $followed_collection_dao = new dao\FollowedCollection();
+            $db_followed_collection = $followed_collection_dao->findBy([
+                'user_id' => $user_id,
+                'collection_id' => $this->id,
+            ]);
+            if ($db_followed_collection) {
+                $group_id = $db_followed_collection['group_id'];
+            }
+        }
+
+        return Group::find($group_id);
+    }
+
+    /**
      * Return the topics attached to the current collection
      *
      * @return \flusio\models\Topic[]
