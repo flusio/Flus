@@ -62,6 +62,30 @@ class Group extends \Minz\Model
     }
 
     /**
+     * Return collections put in current group.
+     *
+     * @return \flusio\models\Collection[]
+     */
+    public function collections()
+    {
+        $collections = Collection::daoToList('listInGroup', $this->user_id, $this->id);
+        Collection::sort($collections, utils\Locale::currentLocale());
+        return $collections;
+    }
+
+    /**
+     * Return followed collections put in current group.
+     *
+     * @return \flusio\models\Collection[]
+     */
+    public function followedCollections()
+    {
+        $collections = Collection::daoToList('listFollowedInGroup', $this->user_id, $this->id);
+        Collection::sort($collections, utils\Locale::currentLocale());
+        return $collections;
+    }
+
+    /**
      * Sort groups based on given locale
      *
      * @param \flusio\models\Group[] $groups

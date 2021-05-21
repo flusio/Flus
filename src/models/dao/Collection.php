@@ -112,26 +112,39 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the list of collections for the given user id. The number of
-     * links of each collection is added. Bookmarks collection is not returned.
+     * Returns the collections in the given group. The number of links of each
+     * collection is added. If group id is null, it returns collections in no
+     * groups.
      *
      * @param string $user_id
+     * @param string $group_id
      *
      * @return array
      */
-    public function listWithNumberLinksForUser($user_id)
+    public function listInGroup($user_id, $group_id)
     {
-        $sql = <<<'SQL'
+        $values = [':user_id' => $user_id];
+
+        if ($group_id) {
+            $group_placeholder = 'AND group_id = :group_id';
+            $values[':group_id'] = $group_id;
+        } else {
+            $group_placeholder = 'AND group_id IS NULL';
+        }
+
+        $sql = <<<SQL
             SELECT c.*, (
                 SELECT COUNT(*) FROM links_to_collections l
                 WHERE c.id = l.collection_id
             ) AS number_links
             FROM collections c
-            WHERE user_id = ? AND type = 'collection'
+            WHERE user_id = :user_id
+            AND type = 'collection'
+            {$group_placeholder}
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$user_id]);
+        $statement->execute($values);
         return $statement->fetchAll();
     }
 
@@ -174,16 +187,27 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the list of followed collections for the given user id. The
-     * number of links of each collection is added.
+     * Returns the followed collections in the given group. The number of links
+     * of each collection is added. If group id is null, it returns collections
+     * in no groups.
      *
      * @param string $user_id
+     * @param string $group_id
      *
      * @return array
      */
-    public function listFollowedWithNumberLinksForUser($user_id)
+    public function listFollowedInGroup($user_id, $group_id)
     {
-        $sql = <<<'SQL'
+        $values = [':user_id' => $user_id];
+
+        if ($group_id) {
+            $group_placeholder = 'AND fc.group_id = :group_id';
+            $values[':group_id'] = $group_id;
+        } else {
+            $group_placeholder = 'AND fc.group_id IS NULL';
+        }
+
+        $sql = <<<SQL
             SELECT c.*, (
                 SELECT COUNT(l.id) FROM links l, links_to_collections lc
                 WHERE lc.collection_id = c.id
@@ -191,13 +215,14 @@ class Collection extends \Minz\DatabaseModel
                 AND l.is_hidden = false
             ) AS number_links
             FROM collections c, followed_collections fc
-            WHERE fc.user_id = ?
+            WHERE fc.user_id = :user_id
             AND fc.collection_id = c.id
             AND c.is_public = true
+            {$group_placeholder}
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$user_id]);
+        $statement->execute($values);
         return $statement->fetchAll();
     }
 
