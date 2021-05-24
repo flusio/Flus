@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-21 17:13+0200\n"
-"PO-Revision-Date: 2021-05-21 17:14+0200\n"
+"POT-Creation-Date: 2021-05-24 10:29+0200\n"
+"PO-Revision-Date: 2021-05-24 10:29+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -42,8 +42,8 @@ msgstr "Afficher"
 #: controllers/Links.php:153 controllers/News.php:72
 #: controllers/Passwords.php:79 controllers/Passwords.php:182
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
-#: controllers/Support.php:70 controllers/collections/Followers.php:47
-#: controllers/collections/Followers.php:90
+#: controllers/Support.php:70 controllers/collections/Followers.php:79
+#: controllers/collections/Followers.php:122
 #: controllers/collections/Groups.php:135 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
 #: controllers/my/Account.php:102 controllers/my/Profile.php:71
@@ -513,11 +513,11 @@ msgstr "Support"
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:248
+#: views/_layouts/connected.phtml:248 views/_layouts/not_connected.phtml:206
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:249
+#: views/_layouts/connected.phtml:249 views/_layouts/not_connected.phtml:207
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -525,11 +525,13 @@ msgstr "Fermer cette fenêtre"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:102 views/registrations/new.phtml:142
+#: views/_layouts/not_connected.phtml:102
+#: views/collections/followers/show.phtml:30 views/registrations/new.phtml:142
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:106 views/sessions/new.phtml:88
+#: views/_layouts/not_connected.phtml:106
+#: views/collections/followers/show.phtml:23 views/sessions/new.phtml:88
 msgid "Login"
 msgstr "Se connecter"
 
@@ -590,7 +592,7 @@ msgid "Add a link"
 msgstr "Ajouter un lien"
 
 #: views/collections/bookmarks/show.phtml:65 views/collections/show.phtml:152
-#: views/collections/show_public.phtml:183 views/links/searches/show.phtml:91
+#: views/collections/show_public.phtml:195 views/links/searches/show.phtml:91
 #: views/news/show.phtml:71
 #, php-format
 msgid "%d comment"
@@ -618,7 +620,7 @@ msgid "Manage collections"
 msgstr "Gérer les collections"
 
 #: views/collections/bookmarks/show.phtml:147 views/collections/show.phtml:230
-#: views/collections/show_public.phtml:199 views/links/show.phtml:44
+#: views/collections/show_public.phtml:211 views/links/show.phtml:44
 #: views/links/show_public.phtml:57 views/news/show.phtml:143
 msgid "read"
 msgstr "lire"
@@ -684,6 +686,20 @@ msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
 #, php-format
 msgid "My comments on <a href=\"%s\">%s</a>."
 msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
+
+#: views/collections/followers/show.phtml:4
+#: views/collections/followers/show.phtml:10
+#, php-format
+msgid "Follow “%s” on %s"
+msgstr "Suivez « %s » sur %s"
+
+#: views/collections/followers/show.phtml:15
+msgid "You must log in to follow this feed."
+msgstr "Vous devez être connecté·e pour suivre ce flux."
+
+#: views/collections/followers/show.phtml:17
+msgid "You must log in to follow this collection."
+msgstr "Vous devez être connecté·e pour suivre cette collection."
 
 #: views/collections/groups/edit.phtml:3 views/collections/groups/edit.phtml:14
 msgid "Collection group"
@@ -832,11 +848,12 @@ msgstr ""
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:136 views/links/searches/show.phtml:198
+#: views/collections/show_public.phtml:136
+#: views/collections/show_public.phtml:150 views/links/searches/show.phtml:198
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:209
+#: views/collections/show_public.phtml:221
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 

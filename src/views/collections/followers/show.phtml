@@ -1,0 +1,41 @@
+<?php
+    $this->layout('base.phtml', [
+        'canonical' => url_full('login to follow collection', ['id' => $collection->id]),
+        'title' => _f('Follow “%s” on %s', $collection->name, $brand),
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _f('Follow “%s” on %s', protect($collection->name), $brand) ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?php if ($collection->type === 'feed'): ?>
+            <?= _('You must log in to follow this feed.') ?>
+        <?php else: ?>
+            <?= _('You must log in to follow this collection.') ?>
+        <?php endif; ?>
+    </p>
+
+    <p class="paragraph--centered">
+        <a class="anchor--action" href="<?= url('login', ['redirect_to' => url('collection', ['id' => $collection->id])]) ?>">
+            <?= _('Login') ?>
+        </a>
+    </p>
+
+    <?php if ($registrations_opened): ?>
+        <p class="paragraph--centered">
+            <a href="<?= url('registration') ?>">
+                <?= _('Sign up') ?>
+            </a>
+        </p>
+    <?php endif; ?>
+
+    <img
+        class="illustration illustration--centered"
+        alt=""
+        src="<?= url_static('illustrations/community.svg') ?>"
+        height="150"
+    />
+</div>

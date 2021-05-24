@@ -137,6 +137,18 @@
                         </button>
                     </form>
                 <?php endif; ?>
+            <?php else: ?>
+                <button
+                    class="button--small"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href="<?= url('login to follow collection', ['id' => $collection->id]) ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    <?= icon('eye') ?>
+                    <?= _('Follow') ?>
+                </button>
             <?php endif; ?>
         </div>
     </div>

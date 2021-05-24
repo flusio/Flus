@@ -14,6 +14,38 @@ use flusio\utils;
 class Followers
 {
     /**
+     * Propose to the unconnected users to login to follow the collection.
+     *
+     * @request_param string id
+     *
+     * @response 302 /collections/:id
+     *     if already connected
+     * @response 404
+     *     if the collection doesn't exist or is inaccessible
+     * @response 200
+     *     on success
+     */
+    public function show($request)
+    {
+        $user = auth\CurrentUser::get();
+        $collection_id = $request->param('id');
+        $collection = models\Collection::find($collection_id);
+
+        $can_view = auth\CollectionsAccess::canView($user, $collection);
+        if (!$can_view) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        if ($user) {
+            return Response::redirect('collection', ['id' => $collection->id]);
+        }
+
+        return Response::ok('collections/followers/show.phtml', [
+            'collection' => $collection,
+        ]);
+    }
+
+    /**
      * Make the current user following the given collection
      *
      * @request_param string id
