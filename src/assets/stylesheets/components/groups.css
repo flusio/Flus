@@ -13,10 +13,14 @@
 
     align-items: center;
 
-    background: linear-gradient(to bottom, var(--color-white) 60%, rgba(253, 252, 255, 0));
+    background-color: var(--color-white);
+    box-shadow: 0 2px 2px var(--color-white);
 }
 
 .group__title {
+    margin-top: var(--space-medium);
+    margin-bottom: var(--space-medium);
+
     font-family: var(--font-family-title);
 }
 
