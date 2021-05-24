@@ -1,0 +1,60 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Group edition'),
+        'canonical' => url_full('edit group', ['id' => $group->id]),
+        'back' => [
+            'href' => $from,
+            'label' => _('Back'),
+        ],
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1 id="modal-title"><?= _('Group edition') ?></h1>
+    </div>
+
+    <form method="post" action="<?= url('update group', ['id' => $group->id]) ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
+
+        <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
+            <label for="name">
+                <?= _('The name of your group') ?>
+            </label>
+
+            <p class="form-group__caption">
+                <?= _f('The name must not be longer than %d characters.', $name_max_length) ?>
+            </p>
+
+            <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                value="<?= $name ?>"
+                autocomplete="off"
+                autofocus
+                maxlength="<?= $name_max_length ?>"
+            />
+
+            <?php if (isset($errors['name'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['name'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Save changes') ?>
+            </button>
+        </div>
+    </form>
+</div>
