@@ -129,6 +129,14 @@
                     <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" />
                 </a>
 
+                <time class="card__image-overlay" datetime="<?= format_date($link->created_at, '%Y-%m-%d') ?>">
+                    <?php if ($now->format('Y') === $link->created_at->format('Y')): ?>
+                        <?= format_date($link->created_at, '%d %b') ?>
+                    <?php else: ?>
+                        <?= format_date($link->created_at, '%d %b %Y') ?>
+                    <?php endif; ?>
+                </time>
+
                 <div class="card__body">
                     <h2 class="card__title">
                         <a

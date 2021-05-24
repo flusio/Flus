@@ -105,6 +105,7 @@ class Application
             'current_user' => $current_user,
             'current_tab' => null,
             'current_page' => null,
+            'now' => \Minz\Time::now(),
             'styles' => [],
             'feed' => [],
             'open_graph' => [],
