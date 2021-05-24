@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-24 11:22+0200\n"
-"PO-Revision-Date: 2021-05-24 11:22+0200\n"
+"POT-Creation-Date: 2021-05-24 14:07+0200\n"
+"PO-Revision-Date: 2021-05-24 14:08+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -39,7 +39,7 @@ msgid "Show"
 msgstr "Afficher"
 
 #: controllers/Collections.php:115 controllers/Collections.php:322
-#: controllers/Links.php:153 controllers/News.php:72
+#: controllers/Groups.php:91 controllers/Links.php:153 controllers/News.php:72
 #: controllers/Passwords.php:79 controllers/Passwords.php:182
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Followers.php:79
@@ -59,10 +59,10 @@ msgstr ""
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:397 controllers/Links.php:291
-#: controllers/Links.php:338 controllers/Links.php:375
-#: controllers/Messages.php:47 controllers/Sessions.php:190
-#: controllers/importations/Importations.php:47
+#: controllers/Collections.php:397 controllers/Groups.php:163
+#: controllers/Links.php:291 controllers/Links.php:338
+#: controllers/Links.php:375 controllers/Messages.php:47
+#: controllers/Sessions.php:190 controllers/importations/Importations.php:47
 #: controllers/importations/Opml.php:88 controllers/importations/Pocket.php:101
 #: controllers/importations/Pocket.php:150
 #: controllers/importations/Pocket.php:242
@@ -71,6 +71,10 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/news/Links.php:371
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
+
+#: controllers/Groups.php:119
+msgid "You already have a group with this name."
+msgstr "Vous avez déjà un groupe portant le même nom."
 
 #: controllers/Links.php:178 controllers/links/Obtentions.php:138
 #: controllers/news/Links.php:139
@@ -600,8 +604,9 @@ msgid_plural "%d comments"
 msgstr[0] "%d commentaire"
 msgstr[1] "%d commentaires"
 
-#: views/collections/bookmarks/show.phtml:96 views/collections/show.phtml:82
-#: views/collections/show.phtml:189 views/links/searches/show.phtml:105
+#: views/collections/bookmarks/show.phtml:96 views/collections/index.phtml:136
+#: views/collections/show.phtml:82 views/collections/show.phtml:189
+#: views/links/searches/show.phtml:105
 msgid "Edit"
 msgstr "Modifier"
 
@@ -638,7 +643,7 @@ msgid "The name of your collection"
 msgstr "Le nom de votre collection"
 
 #: views/collections/edit.phtml:34 views/collections/groups/edit.phtml:43
-#: views/collections/new.phtml:32
+#: views/collections/new.phtml:32 views/groups/edit.phtml:33
 #, php-format
 msgid "The name must not be longer than %d characters."
 msgstr "Le nom ne doit pas faire plus de %d caractères."
@@ -661,8 +666,9 @@ msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
 #: views/collections/edit.phtml:120 views/collections/groups/edit.phtml:73
-#: views/links/collections/index.phtml:67 views/links/edit.phtml:68
-#: views/my/profile/show.phtml:115 views/my/security/show_confirmed.phtml:89
+#: views/groups/edit.phtml:56 views/links/collections/index.phtml:67
+#: views/links/edit.phtml:68 views/my/profile/show.phtml:115
+#: views/my/security/show_confirmed.phtml:89
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -736,13 +742,13 @@ msgid "Create a collection"
 msgstr "Créer une collection"
 
 #: views/collections/index.phtml:44 views/collections/index.phtml:94
-#: views/collections/index.phtml:141 views/collections/index.phtml:194
+#: views/collections/index.phtml:154 views/collections/index.phtml:207
 #: views/links/searches/show.phtml:177 views/topics/show.phtml:69
 msgid "no links"
 msgstr "aucun lien"
 
 #: views/collections/index.phtml:46 views/collections/index.phtml:96
-#: views/collections/index.phtml:143 views/collections/index.phtml:196
+#: views/collections/index.phtml:156 views/collections/index.phtml:209
 #: views/links/searches/show.phtml:179 views/topics/show.phtml:71
 #, php-format
 msgid "%d link"
@@ -750,24 +756,24 @@ msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:51 views/collections/index.phtml:148
+#: views/collections/index.phtml:51 views/collections/index.phtml:161
 #: views/collections/show.phtml:51
 msgid "public"
 msgstr "public"
 
 #: views/collections/index.phtml:61 views/collections/index.phtml:105
-#: views/collections/index.phtml:158 views/collections/index.phtml:205
+#: views/collections/index.phtml:171 views/collections/index.phtml:218
 #: views/links/searches/show.phtml:204 views/topics/show.phtml:85
 msgid "see"
 msgstr "voir"
 
-#: views/collections/index.phtml:84 views/collections/index.phtml:184
+#: views/collections/index.phtml:84 views/collections/index.phtml:197
 #: views/links/searches/show.phtml:172 views/topics/show.phtml:59
 #, php-format
 msgid "Feed from %s"
 msgstr "Flux issu de %s"
 
-#: views/collections/index.phtml:88 views/collections/index.phtml:188
+#: views/collections/index.phtml:88 views/collections/index.phtml:201
 #: views/collections/show_public.phtml:86 views/topics/show.phtml:63
 #, php-format
 msgid "Created by %s"
@@ -830,9 +836,9 @@ msgstr "Un flux issu de %s, sur %s."
 msgid "A collection created by %s on %s."
 msgstr "Une collection créée par %s sur %s."
 
-#: views/collections/show_public.phtml:47 views/links/new.phtml:7
-#: views/links/obtentions/new.phtml:7 views/links/show.phtml:11
-#: views/links/show_public.phtml:23
+#: views/collections/show_public.phtml:47 views/groups/edit.phtml:7
+#: views/links/new.phtml:7 views/links/obtentions/new.phtml:7
+#: views/links/show.phtml:11 views/links/show_public.phtml:23
 msgid "Back"
 msgstr "Retour"
 
@@ -886,6 +892,26 @@ msgstr "Aucune collection"
 #: views/discovery/show.phtml:56
 msgid "There’s no topics to show."
 msgstr "Il n’y a aucune thématique à afficher."
+
+#: views/groups/edit.phtml:3 views/groups/edit.phtml:14
+msgid "Group edition"
+msgstr "Modification d’un groupe"
+
+#: views/groups/edit.phtml:29
+msgid "The name of your group"
+msgstr "Le nom de votre groupe"
+
+#: views/groups/edit.phtml:67
+msgid ""
+"Are you sure that you want to delete this group? The associated collections "
+"will NOT be deleted."
+msgstr ""
+"Êtes-vous sur·e de vouloir supprimer ce groupe ? Les collections associées "
+"ne seront PAS supprimées."
+
+#: views/groups/edit.phtml:74
+msgid "Delete the group"
+msgstr "Supprimer le groupe"
 
 #: views/importations/opml/show.phtml:3
 msgid "Importation from an OPML file"
