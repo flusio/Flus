@@ -5,6 +5,7 @@ namespace flusio\controllers;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
+use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -121,6 +122,49 @@ class Groups
         }
 
         $group->save();
+
+        return Response::found($from);
+    }
+
+    /**
+     * @request_param string id
+     * @request_param string from
+     * @request_param string csrf
+     *
+     * @response 302 /login?redirect_to=:from
+     *     if not connected
+     * @response 404
+     *     if the group doesn't exist or is inaccessible
+     * @response 302 :from
+     * @flash error
+     *     if the CSRF token is invalid
+     * @response 302 :from
+     *     on success
+     */
+    public function delete($request)
+    {
+        $user = auth\CurrentUser::get();
+        $group_id = $request->param('id');
+        $from = $request->param('from');
+        $csrf_token = $request->param('csrf');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        $group = models\Group::find($group_id);
+
+        if (!auth\GroupsAccess::canDelete($user, $group)) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $csrf = new \Minz\CSRF();
+        if (!$csrf->validateToken($csrf_token)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        models\Group::delete($group->id);
 
         return Response::found($from);
     }

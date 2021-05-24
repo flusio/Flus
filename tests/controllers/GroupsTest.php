@@ -8,6 +8,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
+    use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
@@ -294,5 +295,110 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'You already have a group with this name');
         $group = models\Group::find($group_id);
         $this->assertSame($old_group_name, $group->name);
+    }
+
+    public function testDeleteRemovesGroup()
+    {
+        $user = $this->login();
+        $group_id = $this->create('group', [
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collections');
+
+        $response = $this->appRun('post', "/groups/{$group_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+        ]);
+
+        $this->assertFalse(models\Group::exists($group_id));
+    }
+
+    public function testDeleteRedirectsToFrom()
+    {
+        $user = $this->login();
+        $group_id = $this->create('group', [
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collections');
+
+        $response = $this->appRun('post', "/groups/{$group_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+    }
+
+    public function testDeleteRedirectsIfNotConnected()
+    {
+        $user_id = $this->create('user', [
+            'csrf' => 'a token',
+        ]);
+        $group_id = $this->create('group', [
+            'user_id' => $user_id,
+        ]);
+        $from = \Minz\Url::for('collections');
+
+        $response = $this->appRun('post', "/groups/{$group_id}/delete", [
+            'csrf' => 'a token',
+            'from' => $from,
+        ]);
+
+        $from_encoded = urlencode($from);
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertTrue(models\Group::exists($group_id));
+    }
+
+    public function testDeleteFailsIfGroupIsInaccessible()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $group_id = $this->create('group', [
+            'user_id' => $other_user_id,
+        ]);
+        $from = \Minz\Url::for('collections');
+
+        $response = $this->appRun('post', "/groups/{$group_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue(models\Group::exists($group_id));
+    }
+
+    public function testDeleteFailsIfGroupDoesNotExist()
+    {
+        $user = $this->login();
+        $group_id = $this->create('group', [
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collections');
+
+        $response = $this->appRun('post', '/groups/not-an-id/delete', [
+            'csrf' => $user->csrf,
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue(models\Group::exists($group_id));
+    }
+
+    public function testDeleteFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $group_id = $this->create('group', [
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collections');
+
+        $response = $this->appRun('post', "/groups/{$group_id}/delete", [
+            'csrf' => 'not the token',
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $this->assertFlash('error', 'A security verification failed.');
+        $this->assertTrue(models\Group::exists($group_id));
     }
 }

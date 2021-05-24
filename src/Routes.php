@@ -134,6 +134,7 @@ class Routes
         // Groups
         $router->addRoute('get', '/groups/:id/edit', 'Groups#edit', 'edit group');
         $router->addRoute('post', '/groups/:id/edit', 'Groups#update', 'update group');
+        $router->addRoute('post', '/groups/:id/delete', 'Groups#delete', 'delete group');
 
         // Discovery
         $router->addRoute('get', '/discovery', 'Discovery#show', 'discovery');
