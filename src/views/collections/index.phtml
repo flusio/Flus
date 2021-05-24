@@ -122,6 +122,19 @@
                 </h2>
 
                 <div class="group__separator"></div>
+
+                <button
+                    class="button--small button--ghost"
+                    type="button"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href="<?= url('edit group', ['id' => $group->id, 'from' => url('collections')]) ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    <?= icon('pencil') ?>
+                    <?= _('Edit') ?>
+                </button>
             </header>
 
             <?php $collections = $group->collections(); ?>
