@@ -30,6 +30,10 @@
                 <?= _('The name of your collection') ?>
             </label>
 
+            <p class="form-group__caption">
+                <?= _f('The name must not be longer than %d characters.', $name_max_length) ?>
+            </p>
+
             <input
                 id="name"
                 name="name"
@@ -37,6 +41,7 @@
                 required
                 value="<?= $name ?>"
                 autofocus
+                maxlength="<?= $name_max_length ?>"
             />
 
             <?php if (isset($errors['name'])): ?>

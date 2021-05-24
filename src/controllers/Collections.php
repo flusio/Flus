@@ -69,6 +69,7 @@ class Collections
             'is_public' => false,
             'topics' => $topics,
             'topic_ids' => [],
+            'name_max_length' => models\Collection::NAME_MAX_LENGTH,
         ]);
     }
 
@@ -110,6 +111,7 @@ class Collections
                 'topic_ids' => $topic_ids,
                 'is_public' => $is_public,
                 'topics' => $topics,
+                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
@@ -121,6 +123,7 @@ class Collections
                 'topic_ids' => $topic_ids,
                 'is_public' => $is_public,
                 'topics' => $topics,
+                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
                 'errors' => [
                     'topic_ids' => _('One of the associated topic doesn’t exist.'),
                 ],
@@ -136,6 +139,7 @@ class Collections
                 'topic_ids' => $topic_ids,
                 'is_public' => $is_public,
                 'topics' => $topics,
+                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
                 'errors' => $errors,
             ]);
         }
@@ -258,6 +262,7 @@ class Collections
                 'is_public' => $collection->is_public,
                 'topic_ids' => array_column($collection->topics(), 'id'),
                 'from' => $from,
+                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
             ]);
         } else {
             return Response::notFound('not_found.phtml');
@@ -313,6 +318,7 @@ class Collections
                 'is_public' => $is_public,
                 'topic_ids' => $topic_ids,
                 'from' => $from,
+                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
@@ -326,6 +332,7 @@ class Collections
                 'is_public' => $is_public,
                 'topic_ids' => $topic_ids,
                 'from' => $from,
+                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
                 'errors' => [
                     'topic_ids' => _('One of the associated topic doesn’t exist.'),
                 ],
@@ -345,6 +352,7 @@ class Collections
                 'is_public' => $is_public,
                 'topic_ids' => $topic_ids,
                 'from' => $from,
+                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
                 'errors' => $errors,
             ]);
         }

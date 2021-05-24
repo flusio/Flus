@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-24 10:29+0200\n"
-"PO-Revision-Date: 2021-05-24 10:29+0200\n"
+"POT-Creation-Date: 2021-05-24 11:22+0200\n"
+"PO-Revision-Date: 2021-05-24 11:22+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -38,7 +38,7 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:113 controllers/Collections.php:316
+#: controllers/Collections.php:115 controllers/Collections.php:322
 #: controllers/Links.php:153 controllers/News.php:72
 #: controllers/Passwords.php:79 controllers/Passwords.php:182
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
@@ -55,11 +55,11 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:125 controllers/Collections.php:330
+#: controllers/Collections.php:128 controllers/Collections.php:337
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:389 controllers/Links.php:291
+#: controllers/Collections.php:397 controllers/Links.php:291
 #: controllers/Links.php:338 controllers/Links.php:375
 #: controllers/Messages.php:47 controllers/Sessions.php:190
 #: controllers/importations/Importations.php:47
@@ -637,30 +637,36 @@ msgstr "Collection"
 msgid "The name of your collection"
 msgstr "Le nom de votre collection"
 
-#: views/collections/edit.phtml:51
+#: views/collections/edit.phtml:34 views/collections/groups/edit.phtml:43
+#: views/collections/new.phtml:32
+#, php-format
+msgid "The name must not be longer than %d characters."
+msgstr "Le nom ne doit pas faire plus de %d caractères."
+
+#: views/collections/edit.phtml:56
 msgid "Its description"
 msgstr "Sa description"
 
-#: views/collections/edit.phtml:53 views/collections/new.phtml:51
+#: views/collections/edit.phtml:58 views/collections/new.phtml:56
 #: views/news/links/new.phtml:75
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/edit.phtml:71
+#: views/collections/edit.phtml:76
 msgid "Its topics"
 msgstr "Ses thématiques"
 
-#: views/collections/edit.phtml:109 views/collections/new.phtml:107
+#: views/collections/edit.phtml:114 views/collections/new.phtml:112
 msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
-#: views/collections/edit.phtml:115 views/collections/groups/edit.phtml:73
+#: views/collections/edit.phtml:120 views/collections/groups/edit.phtml:73
 #: views/links/collections/index.phtml:67 views/links/edit.phtml:68
 #: views/my/profile/show.phtml:115 views/my/security/show_confirmed.phtml:89
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
-#: views/collections/edit.phtml:126
+#: views/collections/edit.phtml:131
 msgid ""
 "Are you sure that you want to delete this collection? You may lose the links "
 "that are attached only to this collection."
@@ -668,7 +674,7 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/edit.phtml:133
+#: views/collections/edit.phtml:138
 msgid "Delete the collection"
 msgstr "Supprimer la collection"
 
@@ -716,11 +722,6 @@ msgstr ""
 #: views/collections/groups/edit.phtml:39
 msgid "How to name the group?"
 msgstr "Comment nommer le groupe ?"
-
-#: views/collections/groups/edit.phtml:43
-#, php-format
-msgid "The name must not be longer than %d characters."
-msgstr "Le nom ne doit pas faire plus de %d caractères."
 
 #: views/collections/index.phtml:15
 msgid ""
@@ -780,15 +781,15 @@ msgstr "Nouvelle collection"
 msgid "What do you want to name this collection?"
 msgstr "Comment voulez-vous nommer cette collection ?"
 
-#: views/collections/new.phtml:49
+#: views/collections/new.phtml:54
 msgid "What’s the purpose of this collection?"
 msgstr "Quelle est la raison d’être de cette collection ?"
 
-#: views/collections/new.phtml:69
+#: views/collections/new.phtml:74
 msgid "What topics will be covered?"
 msgstr "Quelles thématiques seront abordées ?"
 
-#: views/collections/new.phtml:113
+#: views/collections/new.phtml:118
 msgid "Create the collection"
 msgstr "Créer la collection"
 
