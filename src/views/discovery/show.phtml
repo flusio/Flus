@@ -28,25 +28,22 @@
     <?php if ($topics): ?>
         <p class="section__intro"><?= _('Choose a topic…') ?></p>
 
-        <div class="topics">
+        <div class="cards cards--centered">
             <?php foreach ($topics as $topic): ?>
-                <div class="topic">
-                    <a class="topic__anchor" href="<?= url('topic', ['id' => $topic->id]) ?>">
-                        <img class="topic__image" alt="" src="<?= url_media('cards', $topic->image_filename) ?>" />
-                        <span class="topic__info">
-                            <span class="topic__title">
-                                <?= protect($topic->label) ?>
-                            </span>
+                <div class="card card--illustrated" style="background-image: url('<?= url_media('cards', $topic->image_filename) ?>');">
+                    <a class="card__body card__body--bottom" href="<?= url('topic', ['id' => $topic->id]) ?>">
+                        <h2 class="card__title">
+                            <?= protect($topic->label) ?>
+                        </h2>
 
-                            <span class="topic__collections">
-                                <?php $number_collections = $topic->countPublicCollections(); ?>
-                                <?php if ($number_collections > 0): ?>
-                                    <?= _nf('%d collection', '%d collections', $number_collections, $number_collections) ?>
-                                <?php else: ?>
-                                    <?= _('No collections') ?>
-                                <?php endif; ?>
-                            </span>
-                        </span>
+                        <p class="card__text card__text--small-margin">
+                            <?php $number_collections = $topic->countPublicCollections(); ?>
+                            <?php if ($number_collections > 0): ?>
+                                <?= _nf('%d collection', '%d collections', $number_collections, $number_collections) ?>
+                            <?php else: ?>
+                                <?= _('No collections') ?>
+                            <?php endif; ?>
+                        </p>
                     </a>
                 </div>
             <?php endforeach; ?>

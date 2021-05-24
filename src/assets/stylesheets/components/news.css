@@ -5,8 +5,6 @@
 }
 
 .news__via {
-    margin-top: calc(var(--space-small) * -1);
-
     font-style: italic;
 }
 
