@@ -116,15 +116,18 @@
     <?php foreach ($groups as $group): ?>
         <section class="group">
             <header class="group__header">
-                <h2 class="group__title">
+                <div class="group__icon">
                     <?= icon('directory') ?>
+                </div>
+
+                <h2 class="group__title">
                     <?= protect($group->name) ?>
                 </h2>
 
                 <div class="group__separator"></div>
 
                 <button
-                    class="button--small button--ghost"
+                    class="button--small button--ghost no-mobile"
                     type="button"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
@@ -134,6 +137,21 @@
                 >
                     <?= icon('pencil') ?>
                     <?= _('Edit') ?>
+                </button>
+
+                <button
+                    class="button--smaller button--ghost only-mobile"
+                    type="button"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href="<?= url('edit group', ['id' => $group->id, 'from' => url('collections')]) ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    <?= icon('pencil') ?>
+                    <span class="sr-only">
+                        <?= _('Edit') ?>
+                    </span>
                 </button>
             </header>
 

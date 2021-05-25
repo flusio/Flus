@@ -4,7 +4,7 @@
 
 .group__header {
     position: sticky;
-    z-index: 100;
+    z-index: 1;
     top: 0;
 
     display: flex;
@@ -17,15 +17,23 @@
     box-shadow: 0 2px 2px var(--color-white);
 }
 
+.group__header .group__icon {
+    margin-right: var(--space-smaller);
+}
+
+.group__header .group__icon,
+.group__header button {
+    flex-shrink: 0;
+}
+
 .group__title {
+    overflow: hidden;
+
     margin-top: var(--space-medium);
     margin-bottom: var(--space-medium);
 
     font-family: var(--font-family-title);
-}
-
-.group__title .icon {
-    width: 1em;
+    text-overflow: ellipsis;
 }
 
 .group__separator {
