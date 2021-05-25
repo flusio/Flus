@@ -382,6 +382,41 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return the list of urls indexed by entry ids for the given collection.
+     *
+     * @param string $collection_id
+     *
+     * @return array
+     */
+    public function listUrlsByEntryIds($collection_id)
+    {
+        $sql = <<<SQL
+            SELECT l.id, l.url, l.feed_entry_id
+            FROM links l, links_to_collections lc
+
+            WHERE l.id = lc.link_id
+            AND lc.collection_id = :collection_id
+
+            ORDER BY l.created_at DESC, l.id
+            LIMIT 200
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':collection_id' => $collection_id,
+        ]);
+
+        $urls_by_entry_ids = [];
+        foreach ($statement->fetchAll() as $row) {
+            $urls_by_entry_ids[$row['feed_entry_id']] = [
+                'url' => $row['url'],
+                'id' => $row['id'],
+            ];
+        }
+        return $urls_by_entry_ids;
+    }
+
+    /**
      * Return a list of links to fetch (fetched_at is null, or fetched_error is
      * not null).
      *

@@ -87,6 +87,7 @@ class FeedFetcher
         $user_id = $collection->user_id;
         $link_ids_by_urls = models\Link::daoCall('listIdsByUrls', $user_id);
         $link_ids_to_sync = models\Link::daoCall('listIdsToFeedSync', $user_id);
+        $link_urls_by_entry_ids = models\Link::daoCall('listUrlsByEntryIds', $collection->id);
 
         $links_columns = [];
         $links_to_create = [];
@@ -114,6 +115,25 @@ class FeedFetcher
 
             if (isset($link_ids_by_urls[$url])) {
                 $link_id = $link_ids_by_urls[$url];
+            } elseif (
+                isset($link_urls_by_entry_ids[$feed_entry_id]) &&
+                $link_urls_by_entry_ids[$feed_entry_id]['url'] !== $url
+            ) {
+                // We detected a link with the same entry id has a different
+                // URL. This can happen if the URL was changed by the publisher
+                // after our first fetch. Normally, there is a redirection on
+                // the server so it's not a big deal to not track this change,
+                // but it duplicates content.
+                // To avoid this problem, we update the link URL and publication
+                // date. The title and fetched_at are also reset so the link is
+                // resynchronised by the LinkFetcher service.
+                $link_id = $link_urls_by_entry_ids[$feed_entry_id]['id'];
+                models\Link::update($link_id, [
+                    'url' => $url,
+                    'title' => $url,
+                    'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+                    'fetched_at' => null,
+                ]);
             } else {
                 $link = models\Link::init($url, $user_id, false);
                 $entry_title = trim($entry->title);
