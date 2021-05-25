@@ -11,9 +11,15 @@
         <h1><?= _('Collections') ?></h1>
     </div>
 
-    <p class="section__intro">
-        <?= _('Collections allow to group links by topics, find them later and share them with the community.') ?>
-    </p>
+    <div class="section__intro">
+        <p>
+            <?= _('Collections allow to group links by topics and to find them easily.') ?>
+        </p>
+
+        <p>
+            <?= _f('<a href="%s">Discover more collections</a>', url('discovery')) ?>
+        </p>
+    </div>
 
     <section class="group">
         <div class="cards">
