@@ -323,7 +323,7 @@ class Collection extends \Minz\Model
      */
     public static function validateName($name)
     {
-        return strlen($name) <= self::NAME_MAX_LENGTH;
+        return mb_strlen($name) <= self::NAME_MAX_LENGTH;
     }
 
     /**

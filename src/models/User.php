@@ -337,7 +337,7 @@ class User extends \Minz\Model
      */
     public static function validateUsername($username)
     {
-        return strlen($username) <= 50;
+        return mb_strlen($username) <= 50;
     }
 
     /**

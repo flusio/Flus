@@ -88,7 +88,7 @@ class Topic extends \Minz\Model
      */
     public static function validateLabel($label)
     {
-        return strlen($label) <= self::LABEL_MAX_SIZE;
+        return mb_strlen($label) <= self::LABEL_MAX_SIZE;
     }
 
     /**
