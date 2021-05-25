@@ -152,41 +152,36 @@
             <?php endif; ?>
 
             <?php foreach ($feeds as $feed): ?>
-                <div class="card">
-                    <a
-                        class="anchor--hidden"
-                        href="<?= url('collection', ['id' => $feed->id]) ?>"
-                        tabindex="-1"
-                    >
-                        <img class="card__image" alt="" src="<?= url_static('feed-card.png') ?>" />
+                <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                    <a class="card__body" href="<?= url('collection', ['id' => $feed->id]) ?>">
+                        <div class="card__image"></div>
+
+                        <div class="card__title">
+                            <?= protect($feed->name) ?>
+                        </div>
+
+                        <p class="card__text card__text--oneline">
+                            <?php
+                                $via = _f('Feed %s', protect($feed->feedWebsite()));
+
+                                if ($feed->number_links === 0):
+                                    $number_links = _('no links');
+                                else:
+                                    $number_links = _nf('%d link', '%d links', $feed->number_links, $feed->number_links);
+                                endif;
+                            ?>
+
+                            <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
+                        </p>
                     </a>
 
-                    <div class="card__body">
-                        <h2 class="card__title">
-                            <a class="anchor--hidden" href="<?= url('collection', ['id' => $feed->id]) ?>" tabindex="-1">
-                                <?= protect($feed->name) ?>
-                            </a>
-                        </h2>
-
-                        <p class="card__text">
-                            <?= _f('Feed from %s', $feed->feedWebsite()) ?>
-                        </p>
-
-                        <p class="card__text">
-                            <?php if ($feed->number_links === 0): ?>
-                                <?= _('no links') ?>
-                            <?php else: ?>
-                                <?= _nf('%d link', '%d links', $feed->number_links, $feed->number_links) ?>
-                            <?php endif; ?>
-                        </p>
-                    </div>
-
-                    <div class="card__footer">
+                    <div class="card__footer card__footer--centered">
                         <?php if ($current_user->isFollowing($feed->id)): ?>
                             <form method="post" action="<?= url('unfollow collection', ['id' => $feed->id]) ?>">
                                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                                 <input type="hidden" name="from" value="<?= url('show search link', ['url' => $default_link->url]) ?>" />
-                                <button class="button--small">
+                                <button>
+                                    <?= icon('eye-hide') ?>
                                     <?= _('Unfollow') ?>
                                 </button>
                             </form>
@@ -194,15 +189,12 @@
                             <form method="post" action="<?= url('follow collection', ['id' => $feed->id]) ?>">
                                 <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                                 <input type="hidden" name="from" value="<?= url('show search link', ['url' => $default_link->url]) ?>" />
-                                <button class="button--small">
+                                <button>
+                                    <?= icon('eye') ?>
                                     <?= _('Follow') ?>
                                 </button>
                             </form>
                         <?php endif; ?>
-
-                        <a class="anchor--action" href="<?= url('collection', ['id' => $feed->id]) ?>">
-                            <?= _('see') ?>
-                        </a>
                     </div>
                 </div>
             <?php endforeach; ?>

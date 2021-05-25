@@ -31,13 +31,11 @@
         </div>
 
         <?php foreach ($no_group_collections as $collection): ?>
-            <div class="card">
-                <div class="card__body">
-                    <h2 class="card__title">
-                        <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                            <?= protect($collection->name) ?>
-                        </a>
-                    </h2>
+            <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                    <div class="card__title">
+                        <?= protect($collection->name) ?>
+                    </div>
 
                     <p class="card__text">
                         <?php if ($collection->number_links === 0): ?>
@@ -52,15 +50,7 @@
                             </span>
                         <?php endif; ?>
                     </p>
-                </div>
-
-                <div class="card__footer">
-                    <div></div>
-
-                    <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                        <?= _('see') ?>
-                    </a>
-                </div>
+                </a>
             </div>
         <?php endforeach; ?>
 
@@ -71,40 +61,30 @@
 
     <div class="cards">
         <?php foreach ($no_group_followed_collections as $collection): ?>
-            <div class="card">
-                <div class="card__body">
-                    <h2 class="card__title">
-                        <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                            <?= protect($collection->name) ?>
-                        </a>
-                    </h2>
+            <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                    <div class="card__title">
+                        <?= protect($collection->name) ?>
+                    </div>
 
-                    <?php if ($collection->type === 'feed'): ?>
-                        <p class="card__text">
-                            <?= _f('Feed from %s', protect($collection->feedWebsite())) ?>
-                        </p>
-                    <?php elseif ($collection->type === 'collection'): ?>
-                        <p class="card__text">
-                            <?= _f('Created by %s', protect($collection->owner()->username)) ?>
-                        </p>
-                    <?php endif; ?>
+                    <p class="card__text card__text--oneline">
+                        <?php
+                            if ($collection->type === 'feed'):
+                                $via = _f('Feed %s', protect($collection->feedWebsite()));
+                            else:
+                                $via = _f('By %s', protect($collection->owner()->username));
+                            endif;
 
-                    <p class="card__text">
-                        <?php if ($collection->number_links === 0): ?>
-                            <?= _('no links') ?>
-                        <?php else: ?>
-                            <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
-                        <?php endif; ?>
+                            if ($collection->number_links === 0):
+                                $number_links = _('no links');
+                            else:
+                                $number_links = _nf('%d link', '%d links', $collection->number_links, $collection->number_links);
+                            endif;
+                        ?>
+
+                        <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
                     </p>
-                </div>
-
-                <div class="card__footer">
-                    <div></div>
-
-                    <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                        <?= _('see') ?>
-                    </a>
-                </div>
+                </a>
             </div>
         <?php endforeach; ?>
 
@@ -159,13 +139,11 @@
             <?php if ($collections): ?>
                 <div class="cards">
                     <?php foreach ($collections as $collection): ?>
-                        <div class="card">
-                            <div class="card__body">
-                                <h3 class="card__title">
-                                    <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                                        <?= protect($collection->name) ?>
-                                    </a>
-                                </h3>
+                        <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                            <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                                <div class="card__title">
+                                    <?= protect($collection->name) ?>
+                                </div>
 
                                 <p class="card__text">
                                     <?php if ($collection->number_links === 0): ?>
@@ -180,15 +158,7 @@
                                         </span>
                                     <?php endif; ?>
                                 </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <div></div>
-
-                                <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                                    <?= _('see') ?>
-                                </a>
-                            </div>
+                            </a>
                         </div>
                     <?php endforeach; ?>
 
@@ -202,40 +172,30 @@
             <?php if ($followed_collections): ?>
                 <div class="cards">
                     <?php foreach ($followed_collections as $collection): ?>
-                        <div class="card">
-                            <div class="card__body">
-                                <h3 class="card__title">
-                                    <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                                        <?= protect($collection->name) ?>
-                                    </a>
-                                </h3>
+                        <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                            <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                                <div class="card__title">
+                                    <?= protect($collection->name) ?>
+                                </div>
 
-                                <?php if ($collection->type === 'feed'): ?>
-                                    <p class="card__text">
-                                        <?= _f('Feed from %s', protect($collection->feedWebsite())) ?>
-                                    </p>
-                                <?php elseif ($collection->type === 'collection'): ?>
-                                    <p class="card__text">
-                                        <?= _f('Created by %s', protect($collection->owner()->username)) ?>
-                                    </p>
-                                <?php endif; ?>
+                                <p class="card__text card__text--oneline">
+                                    <?php
+                                        if ($collection->type === 'feed'):
+                                            $via = _f('Feed %s', protect($collection->feedWebsite()));
+                                        else:
+                                            $via = _f('By %s', protect($collection->owner()->username));
+                                        endif;
 
-                                <p class="card__text">
-                                    <?php if ($collection->number_links === 0): ?>
-                                        <?= _('no links') ?>
-                                    <?php else: ?>
-                                        <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
-                                    <?php endif; ?>
+                                        if ($collection->number_links === 0):
+                                            $number_links = _('no links');
+                                        else:
+                                            $number_links = _nf('%d link', '%d links', $collection->number_links, $collection->number_links);
+                                        endif;
+                                    ?>
+
+                                    <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
                                 </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <div></div>
-
-                                <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                                    <?= _('see') ?>
-                                </a>
-                            </div>
+                            </a>
                         </div>
                     <?php endforeach; ?>
 
