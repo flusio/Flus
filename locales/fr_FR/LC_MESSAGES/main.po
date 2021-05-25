@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-25 11:31+0200\n"
-"PO-Revision-Date: 2021-05-25 11:31+0200\n"
+"POT-Creation-Date: 2021-05-25 11:44+0200\n"
+"PO-Revision-Date: 2021-05-25 11:44+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -604,7 +604,7 @@ msgid_plural "%d comments"
 msgstr[0] "%d commentaire"
 msgstr[1] "%d commentaires"
 
-#: views/collections/bookmarks/show.phtml:104 views/collections/index.phtml:116
+#: views/collections/bookmarks/show.phtml:104 views/collections/index.phtml:124
 #: views/collections/show.phtml:84 views/collections/show.phtml:199
 #: views/links/searches/show.phtml:105
 msgid "Edit"
@@ -737,18 +737,18 @@ msgstr ""
 "Les collections permettent de grouper les liens par thématiques, de les "
 "retrouver plus tard et de les partager avec la communauté."
 
-#: views/collections/index.phtml:29
+#: views/collections/index.phtml:30
 msgid "Create a collection"
 msgstr "Créer une collection"
 
-#: views/collections/index.phtml:42 views/collections/index.phtml:79
-#: views/collections/index.phtml:132 views/collections/index.phtml:172
+#: views/collections/index.phtml:43 views/collections/index.phtml:85
+#: views/collections/index.phtml:140 views/collections/index.phtml:184
 #: views/links/searches/show.phtml:168 views/topics/show.phtml:64
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/index.phtml:44 views/collections/index.phtml:81
-#: views/collections/index.phtml:134 views/collections/index.phtml:174
+#: views/collections/index.phtml:45 views/collections/index.phtml:87
+#: views/collections/index.phtml:142 views/collections/index.phtml:186
 #: views/links/searches/show.phtml:170 views/topics/show.phtml:66
 #, php-format
 msgid "%d link"
@@ -756,18 +756,22 @@ msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:49 views/collections/index.phtml:139
+#: views/collections/index.phtml:50 views/collections/index.phtml:147
 #: views/collections/show.phtml:53
 msgid "public"
 msgstr "public"
 
-#: views/collections/index.phtml:73 views/collections/index.phtml:166
+#: views/collections/index.phtml:65 views/collections/index.phtml:164
+msgid "Followed collections"
+msgstr "Collections suivies"
+
+#: views/collections/index.phtml:79 views/collections/index.phtml:178
 #: views/links/searches/show.phtml:165 views/topics/show.phtml:58
 #, php-format
 msgid "Feed %s"
 msgstr "Flux %s"
 
-#: views/collections/index.phtml:75 views/collections/index.phtml:168
+#: views/collections/index.phtml:81 views/collections/index.phtml:180
 #: views/topics/show.phtml:60
 #, php-format
 msgid "By %s"
