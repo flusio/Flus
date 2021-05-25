@@ -11,120 +11,117 @@
         <h1><?= _('Collections') ?></h1>
     </div>
 
-    <p class="section__intro">
-        <?= _('Collections allow to group links by topics, find them later and share them with the community.') ?>
-    </p>
+    <div class="section__intro">
+        <p>
+            <?= _('Collections allow to group links by topics and to find them easily.') ?>
+        </p>
 
-    <div class="cards">
-        <div class="card card--action">
-            <button
-                class="card__button card__button--collection"
-                data-controller="modal-opener"
-                data-action="modal-opener#fetch"
-                data-modal-opener-href="<?= url('new collection') ?>"
-                aria-haspopup="dialog"
-                aria-controls="modal"
-            >
-                <?= icon('plus') ?><br />
-                <?= _('Create a collection') ?>
-            </button>
+        <p>
+            <?= _f('<a href="%s">Discover more collections</a>', url('discovery')) ?>
+        </p>
+    </div>
+
+    <section class="group">
+        <div class="cards">
+            <div class="card card--action">
+                <button
+                    class="card__button card__button--collection"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href="<?= url('new collection') ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    <?= icon('plus') ?><br />
+                    <?= _('Create a collection') ?>
+                </button>
+            </div>
+
+            <?php foreach ($no_group_collections as $collection): ?>
+                <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                    <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                        <div class="card__title">
+                            <?= protect($collection->name) ?>
+                        </div>
+
+                        <p class="card__text">
+                            <?php if ($collection->number_links === 0): ?>
+                                <?= _('no links') ?>
+                            <?php else: ?>
+                                <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
+                            <?php endif; ?>
+
+                            <?php if ($collection->is_public): ?>
+                                <span class="sticker sticker--right">
+                                    <?= _('public') ?>
+                                </span>
+                            <?php endif; ?>
+                        </p>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+
+            <?php for ($i = 0; $i < (3 - ((count($no_group_collections) + 1) % 3)); $i++): ?>
+                <div class="card card--shadow no-mobile"></div>
+            <?php endfor; ?>
         </div>
 
-        <?php foreach ($no_group_collections as $collection): ?>
-            <div class="card">
-                <div class="card__body">
-                    <h2 class="card__title">
-                        <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                            <?= protect($collection->name) ?>
+        <?php if ($no_group_followed_collections): ?>
+            <h3 class="group__subtitle">
+                <?= _('Followed collections') ?>
+            </h3>
+
+            <div class="cards">
+                <?php foreach ($no_group_followed_collections as $collection): ?>
+                    <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                        <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                            <div class="card__title">
+                                <?= protect($collection->name) ?>
+                            </div>
+
+                            <p class="card__text card__text--oneline">
+                                <?php
+                                    if ($collection->type === 'feed'):
+                                        $via = _f('Feed %s', protect($collection->feedWebsite()));
+                                    else:
+                                        $via = _f('By %s', protect($collection->owner()->username));
+                                    endif;
+
+                                    if ($collection->number_links === 0):
+                                        $number_links = _('no links');
+                                    else:
+                                        $number_links = _nf('%d link', '%d links', $collection->number_links, $collection->number_links);
+                                    endif;
+                                ?>
+
+                                <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
+                            </p>
                         </a>
-                    </h2>
+                    </div>
+                <?php endforeach; ?>
 
-                    <p class="card__text">
-                        <?php if ($collection->number_links === 0): ?>
-                            <?= _('no links') ?>
-                        <?php else: ?>
-                            <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
-                        <?php endif; ?>
-
-                        <?php if ($collection->is_public): ?>
-                            <span class="sticker sticker--right">
-                                <?= _('public') ?>
-                            </span>
-                        <?php endif; ?>
-                    </p>
-                </div>
-
-                <div class="card__footer">
-                    <div></div>
-
-                    <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                        <?= _('see') ?>
-                    </a>
-                </div>
+                <?php for ($i = 0; $i < (3 - (count($no_group_followed_collections) % 3)); $i++): ?>
+                    <div class="card card--shadow no-mobile"></div>
+                <?php endfor; ?>
             </div>
-        <?php endforeach; ?>
-
-        <?php for ($i = 0; $i < (3 - ((count($no_group_collections) + 1) % 3)); $i++): ?>
-            <div class="card card--shadow no-mobile"></div>
-        <?php endfor; ?>
-    </div>
-
-    <div class="cards">
-        <?php foreach ($no_group_followed_collections as $collection): ?>
-            <div class="card">
-                <div class="card__body">
-                    <h2 class="card__title">
-                        <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                            <?= protect($collection->name) ?>
-                        </a>
-                    </h2>
-
-                    <?php if ($collection->type === 'feed'): ?>
-                        <p class="card__text">
-                            <?= _f('Feed from %s', protect($collection->feedWebsite())) ?>
-                        </p>
-                    <?php elseif ($collection->type === 'collection'): ?>
-                        <p class="card__text">
-                            <?= _f('Created by %s', protect($collection->owner()->username)) ?>
-                        </p>
-                    <?php endif; ?>
-
-                    <p class="card__text">
-                        <?php if ($collection->number_links === 0): ?>
-                            <?= _('no links') ?>
-                        <?php else: ?>
-                            <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
-                        <?php endif; ?>
-                    </p>
-                </div>
-
-                <div class="card__footer">
-                    <div></div>
-
-                    <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                        <?= _('see') ?>
-                    </a>
-                </div>
-            </div>
-        <?php endforeach; ?>
-
-        <?php for ($i = 0; $i < (3 - (count($no_group_followed_collections) % 3)); $i++): ?>
-            <div class="card card--shadow no-mobile"></div>
-        <?php endfor; ?>
-    </div>
+        <?php endif; ?>
+    </section>
 
     <?php foreach ($groups as $group): ?>
         <section class="group">
             <header class="group__header">
-                <h2 class="group__title">
+                <div class="group__icon">
                     <?= icon('directory') ?>
+                </div>
+
+                <h2 class="group__title">
                     <?= protect($group->name) ?>
                 </h2>
 
                 <div class="group__separator"></div>
 
                 <button
-                    class="button--small button--ghost"
+                    class="button--small button--ghost no-mobile"
                     type="button"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
@@ -135,19 +132,32 @@
                     <?= icon('pencil') ?>
                     <?= _('Edit') ?>
                 </button>
+
+                <button
+                    class="button--smaller button--ghost only-mobile"
+                    type="button"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href="<?= url('edit group', ['id' => $group->id, 'from' => url('collections')]) ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    <?= icon('pencil') ?>
+                    <span class="sr-only">
+                        <?= _('Edit') ?>
+                    </span>
+                </button>
             </header>
 
             <?php $collections = $group->collections(); ?>
             <?php if ($collections): ?>
                 <div class="cards">
                     <?php foreach ($collections as $collection): ?>
-                        <div class="card">
-                            <div class="card__body">
-                                <h3 class="card__title">
-                                    <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                                        <?= protect($collection->name) ?>
-                                    </a>
-                                </h3>
+                        <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                            <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                                <div class="card__title">
+                                    <?= protect($collection->name) ?>
+                                </div>
 
                                 <p class="card__text">
                                     <?php if ($collection->number_links === 0): ?>
@@ -162,15 +172,7 @@
                                         </span>
                                     <?php endif; ?>
                                 </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <div></div>
-
-                                <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                                    <?= _('see') ?>
-                                </a>
-                            </div>
+                            </a>
                         </div>
                     <?php endforeach; ?>
 
@@ -182,42 +184,36 @@
 
             <?php $followed_collections = $group->followedCollections(); ?>
             <?php if ($followed_collections): ?>
+                <h3 class="group__subtitle">
+                    <?= _('Followed collections') ?>
+                </h3>
+
                 <div class="cards">
                     <?php foreach ($followed_collections as $collection): ?>
-                        <div class="card">
-                            <div class="card__body">
-                                <h3 class="card__title">
-                                    <a class="anchor--hidden" href="<?= url('collection', ['id' => $collection->id]) ?>" tabindex="-1">
-                                        <?= protect($collection->name) ?>
-                                    </a>
-                                </h3>
+                        <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                            <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                                <div class="card__title">
+                                    <?= protect($collection->name) ?>
+                                </div>
 
-                                <?php if ($collection->type === 'feed'): ?>
-                                    <p class="card__text">
-                                        <?= _f('Feed from %s', protect($collection->feedWebsite())) ?>
-                                    </p>
-                                <?php elseif ($collection->type === 'collection'): ?>
-                                    <p class="card__text">
-                                        <?= _f('Created by %s', protect($collection->owner()->username)) ?>
-                                    </p>
-                                <?php endif; ?>
+                                <p class="card__text card__text--oneline">
+                                    <?php
+                                        if ($collection->type === 'feed'):
+                                            $via = _f('Feed %s', protect($collection->feedWebsite()));
+                                        else:
+                                            $via = _f('By %s', protect($collection->owner()->username));
+                                        endif;
 
-                                <p class="card__text">
-                                    <?php if ($collection->number_links === 0): ?>
-                                        <?= _('no links') ?>
-                                    <?php else: ?>
-                                        <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
-                                    <?php endif; ?>
+                                        if ($collection->number_links === 0):
+                                            $number_links = _('no links');
+                                        else:
+                                            $number_links = _nf('%d link', '%d links', $collection->number_links, $collection->number_links);
+                                        endif;
+                                    ?>
+
+                                    <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
                                 </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <div></div>
-
-                                <a class="anchor--action" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                                    <?= _('see') ?>
-                                </a>
-                            </div>
+                            </a>
                         </div>
                     <?php endforeach; ?>
 

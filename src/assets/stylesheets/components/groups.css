@@ -4,7 +4,7 @@
 
 .group__header {
     position: sticky;
-    z-index: 100;
+    z-index: 1;
     top: 0;
 
     display: flex;
@@ -17,15 +17,39 @@
     box-shadow: 0 2px 2px var(--color-white);
 }
 
+.group__header .group__icon {
+    margin-right: var(--space-smaller);
+}
+
+.group__header .group__icon,
+.group__header button {
+    flex-shrink: 0;
+}
+
 .group__title {
+    overflow: hidden;
+
     margin-top: var(--space-medium);
     margin-bottom: var(--space-medium);
 
     font-family: var(--font-family-title);
+    text-overflow: ellipsis;
 }
 
-.group__title .icon {
-    width: 1em;
+.group__subtitle {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-right: var(--space-small);
+    padding-left: var(--space-small);
+
+    font-size: var(--size-small);
+}
+
+@media (min-width: 800px) {
+    .group__subtitle {
+        padding-right: var(--space-medium);
+        padding-left: var(--space-medium);
+    }
 }
 
 .group__separator {
