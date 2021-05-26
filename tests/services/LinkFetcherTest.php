@@ -164,8 +164,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
         $card_filepath = "{$media_path}/cards/{$image_filename}";
+        $cover_filepath = "{$media_path}/covers/{$image_filename}";
         $large_filepath = "{$media_path}/large/{$image_filename}";
         $this->assertTrue(file_exists($card_filepath));
+        $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
     }
 

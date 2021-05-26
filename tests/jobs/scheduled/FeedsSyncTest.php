@@ -58,6 +58,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertSame('carnet de flus', $collection->name);
+        $this->assertNotNull($collection->image_fetched_at);
+        $this->assertNotNull($collection->image_filename);
         $links_number = count($collection->links());
         $this->assertGreaterThan(0, $links_number);
     }
