@@ -9,7 +9,7 @@
     ]);
 ?>
 
-<div class="section">
+<div class="section section--small">
     <div class="section__title">
         <h1 id="modal-title"><?= _('Collection group') ?></h1>
     </div>
@@ -34,31 +34,62 @@
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
 
-        <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
-            <label for="name">
-                <?= _('How to name the group?') ?>
-            </label>
+        <div
+            class="form-group group-selector <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>"
+            data-controller="group-selector"
+        >
+            <div class="group-selector__group-input" data-target="group-selector.groupInput">
+                <label for="name">
+                    <?= _('How to name the group?') ?>
+                </label>
 
-            <p class="form-group__caption">
-                <?= _f('The name must not be longer than %d characters.', $name_max_length) ?>
-            </p>
+                <p class="form-group__caption">
+                    <?= _f('The name must not be longer than %d characters.', $name_max_length) ?>
+                </p>
 
-            <input
-                id="name"
-                name="name"
-                type="text"
-                value="<?= $name ?>"
-                list="group-names"
-                autocomplete="off"
-                autofocus
-                maxlength="<?= $name_max_length ?>"
-            />
+                <input
+                    id="name"
+                    name=""
+                    type="text"
+                    value="<?= $name ?>"
+                    list="group-names"
+                    autocomplete="off"
+                    autofocus
+                    maxlength="<?= $name_max_length ?>"
+                    data-target="group-selector.input"
+                />
 
-            <datalist id="group-names">
-                <?php foreach ($groups as $group): ?>
-                    <option value="<?= protect($group->name) ?>">
-                <?php endforeach; ?>
-            </datalist>
+                <datalist id="group-names">
+                    <?php foreach ($groups as $group): ?>
+                        <option value="<?= protect($group->name) ?>">
+                    <?php endforeach; ?>
+                </datalist>
+            </div>
+
+            <div class="group-selector__group-select" data-target="group-selector.groupSelect">
+                <label for="name">
+                    <?= _('Select a group') ?>
+                </label>
+
+                <div class="form-group__stack">
+                    <select id="name" name="name" data-target="group-selector.select">
+                        <option <?= $name === '' ? 'selected' : '' ?> value="">
+                            <?= _('No groups') ?>
+                        </option>
+
+                        <?php foreach ($groups as $group): ?>
+                            <option <?= $name === $group->name ? 'selected' : '' ?> value="<?= $group->name ?>">
+                                <?= protect($group->name) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <button type="button" data-action="group-selector#showInput">
+                        <?= icon('plus') ?>
+                        <?= _('New') ?>
+                    </button>
+                </div>
+            </div>
 
             <?php if (isset($errors['name'])): ?>
                 <p class="form-group__error">

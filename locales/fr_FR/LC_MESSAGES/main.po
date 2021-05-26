@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-26 11:58+0200\n"
-"PO-Revision-Date: 2021-05-26 12:00+0200\n"
+"POT-Creation-Date: 2021-05-26 16:05+0200\n"
+"PO-Revision-Date: 2021-05-26 16:05+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -44,7 +44,7 @@ msgstr "Afficher"
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Followers.php:79
 #: controllers/collections/Followers.php:122
-#: controllers/collections/Groups.php:135
+#: controllers/collections/Groups.php:121
 #: controllers/collections/Images.php:124 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
 #: controllers/my/Account.php:102 controllers/my/Profile.php:71
@@ -648,7 +648,7 @@ msgstr "Collection"
 msgid "The name of your collection"
 msgstr "Le nom de votre collection"
 
-#: views/collections/edit.phtml:34 views/collections/groups/edit.phtml:43
+#: views/collections/edit.phtml:34 views/collections/groups/edit.phtml:47
 #: views/collections/new.phtml:32 views/groups/edit.phtml:33
 #, php-format
 msgid "The name must not be longer than %d characters."
@@ -671,7 +671,7 @@ msgstr "Ses thématiques"
 msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
-#: views/collections/edit.phtml:120 views/collections/groups/edit.phtml:73
+#: views/collections/edit.phtml:120 views/collections/groups/edit.phtml:103
 #: views/groups/edit.phtml:56 views/links/collections/index.phtml:67
 #: views/links/edit.phtml:68 views/my/profile/show.phtml:115
 #: views/my/security/show_confirmed.phtml:89
@@ -731,9 +731,21 @@ msgstr ""
 "Les groupes vous permettent d’organiser les collections. Ils ne sont "
 "visibles que par vous sur la page principale des collections."
 
-#: views/collections/groups/edit.phtml:39
+#: views/collections/groups/edit.phtml:43
 msgid "How to name the group?"
 msgstr "Comment nommer le groupe ?"
+
+#: views/collections/groups/edit.phtml:71
+msgid "Select a group"
+msgstr "Sélectionner un groupe"
+
+#: views/collections/groups/edit.phtml:77
+msgid "No groups"
+msgstr "Aucun groupe"
+
+#: views/collections/groups/edit.phtml:89
+msgid "New"
+msgstr "Nouveau"
 
 #: views/collections/images/edit.phtml:3 views/collections/images/edit.phtml:14
 msgid "Collection illustration"
