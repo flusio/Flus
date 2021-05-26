@@ -46,7 +46,7 @@
     <?php if ($collections): ?>
         <div class="cards cards--centered">
             <?php foreach ($collections as $collection): ?>
-                <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>');">
                     <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
                         <div class="card__title">
                             <?= protect($collection->name) ?>

@@ -52,6 +52,14 @@
 ?>
 
 <div class="section" data-controller="back-storage" data-back-storage-type="link">
+    <?php if ($collection->image_filename): ?>
+        <img
+            class="section__image"
+            alt=""
+            src="<?= url_media('large', $collection->image_filename) ?>"
+        />
+    <?php endif; ?>
+
     <div class="section__title">
         <h1><?= protect($collection->name) ?></h1>
     </div>

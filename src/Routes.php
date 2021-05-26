@@ -104,6 +104,8 @@ class Routes
         $router->addRoute('post', '/collections/:id/unfollow', 'collections/Followers#delete', 'unfollow collection');
         $router->addRoute('get', '/collections/:id/group', 'collections/Groups#edit', 'edit group collection');
         $router->addRoute('post', '/collections/:id/group', 'collections/Groups#update', 'update group collection');
+        $router->addRoute('get', '/collections/:id/image', 'collections/Images#edit', 'edit image collection');
+        $router->addRoute('post', '/collections/:id/image', 'collections/Images#update', 'update image collection');
 
         $router->addRoute('get', '/bookmarks', 'collections/Bookmarks#show', 'bookmarks');
 

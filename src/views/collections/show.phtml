@@ -35,6 +35,14 @@
 ?>
 
 <div class="section" data-controller="back-storage" data-back-storage-type="link">
+    <?php if ($collection->image_filename): ?>
+        <img
+            class="section__image"
+            alt=""
+            src="<?= url_media('large', $collection->image_filename) ?>"
+        />
+    <?php endif; ?>
+
     <div class="section__title">
         <h1><?= protect($collection->name) ?></h1>
     </div>
@@ -94,6 +102,18 @@
                     >
                         <?= icon('directory') ?>
                         <?= _('Put in a group') ?>
+                    </button>
+
+                    <button
+                        class="popup__item popup__item--button"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href="<?= url('edit image collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        <?= icon('image') ?>
+                        <?= _('Change the illustration') ?>
                     </button>
                 </nav>
             </details>

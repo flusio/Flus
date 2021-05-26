@@ -1,0 +1,69 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Collection illustration'),
+        'canonical' => url_full('edit image collection', ['id' => $collection->id]),
+        'back' => [
+            'href' => url('collection', ['id' => $collection->id]),
+            'label' => _('Collection'),
+        ],
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1 id="modal-title"><?= _('Collection illustration') ?></h1>
+    </div>
+
+    <div class="section__intro">
+        <p>
+            <?= protect($collection->name) ?>
+        </p>
+
+        <p>
+            <?= _('Illustrations help to distinguish your collection among the others.') ?>
+        </p>
+    </div>
+
+    <form
+        method="post"
+        action="<?= url('update image collection', ['id' => $collection->id]) ?>"
+        data-controller="autosubmit form-file"
+        enctype="multipart/form-data"
+    >
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $this->safe('error') ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
+
+        <input
+            type="file"
+            name="image"
+            id="image"
+            accept="image/png, image/jpeg"
+            data-action="autosubmit#submit"
+            data-target="form-file.file"
+            hidden
+        />
+
+        <?php if (isset($errors['image_filename'])): ?>
+            <p class="form-group__error">
+                <?= $errors['image_filename'] ?>
+            </p>
+        <?php endif; ?>
+
+        <p class="form-group__caption text--centered">
+            <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only.') ?><br />
+            <?= _('The minimum recommended dimensions are 1100x400px.') ?>
+        </p>
+
+        <div class="form__actions">
+            <button type="button" class="button--primary" data-action="form-file#openFile">
+                <?= _('Upload an image') ?>
+            </button>
+        </div>
+    </form>
+</div>
