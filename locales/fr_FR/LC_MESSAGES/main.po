@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-25 11:54+0200\n"
-"PO-Revision-Date: 2021-05-25 11:54+0200\n"
+"POT-Creation-Date: 2021-05-26 11:58+0200\n"
+"PO-Revision-Date: 2021-05-26 12:00+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -44,7 +44,8 @@ msgstr "Afficher"
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Followers.php:79
 #: controllers/collections/Followers.php:122
-#: controllers/collections/Groups.php:135 controllers/links/Messages.php:72
+#: controllers/collections/Groups.php:135
+#: controllers/collections/Images.php:124 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
 #: controllers/my/Account.php:102 controllers/my/Profile.php:71
 #: controllers/my/Security.php:79 controllers/my/Security.php:139
@@ -126,26 +127,34 @@ msgstr "Le sujet est obligatoire."
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: controllers/importations/Opml.php:80
-msgid "You already have an ongoing OPML importation."
-msgstr "Vous avez déjà une importation OPML en cours."
-
-#: controllers/importations/Opml.php:97 controllers/my/Avatar.php:47
+#: controllers/collections/Images.php:89 controllers/importations/Opml.php:97
+#: controllers/my/Avatar.php:47
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
 
-#: controllers/importations/Opml.php:110 controllers/my/Avatar.php:56
+#: controllers/collections/Images.php:101 controllers/importations/Opml.php:110
+#: controllers/my/Avatar.php:56
 msgid "This file is too large."
 msgstr "Ce fichier est trop gros."
 
-#: controllers/importations/Opml.php:117 controllers/my/Avatar.php:61
+#: controllers/collections/Images.php:107 controllers/importations/Opml.php:117
+#: controllers/my/Avatar.php:61
 #, php-format
 msgid "This file cannot be uploaded (error %d)."
 msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
 
-#: controllers/importations/Opml.php:133 controllers/my/Avatar.php:67
+#: controllers/collections/Images.php:115 controllers/importations/Opml.php:133
+#: controllers/my/Avatar.php:67
 msgid "This file cannot be uploaded."
 msgstr "Ce fichier ne peut pas être téléversé."
+
+#: controllers/collections/Images.php:156 controllers/my/Avatar.php:86
+msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
+msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
+
+#: controllers/importations/Opml.php:80
+msgid "You already have an ongoing OPML importation."
+msgstr "Vous avez déjà une importation OPML en cours."
 
 #: controllers/importations/Pocket.php:86
 msgid "You already have an ongoing Pocket importation."
@@ -158,10 +167,6 @@ msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 #: controllers/my/Account.php:118
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
-
-#: controllers/my/Avatar.php:86
-msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
-msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
 
 #: controllers/my/Security.php:68
 msgid "You must confirm your password."
@@ -242,16 +247,16 @@ msgstr "[%s] Confirmer votre compte"
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
-#: models/Collection.php:127 models/Collection.php:161
+#: models/Collection.php:135 models/Collection.php:169
 #: views/_layouts/connected.phtml:103 views/collections/bookmarks/show.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:343 models/Group.php:125
+#: models/Collection.php:351 models/Group.php:125
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:345
+#: models/Collection.php:353
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
@@ -478,9 +483,9 @@ msgstr "Nouveau lien"
 #: views/_layouts/connected_blocked.phtml:95
 #: views/_layouts/connected_blocked.phtml:98
 #: views/collections/bookmarks/show.phtml:85
-#: views/collections/bookmarks/show.phtml:89 views/collections/show.phtml:67
-#: views/collections/show.phtml:180 views/collections/show.phtml:184
-#: views/collections/show_public.phtml:99 views/links/show.phtml:73
+#: views/collections/bookmarks/show.phtml:89 views/collections/show.phtml:75
+#: views/collections/show.phtml:200 views/collections/show.phtml:204
+#: views/collections/show_public.phtml:107 views/links/show.phtml:73
 #: views/links/show.phtml:77
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
@@ -591,12 +596,12 @@ msgstr "Retour à la page d’accueil"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/collections/bookmarks/show.phtml:29 views/collections/show.phtml:118
+#: views/collections/bookmarks/show.phtml:29 views/collections/show.phtml:138
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/collections/bookmarks/show.phtml:73 views/collections/show.phtml:162
-#: views/collections/show_public.phtml:203 views/links/searches/show.phtml:91
+#: views/collections/bookmarks/show.phtml:73 views/collections/show.phtml:182
+#: views/collections/show_public.phtml:211 views/links/searches/show.phtml:91
 #: views/news/show.phtml:75
 #, php-format
 msgid "%d comment"
@@ -604,13 +609,13 @@ msgid_plural "%d comments"
 msgstr[0] "%d commentaire"
 msgstr[1] "%d commentaires"
 
-#: views/collections/bookmarks/show.phtml:104 views/collections/index.phtml:130
-#: views/collections/show.phtml:84 views/collections/show.phtml:199
-#: views/links/searches/show.phtml:105
+#: views/collections/bookmarks/show.phtml:104 views/collections/index.phtml:133
+#: views/collections/index.phtml:147 views/collections/show.phtml:92
+#: views/collections/show.phtml:219 views/links/searches/show.phtml:105
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/collections/bookmarks/show.phtml:116 views/collections/show.phtml:211
+#: views/collections/bookmarks/show.phtml:116 views/collections/show.phtml:231
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
@@ -619,13 +624,13 @@ msgid "Mark as read"
 msgstr "Marquer comme lu"
 
 #: views/collections/bookmarks/show.phtml:138
-#: views/collections/bookmarks/show.phtml:142 views/collections/show.phtml:224
-#: views/collections/show.phtml:228
+#: views/collections/bookmarks/show.phtml:142 views/collections/show.phtml:244
+#: views/collections/show.phtml:248
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/collections/bookmarks/show.phtml:155 views/collections/show.phtml:240
-#: views/collections/show_public.phtml:219 views/links/show.phtml:44
+#: views/collections/bookmarks/show.phtml:155 views/collections/show.phtml:260
+#: views/collections/show_public.phtml:227 views/links/show.phtml:44
 #: views/links/show_public.phtml:57 views/news/show.phtml:147
 msgid "read"
 msgstr "lire"
@@ -635,6 +640,7 @@ msgid "Collection edition"
 msgstr "Modification d'une collection"
 
 #: views/collections/edit.phtml:8 views/collections/groups/edit.phtml:7
+#: views/collections/images/edit.phtml:7
 msgid "Collection"
 msgstr "Collection"
 
@@ -729,6 +735,27 @@ msgstr ""
 msgid "How to name the group?"
 msgstr "Comment nommer le groupe ?"
 
+#: views/collections/images/edit.phtml:3 views/collections/images/edit.phtml:14
+msgid "Collection illustration"
+msgstr "Illustration de la collection"
+
+#: views/collections/images/edit.phtml:23
+msgid "Illustrations help to distinguish your collection among the others."
+msgstr ""
+"Les illustrations aident à distinguer votre collection parmi les autres."
+
+#: views/collections/images/edit.phtml:59
+msgid "<abbr>PNG</abbr> or <abbr>JPG</abbr> images only."
+msgstr "Formats <abbr>PNG</abbr> ou <abbr>JPG</abbr> seulement."
+
+#: views/collections/images/edit.phtml:60
+msgid "The minimum recommended dimensions are 1100x400px."
+msgstr "Les dimensions minimales recommandées sont de 1100x400px."
+
+#: views/collections/images/edit.phtml:65
+msgid "Upload an image"
+msgstr "Téléverser une image"
+
 #: views/collections/index.phtml:16
 msgid "Collections allow to group links by topics and to find them easily."
 msgstr ""
@@ -745,36 +772,36 @@ msgid "Create a collection"
 msgstr "Créer une collection"
 
 #: views/collections/index.phtml:49 views/collections/index.phtml:91
-#: views/collections/index.phtml:146 views/collections/index.phtml:190
-#: views/links/searches/show.phtml:168 views/topics/show.phtml:64
+#: views/collections/index.phtml:164 views/collections/index.phtml:208
+#: views/links/searches/show.phtml:166 views/topics/show.phtml:64
 msgid "no links"
 msgstr "aucun lien"
 
 #: views/collections/index.phtml:51 views/collections/index.phtml:93
-#: views/collections/index.phtml:148 views/collections/index.phtml:192
-#: views/links/searches/show.phtml:170 views/topics/show.phtml:66
+#: views/collections/index.phtml:166 views/collections/index.phtml:210
+#: views/links/searches/show.phtml:168 views/topics/show.phtml:66
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:56 views/collections/index.phtml:153
-#: views/collections/show.phtml:53
+#: views/collections/index.phtml:56 views/collections/index.phtml:171
+#: views/collections/show.phtml:61
 msgid "public"
 msgstr "public"
 
-#: views/collections/index.phtml:71 views/collections/index.phtml:170
+#: views/collections/index.phtml:71 views/collections/index.phtml:188
 msgid "Followed collections"
 msgstr "Collections suivies"
 
-#: views/collections/index.phtml:85 views/collections/index.phtml:184
-#: views/links/searches/show.phtml:165 views/topics/show.phtml:58
+#: views/collections/index.phtml:85 views/collections/index.phtml:202
+#: views/links/searches/show.phtml:163 views/topics/show.phtml:58
 #, php-format
 msgid "Feed %s"
 msgstr "Flux %s"
 
-#: views/collections/index.phtml:87 views/collections/index.phtml:186
+#: views/collections/index.phtml:87 views/collections/index.phtml:204
 #: views/topics/show.phtml:60
 #, php-format
 msgid "By %s"
@@ -814,19 +841,23 @@ msgstr "Flux de syndication de %s"
 msgid "Back"
 msgstr "Retour"
 
-#: views/collections/show.phtml:57
+#: views/collections/show.phtml:65
 msgid "created by you"
 msgstr "créée par vous"
 
-#: views/collections/show.phtml:70 views/collections/show_public.phtml:102
+#: views/collections/show.phtml:78 views/collections/show_public.phtml:110
 msgid "Actions"
 msgstr "Actions"
 
-#: views/collections/show.phtml:96 views/collections/show_public.phtml:116
+#: views/collections/show.phtml:104 views/collections/show_public.phtml:124
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
-#: views/collections/show.phtml:167
+#: views/collections/show.phtml:116
+msgid "Change the illustration"
+msgstr "Changer l’illustration"
+
+#: views/collections/show.phtml:187
 msgid "hidden"
 msgstr "masqué"
 
@@ -840,8 +871,8 @@ msgstr "Un flux issu de %s, sur %s."
 msgid "A collection created by %s on %s."
 msgstr "Une collection créée par %s sur %s."
 
-#: views/collections/show_public.phtml:77
-#: views/collections/show_public.phtml:79
+#: views/collections/show_public.phtml:85
+#: views/collections/show_public.phtml:87
 #, php-format
 msgid ""
 "Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
@@ -849,21 +880,21 @@ msgstr ""
 "Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
 "%s</a>"
 
-#: views/collections/show_public.phtml:86
+#: views/collections/show_public.phtml:94
 #, php-format
 msgid "Created by %s"
 msgstr "Créée par %s"
 
-#: views/collections/show_public.phtml:125 views/links/searches/show.phtml:185
+#: views/collections/show_public.phtml:133 views/links/searches/show.phtml:183
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:136
-#: views/collections/show_public.phtml:150 views/links/searches/show.phtml:194
+#: views/collections/show_public.phtml:144
+#: views/collections/show_public.phtml:158 views/links/searches/show.phtml:192
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:229
+#: views/collections/show_public.phtml:237
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
