@@ -27,6 +27,10 @@
         ];
     }
 
+    if ($collection->image_filename) {
+        $open_graph['image'] = url_media_full('covers', $collection->image_filename);
+    }
+
     if ($pagination->isCurrentFirstPage()) {
         $current_url_params = ['id' => $collection->id];
     } else {
