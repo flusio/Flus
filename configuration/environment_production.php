@@ -6,8 +6,8 @@ $db_name = $dotenv->pop('DB_NAME', 'flusio_production');
 
 $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 
-$php_os = PHP_OS;
 $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt'));
+$user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio) (compatible; Googlebot/2.1)";
 
 return [
     'app_name' => 'flusio',
@@ -29,7 +29,7 @@ return [
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
         'brand' => $dotenv->pop('APP_BRAND', 'flusio'),
         'version' => $flusio_version,
-        'user_agent' => "flusio/{$flusio_version} ({$php_os}; https://github.com/flusio/flusio)",
+        'user_agent' => $user_agent,
         'cache_path' => $dotenv->pop('APP_CACHE_PATH', $app_path . '/cache'),
         'media_path' => $dotenv->pop('APP_MEDIA_PATH', $app_path . '/public/media'),
         'demo' => filter_var($dotenv->pop('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN),

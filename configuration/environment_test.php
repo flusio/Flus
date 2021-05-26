@@ -15,8 +15,8 @@ $media_directory = $temporary_directory . '/media';
 
 $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 
-$php_os = PHP_OS;
 $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt'));
+$user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio) (compatible; Googlebot/2.1)";
 
 return [
     'app_name' => 'flusio',
@@ -34,7 +34,7 @@ return [
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
         'brand' => 'flusio',
         'version' => $flusio_version,
-        'user_agent' => "flusio/{$flusio_version} ({$php_os}; https://github.com/flusio/flusio)",
+        'user_agent' => $user_agent,
         'tmp_path' => $temporary_directory,
         'cache_path' => $cache_directory,
         'media_path' => $media_directory,
