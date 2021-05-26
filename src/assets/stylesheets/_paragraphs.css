@@ -25,6 +25,10 @@
     text-align: center;
 }
 
+.text--centered {
+    text-align: center;
+}
+
 .paragraph--success {
     margin-top: var(--space-larger);
     margin-bottom: var(--space-larger);

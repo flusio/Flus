@@ -189,6 +189,38 @@ class FeedFetcher
                 $links_to_collections_to_create
             );
         }
+
+        if (!$collection->image_fetched_at) {
+            $response = $this->http->get($collection->feed_site_url);
+            if (!$response->success) {
+                return;
+            }
+
+            $content_type = $response->header('content-type');
+            if (!utils\Belt::contains($content_type, 'text/html')) {
+                $collection->image_fetched_at = \Minz\Time::now();
+                $collection->save();
+                return;
+            }
+
+            $encodings = mb_list_encodings();
+            $data = mb_convert_encoding($response->data, 'UTF-8', $encodings);
+
+            $dom = \SpiderBits\Dom::fromText($data);
+            $url_illustration = \SpiderBits\DomExtractor::illustration($dom);
+            $url_illustration = \SpiderBits\Url::sanitize($url_illustration);
+            if (!$url_illustration) {
+                $collection->image_fetched_at = \Minz\Time::now();
+                $collection->save();
+                return;
+            }
+
+            $image_service = new Image();
+            $image_filename = $image_service->generatePreviews($url_illustration);
+            $collection->image_filename = $image_filename;
+            $collection->image_fetched_at = \Minz\Time::now();
+            $collection->save();
+        }
     }
 
     /**

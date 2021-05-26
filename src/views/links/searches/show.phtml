@@ -152,7 +152,7 @@
             <?php endif; ?>
 
             <?php foreach ($feeds as $feed): ?>
-                <div class="card card--illustrated" style="background-image: url('<?= url_static('collection-card.svg') ?>');">
+                <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $feed->image_filename, 'collection-card.svg') ?>');">
                     <a class="card__body card__body--large" href="<?= url('collection', ['id' => $feed->id]) ?>">
                         <div class="card__title">
                             <?= protect($feed->name) ?>

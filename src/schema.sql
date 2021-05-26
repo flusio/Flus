@@ -98,6 +98,8 @@ CREATE TABLE collections (
     description TEXT NOT NULL DEFAULT '',
     type TEXT NOT NULL,
     is_public BOOLEAN NOT NULL DEFAULT false,
+    image_filename TEXT,
+    image_fetched_at TIMESTAMPTZ,
     user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
     group_id TEXT REFERENCES groups ON DELETE SET NULL ON UPDATE CASCADE,
 

@@ -47,6 +47,14 @@ class Collection extends \Minz\Model
             'required' => true,
         ],
 
+        'image_filename' => [
+            'type' => 'string',
+        ],
+
+        'image_fetched_at' => [
+            'type' => 'datetime',
+        ],
+
         'user_id' => [
             'type' => 'string',
             'required' => true,

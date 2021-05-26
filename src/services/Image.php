@@ -18,6 +18,9 @@ class Image
     private $path_cards;
 
     /** @var string */
+    private $path_covers;
+
+    /** @var string */
     private $path_large;
 
     public function __construct()
@@ -28,9 +31,13 @@ class Image
 
         $media_path = \Minz\Configuration::$application['media_path'];
         $this->path_cards = "{$media_path}/cards";
+        $this->path_covers = "{$media_path}/covers";
         $this->path_large = "{$media_path}/large";
         if (!file_exists($this->path_cards)) {
             @mkdir($this->path_cards, 0755, true);
+        }
+        if (!file_exists($this->path_covers)) {
+            @mkdir($this->path_covers, 0755, true);
         }
         if (!file_exists($this->path_large)) {
             @mkdir($this->path_large, 0755, true);
@@ -49,11 +56,13 @@ class Image
     {
         $url_hash = \SpiderBits\Cache::hash($image_url);
         $card_image_filepath = $this->path_cards . '/' . $url_hash;
+        $cover_image_filepath = $this->path_covers . '/' . $url_hash;
         $large_image_filepath = $this->path_large . '/' . $url_hash;
         $card_file_exists = glob($card_image_filepath . '.*');
+        $cover_file_exists = glob($cover_image_filepath . '.*');
         $large_file_exists = glob($large_image_filepath . '.*');
 
-        if ($card_file_exists && $large_file_exists) {
+        if ($card_file_exists && $cover_file_exists && $large_file_exists) {
             return basename($card_file_exists[0]);
         }
 
@@ -69,14 +78,18 @@ class Image
         }
 
         try {
-            // We generate two different images from the source to keep the
+            // We generate three different images from the source to keep the
             // quality as high as possible
             $card_image = models\Image::fromString($response->data);
             $card_image->resize(300, 150);
             $card_image->save($card_image_filepath . '.' . $card_image->type());
 
+            $cover_image = models\Image::fromString($response->data);
+            $cover_image->resize(300, 300);
+            $cover_image->save($cover_image_filepath . '.' . $card_image->type());
+
             $large_image = models\Image::fromString($response->data);
-            $large_image->resize(1000, 200);
+            $large_image->resize(1100, 250);
             $large_image->save($large_image_filepath . '.' . $large_image->type());
 
             return $url_hash . '.' . $card_image->type();
