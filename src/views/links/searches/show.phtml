@@ -82,7 +82,14 @@
                         </h2>
 
                         <p class="card__text card__text--oneline">
-                            <span class="card__ellipsis"><?= protect($existing_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($existing_link->reading_time) ?>
+                            <?php if (!$existing_link->fetched_at): ?>
+                                <span class="icon--spin">
+                                    <?= icon('sync') ?>
+                                    <?= _('ongoing synchronisation…') ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="card__ellipsis"><?= protect($existing_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($existing_link->reading_time) ?>
+                            <?php endif; ?>
                         </p>
 
                         <p class="card__text">
@@ -132,7 +139,14 @@
                         </h2>
 
                         <p class="card__text card__text--oneline">
-                            <span class="card__ellipsis"><?= protect($default_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($default_link->reading_time) ?>
+                            <?php if (!$default_link->fetched_at): ?>
+                                <span class="icon--spin">
+                                    <?= icon('sync') ?>
+                                    <?= _('ongoing synchronisation…') ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="card__ellipsis"><?= protect($default_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($default_link->reading_time) ?>
+                            <?php endif; ?>
                         </p>
                     </div>
 
