@@ -245,6 +245,28 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($group->id, $db_followed_collection['group_id']);
     }
 
+    public function testUpdateUnsetsGroupIfNameIsEmpty()
+    {
+        $user = $this->login();
+        $group_id = $this->create('group');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+            'group_id' => $group_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'name' => '',
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $collection = models\Collection::find($collection_id);
+        $this->assertNull($collection->group_id);
+    }
+
     public function testUpdateDoesNotCreateGroupIfNameExists()
     {
         $user = $this->login();

@@ -110,20 +110,6 @@ class Groups
         ]);
         models\Group::sort($groups, $user->locale);
 
-        $group = models\Group::init($user->id, $name);
-
-        $errors = $group->validate();
-        if ($errors) {
-            return Response::badRequest('collections/groups/edit.phtml', [
-                'collection' => $collection,
-                'groups' => $groups,
-                'from' => $from,
-                'name' => $name,
-                'name_max_length' => models\Group::NAME_MAX_LENGTH,
-                'errors' => $errors,
-            ]);
-        }
-
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return Response::badRequest('collections/groups/edit.phtml', [
@@ -136,15 +122,35 @@ class Groups
             ]);
         }
 
-        $existing_group_key = array_search($group->name, array_column($groups, 'name'));
-        if ($existing_group_key !== false) {
-            $group = $groups[$existing_group_key];
+        if ($name) {
+            $group = models\Group::init($user->id, $name);
+
+            $errors = $group->validate();
+            if ($errors) {
+                return Response::badRequest('collections/groups/edit.phtml', [
+                    'collection' => $collection,
+                    'groups' => $groups,
+                    'from' => $from,
+                    'name' => $name,
+                    'name_max_length' => models\Group::NAME_MAX_LENGTH,
+                    'errors' => $errors,
+                ]);
+            }
+
+            $existing_group_key = array_search($group->name, array_column($groups, 'name'));
+            if ($existing_group_key !== false) {
+                $group = $groups[$existing_group_key];
+            } else {
+                $group->save();
+            }
+
+            $group_id = $group->id;
         } else {
-            $group->save();
+            $group_id = null;
         }
 
         if ($can_update) {
-            $collection->group_id = $group->id;
+            $collection->group_id = $group_id;
             $collection->save();
         } else {
             $followed_collection_dao = new models\dao\FollowedCollection();
@@ -153,7 +159,7 @@ class Groups
                 'collection_id' => $collection->id,
             ]);
             $followed_collection_dao->update($db_followed_collection['id'], [
-                'group_id' => $group->id,
+                'group_id' => $group_id,
             ]);
         }
 
