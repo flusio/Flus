@@ -35,10 +35,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectly()
     {
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
 
         $response = $this->appRun('get', '/opml');
 
@@ -49,10 +45,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersIfImportationIsOngoing()
     {
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $this->create('importation', [
             'type' => 'opml',
             'user_id' => $user->id,
@@ -67,10 +59,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersIfImportationIsFinished()
     {
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $this->create('importation', [
             'type' => 'opml',
             'user_id' => $user->id,
@@ -85,10 +73,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersIfImportationIsInError()
     {
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $error = $this->fake('sentence');
         $this->create('importation', [
             'type' => 'opml',
@@ -109,15 +93,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fopml');
     }
 
-    public function testShowRedirectsIfNoFeatureFlag()
-    {
-        $this->login();
-
-        $response = $this->appRun('get', '/opml');
-
-        $this->assertResponse($response, 302, '/');
-    }
-
     public function testImportRegistersAnOpmlImportatorJobAndRendersCorrectly()
     {
         // we copy an existing file as a tmp file to simulate an upload
@@ -130,10 +105,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -172,10 +143,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -220,35 +187,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $job_dao->count());
     }
 
-    public function testImportRedirectsIfNoFeatureFlag()
-    {
-        // we copy an existing file as a tmp file to simulate an upload
-        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($opml_filepath, $tmp_filepath);
-
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
-        $user = $this->login();
-        $file = [
-            'tmp_name' => $tmp_filepath,
-            'error' => UPLOAD_ERR_OK,
-        ];
-
-        $response = $this->appRun('post', '/opml', [
-            'csrf' => $user->csrf,
-            'opml' => $file,
-        ]);
-
-        \Minz\Configuration::$application['job_adapter'] = 'test';
-
-        $this->assertResponse($response, 302, '/');
-        $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
-    }
-
     public function testImportFailsIfAnImportAlreadyExists()
     {
         // we copy an existing file as a tmp file to simulate an upload
@@ -261,10 +199,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -298,10 +232,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -334,10 +264,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -372,10 +298,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => $error,
@@ -408,10 +330,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => $error,
@@ -434,10 +352,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
-        $this->create('feature_flag', [
-            'type' => 'feeds',
-            'user_id' => $user->id,
-        ]);
         $file = [
             // see move_uploaded_file override at the top of the file: it will
             // return false if the tmp_name is 'not_uploaded_file'.

@@ -26,7 +26,7 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200);
         $output = $response->render();
-        $this->assertSame('feeds', $output);
+        $this->assertSame('beta', $output);
     }
 
     public function testFlagsRendersCorrectly()
@@ -36,7 +36,7 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
         ]);
         $this->create('feature_flag', [
-            'type' => 'feeds',
+            'type' => 'beta',
             'user_id' => $user_id,
         ]);
 
@@ -44,7 +44,7 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200);
         $output = $response->render();
-        $this->assertSame("feeds {$user_id} {$email}", $output);
+        $this->assertSame("beta {$user_id} {$email}", $output);
     }
 
     public function testFlagsDisplaysIfNoFeatureFlags()
@@ -66,11 +66,11 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FeatureFlag::count());
 
         $response = $this->appRun('cli', '/features/enable', [
-            'type' => 'feeds',
+            'type' => 'beta',
             'user_id' => $user_id,
         ]);
 
-        $this->assertResponse($response, 200, "feeds is enabled for user {$user_id} ({$email})");
+        $this->assertResponse($response, 200, "beta is enabled for user {$user_id} ({$email})");
         $this->assertSame(1, models\FeatureFlag::count());
     }
 
@@ -93,7 +93,7 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
     public function testEnableFailsIfUserDoesNotExist()
     {
         $response = $this->appRun('cli', '/features/enable', [
-            'type' => 'feeds',
+            'type' => 'beta',
             'user_id' => 'not an id',
         ]);
 
@@ -108,18 +108,18 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
         ]);
         $this->create('feature_flag', [
-            'type' => 'feeds',
+            'type' => 'beta',
             'user_id' => $user_id,
         ]);
 
         $this->assertSame(1, models\FeatureFlag::count());
 
         $response = $this->appRun('cli', '/features/disable', [
-            'type' => 'feeds',
+            'type' => 'beta',
             'user_id' => $user_id,
         ]);
 
-        $this->assertResponse($response, 200, "feeds is disabled for user {$user_id} ({$email})");
+        $this->assertResponse($response, 200, "beta is disabled for user {$user_id} ({$email})");
         $this->assertSame(0, models\FeatureFlag::count());
     }
 
@@ -130,14 +130,14 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
         ]);
         $this->create('feature_flag', [
-            'type' => 'feeds',
+            'type' => 'beta',
             'user_id' => $user_id,
         ]);
 
         $this->assertSame(1, models\FeatureFlag::count());
 
         $response = $this->appRun('cli', '/features/disable', [
-            'type' => 'feeds',
+            'type' => 'beta',
             'user_id' => 'not an id',
         ]);
 
@@ -155,11 +155,11 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FeatureFlag::count());
 
         $response = $this->appRun('cli', '/features/disable', [
-            'type' => 'feeds',
+            'type' => 'beta',
             'user_id' => $user_id,
         ]);
 
-        $this->assertResponse($response, 400, "Feature flag feeds isn’t enabled for user {$user_id}");
+        $this->assertResponse($response, 400, "Feature flag beta isn’t enabled for user {$user_id}");
         $this->assertSame(0, models\FeatureFlag::count());
     }
 }

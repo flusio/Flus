@@ -64,7 +64,7 @@
                 </li>
             <?php endif; ?>
 
-            <?php if ($opml_enabled && !$current_user->isBlocked()): ?>
+            <?php if (!$current_user->isBlocked()): ?>
                 <li class="groupnav__item groupnav__item--import">
                     <a class="groupnav__anchor" href="<?= url('opml') ?>">
                         <?= _('Import your data from an <abbr>OPML</abbr> file') ?>
