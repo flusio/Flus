@@ -1,5 +1,35 @@
 # Changelog of flusio
 
+## 2021-05-27 - v0.26
+
+### News
+
+- Add illustrations to collections
+- Allow to group collections
+- Import OPML groups
+- Allow to copy the collection link
+
+### Improvements
+
+- Improve collections look
+- Add OpenGraph image to public collections
+- Add publication date on all links
+- Indicate when a link is being fetched
+- Add a follow button for unconnected users
+- Make explicit collection name max length
+- Improve handling of feeds with bad links
+
+### Bug fixes
+
+- Fix string length calculation on validations
+- Update links if entry id exists on feed sync
+- Set correct font-family on buttons
+
+### Misc
+
+- Add Googlebot-compatible to default user agent
+- Update JS dependencies
+
 ## 2021-05-19 - v0.25
 
 ### News
