@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-26 18:12+0200\n"
-"PO-Revision-Date: 2021-05-26 18:12+0200\n"
+"POT-Creation-Date: 2021-05-27 08:40+0200\n"
+"PO-Revision-Date: 2021-05-27 08:40+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -484,7 +484,7 @@ msgstr "Nouveau lien"
 #: views/_layouts/connected_blocked.phtml:98
 #: views/collections/bookmarks/show.phtml:92
 #: views/collections/bookmarks/show.phtml:96 views/collections/show.phtml:75
-#: views/collections/show.phtml:207 views/collections/show.phtml:211
+#: views/collections/show.phtml:222 views/collections/show.phtml:226
 #: views/collections/show_public.phtml:111 views/links/show.phtml:80
 #: views/links/show.phtml:84
 msgid "Open the menu"
@@ -596,19 +596,19 @@ msgstr "Retour à la page d’accueil"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/collections/bookmarks/show.phtml:29 views/collections/show.phtml:138
+#: views/collections/bookmarks/show.phtml:29 views/collections/show.phtml:153
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/collections/bookmarks/show.phtml:70 views/collections/show.phtml:179
-#: views/collections/show_public.phtml:211 views/links/searches/show.phtml:88
+#: views/collections/bookmarks/show.phtml:70 views/collections/show.phtml:194
+#: views/collections/show_public.phtml:224 views/links/searches/show.phtml:88
 #: views/links/searches/show.phtml:145 views/links/show.phtml:35
 #: views/links/show_public.phtml:48 views/news/show.phtml:57
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/collections/bookmarks/show.phtml:80 views/collections/show.phtml:189
-#: views/collections/show_public.phtml:222 views/links/searches/show.phtml:98
+#: views/collections/bookmarks/show.phtml:80 views/collections/show.phtml:204
+#: views/collections/show_public.phtml:235 views/links/searches/show.phtml:98
 #: views/news/show.phtml:82
 #, php-format
 msgid "%d comment"
@@ -618,11 +618,11 @@ msgstr[1] "%d commentaires"
 
 #: views/collections/bookmarks/show.phtml:111 views/collections/index.phtml:133
 #: views/collections/index.phtml:147 views/collections/show.phtml:92
-#: views/collections/show.phtml:226 views/links/searches/show.phtml:112
+#: views/collections/show.phtml:241 views/links/searches/show.phtml:112
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/collections/bookmarks/show.phtml:123 views/collections/show.phtml:238
+#: views/collections/bookmarks/show.phtml:123 views/collections/show.phtml:253
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
@@ -631,13 +631,13 @@ msgid "Mark as read"
 msgstr "Marquer comme lu"
 
 #: views/collections/bookmarks/show.phtml:145
-#: views/collections/bookmarks/show.phtml:149 views/collections/show.phtml:251
-#: views/collections/show.phtml:255
+#: views/collections/bookmarks/show.phtml:149 views/collections/show.phtml:266
+#: views/collections/show.phtml:270
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/collections/bookmarks/show.phtml:162 views/collections/show.phtml:267
-#: views/collections/show_public.phtml:238 views/links/show.phtml:51
+#: views/collections/bookmarks/show.phtml:162 views/collections/show.phtml:282
+#: views/collections/show_public.phtml:251 views/links/show.phtml:51
 #: views/links/show_public.phtml:64 views/news/show.phtml:154
 msgid "read"
 msgstr "lire"
@@ -876,7 +876,11 @@ msgstr "Placer dans un groupe"
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
-#: views/collections/show.phtml:194
+#: views/collections/show.phtml:129 views/collections/show_public.phtml:140
+msgid "Copy the link"
+msgstr "Copier le lien"
+
+#: views/collections/show.phtml:209
 msgid "hidden"
 msgstr "masqué"
 
@@ -904,16 +908,16 @@ msgstr ""
 msgid "Created by %s"
 msgstr "Créée par %s"
 
-#: views/collections/show_public.phtml:137 views/links/searches/show.phtml:197
+#: views/collections/show_public.phtml:150 views/links/searches/show.phtml:197
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:148
-#: views/collections/show_public.phtml:162 views/links/searches/show.phtml:206
+#: views/collections/show_public.phtml:161
+#: views/collections/show_public.phtml:175 views/links/searches/show.phtml:206
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:248
+#: views/collections/show_public.phtml:261
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
