@@ -17,11 +17,15 @@
     box-shadow: 0 2px 2px var(--color-white);
 }
 
-.group__header .group__icon {
+.group__header .icon {
+    width: 1.3em;
+}
+
+.group__icon {
     margin-right: var(--space-smaller);
 }
 
-.group__header .group__icon,
+.group__icon,
 .group__header button {
     flex-shrink: 0;
 }
@@ -33,7 +37,14 @@
     margin-bottom: var(--space-medium);
 
     font-family: var(--font-family-title);
+    font-size: var(--size-normal);
     text-overflow: ellipsis;
+}
+
+@media (min-width: 800px) {
+    .group__title {
+        font-size: var(--size-large);
+    }
 }
 
 .group__subtitle {
