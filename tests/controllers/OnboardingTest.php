@@ -132,6 +132,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
             [3],
             [4],
             [5],
+            [6],
         ];
     }
 
@@ -141,8 +142,8 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         return [
             [$faker->numberBetween(-42, -1)],
             [0],
-            [6],
-            [$faker->numberBetween(7, 42)],
+            [7],
+            [$faker->numberBetween(8, 42)],
         ];
     }
 }

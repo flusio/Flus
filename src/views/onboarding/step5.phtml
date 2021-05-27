@@ -1,55 +1,68 @@
 <?php
     $this->layout('onboarding.phtml', [
-        'title' => _('Start exploring'),
+        'title' => _('Understanding the news'),
         'current_step' => 5,
     ]);
 ?>
 
 <div class="section section--longbottom">
     <div class="section__title">
-        <h1><?= _('Start exploring') ?></h1>
+        <h1><?= _('Understanding the news') ?></h1>
     </div>
 
     <p class="paragraph--featured">
-        <?= _f('This is the end of the onboarding. You should now have the keys to use %s in an efficient way.', $brand) ?>
-    </p>
-
-    <img
-        class="illustration illustration--centered"
-        alt=""
-        src="<?= url_static('illustrations/completed.svg') ?>"
-        height="250"
-    />
-
-    <p class="paragraph--centered">
-        <?= _('All the features weren’t explained and new ones are coming regularly. If you’re lost, stay curious and you should find your way.') ?>
+        <?= _('You might have a lot to read everyday.') ?>
     </p>
 
     <p class="paragraph--centered">
-        <?= _('You can choose <em>your next destination</em>:') ?>
+        <?= _f('The news offers you 3 ways to select links to read:', $brand) ?>
     </p>
 
     <div class="cards cards--centered">
         <div class="card card--showcase">
-            <a class="anchor--action" href="<?= url('discovery') ?>">
-                <?= _('Explore the collections') ?>
-            </a>
+            <img
+                class="card__image"
+                alt=""
+                src="<?= url_static('illustrations/newspaper.svg') ?>"
+                height="200"
+            />
+
+            <span class="news-selection__title"><?= _('the latest publications') ?></span>
+            <small class="text--secondary"><?= _('from your followed collections') ?></small>
         </div>
 
         <div class="card card--showcase">
-            <a class="anchor--action news-selection__title" href="<?= url('show search link') ?>">
-                <?= _('Add new links') ?>
-            </a>
+            <img
+                class="card__image"
+                alt=""
+                src="<?= url_static('illustrations/reading.svg') ?>"
+                height="200"
+            />
+
+            <span class="news-selection__title"><?= _('3 links of -10 minutes') ?></span>
+            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+        </div>
+
+        <div class="card card--showcase">
+            <img
+                class="card__image"
+                alt=""
+                src="<?= url_static('illustrations/cup-of-tea.svg') ?>"
+                height="200"
+            />
+
+            <span class="news-selection__title"><?= _('1 link of +10 minutes') ?></span>
+            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
         </div>
     </div>
 
     <p class="paragraph--centered">
-        <?= _('Tip: if you use Pocket, you can also import your links:') ?>
+        <?= _f('<strong>These pre-selections keep your reading space pleasant in daily use.</strong> In %s, there is no endless scroll: your <em>peace of mind</em> is what matters most.', $brand) ?>
     </p>
 
     <p class="paragraph--centered">
-        <a href="<?= url('pocket') ?>">
-            <?= _('Import from Pocket') ?>
+        <a class="anchor--action" href="<?= url('onboarding', ['step' => 6]) ?>">
+            <?= _('Continue') ?>
         </a>
     </p>
 </div>

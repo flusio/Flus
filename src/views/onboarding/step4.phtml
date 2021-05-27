@@ -1,64 +1,59 @@
 <?php
     $this->layout('onboarding.phtml', [
-        'title' => _('Understanding the news'),
+        'title' => _('Collections and feeds'),
         'current_step' => 4,
     ]);
 ?>
 
-<div class="section section--longbottom">
+<div class="section section--small section--longbottom">
     <div class="section__title">
-        <h1><?= _('Understanding the news') ?></h1>
+        <h1><?= _('Collections and feeds') ?></h1>
     </div>
 
     <p class="paragraph--featured">
-        <?= _('You might have a lot to read everyday.') ?>
+        <?= _('Create collections and share your passions with the rest of the world.') ?>
+    </p>
+
+    <ul class="list--spaced">
+        <li class="list__item">
+            <?= _('Collections are a convenient way to organize your links;') ?>
+        </li>
+
+        <li class="list__item">
+            <?= _('they can be about anything: culture, education, cooking recipes, local politics and so on;') ?>
+        </li>
+
+        <li class="list__item">
+            <?= _f('once published, anyone can follow your collection: directly in %s or via a feed aggregator for external people.', $brand) ?>
+        </li>
+    </ul>
+
+    <br />
+
+    <p class="paragraph--centered">
+        <em><?= _('Speaking of which…') ?></em><br />
+        <?= _f('You may have come across <abbr>RSS</abbr> feeds by the past?') ?>
     </p>
 
     <p class="paragraph--centered">
-        <?= _f('The news offers you 3 ways to select links to read:', $brand) ?>
+        <strong>
+            <?= _f('Podcasts, news sites, Youtube channels, blogs: all these can be followed in %s as well! Feeds are simply external collections.', $brand) ?>
+        </strong>
     </p>
 
-    <div class="cards cards--centered">
-        <div class="card card--showcase">
+    <figure class="figure--centered">
+        <div class="screenshot">
             <img
-                class="card__image"
-                alt=""
-                src="<?= url_static('illustrations/newspaper.svg') ?>"
-                height="200"
-            />
-
-            <span class="news-selection__title"><?= _('the latest publications') ?></span>
-            <small class="text--secondary"><?= _('from your followed collections') ?></small>
+                alt="<?= _('A screenshot showing the result when searching for the “https://flus.fr” URL: a link and a feed to follow') ?>"
+                class="illustration illustration--figure screenshot__image"
+                src="<?= url_static('onboarding/new-link-with-feed.png') ?>"
+             />
         </div>
 
-        <div class="card card--showcase">
-            <img
-                class="card__image"
-                alt=""
-                src="<?= url_static('illustrations/reading.svg') ?>"
-                height="200"
-            />
-
-            <span class="news-selection__title"><?= _('3 links of -10 minutes') ?></span>
-            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
-        </div>
-
-        <div class="card card--showcase">
-            <img
-                class="card__image"
-                alt=""
-                src="<?= url_static('illustrations/cup-of-tea.svg') ?>"
-                height="200"
-            />
-
-            <span class="news-selection__title"><?= _('1 link of +10 minutes') ?></span>
-            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
-        </div>
-    </div>
-
-    <p class="paragraph--centered">
-        <?= _f('<strong>These pre-selections keep your reading space pleasant in daily use.</strong> In %s, there is no endless scroll: your <em>peace of mind</em> is what matters most.', $brand) ?>
-    </p>
+         <figcaption>
+             <?= _('For instance, when you’re searching for “https://flus.fr”, you can add the link to your collections and follow the feed that has been auto-detected.') ?>
+         </figcaption>
+    </figure>
 
     <p class="paragraph--centered">
         <a class="anchor--action" href="<?= url('onboarding', ['step' => 5]) ?>">

@@ -19,6 +19,7 @@ class Onboarding
      * @request_param integer step
      *
      * @response 302 /login?redirect_to if not connected
+     * @response 404 if step is out of bound
      * @response 200
      *
      * @param \Minz\Request $request
@@ -35,7 +36,7 @@ class Onboarding
         }
 
         $step = intval($request->param('step', 1));
-        if ($step < 1 || $step > 5) {
+        if ($step < 1 || $step > 6) {
             return Response::notFound('not_found.phtml');
         }
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-05-28 13:01+0200\n"
-"PO-Revision-Date: 2021-05-28 13:01+0200\n"
+"POT-Creation-Date: 2021-06-02 08:33+0200\n"
+"PO-Revision-Date: 2021-06-02 08:33+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -47,7 +47,7 @@ msgstr "Afficher"
 #: controllers/collections/Groups.php:121
 #: controllers/collections/Images.php:124 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
-#: controllers/my/Account.php:102 controllers/my/Profile.php:71
+#: controllers/my/Account.php:101 controllers/my/Profile.php:71
 #: controllers/my/Security.php:79 controllers/my/Security.php:139
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
 #: controllers/news/Links.php:126
@@ -64,7 +64,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Links.php:291 controllers/Links.php:338
 #: controllers/Links.php:375 controllers/Messages.php:47
 #: controllers/Sessions.php:190 controllers/importations/Importations.php:47
-#: controllers/importations/Opml.php:88 controllers/importations/Pocket.php:101
+#: controllers/importations/Opml.php:76 controllers/importations/Pocket.php:101
 #: controllers/importations/Pocket.php:150
 #: controllers/importations/Pocket.php:242
 #: controllers/links/Collections.php:102 controllers/my/Avatar.php:41
@@ -114,7 +114,7 @@ msgstr "Un compte existe déjà avec cette adresse courriel."
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
-#: controllers/Sessions.php:109 controllers/my/Account.php:110
+#: controllers/Sessions.php:109 controllers/my/Account.php:109
 #: controllers/my/Security.php:146
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
@@ -127,23 +127,23 @@ msgstr "Le sujet est obligatoire."
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: controllers/collections/Images.php:89 controllers/importations/Opml.php:97
+#: controllers/collections/Images.php:89 controllers/importations/Opml.php:85
 #: controllers/my/Avatar.php:47
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
 
-#: controllers/collections/Images.php:101 controllers/importations/Opml.php:110
+#: controllers/collections/Images.php:101 controllers/importations/Opml.php:98
 #: controllers/my/Avatar.php:56
 msgid "This file is too large."
 msgstr "Ce fichier est trop gros."
 
-#: controllers/collections/Images.php:107 controllers/importations/Opml.php:117
+#: controllers/collections/Images.php:107 controllers/importations/Opml.php:105
 #: controllers/my/Avatar.php:61
 #, php-format
 msgid "This file cannot be uploaded (error %d)."
 msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
 
-#: controllers/collections/Images.php:115 controllers/importations/Opml.php:133
+#: controllers/collections/Images.php:115 controllers/importations/Opml.php:121
 #: controllers/my/Avatar.php:67
 msgid "This file cannot be uploaded."
 msgstr "Ce fichier ne peut pas être téléversé."
@@ -152,7 +152,7 @@ msgstr "Ce fichier ne peut pas être téléversé."
 msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
 msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
 
-#: controllers/importations/Opml.php:80
+#: controllers/importations/Opml.php:68
 msgid "You already have an ongoing OPML importation."
 msgstr "Vous avez déjà une importation OPML en cours."
 
@@ -164,7 +164,7 @@ msgstr "Vous avez déjà une importation Pocket en cours."
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
-#: controllers/my/Account.php:118
+#: controllers/my/Account.php:117
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
@@ -484,7 +484,7 @@ msgstr "Nouveau lien"
 #: views/_layouts/connected_blocked.phtml:98
 #: views/collections/bookmarks/show.phtml:92
 #: views/collections/bookmarks/show.phtml:96 views/collections/show.phtml:75
-#: views/collections/show.phtml:222 views/collections/show.phtml:226
+#: views/collections/show.phtml:224 views/collections/show.phtml:228
 #: views/collections/show_public.phtml:111 views/links/show.phtml:80
 #: views/links/show.phtml:84
 msgid "Open the menu"
@@ -596,19 +596,19 @@ msgstr "Retour à la page d’accueil"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/collections/bookmarks/show.phtml:29 views/collections/show.phtml:153
+#: views/collections/bookmarks/show.phtml:29 views/collections/show.phtml:155
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/collections/bookmarks/show.phtml:70 views/collections/show.phtml:194
-#: views/collections/show_public.phtml:224 views/links/searches/show.phtml:88
+#: views/collections/bookmarks/show.phtml:70 views/collections/show.phtml:196
+#: views/collections/show_public.phtml:226 views/links/searches/show.phtml:88
 #: views/links/searches/show.phtml:145 views/links/show.phtml:35
 #: views/links/show_public.phtml:48 views/news/show.phtml:57
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/collections/bookmarks/show.phtml:80 views/collections/show.phtml:204
-#: views/collections/show_public.phtml:235 views/links/searches/show.phtml:98
+#: views/collections/bookmarks/show.phtml:80 views/collections/show.phtml:206
+#: views/collections/show_public.phtml:237 views/links/searches/show.phtml:98
 #: views/news/show.phtml:82
 #, php-format
 msgid "%d comment"
@@ -618,11 +618,11 @@ msgstr[1] "%d commentaires"
 
 #: views/collections/bookmarks/show.phtml:111 views/collections/index.phtml:133
 #: views/collections/index.phtml:147 views/collections/show.phtml:92
-#: views/collections/show.phtml:241 views/links/searches/show.phtml:112
+#: views/collections/show.phtml:243 views/links/searches/show.phtml:112
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/collections/bookmarks/show.phtml:123 views/collections/show.phtml:253
+#: views/collections/bookmarks/show.phtml:123 views/collections/show.phtml:255
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
@@ -631,13 +631,13 @@ msgid "Mark as read"
 msgstr "Marquer comme lu"
 
 #: views/collections/bookmarks/show.phtml:145
-#: views/collections/bookmarks/show.phtml:149 views/collections/show.phtml:266
-#: views/collections/show.phtml:270
+#: views/collections/bookmarks/show.phtml:149 views/collections/show.phtml:268
+#: views/collections/show.phtml:272
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/collections/bookmarks/show.phtml:162 views/collections/show.phtml:282
-#: views/collections/show_public.phtml:251 views/links/show.phtml:51
+#: views/collections/bookmarks/show.phtml:162 views/collections/show.phtml:284
+#: views/collections/show_public.phtml:253 views/links/show.phtml:51
 #: views/links/show_public.phtml:64 views/news/show.phtml:154
 msgid "read"
 msgstr "lire"
@@ -881,7 +881,7 @@ msgstr "Changer l’illustration"
 msgid "Copy the link"
 msgstr "Copier le lien"
 
-#: views/collections/show.phtml:209
+#: views/collections/show.phtml:211
 msgid "hidden"
 msgstr "masqué"
 
@@ -918,7 +918,7 @@ msgstr "Ne plus suivre"
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:261
+#: views/collections/show_public.phtml:263
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -1592,24 +1592,24 @@ msgstr "Nous n’avons trouvé aucun lien pertinent pour le moment."
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/show.phtml:232 views/onboarding/step4.phtml:30
+#: views/news/show.phtml:232 views/onboarding/step5.phtml:30
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/show.phtml:233 views/onboarding/step4.phtml:31
+#: views/news/show.phtml:233 views/onboarding/step5.phtml:31
 msgid "from your followed collections"
 msgstr "depuis vos collections suivies"
 
-#: views/news/show.phtml:246 views/onboarding/step4.phtml:42
+#: views/news/show.phtml:246 views/onboarding/step5.phtml:42
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
 #: views/news/show.phtml:247 views/news/show.phtml:261
-#: views/onboarding/step4.phtml:43 views/onboarding/step4.phtml:55
+#: views/onboarding/step5.phtml:43 views/onboarding/step5.phtml:55
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/show.phtml:260 views/onboarding/step4.phtml:54
+#: views/news/show.phtml:260 views/onboarding/step5.phtml:54
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 
@@ -1645,7 +1645,8 @@ msgstr ""
 "introduction devrait vous prendre moins de 5 minutes."
 
 #: views/onboarding/step1.phtml:57 views/onboarding/step2.phtml:40
-#: views/onboarding/step3.phtml:75 views/onboarding/step4.phtml:65
+#: views/onboarding/step3.phtml:75 views/onboarding/step4.phtml:60
+#: views/onboarding/step5.phtml:65
 msgid "Continue"
 msgstr "Continuer"
 
@@ -1742,18 +1743,82 @@ msgstr ""
 "abbr> est <code>https://contributopia.org/fr/</code>"
 
 #: views/onboarding/step4.phtml:3 views/onboarding/step4.phtml:10
+msgid "Collections and feeds"
+msgstr "Collections et flux"
+
+#: views/onboarding/step4.phtml:14
+msgid "Create collections and share your passions with the rest of the world."
+msgstr "Créez des collections et partagez vos passions avec le reste du monde."
+
+#: views/onboarding/step4.phtml:19
+msgid "Collections are a convenient way to organize your links;"
+msgstr "Les collections sont une manière pratique d’organiser vos liens ;"
+
+#: views/onboarding/step4.phtml:23
+msgid ""
+"they can be about anything: culture, education, cooking recipes, local "
+"politics and so on;"
+msgstr ""
+"elles peuvent traiter de tout : culture, éducation, recettes de cuisine, "
+"politique locale, etc. ;"
+
+#: views/onboarding/step4.phtml:27
+#, php-format
+msgid ""
+"once published, anyone can follow your collection: directly in %s or via a "
+"feed aggregator for external people."
+msgstr ""
+"une fois publiée, n’importe qui peut suivre votre collection : directement "
+"dans %s ou via un agrégateur de flux pour les personnes externes."
+
+#: views/onboarding/step4.phtml:34
+msgid "Speaking of which…"
+msgstr "En parlant de ça…"
+
+#: views/onboarding/step4.phtml:35
+msgid "You may have come across <abbr>RSS</abbr> feeds by the past?"
+msgstr ""
+"Vous êtes peut-être déjà tombé‧e sur des flux <abbr>RSS</abbr> par le passé ?"
+
+#: views/onboarding/step4.phtml:40
+#, php-format
+msgid ""
+"Podcasts, news sites, Youtube channels, blogs: all these can be followed in "
+"%s as well! Feeds are simply external collections."
+msgstr ""
+"Podcasts, sites d’actualité, chaînes Youtube, blogs : tout cela peut "
+"également être suivi dans %s ! Les flux sont simplement des collections "
+"externes."
+
+#: views/onboarding/step4.phtml:47
+msgid ""
+"A screenshot showing the result when searching for the “https://flus.fr” "
+"URL: a link and a feed to follow"
+msgstr ""
+"Une capture d’écran montrant le résultat quand on cherche « https://flus."
+"fr » : un lien et un flux à suivre"
+
+#: views/onboarding/step4.phtml:54
+msgid ""
+"For instance, when you’re searching for “https://flus.fr”, you can add the "
+"link to your collections and follow the feed that has been auto-detected."
+msgstr ""
+"Par exemple, lorsque vous cherchez « https://flus.fr », vous pouvez ajouter "
+"le lien à vos collections et suivre le flux qui a été auto-découvert."
+
+#: views/onboarding/step5.phtml:3 views/onboarding/step5.phtml:10
 msgid "Understanding the news"
 msgstr "Comprendre le journal"
 
-#: views/onboarding/step4.phtml:14
+#: views/onboarding/step5.phtml:14
 msgid "You might have a lot to read everyday."
 msgstr "Il se peut que vous ayez beaucoup de choses à lire chaque jour."
 
-#: views/onboarding/step4.phtml:18
+#: views/onboarding/step5.phtml:18
 msgid "The news offers you 3 ways to select links to read:"
 msgstr "Le journal vous propose 3 façons de sélectionner des liens à lire :"
 
-#: views/onboarding/step4.phtml:60
+#: views/onboarding/step5.phtml:60
 #, php-format
 msgid ""
 "<strong>These pre-selections keep your reading space pleasant in daily use.</"
@@ -1764,11 +1829,11 @@ msgstr ""
 "quotidien.</strong> Dans %s, il n’y a pas de défilement infini : votre "
 "<em>sérénité</em> est ce qui compte le plus."
 
-#: views/onboarding/step5.phtml:3 views/onboarding/step5.phtml:10
+#: views/onboarding/step6.phtml:3 views/onboarding/step6.phtml:10
 msgid "Start exploring"
 msgstr "Commençons à explorer"
 
-#: views/onboarding/step5.phtml:14
+#: views/onboarding/step6.phtml:14
 #, php-format
 msgid ""
 "This is the end of the onboarding. You should now have the keys to use %s in "
@@ -1777,7 +1842,7 @@ msgstr ""
 "C’est la fin de cette introduction. Vous devriez maintenant avoir tous les "
 "éléments en main pour utiliser %s de manière efficace."
 
-#: views/onboarding/step5.phtml:25
+#: views/onboarding/step6.phtml:25
 msgid ""
 "All the features weren’t explained and new ones are coming regularly. If "
 "you’re lost, stay curious and you should find your way."
@@ -1786,26 +1851,34 @@ msgstr ""
 "régulièrement. Si vous vous sentez perdu‧e, soyez curieux ou curieuse et "
 "vous devriez vous en sortir."
 
-#: views/onboarding/step5.phtml:29
+#: views/onboarding/step6.phtml:29
 msgid "You can choose <em>your next destination</em>:"
 msgstr "Vous pouvez choisir votre <em>prochaine destination</em> :"
 
-#: views/onboarding/step5.phtml:35
+#: views/onboarding/step6.phtml:35
 msgid "Explore the collections"
 msgstr "Explorer les collections"
 
-#: views/onboarding/step5.phtml:41
+#: views/onboarding/step6.phtml:41
 msgid "Add new links"
 msgstr "Ajouter des liens"
 
-#: views/onboarding/step5.phtml:47
+#: views/onboarding/step6.phtml:49
 msgid "Tip: if you use Pocket, you can also import your links:"
 msgstr ""
 "Astuce : si vous utilisez Pocket, vous pouvez aussi importer vos liens :"
 
-#: views/onboarding/step5.phtml:52
+#: views/onboarding/step6.phtml:54
 msgid "Import from Pocket"
 msgstr "Importer depuis Pocket"
+
+#: views/onboarding/step6.phtml:59
+msgid "More of a user of <abbr>RSS</abbr>?"
+msgstr "Plutôt un ou une utilisatrice de <abbr>RSS</abbr> ?"
+
+#: views/onboarding/step6.phtml:64
+msgid "Import an <abbr>OPML</abbr> file"
+msgstr "Importer un fichier <abbr>OPML</abbr>"
 
 #: views/pages/design.phtml:3 views/pages/design.phtml:10
 msgid "flusio design system"
@@ -1988,78 +2061,3 @@ msgstr "Non autorisé"
 #: views/unauthorized.phtml:10
 msgid "You must be connected to see this page."
 msgstr "Vous devez être connecté·e pour voir cette page."
-
-#, php-format
-#~ msgid "The name must not be longer than %d characters."
-#~ msgstr "Le nom ne doit pas faire plus de %d caractères."
-
-#~ msgid "Your username must not be longer than 50 characters."
-#~ msgstr ""
-#~ "Votre nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
-
-#~ msgid "Collections and feeds"
-#~ msgstr "Collections et flux"
-
-#~ msgid ""
-#~ "Create collections and share your passions with the rest of the world."
-#~ msgstr ""
-#~ "Créez des collections et partagez vos passions avec le reste du monde."
-
-#~ msgid "Collections are a convenient way to organize your knowledge;"
-#~ msgstr ""
-#~ "Les collections sont une manière pratique d’organiser vos connaissances ;"
-
-#~ msgid ""
-#~ "they can be about anything: culture, education, cooking recipes, local "
-#~ "politics and so on;"
-#~ msgstr ""
-#~ "elles peuvent traiter de tout : culture, éducation, recettes de cuisine, "
-#~ "politique locale, etc. ;"
-
-#, php-format
-#~ msgid ""
-#~ "once published, anyone can follow your collection: directly in %s or via "
-#~ "a feed aggregator for external people."
-#~ msgstr ""
-#~ "une fois publiée, n’importe qui peut suivre votre collection : "
-#~ "directement dans %s ou via un agrégateur de flux pour les personnes "
-#~ "externes."
-
-#~ msgid "Speaking of which…"
-#~ msgstr "En parlant de ça…"
-
-#~ msgid "You may have come across <abbr>RSS</abbr> feeds by the past?"
-#~ msgstr ""
-#~ "Vous êtes peut-être déjà tombé‧e sur des flux <abbr>RSS</abbr> par le "
-#~ "passé ?"
-
-#, php-format
-#~ msgid ""
-#~ "Podcasts, news sites, Youtube channels, blogs: all these can be followed "
-#~ "in %s as well! Feeds are simply external collections."
-#~ msgstr ""
-#~ "Podcasts, sites d’actualité, chaînes Youtube, blogs : tout cela peut "
-#~ "également être suivi dans %s ! Les flux sont simplement des collections "
-#~ "externes."
-
-#~ msgid ""
-#~ "A screenshot showing the result when searching for the “https://flus.fr” "
-#~ "URL: a link and a feed to follow"
-#~ msgstr ""
-#~ "Une capture d’écran montrant le résultat quand on cherche « https://flus."
-#~ "fr » : un lien et un flux à suivre"
-
-#~ msgid ""
-#~ "For instance, when you’re searching for “https://flus.fr”, you can add "
-#~ "the link to your collections and follow the feed that has been auto-"
-#~ "detected."
-#~ msgstr ""
-#~ "Par exemple, lorsque vous cherchez « https://flus.fr », vous pouvez "
-#~ "ajouter le lien à vos collections et suivre le flux qui a été auto-"
-#~ "découvert."
-
-#~ msgid "More of a user of <abbr>RSS</abbr>?"
-#~ msgstr "Plutôt un ou une utilisatrice de <abbr>RSS</abbr> ?"
-
-#~ msgid "Import an <abbr>OPML</abbr> file"
-#~ msgstr "Importer un fichier <abbr>OPML</abbr>"
