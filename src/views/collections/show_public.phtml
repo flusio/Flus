@@ -178,9 +178,11 @@
         </div>
     </div>
 
-    <p class="collection__description">
-        <?= nl2br(protect($collection->description)) ?>
-    </p>
+    <?php if ($collection->description): ?>
+        <p class="collection__description">
+            <?= nl2br(protect($collection->description)) ?>
+        </p>
+    <?php endif; ?>
 
     <?php if ($links): ?>
         <div class="cards cards--centered">
