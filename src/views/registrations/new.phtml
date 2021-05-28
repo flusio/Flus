@@ -26,11 +26,10 @@
         <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">
             <label for="username">
                 <?= _('How should we name you?') ?>
+                <span class="label__help">
+                    <?= _f('(max. %d characters)', 50) ?>
+                </span>
             </label>
-
-            <p class="form-group__caption">
-                <?= _('Your username must not be longer than 50 characters.') ?>
-            </p>
 
             <input
                 id="username"
@@ -54,17 +53,18 @@
                 <?= _('Your email address') ?>
             </label>
 
-            <p class="form-group__caption">
-                <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
-            </p>
-
             <input
                 id="email"
                 name="email"
                 type="email"
                 value="<?= $email ?>"
                 required
+                aria-describedby="email-caption"
             />
+
+            <p class="form-group__caption" id="email-caption">
+                <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
+            </p>
 
             <?php if (isset($errors['email'])): ?>
                 <p class="form-group__error">
@@ -76,11 +76,10 @@
         <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
             <label for="new-password">
                 <?= _('And a password') ?>
+                <span class="label__help">
+                    <?= _('(recommended at least 8 characters)') ?>
+                </span>
             </label>
-
-            <p class="form-group__caption">
-                <?= _('A strong password is at least 8 characters long.') ?>
-            </p>
 
             <div class="form-group__stack" data-controller="input-password">
                 <input
@@ -114,7 +113,7 @@
 
         <?php if ($has_terms): ?>
             <div class="form-group form-group--terms <?= isset($errors['accept_terms']) ? 'form-group--invalid' : '' ?>">
-                <p class="form-group__caption">
+                <p class="form-group__caption" id="accept-terms-caption">
                     <?= _f('Before going any further, please read <a href="%s" target="_blank">the terms of service</a> to make sure they are suitable for you.', url('terms')) ?>
                 </p>
 
@@ -123,6 +122,7 @@
                     id="accept-terms"
                     name="accept_terms"
                     required
+                    aria-describedby="accept-terms-caption"
                 />
 
                 <label class="label--checkbox" for="accept-terms">

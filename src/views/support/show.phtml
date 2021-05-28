@@ -34,17 +34,18 @@
                 <?= _('Subject') ?>
             </label>
 
-            <p class="form-group__caption">
-                <?= _('Concise and precise, this will allow me to understand quickly what you want to talk about.') ?>
-            </p>
-
             <input
                 id="subject"
                 name="subject"
                 type="text"
                 value="<?= $subject ?>"
                 required
+                aria-describedby="subject-caption"
             />
+
+            <p class="form-group__caption" id="subject-caption">
+                <?= _('Concise and precise, this will allow me to understand quickly what you want to talk about.') ?>
+            </p>
 
             <?php if (isset($errors['subject'])): ?>
                 <p class="form-group__error">

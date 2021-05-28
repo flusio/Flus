@@ -55,15 +55,20 @@
             </p>
         <?php endif; ?>
 
-        <p class="form-group__caption text--centered">
-            <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only.') ?><br />
-            <?= _('The minimum recommended dimensions are 1100x400px.') ?>
-        </p>
-
         <div class="form__actions">
-            <button type="button" class="button--primary" data-action="form-file#openFile">
+            <button
+                type="button"
+                class="button--primary"
+                data-action="form-file#openFile"
+                aria-describedby="file-caption"
+            >
                 <?= _('Upload an image') ?>
             </button>
         </div>
+
+        <p class="form-group__caption text--centered" id="file-caption">
+            <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only.') ?><br />
+            <?= _('The minimum recommended dimensions are 1100x400px.') ?>
+        </p>
     </form>
 </div>

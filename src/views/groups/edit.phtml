@@ -27,11 +27,10 @@
         <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
             <label for="name">
                 <?= _('The name of your group') ?>
+                <span class="label__help">
+                    <?= _f('(max. %d characters)', $name_max_length) ?>
+                </span>
             </label>
-
-            <p class="form-group__caption">
-                <?= _f('The name must not be longer than %d characters.', $name_max_length) ?>
-            </p>
 
             <input
                 id="name"

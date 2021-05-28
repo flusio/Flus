@@ -47,15 +47,20 @@
             </p>
         <?php endif; ?>
 
-        <p class="form-group__caption form-avatar__caption">
-            <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only, a 150x150 image is recommended.') ?>
-        </p>
-
         <div class="form__actions">
-            <button type="button" class="button--small" data-action="form-file#openFile">
+            <button
+                type="button"
+                class="button--small"
+                data-action="form-file#openFile"
+                aria-describedby="avatar-caption"
+            >
                 <?= _('Upload a photo') ?>
             </button>
         </div>
+
+        <p class="form-group__caption text--centered" id="avatar-caption">
+            <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only, a 150x150 image is recommended.') ?>
+        </p>
     </form>
 
     <form method="post" action="<?= url('update profile') ?>">
@@ -64,11 +69,10 @@
         <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">
             <label for="username">
                 <?= _('Your name') ?>
+                <span class="label__help">
+                    <?= _f('(max. %d characters)', 50) ?>
+                </span>
             </label>
-
-            <p class="form-group__caption">
-                <?= _('Your username must not be longer than 50 characters.') ?>
-            </p>
 
             <input
                 type="text"

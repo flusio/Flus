@@ -26,11 +26,10 @@
         <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
             <label for="name">
                 <?= _('What do you want to name this collection?') ?>
+                <span class="label__help">
+                    <?= _f('(max. %d characters)', $name_max_length) ?>
+                </span>
             </label>
-
-            <p class="form-group__caption">
-                <?= _f('The name must not be longer than %d characters.', $name_max_length) ?>
-            </p>
 
             <input
                 id="name"
@@ -52,7 +51,7 @@
         <div class="form-group <?= isset($errors['description']) ? 'form-group--invalid' : '' ?>">
             <label for="description">
                 <?= _('What’s the purpose of this collection?') ?>
-                <span class="text--secondary">
+                <span class="label__help">
                     <?= _('(optional)') ?>
                 </span>
             </label>

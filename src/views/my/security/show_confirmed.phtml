@@ -28,17 +28,18 @@
                 <?= _('Your email address') ?>
             </label>
 
-            <p class="form-group__caption">
-                <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
-            </p>
-
             <input
                 id="email"
                 name="email"
                 type="email"
                 value="<?= $email ?>"
                 required
+                aria-describedby="email-caption"
             />
+
+            <p class="form-group__caption" id="email-caption">
+                <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
+            </p>
 
             <?php if (isset($errors['email'])): ?>
                 <p class="form-group__error">
@@ -50,11 +51,10 @@
         <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
             <label for="new-password">
                 <?= _('New password') ?>
+                <span class="label__help">
+                    <?= _('(optional)') ?>
+                </span>
             </label>
-
-            <p class="form-group__caption">
-                <?= _('Leave this field empty if you want to keep your current password.') ?>
-            </p>
 
             <div class="form-group__stack" data-controller="input-password">
                 <input
@@ -63,6 +63,7 @@
                     type="password"
                     data-target="input-password.input"
                     autocomplete="new-password"
+                    aria-describedby="new-password-caption"
                 />
 
                 <button
@@ -76,6 +77,10 @@
                     <?= _('Show') ?>
                 </button>
             </div>
+
+            <p class="form-group__caption" id="new-password-caption">
+                <?= _('Leave this field empty if you want to keep your current password.') ?>
+            </p>
 
             <?php if (isset($errors['password_hash'])): ?>
                 <p class="form-group__error">

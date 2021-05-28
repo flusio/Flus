@@ -26,11 +26,10 @@
             <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
                 <label for="new-password">
                     <?= _('Your new password') ?>
+                    <span class="label__help">
+                        <?= _('(recommended at least 8 characters)') ?>
+                    </span>
                 </label>
-
-                <p class="form-group__caption">
-                    <?= _('A strong password is at least 8 characters long.') ?>
-                </p>
 
                 <div class="form-group__stack" data-controller="input-password">
                     <input

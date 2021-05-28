@@ -30,10 +30,6 @@
                 <?= _('What’s the <abbr>URL</abbr> of the link?') ?>
             </label>
 
-            <p class="form-group__caption">
-                <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
-            </p>
-
             <input
                 id="url"
                 name="url"
@@ -42,7 +38,12 @@
                 value="<?= $url ?>"
                 autocomplete="off"
                 autofocus
+                aria-describedby="url-caption"
             />
+
+            <p class="form-group__caption" id="url-caption">
+                <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
+            </p>
 
             <?php if (isset($errors['url'])): ?>
                 <p class="form-group__error">
