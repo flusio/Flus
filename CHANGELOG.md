@@ -1,5 +1,20 @@
 # Changelog of flusio
 
+## 2021-06-02 - v0.27
+
+### News
+
+- Enable feeds for all!
+
+### Improvements
+
+- Improve accessibility for form captions
+- Fix small accessibility issues
+
+### Misc
+
+- Add an accessibility item to PR checklist
+
 ## 2021-05-27 - v0.26
 
 ### News
