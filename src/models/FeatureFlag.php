@@ -10,7 +10,7 @@ class FeatureFlag extends \Minz\Model
 {
     use DaoConnector;
 
-    public const VALID_TYPES = ['feeds'];
+    public const VALID_TYPES = ['beta'];
 
     public const PROPERTIES = [
         'id' => [

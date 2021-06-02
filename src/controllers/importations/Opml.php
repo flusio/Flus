@@ -18,8 +18,6 @@ class Opml
      *
      * @response 302 /login?redirect_to=/opml
      *    If the user is not connected
-     * @response 302 /
-     *    If the feeds feature flag is disabled
      * @response 200
      */
     public function show($request)
@@ -29,10 +27,6 @@ class Opml
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('opml'),
             ]);
-        }
-
-        if (!models\FeatureFlag::isEnabled('feeds', $user->id)) {
-            return Response::redirect('home');
         }
 
         $importation = models\Importation::findBy([
@@ -51,8 +45,6 @@ class Opml
      *
      * @response 302 /login?redirect_to=/opml
      *    If the user is not connected
-     * @response 302 /
-     *    If the feeds feature flag is disabled
      * @response 400
      *    If the CSRF token is invalid or if an import of opml type already exists
      * @response 200
@@ -64,10 +56,6 @@ class Opml
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('opml'),
             ]);
-        }
-
-        if (!models\FeatureFlag::isEnabled('feeds', $user->id)) {
-            return Response::redirect('home');
         }
 
         $importation = models\Importation::findBy([

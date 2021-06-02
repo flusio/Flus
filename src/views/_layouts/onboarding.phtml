@@ -65,9 +65,9 @@
                     <div class="header__separator"></div>
 
                     <p class="text--secondary">
-                        <?= _f('Step %d on %d', $current_step, 5) ?>
-                        <?php if ($current_step < 5): ?>
-                            (<a href="<?= url('onboarding', ['step' => $current_step +1]) ?>"><?= _('skip') ?></a>)
+                        <?= _f('Step %d on %d', $current_step, 6) ?>
+                        <?php if ($current_step < 6): ?>
+                            (<a href="<?= url('onboarding', ['step' => $current_step + 1]) ?>"><?= _('skip') ?></a>)
                         <?php else: ?>
                             (<?= _('finished') ?>)
                         <?php endif; ?>
