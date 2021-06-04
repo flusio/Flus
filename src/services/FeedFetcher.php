@@ -191,7 +191,12 @@ class FeedFetcher
         }
 
         if (!$collection->image_fetched_at) {
-            $response = $this->http->get($collection->feed_site_url);
+            try {
+                $response = $this->http->get($collection->feed_site_url);
+            } catch (\SpiderBits\HttpError $e) {
+                return;
+            }
+
             if (!$response->success) {
                 return;
             }
