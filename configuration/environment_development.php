@@ -7,7 +7,7 @@ $db_name = 'flusio_development';
 $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 
 $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt'));
-$user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio) (compatible; Googlebot/2.1)";
+$user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio)";
 
 return [
     'app_name' => 'flusio',
