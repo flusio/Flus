@@ -67,21 +67,26 @@ class PocketImportator extends Job
                     'count' => $count,
                     'offset' => $offset,
                 ]);
-
-                $this->importPocketItems($user, $items, $importation->options());
-
-                $offset = $offset + $count;
-                $imported_count = $imported_count + count($items);
-                $exit_loop = count($items) !== $count;
             } catch (services\PocketError $e) {
                 $user->pocket_error = $e->getCode();
                 $user->save();
                 $error = $e->getMessage();
-                $exit_loop = true;
-            } catch (\Exception $e) {
-                $error = (string)$e;
-                $exit_loop = true;
+                break;
             }
+
+            try {
+                $this->importPocketItems($user, $items, $importation->options());
+            } catch (\Exception $e) {
+                $error = $e->getMessage();
+                $dump_filename = \Minz\Configuration::$data_path . "/dump_importation_{$importation->id}.json";
+                $dump = json_encode($items);
+                file_put_contents($dump_filename, $dump);
+                break;
+            }
+
+            $offset = $offset + $count;
+            $imported_count = $imported_count + count($items);
+            $exit_loop = count($items) !== $count;
         }
 
         if ($error) {
