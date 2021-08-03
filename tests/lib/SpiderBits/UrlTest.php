@@ -97,6 +97,9 @@ class UrlTest extends \PHPUnit\Framework\TestCase
             // More tests
             ["https://domén-with-accent.com?query=with-àccent", 'https://xn--domn-with-accent-dqb.com/?query=with-%C3%A0ccent'], // phpcs:ignore Generic.Files.LineLength.TooLong
             ["https://host.com?query=with-%C3%A0ccent", 'https://host.com/?query=with-%C3%A0ccent'],
+            ["https://host.com?utm_source=gazette%252B-%252Babonn%25C3%25A9s", 'https://host.com/?utm_source=gazette+-+abonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong
+            ["https://host.com?utm_source=gazette%2B-%2Babonn%25C3%25A9s", 'https://host.com/?utm_source=gazette+-+abonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong
+            ["https://host.com?utm_source=gazette+-+abonn%C3%A9s", 'https://host.com/?utm_source=gazette+-+abonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong
             ["http://evil.com/foo#bar/baz", 'http://evil.com/foo#bar/baz'],
             ["http://evil.com/foo#bar%22baz", 'http://evil.com/foo#bar%22baz'],
             ["http://evil.com/foo#🐘", 'http://evil.com/foo#%F0%9F%90%98'],

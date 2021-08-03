@@ -105,7 +105,7 @@ class Url
         // long as percent-encoding characters exist.
         foreach ($parsed_url as $component => $value) {
             while (preg_match('/%[0-9A-Fa-f]{2}/', $value) === 1) {
-                $value = urldecode($value);
+                $value = rawurldecode($value);
             }
 
             $parsed_url[$component] = $value;
