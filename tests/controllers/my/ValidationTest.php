@@ -71,7 +71,9 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
+        $email = $this->fake('email');
         $this->login([
+            'email' => $email,
             'validated_at' => null,
             'validation_token' => $token,
         ]);
@@ -79,7 +81,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/validation');
 
-        $this->assertResponse($response, 200, 'We’ve just sent you an email!');
+        $this->assertResponse($response, 200, "We’ve just sent you an email at {$email}");
     }
 
     public function testShowRedirectsIfUserConnectedAndRegistrationAlreadyValidated()

@@ -31,7 +31,7 @@
 
         <?php if ($status === 'validation_email_sent'): ?>
             <p class="paragraph--featured">
-                <?= _('We’ve just sent you an email!') ?>
+                <?= _f('We’ve just sent you an email at %s', $current_user->email) ?>
             </p>
 
             <p class="paragraph--centered paragraph--secondary">
