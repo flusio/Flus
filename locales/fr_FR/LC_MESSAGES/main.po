@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-08-04 10:17+0200\n"
-"PO-Revision-Date: 2021-08-04 10:18+0200\n"
+"POT-Creation-Date: 2021-08-04 10:23+0200\n"
+"PO-Revision-Date: 2021-08-04 10:23+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -657,7 +657,6 @@ msgstr "Le nom de votre collection"
 
 #: views/collections/edit.phtml:32 views/collections/groups/edit.phtml:45
 #: views/collections/new.phtml:30 views/groups/edit.phtml:31
-#: views/my/profile/show.phtml:73 views/registrations/new.phtml:30
 #, php-format
 msgid "(max. %d characters)"
 msgstr "(max. %d caractères)"
@@ -1435,6 +1434,11 @@ msgstr ""
 #: views/my/profile/show.phtml:71
 msgid "Your name"
 msgstr "Votre nom"
+
+#: views/my/profile/show.phtml:73 views/registrations/new.phtml:30
+#, php-format
+msgid "(public, max. %d characters)"
+msgstr "(public, max. %d caractères)"
 
 #: views/my/profile/show.phtml:96
 msgid "Your language"
