@@ -1,5 +1,30 @@
 # Changelog of flusio
 
+## 2021-08-04 - v0.28
+
+### Improvements
+
+- Improve look of error and success messages
+- Make explicit the username is public
+- Show email address when resending validation
+- Add info importation can be long
+
+### Security
+
+- Reset sessions/reset token on password change
+- Send X-Frame-Options header to deny embeding
+
+### Bug fixes
+
+- Don't decode `+` during URL sanitization
+- Catch errors during collection image fetching
+
+### Misc
+
+- Revert Googlebot-compatibility by default
+- Dump Pocket items on importation errors
+- Fix tests
+
 ## 2021-06-02 - v0.27
 
 ### News
