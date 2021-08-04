@@ -23,6 +23,7 @@
 
         <?php if ($message_sent): ?>
             <p class="paragraph--success">
+                <?= icon('success') ?>
                 <?= _('Your message has been sent.') ?>
             </p>
         <?php endif; ?>
@@ -43,15 +44,16 @@
                 aria-describedby="subject-caption"
             />
 
-            <p class="form-group__caption" id="subject-caption">
-                <?= _('Concise and precise, this will allow me to understand quickly what you want to talk about.') ?>
-            </p>
-
             <?php if (isset($errors['subject'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['subject'] ?>
                 </p>
             <?php endif; ?>
+
+            <p class="form-group__caption" id="subject-caption">
+                <?= _('Concise and precise, this will allow me to understand quickly what you want to talk about.') ?>
+            </p>
         </div>
 
         <div class="form-group <?= isset($errors['message']) ? 'form-group--invalid' : '' ?>">
@@ -63,6 +65,7 @@
 
             <?php if (isset($errors['message'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['message'] ?>
                 </p>
             <?php endif; ?>

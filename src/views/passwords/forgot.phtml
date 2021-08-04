@@ -22,6 +22,7 @@
 
         <?php if ($email_sent): ?>
             <p class="paragraph--success">
+                <?= icon('success') ?>
                 <?= _('We’ve sent you an email to reset your password.') ?>
             </p>
         <?php endif; ?>
@@ -43,6 +44,7 @@
 
             <?php if (isset($errors['email'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['email'] ?>
                 </p>
             <?php endif; ?>

@@ -43,6 +43,7 @@
 
         <?php if (isset($errors['avatar'])): ?>
             <p class="form-group__error">
+                <?= icon('error') ?>
                 <?= $errors['avatar'] ?>
             </p>
         <?php endif; ?>
@@ -85,6 +86,7 @@
 
             <?php if (isset($errors['username'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['username'] ?>
                 </p>
             <?php endif; ?>
@@ -109,6 +111,7 @@
 
             <?php if (isset($errors['locale'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['locale'] ?>
                 </p>
             <?php endif; ?>

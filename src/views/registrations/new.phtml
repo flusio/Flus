@@ -43,6 +43,7 @@
 
             <?php if (isset($errors['username'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['username'] ?>
                 </p>
             <?php endif; ?>
@@ -62,15 +63,16 @@
                 aria-describedby="email-caption"
             />
 
-            <p class="form-group__caption" id="email-caption">
-                <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
-            </p>
-
             <?php if (isset($errors['email'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['email'] ?>
                 </p>
             <?php endif; ?>
+
+            <p class="form-group__caption" id="email-caption">
+                <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
+            </p>
         </div>
 
         <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
@@ -106,6 +108,7 @@
 
             <?php if (isset($errors['password_hash'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['password_hash'] ?>
                 </p>
             <?php endif; ?>
@@ -131,6 +134,7 @@
 
                 <?php if (isset($errors['accept_terms'])): ?>
                     <p class="form-group__error">
+                        <?= icon('error') ?>
                         <?= $errors['accept_terms'] ?>
                     </p>
                 <?php endif; ?>

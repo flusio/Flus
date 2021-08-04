@@ -45,6 +45,7 @@
 
             <?php if (isset($errors['name'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['name'] ?>
                 </p>
             <?php endif; ?>

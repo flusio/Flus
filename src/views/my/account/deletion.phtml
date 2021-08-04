@@ -54,15 +54,16 @@
                 </button>
             </div>
 
-            <p class="form-group__caption" id="password-caption">
-                <?= _('You must type your password so we can confirm your identity.') ?>
-            </p>
-
             <?php if (isset($errors['password_hash'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['password_hash'] ?>
                 </p>
             <?php endif; ?>
+
+            <p class="form-group__caption" id="password-caption">
+                <?= _('You must type your password so we can confirm your identity.') ?>
+            </p>
         </div>
 
         <div class="form__actions">

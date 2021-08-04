@@ -32,11 +32,14 @@
 .paragraph--success {
     margin-top: var(--space-larger);
     margin-bottom: var(--space-larger);
+    padding: var(--space-medium);
 
     color: var(--color-text-success);
-    font-size: var(--size-large);
     font-weight: 600;
     text-align: center;
+
+    background-color: var(--color-back-success);
+    border-radius: var(--border-radius);
 }
 
 .paragraph--secondary,

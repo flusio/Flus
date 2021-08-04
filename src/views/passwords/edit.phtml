@@ -55,6 +55,7 @@
 
                 <?php if (isset($errors['password_hash'])): ?>
                     <p class="form-group__error">
+                        <?= icon('error') ?>
                         <?= $errors['password_hash'] ?>
                     </p>
                 <?php endif; ?>

@@ -41,15 +41,16 @@
                 aria-describedby="url-caption"
             />
 
-            <p class="form-group__caption" id="url-caption">
-                <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
-            </p>
-
             <?php if (isset($errors['url'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['url'] ?>
                 </p>
             <?php endif; ?>
+
+            <p class="form-group__caption" id="url-caption">
+                <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
+            </p>
         </div>
 
         <fieldset class="no-modal">
@@ -57,6 +58,7 @@
 
             <?php if (isset($errors['collection_ids'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['collection_ids'] ?>
                 </p>
             <?php endif; ?>

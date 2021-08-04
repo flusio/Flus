@@ -12,6 +12,7 @@
 
     <?php if ($status === 'user_deleted'): ?>
         <p class="paragraph--success">
+            <?= icon('success') ?>
             <?= _('Your account and your data are now deleted.') ?>
         </p>
     <?php endif; ?>
@@ -43,6 +44,7 @@
 
             <?php if (isset($errors['email'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['email'] ?>
                 </p>
             <?php endif; ?>
@@ -78,6 +80,7 @@
 
             <?php if (isset($errors['password_hash'])): ?>
                 <p class="form-group__error">
+                    <?= icon('error') ?>
                     <?= $errors['password_hash'] ?>
                 </p>
             <?php endif; ?>

@@ -252,6 +252,7 @@ legend {
     padding-left: var(--space-small);
 
     color: var(--color-text-error);
+    font-size: var(--size-small);
     font-weight: bold;
 }
 

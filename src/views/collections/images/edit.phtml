@@ -51,6 +51,7 @@
 
         <?php if (isset($errors['image_filename'])): ?>
             <p class="form-group__error">
+                <?= icon('error') ?>
                 <?= $errors['image_filename'] ?>
             </p>
         <?php endif; ?>
