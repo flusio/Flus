@@ -340,7 +340,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->verifyPassword($new_password));
     }
 
-    public function testUpdateLogsIn()
+    public function testUpdateDeletesResetToken()
     {
         $csrf = (new \Minz\CSRF())->generateToken();
         $minutes = $this->fake('numberBetween', 1, 9000);
@@ -357,9 +357,41 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ]);
 
+        $response = $this->appRun('post', '/password/edit', [
+            'csrf' => $csrf,
+            't' => $token,
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $user = models\User::find($user_id);
+        $this->assertNull($user->reset_token);
+        $this->assertFalse(models\Token::exists($token));
+    }
+
+    public function testUpdateResetsExistingSessionsAndLogsIn()
+    {
+        $csrf = (new \Minz\CSRF())->generateToken();
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $email = $this->fake('email');
+        $old_password = $this->fakeUnique('password');
+        $new_password = $this->fakeUnique('password');
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'reset_token' => $token,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ]);
+        $session_id = $this->create('session', [
+            'user_id' => $user_id,
+        ]);
+
         $user = auth\CurrentUser::get();
         $this->assertNull($user);
-        $this->assertSame(0, models\Session::count());
+        $this->assertSame(1, models\Session::count());
 
         $response = $this->appRun('post', '/password/edit', [
             'csrf' => $csrf,
@@ -372,45 +404,9 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($user);
         $this->assertSame($email, $user->email);
         $this->assertSame(1, models\Session::count());
-    }
-
-    public function testUpdateDoesNotLogInIfAlreadyConnected()
-    {
-        $logged_in_email = $this->fakeUnique('email');
-        $user = $this->login([
-            'email' => $logged_in_email,
-        ]);
-        $csrf = $user->csrf;
-        $minutes = $this->fake('numberBetween', 1, 9000);
-        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-        ]);
-        $email = $this->fakeUnique('email');
-        $old_password = $this->fakeUnique('password');
-        $new_password = $this->fakeUnique('password');
-        $user_id = $this->create('user', [
-            'email' => $email,
-            'reset_token' => $token,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
-        ]);
-
-        $user = auth\CurrentUser::get();
-        $this->assertNotNull($user);
-        $this->assertSame($logged_in_email, $user->email);
-        $this->assertSame(1, models\Session::count());
-
-        $response = $this->appRun('post', '/password/edit', [
-            'csrf' => $csrf,
-            't' => $token,
-            'password' => $new_password,
-        ]);
-
-        $this->assertResponseCode($response, 302, '/');
-        $user = auth\CurrentUser::get();
-        $this->assertNotNull($user);
-        $this->assertSame($logged_in_email, $user->email);
-        $this->assertSame(1, models\Session::count());
+        $session = models\Session::take();
+        $this->assertNotSame($session_id, $session->id);
+        $this->assertSame($user->id, $session->user_id);
     }
 
     public function testUpdateFailsIfTokenIsNotPassed()

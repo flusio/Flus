@@ -196,21 +196,26 @@ class Passwords
 
         $user->save();
 
-        $connected_user = auth\CurrentUser::get();
-        if (!$connected_user) {
-            // Logs the user in
-            $session_token = models\Token::init(1, 'month');
-            $session_token->save();
+        // We make sure to clean token and sessions to prevent attacker to take
+        // control back on the account
+        models\Token::delete($user->reset_token);
+        models\Session::daoCall('deleteByUserId', $user->id);
 
-            $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
-            $ip = $request->header('REMOTE_ADDR', 'unknown');
-            $session = models\Session::init($session_name, $ip);
-            $session->user_id = $user->id;
-            $session->token = $session_token->token;
-            $session->save();
+        // also, the user might be connected with a different account so we
+        // make sure to log him in with the current one.
+        auth\CurrentUser::reset();
 
-            auth\CurrentUser::setSessionToken($session_token->token);
-        }
+        $session_token = models\Token::init(1, 'month');
+        $session_token->save();
+
+        $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
+        $ip = $request->header('REMOTE_ADDR', 'unknown');
+        $session = models\Session::init($session_name, $ip);
+        $session->user_id = $user->id;
+        $session->token = $session_token->token;
+        $session->save();
+
+        auth\CurrentUser::setSessionToken($session_token->token);
 
         return Response::redirect('home');
     }

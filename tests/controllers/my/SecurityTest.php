@@ -111,6 +111,68 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
+    public function testUpdateDeletesResetTokenIfAny()
+    {
+        $old_email = $this->fakeUnique('email');
+        $new_email = $this->fakeUnique('email');
+        $old_password = $this->fakeUnique('password');
+        $new_password = $this->fakeUnique('password');
+        $token = $this->create('token');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'reset_token' => $token,
+        ], [], [
+            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => $user->csrf,
+            'email' => $new_email,
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $user = auth\CurrentUser::reload();
+        $this->assertNull($user->reset_token);
+        $this->assertFalse(models\Token::exists($token));
+    }
+
+    public function testUpdateDeletesExistingSessionsExceptCurrentOne()
+    {
+        $old_email = $this->fakeUnique('email');
+        $new_email = $this->fakeUnique('email');
+        $old_password = $this->fakeUnique('password');
+        $new_password = $this->fakeUnique('password');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ], [], [
+            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $current_session = auth\CurrentUser::session();
+        $session_id = $this->create('session', [
+            'user_id' => $user->id,
+        ]);
+
+        $this->assertSame(2, models\Session::count());
+
+        $response = $this->appRun('post', '/my/security', [
+            'csrf' => $user->csrf,
+            'email' => $new_email,
+            'password' => $new_password,
+        ]);
+
+        $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $user = auth\CurrentUser::reload();
+        $this->assertSame(1, models\Session::count());
+        $this->assertFalse(models\Session::exists($session_id));
+        $session = models\Session::take();
+        $this->assertSame($current_session->id, $session->id);
+    }
+
     public function testUpdateRedirectsIfNotConnected()
     {
         $old_email = $this->fake('email');

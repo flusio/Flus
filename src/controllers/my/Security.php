@@ -80,6 +80,9 @@ class Security
             ]);
         }
 
+        $old_email = $user->email;
+        $old_password_hash = $user->password_hash;
+
         $user->setLoginCredentials($email, $password);
 
         $existing_user = models\User::findBy(['email' => $user->email]);
@@ -102,6 +105,14 @@ class Security
         }
 
         $user->save();
+
+        if ($user->email !== $old_email || $user->password_hash !== $old_password_hash) {
+            // We make sure to clean token and sessions to prevent attacker to take
+            // control back on the account
+            models\Token::delete($user->reset_token);
+            $current_session = auth\CurrentUser::session();
+            models\Session::daoCall('deleteByUserId', $user->id, $current_session->id);
+        }
 
         return Response::ok('my/security/show_confirmed.phtml', [
             'email' => $user->email,
