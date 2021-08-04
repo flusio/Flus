@@ -45,7 +45,7 @@ class FeedsFetcherTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertSame(200, $collection->feed_fetched_code);
-        $this->assertSame('carnet de flus', $collection->name);
+        $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame($now->getTimestamp(), $collection->feed_fetched_at->getTimestamp());
     }
 }

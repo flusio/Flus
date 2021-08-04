@@ -160,7 +160,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, "/links/search?url={$encoded_url}");
         $link = models\Link::findBy(['url' => $url]);
         $this->assertSame($support_user->id, $link->user_id);
-        $this->assertSame('carnet de flus', $link->title);
+        $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(['https://flus.fr/carnet/feeds/all.atom.xml'], $link->feedUrls());
         $this->assertSame(200, $link->fetched_code);
     }
@@ -183,7 +183,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $collection = models\Collection::findBy(['feed_url' => $url_feed]);
         $this->assertSame($support_user->id, $collection->user_id);
         $this->assertSame('feed', $collection->type);
-        $this->assertSame('carnet de flus', $collection->name);
+        $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame(200, $collection->feed_fetched_code);
         $this->assertTrue($collection->is_public);
     }
@@ -206,7 +206,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $collection = models\Collection::findBy(['feed_url' => $url]);
         $this->assertSame($support_user->id, $collection->user_id);
         $this->assertSame('feed', $collection->type);
-        $this->assertSame('carnet de flus', $collection->name);
+        $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame(200, $collection->feed_fetched_code);
         $this->assertTrue($collection->is_public);
     }
@@ -251,7 +251,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Link::count());
         $link = models\Link::find($link_id);
-        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertStringContainsString('flusio/flusio', $link->title);
         $this->assertSame(200, $link->fetched_code);
     }
 

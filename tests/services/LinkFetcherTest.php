@@ -34,7 +34,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service->fetch($link);
 
         $link = models\Link::find($link_id);
-        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertStringContainsString('flusio/flusio', $link->title);
         $this->assertSame(200, $link->fetched_code);
     }
 

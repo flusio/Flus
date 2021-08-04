@@ -91,12 +91,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse(
             $response,
             200,
-            'Feed https://flus.fr/carnet/feeds/all.atom.xml (carnet de flus) has been added.'
+            'Feed https://flus.fr/carnet/feeds/all.atom.xml (Carnet de Flus) has been added.'
         );
         $this->assertSame(1, models\Collection::count());
         $this->assertGreaterThan(0, models\Link::count());
         $collection = models\Collection::take();
-        $this->assertSame('carnet de flus', $collection->name);
+        $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame('https://flus.fr/carnet/feeds/all.atom.xml', $collection->feed_url);
         $this->assertSame('https://flus.fr/carnet/', $collection->feed_site_url);
     }
@@ -177,7 +177,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200, "Feed {$collection_id} ({$feed_url}) has been synchronized.");
         $collection = models\Collection::find($collection_id);
-        $this->assertSame('carnet de flus', $collection->name);
+        $this->assertSame('Carnet de Flus', $collection->name);
         $links_number = count($collection->links());
         $this->assertGreaterThan(0, $links_number);
     }

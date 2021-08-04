@@ -57,7 +57,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $links_fetcher_job->perform();
 
         $link = models\Link::find($link_id);
-        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertStringContainsString('flusio/flusio', $link->title);
         $this->assertNotNull($link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame(1, $link->fetched_count);
@@ -180,7 +180,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $links_fetcher_job->perform();
 
         $link = models\Link::find($link_id);
-        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertStringContainsString('flusio/flusio', $link->title);
         $this->assertNotSame($fetched_at->getTimestamp(), $link->fetched_at->getTimestamp());
         $this->assertSame(200, $link->fetched_code);
         $this->assertNull($link->fetched_error);

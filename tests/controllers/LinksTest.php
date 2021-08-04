@@ -253,7 +253,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::take();
         $this->assertResponse($response, 302, $from);
         $this->assertSame($url, $link->url);
-        $this->assertSame('flusio/flusio', $link->title);
+        $this->assertStringContainsString('flusio/flusio', $link->title);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame($user->id, $link->user_id);
         $this->assertContains($collection_id, array_column($link->collections(), 'id'));
