@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-06-02 08:33+0200\n"
-"PO-Revision-Date: 2021-06-02 08:33+0200\n"
+"POT-Creation-Date: 2021-08-04 10:11+0200\n"
+"PO-Revision-Date: 2021-08-04 10:12+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-Basepath: ../../../src\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
@@ -48,7 +48,7 @@ msgstr "Afficher"
 #: controllers/collections/Images.php:124 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:97
 #: controllers/my/Account.php:101 controllers/my/Profile.php:71
-#: controllers/my/Security.php:79 controllers/my/Security.php:139
+#: controllers/my/Security.php:79 controllers/my/Security.php:150
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
 #: controllers/news/Links.php:126
 msgid "A security verification failed: you should retry to submit the form."
@@ -106,7 +106,7 @@ msgid "The token has expired, you should reset your password again."
 msgstr ""
 "Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
 
-#: controllers/Registrations.php:132 controllers/my/Security.php:91
+#: controllers/Registrations.php:132 controllers/my/Security.php:94
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
@@ -115,7 +115,7 @@ msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
 #: controllers/Sessions.php:109 controllers/my/Account.php:109
-#: controllers/my/Security.php:146
+#: controllers/my/Security.php:157
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -211,19 +211,19 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais vous n’avez pas autorisé "
 "l’accès à vos données Pocket."
 
-#: jobs/PocketImportator.php:108
+#: jobs/PocketImportator.php:113
 msgid "Pocket links"
 msgstr "Liens Pocket"
 
-#: jobs/PocketImportator.php:111
+#: jobs/PocketImportator.php:116
 msgid "All your links imported from Pocket."
 msgstr "Tous vos liens importés depuis Pocket."
 
-#: jobs/PocketImportator.php:115
+#: jobs/PocketImportator.php:120
 msgid "Pocket favorite"
 msgstr "Favoris Pocket"
 
-#: jobs/PocketImportator.php:118
+#: jobs/PocketImportator.php:123
 msgid "All your favorites imported from Pocket."
 msgstr "Tous vos favoris importés depuis Pocket."
 
@@ -352,7 +352,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:202
+#: services/LinkFetcher.php:209
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -1000,27 +1000,32 @@ msgstr ""
 msgid "We’re importing your data…"
 msgstr "Nous importons vos données…"
 
-#: views/importations/opml/show.phtml:43
+#: views/importations/opml/show.phtml:34
+#: views/importations/pocket/show.phtml:34
+msgid "This might take several minutes, please wait."
+msgstr "Cela pourrait prendre plusieurs minutes, merci d’attendre."
+
+#: views/importations/opml/show.phtml:47
 msgid "We’ve imported your data from your <abbr>OPML</abbr> file."
 msgstr ""
 "Nous venons d’importer vos données depuis votre fichier <abbr>OPML</abbr>."
 
-#: views/importations/opml/show.phtml:47
+#: views/importations/opml/show.phtml:51
 msgid "We’re now going to fetch their links in background."
 msgstr "Nous allons désormais télécharger leurs liens en tâche de fond."
 
-#: views/importations/opml/show.phtml:56 views/importations/opml/show.phtml:75
-#: views/importations/pocket/show.phtml:56
-#: views/importations/pocket/show.phtml:75
+#: views/importations/opml/show.phtml:60 views/importations/opml/show.phtml:79
+#: views/importations/pocket/show.phtml:60
+#: views/importations/pocket/show.phtml:79
 msgid "Ok!"
 msgstr "Ok !"
 
-#: views/importations/opml/show.phtml:62
-#: views/importations/pocket/show.phtml:62
+#: views/importations/opml/show.phtml:66
+#: views/importations/pocket/show.phtml:66
 msgid "Oops, a problem occured during your importation."
 msgstr "Oups, un problème est survenu durant l’importation."
 
-#: views/importations/opml/show.phtml:106
+#: views/importations/opml/show.phtml:110
 msgid "Import a file"
 msgstr "Importer un fichier"
 
@@ -1051,11 +1056,11 @@ msgstr "%s vous permet d’importer vos liens sauvegardés dans Pocket."
 msgid "We’re importing your data from Pocket…"
 msgstr "Nous importons vos données depuis Pocket…"
 
-#: views/importations/pocket/show.phtml:43
+#: views/importations/pocket/show.phtml:47
 msgid "We’ve imported your data from Pocket."
 msgstr "Nous venons d’importer vos données depuis Pocket."
 
-#: views/importations/pocket/show.phtml:47
+#: views/importations/pocket/show.phtml:51
 msgid ""
 "You should see new links in your collections and/or bookmarks. We’ll fetch "
 "their illustrations in background."
@@ -1063,11 +1068,11 @@ msgstr ""
 "Vous devriez voir de nouveaux liens dans vos collections et/ou signets. Nous "
 "allons télécharger leurs illustrations en tâche de fond."
 
-#: views/importations/pocket/show.phtml:95
+#: views/importations/pocket/show.phtml:99
 msgid "Import your links by ignoring the tags"
 msgstr "Importer vos liens en ignorant les tags"
 
-#: views/importations/pocket/show.phtml:100
+#: views/importations/pocket/show.phtml:104
 #, php-format
 msgid ""
 "%s will import your links in a collection named “Pocket links”, your tags "
@@ -1076,7 +1081,7 @@ msgstr ""
 "%s importera vos liens dans une collection nommée « Liens Pocket », vos tags "
 "seront ignorés."
 
-#: views/importations/pocket/show.phtml:104
+#: views/importations/pocket/show.phtml:108
 #, php-format
 msgid ""
 "%s will import your links in a collection named “Pocket links” and in "
@@ -1087,25 +1092,25 @@ msgstr ""
 "des collections nommées d’après vos tags (déconseillé si vous avez de "
 "nombreux tags)."
 
-#: views/importations/pocket/show.phtml:121
+#: views/importations/pocket/show.phtml:125
 msgid "Import non-archived links in your bookmarks"
 msgstr "Importer vos liens non-archivés dans vos signets"
 
-#: views/importations/pocket/show.phtml:126
+#: views/importations/pocket/show.phtml:130
 #, php-format
 msgid "%s will import your non-archived Pocket links in your bookmarks."
 msgstr "%s importera vos liens Pocket non-archivés dans vos signets."
 
-#: views/importations/pocket/show.phtml:130
+#: views/importations/pocket/show.phtml:134
 #, php-format
 msgid "%s will leave your bookmarks unchanged."
 msgstr "%s ne modifiera pas vos signets."
 
-#: views/importations/pocket/show.phtml:147
+#: views/importations/pocket/show.phtml:151
 msgid "Import your Pocket favorites in a dedicated collection"
 msgstr "Importer vos favoris Pocket dans une collection dédiée"
 
-#: views/importations/pocket/show.phtml:152
+#: views/importations/pocket/show.phtml:156
 #, php-format
 msgid ""
 "%s doesn’t provide favorites, but it’ll import them in a collection named "
@@ -1114,21 +1119,21 @@ msgstr ""
 "%s ne propose pas de système de favoris, mais il les importera dans une "
 "collection appelée « Favoris Pocket »."
 
-#: views/importations/pocket/show.phtml:156
+#: views/importations/pocket/show.phtml:160
 #, php-format
 msgid "%s doesn’t provide favorites, so they’ll be ignored."
 msgstr "%s ne propose pas de système de favoris, ils seront donc ignorés."
 
-#: views/importations/pocket/show.phtml:163
+#: views/importations/pocket/show.phtml:167
 msgid "Start the import"
 msgstr "Démarrer l’importation"
 
-#: views/importations/pocket/show.phtml:170
+#: views/importations/pocket/show.phtml:174
 #, php-format
 msgid "connected with account <em>%s</em>"
 msgstr "connecté‧e avec le compte <em>%s</em>"
 
-#: views/importations/pocket/show.phtml:179
+#: views/importations/pocket/show.phtml:183
 msgid "Connect to Pocket"
 msgstr "Se connecter à Pocket"
 
