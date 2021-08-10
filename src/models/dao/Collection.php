@@ -330,4 +330,50 @@ class Collection extends \Minz\DatabaseModel
         ]);
         return $statement->fetchAll();
     }
+
+    /**
+     * Lock a collection
+     *
+     * @param string $collection_id
+     *
+     * @return boolean True if the lock is successful, false otherwise
+     */
+    public function lock($collection_id)
+    {
+        $sql = <<<SQL
+            UPDATE collections
+            SET locked_at = :locked_at
+            WHERE id = :collection_id
+            AND locked_at IS NULL
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':locked_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            ':collection_id' => $collection_id,
+        ]);
+        return $statement->rowCount() === 1;
+    }
+
+    /**
+     * Unlock a collection
+     *
+     * @param string $collection_id
+     *
+     * @return boolean True if the unlock is successful, false otherwise
+     */
+    public function unlock($collection_id)
+    {
+        $sql = <<<SQL
+            UPDATE collections
+            SET locked_at = null
+            WHERE id = :collection_id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':collection_id' => $collection_id,
+        ]);
+        return $statement->rowCount() === 1;
+    }
 }

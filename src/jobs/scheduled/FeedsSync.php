@@ -28,7 +28,14 @@ class FeedsSync extends jobs\Job
         $before = \Minz\Time::ago(1, 'hour');
         $collections = models\Collection::daoToList('listFeedsToFetch', $before, 25);
         foreach ($collections as $collection) {
+            $has_lock = models\Collection::daoCall('lock', $collection->id);
+            if (!$has_lock) {
+                continue;
+            }
+
             $feed_fetcher_service->fetch($collection);
+
+            models\Collection::daoCall('unlock', $collection->id);
         }
     }
 }

@@ -450,4 +450,50 @@ class Link extends \Minz\DatabaseModel
         ]);
         return $statement->fetchAll();
     }
+
+    /**
+     * Lock a link
+     *
+     * @param string $link_id
+     *
+     * @return boolean True if the lock is successful, false otherwise
+     */
+    public function lock($link_id)
+    {
+        $sql = <<<SQL
+            UPDATE links
+            SET locked_at = :locked_at
+            WHERE id = :link_id
+            AND locked_at IS NULL
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':locked_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            ':link_id' => $link_id,
+        ]);
+        return $statement->rowCount() === 1;
+    }
+
+    /**
+     * Unlock a link
+     *
+     * @param string $link_id
+     *
+     * @return boolean True if the unlock is successful, false otherwise
+     */
+    public function unlock($link_id)
+    {
+        $sql = <<<SQL
+            UPDATE links
+            SET locked_at = null
+            WHERE id = :link_id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':link_id' => $link_id,
+        ]);
+        return $statement->rowCount() === 1;
+    }
 }

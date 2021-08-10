@@ -26,6 +26,8 @@ class Collection extends \Minz\Model
 
         'created_at' => 'datetime',
 
+        'locked_at' => 'datetime',
+
         'name' => [
             'type' => 'string',
             'required' => true,

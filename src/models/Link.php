@@ -20,6 +20,8 @@ class Link extends \Minz\Model
 
         'created_at' => 'datetime',
 
+        'locked_at' => 'datetime',
+
         'title' => [
             'type' => 'string',
             'required' => true,

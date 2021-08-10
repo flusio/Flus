@@ -60,6 +60,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertNotNull($collection->image_fetched_at);
         $this->assertNotNull($collection->image_filename);
+        $this->assertNull($collection->locked_at);
         $links_number = count($collection->links());
         $this->assertGreaterThan(0, $links_number);
     }
@@ -476,5 +477,27 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertSame($feed_url, $collection->feed_site_url);
+    }
+
+    public function testPerformDoesNotFetchFeedsIfLocked()
+    {
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $name = $this->fake('sentence');
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'name' => $name,
+            'feed_url' => $feed_url,
+            'feed_fetched_at' => \Minz\Time::ago(2, 'hours')->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => $this->fake('iso8601'),
+        ]);
+        $feeds_sync_job = new FeedsSync();
+
+        $feeds_sync_job->perform();
+
+        $collection = models\Collection::find($collection_id);
+        $this->assertSame($name, $collection->name);
+        $this->assertNotNull($collection->locked_at);
+        $links_number = count($collection->links());
+        $this->assertSame(0, $links_number);
     }
 }

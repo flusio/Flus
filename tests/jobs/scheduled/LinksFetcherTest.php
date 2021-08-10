@@ -61,6 +61,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame(1, $link->fetched_count);
+        $this->assertNull($link->locked_at);
     }
 
     public function testPerformLogsFetch()
@@ -240,5 +241,27 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($fetched_at->getTimestamp(), $link->fetched_at->getTimestamp());
         $this->assertSame(404, $link->fetched_code);
         $this->assertSame($fetched_count, $link->fetched_count);
+    }
+
+    public function testPerformDoesNotFetchLinksIfLocked()
+    {
+        $link_id = $this->create('link', [
+            'url' => 'https://github.com/flusio/flusio',
+            'title' => 'https://github.com/flusio/flusio',
+            'fetched_at' => null,
+            'fetched_code' => 0,
+            'fetched_count' => 0,
+            'locked_at' => $this->fake('iso8601'),
+        ]);
+        $links_fetcher_job = new LinksFetcher();
+
+        $links_fetcher_job->perform();
+
+        $link = models\Link::find($link_id);
+        $this->assertSame('https://github.com/flusio/flusio', $link->title);
+        $this->assertNull($link->fetched_at);
+        $this->assertSame(0, $link->fetched_code);
+        $this->assertSame(0, $link->fetched_count);
+        $this->assertNotNull($link->locked_at);
     }
 }

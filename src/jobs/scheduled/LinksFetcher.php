@@ -24,17 +24,19 @@ class LinksFetcher extends jobs\Job
 
     public function perform()
     {
-        $links = models\Link::daoToList('listToFetch', 25);
-        if (!$links) {
-            // nope, nothing to do
-            return;
-        }
-
-        // we fetch the links and save them one by one
         $fetch_service = new services\LinkFetcher();
+
+        $links = models\Link::daoToList('listToFetch', 25);
         foreach ($links as $link) {
+            $has_lock = models\Link::daoCall('lock', $link->id);
+            if (!$has_lock) {
+                continue;
+            }
+
             utils\Locale::setCurrentLocale($link->owner()->locale);
             $fetch_service->fetch($link);
+
+            models\Link::daoCall('unlock', $link->id);
         }
     }
 }

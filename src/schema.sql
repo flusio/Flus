@@ -94,6 +94,7 @@ CREATE UNIQUE INDEX idx_groups_user_id_name ON groups(user_id, name);
 CREATE TABLE collections (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
+    locked_at TIMESTAMPTZ,
     name TEXT NOT NULL,
     description TEXT NOT NULL DEFAULT '',
     type TEXT NOT NULL,
@@ -115,6 +116,7 @@ CREATE INDEX idx_collections_user_id ON collections(user_id);
 CREATE TABLE links (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
+    locked_at TIMESTAMPTZ,
     title TEXT NOT NULL,
     url TEXT NOT NULL,
     url_feeds JSON NOT NULL DEFAULT '[]',
