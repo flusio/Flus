@@ -314,7 +314,10 @@ class Collection extends \Minz\DatabaseModel
             SELECT * FROM collections
 
             WHERE type = 'feed'
-            AND feed_fetched_at <= :before
+            AND (
+                feed_fetched_at <= :before
+                OR feed_fetched_at IS NULL
+            )
 
             ORDER BY random()
             LIMIT :limit
