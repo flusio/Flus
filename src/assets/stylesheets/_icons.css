@@ -1,3 +1,7 @@
+svg {
+    pointer-events: none;
+}
+
 .icon {
     display: inline-block;
     width: 1.5em;
