@@ -40,7 +40,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             $now->getTimestamp(),
             $feeds_sync_job->perform_at->getTimestamp()
         );
-        $this->assertSame('+10 minutes', $feeds_sync_job->frequency);
+        $this->assertSame('+15 seconds', $feeds_sync_job->frequency);
     }
 
     public function testPerform()

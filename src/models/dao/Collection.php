@@ -316,7 +316,7 @@ class Collection extends \Minz\DatabaseModel
             WHERE type = 'feed'
             AND feed_fetched_at <= :before
 
-            ORDER BY feed_fetched_at
+            ORDER BY random()
             LIMIT :limit
         SQL;
 
@@ -326,29 +326,5 @@ class Collection extends \Minz\DatabaseModel
             ':limit' => $limit,
         ]);
         return $statement->fetchAll();
-    }
-
-    /**
-     * Return the number of feeds that can be fetched (i.e. not fetched in the
-     * last hour).
-     *
-     * @param \DateTime $before
-     *
-     * @return integer
-     */
-    public function countFeedsToFetch($before)
-    {
-        $sql = <<<SQL
-            SELECT COUNT(*) FROM collections
-
-            WHERE type = 'feed'
-            AND feed_fetched_at <= :before
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([
-            ':before' => $before->format(\Minz\Model::DATETIME_FORMAT),
-        ]);
-        return intval($statement->fetchColumn());
     }
 }

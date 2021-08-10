@@ -14,14 +14,10 @@ use flusio\services;
  */
 class FeedsSync extends jobs\Job
 {
-    public const CYCLE_DURATION = 60;
-    public const FREQUENCY = 10;
-
     public function __construct()
     {
         parent::__construct();
-        $frequency_number = self::FREQUENCY;
-        $this->frequency = "+{$frequency_number} minutes";
+        $this->frequency = '+15 seconds';
         $this->queue = 'fetchers';
     }
 
@@ -29,14 +25,8 @@ class FeedsSync extends jobs\Job
     {
         $feed_fetcher_service = new services\FeedFetcher();
 
-        // feeds are synced each 10 minutes, but we don't want to sync all at
-        // once, so we distribute the synchronization on 60 minutes.
-        $before = \Minz\Time::ago(self::CYCLE_DURATION, 'minutes');
-        $number_to_fetch = models\Collection::daoCall('countFeedsToFetch', $before);
-        $job_repetition = self::CYCLE_DURATION / self::FREQUENCY;
-        $limit = max(1, intval($number_to_fetch / $job_repetition));
-
-        $collections = models\Collection::daoToList('listFeedsToFetch', $before, $limit);
+        $before = \Minz\Time::ago(1, 'hour');
+        $collections = models\Collection::daoToList('listFeedsToFetch', $before, 25);
         foreach ($collections as $collection) {
             $feed_fetcher_service->fetch($collection);
         }
