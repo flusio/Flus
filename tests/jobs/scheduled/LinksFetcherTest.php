@@ -43,6 +43,40 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('+15 seconds', $links_fetcher_job->frequency);
     }
 
+    public function testInstallWithJobsToCreate()
+    {
+        \Minz\Configuration::$application['links_sync_count'] = 2;
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $links_fetcher_job = new LinksFetcher();
+        $job_dao = new models\dao\Job();
+
+        $this->assertSame(0, $job_dao->count());
+
+        $links_fetcher_job->install();
+
+        \Minz\Configuration::$application['links_sync_count'] = 1;
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertSame(2, $job_dao->count());
+    }
+
+    public function testInstallWithJobsToDelete()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $links_fetcher_job = new LinksFetcher();
+        $job_dao = new models\dao\Job();
+        $links_fetcher_job->performLater();
+        $links_fetcher_job->performLater();
+
+        $this->assertSame(2, $job_dao->count());
+
+        $links_fetcher_job->install();
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertSame(1, $job_dao->count());
+    }
+
     public function testPerform()
     {
         $link_id = $this->create('link', [

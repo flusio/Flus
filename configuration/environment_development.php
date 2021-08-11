@@ -9,6 +9,9 @@ $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt'));
 $user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio)";
 
+$feeds_sync_count = max(1, intval($dotenv->pop('JOB_FEEDS_SYNC_COUNT', '1')));
+$links_sync_count = max(1, intval($dotenv->pop('JOB_LINKS_SYNC_COUNT', '1')));
+
 return [
     'app_name' => 'flusio',
 
@@ -35,6 +38,8 @@ return [
         'subscriptions_host' => $subscriptions_host,
         'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
         'job_adapter' => 'database',
+        'feeds_sync_count' => $feeds_sync_count,
+        'links_sync_count' => $links_sync_count,
         'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY'),
         'cli_locale' => $dotenv->pop('CLI_LOCALE'),
     ],

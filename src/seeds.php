@@ -8,14 +8,10 @@ $environment = \Minz\Configuration::$environment;
 $job_dao = new \flusio\models\dao\Job();
 
 $feeds_sync_job = new \flusio\jobs\scheduled\FeedsSync();
-if (!$job_dao->findBy(['name' => $feeds_sync_job->name])) {
-    $feeds_sync_job->performLater();
-}
+$feeds_sync_job->install();
 
 $links_fetcher_job = new \flusio\jobs\scheduled\LinksFetcher();
-if (!$job_dao->findBy(['name' => $links_fetcher_job->name])) {
-    $links_fetcher_job->performLater();
-}
+$links_fetcher_job->install();
 
 $cleaner_job = new \flusio\jobs\scheduled\Cleaner();
 if (!$job_dao->findBy(['name' => $cleaner_job->name])) {

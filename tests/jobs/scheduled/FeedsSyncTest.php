@@ -43,6 +43,40 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('+15 seconds', $feeds_sync_job->frequency);
     }
 
+    public function testInstallWithJobsToCreate()
+    {
+        \Minz\Configuration::$application['feeds_sync_count'] = 2;
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $feeds_sync_job = new FeedsSync();
+        $job_dao = new models\dao\Job();
+
+        $this->assertSame(0, $job_dao->count());
+
+        $feeds_sync_job->install();
+
+        \Minz\Configuration::$application['feeds_sync_count'] = 1;
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertSame(2, $job_dao->count());
+    }
+
+    public function testInstallWithJobsToDelete()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $feeds_sync_job = new FeedsSync();
+        $job_dao = new models\dao\Job();
+        $feeds_sync_job->performLater();
+        $feeds_sync_job->performLater();
+
+        $this->assertSame(2, $job_dao->count());
+
+        $feeds_sync_job->install();
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertSame(1, $job_dao->count());
+    }
+
     public function testPerform()
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
