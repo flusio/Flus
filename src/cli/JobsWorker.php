@@ -136,7 +136,7 @@ class JobsWorker
     /**
      * Handler to catch signals and stop the worker.
      */
-    private function stopWatch()
+    public function stopWatch()
     {
         $this->exit_watch = true;
     }
