@@ -100,7 +100,7 @@ class Cache
     {
         $files = scandir($this->path);
         foreach ($files as $file) {
-            if ($file === '.' || $file === '..') {
+            if ($file === '.' || $file === '..' || $file === '.keep') {
                 continue;
             }
 
