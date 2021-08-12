@@ -55,8 +55,21 @@ class FeedsSync extends jobs\Job
     {
         $feed_fetcher_service = new services\FeedFetcher();
 
+        // There are two strategies to sync feeds. The first one is to select
+        // randomly 25 active feeds (i.e. followed by at least one active user).
+        // The second strategy is to select the 25 feeds that haven’t been
+        // fetched for the longest time. This second strategy is triggered only
+        // 1 out of 6. This allows multiple jobs to run in parallel on (mostly)
+        // different feeds (first strategy), while being sure to sync all the
+        // feeds (second strategy).
         $before = \Minz\Time::ago(1, 'hour');
-        $collections = models\Collection::daoToList('listFeedsToFetch', $before, 25);
+        $strategy_choice = random_int(1, 6);
+        if ($strategy_choice < 6) {
+            $collections = models\Collection::daoToList('listActiveFeedsToFetch', $before, 25);
+        } else {
+            $collections = models\Collection::daoToList('listOldestFeedsToFetch', $before, 25);
+        }
+
         foreach ($collections as $collection) {
             $has_lock = models\Collection::daoCall('lock', $collection->id);
             if (!$has_lock) {

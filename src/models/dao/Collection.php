@@ -301,25 +301,68 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * List the feeds to be fetched (i.e. not fetched in the last hour).
+     * List (randomly) active feeds to be fetched.
+     *
+     * An active feed is a feed followed by at least one active user (i.e.
+     * account has been validated)
      *
      * @param \DateTime $before
      * @param integer $limit
      *
-     * @return integer
+     * @return array
      */
-    public function listFeedsToFetch($before, $limit)
+    public function listActiveFeedsToFetch($before, $limit)
     {
         $sql = <<<SQL
-            SELECT * FROM collections
+            SELECT c.*
+            FROM collections c, followed_collections fc, users u
 
-            WHERE type = 'feed'
+            WHERE c.type = 'feed'
             AND (
-                feed_fetched_at <= :before
-                OR feed_fetched_at IS NULL
+                c.feed_fetched_at <= :before
+                OR c.feed_fetched_at IS NULL
             )
 
+            AND c.id = fc.collection_id
+            AND u.id = fc.user_id
+
+            -- We prioritize feeds followed by active users. We ignore for now
+            -- expired subscriptions, but it could be checked too.
+            AND u.validated_at IS NOT NULL
+
             ORDER BY random()
+            LIMIT :limit
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':before' => $before->format(\Minz\Model::DATETIME_FORMAT),
+            ':limit' => $limit,
+        ]);
+        return $statement->fetchAll();
+    }
+
+    /**
+     * List feeds that haven't been fetched for the longest time.
+     *
+     * @param \DateTime $before
+     * @param integer $limit
+     *
+     * @return array
+     */
+    public function listOldestFeedsToFetch($before, $limit)
+    {
+        $sql = <<<SQL
+            SELECT c.*
+            FROM collections c
+
+            WHERE c.type = 'feed'
+            AND (
+                c.feed_fetched_at <= :before
+                OR c.feed_fetched_at IS NULL
+            )
+
+            ORDER BY feed_fetched_at NULLS FIRST
             LIMIT :limit
         SQL;
 
