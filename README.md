@@ -60,6 +60,7 @@ This guide is intended to people who want to install flusio on their own server.
 
 1. [Deploy in production](/docs/production.md)
 1. [How to update flusio](/docs/update.md)
+1. [How to improve performance](/docs/performance.md)
 1. [Enable experimental features](/docs/feature_flags.md)
 1. [CHANGELOG](/CHANGELOG.md)
 
