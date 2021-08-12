@@ -187,34 +187,6 @@ Then, reload the systemd daemon and start the service:
 # systemctl start flusio-worker
 ```
 
-Jobs are dispatched into queues. You can attach different workers to
-different queues. First rename the systemd service file in
-`/etc/systemd/system/flusio-worker@.service` (the `@` is important!) Then,
-change the file itself:
-
-```systemd
-[Unit]
-Description=A job worker for flusio (queue %i)
-
-[Service]
-ExecStart=php /var/www/flusio/cli --request /jobs/watch -pqueue=%i
-User=www-data
-Group=www-data
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Then enable/start services:
-
-```console
-# systemctl start flusio-worker@default
-# systemctl start flusio-worker@mailers
-# systemctl start flusio-worker@fetchers
-# # This one is a fallback worker, it's not required
-# systemctl start flusio-worker@all
-```
-
 You should obviously adapt the service files to your needs. Also, you might not
 have permission on your server to create a new service. An alternative is to
 setup a cron task:

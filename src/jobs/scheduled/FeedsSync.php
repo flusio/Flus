@@ -14,31 +14,71 @@ use flusio\services;
  */
 class FeedsSync extends jobs\Job
 {
-    public const CYCLE_DURATION = 60;
-    public const FREQUENCY = 10;
-
+    /**
+     * Initialize the FeedsSync job.
+     */
     public function __construct()
     {
         parent::__construct();
-        $frequency_number = self::FREQUENCY;
-        $this->frequency = "+{$frequency_number} minutes";
+        $this->frequency = '+15 seconds';
         $this->queue = 'fetchers';
     }
 
+    /**
+     * Install the correct number of jobs in database.
+     */
+    public function install()
+    {
+        $number_jobs_to_install = \Minz\Configuration::$application['feeds_sync_count'];
+
+        $job_dao = new models\dao\Job();
+        $jobs = $job_dao->listBy(['name' => $this->name]);
+
+        $diff_count = $number_jobs_to_install - count($jobs);
+        if ($diff_count > 0) {
+            // If positive, we need to install more jobs
+            for ($i = 0; $i < $diff_count; $i++) {
+                $this->performLater();
+            }
+        } elseif ($diff_count < 0) {
+            // If negative, we need to uninstall some jobs
+            for ($i = 0; $i < abs($diff_count); $i++) {
+                $job_dao->delete($jobs[$i]['id']);
+            }
+        }
+    }
+
+    /**
+     * Execute the job.
+     */
     public function perform()
     {
         $feed_fetcher_service = new services\FeedFetcher();
 
-        // feeds are synced each 10 minutes, but we don't want to sync all at
-        // once, so we distribute the synchronization on 60 minutes.
-        $before = \Minz\Time::ago(self::CYCLE_DURATION, 'minutes');
-        $number_to_fetch = models\Collection::daoCall('countFeedsToFetch', $before);
-        $job_repetition = self::CYCLE_DURATION / self::FREQUENCY;
-        $limit = max(1, intval($number_to_fetch / $job_repetition));
+        // There are two strategies to sync feeds. The first one is to select
+        // randomly 25 active feeds (i.e. followed by at least one active user).
+        // The second strategy is to select the 25 feeds that haven’t been
+        // fetched for the longest time. This second strategy is triggered only
+        // 1 out of 6. This allows multiple jobs to run in parallel on (mostly)
+        // different feeds (first strategy), while being sure to sync all the
+        // feeds (second strategy).
+        $before = \Minz\Time::ago(1, 'hour');
+        $strategy_choice = random_int(1, 6);
+        if ($strategy_choice < 6) {
+            $collections = models\Collection::daoToList('listActiveFeedsToFetch', $before, 25);
+        } else {
+            $collections = models\Collection::daoToList('listOldestFeedsToFetch', $before, 25);
+        }
 
-        $collections = models\Collection::daoToList('listFeedsToFetch', $before, $limit);
         foreach ($collections as $collection) {
+            $has_lock = models\Collection::daoCall('lock', $collection->id);
+            if (!$has_lock) {
+                continue;
+            }
+
             $feed_fetcher_service->fetch($collection);
+
+            models\Collection::daoCall('unlock', $collection->id);
         }
     }
 }

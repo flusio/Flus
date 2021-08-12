@@ -1,5 +1,13 @@
 # Changelog of flusio
 
+## 2021-xx-yy - not released
+
+### Migration notes
+
+You can now improve performance if you have a high number of feeds and links to
+synchronize. Documentation has been updated with a new document titled “[How to
+improve performance](/docs/performance.md)”.
+
 ## 2021-08-04 - v0.28
 
 ### Improvements

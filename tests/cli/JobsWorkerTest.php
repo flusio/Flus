@@ -180,6 +180,35 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($job_dao->exists($job_id_1));
     }
 
+    public function testRunSelectsJobsWithGivenQueueByRtrimingNumbers()
+    {
+        $job_dao = new models\dao\Job();
+        $token = $this->create('token');
+        $user_id = $this->create('user', [
+            'validation_token' => $token,
+        ]);
+        $queue = $this->fake('word');
+        $job_id = $this->create('job', [
+            'perform_at' => \Minz\Time::ago(10, 'seconds')->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => null,
+            'number_attempts' => $this->fake('numberBetween', 0, 25),
+            'queue' => $queue,
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
+            ]),
+        ]);
+
+        $this->assertSame(1, $job_dao->count());
+
+        $response = $this->appRun('cli', '/jobs/run', [
+            'queue' => $queue . $this->fake('randomNumber'),
+        ]);
+
+        $this->assertResponse($response, 200, "job#{$job_id}: done");
+        $this->assertSame(0, $job_dao->count());
+    }
+
     public function testRunDoesNotSelectJobToBeExecutedLater()
     {
         $job_dao = new models\dao\Job();

@@ -28,10 +28,11 @@ Then, apply the migrations and load seeds with:
 flusio$ sudo -u www-data make update NO_DOCKER=true
 ```
 
-Finally, you might need to restart PHP so it detects localization changes:
+Finally, you might need to restart PHP and the job worker so it detects
+localization and code changes:
 
 ```console
-flusio$ sudo systemctl restart php
+flusio$ sudo systemctl restart php flusio-worker
 ```
 
 **In development,** don’t prefix commands with `sudo -u www-data`. To restart

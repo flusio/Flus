@@ -301,22 +301,36 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * List the feeds to be fetched (i.e. not fetched in the last hour).
+     * List (randomly) active feeds to be fetched.
+     *
+     * An active feed is a feed followed by at least one active user (i.e.
+     * account has been validated)
      *
      * @param \DateTime $before
      * @param integer $limit
      *
-     * @return integer
+     * @return array
      */
-    public function listFeedsToFetch($before, $limit)
+    public function listActiveFeedsToFetch($before, $limit)
     {
         $sql = <<<SQL
-            SELECT * FROM collections
+            SELECT c.*
+            FROM collections c, followed_collections fc, users u
 
-            WHERE type = 'feed'
-            AND feed_fetched_at <= :before
+            WHERE c.type = 'feed'
+            AND (
+                c.feed_fetched_at <= :before
+                OR c.feed_fetched_at IS NULL
+            )
 
-            ORDER BY feed_fetched_at
+            AND c.id = fc.collection_id
+            AND u.id = fc.user_id
+
+            -- We prioritize feeds followed by active users. We ignore for now
+            -- expired subscriptions, but it could be checked too.
+            AND u.validated_at IS NOT NULL
+
+            ORDER BY random()
             LIMIT :limit
         SQL;
 
@@ -329,26 +343,80 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Return the number of feeds that can be fetched (i.e. not fetched in the
-     * last hour).
+     * List feeds that haven't been fetched for the longest time.
      *
      * @param \DateTime $before
+     * @param integer $limit
      *
-     * @return integer
+     * @return array
      */
-    public function countFeedsToFetch($before)
+    public function listOldestFeedsToFetch($before, $limit)
     {
         $sql = <<<SQL
-            SELECT COUNT(*) FROM collections
+            SELECT c.*
+            FROM collections c
 
-            WHERE type = 'feed'
-            AND feed_fetched_at <= :before
+            WHERE c.type = 'feed'
+            AND (
+                c.feed_fetched_at <= :before
+                OR c.feed_fetched_at IS NULL
+            )
+
+            ORDER BY feed_fetched_at NULLS FIRST
+            LIMIT :limit
         SQL;
 
         $statement = $this->prepare($sql);
         $statement->execute([
             ':before' => $before->format(\Minz\Model::DATETIME_FORMAT),
+            ':limit' => $limit,
         ]);
-        return intval($statement->fetchColumn());
+        return $statement->fetchAll();
+    }
+
+    /**
+     * Lock a collection
+     *
+     * @param string $collection_id
+     *
+     * @return boolean True if the lock is successful, false otherwise
+     */
+    public function lock($collection_id)
+    {
+        $sql = <<<SQL
+            UPDATE collections
+            SET locked_at = :locked_at
+            WHERE id = :collection_id
+            AND locked_at IS NULL
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':locked_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            ':collection_id' => $collection_id,
+        ]);
+        return $statement->rowCount() === 1;
+    }
+
+    /**
+     * Unlock a collection
+     *
+     * @param string $collection_id
+     *
+     * @return boolean True if the unlock is successful, false otherwise
+     */
+    public function unlock($collection_id)
+    {
+        $sql = <<<SQL
+            UPDATE collections
+            SET locked_at = null
+            WHERE id = :collection_id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':collection_id' => $collection_id,
+        ]);
+        return $statement->rowCount() === 1;
     }
 }

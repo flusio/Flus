@@ -130,9 +130,6 @@ class OpmlImportator extends Job
         $importation->save();
 
         @unlink($opml_filepath);
-
-        $feeds_fetcher_job = new FeedsFetcher();
-        $feeds_fetcher_job->performLater();
     }
 
     /**

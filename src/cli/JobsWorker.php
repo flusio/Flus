@@ -53,7 +53,10 @@ class JobsWorker
     /**
      * Find an available job and run it.
      *
-     * @request_param string $queue Selects job in the given queue (default: all)
+     * @request_param string $queue
+     *     Selects job in the given queue (default: all). Numbers at the end of
+     *     the queue are ignored, so it allows to identify worker with, e.g.
+     *     fetchers1, fetchers2, etc.
      *
      * @response 204 If no job to run
      * @response 500 If we took a job but we can't lock it
@@ -63,6 +66,7 @@ class JobsWorker
     {
         $job_dao = new models\dao\Job();
         $queue = $request->param('queue', 'all');
+        $queue = rtrim($queue, '0..9');
         $db_job = $job_dao->findNextJob($queue);
         if (!$db_job) {
             return Response::noContent();
@@ -99,7 +103,10 @@ class JobsWorker
      *
      * Responses are yield during the lifetime of the action.
      *
-     * @request_param string $queue Selects job in the given queue (default: all)
+     * @request_param string $queue
+     *     Selects job in the given queue (default: all). Numbers at the end of
+     *     the queue are ignored, so it allows to identify worker with, e.g.
+     *     fetchers1, fetchers2, etc.
      *
      * @response 204 If no job to run
      * @response 500 If we took a job but we can't lock it
