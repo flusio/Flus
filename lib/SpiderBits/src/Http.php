@@ -102,6 +102,10 @@ class Http
             curl_setopt($curl_handle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         }
 
+        if (isset($options['interface'])) {
+            curl_setopt($curl_handle, CURLOPT_INTERFACE, $options['interface']);
+        }
+
         if (isset($options['headers'])) {
             $request_headers = array_merge($this->headers, $options['headers']);
         } else {

@@ -80,7 +80,8 @@ CREATE TABLE fetch_logs (
     created_at TIMESTAMPTZ NOT NULL,
     url TEXT NOT NULL,
     host TEXT NOT NULL,
-    type TEXT NOT NULL DEFAULT 'link'
+    type TEXT NOT NULL DEFAULT 'link',
+    ip TEXT
 );
 
 CREATE TABLE groups (

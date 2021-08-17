@@ -33,6 +33,10 @@ class FetchLog extends \Minz\Model
             'type' => 'string',
             'required' => true,
         ],
+
+        'ip' => [
+            'type' => 'string',
+        ],
     ];
 
     /**
@@ -40,14 +44,16 @@ class FetchLog extends \Minz\Model
      *
      * @param string $url
      * @param string $type
+     * @param string $ip (optional)
      */
-    public static function log($url, $type)
+    public static function log($url, $type, $ip = null)
     {
         $host = \flusio\utils\Belt::host($url);
         $fetch_log = new self([
             'url' => $url,
             'host' => $host,
             'type' => $type,
+            'ip' => $ip,
         ]);
         $fetch_log->save();
     }
@@ -57,10 +63,11 @@ class FetchLog extends \Minz\Model
      *
      * @param string $url
      * @param string $type
+     * @param string $ip (optional)
      *
      * @return boolean
      */
-    public static function hasReachedRateLimit($url, $type)
+    public static function hasReachedRateLimit($url, $type, $ip = null)
     {
         $host = \flusio\utils\Belt::host($url);
         $since = \Minz\Time::ago(1, 'minute');
@@ -77,7 +84,7 @@ class FetchLog extends \Minz\Model
             $count_limit = 25;
         }
 
-        $count = self::daoCall('countFetchesToHost', $host, $since, $type);
+        $count = self::daoCall('countFetchesToHost', $host, $since, $type, $ip);
         return $count >= $count_limit;
     }
 }

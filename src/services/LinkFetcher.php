@@ -111,16 +111,45 @@ class LinkFetcher
      */
     public function fetchUrl($url)
     {
-        // First, we "GET" the URL...
+        // First, we get information about rate limit and IP to select to
+        // execute the request (for Youtube).
+        $server_ips = \Minz\Configuration::$application['server_ips'];
+        if (!$this->options['rate_limit']) {
+            // rate limit is disabled for this call
+            $is_rate_limited = false;
+            $selected_ip = null;
+        } elseif ($server_ips && $this->isYoutube($url)) {
+            // Youtube has a strict rate limit (1 req/min), so we load balance
+            // the requests on different IPs if the admin set the options.
+            $is_rate_limited = true;
+            $selected_ip = null;
+            foreach ($server_ips as $server_ip) {
+                // we calculate the rate limit for the given IP and if it
+                // hasn't been reached, we select the IP to be passed to Curl.
+                $is_rate_limited = models\FetchLog::hasReachedRateLimit(
+                    $url,
+                    'link',
+                    $server_ip
+                );
+                if (!$is_rate_limited) {
+                    $selected_ip = $server_ip;
+                    break;
+                }
+            }
+        } else {
+            // the default case where we calculate the reach limit and select
+            // no interface.
+            $is_rate_limited = models\FetchLog::hasReachedRateLimit($url, 'link');
+            $selected_ip = null;
+        }
+
+        // Then, we "GET" the URL...
         $url_hash = \SpiderBits\Cache::hash($url);
         $cached_response = $this->cache->get($url_hash);
         if ($this->options['cache'] && $cached_response) {
             // ... via the cache
             $response = \SpiderBits\Response::fromText($cached_response);
-        } elseif (
-            !$this->options['rate_limit'] ||
-            !models\FetchLog::hasReachedRateLimit($url, 'link')
-        ) {
+        } elseif (!$is_rate_limited) {
             // ... or via HTTP
             $options = [];
             if ($this->isTwitter($url)) {
@@ -130,13 +159,13 @@ class LinkFetcher
                 $options['user_agent'] = $this->http->user_agent . ' (compatible; Googlebot/2.1)';
             }
 
-            if ($this->isYoutube($url)) {
-                // Apparently there’s lower risk to be blocked by Youtube if we
-                // fetch pages with IPv4, so be it.
-                $options['force_ipv4'] = true;
+            if ($selected_ip) {
+                $options['interface'] = $selected_ip;
+                models\FetchLog::log($url, 'link', $selected_ip);
+            } else {
+                models\FetchLog::log($url, 'link');
             }
 
-            models\FetchLog::log($url, 'link');
             try {
                 $response = $this->http->get($url, [], $options);
             } catch (\SpiderBits\HttpError $e) {
