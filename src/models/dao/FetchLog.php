@@ -22,21 +22,32 @@ class FetchLog extends \Minz\DatabaseModel
      *
      * @param string $host
      * @param \DateTime $since
+     * @param string $type (optional)
      *
      * @return integer
      */
-    public function countFetchesToHost($host, $since)
+    public function countFetchesToHost($host, $since, $type = null)
     {
         $since = $since->format(\Minz\Model::DATETIME_FORMAT);
+        $values = [
+            ':host' => $host,
+            ':since' => $since,
+        ];
+        $type_placeholder = '';
+        if ($type !== null) {
+            $type_placeholder = 'AND type = :type';
+            $values[':type'] = $type;
+        }
 
-        $sql = <<<'SQL'
+        $sql = <<<SQL
             SELECT COUNT(*) FROM fetch_logs
-            WHERE host = ?
-            AND created_at >= ?
+            WHERE host = :host
+            AND created_at >= :since
+            {$type_placeholder}
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$host, $since]);
+        $statement->execute($values);
         return intval($statement->fetchColumn());
     }
 

@@ -247,14 +247,17 @@ class FeedFetcher
             // ... via the cache
             $response = \SpiderBits\Response::fromText($cached_response);
         } else {
-            if ($this->options['rate_limit'] && models\FetchLog::hasReachedRateLimit($url)) {
+            if (
+                $this->options['rate_limit'] &&
+                models\FetchLog::hasReachedRateLimit($url, 'feed')
+            ) {
                 // We slow down the requests
                 $sleep_time = random_int(5, 10);
                 \Minz\Time::sleep($sleep_time);
             }
 
             // ... or via HTTP
-            models\FetchLog::log($url);
+            models\FetchLog::log($url, 'feed');
             try {
                 $response = $this->http->get($url);
             } catch (\SpiderBits\HttpError $e) {

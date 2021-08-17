@@ -79,7 +79,8 @@ CREATE TABLE fetch_logs (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     url TEXT NOT NULL,
-    host TEXT NOT NULL
+    host TEXT NOT NULL,
+    type TEXT NOT NULL DEFAULT 'link'
 );
 
 CREATE TABLE groups (

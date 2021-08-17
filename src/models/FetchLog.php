@@ -28,19 +28,26 @@ class FetchLog extends \Minz\Model
             'type' => 'string',
             'required' => true,
         ],
+
+        'type' => [
+            'type' => 'string',
+            'required' => true,
+        ],
     ];
 
     /**
      * Create a log in DB for the given URL.
      *
      * @param string $url
+     * @param string $type
      */
-    public static function log($url)
+    public static function log($url, $type)
     {
         $host = \flusio\utils\Belt::host($url);
         $fetch_log = new self([
             'url' => $url,
             'host' => $host,
+            'type' => $type,
         ]);
         $fetch_log->save();
     }
@@ -48,24 +55,29 @@ class FetchLog extends \Minz\Model
     /**
      * Determine if we reached the rate limit for the URL host.
      *
-     * It returns true if there were more than 25 requests to the host within
-     * 1 minute.
-     *
      * @param string $url
+     * @param string $type
      *
      * @return boolean
      */
-    public static function hasReachedRateLimit($url)
+    public static function hasReachedRateLimit($url, $type)
     {
         $host = \flusio\utils\Belt::host($url);
         $since = \Minz\Time::ago(1, 'minute');
-        $count_limit = 25;
 
-        if ($host === 'youtube.com') {
+        // Most of the time, we don’t consider the type and we rate limit
+        // requests to 25 requests per minute. But we must be more drastic with
+        // Youtube links which must be limited to 1 req/min. Hopefully, this
+        // limit doesn't apply to feeds.
+        if ($host === 'youtube.com' && $type === 'link') {
+            $type = 'link';
             $count_limit = 1;
+        } else {
+            $type = null;
+            $count_limit = 25;
         }
 
-        $count = self::daoCall('countFetchesToHost', $host, $since);
+        $count = self::daoCall('countFetchesToHost', $host, $since, $type);
         return $count >= $count_limit;
     }
 }

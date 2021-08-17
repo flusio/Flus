@@ -119,7 +119,7 @@ class LinkFetcher
             $response = \SpiderBits\Response::fromText($cached_response);
         } elseif (
             !$this->options['rate_limit'] ||
-            !models\FetchLog::hasReachedRateLimit($url)
+            !models\FetchLog::hasReachedRateLimit($url, 'link')
         ) {
             // ... or via HTTP
             $options = [];
@@ -136,7 +136,7 @@ class LinkFetcher
                 $options['force_ipv4'] = true;
             }
 
-            models\FetchLog::log($url);
+            models\FetchLog::log($url, 'link');
             try {
                 $response = $this->http->get($url, [], $options);
             } catch (\SpiderBits\HttpError $e) {
