@@ -363,5 +363,8 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
             $parsed_url = parse_url($url);
             return $parsed_url['host'];
         },
+        'type' => function () use ($faker) {
+            return $faker->randomElement(['link', 'feed', 'image']);
+        }
     ]
 );

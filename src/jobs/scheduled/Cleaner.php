@@ -26,7 +26,7 @@ class Cleaner extends jobs\Job
         $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
         $cache->clean();
 
-        models\FetchLog::daoCall('deleteOlderThan', \Minz\Time::ago(7, 'days'));
+        models\FetchLog::daoCall('deleteOlderThan', \Minz\Time::ago(3, 'days'));
         models\Token::daoCall('deleteExpired');
         models\Session::daoCall('deleteExpired');
 

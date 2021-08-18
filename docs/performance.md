@@ -8,6 +8,8 @@ read it.
 Here, we’ll consider that you followed the [“Deploy in production”](/docs/production.md)
 document, in particular the “Setup the job worker” section.
 
+## Dedicate workers to queues
+
 At a certain point, you might have too many feeds to fetch in an acceptable
 time. Also, having a lot of feeds means having more and more links to
 synchronize. This work is done by asynchronous jobs, via the worker you’ve
@@ -55,6 +57,8 @@ the value you give after the `@` when starting the services.
 At this point, feeds and links synchronization (i.e. `fetchers` queue) should
 no longer impact the other jobs.
 
+## Increase the number of `fetchers` jobs
+
 However, you might still have performance issues. We’ll now increase the number
 of jobs and workers to handle the synchronization. First, you need to increase
 the values of the `JOB_FEEDS_SYNC_COUNT` and `JOB_LINKS_SYNC_COUNT` environment
@@ -86,3 +90,41 @@ services. Instead of doing it one by one, you can settle for:
 ```console
 flusio$ sudo systemctl restart flusio-worker@*
 ```
+
+## Increase rate limit of requests against Youtube domain
+
+In order to not DDoS external servers, flusio limits the number of requests to
+25 per minute and domain. However, to avoid being blocked by Youtube, this
+limit is set to 1 request per minute against the domain `youtube.com`. This is
+very low. For instance, for 3000 links to synchronize, it will take at least 50
+hours!
+
+It’s possible to increase this limit by using several IP addresses. If your
+server has an IPv4 and an IPv6 for instance, you can use both to request
+Youtube. The rate limit will increase to 2 requests per minute, which divide
+our previous waiting time by 2, so 25 hours. It’s also possible that your host
+provider allows you to assign more IPs to your server, check it out!
+
+To do so, you have to get your IPs:
+
+```console
+$ ip addr | grep 'inet6\?'
+```
+
+Be sure to only consider public addresses (e.g. `127.0.0.1` is NOT public).
+
+Then, set the variable in your `.env` file by separating addresses with commas
+(,):
+
+```dotenv
+# Adapt with your own IPs!
+APP_SERVER_IPS=172.16.254.1,2001:db8:0:85a3::ac1f:8001
+```
+
+Finally, restart your workers so they consider the new variable:
+
+```console
+flusio$ sudo systemctl restart flusio-worker@*
+```
+
+flusio will soon request Youtube servers with those two addresses.

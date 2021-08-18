@@ -79,8 +79,12 @@ CREATE TABLE fetch_logs (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     url TEXT NOT NULL,
-    host TEXT NOT NULL
+    host TEXT NOT NULL,
+    type TEXT NOT NULL DEFAULT 'link',
+    ip TEXT
 );
+
+CREATE INDEX idx_fetch_logs_host_created_at ON fetch_logs(host, created_at);
 
 CREATE TABLE groups (
     id TEXT PRIMARY KEY,
