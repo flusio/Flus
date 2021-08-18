@@ -68,7 +68,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     public function testPerformDeletesOldFetchLogs()
     {
         $cleaner_job = new Cleaner();
-        $days = $this->fake('numberBetween', 7, 9000);
+        $days = $this->fake('numberBetween', 4, 9000);
         $created_at = \Minz\Time::ago($days, 'days');
         $fetch_log_id = $this->create('fetch_log', [
             'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -82,7 +82,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     public function testPerformKeepsFreshFetchLogs()
     {
         $cleaner_job = new Cleaner();
-        $days = $this->fake('numberBetween', 0, 6);
+        $days = $this->fake('numberBetween', 0, 3);
         $created_at = \Minz\Time::ago($days, 'days');
         $fetch_log_id = $this->create('fetch_log', [
             'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
