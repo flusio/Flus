@@ -84,6 +84,8 @@ CREATE TABLE fetch_logs (
     ip TEXT
 );
 
+CREATE INDEX idx_fetch_logs_host_created_at ON fetch_logs(host, created_at);
+
 CREATE TABLE groups (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
