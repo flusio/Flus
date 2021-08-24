@@ -89,4 +89,19 @@ class Feed
             strpos($content_type, 'text/plain') !== false
         );
     }
+
+    /**
+     * Return a unique hash of the given feed.
+     *
+     * @return string
+     */
+    public function hash()
+    {
+        return hash('sha256', serialize([
+            $this->title,
+            $this->description,
+            $this->link,
+            $this->entries,
+        ]));
+    }
 }

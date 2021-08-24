@@ -62,6 +62,15 @@ class FeedFetcher
         }
 
         $feed = $info['feed'];
+        $feed_hash = $feed->hash();
+
+        if ($feed_hash === $collection->feed_last_hash) {
+            // The feed didn’t change, do nothing
+            $collection->save();
+            return;
+        }
+
+        $collection->feed_last_hash = $feed_hash;
 
         $title = substr(trim($feed->title), 0, models\Collection::NAME_MAX_LENGTH);
         if ($title) {
