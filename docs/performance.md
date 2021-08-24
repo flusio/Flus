@@ -47,8 +47,8 @@ You can now start multiple workers, each dedicated to a specific queue:
 
 ```console
 # systemctl daemon-reload
-# systemctl enable flusio-worker@default flusio-worker@mailers flusio-worker@fetchers1 flusio-worker@all
-# systemctl start flusio-worker@default flusio-worker@mailers flusio-worker@fetchers1 flusio-worker@all
+# systemctl enable flusio-worker@default flusio-worker@mailers flusio-worker@importators flusio-worker@fetchers1 flusio-worker@all
+# systemctl start flusio-worker@default flusio-worker@mailers flusio-worker@importators flusio-worker@fetchers1 flusio-worker@all
 ```
 
 You may have noticed the `%i` parameter in the systemd file: it is replaced by

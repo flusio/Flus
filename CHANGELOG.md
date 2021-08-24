@@ -1,5 +1,13 @@
 # Changelog of flusio
 
+## 2021-xx-yy - v0.30
+
+### Migration notes
+
+If you dedicates workers to queues, the [performance document](/docs/performance.md)
+didn’t mentionned the `importators` queue previously. It’s now fixed and you
+should start a worker dedicated to this queue as well.
+
 ## 2021-08-12 - v0.29
 
 ### Migration notes
