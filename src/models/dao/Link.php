@@ -353,32 +353,30 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return the list of ids that needs to be synced (i.e. feed_entry_id is null)
+     * Return the list of url ids indexed by urls for the given collection.
      *
-     * The ids are set as values AND keys of the returned array.
-     *
-     * @param string $user_id
+     * @param string $collection_id
      *
      * @return array
      */
-    public function listIdsToFeedSync($user_id)
+    public function listIdsByUrlsForCollection($collection_id)
     {
         $sql = <<<SQL
-            SELECT id FROM links
-            WHERE user_id = :user_id
-            AND feed_entry_id IS NULL
+            SELECT l.id, l.url FROM links l, links_to_collections lc
+            WHERE lc.link_id = l.id
+            AND lc.collection_id = :collection_id
         SQL;
 
         $statement = $this->prepare($sql);
         $statement->execute([
-            ':user_id' => $user_id,
+            ':collection_id' => $collection_id,
         ]);
 
-        $ids = [];
+        $ids_by_urls = [];
         foreach ($statement->fetchAll() as $row) {
-            $ids[$row['id']] = $row['id'];
+            $ids_by_urls[$row['url']] = $row['id'];
         }
-        return $ids;
+        return $ids_by_urls;
     }
 
     /**
