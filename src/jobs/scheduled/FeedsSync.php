@@ -76,7 +76,11 @@ class FeedsSync extends jobs\Job
                 continue;
             }
 
-            $feed_fetcher_service->fetch($collection);
+            try {
+                $feed_fetcher_service->fetch($collection);
+            } catch (\Exception $e) {
+                \Minz\Log::error("Error while syncing feed {$collection->id}: {$e->getMessage()}");
+            }
 
             models\Collection::daoCall('unlock', $collection->id);
         }

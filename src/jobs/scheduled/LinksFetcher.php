@@ -64,7 +64,11 @@ class LinksFetcher extends jobs\Job
             }
 
             utils\Locale::setCurrentLocale($link->owner()->locale);
-            $fetch_service->fetch($link);
+            try {
+                $fetch_service->fetch($link);
+            } catch (\Exception $e) {
+                \Minz\Log::error("Error while syncing link {$link->id}: {$e->getMessage()}");
+            }
 
             models\Link::daoCall('unlock', $link->id);
         }
