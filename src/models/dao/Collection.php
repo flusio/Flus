@@ -254,7 +254,7 @@ class Collection extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listIdsByNames($user_id)
+    public function listIdsByNamesForUser($user_id)
     {
         $sql = <<<SQL
             SELECT id, name FROM collections
@@ -280,7 +280,7 @@ class Collection extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listIdsByFeedUrls($user_id)
+    public function listIdsByFeedUrlsForUser($user_id)
     {
         $sql = <<<SQL
             SELECT id, feed_url FROM collections

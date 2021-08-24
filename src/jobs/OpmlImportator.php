@@ -54,7 +54,7 @@ class OpmlImportator extends Job
 
         $feed_urls_by_groups = $this->loadUrlsFromOutlines($opml->outlines, '');
 
-        $collection_ids_by_feed_urls = models\Collection::daoCall('listIdsByFeedUrls', $support_user->id);
+        $collection_ids_by_feed_urls = models\Collection::daoCall('listIdsByFeedUrlsForUser', $support_user->id);
         $collections_columns = [];
         $collections_to_create = [];
         $followed_collections_to_create = [];

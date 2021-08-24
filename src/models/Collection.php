@@ -79,6 +79,10 @@ class Collection extends \Minz\Model
             'type' => 'string',
         ],
 
+        'feed_last_hash' => [
+            'type' => 'string',
+        ],
+
         'feed_fetched_code' => [
             'type' => 'integer',
         ],

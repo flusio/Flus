@@ -110,6 +110,7 @@ CREATE TABLE collections (
 
     feed_url TEXT,
     feed_site_url TEXT,
+    feed_last_hash TEXT,
     feed_fetched_code INTEGER NOT NULL DEFAULT 0,
     feed_fetched_at TIMESTAMPTZ,
     feed_fetched_error TEXT
