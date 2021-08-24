@@ -111,7 +111,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $this->assertSame(1, models\FetchLog::count());
+        $this->assertGreaterThanOrEqual(1, models\FetchLog::count());
         $fetch_log = models\FetchLog::take();
         $this->assertSame('https://github.com/flusio/flusio', $fetch_log->url);
         $this->assertSame('github.com', $fetch_log->host);
