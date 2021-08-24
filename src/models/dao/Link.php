@@ -333,7 +333,7 @@ class Link extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listIdsByUrls($user_id)
+    public function listIdsByUrlsForUser($user_id)
     {
         $sql = <<<SQL
             SELECT id, url FROM links
@@ -388,7 +388,7 @@ class Link extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listUrlsByEntryIds($collection_id)
+    public function listUrlsByEntryIdsForCollection($collection_id)
     {
         $sql = <<<SQL
             SELECT l.id, l.url, l.feed_entry_id

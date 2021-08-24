@@ -85,9 +85,9 @@ class FeedFetcher
         $collection->save();
 
         $user_id = $collection->user_id;
-        $link_ids_by_urls = models\Link::daoCall('listIdsByUrls', $user_id);
+        $link_ids_by_urls = models\Link::daoCall('listIdsByUrlsForUser', $user_id);
         $link_ids_to_sync = models\Link::daoCall('listIdsToFeedSync', $user_id);
-        $link_urls_by_entry_ids = models\Link::daoCall('listUrlsByEntryIds', $collection->id);
+        $link_urls_by_entry_ids = models\Link::daoCall('listUrlsByEntryIdsForCollection', $collection->id);
 
         $links_columns = [];
         $links_to_create = [];
