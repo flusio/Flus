@@ -15,6 +15,19 @@ use flusio\utils;
  */
 class SubscriptionsSync extends jobs\Job
 {
+    /**
+     * Install the job in database.
+     */
+    public static function install()
+    {
+        $job_dao = new \flusio\models\dao\Job();
+        $subscriptions_sync_job = new SubscriptionsSync();
+
+        if (!$job_dao->findBy(['name' => $subscriptions_sync_job->name])) {
+            $subscriptions_sync_job->performLater();
+        }
+    }
+
     public function __construct()
     {
         parent::__construct();

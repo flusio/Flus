@@ -1,24 +1,21 @@
 <?php
 
 $environment = \Minz\Configuration::$environment;
+$subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
 
-// Make sure to initiaze the support user
+// Make sure that the technical user is initialized
 \flusio\models\User::supportUser();
 
-$job_dao = new \flusio\models\dao\Job();
-
-$feeds_sync_job = new \flusio\jobs\scheduled\FeedsSync();
-$feeds_sync_job->install();
-
-$links_sync_job = new \flusio\jobs\scheduled\LinksSync();
-$links_sync_job->install();
-
-$cleaner_job = new \flusio\jobs\scheduled\Cleaner();
-if (!$job_dao->findBy(['name' => $cleaner_job->name])) {
-    $cleaner_job->performLater();
+// Install the scheduled jobs in database
+\flusio\jobs\scheduled\FeedsSync::install();
+\flusio\jobs\scheduled\LinksSync::install();
+\flusio\jobs\scheduled\Cleaner::install();
+if ($subscriptions_enabled) {
+    \flusio\jobs\scheduled\SubscriptionsSync::install();
 }
 
 if ($environment === 'development') {
+    // Initialize topics (only in development)
     \flusio\models\Topic::findOrCreateBy(['label' => _('Business')]);
     \flusio\models\Topic::findOrCreateBy(['label' => _('Climate')]);
     \flusio\models\Topic::findOrCreateBy(['label' => _('Culture')]);
@@ -27,12 +24,4 @@ if ($environment === 'development') {
     \flusio\models\Topic::findOrCreateBy(['label' => _('Science')]);
     \flusio\models\Topic::findOrCreateBy(['label' => _('Sport')]);
     \flusio\models\Topic::findOrCreateBy(['label' => _('Tech')]);
-}
-
-$subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
-if ($subscriptions_enabled) {
-    $subscriptions_sync_job = new \flusio\jobs\scheduled\SubscriptionsSync();
-    if (!$job_dao->findBy(['name' => $subscriptions_sync_job->name])) {
-        $subscriptions_sync_job->performLater();
-    }
 }
