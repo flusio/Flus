@@ -38,7 +38,7 @@ class Response
             $body = '';
         } else {
             $headers = $matches['headers'];
-            $body = $matches['body'];
+            $body = $matches['body'] ?? '';
         }
 
         preg_match('/^HTTP\/\d+(\.\d+)?\s+(?P<status>\d{3}).*$/m', $headers, $matches);

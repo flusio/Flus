@@ -22,6 +22,21 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 
     public function testFromTextWithNoContent()
     {
+        $text = <<<TEXT
+        HTTP/2 204 No content\r
+        Content-Type: text/plain\r
+        \r
+        TEXT;
+
+        $response = Response::fromText($text);
+
+        $this->assertSame(204, $response->status);
+        $this->assertSame('text/plain', $response->headers['content-type']);
+        $this->assertSame('', $response->data);
+    }
+
+    public function testFromTextWithNoContentAndNoFinalEmptyLine()
+    {
         // Even 204 response should contain a final empty line. We just try to
         // be more robust than the norm.
         $text = <<<TEXT
