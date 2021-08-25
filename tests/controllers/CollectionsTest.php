@@ -185,7 +185,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $description = $this->fake('sentence');
 
         $response = $this->appRun('post', '/collections/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'name' => $name,
             'description' => $description,
         ]);
@@ -591,7 +591,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'from' => $from,
@@ -819,7 +819,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'from' => "/collections/{$collection_id}/edit",
         ]);
 

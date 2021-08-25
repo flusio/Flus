@@ -69,8 +69,8 @@ class Subscription
             return Response::redirect('account');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $csrf = $request->param('csrf');
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::redirect('account');
         }

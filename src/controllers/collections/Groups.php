@@ -91,6 +91,7 @@ class Groups
 
         $name = $request->param('name', '');
         $collection_id = $request->param('id');
+        $csrf = $request->param('csrf');
 
         $collection = models\Collection::find($collection_id);
 
@@ -110,8 +111,7 @@ class Groups
         ]);
         models\Group::sort($groups, $user->locale);
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('collections/groups/edit.phtml', [
                 'collection' => $collection,
                 'groups' => $groups,

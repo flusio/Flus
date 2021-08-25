@@ -392,7 +392,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', '/links/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'url' => $url,
             'collection_ids' => [$collection_id],
             'from' => $from,
@@ -659,7 +659,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'title' => $new_title,
         ]);
 

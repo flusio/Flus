@@ -48,7 +48,7 @@
             <?php elseif ($subscriptions_enabled): ?>
                 <li class="groupnav__item groupnav__item--create groupnav__item--featured">
                     <form method="post" action="<?= url('create subscription account') ?>">
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                         <button class="groupnav__button" type="submit">
                             <?= _('Create your payment account') ?>
                         </button>

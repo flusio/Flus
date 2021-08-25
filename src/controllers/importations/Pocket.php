@@ -94,8 +94,8 @@ class Pocket
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $csrf = $request->param('csrf');
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('importations/pocket/show.phtml', [
                 'importation' => null,
                 'error' => _('A security verification failed.'),
@@ -145,8 +145,8 @@ class Pocket
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $csrf = $request->param('csrf');
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('pocket');
         }
@@ -236,8 +236,8 @@ class Pocket
             return Response::redirect('pocket');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $csrf = $request->param('csrf');
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('importations/pocket/authorization.phtml', [
                 'error' => _('A security verification failed.'),
             ]);

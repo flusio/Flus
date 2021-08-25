@@ -89,20 +89,21 @@ class Account
     public function delete($request)
     {
         $current_user = auth\CurrentUser::get();
+        $password = $request->param('password');
+        $csrf = $request->param('csrf');
+
         if (!$current_user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('account deletion'),
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('my/account/deletion.phtml', [
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $password = $request->param('password');
         if (!$current_user->verifyPassword($password)) {
             return Response::badRequest('my/account/deletion.phtml', [
                 'errors' => [

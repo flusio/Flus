@@ -18,6 +18,7 @@ class Importations
      *
      * @request_param string id
      * @request_param string from
+     * @request_param string csrf
      *
      * @response 302 /login?redirect_to=:from if not connected
      * @response 404 if the importation doesn’t exist or user hasn't access
@@ -29,6 +30,7 @@ class Importations
         $user = auth\CurrentUser::get();
         $importation_id = $request->param('id');
         $from = $request->param('from');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -42,8 +44,7 @@ class Importations
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

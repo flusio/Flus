@@ -52,6 +52,8 @@ class Opml
     public function import($request)
     {
         $user = auth\CurrentUser::get();
+        $csrf = $request->param('csrf');
+
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('opml'),
@@ -69,8 +71,7 @@ class Opml
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('importations/opml/show.phtml', [
                 'importation' => null,
                 'error' => _('A security verification failed.'),

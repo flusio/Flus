@@ -414,7 +414,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     public function testResendEmailFailsIfUserNotConnected()
     {
         $response = $this->appRun('post', '/my/account/validation/email', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2F');

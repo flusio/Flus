@@ -48,7 +48,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetRedirectsCorrectly()
     {
         $this->freeze($this->fake('dateTime'));
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $email = $this->fake('email');
         $user_id = $this->create('user', [
             'email' => $email,
@@ -66,7 +66,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetGeneratesAToken()
     {
         $this->freeze($this->fake('dateTime'));
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $email = $this->fake('email');
         $user_id = $this->create('user', [
             'email' => $email,
@@ -87,7 +87,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetSendsAnEmail()
     {
         $this->freeze($this->fake('dateTime'));
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $email = $this->fake('email');
         $user_id = $this->create('user', [
             'email' => $email,
@@ -110,7 +110,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetSetsFlashEmailSent()
     {
         $this->freeze($this->fake('dateTime'));
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $email = $this->fake('email');
         $user_id = $this->create('user', [
             'email' => $email,
@@ -128,7 +128,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetFailsIfEmailIsEmpty()
     {
         $this->freeze($this->fake('dateTime'));
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $email = '';
         $user_id = $this->create('user', [
             'email' => $email,
@@ -150,7 +150,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetFailsIfEmailDoesNotMatchUserEmail()
     {
         $this->freeze($this->fake('dateTime'));
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $email = $this->fakeUnique('email');
         $user_email = $this->fakeUnique('email');
         $user_id = $this->create('user', [
@@ -173,7 +173,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetFailsIfCsrfIsInvalid()
     {
         $this->freeze($this->fake('dateTime'));
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $email = $this->fake('email');
         $user_id = $this->create('user', [
             'email' => $email,
@@ -314,7 +314,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateChangesPasswordAndRedirectsCorrectly()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = $this->create('token', [
@@ -342,7 +342,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateDeletesResetToken()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = $this->create('token', [
@@ -371,7 +371,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateResetsExistingSessionsAndLogsIn()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = $this->create('token', [
@@ -411,7 +411,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfTokenIsNotPassed()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = $this->create('token', [
@@ -440,7 +440,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfTokenIsInvalid()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = 'a fake token';
@@ -467,7 +467,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfTokenIsNotAttachedToUser()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = $this->create('token', [
@@ -496,7 +496,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfTokenHasExpired()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 0, 9000);
         $expired_at = \Minz\Time::ago($minutes, 'minutes');
         $token = $this->create('token', [
@@ -526,7 +526,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfTokenIsInvalidated()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $invalidated_at = $this->fake('dateTime');
@@ -558,7 +558,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfPasswordIsEmpty()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = $this->create('token', [
@@ -588,7 +588,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCsrfIsInvalid()
     {
-        $csrf = (new \Minz\CSRF())->generateToken();
+        $csrf = \Minz\CSRF::generate();
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = $this->create('token', [

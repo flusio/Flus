@@ -50,6 +50,7 @@ class Followers
      *
      * @request_param string id
      * @request_param string from
+     * @request_param string csrf
      *
      * @response 302 /login?redirect_to=:from
      *     if not connected
@@ -64,6 +65,7 @@ class Followers
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
         $from = $request->param('from');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -74,8 +76,7 @@ class Followers
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::found($from);
         }
@@ -93,6 +94,7 @@ class Followers
      *
      * @request_param string id
      * @request_param string from
+     * @request_param string csrf
      *
      * @response 302 /login?redirect_to=:from
      *     if not connected
@@ -107,6 +109,7 @@ class Followers
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
         $from = $request->param('from');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -117,8 +120,7 @@ class Followers
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::found($from);
         }

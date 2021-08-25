@@ -80,6 +80,7 @@ class Collections
         $link_id = $request->param('id');
         $new_collection_ids = $request->param('collection_ids', []);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', [
@@ -97,8 +98,7 @@ class Collections
             return Response::found($from);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

@@ -64,16 +64,17 @@ class Images
      */
     public function update($request)
     {
-        $user = auth\CurrentUser::get();
+        $uploaded_file = $request->param('image');
+        $collection_id = $request->param('id');
         $from = $request->param('from');
+        $csrf = $request->param('csrf');
+
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
-
-        $uploaded_file = $request->param('image');
-        $collection_id = $request->param('id');
 
         $collection = models\Collection::find($collection_id);
 
@@ -116,8 +117,7 @@ class Images
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('collections/images/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,

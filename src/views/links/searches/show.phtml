@@ -17,7 +17,7 @@
             </p>
         <?php endif; ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
         <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
             <label for="url">
@@ -191,7 +191,7 @@
                     <div class="card__footer card__footer--centered">
                         <?php if ($current_user->isFollowing($feed->id)): ?>
                             <form method="post" action="<?= url('unfollow collection', ['id' => $feed->id]) ?>">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <input type="hidden" name="from" value="<?= url('show search link', ['url' => $default_link->url]) ?>" />
                                 <button>
                                     <?= icon('eye-hide') ?>
@@ -200,7 +200,7 @@
                             </form>
                         <?php else: ?>
                             <form method="post" action="<?= url('follow collection', ['id' => $feed->id]) ?>">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <input type="hidden" name="from" value="<?= url('show search link', ['url' => $default_link->url]) ?>" />
                                 <button>
                                     <?= icon('eye') ?>

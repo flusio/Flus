@@ -24,7 +24,7 @@
             </p>
         <?php endif; ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="redirect_to" value="<?= $redirect_to ?>" />
 
         <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">

@@ -30,19 +30,20 @@ class Avatar
     public function update($request)
     {
         $user = auth\CurrentUser::get();
+        $uploaded_file = $request->param('avatar');
+        $csrf = $request->param('csrf');
+
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('profile'),
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('profile');
         }
 
-        $uploaded_file = $request->param('avatar');
         if (!isset($uploaded_file['error'])) {
             utils\Flash::set('error', _('The file is required.'));
             return Response::redirect('profile');

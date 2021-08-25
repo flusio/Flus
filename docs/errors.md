@@ -75,8 +75,8 @@ If the route accepts both `GET` and `POST` requests, the default response
 should be a `bad request` HTTP response returning the current `GET` view:
 
 ```php
-$csrf = new \Minz\CSRF();
-if (!$csrf->validateToken($request->param('csrf'))) {
+$csrf = $request->param('csrf');
+if (!\Minz\CSRF::validate($csrf)) {
     return Response::badRequest('get view pointer', [
         'error' => _('A security verification failed: you should retry to submit the form.'),
     ]);

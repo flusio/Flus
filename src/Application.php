@@ -77,8 +77,7 @@ class Application
 
         // Force CSRF token to avoid weird issues when user did nothing for a while
         if ($current_user) {
-            $csrf = new \Minz\CSRF();
-            $csrf->setToken($current_user->csrf);
+            \Minz\CSRF::set($current_user->csrf);
         }
 
         $errors = utils\Flash::pop('errors', []);
@@ -95,6 +94,7 @@ class Application
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
             'brand' => $app_conf['brand'],
+            'csrf_token' => \Minz\CSRF::generate(),
             'errors' => $errors,
             'error' => $error,
             'status' => $status,

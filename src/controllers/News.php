@@ -63,8 +63,10 @@ class News
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $type = $request->param('type');
+        $csrf = $request->param('csrf');
+
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('news/show.phtml', [
                 'links' => [],
                 'has_collections' => count($user->collections(true)) > 0,
@@ -73,7 +75,6 @@ class News
             ]);
         }
 
-        $type = $request->param('type');
         if ($type === 'newsfeed') {
             $options = [
                 'number_links' => 9,

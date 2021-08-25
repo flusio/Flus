@@ -78,6 +78,8 @@ class Searches
     {
         $user = auth\CurrentUser::get();
         $url = $request->param('url', '');
+        $csrf = $request->param('csrf');
+
         $url = \SpiderBits\Url::sanitize($url);
         $support_user = models\User::supportUser();
 
@@ -87,8 +89,7 @@ class Searches
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('links/searches/show.phtml', [
                 'url' => $url,
                 'default_link' => null,

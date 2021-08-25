@@ -164,7 +164,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/collections", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'collection_ids' => [$collection_id_2],
         ]);
 

@@ -67,7 +67,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
 
         $response = $this->appRun('post', '/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'email' => $email,
             'password' => $password,
         ]);
@@ -87,7 +87,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'email' => $email,
             'password' => $password,
         ]);
@@ -113,7 +113,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
 
         $response = $this->appRun('post', '/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'email' => $email,
             'password' => $password,
         ], [
@@ -162,7 +162,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'email' => $email,
             'password' => $password,
             'redirect_to' => '/about',
@@ -184,7 +184,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
 
         $response = $this->appRun('post', '/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'email' => strtoupper($email),
             'password' => $password,
         ]);
@@ -203,7 +203,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        (new \Minz\CSRF())->generateToken();
+        \Minz\CSRF::generate();
         $response = $this->appRun('post', '/login', [
             'csrf' => 'not the token',
             'email' => $email,
@@ -224,7 +224,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'email' => 'not@the.email',
             'password' => $password,
         ]);
@@ -243,7 +243,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'email' => $email,
             'password' => 'not the password',
         ]);
@@ -287,7 +287,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
 
         $response = $this->appRun('post', '/logout', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
         ]);
 
         $this->assertResponse($response, 302, '/');
@@ -311,7 +311,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey('locale', $_SESSION);
 
         $response = $this->appRun('post', '/sessions/locale', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'locale' => 'fr_FR',
         ]);
 
@@ -322,7 +322,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testChangeLocaleRedirectsToRedirectTo()
     {
         $response = $this->appRun('post', '/sessions/locale', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'locale' => 'fr_FR',
             'redirect_to' => '/registration',
         ]);
@@ -344,7 +344,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testChangeLocaleWithUnsupportedLocaleDoesntSetsSessionLocale()
     {
         $response = $this->appRun('post', '/sessions/locale', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'locale' => 'zu',
         ]);
 

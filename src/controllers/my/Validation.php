@@ -121,14 +121,14 @@ class Validation
     public function resendEmail($request)
     {
         $from = $request->param('from', \Minz\Url::for('home'));
-        $csrf = new \Minz\CSRF();
+        $csrf = $request->param('csrf');
         $user = auth\CurrentUser::get();
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::found($from);
         }

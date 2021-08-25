@@ -113,9 +113,9 @@ class Links
         $is_hidden = $request->param('is_hidden', false);
         $collection_ids = $request->param('collection_ids', []);
         $comment = $request->param('comment', '');
+        $csrf = $request->param('csrf');
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('news/links/new.phtml', [
                 'news_link' => $news_link,
                 'is_hidden' => $is_hidden,
@@ -208,13 +208,13 @@ class Links
         $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('news');
         $news_link_id = $request->param('id');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
@@ -277,13 +277,13 @@ class Links
         $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('news');
         $news_link_id = $request->param('id');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
@@ -355,6 +355,7 @@ class Links
         $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('news');
         $news_link_id = $request->param('id');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -366,8 +367,7 @@ class Links
             return Response::found($from);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

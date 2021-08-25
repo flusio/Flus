@@ -207,7 +207,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     public function testDeleteRedirectsToLoginIfUserIsNotConnected()
     {
         $response = $this->appRun('post', '/my/account/deletion', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'password' => $this->fake('password'),
         ]);
 

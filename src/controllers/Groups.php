@@ -69,7 +69,7 @@ class Groups
         $group_id = $request->param('id');
         $name = $request->param('name');
         $from = $request->param('from');
-        $csrf_token = $request->param('csrf');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -81,8 +81,7 @@ class Groups
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($csrf_token)) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('groups/edit.phtml', [
                 'group' => $group,
                 'name' => $name,
@@ -146,7 +145,7 @@ class Groups
         $user = auth\CurrentUser::get();
         $group_id = $request->param('id');
         $from = $request->param('from');
-        $csrf_token = $request->param('csrf');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -158,8 +157,7 @@ class Groups
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($csrf_token)) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

@@ -134,6 +134,7 @@ class Links
         $is_hidden = $request->param('is_hidden', false);
         $collection_ids = $request->param('collection_ids', []);
         $from = $request->param('from', \Minz\Url::for('new link', ['url' => $url]));
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -142,8 +143,7 @@ class Links
         $collections = $user->collections();
         models\Collection::sort($collections, $user->locale);
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_hidden' => $is_hidden,
@@ -274,6 +274,7 @@ class Links
         $new_title = $request->param('title');
         $is_hidden = $request->param('is_hidden', false);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', [
@@ -286,8 +287,7 @@ class Links
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
@@ -323,6 +323,7 @@ class Links
         $link_id = $request->param('id');
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -333,8 +334,7 @@ class Links
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
@@ -365,13 +365,13 @@ class Links
         $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('bookmarks');
         $link_id = $request->param('id');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
