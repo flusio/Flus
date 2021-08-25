@@ -41,10 +41,7 @@ if (\Minz\Configuration::$environment === 'development' && $current_filepath !==
 // Initialize the Application and execute the request to get a Response
 $application = new \flusio\Application();
 $response = $application->run($request);
-$response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
 $response->setHeader('Turbolinks-Location', $http_uri);
-$response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
-$response->setHeader('X-Frame-Options', 'deny');
 
 // Generate the HTTP headers, cookies and output
 http_response_code($response->code());

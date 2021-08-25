@@ -108,4 +108,20 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/my/account');
     }
+
+    public function testHeaders()
+    {
+        $request = new \Minz\Request('GET', '/');
+        $application = new Application();
+
+        $response = $application->run($request);
+
+        $headers = $response->headers(true);
+        $this->assertSame('interest-cohort=()', $headers['Permissions-Policy']);
+        $this->assertSame('deny', $headers['X-Frame-Options']);
+        $this->assertSame([
+            'default-src' => "'self'",
+            'style-src' => "'self' 'unsafe-inline'",
+        ], $headers['Content-Security-Policy']);
+    }
 }

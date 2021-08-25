@@ -115,6 +115,10 @@ class Application
             'registrations_opened' => $app_conf['registrations_opened'],
         ]);
 
+        $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
+        $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
+        $response->setHeader('X-Frame-Options', 'deny');
+
         return $response;
     }
 
