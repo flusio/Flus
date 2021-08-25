@@ -10,8 +10,8 @@ $job_dao = new \flusio\models\dao\Job();
 $feeds_sync_job = new \flusio\jobs\scheduled\FeedsSync();
 $feeds_sync_job->install();
 
-$links_fetcher_job = new \flusio\jobs\scheduled\LinksFetcher();
-$links_fetcher_job->install();
+$links_sync_job = new \flusio\jobs\scheduled\LinksSync();
+$links_sync_job->install();
 
 $cleaner_job = new \flusio\jobs\scheduled\Cleaner();
 if (!$job_dao->findBy(['name' => $cleaner_job->name])) {

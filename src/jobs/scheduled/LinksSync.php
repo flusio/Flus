@@ -8,15 +8,15 @@ use flusio\services;
 use flusio\utils;
 
 /**
- * Fetch links that weren't fetched yet.
+ * Synchronize links that weren't fetched yet.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class LinksFetcher extends jobs\Job
+class LinksSync extends jobs\Job
 {
     /**
-     * Initialize the FeedsSync job.
+     * Initialize the LinksSync job.
      */
     public function __construct()
     {

@@ -4,7 +4,7 @@ namespace flusio\jobs\scheduled;
 
 use flusio\models;
 
-class LinksFetcherTest extends \PHPUnit\Framework\TestCase
+class LinksSyncTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
@@ -24,7 +24,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
 
     public function testQueue()
     {
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $this->assertSame('fetchers', $links_fetcher_job->queue);
     }
@@ -34,7 +34,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
 
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $this->assertSame(
             $now->getTimestamp(),
@@ -47,7 +47,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
     {
         \Minz\Configuration::$application['links_sync_count'] = 2;
         \Minz\Configuration::$application['job_adapter'] = 'database';
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
         $job_dao = new models\dao\Job();
 
         $this->assertSame(0, $job_dao->count());
@@ -63,7 +63,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
     public function testInstallWithJobsToDelete()
     {
         \Minz\Configuration::$application['job_adapter'] = 'database';
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
         $job_dao = new models\dao\Job();
         $links_fetcher_job->performLater();
         $links_fetcher_job->performLater();
@@ -86,7 +86,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             'fetched_code' => 0,
             'fetched_count' => 0,
         ]);
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $links_fetcher_job->perform();
 
@@ -105,7 +105,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             'title' => 'https://github.com/flusio/flusio',
             'fetched_at' => null,
         ]);
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $this->assertSame(0, models\FetchLog::count());
 
@@ -125,7 +125,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             'title' => $url,
             'fetched_at' => null,
         ]);
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $links_fetcher_job->perform();
 
@@ -142,7 +142,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             'title' => $url,
             'fetched_at' => null,
         ]);
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
         $expected_title = $this->fake('sentence');
         $hash = \SpiderBits\Cache::hash($url);
         $raw_response = <<<TEXT
@@ -184,7 +184,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             'title' => $url,
             'fetched_at' => null,
         ]);
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $links_fetcher_job->perform();
 
@@ -210,7 +210,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             'fetched_error' => 'not found',
             'fetched_count' => $fetched_count,
         ]);
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $links_fetcher_job->perform();
 
@@ -238,7 +238,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             'fetched_error' => 'not found',
             'fetched_count' => $fetched_count,
         ]);
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $links_fetcher_job->perform();
 
@@ -266,7 +266,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             'fetched_error' => 'not found',
             'fetched_count' => $fetched_count,
         ]);
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $links_fetcher_job->perform();
 
@@ -287,7 +287,7 @@ class LinksFetcherTest extends \PHPUnit\Framework\TestCase
             'fetched_count' => 0,
             'locked_at' => $this->fake('iso8601'),
         ]);
-        $links_fetcher_job = new LinksFetcher();
+        $links_fetcher_job = new LinksSync();
 
         $links_fetcher_job->perform();
 
