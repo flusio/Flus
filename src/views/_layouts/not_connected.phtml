@@ -3,11 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <?php if($canonical): ?>
-            <link rel="canonical" href="<?= $canonical ?>">
-        <?php elseif($current_action_pointer): ?>
-            <link rel="canonical" href="<?= url_full($current_action_pointer) ?>">
-        <?php endif; ?>
+        <link rel="canonical" href="<?= $canonical ?>">
 
         <?php if ($feed): ?>
             <link rel="alternate" type="application/atom+xml" title="<?= protect($feed['title']) ?>" href="<?= $feed['url'] ?>" />
@@ -114,11 +110,7 @@
                         data-controller="autosubmit"
                     >
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                        <?php if(isset($canonical)): ?>
-                            <input type="hidden" name="redirect_to" value="<?= $canonical ?>" />
-                        <?php elseif($current_action_pointer): ?>
-                            <input type="hidden" name="redirect_to" value="<?= url($current_action_pointer) ?>" />
-                        <?php endif; ?>
+                        <input type="hidden" name="redirect_to" value="<?= $canonical ?>" />
 
                         <div class="form-group">
                             <label for="locale" aria-label="<?= _('Choose your language') ?>">

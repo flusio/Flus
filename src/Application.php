@@ -98,8 +98,6 @@ class Application
             'errors' => $errors,
             'error' => $error,
             'status' => $status,
-            'current_action_pointer' => $request->param('_action_pointer'),
-            'canonical' => null,
             'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,
             'current_user' => $current_user,

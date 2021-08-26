@@ -1,6 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Profile'),
+        'canonical' => url_full('profile'),
         'current_locale' => $current_locale,
         'current_page' => 'profile',
     ]);
