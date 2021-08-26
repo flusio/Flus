@@ -92,8 +92,8 @@ class Obtentions
     {
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
-        $is_hidden = $request->param('is_hidden', false);
-        $collection_ids = $request->param('collection_ids', []);
+        $is_hidden = $request->paramBoolean('is_hidden', false);
+        $collection_ids = $request->paramArray('collection_ids', []);
         $from = $request->param('from');
         $csrf = $request->param('csrf');
 

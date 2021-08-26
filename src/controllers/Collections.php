@@ -97,8 +97,8 @@ class Collections
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');
-        $topic_ids = $request->param('topic_ids', []);
-        $is_public = $request->param('is_public', false);
+        $topic_ids = $request->paramArray('topic_ids', []);
+        $is_public = $request->paramBoolean('is_public', false);
         $csrf = $request->param('csrf');
 
         $topics = models\Topic::listAll();
@@ -305,8 +305,8 @@ class Collections
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');
-        $is_public = $request->param('is_public', false);
-        $topic_ids = $request->param('topic_ids', []);
+        $is_public = $request->paramBoolean('is_public', false);
+        $topic_ids = $request->paramArray('topic_ids', []);
         $csrf = $request->param('csrf');
 
         if (!\Minz\CSRF::validate($csrf)) {

@@ -35,7 +35,7 @@ class Onboarding
             ]);
         }
 
-        $step = intval($request->param('step', 1));
+        $step = $request->paramInteger('step', 1);
         if ($step < 1 || $step > 6) {
             return Response::notFound('not_found.phtml');
         }

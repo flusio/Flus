@@ -103,9 +103,9 @@ class Pocket
         }
 
         $options = [
-            'ignore_tags' => filter_var($request->param('ignore_tags'), FILTER_VALIDATE_BOOLEAN),
-            'import_bookmarks' => filter_var($request->param('import_bookmarks'), FILTER_VALIDATE_BOOLEAN),
-            'import_favorites' => filter_var($request->param('import_favorites'), FILTER_VALIDATE_BOOLEAN),
+            'ignore_tags' => $request->paramBoolean('ignore_tags'),
+            'import_bookmarks' => $request->paramBoolean('import_bookmarks'),
+            'import_favorites' => $request->paramBoolean('import_favorites'),
         ];
 
         $importation = models\Importation::init('pocket', $user->id, $options);

@@ -21,7 +21,7 @@ class Links
      */
     public function refresh($request)
     {
-        $number = $request->param('number', 10);
+        $number = $request->paramInteger('number', 10);
 
         $fetch_service = new services\LinkFetcher();
         $image_service = new services\Image();

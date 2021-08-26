@@ -62,7 +62,7 @@ class Collections
      *
      * @request_param string csrf
      * @request_param string id
-     * @request_param string[] collections
+     * @request_param string[] collection_ids
      * @request_param string from (default is /links/:id)
      *
      * @response 302 /login?redirect_to=/links/:id/collections
@@ -78,7 +78,7 @@ class Collections
     {
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
-        $new_collection_ids = $request->param('collection_ids', []);
+        $new_collection_ids = $request->paramArray('collection_ids', []);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
         $csrf = $request->param('csrf');
 

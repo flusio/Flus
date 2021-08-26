@@ -110,8 +110,8 @@ class Links
             'user_id' => $user->id,
         ]);
 
-        $is_hidden = $request->param('is_hidden', false);
-        $collection_ids = $request->param('collection_ids', []);
+        $is_hidden = $request->paramBoolean('is_hidden', false);
+        $collection_ids = $request->paramArray('collection_ids', []);
         $comment = $request->param('comment', '');
         $csrf = $request->param('csrf');
 

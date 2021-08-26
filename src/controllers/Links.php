@@ -131,8 +131,8 @@ class Links
     {
         $user = auth\CurrentUser::get();
         $url = $request->param('url', '');
-        $is_hidden = $request->param('is_hidden', false);
-        $collection_ids = $request->param('collection_ids', []);
+        $is_hidden = $request->paramBoolean('is_hidden', false);
+        $collection_ids = $request->paramArray('collection_ids', []);
         $from = $request->param('from', \Minz\Url::for('new link', ['url' => $url]));
         $csrf = $request->param('csrf');
 
@@ -272,7 +272,7 @@ class Links
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $new_title = $request->param('title');
-        $is_hidden = $request->param('is_hidden', false);
+        $is_hidden = $request->paramBoolean('is_hidden', false);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
         $csrf = $request->param('csrf');
 

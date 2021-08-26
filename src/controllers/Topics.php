@@ -25,7 +25,7 @@ class Topics
     public function show($request)
     {
         $id = $request->param('id');
-        $pagination_page = intval($request->param('page', 1));
+        $pagination_page = $request->paramInteger('page', 1);
 
         $topic = models\Topic::find($id);
         if (!$topic) {

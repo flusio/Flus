@@ -249,7 +249,7 @@ class System
             $migrator->setVersion($migration_version);
         }
 
-        $steps = intval($request->param('steps', 1));
+        $steps = $request->paramInteger('steps', 1);
         $results = $migrator->rollback($steps);
 
         $new_version = $migrator->version();
