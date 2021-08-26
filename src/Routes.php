@@ -145,8 +145,6 @@ class Routes
 
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');
-
-        $router->addRoute('get', '/design', 'Pages#design', 'design');
     }
 
     /**

@@ -36,9 +36,6 @@
         <meta name="msapplication-TileColor" content="#00d0ad">
 
         <link rel="stylesheet" href="<?= url_asset('stylesheets/application.css') ?>" data-turbolinks-track="reload">
-        <?php foreach ($styles as $style_name): ?>
-            <link rel="stylesheet" href="<?= url_asset("stylesheets/{$style_name}.css") ?>" data-turbolinks-track="reload">
-        <?php endforeach; ?>
 
         <script id="javascript-configuration" type="application/json">
             <?= $this->safe('javascript_configuration') ?>

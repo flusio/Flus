@@ -48,12 +48,4 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 404);
     }
-
-    public function testDesignRendersCorrectly()
-    {
-        $response = $this->appRun('GET', '/design');
-
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'pages/design.phtml');
-    }
 }

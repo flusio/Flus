@@ -104,7 +104,6 @@ class Application
             'current_tab' => null,
             'current_page' => null,
             'now' => \Minz\Time::now(),
-            'styles' => [],
             'feed' => [],
             'open_graph' => [],
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
