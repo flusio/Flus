@@ -76,7 +76,7 @@ class Links
      * Show the page to add a link.
      *
      * @request_param string url The URL to prefill the URL input (default is '')
-     * @request_param string[] collection_ids Collection to check (default contains bookmarks id)
+     * @request_param string collection_id Collection to check (default is bookmarks id)
      * @request_param string from The page to redirect to after creation (default is /links/new)
      *
      * @response 302 /login?redirect_to=:from if not connected
@@ -95,7 +95,7 @@ class Links
         $collections = $user->collections();
         models\Collection::sort($collections, $user->locale);
 
-        $default_collection_id = $request->param('collection');
+        $default_collection_id = $request->param('collection_id');
         if ($default_collection_id) {
             $default_collection_ids = [$default_collection_id];
         } else {

@@ -207,7 +207,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('get', '/links/new', [
-            'collection' => $collection_id,
+            'collection_id' => $collection_id,
             'from' => $from,
         ]);
 
