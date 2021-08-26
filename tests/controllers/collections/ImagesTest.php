@@ -4,27 +4,13 @@ namespace flusio\controllers\collections;
 
 use flusio\models;
 
-// In PHP, this function verifies a file has been uploaded via HTTP POST. We
-// want it for security reasons. Unfortunately, it prevents us to test the file
-// upload because we can’t bypass it. One solution would be to create a wrapper
-// around this function, but the cheapest solution is to redeclare it in the
-// current namespace.
-//
-// If uploading files become a thing in flusio, I should consider a design less
-// "hacky".
-//
-// @see https://www.php.net/manual/fr/function.is-uploaded-file.php
-function is_uploaded_file($filename)
-{
-    return $filename !== 'not_uploaded_file';
-}
-
 class ImagesTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\FilesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
@@ -83,13 +69,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsToFrom()
     {
-        // we copy an existing file as a tmp file to simulate an image upload
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($image_filepath, $tmp_filepath);
-
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'type' => 'collection',
@@ -113,13 +94,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateSetsImageFilename()
     {
-        // we copy an existing file as a tmp file to simulate an image upload
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($image_filepath, $tmp_filepath);
-
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'type' => 'collection',
@@ -151,10 +127,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsIfNotConnected()
     {
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user_id = $this->create('user', [
             'csrf' => 'a token',
         ]);
@@ -183,10 +157,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCollectionDoesNotExist()
     {
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'type' => 'collection',
@@ -212,10 +184,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCsrfIsInvalid()
     {
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'type' => 'collection',
@@ -265,13 +235,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfWrongFileType()
     {
-        // we copy an existing file as a tmp file to simulate an image upload
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-avatar.svg';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($image_filepath, $tmp_filepath);
-
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'type' => 'collection',
@@ -299,6 +264,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfIsUploadedFileReturnsFalse()
     {
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'type' => 'collection',
@@ -306,10 +273,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'image_filename' => null,
         ]);
         $file = [
-            // see is_uploaded_file override at the top of the file: it will
-            // return false if the tmp_name is 'not_uploaded_file'.
-            'tmp_name' => 'not_uploaded_file',
+            'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
+            'is_uploaded_file' => false, // this is possible only during tests!
         ];
         $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
@@ -321,7 +287,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponsePointer($response, 'collections/images/edit.phtml');
-        $this->assertResponseContains($response, 'This file cannot be uploaded');
+        $this->assertResponseContains($response, 'This file cannot be uploaded (error -1).');
         $collection = models\Collection::find($collection_id);
         $this->assertNull($collection->image_filename);
     }
@@ -331,11 +297,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
      */
     public function testUpdateFailsIfTooLarge($error)
     {
-        // we copy an existing file as a tmp file to simulate an image upload
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'type' => 'collection',
@@ -366,11 +329,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
      */
     public function testUpdateFailsIfFileFailedToUpload($error)
     {
-        // we copy an existing file as a tmp file to simulate an image upload
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection_id = $this->create('collection', [
             'type' => 'collection',

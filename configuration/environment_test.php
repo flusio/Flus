@@ -40,7 +40,6 @@ return [
         'brand' => 'flusio',
         'version' => $flusio_version,
         'user_agent' => $user_agent,
-        'tmp_path' => $temporary_directory,
         'cache_path' => $cache_directory,
         'media_path' => $media_directory,
         'demo' => false,
@@ -68,5 +67,6 @@ return [
     ],
 
     'data_path' => $data_directory,
+    'tmp_path' => $temporary_directory,
     'no_syslog' => !getenv('APP_SYSLOG_ENABLED'),
 ];

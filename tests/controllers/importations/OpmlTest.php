@@ -4,25 +4,6 @@ namespace flusio\controllers\importations;
 
 use flusio\models;
 
-// In PHP, this function verifies a file has been uploaded via HTTP POST. We
-// want it for security reasons. Unfortunately, it prevents us to test the file
-// upload because we can’t bypass it. One solution would be to create a wrapper
-// around this function, but the cheapest solution is to redeclare it in the
-// current namespace.
-//
-// If uploading files become a thing in flusio, I should consider a design less
-// "hacky".
-//
-// @see https://www.php.net/manual/fr/function.is-uploaded-file.php
-function move_uploaded_file($source_filepath, $destination_filepath)
-{
-    if ($source_filepath === 'not_uploaded_file') {
-        return false;
-    }
-
-    return rename($source_filepath, $destination_filepath);
-}
-
 class OpmlTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
@@ -30,6 +11,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\FilesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
@@ -95,16 +77,11 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
     public function testImportRegistersAnOpmlImportatorJobAndRendersCorrectly()
     {
-        // we copy an existing file as a tmp file to simulate an upload
-        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($opml_filepath, $tmp_filepath);
-
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
+        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -133,16 +110,11 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
     public function testImportCopiesFileUnderData()
     {
-        // we copy an existing file as a tmp file to simulate an upload
-        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($opml_filepath, $tmp_filepath);
-
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
+        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -161,15 +133,10 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
     public function testImportRedirectsToLoginIfNotConnected()
     {
-        // we copy an existing file as a tmp file to simulate an upload
-        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($opml_filepath, $tmp_filepath);
-
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
+        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -189,16 +156,11 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
     public function testImportFailsIfAnImportAlreadyExists()
     {
-        // we copy an existing file as a tmp file to simulate an upload
-        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($opml_filepath, $tmp_filepath);
-
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
+        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -222,16 +184,11 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
     public function testImportFailsIfCsrfIsInvalid()
     {
-        // we copy an existing file as a tmp file to simulate an upload
-        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($opml_filepath, $tmp_filepath);
-
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
+        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -254,16 +211,11 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
     public function testImportFailsIfFileIsNotPassed()
     {
-        // we copy an existing file as a tmp file to simulate an upload
-        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($opml_filepath, $tmp_filepath);
-
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
+        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
@@ -288,16 +240,11 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
      */
     public function testImportFailsIfFileIsTooLarge($error)
     {
-        // we copy an existing file as a tmp file to simulate an upload
-        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($opml_filepath, $tmp_filepath);
-
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
+        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => $error,
@@ -320,16 +267,11 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
      */
     public function testImportFailsIfFileFailedToUpload($error)
     {
-        // we copy an existing file as a tmp file to simulate an upload
-        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($opml_filepath, $tmp_filepath);
-
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
+        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => $error,
@@ -347,16 +289,17 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $job_dao->count());
     }
 
-    public function testImportFailsIfMoveUploadedFileReturnsFalse()
+    public function testImportFailsIfIsUploadedFileReturnsFalse()
     {
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
         $user = $this->login();
+        $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
-            // see move_uploaded_file override at the top of the file: it will
-            // return false if the tmp_name is 'not_uploaded_file'.
-            'tmp_name' => 'not_uploaded_file',
+            'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
+            'is_uploaded_file' => false, // this is possible only during tests!
         ];
 
         $response = $this->appRun('post', '/opml', [
@@ -366,7 +309,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, 'This file cannot be uploaded.');
+        $this->assertResponse($response, 400, 'This file cannot be uploaded (error -1).');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }

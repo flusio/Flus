@@ -5,21 +5,6 @@ namespace flusio\controllers\my;
 use flusio\auth;
 use flusio\models;
 
-// In PHP, this function verifies a file has been uploaded via HTTP POST. We
-// want it for security reasons. Unfortunately, it prevents us to test the file
-// upload because we can’t bypass it. One solution would be to create a wrapper
-// around this function, but the cheapest solution is to redeclare it in the
-// current namespace.
-//
-// If uploading files become a thing in flusio, I should consider a design less
-// "hacky".
-//
-// @see https://www.php.net/manual/fr/function.is-uploaded-file.php
-function is_uploaded_file($filename)
-{
-    return $filename !== 'not_uploaded_file';
-}
-
 class AvatarTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
@@ -28,17 +13,13 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\FilesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testUpdateCreatesAvatarAndRedirects()
     {
-        // we copy an existing file as a tmp file to simulate an image upload
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($image_filepath, $tmp_filepath);
-
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
         ]);
@@ -62,13 +43,8 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateDeletesOldFile()
     {
-        // we copy an existing file as a tmp file to simulate an image upload
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($image_filepath, $tmp_filepath);
-
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         // we also copy the image as the existing avatar. Note the extension is
         // JPG instead of PNG: we just want to check that the file is deleted.
         $media_path = \Minz\Configuration::$application['media_path'];
@@ -99,9 +75,8 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsToLoginIfNotConnected()
     {
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user_id = $this->create('user', [
             'avatar_filename' => null,
             'csrf' => 'a token',
@@ -123,9 +98,8 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCsrfIsInvalid()
     {
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.png';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
         ]);
@@ -163,13 +137,8 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfWrongFileType()
     {
-        // we copy an existing file as a tmp file to simulate an image upload
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-avatar.svg';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.svg';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($image_filepath, $tmp_filepath);
-
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
         ]);
@@ -191,14 +160,15 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfIsUploadedFileReturnsFalse()
     {
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
         ]);
         $file = [
-            // see is_uploaded_file override at the top of the file: it will
-            // return false if the tmp_name is 'not_uploaded_file'.
-            'tmp_name' => 'not_uploaded_file',
+            'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
+            'is_uploaded_file' => false, // this is possible only during tests!
         ];
 
         $response = $this->appRun('post', '/my/profile/avatar', [
@@ -207,7 +177,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
-        $this->assertFlash('error', 'This file cannot be uploaded.');
+        $this->assertFlash('error', 'This file cannot be uploaded (error -1).');
         $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
     }
@@ -217,9 +187,8 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
      */
     public function testUpdateFailsIfTooLarge($error)
     {
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.svg';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
         ]);
@@ -244,9 +213,8 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
      */
     public function testUpdateFailsIfFileFailedToUpload($error)
     {
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.svg';
-        $tmp_filepath = $tmp_path . '/' . $tmp_filename;
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
         ]);
