@@ -4,6 +4,10 @@
 
 ### Migration notes
 
+**Important change:** CLI commands format has changed! You’ll need to update
+the worker(s) service/cron command with the new format (i.e. `php cli jobs
+watch [--queue=TEXT]`).
+
 If you dedicates workers to queues, the [performance document](/docs/performance.md)
 didn’t mentionned the `importators` queue previously. It’s now fixed and you
 should start a worker dedicated to this queue as well.

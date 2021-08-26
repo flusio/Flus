@@ -25,7 +25,7 @@ services:
             context: .
             dockerfile: Dockerfile.php
         restart: unless-stopped
-        command: php ./cli --request /jobs/watch
+        command: php cli jobs watch
         volumes:
             - ..:/var/www/html:z
             - composer:/tmp

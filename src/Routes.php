@@ -155,6 +155,7 @@ class Routes
     public static function loadCli($router)
     {
         $router->addRoute('cli', '/', 'System#usage');
+        $router->addRoute('cli', '/help', 'System#usage');
 
         $router->addRoute('cli', '/system/secret', 'System#secret');
         $router->addRoute('cli', '/system/setup', 'System#setup');

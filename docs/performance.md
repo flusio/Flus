@@ -35,7 +35,7 @@ Then, rename the systemd service file into `/etc/systemd/system/flusio-worker@.s
 Description=A job worker for flusio (queue %i)
 
 [Service]
-ExecStart=php /var/www/flusio/cli --request /jobs/watch -pqueue=%i
+ExecStart=php /var/www/flusio/cli jobs watch --queue=%i
 User=www-data
 Group=www-data
 

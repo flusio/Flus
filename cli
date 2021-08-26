@@ -18,35 +18,29 @@ include $app_path . '/autoload.php';
 \Minz\Environment::initialize();
 
 // Read command line parameters to create a Request
-$shortopts = 'p::';
-$longopts = [
-    'request:',
-];
-$options = getopt($shortopts, $longopts);
+$command = [];
+$parameters = [];
 
-if (!isset($options['request']) || !$options['request']) {
-    $options['request'] = '/';
+// We need to skip the first argument which is the name of the script
+$arguments = array_slice($argv, 1);
+foreach ($arguments as $argument) {
+    $result = preg_match('/^--(?P<option>\w+)(=(?P<argument>.+))?$/sm', $argument, $matches);
+    if ($result) {
+        $parameters[$matches['option']] = $matches['argument'] ?? true;
+    } else {
+        $command[] = $argument;
+    }
 }
 
-$parameters = [];
-if (isset($options['p'])) {
-    $cli_parameters = $options['p'];
-    if (!is_array($cli_parameters)) {
-        $cli_parameters = array($cli_parameters);
-    }
-
-    foreach ($cli_parameters as $parameter) {
-        if (strpos($parameter, '=') === false) {
-            die("Parameters must be in the form key=value ({$parameter}).\n");
-        }
-
-        list($key, $value) = explode('=', $parameter, 2);
-        $parameters[$key] = $value;
-    }
+$request_uri = implode('/', $command);
+if (!$request_uri) {
+    $request_uri = '/help';
+} elseif ($request_uri[0] !== '/') {
+    $request_uri = '/' . $request_uri;
 }
 
 try {
-    $request = new \Minz\Request('cli', $options['request'], $parameters);
+    $request = new \Minz\Request('cli', $request_uri, $parameters);
 } catch (\Minz\Errors\RequestError $e) {
     die($e->getMessage() . "\n");
 }

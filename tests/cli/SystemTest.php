@@ -29,7 +29,7 @@ class SystemTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('cli', '/');
 
-        $this->assertResponse($response, 200, 'Usage: php ./cli --request REQUEST [-pKEY=VALUE]...');
+        $this->assertResponse($response, 200, 'Usage: php cli COMMAND [--OPTION=VALUE]...');
     }
 
     public function testSecret()
