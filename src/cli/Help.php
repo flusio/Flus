@@ -48,6 +48,7 @@ class Help
         $usage .= "  jobs watch               Wait and execute jobs\n";
         $usage .= "      [--queue=TEXT]       where TEXT is one of default, mailers, importators, fetchers or all\n";
         $usage .= "\n";
+        $usage .= "  system                   Show information about the system\n";
         $usage .= "  system rollback          Reverse the last migration\n";
         $usage .= "      [--steps=NUMBER]     where NUMBER is the number of rollbacks to apply (default is 1)\n";
         $usage .= "  system secret            Generate a secure key to be used as APP_SECRET_KEY\n";

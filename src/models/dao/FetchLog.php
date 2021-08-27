@@ -18,6 +18,48 @@ class FetchLog extends \Minz\DatabaseModel
     }
 
     /**
+     * Return the number of fetch_logs by type
+     *
+     * @param string $type
+     *
+     * @return integer
+     */
+    public function countByType($type)
+    {
+        $sql = <<<'SQL'
+            SELECT COUNT(*) FROM fetch_logs
+            WHERE type = ?
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([$type]);
+        return intval($statement->fetchColumn());
+    }
+
+    /**
+     * Return the number of fetch_logs by days.
+     *
+     * @return integer[]
+     */
+    public function countByDays()
+    {
+        $sql = <<<'SQL'
+            SELECT TO_CHAR(created_at, 'yyyy-mm-dd') AS day, COUNT(*) as count
+            FROM fetch_logs
+            GROUP BY day
+        SQL;
+
+        $statement = $this->query($sql);
+        $result = $statement->fetchAll();
+        $count_by_days = [];
+        foreach ($result as $row) {
+            $count_by_days[$row['day']] = intval($row['count']);
+        }
+        ksort($count_by_days);
+        return $count_by_days;
+    }
+
+    /**
      * Return the number of calls to a host since a given time.
      *
      * @param string $host

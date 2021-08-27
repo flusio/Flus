@@ -430,6 +430,29 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return the number of links to fetch.
+     *
+     * @return integer
+     */
+    public function countToFetch()
+    {
+        $sql = <<<'SQL'
+            SELECT COUNT(*) FROM links
+            WHERE fetched_at IS NULL
+            OR (
+                fetched_error IS NOT NULL
+                AND fetched_count <= 25
+                AND fetched_at < (?::timestamptz - interval '1 second' * (5 + pow(fetched_count, 4)))
+            )
+        SQL;
+
+        $now = \Minz\Time::now();
+        $statement = $this->prepare($sql);
+        $statement->execute([$now->format(\Minz\Model::DATETIME_FORMAT)]);
+        return intval($statement->fetchColumn());
+    }
+
+    /**
      * Lock a link
      *
      * @param string $link_id

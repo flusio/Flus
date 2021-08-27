@@ -25,6 +25,20 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         \Minz\Database::drop();
     }
 
+    public function testShow()
+    {
+        // We need to initialize the DB manually because of the uninstall hook
+        // (used for the other tests)
+        \Minz\Database::reset();
+        $database = \Minz\Database::get();
+        $schema = @file_get_contents(\Minz\Configuration::$schema_path);
+        $database->exec($schema);
+
+        $response = $this->appRun('cli', '/system');
+
+        $this->assertResponseCode($response, 200);
+    }
+
     public function testSecret()
     {
         $response = $this->appRun('cli', '/system/secret');

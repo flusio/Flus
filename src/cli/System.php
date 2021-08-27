@@ -3,6 +3,7 @@
 namespace flusio\cli;
 
 use Minz\Response;
+use flusio\models;
 use flusio\utils;
 
 /**
@@ -13,6 +14,84 @@ use flusio\utils;
  */
 class System
 {
+    /**
+     * Show information about the system.
+     *
+     * @response 200
+     */
+    public function show()
+    {
+        $app_name = \Minz\Configuration::$app_name;
+        $app_version = \Minz\Configuration::$application['version'];
+        $demo_enabled = \Minz\Configuration::$application['demo'];
+        $registrations_enabled = \Minz\Configuration::$application['registrations_opened'];
+        $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        $pocket_enabled = \Minz\Configuration::$application['pocket_consumer_key'] !== null;
+        $feeds_sync_count = \Minz\Configuration::$application['feeds_sync_count'];
+        $links_sync_count = \Minz\Configuration::$application['links_sync_count'];
+        $server_ips = implode(', ', \Minz\Configuration::$application['server_ips']);
+
+        $count_users = models\User::count();
+        $count_users_validated = models\User::daoCall('countValidated');
+        $percent_users_validated = intval($count_users_validated * 100 / max(1, $count_users));
+        $count_users_week = models\User::daoCall('countSince', \Minz\Time::ago(1, 'week'));
+        $count_users_month = models\User::daoCall('countSince', \Minz\Time::ago(1, 'month'));
+
+        $count_links = models\Link::count();
+        $count_links_to_fetch = models\Link::daoCall('countToFetch');
+
+        $count_collections = models\Collection::daoCall('countCollections');
+        $count_collections_public = models\Collection::daoCall('countCollectionsPublic');
+
+        $count_feeds = models\Collection::daoCall('countFeeds');
+        $count_feeds_by_hours = models\Collection::daoCall('countFeedsByHours');
+
+        $count_requests = models\FetchLog::count();
+        $count_requests_feeds = models\FetchLog::daoCall('countByType', 'feed');
+        $count_requests_links = models\FetchLog::daoCall('countByType', 'link');
+        $count_requests_images = models\FetchLog::daoCall('countByType', 'image');
+        $count_requests_by_days = models\FetchLog::daoCall('countByDays');
+
+        $info =  "{$app_name} v{$app_version}\n";
+        $info .= "\n";
+        $info .= "Demo " . ($demo_enabled ? 'enabled' : 'disabled') . "\n";
+        $info .= "Registrations " . ($registrations_enabled ? 'enabled' : 'disabled') . "\n";
+        $info .= "Subscriptions " . ($subscriptions_enabled ? 'enabled' : 'disabled') . "\n";
+        $info .= "Pocket " . ($pocket_enabled ? 'enabled' : 'disabled') . "\n";
+        $info .= "\n";
+        $info .= "{$feeds_sync_count} job(s) to synchronize feeds\n";
+        $info .= "{$links_sync_count} job(s) to synchronize links\n";
+        if ($server_ips) {
+            $info .= "Server IPs: {$server_ips}\n";
+        }
+        $info .= "\n";
+        $info .= "{$count_users} users\n";
+        $info .= "→ {$count_users_month} this month\n";
+        $info .= "→ {$count_users_week} this week\n";
+        $info .= "→ {$percent_users_validated}% validated\n";
+        $info .= "\n";
+        $info .= "{$count_links} links\n";
+        $info .= "→ {$count_links_to_fetch} to synchronize\n";
+        $info .= "\n";
+        $info .= "{$count_collections} collections\n";
+        $info .= "→ {$count_collections_public} public\n";
+        $info .= "\n";
+        $info .= "{$count_feeds} feeds\n";
+        foreach ($count_feeds_by_hours as $hour => $count) {
+            $info .= "→ {$count} synchronized at {$hour}h\n";
+        }
+        $info .= "\n";
+        $info .= "{$count_requests} HTTP requests (last 3 - 4 days)\n";
+        $info .= "→ {$count_requests_feeds} to fetch feeds\n";
+        $info .= "→ {$count_requests_links} to fetch links\n";
+        $info .= "→ {$count_requests_images} to fetch images\n";
+        foreach ($count_requests_by_days as $day => $count) {
+            $info .= "→ {$count} on {$day}\n";
+        }
+
+        return Response::text(200, $info);
+    }
+
     /**
      * Output a secured key.
      *

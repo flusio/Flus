@@ -20,6 +20,41 @@ class User extends \Minz\DatabaseModel
     }
 
     /**
+     * Return the number of validated users.
+     *
+     * @return integer
+     */
+    public function countValidated()
+    {
+        $sql = <<<'SQL'
+            SELECT COUNT(*) FROM users
+            WHERE validated_at IS NOT NULL
+        SQL;
+
+        $statement = $this->query($sql);
+        return intval($statement->fetchColumn());
+    }
+
+    /**
+     * Return the number of users created since the given date.
+     *
+     * @param \DateTime $since
+     *
+     * @return integer
+     */
+    public function countSince($since)
+    {
+        $sql = <<<'SQL'
+            SELECT COUNT(*) FROM users
+            WHERE created_at >= ?
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([$since->format(\Minz\Model::DATETIME_FORMAT)]);
+        return intval($statement->fetchColumn());
+    }
+
+    /**
      * Return not validated users older than the given time.
      *
      * @see \Minz\Time::ago

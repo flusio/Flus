@@ -157,6 +157,7 @@ class Routes
         $router->addRoute('cli', '/', 'Help#show');
         $router->addRoute('cli', '/help', 'Help#show');
 
+        $router->addRoute('cli', '/system', 'System#show');
         $router->addRoute('cli', '/system/secret', 'System#secret');
         $router->addRoute('cli', '/system/setup', 'System#setup');
         $router->addRoute('cli', '/system/rollback', 'System#rollback');
