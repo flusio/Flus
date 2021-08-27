@@ -82,7 +82,8 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     public function testPerformKeepsFreshFetchLogs()
     {
         $cleaner_job = new Cleaner();
-        $days = $this->fake('numberBetween', 0, 3);
+        // logs are kept up to 3 days, but the test can fail if $days = 3 and it takes too long to execute
+        $days = $this->fake('numberBetween', 0, 2);
         $created_at = \Minz\Time::ago($days, 'days');
         $fetch_log_id = $this->create('fetch_log', [
             'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
