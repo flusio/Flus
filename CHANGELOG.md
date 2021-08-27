@@ -1,16 +1,33 @@
 # Changelog of flusio
 
-## 2021-xx-yy - v0.30
+## 2021-08-27 - v0.30
 
 ### Migration notes
 
-**Important change:** CLI commands format has changed! You’ll need to update
+**Important change:** CLI commands interface has changed! You’ll need to update
 the worker(s) service/cron command with the new format (i.e. `php cli jobs
 watch [--queue=TEXT]`).
 
 If you dedicates workers to queues, the [performance document](/docs/performance.md)
 didn’t mentionned the `importators` queue previously. It’s now fixed and you
 should start a worker dedicated to this queue as well.
+
+### Improvements
+
+- Improve performance of Youtube and feeds fetching
+- Redesign the command line interface
+- Provide CLI command to show system info and stats
+- Add three indexes to database for performance
+
+### Misc
+
+- Refactor a whole bunch of code
+- Mention importators queue in performance doc
+- Improve handling of errors during feeds and links sync
+- Fix output of migration and rollback commands
+- Rename the LinksFetcher job
+- Handle correctly empty responses with SpiderBits
+- Fix some failing tests
 
 ## 2021-08-12 - v0.29
 
