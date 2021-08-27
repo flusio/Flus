@@ -307,26 +307,6 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return links with oldest fetched_at date.
-     *
-     * @param integer $number
-     *
-     * @return array
-     */
-    public function listByOldestFetching($number)
-    {
-        $sql = <<<SQL
-             SELECT * FROM links
-             ORDER BY fetched_at
-             LIMIT ?
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([$number]);
-        return $statement->fetchAll();
-    }
-
-    /**
      * Return the list of url ids indexed by urls for the given user.
      *
      * @param string $user_id

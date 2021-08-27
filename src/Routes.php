@@ -180,8 +180,6 @@ class Routes
         $router->addRoute('cli', '/topics/update', 'Topics#update');
         $router->addRoute('cli', '/topics/delete', 'Topics#delete');
 
-        $router->addRoute('cli', '/links/refresh', 'Links#refresh');
-
         $router->addRoute('cli', '/jobs', 'JobsWorker#index');
         $router->addRoute('cli', '/jobs/run', 'JobsWorker#run');
         $router->addRoute('cli', '/jobs/watch', 'JobsWorker#watch');
