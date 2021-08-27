@@ -15,6 +15,7 @@ $app_path = __DIR__;
 
 include $app_path . '/autoload.php';
 \Minz\Configuration::load('dotenv', $app_path);
+\Minz\Configuration::$no_syslog_output = true;
 \Minz\Environment::initialize();
 
 // Read command line parameters to create a Request
@@ -45,6 +46,8 @@ try {
     die($e->getMessage() . "\n");
 }
 
+$request->setParam('bin', $argv[0]);
+
 // Initialize the Application and execute the request to get a Response
 $application = new \flusio\cli\Application();
 $response = $application->run($request);
@@ -63,7 +66,9 @@ if ($response instanceof Generator) {
 } else {
     // Display the content
     $output = $response->render();
-    if ($output) {
+    if ($output && $output[-1] === "\n") {
+        echo $output;
+    } elseif ($output) {
         echo $output . "\n";
     }
 

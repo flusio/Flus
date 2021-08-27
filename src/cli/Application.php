@@ -41,7 +41,20 @@ class Application
             utils\Locale::setCurrentLocale($cli_locale);
         }
 
+        $bin = $request->param('bin');
+        $bin = $bin === 'cli' ? 'php cli' : $bin;
+
+        $current_command = $request->path();
+        $current_command = trim(str_replace('/', ' ', $current_command));
+
+        \Minz\Output\View::declareDefaultVariables([
+            'bin' => $bin,
+            'current_command' => $current_command,
+        ]);
+
         return $this->engine->run($request, [
+            'not_found_view_pointer' => 'cli/not_found.txt',
+            'internal_server_error_view_pointer' => 'cli/internal_server_error.txt',
             'controller_namespace' => '\\flusio\\cli',
         ]);
     }

@@ -68,5 +68,5 @@ return [
 
     'data_path' => $data_directory,
     'tmp_path' => $temporary_directory,
-    'no_syslog' => !getenv('APP_SYSLOG_ENABLED'),
+    'no_syslog_output' => true,
 ];
