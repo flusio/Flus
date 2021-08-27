@@ -43,11 +43,11 @@
                     <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" />
                 </a>
 
-                <time class="card__image-overlay" datetime="<?= format_date($link->created_at, '%Y-%m-%d') ?>">
+                <time class="card__image-overlay" datetime="<?= _d($link->created_at, '%Y-%m-%d') ?>">
                     <?php if ($now->format('Y') === $link->created_at->format('Y')): ?>
-                        <?= format_date($link->created_at, '%d %b') ?>
+                        <?= _d($link->created_at, '%d %b') ?>
                     <?php else: ?>
-                        <?= format_date($link->created_at, '%d %b %Y') ?>
+                        <?= _d($link->created_at, '%d %b %Y') ?>
                     <?php endif; ?>
                 </time>
 

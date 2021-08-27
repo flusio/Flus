@@ -9,21 +9,6 @@
  */
 
 /**
- * Format a DateTime to the given format (with `strftime`)
- *
- * @see https://www.php.net/manual/function.strftime
- *
- * @param \DateTime $date
- * @param string $format
- *
- * @return string
- */
-function format_date($date, $format)
-{
-    return strftime($format, $date->getTimestamp());
-}
-
-/**
  * Format a DateTime according to current day (designed for Message dates)
  *
  * @param \DateTime $date
