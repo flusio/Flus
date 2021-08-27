@@ -10,7 +10,7 @@ documentation](/docs/cli.md).
 First of all, you can list the features with the following command:
 
 ```console
-$ ./cli --request /features
+$ php cli features
 beta
 ```
 
@@ -19,7 +19,7 @@ Here, there is only one feature: beta.
 You should now list the users to get there ids:
 
 ```console
-$ ./cli --request /users
+$ php cli users
 44ff4da402379f91ab0b1cf2a12bf6d4 2021-04-07 test1@example.com
 a97f04ac01bce558a06fca5023cd3b54 2021-04-07 test2@example.com
 8dff621fbf93ee18b39ee48fe6ec44d4 2021-04-14 test3@example.com
@@ -31,7 +31,7 @@ If you want to enable the feature `beta` for the user `test3@example.com`, you
 must run the following command:
 
 ```console
-$ ./cli --request /features/enable -ptype=beta -puser_id=8dff621fbf93ee18b39ee48fe6ec44d4
+$ php cli features enable --type=beta --user_id=8dff621fbf93ee18b39ee48fe6ec44d4
 beta is enabled for user 8dff621fbf93ee18b39ee48fe6ec44d4 (test3@example.com)
 ```
 
@@ -40,7 +40,7 @@ Then, the user should be able to access the `beta` feature.
 You can list the enabled flags:
 
 ```console
-$ ./cli --request /features/flags
+$ php cli features flags
 beta 8dff621fbf93ee18b39ee48fe6ec44d4 test3@example.com
 ```
 
@@ -50,6 +50,6 @@ email.
 You can disable the flags at any moment:
 
 ```console
-$ ./cli --request /features/disable -ptype=beta -puser_id=8dff621fbf93ee18b39ee48fe6ec44d4
+$ php cli features disable --type=beta --user_id=8dff621fbf93ee18b39ee48fe6ec44d4
 beta is disabled for user 8dff621fbf93ee18b39ee48fe6ec44d4 (test3@example.com)
 ```

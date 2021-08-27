@@ -6,10 +6,12 @@ ifdef NO_DOCKER
 	PHP = php
 	COMPOSER = composer
 	NPM = npm
+	CLI = php cli
 else
 	PHP = ./docker/bin/php
 	COMPOSER = ./docker/bin/composer
 	NPM = ./docker/bin/npm
+	CLI = ./docker/bin/cli
 endif
 
 ifndef COVERAGE
@@ -44,7 +46,7 @@ install: ## Install the dependencies
 
 .PHONY: setup
 setup: .env ## Setup the application system
-	$(PHP) ./cli --request /system/setup
+	$(CLI) system setup
 
 .PHONY: update
 update: setup ## Update the application
@@ -52,15 +54,15 @@ update: setup ## Update the application
 .PHONY: rollback
 rollback: ## Reverse the last migration
 ifdef STEPS
-	$(PHP) ./cli --request /system/rollback -psteps=$(STEPS)
+	$(CLI) system rollback --steps=$(STEPS)
 else
-	$(PHP) ./cli --request /system/rollback
+	$(CLI) system rollback
 endif
 
 .PHONY: reset
 reset: ## Reset the database
 	rm data/migrations_version.txt || true
-	$(PHP) ./cli --request /system/setup
+	$(CLI) system setup
 
 .PHONY: test
 test: ## Run the test suite

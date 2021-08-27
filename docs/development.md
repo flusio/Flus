@@ -89,7 +89,7 @@ The most important section is the `DB_*` configuration. You can verify the
 access to your database with:
 
 ```console
-$ php ./cli --request /database/status
+$ php cli database status
 Database status: OK
 ```
 
@@ -112,7 +112,7 @@ $ php -t public/ -S localhost:8000 public/index.php
 Then start the job worker in a different console:
 
 ```console
-$ php ./cli --request /jobs/watch
+$ php cli jobs watch
 ```
 
 And Parcel in another console:

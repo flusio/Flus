@@ -154,7 +154,8 @@ class Routes
      */
     public static function loadCli($router)
     {
-        $router->addRoute('cli', '/', 'System#usage');
+        $router->addRoute('cli', '/', 'Help#show');
+        $router->addRoute('cli', '/help', 'Help#show');
 
         $router->addRoute('cli', '/system/secret', 'System#secret');
         $router->addRoute('cli', '/system/setup', 'System#setup');
@@ -179,12 +180,10 @@ class Routes
         $router->addRoute('cli', '/topics/update', 'Topics#update');
         $router->addRoute('cli', '/topics/delete', 'Topics#delete');
 
-        $router->addRoute('cli', '/links/refresh', 'Links#refresh');
-
         $router->addRoute('cli', '/jobs', 'JobsWorker#index');
         $router->addRoute('cli', '/jobs/run', 'JobsWorker#run');
+        $router->addRoute('cli', '/jobs/unlock', 'JobsWorker#unlock');
         $router->addRoute('cli', '/jobs/watch', 'JobsWorker#watch');
-        $router->addRoute('cli', '/jobs/clear', 'JobsWorker#clear');
 
         self::load($router);
     }

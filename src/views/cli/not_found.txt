@@ -1,0 +1,2 @@
+<?= $bin ?>: '<?= $current_command ?>' is not a valid command.
+See '<?= $bin ?> help'

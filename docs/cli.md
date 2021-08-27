@@ -6,14 +6,12 @@ command:
 ```console
 $ ./docker/bin/cli
 $ # or if you don't use Docker
-$ ./cli
+$ php cli
 ```
 
-By default, it shows you how to use the command. The syntax mimics a browser
-requests: it takes a `--request` parameter which is used to create a `Request`
-object as seen in the previous section. Parameters can be passed with the
-following syntax: `-pKEY=VALUE` where KEY is the parameter name and VALUE its
-value.
+By default, it shows you how to use the command. The syntax is pretty simple:
+it takes a serie of commands (e.g. `feeds sync`) and parameters (e.g.
+`--user_id=ID`).
 
 The architecture of the [`cli` file](/cli) is, in fact, pretty similar to the
 [`public/index.php`](/public/index.php). It just needs to create the Request

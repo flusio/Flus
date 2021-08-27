@@ -1,0 +1,2 @@
+<?= $bin ?>: '<?= $current_command ?>' failed because of an internal error.
+<?= $error->getMessage() ?>
