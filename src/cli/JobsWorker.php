@@ -23,8 +23,13 @@ class JobsWorker
         $db_jobs = $job_dao->listAll();
         $result = [];
         foreach ($db_jobs as $db_job) {
-            $job_as_text = "job#{$db_job['id']} at {$db_job['perform_at']}";
-            $job_as_text .= " {$db_job['number_attempts']} attempts";
+            $job_as_text = "job {$db_job['id']} ({$db_job['name']})";
+            if ($db_job['frequency']) {
+                $job_as_text .= " scheduled each {$db_job['frequency']}, next at {$db_job['perform_at']}";
+            } else {
+                $job_as_text .= " at {$db_job['perform_at']} {$db_job['number_attempts']} attempts";
+            }
+
             if ($db_job['locked_at']) {
                 $job_as_text .= ' (locked)';
             }
@@ -39,15 +44,23 @@ class JobsWorker
     }
 
     /**
-     * Delete all the jobs.
+     * Unlock a job.
+     *
+     * @request_param string id
      *
      * @response 200
      */
-    public function clear($request)
+    public function unlock($request)
     {
         $job_dao = new models\dao\Job();
-        $count = $job_dao->deleteAll();
-        return Response::text(200, "{$count} jobs deleted");
+        $job_id = $request->param('id');
+        $db_job = $job_dao->find($job_id);
+        if ($db_job['locked_at']) {
+            $job_dao->update($job_id, ['locked_at' => null]);
+            return Response::text(200, "job {$db_job['id']} lock has been released");
+        } else {
+            return Response::text(200, "job {$db_job['id']} was not locked");
+        }
     }
 
     /**

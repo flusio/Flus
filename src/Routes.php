@@ -182,8 +182,8 @@ class Routes
 
         $router->addRoute('cli', '/jobs', 'JobsWorker#index');
         $router->addRoute('cli', '/jobs/run', 'JobsWorker#run');
+        $router->addRoute('cli', '/jobs/unlock', 'JobsWorker#unlock');
         $router->addRoute('cli', '/jobs/watch', 'JobsWorker#watch');
-        $router->addRoute('cli', '/jobs/clear', 'JobsWorker#clear');
 
         self::load($router);
     }
