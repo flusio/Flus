@@ -16,7 +16,7 @@ class ViewHelpersTest extends \PHPUnit\Framework\TestCase
     {
         $locale = 'en_GB';
 
-        $bcp47 = localeToBCP47($locale);
+        $bcp47 = locale_to_bcp_47($locale);
 
         $this->assertSame('en-GB', $bcp47);
     }
@@ -25,7 +25,7 @@ class ViewHelpersTest extends \PHPUnit\Framework\TestCase
     {
         $locale = 'en';
 
-        $bcp47 = localeToBCP47($locale);
+        $bcp47 = locale_to_bcp_47($locale);
 
         $this->assertSame('en', $bcp47);
     }

@@ -65,16 +65,4 @@ class Pages
         $response->setHeader('Content-Type', 'application/manifest+json');
         return $response;
     }
-
-    /**
-     * Show the design page.
-     *
-     * @response 200
-     *
-     * @return \Minz\Response
-     */
-    public function design()
-    {
-        return Response::ok('pages/design.phtml');
-    }
 }

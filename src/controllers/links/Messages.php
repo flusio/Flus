@@ -50,6 +50,7 @@ class Messages
         $user = auth\CurrentUser::get();
         $link_id = $request->param('link_id');
         $content = $request->param('content');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('link', ['id' => $link_id]);
@@ -60,8 +61,7 @@ class Messages
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             $collections = $link->collections();
             models\Collection::sort($collections, $user->locale);
             return Response::badRequest('links/show.phtml', [

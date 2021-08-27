@@ -14,6 +14,19 @@ use flusio\utils;
  */
 class Cleaner extends jobs\Job
 {
+    /**
+     * Install the job in database.
+     */
+    public static function install()
+    {
+        $job_dao = new \flusio\models\dao\Job();
+        $cleaner_job = new Cleaner();
+
+        if (!$job_dao->findBy(['name' => $cleaner_job->name])) {
+            $cleaner_job->performLater();
+        }
+    }
+
     public function __construct()
     {
         parent::__construct();

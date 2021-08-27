@@ -64,16 +64,17 @@ class Images
      */
     public function update($request)
     {
-        $user = auth\CurrentUser::get();
+        $image_file = $request->paramFile('image');
+        $collection_id = $request->param('id');
         $from = $request->param('from');
+        $csrf = $request->param('csrf');
+
+        $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
-
-        $uploaded_file = $request->param('image');
-        $collection_id = $request->param('id');
 
         $collection = models\Collection::find($collection_id);
 
@@ -82,7 +83,7 @@ class Images
             return Response::notFound('not_found.phtml');
         }
 
-        if (!isset($uploaded_file['error'])) {
+        if (!$image_file) {
             return Response::badRequest('collections/images/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,
@@ -90,34 +91,21 @@ class Images
             ]);
         }
 
-        $error_status = $uploaded_file['error'];
-        if (
-            $error_status === UPLOAD_ERR_INI_SIZE ||
-            $error_status === UPLOAD_ERR_FORM_SIZE
-        ) {
+        if ($image_file->isTooLarge()) {
             return Response::badRequest('collections/images/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'error' => _('This file is too large.'),
             ]);
-        } elseif ($error_status !== UPLOAD_ERR_OK) {
+        } elseif ($image_file->error) {
             return Response::badRequest('collections/images/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,
-                'error' => vsprintf(_('This file cannot be uploaded (error %d).'), [$error_status]),
+                'error' => vsprintf(_('This file cannot be uploaded (error %d).'), [$image_file->error]),
             ]);
         }
 
-        if (!is_uploaded_file($uploaded_file['tmp_name'])) {
-            return Response::badRequest('collections/images/edit.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'error' => _('This file cannot be uploaded.'),
-            ]);
-        }
-
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('collections/images/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,
@@ -139,7 +127,7 @@ class Images
             @mkdir($large_path, 0755, true);
         }
 
-        $image_data = @file_get_contents($uploaded_file['tmp_name']);
+        $image_data = $image_file->content();
         try {
             $card_image = models\Image::fromString($image_data);
             $cover_image = models\Image::fromString($image_data);

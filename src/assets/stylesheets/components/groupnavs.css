@@ -28,8 +28,8 @@
     text-decoration: none;
 
     transition:
-        background-color .3s ease-in-out,
-        color .3s ease-in-out;
+        background-color 0.3s ease-in-out,
+        color 0.3s ease-in-out;
 }
 
 .groupnav__anchor {
@@ -72,19 +72,19 @@
 
 .groupnav__item--validate .groupnav__anchor,
 .groupnav__item--create .groupnav__button {
-    background-image: url("../icons/check.svg");
+    background-image: url("../../icons/check.svg");
 }
 
 .groupnav__item--subscription .groupnav__anchor {
-    background-image: url("../icons/credit-card.svg");
+    background-image: url("../../icons/credit-card.svg");
 }
 
 .groupnav__item--import .groupnav__anchor {
-    background-image: url("../icons/backup.svg");
+    background-image: url("../../icons/backup.svg");
 }
 
 .groupnav__item--delete .groupnav__anchor {
-    background-image: url("../icons/trash.svg");
+    background-image: url("../../icons/trash.svg");
 }
 
 .groupnav__item:first-child,

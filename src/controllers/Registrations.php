@@ -90,9 +90,9 @@ class Registrations
         $email = $request->param('email');
         $password = $request->param('password');
         $accept_terms = $request->param('accept_terms', false);
-        $csrf = new \Minz\CSRF();
+        $csrf = $request->param('csrf');
 
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('registrations/new.phtml', [
                 'has_terms' => $has_terms,
                 'username' => $username,

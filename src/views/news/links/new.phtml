@@ -26,7 +26,7 @@
             </p>
         <?php endif; ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
         <fieldset>
             <legend><?= _('Collections') ?></legend>

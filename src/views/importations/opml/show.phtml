@@ -1,6 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Importation from an OPML file'),
+        'canonical' => url_full('opml'),
         'back' => [
             'href' => url('account'),
             'label' => _('Account'),
@@ -52,7 +53,7 @@
         </p>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
             <input type="hidden" name="from" value="<?= url('opml') ?>" />
 
             <div class="form__actions">
@@ -71,7 +72,7 @@
         </p>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
             <input type="hidden" name="from" value="<?= url('opml') ?>" />
 
             <div class="form__actions">
@@ -87,7 +88,7 @@
             data-controller="autosubmit form-file"
             enctype="multipart/form-data"
         >
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
             <input
                 type="file"

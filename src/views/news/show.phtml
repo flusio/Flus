@@ -1,6 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('News'),
+        'canonical' => url_full('news'),
         'current_tab' => 'news',
         'current_page' => 'news',
     ]);
@@ -29,11 +30,11 @@
                         <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" />
                     </a>
 
-                    <time class="card__image-overlay" datetime="<?= format_date($link->created_at, '%Y-%m-%d') ?>">
+                    <time class="card__image-overlay" datetime="<?= _d($link->created_at, '%Y-%m-%d') ?>">
                         <?php if ($now->format('Y') === $link->created_at->format('Y')): ?>
-                            <?= format_date($link->created_at, '%d %b') ?>
+                            <?= _d($link->created_at, '%d %b') ?>
                         <?php else: ?>
-                            <?= format_date($link->created_at, '%d %b %Y') ?>
+                            <?= _d($link->created_at, '%d %b %Y') ?>
                         <?php endif; ?>
                     </time>
 
@@ -107,7 +108,7 @@
                                     </div>
 
                                     <form method="post" action="<?= url('mark news as read', ['id' => $link->news_link_id]) ?>">
-                                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                                         <button class="popup__item popup__item--button">
                                             <?= icon('check') ?>
@@ -116,7 +117,7 @@
                                     </form>
 
                                     <form method="post" action="<?= url('read news later', ['id' => $link->news_link_id]) ?>">
-                                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                                         <button class="popup__item popup__item--button">
                                             <?= icon('bookmark') ?>
@@ -179,7 +180,7 @@
                         data-action="confirmation#confirm"
                         data-message="<?= _('You’ll mark all the news links as read, this action cannot be canceled. Are you sure?') ?>"
                     >
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                         <button class="popup__item popup__item--button">
                             <?= icon('check') ?>
@@ -188,7 +189,7 @@
                     </form>
 
                     <form method="post" action="<?= url('read news later', ['id' => 'all']) ?>">
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                         <button class="popup__item popup__item--button">
                             <?= icon('bookmark') ?>
@@ -217,7 +218,7 @@
                 </p>
             <?php endif; ?>
 
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
             <div class="cards cards--centered">
                 <div class="card card--action">

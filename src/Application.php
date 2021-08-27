@@ -77,8 +77,7 @@ class Application
 
         // Force CSRF token to avoid weird issues when user did nothing for a while
         if ($current_user) {
-            $csrf = new \Minz\CSRF();
-            $csrf->setToken($current_user->csrf);
+            \Minz\CSRF::set($current_user->csrf);
         }
 
         $errors = utils\Flash::pop('errors', []);
@@ -95,25 +94,23 @@ class Application
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
             'brand' => $app_conf['brand'],
+            'csrf_token' => \Minz\CSRF::generate(),
             'errors' => $errors,
             'error' => $error,
             'status' => $status,
-            'current_action_pointer' => $request->param('_action_pointer'),
-            'canonical' => null,
             'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,
             'current_user' => $current_user,
-            'current_tab' => null,
-            'current_page' => null,
             'now' => \Minz\Time::now(),
-            'styles' => [],
-            'feed' => [],
-            'open_graph' => [],
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
             'no_layout' => $request->header('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest',
             'demo' => $app_conf['demo'],
             'registrations_opened' => $app_conf['registrations_opened'],
         ]);
+
+        $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
+        $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
+        $response->setHeader('X-Frame-Options', 'deny');
 
         return $response;
     }

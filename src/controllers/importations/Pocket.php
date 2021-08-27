@@ -94,8 +94,8 @@ class Pocket
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $csrf = $request->param('csrf');
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('importations/pocket/show.phtml', [
                 'importation' => null,
                 'error' => _('A security verification failed.'),
@@ -103,9 +103,9 @@ class Pocket
         }
 
         $options = [
-            'ignore_tags' => filter_var($request->param('ignore_tags'), FILTER_VALIDATE_BOOLEAN),
-            'import_bookmarks' => filter_var($request->param('import_bookmarks'), FILTER_VALIDATE_BOOLEAN),
-            'import_favorites' => filter_var($request->param('import_favorites'), FILTER_VALIDATE_BOOLEAN),
+            'ignore_tags' => $request->paramBoolean('ignore_tags'),
+            'import_bookmarks' => $request->paramBoolean('import_bookmarks'),
+            'import_favorites' => $request->paramBoolean('import_favorites'),
         ];
 
         $importation = models\Importation::init('pocket', $user->id, $options);
@@ -145,8 +145,8 @@ class Pocket
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $csrf = $request->param('csrf');
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('pocket');
         }
@@ -236,8 +236,8 @@ class Pocket
             return Response::redirect('pocket');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $csrf = $request->param('csrf');
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('importations/pocket/authorization.phtml', [
                 'error' => _('A security verification failed.'),
             ]);

@@ -166,7 +166,7 @@ select {
 select:not([multiple]) {
     padding-right: 3.5rem;
 
-    background-image: url("../icons/angle-down.svg");
+    background-image: url("../../icons/angle-down.svg");
     background-repeat: no-repeat;
     background-position: right 0.75rem top 58%;
     background-size: 2.5rem;

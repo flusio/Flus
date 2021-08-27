@@ -47,6 +47,8 @@ class Passwords
     public function reset($request)
     {
         $email = $request->param('email', '');
+        $csrf = $request->param('csrf');
+
         $email = utils\Email::sanitize($email);
         if (!utils\Email::validate($email)) {
             return Response::badRequest('passwords/forgot.phtml', [
@@ -71,8 +73,7 @@ class Passwords
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('passwords/forgot.phtml', [
                 'email' => $email,
                 'email_sent' => false,
@@ -153,6 +154,7 @@ class Passwords
     {
         $t = $request->param('t');
         $password = $request->param('password');
+        $csrf = $request->param('csrf');
 
         $token = models\Token::find($t);
         if (!$token) {
@@ -174,8 +176,7 @@ class Passwords
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('passwords/edit.phtml', [
                 'token' => $token->token,
                 'email' => $user->email,

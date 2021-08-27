@@ -1,13 +1,9 @@
 <!DOCTYPE html>
-<html lang="<?= localeToBCP47($current_locale) ?>">
+<html lang="<?= locale_to_bcp_47($current_locale) ?>">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <?php if($canonical): ?>
-            <link rel="canonical" href="<?= $canonical ?>">
-        <?php elseif($current_action_pointer): ?>
-            <link rel="canonical" href="<?= url_full($current_action_pointer) ?>">
-        <?php endif; ?>
+        <link rel="canonical" href="<?= $canonical ?>">
 
         <?php if ($feed): ?>
             <link rel="alternate" type="application/atom+xml" title="<?= protect($feed['title']) ?>" href="<?= $feed['url'] ?>" />
@@ -26,9 +22,6 @@
         <meta name="msapplication-TileColor" content="#00d0ad">
 
         <link rel="stylesheet" href="<?= url_asset('stylesheets/application.css') ?>" data-turbolinks-track="reload">
-        <?php foreach ($styles as $style_name): ?>
-            <link rel="stylesheet" href="<?= url_asset("stylesheets/{$style_name}.css") ?>" data-turbolinks-track="reload">
-        <?php endforeach; ?>
 
         <script id="javascript-configuration" type="application/json">
             <?= $this->safe('javascript_configuration') ?>
@@ -36,7 +29,7 @@
         <script src="<?= url_asset('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
 
         <meta name="csrf-param" content="csrf" />
-        <meta name="csrf-token" content="<?= csrf_token() ?>" />
+        <meta name="csrf-token" content="<?= $csrf_token ?>" />
 
         <title><?php if ($environment === 'development'): ?>[devmode] <?php endif; ?><?= $title ?></title>
     </head>
@@ -182,7 +175,7 @@
                             </a>
 
                             <form method="post" action="<?= url('logout') ?>">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <button type="submit" class="popup__item popup__item--button">
                                     <?= icon('logout') ?>
                                     <?= _('Log out') ?>

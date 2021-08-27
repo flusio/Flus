@@ -1,6 +1,7 @@
 <?php
     $this->layout('onboarding.phtml', [
         'title' => _('Understanding the news'),
+        'canonical' => url_full('onboarding', ['step' => 5]),
         'current_step' => 5,
     ]);
 ?>

@@ -1,6 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Profile'),
+        'canonical' => url_full('profile'),
         'current_locale' => $current_locale,
         'current_page' => 'profile',
     ]);
@@ -24,11 +25,9 @@
         data-controller="autosubmit form-file"
         enctype="multipart/form-data"
     >
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
         <img class="form-avatar__photo" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
-
-        <input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
 
         <input
             type="file"
@@ -65,7 +64,7 @@
     </form>
 
     <form method="post" action="<?= url('update profile') ?>">
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
         <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">
             <label for="username">

@@ -54,7 +54,7 @@ figure {
     padding: calc(var(--space-medium) * 1.5);
 
     background-color: var(--color-purple-5);
-    background-image: url("../icons/camera-white.svg");
+    background-image: url("../../icons/camera-white.svg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 1.5em;

@@ -30,41 +30,34 @@ class Avatar
     public function update($request)
     {
         $user = auth\CurrentUser::get();
+        $avatar_file = $request->paramFile('avatar');
+        $csrf = $request->param('csrf');
+
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('profile'),
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('profile');
         }
 
-        $uploaded_file = $request->param('avatar');
-        if (!isset($uploaded_file['error'])) {
+        if (!$avatar_file) {
             utils\Flash::set('error', _('The file is required.'));
             return Response::redirect('profile');
         }
 
-        $error_status = $uploaded_file['error'];
-        if (
-            $error_status === UPLOAD_ERR_INI_SIZE ||
-            $error_status === UPLOAD_ERR_FORM_SIZE
-        ) {
+        if ($avatar_file->isTooLarge()) {
             utils\Flash::set('error', _('This file is too large.'));
             return Response::redirect('profile');
-        } elseif ($error_status !== UPLOAD_ERR_OK) {
+        } elseif ($avatar_file->error) {
+            $error = $avatar_file->error;
             utils\Flash::set(
                 'error',
-                vsprintf(_('This file cannot be uploaded (error %d).'), [$error_status])
+                vsprintf(_('This file cannot be uploaded (error %d).'), [$error])
             );
-            return Response::redirect('profile');
-        }
-
-        if (!is_uploaded_file($uploaded_file['tmp_name'])) {
-            utils\Flash::set('error', _('This file cannot be uploaded.'));
             return Response::redirect('profile');
         }
 
@@ -74,7 +67,7 @@ class Avatar
             @mkdir($avatars_path, 0755, true);
         }
 
-        $image_data = @file_get_contents($uploaded_file['tmp_name']);
+        $image_data = $avatar_file->content();
         try {
             $image = models\Image::fromString($image_data);
             $image_type = $image->type();

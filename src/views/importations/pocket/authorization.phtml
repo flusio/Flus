@@ -1,6 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Pocket authorization'),
+        'canonical' => url_full('pocket auth'),
         'back' => [
             'href' => url('account'),
             'label' => _('Account'),
@@ -19,7 +20,7 @@
         </p>
 
         <form method="post" action="<?= url('authorize pocket') ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
             <button type="submit" class="button--primary">
                 <?= _('Check authorization') ?>
             </button>
@@ -37,7 +38,7 @@
              data-controller="autosubmit"
              data-autosubmit-mode="timeout"
          >
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         </form>
     <?php endif; ?>
 </div>

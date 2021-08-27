@@ -60,9 +60,9 @@ class Support
 
         $subject = trim($request->param('subject'));
         $message = trim($request->param('message'));
+        $csrf = $request->param('csrf');
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('support/show.phtml', [
                 'subject' => $subject,
                 'message' => $message,

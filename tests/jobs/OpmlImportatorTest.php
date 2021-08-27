@@ -8,6 +8,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\FilesHelper;
     use \Minz\Tests\InitializerHelper;
 
     /**
@@ -36,11 +37,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
     public function testPerformCreatesNewCollectionsAndGroupsFromOpmlFile()
     {
         $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $opml_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($example_filepath, $opml_filepath);
-
+        $opml_filepath = $this->tmpCopyFile($example_filepath);
         $followed_collections_dao = new models\dao\FollowedCollection();
         $importator = new OpmlImportator();
         $user_id = $this->create('user');
@@ -90,11 +87,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
     public function testPerformRemovesFile()
     {
         $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $opml_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($example_filepath, $opml_filepath);
-
+        $opml_filepath = $this->tmpCopyFile($example_filepath);
         $importator = new OpmlImportator();
         $user_id = $this->create('user');
         $importation_id = $this->create('importation', [
@@ -113,11 +106,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
     public function testPerformDoesNotCreateExistingFeed()
     {
         $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $opml_filepath = $tmp_path . '/' . $tmp_filename;
-        copy($example_filepath, $opml_filepath);
-
+        $opml_filepath = $this->tmpCopyFile($example_filepath);
         $followed_collections_dao = new models\dao\FollowedCollection();
         $importator = new OpmlImportator();
         $user_id = $this->create('user');
@@ -160,10 +149,9 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformFailsIfFileIsMissing()
     {
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $opml_filepath = $tmp_path . '/' . $tmp_filename;
-
+        $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $opml_filepath = $this->tmpCopyFile($example_filepath);
+        unlink($opml_filepath);
         $followed_collections_dao = new models\dao\FollowedCollection();
         $importator = new OpmlImportator();
         $user_id = $this->create('user');
@@ -186,11 +174,9 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformFailsIfFileIsNotOpml()
     {
-        $tmp_path = \Minz\Configuration::$application['tmp_path'];
-        $tmp_filename = $this->fakeUnique('md5') . '.xml';
-        $opml_filepath = $tmp_path . '/' . $tmp_filename;
+        $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $opml_filepath = $this->tmpCopyFile($example_filepath);
         file_put_contents($opml_filepath, 'not opml');
-
         $followed_collections_dao = new models\dao\FollowedCollection();
         $importator = new OpmlImportator();
         $user_id = $this->create('user');

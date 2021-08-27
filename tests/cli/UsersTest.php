@@ -193,20 +193,4 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 400, 'The `since` parameter must be greater or equal to 1.');
         $this->assertTrue(models\User::exists($user_id));
     }
-
-    public function testCleanFailsIfSinceIsNotAnInteger()
-    {
-        $this->freeze($this->fake('dateTime'));
-        $user_id = $this->create('user', [
-            'created_at' => \Minz\Time::ago(1, 'month')->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => null,
-        ]);
-
-        $response = $this->appRun('cli', '/users/clean', [
-            'since' => '12foo',
-        ]);
-
-        $this->assertResponse($response, 400, 'The `since` parameter must be an integer.');
-        $this->assertTrue(models\User::exists($user_id));
-    }
 }

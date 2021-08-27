@@ -87,16 +87,11 @@ class Users
      * @request_param integer since Number of months since the creation, default is 1
      *
      * @response 200
-     * @response 400 If since parameter is not a number or less than 1
+     * @response 400 If since parameter is less than 1
      */
     public function clean($request)
     {
-        $since = $request->param('since', 1);
-        if (filter_var($since, FILTER_VALIDATE_INT) === false) {
-            return Response::text(400, 'The `since` parameter must be an integer.');
-        }
-
-        $since = intval($since);
+        $since = $request->paramInteger('since', 1);
         if ($since < 1) {
             return Response::text(400, 'The `since` parameter must be greater or equal to 1.');
         }

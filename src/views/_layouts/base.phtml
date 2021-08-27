@@ -8,23 +8,17 @@
             $layout_name = 'not_connected.phtml';
         }
 
-        if (!isset($back)) {
-            $back = null;
-        }
-
         $this->layout($layout_name, [
             // The title can be considered as safe since it's already sanitized in
             // the calling view.
             'title' => $this->safe('title'),
-            'current_action_pointer' => $current_action_pointer,
             'current_locale' => $current_locale,
-            'current_tab' => $current_tab,
-            'current_page' => $current_page,
+            'current_tab' => $current_tab ?? null,
+            'current_page' => $current_page ?? null,
             'canonical' => $canonical,
-            'styles' => $styles,
-            'feed' => $feed,
-            'open_graph' => $open_graph,
-            'back' => $back,
+            'feed' => $feed ?? [],
+            'open_graph' => $open_graph ?? [],
+            'back' => $back ?? null,
         ]);
     }
 

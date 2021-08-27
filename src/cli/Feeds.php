@@ -93,7 +93,7 @@ class Feeds
     public function sync($request)
     {
         $id = $request->param('id');
-        $nocache = filter_var($request->param('nocache', false), FILTER_VALIDATE_BOOLEAN);
+        $nocache = $request->paramBoolean('nocache', false);
         $collection = models\Collection::findBy([
             'type' => 'feed',
             'id' => $id,

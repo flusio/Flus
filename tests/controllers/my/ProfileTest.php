@@ -79,7 +79,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('post', '/my/profile', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\CSRF::generate(),
             'username' => $new_username,
             'locale' => 'fr_FR',
         ]);

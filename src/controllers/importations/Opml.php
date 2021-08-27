@@ -52,6 +52,8 @@ class Opml
     public function import($request)
     {
         $user = auth\CurrentUser::get();
+        $csrf = $request->param('csrf');
+
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => \Minz\Url::for('opml'),
@@ -69,16 +71,15 @@ class Opml
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('importations/opml/show.phtml', [
                 'importation' => null,
                 'error' => _('A security verification failed.'),
             ]);
         }
 
-        $uploaded_file = $request->param('opml');
-        if (!isset($uploaded_file['error'])) {
+        $opml_file = $request->paramFile('opml');
+        if (!$opml_file) {
             return Response::badRequest('importations/opml/show.phtml', [
                 'importation' => null,
                 'errors' => [
@@ -87,22 +88,18 @@ class Opml
             ]);
         }
 
-        $error_status = $uploaded_file['error'];
-        if (
-            $error_status === UPLOAD_ERR_INI_SIZE ||
-            $error_status === UPLOAD_ERR_FORM_SIZE
-        ) {
+        if ($opml_file->isTooLarge()) {
             return Response::badRequest('importations/opml/show.phtml', [
                 'importation' => null,
                 'errors' => [
                     'opml' => _('This file is too large.'),
                 ],
             ]);
-        } elseif ($error_status !== UPLOAD_ERR_OK) {
+        } elseif ($opml_file->error) {
             return Response::badRequest('importations/opml/show.phtml', [
                 'importation' => null,
                 'errors' => [
-                    'opml' => vsprintf(_('This file cannot be uploaded (error %d).'), [$error_status]),
+                    'opml' => vsprintf(_('This file cannot be uploaded (error %d).'), [$opml_file->error]),
                 ],
             ]);
         }
@@ -113,7 +110,7 @@ class Opml
         }
 
         $opml_filepath = "{$importations_filepath}/opml_{$user->id}.xml";
-        $is_moved = move_uploaded_file($uploaded_file['tmp_name'], $opml_filepath);
+        $is_moved = $opml_file->move($opml_filepath);
         if (!$is_moved) {
             return Response::badRequest('importations/opml/show.phtml', [
                 'importation' => null,

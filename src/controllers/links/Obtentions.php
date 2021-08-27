@@ -92,9 +92,10 @@ class Obtentions
     {
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
-        $is_hidden = $request->param('is_hidden', false);
-        $collection_ids = $request->param('collection_ids', []);
+        $is_hidden = $request->paramBoolean('is_hidden', false);
+        $collection_ids = $request->paramArray('collection_ids', []);
         $from = $request->param('from');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -113,8 +114,7 @@ class Obtentions
             'user_id' => $user->id,
         ]);
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('links/obtentions/new.phtml', [
                 'link' => $link,
                 'is_hidden' => $is_hidden,

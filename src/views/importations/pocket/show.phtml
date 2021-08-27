@@ -1,6 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('Importation from Pocket'),
+        'canonical' => url_full('pocket'),
         'back' => [
             'href' => url('account'),
             'label' => _('Account'),
@@ -52,7 +53,7 @@
         </p>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
             <input type="hidden" name="from" value="<?= url('pocket') ?>" />
 
             <div class="form__actions">
@@ -71,7 +72,7 @@
         </p>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
             <input type="hidden" name="from" value="<?= url('pocket') ?>" />
 
             <div class="form__actions">
@@ -82,7 +83,7 @@
         </form>
     <?php elseif ($current_user->pocket_access_token): ?>
         <form method="post" action="<?= url('import pocket') ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
             <div class="form-group pocket-option" data-controller="pocket-option">
                 <input
@@ -176,7 +177,7 @@
         </p>
     <?php else: ?>
         <form method="post" action="<?= url('request pocket access') ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
             <div class="form__actions">
                 <button type="submit" class="button--primary">

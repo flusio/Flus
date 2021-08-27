@@ -29,6 +29,7 @@ class Messages
         $user = auth\CurrentUser::get();
         $message_id = $request->param('id');
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $redirect_to]);
@@ -42,8 +43,7 @@ class Messages
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($redirect_to);
         }

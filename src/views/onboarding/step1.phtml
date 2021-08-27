@@ -1,6 +1,7 @@
 <?php
     $this->layout('onboarding.phtml', [
         'title' => _('Welcome!'),
+        'canonical' => url_full('onboarding', ['step' => 1]),
         'current_step' => 1,
     ]);
 ?>
@@ -16,7 +17,7 @@
         action="<?= url('onboarding update locale') ?>"
         data-controller="autosubmit"
     >
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="redirect_to" value="<?= url('onboarding') ?>" />
 
         <div class="form-group">

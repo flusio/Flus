@@ -97,14 +97,14 @@ class Collections
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');
-        $topic_ids = $request->param('topic_ids', []);
-        $is_public = $request->param('is_public', false);
+        $topic_ids = $request->paramArray('topic_ids', []);
+        $is_public = $request->paramBoolean('is_public', false);
+        $csrf = $request->param('csrf');
 
         $topics = models\Topic::listAll();
         models\Topic::sort($topics, $user->locale);
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
@@ -305,11 +305,11 @@ class Collections
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');
-        $is_public = $request->param('is_public', false);
-        $topic_ids = $request->param('topic_ids', []);
+        $is_public = $request->paramBoolean('is_public', false);
+        $topic_ids = $request->paramArray('topic_ids', []);
+        $csrf = $request->param('csrf');
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
@@ -380,6 +380,7 @@ class Collections
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
         $from = $request->param('from');
+        $csrf = $request->param('csrf');
 
         if (!$user) {
             return Response::redirect('login', [
@@ -392,8 +393,7 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

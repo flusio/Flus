@@ -71,9 +71,9 @@ class Security
 
         $email = $request->param('email');
         $password = $request->param('password');
+        $csrf = $request->param('csrf');
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('my/security/show_confirmed.phtml', [
                 'email' => $email,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -145,13 +145,14 @@ class Security
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $password = $request->param('password');
+        $csrf = $request->param('csrf');
+
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::redirect('security');
         }
 
-        $password = $request->param('password');
         if (!$user->verifyPassword($password)) {
             utils\Flash::set('errors', [
                 'password_hash' => _('The password is incorrect.'),

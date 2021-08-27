@@ -55,6 +55,7 @@ class Profile
     {
         $username = $request->param('username');
         $locale = $request->param('locale');
+        $csrf = $request->param('csrf');
 
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -63,8 +64,7 @@ class Profile
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('my/profile/show.phtml', [
                 'username' => $username,
                 'locale' => $locale,

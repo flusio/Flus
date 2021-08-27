@@ -75,9 +75,9 @@ class Sessions
 
         $email = $request->param('email');
         $password = $request->param('password');
-        $csrf = new \Minz\CSRF();
+        $csrf = $request->param('csrf');
 
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('sessions/new.phtml', [
                 'email' => $email,
                 'password' => $password,
@@ -148,13 +148,14 @@ class Sessions
      */
     public function changeLocale($request)
     {
-        $csrf = new \Minz\CSRF();
+        $locale = $request->param('locale');
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $csrf = $request->param('csrf');
+
+        if (!\Minz\CSRF::validate($csrf)) {
             return Response::found($redirect_to);
         }
 
-        $locale = $request->param('locale');
         $available_locales = utils\Locale::availableLocales();
         if (isset($available_locales[$locale])) {
             $_SESSION['locale'] = $locale;
@@ -185,8 +186,8 @@ class Sessions
             return Response::redirect('home');
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        $csrf = $request->param('csrf');
+        if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('home');
         }
