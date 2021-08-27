@@ -35,7 +35,7 @@ function format_message_date($date)
  *
  * @return string
  */
-function localeToBCP47($locale)
+function locale_to_bcp_47($locale)
 {
     $splitted_locale = explode('_', $locale, 2);
     if (!$splitted_locale) {
