@@ -199,7 +199,7 @@ class System
         }
 
         $has_error = false;
-        $text = '';
+        $results_as_text = [];
         foreach ($results as $migration => $result) {
             if ($result === false) {
                 $result = 'KO';
@@ -211,9 +211,9 @@ class System
                 $has_error = true;
             }
 
-            $text .= "\n" . $migration . ': ' . $result;
+            $results_as_text[] = "{$migration}: {$result}";
         }
-        return Response::text($has_error ? 500 : 200, $text);
+        return Response::text($has_error ? 500 : 200, implode("\n", $results_as_text));
     }
 
     /**
@@ -277,7 +277,7 @@ class System
         }
 
         $has_error = false;
-        $text = '';
+        $results_as_text = [];
         foreach ($results as $migration => $result) {
             if ($result === false) {
                 $result = 'KO';
@@ -289,8 +289,8 @@ class System
                 $has_error = true;
             }
 
-            $text .= "\n" . $migration . ': ' . $result;
+            $results_as_text[] = "{$migration}: {$result}";
         }
-        return Response::text($has_error ? 500 : 200, $text);
+        return Response::text($has_error ? 500 : 200, implode("\n", $results_as_text));
     }
 }
