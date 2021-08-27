@@ -85,6 +85,7 @@ CREATE TABLE fetch_logs (
 );
 
 CREATE INDEX idx_fetch_logs_host_created_at ON fetch_logs(host, created_at);
+CREATE INDEX idx_fetch_logs_created_at ON fetch_logs(created_at);
 
 CREATE TABLE groups (
     id TEXT PRIMARY KEY,
@@ -117,6 +118,7 @@ CREATE TABLE collections (
 );
 
 CREATE INDEX idx_collections_user_id ON collections(user_id);
+CREATE INDEX idx_collections_feed_fetched_at ON collections(feed_fetched_at);
 
 CREATE TABLE links (
     id TEXT PRIMARY KEY,
@@ -137,6 +139,7 @@ CREATE TABLE links (
 );
 
 CREATE UNIQUE INDEX idx_links_user_id_url ON links(user_id, url);
+CREATE INDEX idx_links_fetched_at ON links(fetched_at);
 
 CREATE TABLE links_to_collections (
     id SERIAL PRIMARY KEY,
