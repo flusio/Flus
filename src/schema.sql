@@ -144,6 +144,7 @@ CREATE INDEX idx_links_fetched_code ON links(fetched_code);
 
 CREATE TABLE links_to_collections (
     id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
     link_id TEXT REFERENCES links ON DELETE CASCADE ON UPDATE CASCADE,
     collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -164,6 +165,7 @@ CREATE UNIQUE INDEX idx_followed_collections ON followed_collections(user_id, co
 CREATE TABLE news_links (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
+    published_at TIMESTAMPTZ,
     url TEXT NOT NULL,
     link_id TEXT REFERENCES links ON DELETE SET NULL ON UPDATE CASCADE,
     via_type TEXT NOT NULL DEFAULT '',

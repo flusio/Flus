@@ -341,8 +341,14 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
 
         $importator->importPocketItems($user, $items, $options);
 
+        $links_to_collections_dao = new models\dao\LinksToCollections();
         $link = models\Link::findBy(['url' => $url]);
-        $this->assertSame($time_added->getTimestamp(), $link->created_at->getTimestamp());
+        $db_link_to_collection = $links_to_collections_dao->findBy(['link_id' => $link->id]);
+        $created_at = date_create_from_format(
+            \Minz\Model::DATETIME_FORMAT,
+            $db_link_to_collection['created_at']
+        );
+        $this->assertSame($time_added->getTimestamp(), $created_at->getTimestamp());
     }
 
     public function testImportPocketItemsDoesNotDuplicateAGivenUrlAlreadyThere()

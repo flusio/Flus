@@ -17,7 +17,7 @@ class LinksToCollections extends \Minz\DatabaseModel
      */
     public function __construct()
     {
-        $properties = ['id', 'link_id', 'collection_id'];
+        $properties = ['id', 'created_at', 'link_id', 'collection_id'];
         parent::__construct('links_to_collections', 'id', $properties);
     }
 
@@ -31,16 +31,17 @@ class LinksToCollections extends \Minz\DatabaseModel
      */
     public function attach($link_id, $collection_ids)
     {
+        $now = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
         $values_as_question_marks = [];
         $values = [];
         foreach ($collection_ids as $collection_id) {
-            $values_as_question_marks[] = '(?, ?)';
-            $values = array_merge($values, [$link_id, $collection_id]);
+            $values_as_question_marks[] = '(?, ?, ?)';
+            $values = array_merge($values, [$now, $link_id, $collection_id]);
         }
         $values_placeholder = implode(", ", $values_as_question_marks);
 
         $sql = <<<SQL
-            INSERT INTO links_to_collections (link_id, collection_id)
+            INSERT INTO links_to_collections (created_at, link_id, collection_id)
             VALUES {$values_placeholder};
         SQL;
 

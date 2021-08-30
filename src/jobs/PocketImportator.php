@@ -204,17 +204,7 @@ class PocketImportator extends Job
                 // In normal cases, created_at is set on save() call. Since we
                 // add links via the bulkInsert call, we have to set created_at
                 // first, or it would fail because of the not-null constraint.
-                // If time_added is set (not documented), we use it to set the
-                // property in order to keep the order from Pocket. It defaults
-                // to "now".
-                $created_at = \Minz\Time::now();
-                if (isset($item['time_added'])) {
-                    $timestamp = intval($item['time_added']);
-                    if ($timestamp > 0) {
-                        $created_at->setTimestamp($timestamp);
-                    }
-                }
-                $link->created_at = $created_at;
+                $link->created_at = \Minz\Time::now();
 
                 // Then, add the link properties values to the list
                 $db_link = $link->toValues();
@@ -234,9 +224,21 @@ class PocketImportator extends Job
                 $link_id = $link->id;
             }
 
+            // If time_added is set (not documented), we use it to set the date
+            // of attachment to the collection in order to keep the order from
+            // Pocket. It defaults to now.
+            $published_at = \Minz\Time::now();
+            if (isset($item['time_added'])) {
+                $timestamp = intval($item['time_added']);
+                if ($timestamp > 0) {
+                    $published_at->setTimestamp($timestamp);
+                }
+            }
+
             // We now have a link_id and a list of collection ids. We store
             // here the relations in the last _to_create array.
             foreach ($collection_ids as $collection_id) {
+                $links_to_collections_to_create[] = $published_at->format(\Minz\Model::DATETIME_FORMAT);
                 $links_to_collections_to_create[] = $link_id;
                 $links_to_collections_to_create[] = $collection_id;
             }
@@ -262,7 +264,7 @@ class PocketImportator extends Job
         if ($links_to_collections_to_create) {
             $links_to_collections_dao = new models\dao\LinksToCollections();
             $links_to_collections_dao->bulkInsert(
-                ['link_id', 'collection_id'],
+                ['created_at', 'link_id', 'collection_id'],
                 $links_to_collections_to_create
             );
         }

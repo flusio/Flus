@@ -212,6 +212,58 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_title, $link->title);
     }
 
+    public function testPerformSavesPublishedDate()
+    {
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $expected_name = $this->fakeUnique('sentence');
+        $expected_title = $this->fakeUnique('sentence');
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'name' => $this->fakeUnique('sentence'),
+            'feed_url' => $feed_url,
+            'feed_fetched_at' => \Minz\Time::ago(2, 'hours')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $user_id = $this->create('user', [
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+        $this->create('followed_collection', [
+            'collection_id' => $collection_id,
+            'user_id' => $user_id,
+        ]);
+        $hash = \SpiderBits\Cache::hash($feed_url);
+        $raw_response = <<<XML
+        HTTP/2 200 OK
+        Content-Type: application/xml
+
+        <?xml version='1.0' encoding='UTF-8'?>
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <title>Carnet de Flus</title>
+            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
+            <updated>2021-03-30T11:26:00+02:00</updated>
+            <entry>
+                <title>Les nouveautés de mars 2021</title>
+                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                <author><name>Marien</name></author>
+                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                <published>2021-03-30T11:26:00+02:00</published>
+                <updated>2021-03-30T11:26:00+02:00</updated>
+                <content type="html"></content>
+            </entry>
+        </feed>
+        XML;
+        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $cache->save($hash, $raw_response);
+        $feeds_sync_job = new FeedsSync();
+
+        $feeds_sync_job->perform();
+
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $db_link_to_collection = $links_to_collections_dao->listAll()[0];
+        $this->assertSame('2021-03-30 09:26:00+00', $db_link_to_collection['created_at']);
+    }
+
     public function testPerformIgnoresFeedFetchedLastHour()
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
@@ -618,7 +670,6 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::find($link_id);
         $this->assertSame($new_url, $link->url);
         $this->assertSame($new_url, $link->title);
-        $this->assertSame(1617096360, $link->created_at->getTimestamp());
         $this->assertNull($link->fetched_at);
     }
 

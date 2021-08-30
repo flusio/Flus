@@ -27,6 +27,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->create('news_link', [
+            'published_at' => $this->fake('iso8601'),
             'user_id' => $user->id,
             'link_id' => $link_news_id,
             'read_at' => null,
@@ -37,6 +38,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->create('news_link', [
+            'published_at' => $this->fake('iso8601'),
             'user_id' => $user->id,
             'link_id' => $link_not_news_id_1,
             'read_at' => null,
@@ -47,6 +49,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->create('news_link', [
+            'published_at' => $this->fake('iso8601'),
             'user_id' => $user->id,
             'link_id' => $link_not_news_id_2,
             'read_at' => $this->fake('iso8601'),
@@ -58,6 +61,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'is_hidden' => 1,
         ]);
         $this->create('news_link', [
+            'published_at' => $this->fake('iso8601'),
             'user_id' => $user->id,
             'link_id' => $link_not_news_id_3,
             'read_at' => null,
@@ -91,6 +95,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
         $this->create('news_link', [
+            'published_at' => $this->fake('iso8601'),
             'user_id' => $user->id,
             'url' => $url,
             'read_at' => null,
@@ -135,6 +140,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
         $this->create('news_link', [
+            'published_at' => $this->fake('iso8601'),
             'user_id' => $user->id,
             'read_at' => null,
             'removed_at' => null,
@@ -170,6 +176,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->create('news_link', [
+            'published_at' => $this->fake('iso8601'),
             'user_id' => $user->id,
             'link_id' => $link_id,
             'read_at' => null,

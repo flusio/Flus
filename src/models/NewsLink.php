@@ -19,6 +19,10 @@ class NewsLink extends \Minz\Model
             'type' => 'datetime',
         ],
 
+        'published_at' => [
+            'type' => 'datetime',
+        ],
+
         'url' => [
             'type' => 'string',
             'required' => true,
@@ -60,6 +64,7 @@ class NewsLink extends \Minz\Model
     public static function initFromLink($link, $user_id)
     {
         return new self([
+            'published_at' => $link->published_at,
             'url' => $link->url,
             'user_id' => $user_id,
             'link_id' => $link->id,

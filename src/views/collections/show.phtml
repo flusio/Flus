@@ -168,11 +168,11 @@
                     <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" />
                 </a>
 
-                <time class="card__image-overlay" datetime="<?= _d($link->created_at, '%Y-%m-%d') ?>">
-                    <?php if ($now->format('Y') === $link->created_at->format('Y')): ?>
-                        <?= _d($link->created_at, '%d %b') ?>
+                <time class="card__image-overlay" datetime="<?= _d($link->published_at, '%Y-%m-%d') ?>">
+                    <?php if ($now->format('Y') === $link->published_at->format('Y')): ?>
+                        <?= _d($link->published_at, '%d %b') ?>
                     <?php else: ?>
-                        <?= _d($link->created_at, '%d %b %Y') ?>
+                        <?= _d($link->published_at, '%d %b %Y') ?>
                     <?php endif; ?>
                 </time>
 

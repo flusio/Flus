@@ -89,7 +89,7 @@ class Link extends \Minz\DatabaseModel
         }
 
         $sql = <<<SQL
-            SELECT l.*, (
+            SELECT l.*, lc.created_at AS published_at, (
                 SELECT COUNT(m.*) FROM messages m
                 WHERE m.link_id = l.id
             ) AS number_comments
@@ -100,7 +100,7 @@ class Link extends \Minz\DatabaseModel
 
             {$visibility_clause}
 
-            ORDER BY l.created_at DESC, l.id
+            ORDER BY lc.created_at DESC, l.id
             OFFSET :offset
             {$limit_clause}
         SQL;
@@ -152,7 +152,7 @@ class Link extends \Minz\DatabaseModel
     public function listForNews($user_id)
     {
         $sql = <<<SQL
-            SELECT l.*, nl.id AS news_link_id, (
+            SELECT l.*, nl.published_at AS published_at, nl.id AS news_link_id, (
                 SELECT COUNT(m.*) FROM messages m
                 WHERE m.link_id = l.id
             ) AS number_comments
@@ -165,7 +165,7 @@ class Link extends \Minz\DatabaseModel
             AND nl.read_at IS NULL
             AND (l.is_hidden = false OR l.user_id = :user_id)
 
-            ORDER BY l.created_at DESC, l.id
+            ORDER BY nl.published_at DESC, l.id
         SQL;
 
         $statement = $this->prepare($sql);
@@ -208,7 +208,7 @@ class Link extends \Minz\DatabaseModel
         }
 
         $sql = <<<SQL
-            SELECT l.*, 'bookmarks' AS news_via_type
+            SELECT l.*, lc.created_at AS published_at, 'bookmarks' AS news_via_type
             FROM links l, collections c, links_to_collections lc
 
             WHERE lc.link_id = l.id
@@ -221,7 +221,7 @@ class Link extends \Minz\DatabaseModel
 
             {$where_placeholder}
 
-            GROUP BY l.id
+            GROUP BY l.id, lc.created_at
 
             ORDER BY random()
         SQL;
@@ -266,7 +266,7 @@ class Link extends \Minz\DatabaseModel
         }
 
         $sql = <<<SQL
-            SELECT l.*, 'followed' AS news_via_type, c.id AS news_via_collection_id
+            SELECT l.*, lc.created_at AS published_at, 'followed' AS news_via_type, c.id AS news_via_collection_id
             FROM links l, collections c, links_to_collections lc, followed_collections fc
 
             WHERE fc.user_id = :user_id
@@ -295,9 +295,9 @@ class Link extends \Minz\DatabaseModel
 
             {$where_placeholder}
 
-            GROUP BY l.id, c.id
+            GROUP BY l.id, lc.created_at, c.id
 
-            ORDER BY l.created_at DESC, l.id
+            ORDER BY lc.created_at DESC, l.id
             LIMIT 30
         SQL;
 
@@ -375,7 +375,7 @@ class Link extends \Minz\DatabaseModel
             WHERE l.id = lc.link_id
             AND lc.collection_id = :collection_id
 
-            ORDER BY l.created_at DESC, l.id
+            ORDER BY lc.created_at DESC, l.id
             LIMIT 200
         SQL;
 

@@ -115,9 +115,9 @@ class FeedFetcher
             }
 
             if ($entry->published_at) {
-                $created_at = $entry->published_at;
+                $published_at = $entry->published_at;
             } else {
-                $created_at = \Minz\Time::now();
+                $published_at = \Minz\Time::now();
             }
 
             if ($entry->id) {
@@ -135,15 +135,23 @@ class FeedFetcher
                 // after our first fetch. Normally, there is a redirection on
                 // the server so it's not a big deal to not track this change,
                 // but it duplicates content.
-                // To avoid this problem, we update the link URL and publication
-                // date. The title and fetched_at are also reset so the link is
-                // resynchronised by the LinkFetcher service.
+                // To avoid this problem, we update the link URL and reset the
+                // title and fetched_at so the link is resynchronised by the
+                // LinkFetcher service.
                 $link_id = $link_urls_by_entry_ids[$feed_entry_id]['id'];
                 models\Link::update($link_id, [
                     'url' => $url,
                     'title' => $url,
-                    'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
                     'fetched_at' => null,
+                ]);
+
+                // we also update the publication date in case it changed
+                $db_link_to_collection = $links_to_collections_dao->findBy([
+                    'link_id' => $link_id,
+                    'collection_id' => $collection->id,
+                ]);
+                $links_to_collections_dao->update($db_link_to_collection['id'], [
+                    'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
                 ]);
             } else {
                 // The URL is not associated to the collection in database yet,
@@ -153,7 +161,7 @@ class FeedFetcher
                 if ($entry_title) {
                     $link->title = $entry_title;
                 }
-                $link->created_at = $created_at;
+                $link->created_at = \Minz\Time::now();
                 $link->feed_entry_id = $feed_entry_id;
 
                 $db_link = $link->toValues();
@@ -170,6 +178,7 @@ class FeedFetcher
                 $link_id = $link->id;
             }
 
+            $links_to_collections_to_create[] = $published_at->format(\Minz\Model::DATETIME_FORMAT);
             $links_to_collections_to_create[] = $link_id;
             $links_to_collections_to_create[] = $collection->id;
         }
@@ -185,7 +194,7 @@ class FeedFetcher
         if ($links_to_collections_to_create) {
             $links_to_collections_dao = new models\dao\LinksToCollections();
             $links_to_collections_dao->bulkInsert(
-                ['link_id', 'collection_id'],
+                ['created_at', 'link_id', 'collection_id'],
                 $links_to_collections_to_create
             );
         }

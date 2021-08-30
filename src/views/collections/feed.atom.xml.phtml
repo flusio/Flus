@@ -9,7 +9,7 @@
     </author>
     <generator><?= $user_agent ?></generator>
     <?php if (isset($links[0])): ?>
-        <updated><?= $links[0]->created_at->format(\DateTimeInterface::ATOM) ?></updated>
+        <updated><?= $links[0]->published_at->format(\DateTimeInterface::ATOM) ?></updated>
     <?php else: ?>
         <updated><?= \Minz\Time::now()->format(\DateTimeInterface::ATOM) ?></updated>
     <?php endif; ?>
@@ -24,8 +24,8 @@
             <id><?= $link->tagUri() ?></id>
             <link href="<?= protect($link->url) ?>" rel="alternate" type="text/html" />
             <link href="<?= url_full('link', ['id' => $link->id]) ?>" rel="replies" type="text/html" />
-            <published><?= $link->created_at->format(\DateTimeInterface::ATOM) ?></published>
-            <updated><?= $link->created_at->format(\DateTimeInterface::ATOM) ?></updated>
+            <published><?= $link->published_at->format(\DateTimeInterface::ATOM) ?></published>
+            <updated><?= $link->published_at->format(\DateTimeInterface::ATOM) ?></updated>
             <content type="html"><![CDATA[
                 <p><?= _f('“%s”', protect($link->title)) ?></p>
                 <p><?= _f('Read this on <a href="%s">%s</a>.', protect($link->url), protect($link->host())) ?></p>
