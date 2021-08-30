@@ -138,7 +138,7 @@ CREATE TABLE links (
     feed_entry_id TEXT
 );
 
-CREATE UNIQUE INDEX idx_links_user_id_url ON links(user_id, url);
+CREATE INDEX idx_links_user_id_url ON links(user_id, url);
 CREATE INDEX idx_links_fetched_at ON links(fetched_at);
 CREATE INDEX idx_links_fetched_code ON links(fetched_code);
 

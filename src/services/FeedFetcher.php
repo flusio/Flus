@@ -126,34 +126,11 @@ class FeedFetcher
                 $feed_entry_id = $url;
             }
 
-
-            $link = models\Link::findBy([
-                'user_id' => $collection->user_id,
-                'url' => $url,
-            ]);
-            if ($link) {
-                // A link with the current URL is already in database but not
-                // associated to the collection: we’ll need to associate them.
-                // Also there are good chances the feed entry id is wrong and
-                // need to be updated.
-                // This can happen for instance if a user searched previously
-                // the URL of an article (i.e. the link was created at this
-                // moment).
-                $link_ids_by_urls[$link->url] = $link->id;
-                $link_urls_by_entry_ids[$link->url] = $feed_entry_id;
-                $link_id = $link->id;
-
-                if ($link->feed_entry_id !== $feed_entry_id) {
-                    models\Link::update($link_id, [
-                        'feed_entry_id' => $feed_entry_id,
-                        'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
-                    ]);
-                }
-            } elseif (
+            if (
                 isset($link_urls_by_entry_ids[$feed_entry_id]) &&
                 $link_urls_by_entry_ids[$feed_entry_id]['url'] !== $url
             ) {
-                // We detected a link with the same entry id as a different
+                // We detected a link with the same entry id has a different
                 // URL. This can happen if the URL was changed by the publisher
                 // after our first fetch. Normally, there is a redirection on
                 // the server so it's not a big deal to not track this change,
@@ -169,7 +146,8 @@ class FeedFetcher
                     'fetched_at' => null,
                 ]);
             } else {
-                // The URL is not in database yet, so we create it.
+                // The URL is not associated to the collection in database yet,
+                // so we create a new link.
                 $link = models\Link::init($url, $collection->user_id, false);
                 $entry_title = trim($entry->title);
                 if ($entry_title) {

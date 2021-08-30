@@ -43,29 +43,4 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($dao->exists($link_2->id));
         $this->assertTrue($dao->exists($link_3->id));
     }
-
-    public function testBulkInsertDoesNothingOnConflict()
-    {
-        $dao = new Link();
-        $user_id = $this->create('user');
-        $initial_link_url = $this->fake('url');
-        $initial_link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'url' => $initial_link_url,
-        ]);
-        $link = models\Link::init($initial_link_url, $user_id, true);
-        $link->created_at = $this->fake('dateTime');
-        $db_link = $link->toValues();
-        $columns = array_keys($db_link);
-        $values = array_values($db_link);
-
-        $this->assertSame(1, $dao->count());
-
-        $result = $dao->bulkInsert($columns, $values);
-
-        $this->assertTrue($result);
-        $this->assertSame(1, $dao->count());
-        $this->assertTrue($dao->exists($initial_link_id));
-        $this->assertFalse($dao->exists($link->id));
-    }
 }
