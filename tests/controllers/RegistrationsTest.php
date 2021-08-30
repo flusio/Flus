@@ -172,7 +172,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/');
     }
 
-    public function testCreateCreatesABookmarksCollection()
+    public function testCreateCreatesDefaultCollections()
     {
         $this->assertSame(0, models\Collection::count());
 
@@ -184,11 +184,23 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding');
-        $this->assertSame(1, models\Collection::count());
-        $collection = models\Collection::take();
+        $this->assertSame(3, models\Collection::count());
         $user = auth\CurrentUser::get();
-        $this->assertSame('bookmarks', $collection->type);
-        $this->assertSame($user->id, $collection->user_id);
+        $bookmarks = models\Collection::findBy([
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $news = models\Collection::findBy([
+            'user_id' => $user->id,
+            'type' => 'news',
+        ]);
+        $read_list = models\Collection::findBy([
+            'user_id' => $user->id,
+            'type' => 'read',
+        ]);
+        $this->assertNotNull($bookmarks);
+        $this->assertNotNull($news);
+        $this->assertNotNull($read_list);
     }
 
     public function testCreateRedirectsIfRegistrationsAreClosed()

@@ -158,6 +158,46 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the user' news collection
+     *
+     * @return \flusio\models\Collection
+     */
+    public function news()
+    {
+        $news = Collection::findBy([
+            'user_id' => $this->id,
+            'type' => 'news',
+        ]);
+
+        if (!$news) {
+            $news = Collection::initNews($this->id);
+            $news->save();
+        }
+
+        return $news;
+    }
+
+    /**
+     * Return the user' read list collection
+     *
+     * @return \flusio\models\Collection
+     */
+    public function readList()
+    {
+        $read_list = Collection::findBy([
+            'user_id' => $this->id,
+            'type' => 'read',
+        ]);
+
+        if (!$read_list) {
+            $read_list = Collection::initReadList($this->id);
+            $read_list->save();
+        }
+
+        return $read_list;
+    }
+
+    /**
      * Return the list of collections created by the user
      *
      * @param boolean $exclude_bookmarks Default is false.
@@ -174,6 +214,7 @@ class User extends \Minz\Model
         } else {
             return Collection::listBy([
                 'user_id' => $this->id,
+                'type' => ['bookmarks', 'collection'],
             ]);
         }
     }
