@@ -395,8 +395,7 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return a list of links to fetch (fetched_at is null, or fetched_error is
-     * not null).
+     * Return a list of links to fetch (fetched_at is null, or fetched_code is in error).
      *
      * Links in error are not returned if their fetched_count is greater than
      * 25 or if fetched_at is too close (a number of seconds depending on the
@@ -412,7 +411,7 @@ class Link extends \Minz\DatabaseModel
             SELECT * FROM links
             WHERE fetched_at IS NULL
             OR (
-                fetched_error IS NOT NULL
+                (fetched_code < 200 OR fetched_code >= 300)
                 AND fetched_count <= 25
                 AND fetched_at < (?::timestamptz - interval '1 second' * (5 + pow(fetched_count, 4)))
             )
@@ -440,7 +439,7 @@ class Link extends \Minz\DatabaseModel
             SELECT COUNT(*) FROM links
             WHERE fetched_at IS NULL
             OR (
-                fetched_error IS NOT NULL
+                (fetched_code < 200 OR fetched_code >= 300)
                 AND fetched_count <= 25
                 AND fetched_at < (?::timestamptz - interval '1 second' * (5 + pow(fetched_count, 4)))
             )
