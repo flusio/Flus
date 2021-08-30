@@ -21,6 +21,10 @@ class JobsWorker
     {
         $job_dao = new models\dao\Job();
         $db_jobs = $job_dao->listAll();
+        usort($db_jobs, function ($db_job_1, $db_job_2) {
+            return $db_job_1['id'] - $db_job_2['id'];
+        });
+
         $result = [];
         foreach ($db_jobs as $db_job) {
             $job_as_text = "job {$db_job['id']} ({$db_job['name']})";
