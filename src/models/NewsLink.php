@@ -68,8 +68,8 @@ class NewsLink extends \Minz\Model
             'url' => $link->url,
             'user_id' => $user_id,
             'link_id' => $link->id,
-            'via_type' => $link->news_via_type,
-            'via_collection_id' => $link->news_via_collection_id,
+            'via_type' => $link->via_type,
+            'via_collection_id' => $link->via_collection_id,
         ]);
     }
 

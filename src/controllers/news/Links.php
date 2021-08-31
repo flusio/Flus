@@ -190,13 +190,9 @@ class Links
      * Mark a news link as read and remove it from bookmarks.
      *
      * @request_param string csrf
-     * @request_param string id (can be "all")
      *
      * @response 302 /login?redirect_to=/news
      *     if not connected
-     * @response 302 /news
-     * @flash error
-     *     if the link doesn't exist, or is not associated to the current user
      * @response 302 /news
      * @flash error
      *     if CSRF is invalid
@@ -207,7 +203,6 @@ class Links
     {
         $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('news');
-        $news_link_id = $request->param('id');
         $csrf = $request->param('csrf');
 
         if (!$user) {
@@ -219,37 +214,14 @@ class Links
             return Response::found($from);
         }
 
-        if ($news_link_id === 'all') {
-            $news_links = models\NewsLink::daoToList('listCurrentNews', $user->id);
-        } else {
-            $news_link = models\NewsLink::find($news_link_id);
-            if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
-                utils\Flash::set('error', _('The link doesn’t exist.'));
-                return Response::found($from);
-            }
-            $news_links = [$news_link];
-        }
-
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $read_list = $user->readList();
         $bookmarks = $user->bookmarks();
+        $news = $user->news();
 
-        foreach ($news_links as $news_link) {
-            // First, we mark the news link as read
-            $news_link->read_at = \Minz\Time::now();
-            $news_link->save();
-
-            // Then, we try to find a link with corresponding URL in order to
-            // remove it from bookmarks.
-            $link = models\Link::findBy([
-                'url' => $news_link->url,
-                'user_id' => $user->id,
-            ]);
-            if ($link) {
-                $actual_collection_ids = array_column($link->collections(), 'id');
-                if (in_array($bookmarks->id, $actual_collection_ids)) {
-                    $links_to_collections_dao = new models\dao\LinksToCollections();
-                    $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
-                }
-            }
+        foreach ($news->links() as $link) {
+            $links_to_collections_dao->attach($link->id, [$read_list->id]);
+            $links_to_collections_dao->detach($link->id, [$bookmarks->id, $news->id]);
         }
 
         return Response::found($from);
@@ -259,13 +231,9 @@ class Links
      * Remove a link from news and add it to bookmarks.
      *
      * @request_param string csrf
-     * @request_param string id (can be "all")
      *
      * @response 302 /login?redirect_to=/news
      *     if not connected
-     * @response 302 /news
-     * @flash error
-     *     if the link doesn't exist, or is not associated to the current user
      * @response 302 /news
      * @flash error
      *     if CSRF is invalid
@@ -276,7 +244,6 @@ class Links
     {
         $user = auth\CurrentUser::get();
         $from = \Minz\Url::for('news');
-        $news_link_id = $request->param('id');
         $csrf = $request->param('csrf');
 
         if (!$user) {
@@ -288,46 +255,13 @@ class Links
             return Response::found($from);
         }
 
-        if ($news_link_id === 'all') {
-            $news_links = models\NewsLink::daoToList('listCurrentNews', $user->id);
-        } else {
-            $news_link = models\NewsLink::find($news_link_id);
-            if (!auth\NewsLinksAccess::canUpdate($user, $news_link)) {
-                utils\Flash::set('error', _('The link doesn’t exist.'));
-                return Response::found($from);
-            }
-            $news_links = [$news_link];
-        }
-
         $links_to_collections_dao = new models\dao\LinksToCollections();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
 
-        foreach ($news_links as $news_link) {
-            // First, we want the link with corresponding URL to exist for the
-            // current user (or it would be impossible to bookmark it correctly).
-            // If it doesn't exist, let's create it in DB from the $news_link variable.
-            $link = models\Link::findBy([
-                'url' => $news_link->url,
-                'user_id' => $user->id,
-            ]);
-            if (!$link && $news_link->link_id) {
-                $associated_link = models\Link::find($news_link->link_id);
-                $link = models\Link::copy($associated_link, $user->id);
-                $link->save();
-            } elseif (!$link) {
-                $link = models\Link::init($news_link->url, $user->id, false);
-                $link->save();
-            }
-
-            // Then, we check if the link is bookmarked. If it isn't, bookmark it.
-            $bookmarks = $user->bookmarks();
-            $actual_collection_ids = array_column($link->collections(), 'id');
-            if (!in_array($bookmarks->id, $actual_collection_ids)) {
-                $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
-            }
-
-            // Then, delete the news (we don't set removed_at or it would no
-            // longer be suggested to the user).
-            models\NewsLink::delete($news_link->id);
+        foreach ($news->links() as $link) {
+            $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
+            $links_to_collections_dao->detach($link->id, [$news->id]);
         }
 
         return Response::found($from);

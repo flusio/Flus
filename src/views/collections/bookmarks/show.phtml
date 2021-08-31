@@ -125,7 +125,7 @@
                                     </button>
                                 </div>
 
-                                <form method="post" action="<?= url('mark link as read', ['id' => $link->id]) ?>">
+                                <form method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => url('bookmarks')]) ?>">
                                     <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                                     <button class="popup__item popup__item--button">

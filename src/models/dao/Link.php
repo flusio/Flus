@@ -143,39 +143,6 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return links associated to news_links of the given user
-     *
-     * @param string $user_id
-     *
-     * @return array
-     */
-    public function listForNews($user_id)
-    {
-        $sql = <<<SQL
-            SELECT l.*, nl.published_at AS published_at, nl.id AS news_link_id, (
-                SELECT COUNT(m.*) FROM messages m
-                WHERE m.link_id = l.id
-            ) AS number_comments
-            FROM links l, news_links nl
-
-            WHERE l.id = nl.link_id
-
-            AND nl.user_id = :user_id
-            AND nl.removed_at IS NULL
-            AND nl.read_at IS NULL
-            AND (l.is_hidden = false OR l.user_id = :user_id)
-
-            ORDER BY nl.published_at DESC, l.id
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([
-            ':user_id' => $user_id,
-        ]);
-        return $statement->fetchAll();
-    }
-
-    /**
      * Return links listed in bookmarks of the given user, ordered randomly.
      *
      * @param string $user_id
@@ -208,7 +175,7 @@ class Link extends \Minz\DatabaseModel
         }
 
         $sql = <<<SQL
-            SELECT l.*, lc.created_at AS published_at, 'bookmarks' AS news_via_type
+            SELECT l.*, lc.created_at AS published_at, 'bookmarks' AS via_type
             FROM links l, collections c, links_to_collections lc
 
             WHERE lc.link_id = l.id
@@ -266,7 +233,7 @@ class Link extends \Minz\DatabaseModel
         }
 
         $sql = <<<SQL
-            SELECT l.*, lc.created_at AS published_at, 'followed' AS news_via_type, c.id AS news_via_collection_id
+            SELECT l.*, lc.created_at AS published_at, 'followed' AS via_type, c.id AS via_collection_id
             FROM links l, collections c, links_to_collections lc, followed_collections fc
 
             WHERE fc.user_id = :user_id
@@ -279,18 +246,14 @@ class Link extends \Minz\DatabaseModel
             AND c.is_public = true
 
             AND l.url NOT IN (
-                SELECT nl.url FROM news_links nl
-                WHERE nl.user_id = :user_id
-            )
-            AND l.url NOT IN (
-                SELECT bl.url
-                FROM links bl, collections bc, links_to_collections blc
+                SELECT l_exclude.url
+                FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
 
-                WHERE bc.user_id = :user_id
-                AND bc.type = 'bookmarks'
+                WHERE c_exclude.user_id = :user_id
+                AND (c_exclude.type = 'bookmarks' OR c_exclude.type = 'read')
 
-                AND blc.link_id = bl.id
-                AND blc.collection_id = bc.id
+                AND lc_exclude.link_id = l_exclude.id
+                AND lc_exclude.collection_id = c_exclude.id
             )
 
             {$where_placeholder}

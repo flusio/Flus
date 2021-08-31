@@ -26,23 +26,31 @@ class LinksToCollections extends \Minz\DatabaseModel
      *
      * @param string $link_id
      * @param string[] $collection_ids
+     * @param \DateTime $created_at Value to set as created_at, "now" by default
      *
      * @return boolean True on success
      */
-    public function attach($link_id, $collection_ids)
+    public function attach($link_id, $collection_ids, $created_at = null)
     {
-        $now = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
+        if (!$created_at) {
+            $created_at = \Minz\Time::now();
+        }
         $values_as_question_marks = [];
         $values = [];
         foreach ($collection_ids as $collection_id) {
             $values_as_question_marks[] = '(?, ?, ?)';
-            $values = array_merge($values, [$now, $link_id, $collection_id]);
+            $values = array_merge($values, [
+                $created_at->format(\Minz\Model::DATETIME_FORMAT),
+                $link_id,
+                $collection_id,
+            ]);
         }
         $values_placeholder = implode(", ", $values_as_question_marks);
 
         $sql = <<<SQL
             INSERT INTO links_to_collections (created_at, link_id, collection_id)
-            VALUES {$values_placeholder};
+            VALUES {$values_placeholder}
+            ON CONFLICT DO NOTHING;
         SQL;
 
         $statement = $this->prepare($sql);

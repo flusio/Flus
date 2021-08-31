@@ -124,18 +124,26 @@ CREATE TABLE links (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     locked_at TIMESTAMPTZ,
+    is_hidden BOOLEAN NOT NULL DEFAULT false,
+
     title TEXT NOT NULL,
     url TEXT NOT NULL,
     url_feeds JSON NOT NULL DEFAULT '[]',
-    is_hidden BOOLEAN NOT NULL DEFAULT false,
     reading_time INTEGER NOT NULL DEFAULT 0,
     image_filename TEXT,
+
     fetched_at TIMESTAMPTZ,
     fetched_code INTEGER NOT NULL DEFAULT 0,
     fetched_error TEXT,
     fetched_count INTEGER NOT NULL DEFAULT 0,
-    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
-    feed_entry_id TEXT
+
+    feed_entry_id TEXT,
+
+    via_type TEXT NOT NULL DEFAULT '',
+    via_link_id TEXT REFERENCES links ON DELETE SET NULL ON UPDATE CASCADE,
+    via_collection_id TEXT REFERENCES collections ON DELETE SET NULL ON UPDATE CASCADE,
+
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE INDEX idx_links_user_id_url ON links(user_id, url);

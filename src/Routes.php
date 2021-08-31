@@ -83,10 +83,10 @@ class Routes
         // News page
         $router->addRoute('get', '/news', 'News#show', 'news');
         $router->addRoute('post', '/news', 'News#create', 'fill news');
+        $router->addRoute('post', '/news/mark-as-read', 'news/Links#markAsRead', 'mark news as read');
+        $router->addRoute('post', '/news/read-later', 'news/Links#readLater', 'read news later');
         $router->addRoute('get', '/news/:id/add', 'news/Links#new', 'adding news');
         $router->addRoute('post', '/news/:id/add', 'news/Links#create', 'add news');
-        $router->addRoute('post', '/news/:id/mark-as-read', 'news/Links#markAsRead', 'mark news as read');
-        $router->addRoute('post', '/news/:id/read-later', 'news/Links#readLater', 'read news later');
         $router->addRoute('post', '/news/:id/remove', 'news/Links#delete', 'remove news');
 
         // Collections
@@ -123,6 +123,7 @@ class Routes
         $router->addRoute('get', '/links/:id/obtain', 'links/Obtentions#new', 'obtaining link');
         $router->addRoute('post', '/links/:id/obtain', 'links/Obtentions#create', 'obtain link');
         $router->addRoute('post', '/links/:id/mark-as-read', 'Links#markAsRead', 'mark link as read');
+        $router->addRoute('post', '/links/:id/read-later', 'Links#readLater', 'read link later');
 
         // Link collections
         $router->addRoute('get', '/links/:id/collections', 'links/Collections#index', 'link collections');

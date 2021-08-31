@@ -349,21 +349,22 @@ class Links
      *
      * @request_param string csrf
      * @request_param string id
+     * @request_param string from
      *
-     * @response 302 /login?redirect_to=/bookmarks
+     * @response 302 /login?redirect_to=:from
      *     if not connected
      * @response 404
      *     if the link doesn't exist, or is not associated to the current user
-     * @response 302 /bookmarks
+     * @response 302 :from
      * @flash error
      *     if CSRF is invalid
-     * @response 302 /bookmarks
+     * @response 302 :from
      *     on success
      */
     public function markAsRead($request)
     {
         $user = auth\CurrentUser::get();
-        $from = \Minz\Url::for('bookmarks');
+        $from = $request->param('from');
         $link_id = $request->param('id');
         $csrf = $request->param('csrf');
 
@@ -381,25 +382,65 @@ class Links
             return Response::notFound('not_found.phtml');
         }
 
-        // First, we make sure to mark a corresponding news link as read
-        $news_link = models\NewsLink::findBy([
-            'url' => $link->url,
-            'user_id' => $user->id,
-        ]);
-        if (!$news_link) {
-            $news_link = models\NewsLink::initFromLink($link, $user->id);
-        }
-        $news_link->via_type = 'bookmarks';
-        $news_link->read_at = \Minz\Time::now();
-        $news_link->save();
-
-        // Then, we detach the link from the bookmarks
-        $bookmarks = $user->bookmarks();
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
+        $read_list = $user->readList();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+
+        $links_to_collections_dao->attach($link->id, [$read_list->id]);
+        $links_to_collections_dao->detach($link->id, [$bookmarks->id, $news->id]);
 
         return Response::found($from);
     }
+
+    /**
+     * Remove a link from news and add it to bookmarks.
+     *
+     * @request_param string csrf
+     * @request_param string id
+     * @request_param string from
+     *
+     * @response 302 /login?redirect_to=:from
+     *     if not connected
+     * @response 404
+     *     if the link doesn't exist, or is not associated to the current user
+     * @response 302 :from
+     * @flash error
+     *     if CSRF is invalid
+     * @response 302 :from
+     *     on success
+     */
+    public function readLater($request)
+    {
+        $user = auth\CurrentUser::get();
+        $from = $request->param('from');
+        $link_id = $request->param('id');
+        $csrf = $request->param('csrf');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $link = models\Link::find($link_id);
+        if (!auth\LinksAccess::canUpdate($user, $link)) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
+        $links_to_collections_dao->detach($link->id, [$news->id]);
+
+        return Response::found($from);
+    }
+
 
     /**
      * Do nothing, it handles webextension requests on the removed fetch endpoint.

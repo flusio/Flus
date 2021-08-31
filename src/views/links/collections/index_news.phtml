@@ -1,0 +1,107 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Add to your collections'),
+        'current_tab' => 'news',
+        'canonical' => url_full('link collections', ['id' => $link->id, 'mode' => 'news']),
+        'back' => [
+            'href' => url('news'),
+            'label' => _('News'),
+        ],
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1 id="modal-title"><?= _('Add to your collections') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= protect($link->title) ?>
+    </p>
+
+    <form method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
+        <input type="hidden" name="mode" value="news" />
+
+        <fieldset>
+            <legend><?= _('Collections') ?></legend>
+
+            <?php if (isset($errors['collection_ids'])): ?>
+                <p class="form-group__error">
+                    <?= icon('error') ?>
+                    <?= $errors['collection_ids'] ?>
+                </p>
+            <?php endif; ?>
+
+            <div class="collections-selector" data-controller="collections-selector">
+                <select
+                    id="collection-ids"
+                    class="collections-selector__data"
+                    name="collection_ids[]"
+                    data-target="collections-selector.data"
+                    multiple
+                    required
+                    tabindex="-1"
+                >
+                    <?php foreach ($collections as $collection): ?>
+                        <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
+                            <?= protect($collection->name()) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <ul class="collections-selector__list" data-target="collections-selector.list"></ul>
+
+                <select
+                    data-target="collections-selector.select"
+                    data-action="collections-selector#attach"
+                    aria-label="<?= _('Select a collection') ?>"
+                >
+                    <option selected disabled>
+                        <?= _('Select a collection') ?>
+                    </option>
+                </select>
+            </div>
+        </fieldset>
+
+        <div class="form-group">
+            <label for="comment">
+                <?= _('What do you think?') ?>
+                <span class="label__help">
+                    <?= _('(optional)') ?>
+                </span>
+            </label>
+
+            <textarea
+                id="comment"
+                name="comment"
+            ><?= $comment ?></textarea>
+        </div>
+
+        <div class="form-group">
+            <input
+                type="checkbox"
+                id="is-hidden"
+                name="is_hidden"
+                <?= $link->is_hidden ? 'checked' : '' ?>
+            />
+
+            <label class="label--checkbox" for="is-hidden">
+                <?= _('Hide this link in public collections') ?>
+            </label>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Save and mark as read') ?>
+            </button>
+        </div>
+    </form>
+</div>

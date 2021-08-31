@@ -15,10 +15,7 @@
     <?php if ($links): ?>
         <div class="cards cards--centered">
             <?php foreach ($links as $link): ?>
-                <?php
-                    $news_link = $link->newsLink();
-                    $via_collection = $news_link->viaCollection();
-                ?>
+                <?php $via_collection = $link->viaCollection(); ?>
                 <div class="card">
                     <a
                         class="anchor--hidden"
@@ -63,15 +60,15 @@
                         </p>
 
                         <p class="card__text news__via">
-                            <?php if ($news_link->via_type === 'bookmarks'): ?>
+                            <?php if ($link->via_type === 'bookmarks'): ?>
                                 <?= _f('via your <strong><a class="anchor--hidden" href="%s">bookmarks</a></strong>', url('bookmarks')) ?>
-                            <?php elseif ($news_link->via_type === 'followed' && $via_collection): ?>
+                            <?php elseif ($link->via_type === 'followed' && $via_collection): ?>
                                 <?php if ($via_collection->type === 'collection'): ?>
                                     <?= _f('via <strong><a class="anchor--hidden" href="%s">%s</a></strong> by %s', url('collection', ['id' => $via_collection->id]), protect($via_collection->name()), protect($via_collection->owner()->username)) ?>
                                 <?php else: ?>
                                     <?= _f('via <strong><a class="anchor--hidden" href="%s">%s</a></strong>', url('collection', ['id' => $via_collection->id]), protect($via_collection->name())) ?>
                                 <?php endif; ?>
-                            <?php elseif ($news_link->via_type === 'followed'): ?>
+                            <?php elseif ($link->via_type === 'followed'): ?>
                                 <?= _('via a <strong>followed collection</strong> (deleted)') ?>
                             <?php endif; ?>
                         </p>
@@ -107,7 +104,7 @@
                                         <?= _('Remove from the news…') ?>
                                     </div>
 
-                                    <form method="post" action="<?= url('mark news as read', ['id' => $link->news_link_id]) ?>">
+                                    <form method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => url('news')]) ?>">
                                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                                         <button class="popup__item popup__item--button">
@@ -116,7 +113,7 @@
                                         </button>
                                     </form>
 
-                                    <form method="post" action="<?= url('read news later', ['id' => $link->news_link_id]) ?>">
+                                    <form method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => url('news')]) ?>">
                                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                                         <button class="popup__item popup__item--button">
@@ -132,7 +129,7 @@
                                     class="button--ghost button--smaller"
                                     data-controller="modal-opener"
                                     data-action="modal-opener#fetch"
-                                    data-modal-opener-href="<?= url('add news', ['id' => $link->news_link_id]) ?>"
+                                    data-modal-opener-href="<?= url('link collections', ['id' => $link->id, 'mode' => 'news', 'from' => url('news')]) ?>"
                                     aria-haspopup="dialog"
                                     aria-controls="modal"
                                     title="<?= _('Add to collections') ?>"
@@ -175,7 +172,7 @@
                 <nav class="popup__container popup__container--bottom">
                     <form
                         method="post"
-                        action="<?= url('mark news as read', ['id' => 'all']) ?>"
+                        action="<?= url('mark news as read') ?>"
                         data-controller="confirmation"
                         data-action="confirmation#confirm"
                         data-message="<?= _('You’ll mark all the news links as read, this action cannot be canceled. Are you sure?') ?>"
@@ -188,7 +185,7 @@
                         </button>
                     </form>
 
-                    <form method="post" action="<?= url('read news later', ['id' => 'all']) ?>">
+                    <form method="post" action="<?= url('read news later') ?>">
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                         <button class="popup__item popup__item--button">
