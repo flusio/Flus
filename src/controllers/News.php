@@ -137,4 +137,85 @@ class News
 
         return Response::redirect('news');
     }
+
+    /**
+     * Mark a news link as read and remove it from bookmarks.
+     *
+     * @request_param string csrf
+     *
+     * @response 302 /login?redirect_to=/news
+     *     if not connected
+     * @response 302 /news
+     * @flash error
+     *     if CSRF is invalid
+     * @response 302 /news
+     *     on success
+     */
+    public function markAsRead($request)
+    {
+        $user = auth\CurrentUser::get();
+        $from = \Minz\Url::for('news');
+        $csrf = $request->param('csrf');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $read_list = $user->readList();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+
+        foreach ($news->links() as $link) {
+            $links_to_collections_dao->attach($link->id, [$read_list->id]);
+            $links_to_collections_dao->detach($link->id, [$bookmarks->id, $news->id]);
+        }
+
+        return Response::found($from);
+    }
+
+    /**
+     * Remove a link from news and add it to bookmarks.
+     *
+     * @request_param string csrf
+     *
+     * @response 302 /login?redirect_to=/news
+     *     if not connected
+     * @response 302 /news
+     * @flash error
+     *     if CSRF is invalid
+     * @response 302 /news
+     *     on success
+     */
+    public function readLater($request)
+    {
+        $user = auth\CurrentUser::get();
+        $from = \Minz\Url::for('news');
+        $csrf = $request->param('csrf');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+
+        foreach ($news->links() as $link) {
+            $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
+            $links_to_collections_dao->detach($link->id, [$news->id]);
+        }
+
+        return Response::found($from);
+    }
 }

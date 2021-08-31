@@ -200,8 +200,8 @@ class Link extends \Minz\DatabaseModel
 
     /**
      * Return public links listed in followed collections of the given user,
-     * ordered by created_at. Links with a matching url in news_links are not
-     * returned.
+     * ordered by publication date. Links with a matching url in bookmarks or
+     * read list are not returned.
      *
      * @param string $user_id
      * @param integer|null $min_duration
