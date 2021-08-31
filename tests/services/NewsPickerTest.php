@@ -160,12 +160,10 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         ]);
         $link_id_1 = $this->create('link', [
             'user_id' => $this->other_user->id,
-            'created_at' => $created_at_1->format(\Minz\Model::DATETIME_FORMAT),
             'is_hidden' => 0,
         ]);
         $link_id_2 = $this->create('link', [
             'user_id' => $this->other_user->id,
-            'created_at' => $created_at_2->format(\Minz\Model::DATETIME_FORMAT),
             'is_hidden' => 0,
         ]);
         $collection_id = $this->create('collection', [
@@ -174,10 +172,12 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $created_at_1->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
             'link_id' => $link_id_1,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $created_at_2->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
             'link_id' => $link_id_2,
         ]);

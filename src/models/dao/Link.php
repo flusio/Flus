@@ -203,7 +203,7 @@ class Link extends \Minz\DatabaseModel
         }
 
         if ($until !== null) {
-            $where_placeholder .= 'AND l.created_at >= :until ';
+            $where_placeholder .= 'AND lc.created_at >= :until ';
             $values[':until'] = $until->format(\Minz\Model::DATETIME_FORMAT);
         }
 
@@ -261,7 +261,7 @@ class Link extends \Minz\DatabaseModel
         }
 
         if ($until !== null) {
-            $where_placeholder .= 'AND l.created_at >= :until ';
+            $where_placeholder .= 'AND lc.created_at >= :until ';
             $values[':until'] = $until->format(\Minz\Model::DATETIME_FORMAT);
         }
 
