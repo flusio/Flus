@@ -18,94 +18,39 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersNewsLinksCorrectly()
     {
         $user = $this->login();
-        $title_news = $this->fakeUnique('sentence');
-        $title_not_news_1 = $this->fakeUnique('sentence');
-        $title_not_news_2 = $this->fakeUnique('sentence');
-        $title_not_news_3 = $this->fakeUnique('sentence');
-        $link_news_id = $this->create('link', [
-            'title' => $title_news,
-            'user_id' => $user->id,
-        ]);
-        $this->create('news_link', [
-            'published_at' => $this->fake('iso8601'),
-            'user_id' => $user->id,
-            'link_id' => $link_news_id,
-            'read_at' => null,
-            'removed_at' => null,
-        ]);
-        $link_not_news_id_1 = $this->create('link', [
-            'title' => $title_not_news_1,
-            'user_id' => $user->id,
-        ]);
-        $this->create('news_link', [
-            'published_at' => $this->fake('iso8601'),
-            'user_id' => $user->id,
-            'link_id' => $link_not_news_id_1,
-            'read_at' => null,
-            'removed_at' => $this->fake('iso8601'),
-        ]);
-        $link_not_news_id_2 = $this->create('link', [
-            'title' => $title_not_news_2,
-            'user_id' => $user->id,
-        ]);
-        $this->create('news_link', [
-            'published_at' => $this->fake('iso8601'),
-            'user_id' => $user->id,
-            'link_id' => $link_not_news_id_2,
-            'read_at' => $this->fake('iso8601'),
-            'removed_at' => null,
-        ]);
-        $link_not_news_id_3 = $this->create('link', [
-            'title' => $title_not_news_3,
-            'user_id' => $this->create('user'),
-            'is_hidden' => 1,
-        ]);
-        $this->create('news_link', [
-            'published_at' => $this->fake('iso8601'),
-            'user_id' => $user->id,
-            'link_id' => $link_not_news_id_3,
-            'read_at' => null,
-            'removed_at' => null,
-        ]);
-
-        $response = $this->appRun('get', '/news');
-
-        $this->assertResponse($response, 200);
-        $response_output = $response->render();
-        $this->assertStringContainsString($title_news, $response_output);
-        $this->assertStringNotContainsString($title_not_news_1, $response_output);
-        $this->assertStringNotContainsString($title_not_news_2, $response_output);
-        $this->assertStringNotContainsString($title_not_news_3, $response_output);
-    }
-
-    public function testShowShowsIfViaBookmarks()
-    {
-        $user = $this->login();
-        $url = $this->fake('url');
+        $news = $user->news();
+        $title = $this->fakeUnique('sentence');
         $link_id = $this->create('link', [
+            'title' => $title,
             'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $collection_id,
-        ]);
-        $this->create('news_link', [
-            'published_at' => $this->fake('iso8601'),
-            'user_id' => $user->id,
-            'url' => $url,
-            'read_at' => null,
-            'removed_at' => null,
-            'link_id' => $link_id,
-            'via_type' => 'bookmarks',
+            'collection_id' => $news->id,
         ]);
 
         $response = $this->appRun('get', '/news');
 
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $title);
+    }
+
+    public function testShowRendersIfViaBookmarks()
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'via_type' => 'bookmarks',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('get', '/news');
+
+        $this->assertResponseCode($response, 200);
         $bookmarks_url = \Minz\Url::for('bookmarks');
         $bookmarks_anchor = "<a class=\"anchor--hidden\" href=\"{$bookmarks_url}\">bookmarks</a>";
         $this->assertResponseContains($response, "via your <strong>{$bookmarks_anchor}</strong>");
@@ -114,40 +59,25 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersIfViaFollowedCollections()
     {
         $user = $this->login();
-        $url = $this->fake('url');
-        $collection_name = $this->fake('word');
         $username = $this->fake('username');
         $other_user_id = $this->create('user', [
             'username' => $username,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'url' => $url,
-            'is_hidden' => 0,
-        ]);
+        $collection_name = $this->fake('sentence');
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
-            'name' => $collection_name,
-            'is_public' => 1,
             'type' => 'collection',
+            'name' => $collection_name,
+        ]);
+        $news = $user->news();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'via_type' => 'followed',
+            'via_collection_id' => $collection_id,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $collection_id,
-        ]);
-        $this->create('followed_collection', [
-            'user_id' => $user->id,
-            'collection_id' => $collection_id,
-        ]);
-        $this->create('news_link', [
-            'published_at' => $this->fake('iso8601'),
-            'user_id' => $user->id,
-            'read_at' => null,
-            'removed_at' => null,
-            'url' => $url,
-            'link_id' => $link_id,
-            'via_type' => 'followed',
-            'via_collection_id' => $collection_id,
+            'collection_id' => $news->id,
         ]);
 
         $response = $this->appRun('get', '/news');
@@ -161,58 +91,74 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersTipsIfNoNewsFlash()
     {
         $user = $this->login();
+        $news = $user->news();
+        $title = $this->fakeUnique('sentence');
+        $link_id = $this->create('link', [
+            'title' => $title,
+            'user_id' => $user->id,
+        ]);
         utils\Flash::set('no_news', true);
 
         $response = $this->appRun('get', '/news');
 
-        $response_output = $response->render();
-        $this->assertStringContainsString('We haven’t found any relevant links for the moment.', $response_output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'We haven’t found any relevant links for the moment.');
     }
 
     public function testShowHidesAddToCollectionsIfUserHasNoCollections()
     {
         $user = $this->login();
+        $news = $user->news();
+        $title = $this->fakeUnique('sentence');
         $link_id = $this->create('link', [
+            'title' => $title,
             'user_id' => $user->id,
         ]);
-        $this->create('news_link', [
-            'published_at' => $this->fake('iso8601'),
-            'user_id' => $user->id,
+        $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'read_at' => null,
-            'removed_at' => null,
+            'collection_id' => $news->id,
         ]);
 
         $response = $this->appRun('get', '/news');
 
-        $response_output = $response->render();
-        $this->assertStringNotContainsString('Add to collections', $response_output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseNotContains($response, 'Add to collections');
     }
 
     public function testShowRedirectsIfNotConnected()
     {
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $news = $user->news();
+        $title = $this->fakeUnique('sentence');
+        $link_id = $this->create('link', [
+            'title' => $title,
+            'user_id' => $user->id,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
         $response = $this->appRun('get', '/news');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
     }
 
     public function testCreateSelectsLinksFromBookmarksIfTypeIsShort()
     {
         $user = $this->login();
-        $link_url = $this->fake('url');
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
         $duration = $this->fake('numberBetween', 0, 9);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'url' => $link_url,
             'reading_time' => $duration,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
+            'via_type' => '',
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
         ]);
 
         $response = $this->appRun('post', '/news', [
@@ -220,30 +166,32 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'short',
         ]);
 
-        $this->assertResponse($response, 302, '/news');
-        $news_link = models\NewsLink::findBy(['url' => $link_url]);
-        $this->assertNotNull($news_link);
-        $this->assertSame('bookmarks', $news_link->via_type);
-        $this->assertSame($link_id, $news_link->link_id);
+        $this->assertResponseCode($response, 302, '/news');
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link = models\Link::find($link_id);
+        $this->assertSame('bookmarks', $link->via_type);
+        $this->assertSame($link->id, $link->via_link_id);
+        $link_to_news_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $this->assertNotNull($link_to_news_id);
     }
 
     public function testCreateSelectsLinksFromBookmarksIfTypeIsLong()
     {
         $user = $this->login();
-        $link_url = $this->fake('url');
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
         $duration = $this->fake('numberBetween', 10, 9000);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'url' => $link_url,
             'reading_time' => $duration,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
+            'via_type' => '',
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
         ]);
 
         $response = $this->appRun('post', '/news', [
@@ -251,23 +199,28 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'long',
         ]);
 
-        $this->assertResponse($response, 302, '/news');
-        $news_link = models\NewsLink::findBy(['url' => $link_url]);
-        $this->assertNotNull($news_link);
-        $this->assertSame('bookmarks', $news_link->via_type);
-        $this->assertSame($link_id, $news_link->link_id);
+        $this->assertResponseCode($response, 302, '/news');
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link = models\Link::find($link_id);
+        $this->assertSame('bookmarks', $link->via_type);
+        $this->assertSame($link->id, $link->via_link_id);
+        $link_to_news_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $this->assertNotNull($link_to_news_id);
     }
 
     public function testCreateSelectsLinksFromFollowedIfTypeIsNewsfeed()
     {
         $user = $this->login();
+        $news = $user->news();
         $other_user_id = $this->create('user');
         $days = $this->fake('numberBetween', 0, 2);
         $created_at = \Minz\Time::ago($days, 'days');
         $link_url = $this->fake('url');
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
             'url' => $link_url,
             'is_hidden' => 0,
         ]);
@@ -277,6 +230,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
             'link_id' => $link_id,
             'collection_id' => $collection_id,
         ]);
@@ -290,13 +244,72 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'newsfeed',
         ]);
 
-        $this->assertResponse($response, 302, '/news');
-        $news_link = models\NewsLink::findBy(['url' => $link_url]);
+        $this->assertResponseCode($response, 302, '/news');
+        $news_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $link_url,
+        ]);
         $this->assertNotNull($news_link);
-        $this->assertSame($user->id, $news_link->user_id);
         $this->assertSame('followed', $news_link->via_type);
         $this->assertSame($collection_id, $news_link->via_collection_id);
-        $this->assertSame($link_id, $news_link->link_id);
+        $this->assertSame($link_id, $news_link->via_link_id);
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link_to_news_id = $links_to_collections_dao->findBy([
+            'link_id' => $news_link->id,
+            'collection_id' => $news->id,
+        ]);
+        $this->assertNotNull($link_to_news_id);
+    }
+
+    public function testCreateDoesNotDuplicatesLink()
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $other_user_id = $this->create('user');
+        $days = $this->fake('numberBetween', 0, 2);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $link_url = $this->fake('url');
+        $owned_link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $link_url,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'url' => $link_url,
+            'is_hidden' => 0,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', '/news', [
+            'csrf' => $user->csrf,
+            'type' => 'newsfeed',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $news_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $link_url,
+        ]);
+        $this->assertSame($owned_link_id, $news_link->id);
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link_to_news_id = $links_to_collections_dao->findBy([
+            'link_id' => $owned_link_id,
+            'collection_id' => $news->id,
+        ]);
+        $this->assertNotNull($link_to_news_id);
     }
 
     public function testCreateSetsFlashNoNewsIfNoSuggestions()
@@ -312,52 +325,52 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user', [
-            'csrf' => 'a token',
-        ]);
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
         $duration = $this->fake('numberBetween', 0, 9);
-        $link_url = $this->fake('url');
         $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'url' => $link_url,
+            'user_id' => $user->id,
             'reading_time' => $duration,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user_id,
-            'type' => 'bookmarks',
+            'via_type' => '',
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
         ]);
 
         $response = $this->appRun('post', '/news', [
-            'csrf' => 'a token',
+            'csrf' => $user->csrf,
             'type' => 'short',
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
-        $news_link = models\NewsLink::findBy(['url' => $link_url]);
-        $this->assertNull($news_link);
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link = models\Link::find($link_id);
+        $this->assertSame('', $link->via_type);
+        $this->assertNull($link->via_link_id);
+        $link_to_news_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $this->assertNull($link_to_news_id);
     }
 
     public function testCreateFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $link_url = $this->fake('url');
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
         $duration = $this->fake('numberBetween', 0, 9);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'url' => $link_url,
             'reading_time' => $duration,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
+            'via_type' => '',
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
         ]);
 
         $response = $this->appRun('post', '/news', [
@@ -365,8 +378,244 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'short',
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
-        $news_link = models\NewsLink::findBy(['url' => $link_url]);
-        $this->assertNull($news_link);
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $link = models\Link::find($link_id);
+        $this->assertSame('', $link->via_type);
+        $this->assertNull($link->via_link_id);
+        $link_to_news_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $this->assertNull($link_to_news_id);
+    }
+
+    public function testReadLaterRemovesLinkFromNewsAndAddsToBookmarksAndRedirects()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/read-later', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
+        $link_to_bookmarks = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $this->assertFalse($exists_in_news, 'The link should no longer be in news.');
+        $this->assertNotNull($link_to_bookmarks, 'The link should be in bookmarks.');
+    }
+
+    public function testReadLaterJustRemovesFromNewsIfAlreadyBookmarked()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/read-later', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
+        $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_bookmarks_id);
+        $this->assertFalse($exists_in_news, 'The link should no longer be in news.');
+        $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
+    }
+
+    public function testReadLaterRedirectsToLoginIfNotConnected()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/read-later', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
+        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
+        $link_to_bookmarks = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $this->assertTrue($exists_in_news, 'The link should still be in news.');
+        $this->assertNull($link_to_bookmarks, 'The link should not be in bookmarks.');
+    }
+
+    public function testReadLaterFailsIfCsrfIsInvalid()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/read-later', [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $this->assertFlash('error', 'A security verification failed.');
+        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
+        $link_to_bookmarks = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $this->assertTrue($exists_in_news, 'The link should still be in news.');
+        $this->assertNull($link_to_bookmarks, 'The link should not be in bookmarks.');
+    }
+
+    public function testMarkAsReadMarksLinkAsReadAndRedirects()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $news = $user->news();
+        $read_list = $user->readList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/mark-as-read', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
+        $link_to_read_list = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
+        ]);
+        $this->assertFalse($exists_in_news, 'The link should not be in news.');
+        $this->assertNotNull($link_to_read_list, 'The link should be in read list.');
+    }
+
+    public function testMarkAsReadRemovesFromBookmarks()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $news = $user->news();
+        $bookmarks = $user->bookmarks();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/mark-as-read', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_bookmarks_id);
+        $this->assertFalse($exists_in_bookmarks, 'The link should not be in bookmarks.');
+    }
+
+    public function testMarkAsReadRedirectsToLoginIfNotConnected()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $news = $user->news();
+        $read_list = $user->readList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/mark-as-read', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
+        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
+        $link_to_read_list = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
+        ]);
+        $this->assertTrue($exists_in_news, 'The link should be in news.');
+        $this->assertNull($link_to_read_list, 'The link should not be in read list.');
+    }
+
+    public function testMarkAsReadFailsIfCsrfIsInvalid()
+    {
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $user = $this->login();
+        $news = $user->news();
+        $read_list = $user->readList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/mark-as-read', [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $this->assertFlash('error', 'A security verification failed.');
+        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
+        $link_to_read_list = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
+        ]);
+        $this->assertTrue($exists_in_news, 'The link should be in news.');
+        $this->assertNull($link_to_read_list, 'The link should not be in read list.');
     }
 }

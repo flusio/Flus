@@ -195,6 +195,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
             $user_factory = new \Minz\Tests\DatabaseFactory('user');
             return $user_factory->create();
         },
+        'via_type' => '',
     ]
 );
 

@@ -46,7 +46,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('bookmarks', $db_links[0]['news_via_type']);
+        $this->assertSame('bookmarks', $db_links[0]['via_type']);
     }
 
     public function testPickSelectsFromFollowed()
@@ -76,8 +76,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('followed', $db_links[0]['news_via_type']);
-        $this->assertSame($collection_id, $db_links[0]['news_via_collection_id']);
+        $this->assertSame('followed', $db_links[0]['via_type']);
+        $this->assertSame($collection_id, $db_links[0]['via_collection_id']);
     }
 
     public function testPickRespectsMinDuration()
@@ -298,16 +298,21 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($db_links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfUrlInNewsLink()
+    public function testPickDoesNotSelectFromFollowedIfUrlInBookmarks()
     {
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
+        $bookmarks = $this->user->bookmarks();
         $url = $this->fake('url');
         $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
             'url' => $url,
             'is_hidden' => 0,
+        ]);
+        $owned_link_id = $this->create('link', [
+            'user_id' => $this->user->id,
+            'url' => $url,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $this->other_user->id,
@@ -318,13 +323,52 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
             'link_id' => $link_id,
         ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $bookmarks->id,
+            'link_id' => $owned_link_id,
+        ]);
         $this->create('followed_collection', [
             'user_id' => $this->user->id,
             'collection_id' => $collection_id,
         ]);
-        $this->create('news_link', [
+
+        $db_links = $news_picker->pick();
+
+        $this->assertSame(0, count($db_links));
+    }
+
+    public function testPickDoesNotSelectFromFollowedIfUrlInReadList()
+    {
+        $news_picker = new NewsPicker($this->user, [
+            'from' => 'followed',
+        ]);
+        $read_list = $this->user->readList();
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $this->other_user->id,
+            'url' => $url,
+            'is_hidden' => 0,
+        ]);
+        $owned_link_id = $this->create('link', [
             'user_id' => $this->user->id,
             'url' => $url,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $read_list->id,
+            'link_id' => $owned_link_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $this->user->id,
+            'collection_id' => $collection_id,
         ]);
 
         $db_links = $news_picker->pick();

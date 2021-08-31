@@ -798,194 +798,305 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testMarkAsRead()
     {
         $user = $this->login();
-        $url = $this->fake('url');
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $read_list = $user->readList();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'url' => $url,
         ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-        $link_to_collection_id = $this->create('link_to_collection', [
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/mark-as-read", [
             'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $this->assertFalse($links_to_collections_dao->exists($link_to_collection_id));
-        $news_link = models\NewsLink::findBy([
-            'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $this->assertNotNull($news_link);
-        $this->assertSame('bookmarks', $news_link->via_type);
-        $this->assertNotNull($news_link->read_at);
-    }
-
-    public function testMarkAsReadDoesNotCreateNewsLinkIfExisting()
-    {
-        $user = $this->login();
-        $url = $this->fake('url');
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-        $link_to_collection_id = $this->create('link_to_collection', [
+        $this->assertFalse($links_to_collections_dao->exists($link_to_bookmarks_id));
+        $this->assertFalse($links_to_collections_dao->exists($link_to_news_id));
+        $link_to_read_list_id = $links_to_collections_dao->findBy([
             'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $read_list->id,
         ]);
-        $news_link_id = $this->create('news_link', [
-            'user_id' => $user->id,
-            'url' => $url,
-            'via_type' => 'followed',
-            'read_at' => null,
-        ]);
-
-        $this->assertSame(1, models\NewsLink::count());
-
-        $response = $this->appRun('post', "/links/{$link_id}/mark-as-read", [
-            'csrf' => $user->csrf,
-        ]);
-
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $this->assertFalse($links_to_collections_dao->exists($link_to_collection_id));
-        $this->assertSame(1, models\NewsLink::count());
-        $news_link = models\NewsLink::find($news_link_id);
-        $this->assertSame('bookmarks', $news_link->via_type);
-        $this->assertNotNull($news_link->read_at);
+        $this->assertNotNull($link_to_read_list_id);
     }
 
     public function testMarkAsReadWorksEvenIfNotInBookmarks()
     {
         $user = $this->login();
-        $url = $this->fake('url');
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $read_list = $user->readList();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/mark-as-read", [
             'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
-        $news_link = models\NewsLink::findBy([
-            'user_id' => $user->id,
-            'url' => $url,
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $this->assertSame(1, $links_to_collections_dao->count());
+        $link_to_read_list_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
         ]);
-        $this->assertNotNull($news_link);
-        $this->assertSame('bookmarks', $news_link->via_type);
-        $this->assertNotNull($news_link->read_at);
+        $this->assertNotNull($link_to_read_list_id);
     }
 
     public function testMarkAsReadRedirectsToLoginIfNotConnected()
     {
-        $user_id = $this->create('user', [
-            'csrf' => 'a token',
-        ]);
-        $url = $this->fake('url');
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $read_list = $user->readList();
         $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'url' => $url,
+            'user_id' => $user->id,
         ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user_id,
-            'type' => 'bookmarks',
-        ]);
-        $link_to_collection_id = $this->create('link_to_collection', [
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/mark-as-read", [
-            'csrf' => 'a token',
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
-        $news_link = models\NewsLink::findBy([
-            'user_id' => $user_id,
-            'url' => $url,
+        $this->assertTrue($links_to_collections_dao->exists($link_to_bookmarks_id));
+        $this->assertTrue($links_to_collections_dao->exists($link_to_news_id));
+        $link_to_read_list_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
         ]);
-        $this->assertNull($news_link);
+        $this->assertNull($link_to_read_list_id);
     }
 
     public function testMarkAsReadFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $url = $this->fake('url');
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $read_list = $user->readList();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'url' => $url,
         ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-        $link_to_collection_id = $this->create('link_to_collection', [
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/mark-as-read", [
             'csrf' => 'not the token',
+            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
         $this->assertFlash('error', 'A security verification failed.');
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
-        $news_link = models\NewsLink::findBy([
-            'user_id' => $user->id,
-            'url' => $url,
+        $this->assertTrue($links_to_collections_dao->exists($link_to_bookmarks_id));
+        $this->assertTrue($links_to_collections_dao->exists($link_to_news_id));
+        $link_to_read_list_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
         ]);
-        $this->assertNull($news_link);
+        $this->assertNull($link_to_read_list_id);
     }
 
     public function testMarkAsReadFailsIfNotOwned()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $url = $this->fake('url');
+        $other_user = models\User::find($other_user_id);
+        $bookmarks = $other_user->bookmarks();
+        $news = $other_user->news();
+        $read_list = $user->readList();
         $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'url' => $url,
+            'user_id' => $other_user->id,
         ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'type' => 'bookmarks',
-        ]);
-        $link_to_collection_id = $this->create('link_to_collection', [
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/mark-as-read", [
             'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $links_to_collections_dao = new models\dao\LinksToCollections();
-        $this->assertTrue($links_to_collections_dao->exists($link_to_collection_id));
-        $news_link = models\NewsLink::findBy([
-            'user_id' => $user->id,
-            'url' => $url,
+        $this->assertTrue($links_to_collections_dao->exists($link_to_bookmarks_id));
+        $this->assertTrue($links_to_collections_dao->exists($link_to_news_id));
+        $link_to_read_list_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
         ]);
-        $this->assertNull($news_link);
+        $this->assertNull($link_to_read_list_id);
+    }
+
+    public function testReadLater()
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $bookmarks = $user->bookmarks();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read-later", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $this->assertFalse($links_to_collections_dao->exists($link_to_news_id));
+        $link_to_bookmarks_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $this->assertNotNull($link_to_bookmarks_id);
+    }
+
+    public function testReadLaterWorksEvenIfNotInNews()
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $bookmarks = $user->bookmarks();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read-later", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $this->assertSame(1, $links_to_collections_dao->count());
+        $link_to_bookmarks_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $this->assertNotNull($link_to_bookmarks_id);
+    }
+
+    public function testReadLaterRedirectsToLoginIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $news = $user->news();
+        $bookmarks = $user->bookmarks();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read-later", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $this->assertTrue($links_to_collections_dao->exists($link_to_news_id));
+        $link_to_bookmarks_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $this->assertNull($link_to_bookmarks_id);
+    }
+
+    public function testReadLaterFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $bookmarks = $user->bookmarks();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read-later", [
+            'csrf' => 'not the token',
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertFlash('error', 'A security verification failed.');
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $this->assertTrue($links_to_collections_dao->exists($link_to_news_id));
+        $link_to_bookmarks_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $this->assertNull($link_to_bookmarks_id);
+    }
+
+    public function testReadLaterFailsIfNotOwned()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $other_user = models\User::find($other_user_id);
+        $news = $other_user->news();
+        $bookmarks = $user->bookmarks();
+        $link_id = $this->create('link', [
+            'user_id' => $other_user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read-later", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $links_to_collections_dao = new models\dao\LinksToCollections();
+        $this->assertTrue($links_to_collections_dao->exists($link_to_news_id));
+        $link_to_bookmarks_id = $links_to_collections_dao->findBy([
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $this->assertNull($link_to_bookmarks_id);
     }
 }
