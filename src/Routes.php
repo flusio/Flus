@@ -107,6 +107,8 @@ class Routes
         $router->addRoute('get', '/collections/:id/image', 'collections/Images#edit', 'edit image collection');
         $router->addRoute('post', '/collections/:id/image', 'collections/Images#update', 'update image collection');
 
+        $router->addRoute('get', '/read', 'collections/Read#index', 'read list');
+
         // Links
         $router->addRoute('get', '/links/new', 'Links#new', 'new link');
         $router->addRoute('post', '/links/new', 'Links#create', 'create link');

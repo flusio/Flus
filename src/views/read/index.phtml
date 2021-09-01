@@ -1,0 +1,171 @@
+<?php
+    if ($pagination->isCurrentFirstPage()) {
+        $current_url_params = [];
+    } else {
+        $current_url_params = [
+            'page' => $pagination->currentPage(),
+        ];
+    }
+
+    $this->layout('base.phtml', [
+        'title' => $collection->name(),
+        'canonical' => url_full('read list', $current_url_params),
+        'current_tab' => 'collections',
+        'current_page' => 'collections',
+        'back' => [
+            'href' => url('collections'),
+            'label' => _('Back'),
+        ],
+    ]);
+?>
+
+<div class="section" data-controller="back-storage" data-back-storage-type="link">
+    <div class="section__title">
+        <h1><?= protect($collection->name()) ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('Find here all the links you’ve marked as read.') ?>
+    </p>
+
+    <div class="cards">
+        <?php foreach ($links as $link): ?>
+            <div class="card">
+                <a
+                    class="anchor--hidden"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    tabindex="-1"
+                    href="<?= protect($link->url) ?>"
+                >
+                    <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" />
+                </a>
+
+                <time class="card__image-overlay" datetime="<?= _d($link->published_at, '%Y-%m-%d') ?>">
+                    <?php if ($now->format('Y') === $link->published_at->format('Y')): ?>
+                        <?= _d($link->published_at, '%d %b') ?>
+                    <?php else: ?>
+                        <?= _d($link->published_at, '%d %b %Y') ?>
+                    <?php endif; ?>
+                </time>
+
+                <div class="card__body">
+                    <h2 class="card__title">
+                        <a
+                            class="anchor--hidden"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            tabindex="-1"
+                            href="<?= protect($link->url) ?>"
+                        >
+                            <?= protect($link->title) ?>
+                        </a>
+                    </h2>
+
+                    <p class="card__text card__text--oneline">
+                        <?php if (!$link->fetched_at): ?>
+                            <span class="icon--spin">
+                                <?= icon('sync') ?>
+                                <?= _('ongoing synchronisation…') ?>
+                            </span>
+                        <?php else: ?>
+                            <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                        <?php endif; ?>
+                    </p>
+
+                    <p class="card__text">
+                        <a href="<?= url('link', ['id' => $link->id]) ?>">
+                            <?= icon('comment') ?>
+                            <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
+                        </a>
+                    </p>
+                </div>
+
+                <div class="card__footer">
+                    <div class="card__footer-group">
+                        <details
+                            class="popup"
+                            data-controller="popup"
+                            data-action="click@window->popup#close"
+                        >
+                            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
+                                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
+                                    <?= icon('menu') ?>
+                                    <span class="sr-only">
+                                        <?= _('Open the menu') ?>
+                                    </span>
+                                </button>
+                            </summary>
+
+                            <nav class="popup__container popup__container--over">
+                                <button
+                                    class="popup__item popup__item--button"
+                                    data-controller="modal-opener"
+                                    data-action="modal-opener#fetch"
+                                    data-modal-opener-href="<?= url('edit link', ['id' => $link->id, 'from' => url('read list', $current_url_params)]) ?>"
+                                    aria-haspopup="dialog"
+                                    aria-controls="modal"
+                                >
+                                    <?= icon('pencil') ?>
+                                    <?= _('Edit') ?>
+                                </button>
+
+                                <div data-controller="copy-to-clipboard">
+                                    <input type="hidden" value="<?= protect($link->url) ?>" data-target="copy-to-clipboard.copyable" />
+
+                                    <button
+                                        class="popup__item popup__item--button share__button"
+                                        data-action="copy-to-clipboard#copy"
+                                        data-target="copy-to-clipboard.feedback"
+                                    >
+                                        <?= icon('copy-to-clipboard') ?>
+                                        <?= _('Copy the external link') ?>
+                                    </button>
+                                </div>
+                            </nav>
+                        </details>
+
+                        <button
+                            class="button--ghost button--smaller"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href="<?= url('link collections', ['id' => $link->id, 'from' => url('read list', $current_url_params)]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                            title="<?= _('Manage collections') ?>"
+                        >
+                            <?= icon('collection') ?>
+                            <span class="sr-only">
+                                <?= _('Manage collections') ?>
+                            </span>
+                        </button>
+                    </div>
+
+
+                    <a
+                        class="anchor--action"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="<?= protect($link->url) ?>"
+                    >
+                        <?= icon('pop-out') ?>
+                        <?= _('read') ?>
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <?php for ($i = 0; $i < max(3, (3 - (count($links) % 3))); $i++): ?>
+            <div class="card card--shadow no-mobile"></div>
+        <?php endfor; ?>
+    </div>
+
+    <?= $this->include('_pagination.phtml', ['pagination' => $pagination, 'url' => url('read list')]) ?>
+
+    <img
+        class="illustration illustration--centered"
+        alt=""
+        src="<?= url_static('illustrations/collecting.svg') ?>"
+        height="250"
+    />
+</div>

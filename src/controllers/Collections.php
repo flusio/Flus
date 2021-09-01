@@ -39,6 +39,7 @@ class Collections
         models\Group::sort($groups, $user->locale);
 
         return Response::ok('collections/index.phtml', [
+            'read_list' => $user->readList(),
             'no_group_collections' => $no_group_collections,
             'no_group_followed_collections' => $no_group_followed_collections,
             'groups' => $groups,
