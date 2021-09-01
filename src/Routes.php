@@ -86,6 +86,9 @@ class Routes
         $router->addRoute('post', '/news/read', 'news/Read#create', 'mark news as read');
         $router->addRoute('post', '/news/read/later', 'news/Read#later', 'read news later');
 
+        // Bookmarks
+        $router->addRoute('get', '/bookmarks', 'Bookmarks#index', 'bookmarks');
+
         // Collections
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');
         $router->addRoute('get', '/collections/new', 'Collections#new', 'new collection');
@@ -103,8 +106,6 @@ class Routes
         $router->addRoute('post', '/collections/:id/group', 'collections/Groups#update', 'update group collection');
         $router->addRoute('get', '/collections/:id/image', 'collections/Images#edit', 'edit image collection');
         $router->addRoute('post', '/collections/:id/image', 'collections/Images#update', 'update image collection');
-
-        $router->addRoute('get', '/bookmarks', 'collections/Bookmarks#show', 'bookmarks');
 
         // Links
         $router->addRoute('get', '/links/new', 'Links#new', 'new link');

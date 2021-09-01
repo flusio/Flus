@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers\collections;
+namespace flusio\controllers;
 
 use flusio\models;
 
@@ -13,7 +13,7 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowBookmarksRendersCorrectly()
+    public function testIndexRendersCorrectly()
     {
         $user = $this->login();
         $link_title = $this->fake('words', 3, true);
@@ -32,14 +32,15 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/bookmarks');
 
-        $this->assertResponse($response, 200, $link_title);
-        $this->assertPointer($response, 'collections/bookmarks/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'bookmarks/index.phtml');
+        $this->assertResponseContains($response, $link_title);
     }
 
-    public function testShowBookmarksRedirectsIfNotConnected()
+    public function testIndexRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/bookmarks');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
     }
 }

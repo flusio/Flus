@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers\collections;
+namespace flusio\controllers;
 
 use Minz\Response;
 use flusio\auth;
@@ -18,7 +18,7 @@ class Bookmarks
      * @response 302 /login?redirect_to=/bookmarks if not connected
      * @response 200
      */
-    public function show()
+    public function index()
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -28,7 +28,7 @@ class Bookmarks
         }
 
         $bookmarks = $user->bookmarks();
-        return Response::ok('collections/bookmarks/show.phtml', [
+        return Response::ok('bookmarks/index.phtml', [
             'collection' => $bookmarks,
             'links' => $bookmarks->links(),
         ]);
