@@ -207,13 +207,7 @@ class Links
             $link_fetcher_service->fetch($link);
         }
 
-        $existing_collections = $link->collections();
-        $existing_collection_ids = array_column($existing_collections, 'id');
-        $collection_ids = array_diff($collection_ids, $existing_collection_ids);
-        if ($collection_ids) {
-            $links_to_collections_dao = new models\dao\LinksToCollections();
-            $links_to_collections_dao->attach($link->id, $collection_ids);
-        }
+        models\LinkToCollection::attach($link->id, $collection_ids);
 
         return Response::found($from);
     }
@@ -342,63 +336,6 @@ class Links
         models\Link::delete($link->id);
 
         return Response::found($redirect_to);
-    }
-
-    /**
-     * Mark a link as read and remove it from bookmarks.
-     *
-     * @request_param string csrf
-     * @request_param string id
-     *
-     * @response 302 /login?redirect_to=/bookmarks
-     *     if not connected
-     * @response 404
-     *     if the link doesn't exist, or is not associated to the current user
-     * @response 302 /bookmarks
-     * @flash error
-     *     if CSRF is invalid
-     * @response 302 /bookmarks
-     *     on success
-     */
-    public function markAsRead($request)
-    {
-        $user = auth\CurrentUser::get();
-        $from = \Minz\Url::for('bookmarks');
-        $link_id = $request->param('id');
-        $csrf = $request->param('csrf');
-
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
-
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
-            return Response::found($from);
-        }
-
-        $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        // First, we make sure to mark a corresponding news link as read
-        $news_link = models\NewsLink::findBy([
-            'url' => $link->url,
-            'user_id' => $user->id,
-        ]);
-        if (!$news_link) {
-            $news_link = models\NewsLink::initFromLink($link, $user->id);
-        }
-        $news_link->via_type = 'bookmarks';
-        $news_link->read_at = \Minz\Time::now();
-        $news_link->save();
-
-        // Then, we detach the link from the bookmarks
-        $bookmarks = $user->bookmarks();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $links_to_collections_dao->detach($link->id, [$bookmarks->id]);
-
-        return Response::found($from);
     }
 
     /**

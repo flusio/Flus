@@ -195,12 +195,13 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
             $user_factory = new \Minz\Tests\DatabaseFactory('user');
             return $user_factory->create();
         },
+        'via_type' => '',
     ]
 );
 
 \Minz\Tests\DatabaseFactory::addFactory(
     'link_to_collection',
-    '\flusio\models\dao\LinksToCollections',
+    '\flusio\models\dao\LinkToCollection',
     [
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
@@ -230,29 +231,6 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'collection_id' => function () {
             $collection_factory = new \Minz\Tests\DatabaseFactory('collection');
             return $collection_factory->create();
-        },
-    ]
-);
-
-\Minz\Tests\DatabaseFactory::addFactory(
-    'news_link',
-    '\flusio\models\dao\NewsLink',
-    [
-        'created_at' => function () use ($faker) {
-            return $faker->iso8601;
-        },
-        'url' => function () use ($faker) {
-            return $faker->url;
-        },
-        'link_id' => function () {
-            $link_factory = new \Minz\Tests\DatabaseFactory('link');
-            return $link_factory->create([
-                'is_hidden' => 0,
-            ]);
-        },
-        'user_id' => function () use ($faker) {
-            $user_factory = new \Minz\Tests\DatabaseFactory('user');
-            return $user_factory->create();
         },
     ]
 );

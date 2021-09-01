@@ -75,8 +75,10 @@ class Users
 
         $user->save();
 
-        $bookmarks_collection = models\Collection::initBookmarks($user->id);
-        $bookmarks_collection->save();
+        // Initialize the default collections
+        $user->bookmarks();
+        $user->news();
+        $user->readList();
 
         return Response::text(200, "User {$user->username} ({$user->email}) has been created.");
     }

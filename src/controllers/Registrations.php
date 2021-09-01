@@ -154,9 +154,10 @@ class Registrations
         $user->validation_token = $validation_token->token;
         $user->save();
 
-        // Initialize the bookmarks collection
-        $bookmarks_collection = models\Collection::initBookmarks($user->id);
-        $bookmarks_collection->save();
+        // Initialize the default collections
+        $user->bookmarks();
+        $user->news();
+        $user->readList();
 
         // Initialize the current session
         $session_token = models\Token::init(1, 'month');

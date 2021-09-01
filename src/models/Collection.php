@@ -14,7 +14,7 @@ class Collection extends \Minz\Model
 {
     use DaoConnector;
 
-    public const VALID_TYPES = ['bookmarks', 'collection', 'feed'];
+    public const VALID_TYPES = ['bookmarks', 'news', 'read', 'collection', 'feed'];
 
     public const NAME_MAX_LENGTH = 100;
 
@@ -149,6 +149,34 @@ class Collection extends \Minz\Model
      *
      * @return \flusio\models\Collection
      */
+    public static function initReadList($user_id)
+    {
+        return new self([
+            'name' => _('Links read'),
+            'type' => 'read',
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * @param string $user_id
+     *
+     * @return \flusio\models\Collection
+     */
+    public static function initNews($user_id)
+    {
+        return new self([
+            'name' => _('News'),
+            'type' => 'news',
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * @param string $user_id
+     *
+     * @return \flusio\models\Collection
+     */
     public static function initFeed($user_id, $feed_url)
     {
         $feed_url = \SpiderBits\Url::sanitize($feed_url);
@@ -164,8 +192,8 @@ class Collection extends \Minz\Model
     /**
      * Return the name of the collection.
      *
-     * If the collection is of "bookmarks" type, the localized version is
-     * returned.
+     * If the collection is one of bookmarks, read or news types, the localized
+     * version is returned.
      *
      * @return string
      */
@@ -173,6 +201,10 @@ class Collection extends \Minz\Model
     {
         if ($this->type === 'bookmarks') {
             return _('Bookmarks');
+        } elseif ($this->type === 'read') {
+            return _('Links read');
+        } elseif ($this->type === 'news') {
+            return _('News');
         } else {
             return $this->name;
         }

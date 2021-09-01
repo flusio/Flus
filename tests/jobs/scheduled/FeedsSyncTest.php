@@ -259,9 +259,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $db_link_to_collection = $links_to_collections_dao->listAll()[0];
-        $this->assertSame('2021-03-30 09:26:00+00', $db_link_to_collection['created_at']);
+        $link_to_collection = models\LinkToCollection::take();
+        $this->assertSame(1617096360, $link_to_collection->created_at->getTimestamp());
     }
 
     public function testPerformIgnoresFeedFetchedLastHour()

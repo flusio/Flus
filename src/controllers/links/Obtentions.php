@@ -166,8 +166,7 @@ class Obtentions
 
         // Attach the link to the given collections (and potentially forget the
         // old ones)
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $links_to_collections_dao->set($new_link->id, $collection_ids);
+        models\LinkToCollection::setCollections($new_link->id, $collection_ids);
 
         return Response::found($from);
     }

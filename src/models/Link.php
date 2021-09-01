@@ -77,6 +77,18 @@ class Link extends \Minz\Model
             'type' => 'string',
         ],
 
+        'via_type' => [
+            'type' => 'string',
+        ],
+
+        'via_collection_id' => [
+            'type' => 'string',
+        ],
+
+        'via_link_id' => [
+            'type' => 'string',
+        ],
+
         'published_at' => [
             'type' => 'datetime',
             'computed' => true,
@@ -84,21 +96,6 @@ class Link extends \Minz\Model
 
         'number_comments' => [
             'type' => 'integer',
-            'computed' => true,
-        ],
-
-        'news_link_id' => [
-            'type' => 'string',
-            'computed' => true,
-        ],
-
-        'news_via_type' => [
-            'type' => 'string',
-            'computed' => true,
-        ],
-
-        'news_via_collection_id' => [
-            'type' => 'string',
             'computed' => true,
         ],
     ];
@@ -123,6 +120,7 @@ class Link extends \Minz\Model
             'reading_time' => 0,
             'fetched_code' => 0,
             'fetched_count' => 0,
+            'via_type' => '',
         ]);
     }
 
@@ -147,6 +145,7 @@ class Link extends \Minz\Model
             'fetched_at' => $link->fetched_at,
             'fetched_code' => $link->fetched_code,
             'fetched_count' => $link->fetched_count,
+            'via_type' => '',
             'user_id' => $user_id,
         ]);
     }
@@ -182,13 +181,14 @@ class Link extends \Minz\Model
     }
 
     /**
-     * Return the news link associated to the link (only if news_link_id is set)
-     *
-     * @return \flusio\models\NewsLink
+     * @return \flusio\models\Collection|null
      */
-    public function newsLink()
+    public function viaCollection()
     {
-        return NewsLink::find($this->news_link_id);
+        if (!$this->via_collection_id) {
+            return null;
+        }
+        return Collection::find($this->via_collection_id);
     }
 
     /**

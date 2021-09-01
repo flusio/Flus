@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Add to your collections'),
         'current_tab' => 'news',
-        'canonical' => url('adding news', ['id' => $news_link->id]),
+        'canonical' => url_full('link collections', ['id' => $link->id, 'mode' => 'news']),
         'back' => [
             'href' => url('news'),
             'label' => _('News'),
@@ -16,10 +16,10 @@
     </div>
 
     <p class="section__intro">
-        <?= protect($news_link->title()) ?>
+        <?= protect($link->title) ?>
     </p>
 
-    <form method="post" action="<?= url('add news', ['id' => $news_link->id]) ?>">
+    <form method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
         <?php if ($error): ?>
             <p class="form__error">
                 <?= $error ?>
@@ -27,6 +27,8 @@
         <?php endif; ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
+        <input type="hidden" name="mode" value="news" />
 
         <fieldset>
             <legend><?= _('Collections') ?></legend>
@@ -88,7 +90,7 @@
                 type="checkbox"
                 id="is-hidden"
                 name="is_hidden"
-                <?= $is_hidden ? 'checked' : '' ?>
+                <?= $link->is_hidden ? 'checked' : '' ?>
             />
 
             <label class="label--checkbox" for="is-hidden">
@@ -97,15 +99,9 @@
         </div>
 
         <div class="form__actions">
-            <?php if ($exists_already): ?>
-                <button type="submit" class="button--primary">
-                    <?= _('Save and mark as read') ?>
-                </button>
-            <?php else: ?>
-                <button type="submit" class="button--primary">
-                    <?= _('Add and mark as read') ?>
-                </button>
-            <?php endif; ?>
+            <button type="submit" class="button--primary">
+                <?= _('Save and mark as read') ?>
+            </button>
         </div>
     </form>
 </div>

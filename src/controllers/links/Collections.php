@@ -19,26 +19,22 @@ class Collections
      * Show the page to update the link collections
      *
      * @request_param string id
-     * @request_param string from (default is /links/:id)
+     * @request_param string mode Either 'normal' (default) or 'news'
+     * @request_param string from
      *
-     * @response 302 /login?redirect_to=/links/:id/collections
+     * @response 302 /login?redirect_to=:from
      * @response 404 if the link is not found
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function index($request)
     {
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
-        $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $mode = $request->param('mode', 'normal');
+        $from = $request->param('from');
 
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('link collections', ['id' => $link_id]),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $link = models\Link::find($link_id);
@@ -46,46 +42,62 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
-        $collections = $user->collections();
-        models\Collection::sort($collections, $user->locale);
+        if ($mode === 'news') {
+            $collections = $user->collections(true);
+            models\Collection::sort($collections, $user->locale);
 
-        return Response::ok('links/collections/index.phtml', [
-            'link' => $link,
-            'collection_ids' => array_column($link->collections(), 'id'),
-            'collections' => $collections,
-            'from' => $from,
-        ]);
+            return Response::ok('links/collections/index_news.phtml', [
+                'link' => $link,
+                'collection_ids' => array_column($link->collections(), 'id'),
+                'collections' => $collections,
+                'comment' => '',
+                'from' => $from,
+            ]);
+        } else {
+            $collections = $user->collections();
+            models\Collection::sort($collections, $user->locale);
+
+            return Response::ok('links/collections/index.phtml', [
+                'link' => $link,
+                'collection_ids' => array_column($link->collections(), 'id'),
+                'collections' => $collections,
+                'from' => $from,
+            ]);
+        }
     }
 
     /**
      * Update the link collections list
      *
+     * News mode allows to set is_hidden and add a comment. It also removes the
+     * link from the news and from bookmarks and adds it to the read list.
+     *
      * @request_param string csrf
      * @request_param string id
      * @request_param string[] collection_ids
-     * @request_param string from (default is /links/:id)
+     * @request_param boolean is_hidden
+     * @request_param string comment
+     * @request_param string mode Either 'normal' (default) or 'news'
+     * @request_param string from
      *
-     * @response 302 /login?redirect_to=/links/:id/collections
+     * @response 302 /login?redirect_to=:from
      * @response 404 if the link is not found
      * @response 302 :from if CSRF or collection_ids are invalid
      * @response 302 :from
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function update($request)
     {
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $new_collection_ids = $request->paramArray('collection_ids', []);
-        $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $is_hidden = $request->paramBoolean('is_hidden', false);
+        $comment = trim($request->param('comment', ''));
+        $mode = $request->param('mode', 'normal');
+        $from = $request->param('from');
         $csrf = $request->param('csrf');
 
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('link collections', ['id' => $link_id]),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $link = models\Link::find($link_id);
@@ -103,8 +115,19 @@ class Collections
             return Response::found($from);
         }
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $links_to_collections_dao->set($link->id, $new_collection_ids);
+        models\LinkToCollection::setCollections($link->id, $new_collection_ids);
+
+        if ($mode === 'news') {
+            $link->is_hidden = $is_hidden;
+            $link->save();
+
+            if ($comment) {
+                $message = models\Message::init($user->id, $link->id, $comment);
+                $message->save();
+            }
+
+            models\LinkToCollection::markAsRead($user, [$link->id]);
+        }
 
         return Response::found($from);
     }
