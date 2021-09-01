@@ -123,6 +123,9 @@ class LinkFetcher
             // the requests on different IPs if the admin set the options.
             $is_rate_limited = true;
             $selected_ip = null;
+            // shuffle the IPs so it's not always the same IPs that fetch
+            // Youtube
+            shuffle($server_ips);
             foreach ($server_ips as $server_ip) {
                 // we calculate the rate limit for the given IP and if it
                 // hasn't been reached, we select the IP to be passed to Curl.
@@ -270,10 +273,8 @@ class LinkFetcher
      */
     private function isTwitter($url)
     {
-        return (
-            utils\Belt::startsWith($url, 'https://twitter.com/') ||
-            utils\Belt::startsWith($url, 'https://mobile.twitter.com/')
-        );
+        $host = utils\Belt::host($url);
+        return utils\Belt::endsWith($host, 'twitter.com');
     }
 
     /**
@@ -285,8 +286,8 @@ class LinkFetcher
      */
     private function isYoutube($url)
     {
-        $parsed_url = parse_url($url);
-        return isset($parsed_url['host']) && $parsed_url['host'] === 'www.youtube.com';
+        $host = utils\Belt::host($url);
+        return utils\Belt::endsWith($host, 'youtube.com');
     }
 
     /**

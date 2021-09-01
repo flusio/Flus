@@ -11,6 +11,8 @@ use flusio\utils;
  */
 class FeedFetcher
 {
+    public const ERROR_RATE_LIMIT = -1;
+
     /** @var \SpiderBits\Cache */
     private $cache;
 
@@ -51,6 +53,12 @@ class FeedFetcher
     public function fetch($collection)
     {
         $info = $this->fetchUrl($collection->feed_url);
+
+        if ($info['status'] === self::ERROR_RATE_LIMIT) {
+            // In case of a rate limit error, skip the link so it can be
+            // fetched later.
+            return;
+        }
 
         $collection->feed_fetched_at = \Minz\Time::now();
         $collection->feed_fetched_code = $info['status'];
@@ -249,26 +257,59 @@ class FeedFetcher
      */
     public function fetchUrl($url)
     {
+        // First, we get information about rate limit and IP to select to
+        // execute the request (for Youtube).
+        $server_ips = \Minz\Configuration::$application['server_ips'];
+        if (!$this->options['rate_limit']) {
+            // rate limit is disabled for this call
+            $is_rate_limited = false;
+            $selected_ip = null;
+        } elseif ($server_ips && $this->isYoutube($url)) {
+            // Youtube has a strict rate limit, so we load balance the requests
+            // on different IPs if the admin set the options.
+            $is_rate_limited = true;
+            $selected_ip = null;
+            // shuffle the IPs so it's not always the same IPs that fetch
+            // Youtube
+            shuffle($server_ips);
+            foreach ($server_ips as $server_ip) {
+                // we calculate the rate limit for the given IP and if it
+                // hasn't been reached, we select the IP to be passed to Curl.
+                $is_rate_limited = models\FetchLog::hasReachedRateLimit(
+                    $url,
+                    'feed',
+                    $server_ip
+                );
+                if (!$is_rate_limited) {
+                    $selected_ip = $server_ip;
+                    break;
+                }
+            }
+        } else {
+            // the default case where we calculate the reach limit and select
+            // no interface.
+            $is_rate_limited = models\FetchLog::hasReachedRateLimit($url, 'feed');
+            $selected_ip = null;
+        }
+
         // First, we "GET" the URL...
         $url_hash = \SpiderBits\Cache::hash($url);
         $cached_response = $this->cache->get($url_hash, 60 * 60);
         if ($this->options['cache'] && $cached_response) {
             // ... via the cache
             $response = \SpiderBits\Response::fromText($cached_response);
-        } else {
-            if (
-                $this->options['rate_limit'] &&
-                models\FetchLog::hasReachedRateLimit($url, 'feed')
-            ) {
-                // We slow down the requests
-                $sleep_time = random_int(5, 10);
-                \Minz\Time::sleep($sleep_time);
+        } elseif (!$is_rate_limited) {
+            // ... or via HTTP
+            $options = [];
+            if ($selected_ip) {
+                $options['interface'] = $selected_ip;
+                models\FetchLog::log($url, 'feed', $selected_ip);
+            } else {
+                models\FetchLog::log($url, 'feed');
             }
 
-            // ... or via HTTP
-            models\FetchLog::log($url, 'feed');
             try {
-                $response = $this->http->get($url);
+                $response = $this->http->get($url, [], $options);
             } catch (\SpiderBits\HttpError $e) {
                 return [
                     'status' => 0,
@@ -280,6 +321,11 @@ class FeedFetcher
             if ($response->success) {
                 $this->cache->save($url_hash, (string)$response);
             }
+        } else {
+            return [
+                'status' => self::ERROR_RATE_LIMIT,
+                'error' => 'Reached rate limit',
+            ];
         }
 
         $info = [
@@ -310,5 +356,18 @@ class FeedFetcher
         }
 
         return $info;
+    }
+
+    /**
+     * Return true if the url is pointing to Youtube
+     *
+     * @param string $url
+     *
+     * @return boolean
+     */
+    private function isYoutube($url)
+    {
+        $host = utils\Belt::host($url);
+        return utils\Belt::endsWith($host, 'youtube.com');
     }
 }

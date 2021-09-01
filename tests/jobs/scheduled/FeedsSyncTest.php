@@ -410,10 +410,10 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($original_link_id, $link->id);
     }
 
-    public function testPerformSlowsDownFetchIfReachedRateLimit()
+    public function testPerformSkipsFetchIfReachedRateLimit()
     {
-        $now1 = $this->fake('dateTime');
-        $this->freeze($now1);
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $host = 'flus.fr';
         foreach (range(1, 25) as $i) {
@@ -427,9 +427,10 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         }
         $collection_id = $this->create('collection', [
             'type' => 'feed',
-            'name' => $this->fake('sentence'),
+            'name' => $feed_url,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours')->format(\Minz\Model::DATETIME_FORMAT),
+            'feed_fetched_at' => null,
+            'feed_fetched_code' => 0,
         ]);
         $user_id = $this->create('user', [
             'validated_at' => $this->fake('iso8601'),
@@ -442,8 +443,10 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $now2 = \Minz\Time::now();
-        $this->assertGreaterThanOrEqual(5, $now2->getTimestamp() - $now1->getTimestamp());
+        $collection = models\Collection::find($collection_id);
+        $this->assertSame($feed_url, $collection->name);
+        $this->assertSame(0, $collection->feed_fetched_code);
+        $this->assertNull($collection->feed_fetched_at);
     }
 
     public function testPerformIgnoresEntriesWithNoLink()
