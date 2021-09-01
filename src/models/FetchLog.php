@@ -72,13 +72,14 @@ class FetchLog extends \Minz\Model
         $host = \flusio\utils\Belt::host($url);
         $since = \Minz\Time::ago(1, 'minute');
 
-        // Most of the time, we don’t consider the type and we rate limit
-        // requests to 25 requests per minute. But we must be more drastic with
-        // Youtube links which must be limited to 1 req/min. Hopefully, this
-        // limit doesn't apply to feeds.
+        // Most of the time, we rate limit the requests to 25 requests per
+        // minute. But we must be more drastic with Youtube servers which
+        // require a limit of 1 req/min for the links. The limit for the feeds
+        // seems to be higher, but I didn't succeed to find the exact count.
         if ($host === 'youtube.com' && $type === 'link') {
-            $type = 'link';
             $count_limit = 1;
+        } elseif ($host === 'youtube.com' && $type === 'feed') {
+            $count_limit = 10;
         } else {
             $type = null;
             $count_limit = 25;
