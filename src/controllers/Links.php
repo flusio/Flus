@@ -207,13 +207,7 @@ class Links
             $link_fetcher_service->fetch($link);
         }
 
-        $existing_collections = $link->collections();
-        $existing_collection_ids = array_column($existing_collections, 'id');
-        $collection_ids = array_diff($collection_ids, $existing_collection_ids);
-        if ($collection_ids) {
-            $links_to_collections_dao = new models\dao\LinksToCollections();
-            $links_to_collections_dao->attach($link->id, $collection_ids);
-        }
+        models\LinkToCollection::attach($link->id, $collection_ids);
 
         return Response::found($from);
     }
@@ -382,13 +376,7 @@ class Links
             return Response::notFound('not_found.phtml');
         }
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $read_list = $user->readList();
-        $bookmarks = $user->bookmarks();
-        $news = $user->news();
-
-        $links_to_collections_dao->attach($link->id, [$read_list->id]);
-        $links_to_collections_dao->detach($link->id, [$bookmarks->id, $news->id]);
+        models\LinkToCollection::markAsRead($user, [$link->id]);
 
         return Response::found($from);
     }
@@ -431,12 +419,7 @@ class Links
             return Response::notFound('not_found.phtml');
         }
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-
-        $bookmarks = $user->bookmarks();
-        $news = $user->news();
-        $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
-        $links_to_collections_dao->detach($link->id, [$news->id]);
+        models\LinkToCollection::markToReadLater($user, [$link->id]);
 
         return Response::found($from);
     }

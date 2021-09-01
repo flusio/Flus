@@ -167,15 +167,14 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $link = models\Link::find($link_id);
         $this->assertSame('bookmarks', $link->via_type);
         $this->assertSame($link->id, $link->via_link_id);
-        $link_to_news_id = $links_to_collections_dao->findBy([
+        $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $news->id,
         ]);
-        $this->assertNotNull($link_to_news_id);
+        $this->assertNotNull($link_to_news);
     }
 
     public function testCreateSelectsLinksFromBookmarksIfTypeIsLong()
@@ -200,15 +199,14 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $link = models\Link::find($link_id);
         $this->assertSame('bookmarks', $link->via_type);
         $this->assertSame($link->id, $link->via_link_id);
-        $link_to_news_id = $links_to_collections_dao->findBy([
+        $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $news->id,
         ]);
-        $this->assertNotNull($link_to_news_id);
+        $this->assertNotNull($link_to_news);
     }
 
     public function testCreateSelectsLinksFromFollowedIfTypeIsNewsfeed()
@@ -253,12 +251,11 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('followed', $news_link->via_type);
         $this->assertSame($collection_id, $news_link->via_collection_id);
         $this->assertSame($link_id, $news_link->via_link_id);
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $link_to_news_id = $links_to_collections_dao->findBy([
+        $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $news_link->id,
             'collection_id' => $news->id,
         ]);
-        $this->assertNotNull($link_to_news_id);
+        $this->assertNotNull($link_to_news);
     }
 
     public function testCreateDoesNotDuplicatesLink()
@@ -304,12 +301,11 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
         ]);
         $this->assertSame($owned_link_id, $news_link->id);
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $link_to_news_id = $links_to_collections_dao->findBy([
+        $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $owned_link_id,
             'collection_id' => $news->id,
         ]);
-        $this->assertNotNull($link_to_news_id);
+        $this->assertNotNull($link_to_news);
     }
 
     public function testCreateSetsFlashNoNewsIfNoSuggestions()
@@ -346,15 +342,14 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $link = models\Link::find($link_id);
         $this->assertSame('', $link->via_type);
         $this->assertNull($link->via_link_id);
-        $link_to_news_id = $links_to_collections_dao->findBy([
+        $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $news->id,
         ]);
-        $this->assertNull($link_to_news_id);
+        $this->assertNull($link_to_news);
     }
 
     public function testCreateFailsIfCsrfIsInvalid()
@@ -380,20 +375,18 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $link = models\Link::find($link_id);
         $this->assertSame('', $link->via_type);
         $this->assertNull($link->via_link_id);
-        $link_to_news_id = $links_to_collections_dao->findBy([
+        $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $news->id,
         ]);
-        $this->assertNull($link_to_news_id);
+        $this->assertNull($link_to_news);
     }
 
     public function testReadLaterRemovesLinkFromNewsAndAddsToBookmarksAndRedirects()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user = $this->login();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
@@ -410,8 +403,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
-        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
-        $link_to_bookmarks = $links_to_collections_dao->findBy([
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $bookmarks->id,
         ]);
@@ -421,7 +414,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
     public function testReadLaterJustRemovesFromNewsIfAlreadyBookmarked()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user = $this->login();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
@@ -442,15 +434,14 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
-        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
-        $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_bookmarks_id);
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks_id);
         $this->assertFalse($exists_in_news, 'The link should no longer be in news.');
         $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
     }
 
     public function testReadLaterRedirectsToLoginIfNotConnected()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $bookmarks = $user->bookmarks();
@@ -468,8 +459,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
-        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
-        $link_to_bookmarks = $links_to_collections_dao->findBy([
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $bookmarks->id,
         ]);
@@ -479,7 +470,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
     public function testReadLaterFailsIfCsrfIsInvalid()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user = $this->login();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
@@ -497,8 +487,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
-        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
-        $link_to_bookmarks = $links_to_collections_dao->findBy([
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $bookmarks->id,
         ]);
@@ -508,7 +498,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
     public function testMarkAsReadMarksLinkAsReadAndRedirects()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user = $this->login();
         $news = $user->news();
         $read_list = $user->readList();
@@ -525,8 +514,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
-        $link_to_read_list = $links_to_collections_dao->findBy([
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $read_list->id,
         ]);
@@ -536,7 +525,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
     public function testMarkAsReadRemovesFromBookmarks()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user = $this->login();
         $news = $user->news();
         $bookmarks = $user->bookmarks();
@@ -557,13 +545,12 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/news');
-        $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_bookmarks_id);
+        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks_id);
         $this->assertFalse($exists_in_bookmarks, 'The link should not be in bookmarks.');
     }
 
     public function testMarkAsReadRedirectsToLoginIfNotConnected()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $news = $user->news();
@@ -581,8 +568,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
-        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
-        $link_to_read_list = $links_to_collections_dao->findBy([
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $read_list->id,
         ]);
@@ -592,7 +579,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
     public function testMarkAsReadFailsIfCsrfIsInvalid()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user = $this->login();
         $news = $user->news();
         $read_list = $user->readList();
@@ -610,8 +596,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
-        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
-        $link_to_read_list = $links_to_collections_dao->findBy([
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $read_list->id,
         ]);

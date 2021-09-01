@@ -94,7 +94,6 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
             'is_hidden' => 0,
@@ -120,19 +119,18 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, $from);
         $initial_link = models\Link::find($link_id);
         $new_link = models\Link::findBy(['user_id' => $user->id]);
-        $db_link_to_collection = $links_to_collections_dao->listAll()[0];
+        $link_to_collection = models\LinkToCollection::take();
         $this->assertSame($initial_link->title, $new_link->title);
         $this->assertSame($initial_link->url, $new_link->url);
         $this->assertTrue($new_link->is_hidden);
-        $this->assertSame($new_link->id, $db_link_to_collection['link_id']);
-        $this->assertSame($collection_id, $db_link_to_collection['collection_id']);
+        $this->assertSame($new_link->id, $link_to_collection->link_id);
+        $this->assertSame($collection_id, $link_to_collection->collection_id);
     }
 
     public function testCreateUpdatesExistingLinks()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $url = $this->fake('url');
         $initial_link_id = $this->create('link', [
             'user_id' => $other_user_id,
@@ -146,9 +144,11 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $old_collection_id = $this->create('collection', [
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $new_collection_id = $this->create('collection', [
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $link_to_collection_id = $this->create('link_to_collection', [
             'link_id' => $existing_link_id,
@@ -172,10 +172,12 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, $from);
         $existing_link = models\Link::find($existing_link_id);
         $this->assertTrue($existing_link->is_hidden);
-        $this->assertFalse($links_to_collections_dao->exists($link_to_collection_id));
-        $new_db_link_to_collection = $links_to_collections_dao->listAll()[0];
-        $this->assertSame($existing_link_id, $new_db_link_to_collection['link_id']);
-        $this->assertSame($new_collection_id, $new_db_link_to_collection['collection_id']);
+        $this->assertFalse(models\LinkToCollection::exists($link_to_collection_id));
+        $new_link_to_collection = models\LinkToCollection::findBy([
+            'link_id' => $existing_link_id,
+            'collection_id' => $new_collection_id,
+        ]);
+        $this->assertNotNull($new_link_to_collection);
     }
 
     public function testCreateRedirectsIfNotConnected()

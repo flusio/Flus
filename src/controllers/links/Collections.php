@@ -115,8 +115,7 @@ class Collections
             return Response::found($from);
         }
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $links_to_collections_dao->set($link->id, $new_collection_ids);
+        models\LinkToCollection::setCollections($link->id, $new_collection_ids);
 
         if ($mode === 'news') {
             $link->is_hidden = $is_hidden;
@@ -127,13 +126,7 @@ class Collections
                 $message->save();
             }
 
-            $links_to_collections_dao = new models\dao\LinksToCollections();
-            $read_list = $user->readList();
-            $bookmarks = $user->bookmarks();
-            $news = $user->news();
-
-            $links_to_collections_dao->attach($link->id, [$read_list->id]);
-            $links_to_collections_dao->detach($link->id, [$bookmarks->id, $news->id]);
+            models\LinkToCollection::markAsRead($user, [$link->id]);
         }
 
         return Response::found($from);

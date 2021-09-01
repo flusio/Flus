@@ -201,7 +201,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
 
 \Minz\Tests\DatabaseFactory::addFactory(
     'link_to_collection',
-    '\flusio\models\dao\LinksToCollections',
+    '\flusio\models\dao\LinkToCollection',
     [
         'created_at' => function () use ($faker) {
             return $faker->iso8601;

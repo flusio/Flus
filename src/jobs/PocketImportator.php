@@ -262,8 +262,8 @@ class PocketImportator extends Job
         }
 
         if ($links_to_collections_to_create) {
-            $links_to_collections_dao = new models\dao\LinksToCollections();
-            $links_to_collections_dao->bulkInsert(
+            models\LinkToCollection::daoCall(
+                'bulkInsert',
                 ['created_at', 'link_id', 'collection_id'],
                 $links_to_collections_to_create
             );

@@ -97,7 +97,6 @@ class News
         $news_picker = new services\NewsPicker($user, $options);
         $db_links = $news_picker->pick();
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $news = $user->news();
 
         foreach ($db_links as $db_link) {
@@ -128,7 +127,7 @@ class News
             $link->save();
 
             // And don't forget to add the link to the news collection!
-            $links_to_collections_dao->attach($link->id, [$news->id], $news_link->published_at);
+            models\LinkToCollection::attach($link->id, [$news->id], $news_link->published_at);
         }
 
         if (!$db_links) {
@@ -166,15 +165,9 @@ class News
             return Response::found($from);
         }
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $read_list = $user->readList();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
-
-        foreach ($news->links() as $link) {
-            $links_to_collections_dao->attach($link->id, [$read_list->id]);
-            $links_to_collections_dao->detach($link->id, [$bookmarks->id, $news->id]);
-        }
+        $link_ids = array_column($news->links(), 'id');
+        models\LinkToCollection::markAsRead($user, $link_ids);
 
         return Response::found($from);
     }
@@ -207,14 +200,9 @@ class News
             return Response::found($from);
         }
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
-
-        foreach ($news->links() as $link) {
-            $links_to_collections_dao->attach($link->id, [$bookmarks->id]);
-            $links_to_collections_dao->detach($link->id, [$news->id]);
-        }
+        $link_ids = array_column($news->links(), 'id');
+        models\LinkToCollection::markToReadLater($user, $link_ids);
 
         return Response::found($from);
     }

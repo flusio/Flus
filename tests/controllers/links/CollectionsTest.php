@@ -146,17 +146,53 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/bookmarks');
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $link_to_collection_1 = $links_to_collections_dao->findBy([
+        $link_to_collection_1 = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id_1,
         ]);
-        $link_to_collection_2 = $links_to_collections_dao->findBy([
+        $link_to_collection_2 = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id_2,
         ]);
         $this->assertNull($link_to_collection_1);
         $this->assertNotNull($link_to_collection_2);
+    }
+
+    public function testUpdateDoesNotRemoveFromNewsOrReadList()
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $read_list = $user->readList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $link_to_news = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_read_list = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+            'collection_ids' => [$collection_id],
+        ]);
+
+        $this->assertResponse($response, 302, '/bookmarks');
+        $link_to_collection = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->assertNotNull($link_to_collection);
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_read_list));
     }
 
     public function testUpdateInModeNewsAcceptsComment()
@@ -221,10 +257,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/bookmarks');
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $exists_in_bookmarks = $links_to_collections_dao->exists($link_to_bookmarks_id);
-        $exists_in_news = $links_to_collections_dao->exists($link_to_news_id);
-        $link_to_read_list = $links_to_collections_dao->findBy([
+        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks_id);
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $read_list->id,
         ]);
@@ -259,12 +294,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $link_to_collection_1 = $links_to_collections_dao->findBy([
+        $link_to_collection_1 = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id_1,
         ]);
-        $link_to_collection_2 = $links_to_collections_dao->findBy([
+        $link_to_collection_2 = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id_2,
         ]);
@@ -299,12 +333,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $links_to_collections_dao = new models\dao\LinksToCollections();
-        $link_to_collection_1 = $links_to_collections_dao->findBy([
+        $link_to_collection_1 = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id_1,
         ]);
-        $link_to_collection_2 = $links_to_collections_dao->findBy([
+        $link_to_collection_2 = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id_2,
         ]);
@@ -314,7 +347,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCollectionIdsContainsNotOwnedId()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user = $this->login();
         $other_user_id = $this->create('user');
         $link_id = $this->create('link', [
@@ -333,12 +365,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'One of the associated collection doesn’t exist.');
-        $this->assertSame(0, $links_to_collections_dao->count());
+        $this->assertSame(0, models\LinkToCollection::count());
     }
 
     public function testUpdateFailsIfCsrfIsInvalid()
     {
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -356,6 +387,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/bookmarks');
         $this->assertFlash('error', 'A security verification failed.');
-        $this->assertSame(0, $links_to_collections_dao->count());
+        $this->assertSame(0, models\LinkToCollection::count());
     }
 }

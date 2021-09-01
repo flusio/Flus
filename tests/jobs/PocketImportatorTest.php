@@ -20,7 +20,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsImportInBookmarks()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $bookmarks_id = $this->create('collection', [
@@ -46,17 +45,16 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::findBy(['url' => $url]);
         $this->assertNotNull($link);
-        $db_links_to_collection = $links_to_collections_dao->findBy([
+        $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $bookmarks_id,
         ]);
-        $this->assertNotNull($db_links_to_collection);
+        $this->assertNotNull($link_to_collection);
     }
 
     public function testImportPocketItemsDoesNotImportInBookmarksIfOption()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $bookmarks_id = $this->create('collection', [
@@ -82,17 +80,16 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::findBy(['url' => $url]);
         $this->assertNotNull($link);
-        $db_links_to_collection = $links_to_collections_dao->findBy([
+        $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $bookmarks_id,
         ]);
-        $this->assertNull($db_links_to_collection);
+        $this->assertNull($link_to_collection);
     }
 
     public function testImportPocketItemsImportInFavorite()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -116,17 +113,16 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection);
         $link = models\Link::findBy(['url' => $url]);
         $this->assertNotNull($link);
-        $db_links_to_collection = $links_to_collections_dao->findBy([
+        $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $collection->id,
         ]);
-        $this->assertNotNull($db_links_to_collection);
+        $this->assertNotNull($link_to_collection);
     }
 
     public function testImportPocketItemsDoesNotKeepFavoriteCollectionIfEmpty()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -153,7 +149,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsDoesNotImportInFavoriteIfOption()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -182,7 +177,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsImportInDefaultCollection()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -206,17 +200,16 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection);
         $link = models\Link::findBy(['url' => $url]);
         $this->assertNotNull($link);
-        $db_links_to_collection = $links_to_collections_dao->findBy([
+        $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $collection->id,
         ]);
-        $this->assertNotNull($db_links_to_collection);
+        $this->assertNotNull($link_to_collection);
     }
 
     public function testImportPocketItemsImportDoesNotKeepDefaultCollectionIfEmpty()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -236,7 +229,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsDoesNotImportTags()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -269,7 +261,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsImportTagsIfOption()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $url = $this->fake('url');
@@ -301,11 +292,11 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection2);
         $link = models\Link::findBy(['url' => $url]);
         $this->assertNotNull($link);
-        $db_links_to_collection1 = $links_to_collections_dao->findBy([
+        $db_links_to_collection1 = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $collection1->id,
         ]);
-        $db_links_to_collection2 = $links_to_collections_dao->findBy([
+        $db_links_to_collection2 = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $collection2->id,
         ]);
@@ -341,20 +332,14 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
 
         $importator->importPocketItems($user, $items, $options);
 
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $link = models\Link::findBy(['url' => $url]);
-        $db_link_to_collection = $links_to_collections_dao->findBy(['link_id' => $link->id]);
-        $created_at = date_create_from_format(
-            \Minz\Model::DATETIME_FORMAT,
-            $db_link_to_collection['created_at']
-        );
-        $this->assertSame($time_added->getTimestamp(), $created_at->getTimestamp());
+        $link_to_collection = models\LinkToCollection::findBy(['link_id' => $link->id]);
+        $this->assertSame($time_added->getTimestamp(), $link_to_collection->created_at->getTimestamp());
     }
 
     public function testImportPocketItemsDoesNotDuplicateAGivenUrlAlreadyThere()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $given_url = $this->fakeUnique('url');
@@ -388,19 +373,18 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::findBy(['url' => $given_url]);
         $this->assertSame($previous_link_id, $link->id);
-        $this->assertTrue($links_to_collections_dao->exists($previous_link_to_collection_id));
+        $this->assertTrue(models\LinkToCollection::exists($previous_link_to_collection_id));
         $favorite_collection = models\Collection::findBy(['name' => 'Pocket favorite']);
-        $db_links_to_collection = $links_to_collections_dao->findBy([
+        $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $favorite_collection->id,
         ]);
-        $this->assertNotNull($db_links_to_collection);
+        $this->assertNotNull($link_to_collection);
     }
 
     public function testImportPocketItemsDoesNotDuplicateAResolvedUrlAlreadyThere()
     {
         $importator = new PocketImportator();
-        $links_to_collections_dao = new models\dao\LinksToCollections();
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $given_url = $this->fakeUnique('url');
@@ -434,13 +418,13 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::findBy(['url' => $resolved_url]);
         $this->assertSame($previous_link_id, $link->id);
-        $this->assertTrue($links_to_collections_dao->exists($previous_link_to_collection_id));
+        $this->assertTrue(models\LinkToCollection::exists($previous_link_to_collection_id));
         $favorite_collection = models\Collection::findBy(['name' => 'Pocket favorite']);
-        $db_links_to_collection = $links_to_collections_dao->findBy([
+        $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $favorite_collection->id,
         ]);
-        $this->assertNotNull($db_links_to_collection);
+        $this->assertNotNull($link_to_collection);
     }
 
     public function testImportPocketItemsSetsResolvedTitle()
