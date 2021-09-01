@@ -1,5 +1,12 @@
 # Changelog of flusio
 
+## 2021-xx-yy - v0.31
+
+**Important note:** this version comes with a bunch of tricky migrations. They
+are expected to work well but, you know, a crash can be expected. For this
+reason, it's recommended to stop the jobs workers and to put the application
+in maintenance mode during the update.
+
 ## 2021-08-27 - v0.30
 
 ### Migration notes
