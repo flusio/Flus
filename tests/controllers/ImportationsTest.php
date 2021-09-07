@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers\importations;
+namespace flusio\controllers;
 
 use flusio\models;
 

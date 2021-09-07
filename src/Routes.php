@@ -69,7 +69,7 @@ class Routes
         $router->addRoute('post', '/my/account/subscription', 'my/Subscription#create', 'create subscription account');
 
         // Importations
-        $router->addRoute('post', '/importations/:id/delete', 'importations/Importations#delete', 'delete importation');
+        $router->addRoute('post', '/importations/:id/delete', 'Importations#delete', 'delete importation');
 
         $router->addRoute('get', '/pocket', 'importations/Pocket#show', 'pocket');
         $router->addRoute('post', '/pocket', 'importations/Pocket#import', 'import pocket');

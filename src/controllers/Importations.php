@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers\importations;
+namespace flusio\controllers;
 
 use Minz\Response;
 use flusio\auth;
