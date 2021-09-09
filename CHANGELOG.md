@@ -1,11 +1,30 @@
 # Changelog of flusio
 
-## 2021-xx-yy - v0.31
+## 2021-09-09 - v0.31
 
 **Important note:** this version comes with a bunch of tricky migrations. They
 are expected to work well but, you know, a crash can be expected. For this
 reason, it's recommended to stop the jobs workers and to put the application
 in maintenance mode during the update.
+
+### News
+
+- Allow to list read links
+
+### Improvements
+
+- Handle different link publication dates
+
+### Security
+
+- Duplicate identical URLs for different feeds
+
+### Misc
+
+- Decrease rate limit for Youtube feeds
+- Improve rate limit during feeds fetching
+- Select links to fetch based on fetched\_code
+- Sort jobs by ids in CLI
 
 ## 2021-08-27 - v0.30
 
