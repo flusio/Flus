@@ -629,7 +629,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'url' => $old_url,
             'feed_entry_id' => $entry_id,
         ]);
-        $this->create('link_to_collection', [
+        $link_to_collection_id = $this->create('link_to_collection', [
             'link_id' => $link_id,
             'collection_id' => $collection_id,
         ]);
@@ -673,6 +673,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_url, $link->url);
         $this->assertSame($new_url, $link->title);
         $this->assertNull($link->fetched_at);
+        $link_to_collection = models\LinkToCollection::find($link_to_collection_id);
+        $this->assertSame(1617096360, $link_to_collection->created_at->getTimestamp());
     }
 
     public function testPerformAbsolutizesLinks()

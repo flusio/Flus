@@ -154,11 +154,11 @@ class FeedFetcher
                 ]);
 
                 // we also update the publication date in case it changed
-                $db_link_to_collection = $links_to_collections_dao->findBy([
+                $link_to_collection = models\LinkToCollection::findBy([
                     'link_id' => $link_id,
                     'collection_id' => $collection->id,
                 ]);
-                $links_to_collections_dao->update($db_link_to_collection['id'], [
+                models\LinkToCollection::update($link_to_collection->id, [
                     'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
                 ]);
             } else {
