@@ -184,7 +184,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding');
-        $this->assertSame(3, models\Collection::count());
+        $this->assertSame(4, models\Collection::count());
         $user = auth\CurrentUser::get();
         $bookmarks = models\Collection::findBy([
             'user_id' => $user->id,
@@ -198,9 +198,14 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'read',
         ]);
+        $never_list = models\Collection::findBy([
+            'user_id' => $user->id,
+            'type' => 'never',
+        ]);
         $this->assertNotNull($bookmarks);
         $this->assertNotNull($news);
         $this->assertNotNull($read_list);
+        $this->assertNotNull($never_list);
     }
 
     public function testCreateRedirectsIfRegistrationsAreClosed()

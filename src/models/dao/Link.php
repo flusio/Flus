@@ -250,7 +250,7 @@ class Link extends \Minz\DatabaseModel
                 FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
 
                 WHERE c_exclude.user_id = :user_id
-                AND (c_exclude.type = 'bookmarks' OR c_exclude.type = 'read')
+                AND (c_exclude.type = 'bookmarks' OR c_exclude.type = 'read' OR c_exclude.type = 'never')
 
                 AND lc_exclude.link_id = l_exclude.id
                 AND lc_exclude.collection_id = c_exclude.id

@@ -11,6 +11,7 @@
 .news__postpone {
     margin-top: var(--space-large);
     padding: var(--space-medium);
+    padding-bottom: var(--space-larger);
 
     text-align: center;
 }

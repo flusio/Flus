@@ -232,4 +232,108 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($exists_in_news, 'The link should still be in news.');
         $this->assertNull($link_to_bookmarks, 'The link should not be in bookmarks.');
     }
+
+    public function testNeverMarksNewsLinksToNeverReadAndRedirects()
+    {
+        $user = $this->login();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $never_list = $user->neverList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/read/never', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks_id);
+        $link_to_never_list = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $never_list->id,
+        ]);
+        $this->assertFalse($exists_in_news, 'The link should no longer be in news.');
+        $this->assertFalse($exists_in_bookmarks, 'The link should no longer be in bookmarks.');
+        $this->assertNotNull($link_to_never_list, 'The link should be in the never list.');
+    }
+
+    public function testNeverRedirectsToLoginIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $never_list = $user->neverList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/read/never', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks_id);
+        $link_to_never_list = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $never_list->id,
+        ]);
+        $this->assertTrue($exists_in_news, 'The link should be in news.');
+        $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
+        $this->assertNull($link_to_never_list, 'The link should not be in the never list.');
+    }
+
+    public function testNeverFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $never_list = $user->neverList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', '/news/read/never', [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $this->assertFlash('error', 'A security verification failed.');
+        $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
+        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks_id);
+        $link_to_never_list = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $never_list->id,
+        ]);
+        $this->assertTrue($exists_in_news, 'The link should be in news.');
+        $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
+        $this->assertNull($link_to_never_list, 'The link should not be in the never list.');
+    }
 }

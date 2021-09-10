@@ -307,4 +307,140 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNull($link_to_bookmarks);
     }
+
+    public function testNeverMarksToNeverRead()
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $bookmarks = $user->bookmarks();
+        $never_list = $user->neverList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read/never", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertFalse(models\LinkToCollection::exists($link_to_news_id));
+        $this->assertFalse(models\LinkToCollection::exists($link_to_bookmarks_id));
+        $link_to_never_list = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $never_list->id,
+        ]);
+        $this->assertNotNull($link_to_never_list);
+    }
+
+    public function testNeverRedirectsToLoginIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $news = $user->news();
+        $bookmarks = $user->bookmarks();
+        $never_list = $user->neverList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read/never", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news_id));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks_id));
+        $link_to_never_list = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $never_list->id,
+        ]);
+        $this->assertNull($link_to_never_list);
+    }
+
+    public function testNeverFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $bookmarks = $user->bookmarks();
+        $never_list = $user->neverList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read/never", [
+            'csrf' => 'not the token',
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertFlash('error', 'A security verification failed.');
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news_id));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks_id));
+        $link_to_never_list = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $never_list->id,
+        ]);
+        $this->assertNull($link_to_never_list);
+    }
+
+    public function testNeverFailsIfNotOwned()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $other_user = models\User::find($other_user_id);
+        $news = $other_user->news();
+        $bookmarks = $other_user->bookmarks();
+        $never_list = $user->neverList();
+        $link_id = $this->create('link', [
+            'user_id' => $other_user->id,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $link_to_bookmarks_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read/never", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news_id));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks_id));
+        $link_to_never_list = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $never_list->id,
+        ]);
+        $this->assertNull($link_to_never_list);
+    }
 }

@@ -53,10 +53,7 @@ class Cleaner extends jobs\Job
             $user->locale = utils\Locale::currentLocale();
             $user->save();
 
-            // Initialize the default collections
-            $user->bookmarks();
-            $user->news();
-            $user->readList();
+            $user->initDefaultCollections();
         }
     }
 }

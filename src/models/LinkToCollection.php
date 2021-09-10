@@ -99,6 +99,30 @@ class LinkToCollection extends \Minz\Model
     }
 
     /**
+     * Mark the links never to be read for the current user.
+     *
+     * When a link is marked never to be read, it is added to the user's never
+     * list and removed from its bookmarks and from its news.
+     *
+     * You MUST be sure the links are owned by the user when you call this
+     * method.
+     *
+     * @param \flusio\models\User $user
+     * @param string[] $link_ids
+     */
+    public static function markToNeverRead($user, $link_ids)
+    {
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $never_list = $user->neverList();
+
+        foreach ($link_ids as $link_id) {
+            self::daoCall('attach', $link_id, [$never_list->id]);
+            self::daoCall('detach', $link_id, [$bookmarks->id, $news->id]);
+        }
+    }
+
+    /**
      * Attach the collections to the given link and remove old ones if any.
      *
      * This method will not detach the link from the read list, nor news, even

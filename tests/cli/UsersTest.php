@@ -93,7 +93,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(3, models\Collection::count());
+        $this->assertSame(4, models\Collection::count());
         $user = models\User::take();
         $bookmarks = models\Collection::findBy([
             'user_id' => $user->id,
@@ -107,9 +107,14 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'read',
         ]);
+        $never_list = models\Collection::findBy([
+            'user_id' => $user->id,
+            'type' => 'never',
+        ]);
         $this->assertNotNull($bookmarks);
         $this->assertNotNull($news);
         $this->assertNotNull($read_list);
+        $this->assertNotNull($never_list);
     }
 
     public function testCreateFailsIfAnArgumentIsInvalid()

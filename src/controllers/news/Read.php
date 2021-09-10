@@ -82,4 +82,39 @@ class Read
 
         return Response::found($from);
     }
+
+    /**
+     * Remove news links from news and bookmarks and add them to the never list.
+     *
+     * @request_param string csrf
+     *
+     * @response 302 /login?redirect_to=/news
+     *     if not connected
+     * @response 302 /news
+     * @flash error
+     *     if CSRF is invalid
+     * @response 302 /news
+     *     on success
+     */
+    public function never($request)
+    {
+        $user = auth\CurrentUser::get();
+        $from = \Minz\Url::for('news');
+        $csrf = $request->param('csrf');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $news = $user->news();
+        $link_ids = array_column($news->links(), 'id');
+        models\LinkToCollection::markToNeverRead($user, $link_ids);
+
+        return Response::found($from);
+    }
 }

@@ -14,7 +14,7 @@ class Collection extends \Minz\Model
 {
     use DaoConnector;
 
-    public const VALID_TYPES = ['bookmarks', 'news', 'read', 'collection', 'feed'];
+    public const VALID_TYPES = ['bookmarks', 'news', 'read', 'never', 'collection', 'feed'];
 
     public const NAME_MAX_LENGTH = 100;
 
@@ -154,6 +154,20 @@ class Collection extends \Minz\Model
         return new self([
             'name' => _('Links read'),
             'type' => 'read',
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * @param string $user_id
+     *
+     * @return \flusio\models\Collection
+     */
+    public static function initNeverList($user_id)
+    {
+        return new self([
+            'name' => _('Links never to read'),
+            'type' => 'never',
             'user_id' => $user_id,
         ]);
     }

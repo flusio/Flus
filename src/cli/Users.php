@@ -75,10 +75,7 @@ class Users
 
         $user->save();
 
-        // Initialize the default collections
-        $user->bookmarks();
-        $user->news();
-        $user->readList();
+        $user->initDefaultCollections();
 
         return Response::text(200, "User {$user->username} ({$user->email}) has been created.");
     }

@@ -138,6 +138,17 @@ class User extends \Minz\Model
     }
 
     /**
+     * Initialize all the default collections for the current user
+     */
+    public function initDefaultCollections()
+    {
+        $this->bookmarks();
+        $this->news();
+        $this->readList();
+        $this->neverList();
+    }
+
+    /**
      * Return the user' bookmarks collection
      *
      * @return \flusio\models\Collection
@@ -195,6 +206,26 @@ class User extends \Minz\Model
         }
 
         return $read_list;
+    }
+
+    /**
+     * Return the user' never list collection
+     *
+     * @return \flusio\models\Collection
+     */
+    public function neverList()
+    {
+        $never_list = Collection::findBy([
+            'user_id' => $this->id,
+            'type' => 'never',
+        ]);
+
+        if (!$never_list) {
+            $never_list = Collection::initNeverList($this->id);
+            $never_list->save();
+        }
+
+        return $never_list;
     }
 
     /**

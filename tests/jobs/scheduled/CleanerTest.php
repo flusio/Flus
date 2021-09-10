@@ -154,7 +154,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['demo'] = false;
 
         $this->assertSame(1, models\User::count());
-        $this->assertSame(3, models\Collection::count());
+        $this->assertSame(4, models\Collection::count());
         $this->assertSame(0, models\Token::count());
         $this->assertSame(0, models\Link::count());
         $user = models\User::take();
@@ -174,9 +174,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'read',
         ]);
+        $never_list = models\Collection::findBy([
+            'user_id' => $user->id,
+            'type' => 'never',
+        ]);
         $this->assertNotNull($bookmarks);
         $this->assertNotNull($news);
         $this->assertNotNull($read_list);
+        $this->assertNotNull($never_list);
     }
 
     public function testPerformKeepsDataIfDemoIsDisabled()
