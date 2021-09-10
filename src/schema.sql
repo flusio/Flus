@@ -170,19 +170,6 @@ CREATE TABLE followed_collections (
 
 CREATE UNIQUE INDEX idx_followed_collections ON followed_collections(user_id, collection_id);
 
-CREATE TABLE news_links (
-    id SERIAL PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
-    published_at TIMESTAMPTZ,
-    url TEXT NOT NULL,
-    link_id TEXT REFERENCES links ON DELETE SET NULL ON UPDATE CASCADE,
-    via_type TEXT NOT NULL DEFAULT '',
-    via_collection_id TEXT REFERENCES collections ON DELETE SET NULL ON UPDATE CASCADE,
-    read_at TIMESTAMPTZ,
-    removed_at TIMESTAMPTZ,
-    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
-);
-
 CREATE TABLE messages (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
