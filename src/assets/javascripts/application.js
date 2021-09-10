@@ -16,6 +16,7 @@ import ModalOpenerController from 'js/controllers/modal_opener_controller.js';
 import PocketOptionController from 'js/controllers/pocket_option_controller.js';
 import PopupController from 'js/controllers/popup_controller.js';
 import SkipNavController from 'js/controllers/skip_nav_controller.js';
+import TextEditorController from 'js/controllers/text_editor_controller.js';
 
 window.jsConfiguration = JSON.parse(document.getElementById('javascript-configuration').innerHTML);
 
@@ -37,6 +38,7 @@ application.register('modal-opener', ModalOpenerController);
 application.register('pocket-option', PocketOptionController);
 application.register('popup', PopupController);
 application.register('skip-nav', SkipNavController);
+application.register('text-editor', TextEditorController);
 
 function adaptLayoutContentBorderRadius () {
     const layoutContentNode = document.querySelector('.layout__content');

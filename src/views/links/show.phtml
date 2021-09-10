@@ -135,6 +135,8 @@
                     id="content"
                     name="content"
                     required
+                    data-controller="text-editor"
+                    data-action="input->text-editor#refresh"
                 ><?= $comment ?></textarea>
 
                 <?php if (isset($errors['content'])): ?>

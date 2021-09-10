@@ -62,7 +62,13 @@
                 <?= _('Your message') ?>
             </label>
 
-            <textarea id="message" name="message" required><?= $message ?></textarea>
+            <textarea
+                id="message"
+                name="message"
+                required
+                data-controller="text-editor"
+                data-action="input->text-editor#refresh"
+            ><?= $message ?></textarea>
 
             <?php if (isset($errors['message'])): ?>
                 <p class="form-group__error">

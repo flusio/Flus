@@ -82,6 +82,8 @@
             <textarea
                 id="comment"
                 name="comment"
+                data-controller="text-editor"
+                data-action="input->text-editor#refresh"
             ><?= $comment ?></textarea>
         </div>
 
