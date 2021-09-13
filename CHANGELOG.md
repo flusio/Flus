@@ -1,5 +1,27 @@
 # Changelog of flusio
 
+## 2021-09-13 - v0.32
+
+### News
+
+- Remove links from news without marking as read
+
+### Improvements
+
+- Auto-resize text editors
+
+### Bug fixes
+
+- Fix use of `LinkToCollection` DAO in `FeedFetcher`
+
+### Misc
+
+- Upgrade JavaScript dependencies
+- Migrate from Turbolinks to Turbo
+- Upgrade to Stimulus 2.0.0
+- Refactor modal with TurboFrame
+- Drop `news_links` table
+
 ## 2021-09-09 - v0.31
 
 **Important note:** this version comes with a bunch of tricky migrations. They
