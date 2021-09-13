@@ -1,4 +1,4 @@
-import Turbolinks from 'turbolinks';
+import * as Turbo from '@hotwired/turbo'; // eslint-disable-line no-unused-vars
 import { Application } from 'stimulus';
 
 import AutosubmitController from 'js/controllers/autosubmit_controller.js';
@@ -19,8 +19,6 @@ import SkipNavController from 'js/controllers/skip_nav_controller.js';
 import TextEditorController from 'js/controllers/text_editor_controller.js';
 
 window.jsConfiguration = JSON.parse(document.getElementById('javascript-configuration').innerHTML);
-
-Turbolinks.start();
 
 const application = Application.start();
 application.register('autosubmit', AutosubmitController);
@@ -52,4 +50,4 @@ function adaptLayoutContentBorderRadius () {
     }
 }
 
-document.addEventListener('turbolinks:load', adaptLayoutContentBorderRadius);
+document.addEventListener('turbo:load', adaptLayoutContentBorderRadius);

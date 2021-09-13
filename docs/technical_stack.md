@@ -21,11 +21,11 @@ handled via a CRON task (but with less efficiency).
 
 The assets (CSS and JS) are bundled with [Parcel](https://parceljs.org/). The
 JavaScript relies on both [Stimulus](https://stimulus.hotwired.dev/) (“a modest
-JavaScript framework”) and [Turbolinks](https://github.com/turbolinks/turbolinks)
-(used to speed up navigation on the application). The dependencies are managed
-with [NPM](https://www.npmjs.com/), the default Node package manager. NPM is
-not needed in production because I bundle assets and add them in the repository
-at each new release.
+JavaScript framework”) and [Turbo](https://turbo.hotwired.dev/) (used to speed
+up navigation on the application). The dependencies are managed with
+[NPM](https://www.npmjs.com/), the default Node package manager. NPM is not
+needed in production because I bundle assets and add them in the repository at
+each new release.
 
 The test suite is runned over [GitHub Actions](https://github.com/features/actions).
 It’s using [PHPUnit 9](https://phpunit.de/) as a testing framework and

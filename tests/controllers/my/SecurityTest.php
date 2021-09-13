@@ -63,7 +63,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
     }
 
-    public function testUpdateChangesEmailAndPasswordAndRenders()
+    public function testUpdateChangesEmailAndPasswordAndRedirects()
     {
         $old_email = $this->fake('email');
         $new_email = $this->fake('email');
@@ -82,8 +82,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $new_password,
         ]);
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $this->assertResponseCode($response, 302, '/my/security');
         $user = auth\CurrentUser::reload();
         $this->assertSame($new_email, $user->email);
         $this->assertTrue($user->verifyPassword($new_password));
@@ -132,8 +131,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $new_password,
         ]);
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $this->assertResponseCode($response, 302, '/my/security');
         $user = auth\CurrentUser::reload();
         $this->assertNull($user->reset_token);
         $this->assertFalse(models\Token::exists($token));
@@ -164,8 +162,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $new_password,
         ]);
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $this->assertResponseCode($response, 302, '/my/security');
         $user = auth\CurrentUser::reload();
         $this->assertSame(1, models\Session::count());
         $this->assertFalse(models\Session::exists($session_id));

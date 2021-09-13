@@ -41,7 +41,6 @@ if (\Minz\Configuration::$environment === 'development' && $current_filepath !==
 // Initialize the Application and execute the request to get a Response
 $application = new \flusio\Application();
 $response = $application->run($request);
-$response->setHeader('Turbolinks-Location', $http_uri);
 
 // Generate the HTTP headers, cookies and output
 http_response_code($response->code());

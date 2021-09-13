@@ -32,7 +32,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
     }
 
-    public function testUpdateRendersCorrectlyAndSavesTheUser()
+    public function testUpdateSavesTheUserAndRedirects()
     {
         $old_username = $this->fakeUnique('username');
         $new_username = $this->fakeUnique('username');
@@ -47,8 +47,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'locale' => 'fr_FR',
         ]);
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'my/profile/show.phtml');
+        $this->assertResponseCode($response, 302, '/my/profile');
         $user = auth\CurrentUser::reload();
         $this->assertSame($new_username, $user->username);
         $this->assertSame('fr_FR', $user->locale);

@@ -50,7 +50,7 @@ class Security
      * @response 400
      *    If CSRF or email is invalid, or if the user didn't confirmed its
      *    password first
-     * @response 200
+     * @response 302 /my/security
      *    On success
      */
     public function update($request)
@@ -114,9 +114,7 @@ class Security
             models\Session::daoCall('deleteByUserId', $user->id, $current_session->id);
         }
 
-        return Response::ok('my/security/show_confirmed.phtml', [
-            'email' => $user->email,
-        ]);
+        return Response::redirect('security');
     }
 
     /**

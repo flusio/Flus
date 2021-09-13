@@ -49,7 +49,8 @@ class Profile
      *     If the user is not connected
      * @response 400
      *     If the CSRF, username or locale are invalid
-     * @response 200
+     * @response 302 /my/profile
+     *     On success
      */
     public function update($request)
     {
@@ -95,10 +96,6 @@ class Profile
         $user->save();
         utils\Locale::setCurrentLocale($locale);
 
-        return Response::ok('my/profile/show.phtml', [
-            'username' => $username,
-            'locale' => $locale,
-            'current_locale' => $locale,
-        ]);
+        return Response::redirect('profile');
     }
 }

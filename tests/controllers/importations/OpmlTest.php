@@ -75,7 +75,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fopml');
     }
 
-    public function testImportRegistersAnOpmlImportatorJobAndRendersCorrectly()
+    public function testImportRegistersAnOpmlImportatorJobAndRedirects()
     {
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
@@ -97,8 +97,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 200, 'Importation from an OPML file');
-        $this->assertPointer($response, 'importations/opml/show.phtml');
+        $this->assertResponseCode($response, 302, '/opml');
         $this->assertSame(1, models\Importation::count());
         $this->assertSame(1, $job_dao->count());
         $importation = models\Importation::take();
