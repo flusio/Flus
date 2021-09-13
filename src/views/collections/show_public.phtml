@@ -55,7 +55,7 @@
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type="link">
+<div class="section" data-controller="back-storage" data-back-storage-type-value="link">
     <?php if ($collection->image_filename): ?>
         <img
             class="section__image"
@@ -120,7 +120,7 @@
                                 class="popup__item popup__item--button"
                                 data-controller="modal-opener"
                                 data-action="modal-opener#fetch"
-                                data-modal-opener-href="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                                data-modal-opener-href-value="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
                                 aria-haspopup="dialog"
                                 aria-controls="modal"
                             >
@@ -129,12 +129,12 @@
                             </button>
 
                             <div data-controller="copy-to-clipboard">
-                                <input type="hidden" value="<?= url_full('collection', ['id' => $collection->id]) ?>" data-target="copy-to-clipboard.copyable" />
+                                <input type="hidden" value="<?= url_full('collection', ['id' => $collection->id]) ?>" data-copy-to-clipboard-target="copyable" />
 
                                 <button
                                     class="popup__item popup__item--button share__button"
                                     data-action="copy-to-clipboard#copy"
-                                    data-target="copy-to-clipboard.feedback"
+                                    data-copy-to-clipboard-target="feedback"
                                 >
                                     <?= icon('copy-to-clipboard') ?>
                                     <?= _('Copy the link') ?>
@@ -167,7 +167,7 @@
                     class="button--small"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('login to follow collection', ['id' => $collection->id]) ?>"
+                    data-modal-opener-href-value="<?= url('login to follow collection', ['id' => $collection->id]) ?>"
                     aria-haspopup="dialog"
                     aria-controls="modal"
                 >

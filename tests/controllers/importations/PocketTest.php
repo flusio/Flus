@@ -107,7 +107,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 404);
     }
 
-    public function testImportRegistersAPocketImportatorJobAndRendersCorrectly()
+    public function testImportRegistersAPocketImportatorJobAndRedirects()
     {
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $job_dao = new models\dao\Job();
@@ -127,8 +127,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Importation::count());
         $this->assertSame(1, $job_dao->count());
 
-        $this->assertResponse($response, 200, 'Importation from Pocket');
-        $this->assertPointer($response, 'importations/pocket/show.phtml');
+        $this->assertResponseCode($response, 302, '/pocket');
         $importation = models\Importation::take();
         $db_job = $job_dao->listAll()[0];
         $handler = json_decode($db_job['handler'], true);

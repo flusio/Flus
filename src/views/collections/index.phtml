@@ -7,7 +7,7 @@
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type="collection">
+<div class="section" data-controller="back-storage" data-back-storage-type-value="collection">
     <div class="section__title">
         <h1><?= _('Collections') ?></h1>
     </div>
@@ -29,7 +29,7 @@
                     class="card__button card__button--collection"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('new collection') ?>"
+                    data-modal-opener-href-value="<?= url('new collection') ?>"
                     aria-haspopup="dialog"
                     aria-controls="modal"
                 >
@@ -138,7 +138,7 @@
                     type="button"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('edit group', ['id' => $group->id, 'from' => url('collections')]) ?>"
+                    data-modal-opener-href-value="<?= url('edit group', ['id' => $group->id, 'from' => url('collections')]) ?>"
                     aria-haspopup="dialog"
                     aria-controls="modal"
                 >
@@ -151,7 +151,7 @@
                     type="button"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
-                    data-modal-opener-href="<?= url('edit group', ['id' => $group->id, 'from' => url('collections')]) ?>"
+                    data-modal-opener-href-value="<?= url('edit group', ['id' => $group->id, 'from' => url('collections')]) ?>"
                     aria-haspopup="dialog"
                     aria-controls="modal"
                 >

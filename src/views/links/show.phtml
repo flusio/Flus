@@ -92,7 +92,7 @@
                                     action="<?= url('delete message', ['id' => $message->id]) ?>"
                                     data-controller="confirmation"
                                     data-action="confirmation#confirm"
-                                    data-message="<?= _('Are you sure that you want to delete this message?') ?>"
+                                    data-confirmation-message-value="<?= _('Are you sure that you want to delete this message?') ?>"
                                 >
                                     <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                     <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />
@@ -136,7 +136,7 @@
                     name="content"
                     required
                     data-controller="text-editor"
-                    data-action="input->text-editor#refresh"
+                    data-action="text-editor#refresh"
                 ><?= $comment ?></textarea>
 
                 <?php if (isset($errors['content'])): ?>

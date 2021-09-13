@@ -63,7 +63,7 @@
                 id="description"
                 name="description"
                 data-controller="text-editor"
-                data-action="input->text-editor#refresh"
+                data-action="text-editor#refresh"
             ><?= $description ?></textarea>
 
             <?php if (isset($errors['description'])): ?>
@@ -132,7 +132,7 @@
         action="<?= url('delete collection', ['id' => $collection->id]) ?>"
         data-controller="confirmation"
         data-action="confirmation#confirm"
-        data-message="<?= _('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.') ?>"
+        data-confirmation-message-value="<?= _('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.') ?>"
     >
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />

@@ -43,7 +43,10 @@ services:
             - "5432:5432"
 
     bundler:
-        image: node:14-alpine
+        image: flusio_node:dev
+        build:
+            context: .
+            dockerfile: Dockerfile.node
         restart: unless-stopped
         command: npm run watch
         working_dir: /app

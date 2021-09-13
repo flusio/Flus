@@ -61,7 +61,8 @@ class Pocket
      * @response 400
      *    If the CSRF token is invalid, if user has no access token or if an
      *    import of pocket type already exists
-     * @response 200
+     * @response 302 /pocket
+     *    On success
      */
     public function import($request)
     {
@@ -113,9 +114,7 @@ class Pocket
         $importator_job = new jobs\PocketImportator();
         $importator_job->performLater($importation->id);
 
-        return Response::ok('importations/pocket/show.phtml', [
-            'importation' => $importation,
-        ]);
+        return Response::redirect('pocket');
     }
 
     /**

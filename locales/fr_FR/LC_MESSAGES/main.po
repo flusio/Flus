@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-09-13 09:55+0200\n"
-"PO-Revision-Date: 2021-09-13 09:55+0200\n"
+"POT-Creation-Date: 2021-09-13 16:34+0200\n"
+"PO-Revision-Date: 2021-09-13 16:34+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -47,8 +47,8 @@ msgstr "Afficher"
 #: controllers/collections/Groups.php:121
 #: controllers/collections/Images.php:112 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:98
-#: controllers/my/Account.php:103 controllers/my/Profile.php:71
-#: controllers/my/Security.php:79 controllers/my/Security.php:152
+#: controllers/my/Account.php:103 controllers/my/Profile.php:72
+#: controllers/my/Security.php:79 controllers/my/Security.php:150
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -63,9 +63,9 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Links.php:285 controllers/Links.php:332
 #: controllers/Messages.php:47 controllers/Sessions.php:191
 #: controllers/importations/Importations.php:48
-#: controllers/importations/Opml.php:77 controllers/importations/Pocket.php:101
-#: controllers/importations/Pocket.php:150
-#: controllers/importations/Pocket.php:242
+#: controllers/importations/Opml.php:78 controllers/importations/Pocket.php:102
+#: controllers/importations/Pocket.php:149
+#: controllers/importations/Pocket.php:241
 #: controllers/links/Collections.php:114 controllers/links/Read.php:45
 #: controllers/links/Read.php:88 controllers/links/Read.php:131
 #: controllers/my/Avatar.php:43 controllers/news/Read.php:40
@@ -114,7 +114,7 @@ msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
 #: controllers/Sessions.php:109 controllers/my/Account.php:110
-#: controllers/my/Security.php:158
+#: controllers/my/Security.php:156
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -126,17 +126,17 @@ msgstr "Le sujet est obligatoire."
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: controllers/collections/Images.php:90 controllers/importations/Opml.php:86
+#: controllers/collections/Images.php:90 controllers/importations/Opml.php:87
 #: controllers/my/Avatar.php:48
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
 
-#: controllers/collections/Images.php:98 controllers/importations/Opml.php:95
+#: controllers/collections/Images.php:98 controllers/importations/Opml.php:96
 #: controllers/my/Avatar.php:53
 msgid "This file is too large."
 msgstr "Ce fichier est trop gros."
 
-#: controllers/collections/Images.php:104 controllers/importations/Opml.php:102
+#: controllers/collections/Images.php:104 controllers/importations/Opml.php:103
 #: controllers/my/Avatar.php:59
 #, php-format
 msgid "This file cannot be uploaded (error %d)."
@@ -146,19 +146,19 @@ msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
 msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
 msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
 
-#: controllers/importations/Opml.php:70
+#: controllers/importations/Opml.php:71
 msgid "You already have an ongoing OPML importation."
 msgstr "Vous avez déjà une importation OPML en cours."
 
-#: controllers/importations/Opml.php:118
+#: controllers/importations/Opml.php:119
 msgid "This file cannot be uploaded."
 msgstr "Ce fichier ne peut pas être téléversé."
 
-#: controllers/importations/Pocket.php:86
+#: controllers/importations/Pocket.php:87
 msgid "You already have an ongoing Pocket importation."
 msgstr "Vous avez déjà une importation Pocket en cours."
 
-#: controllers/importations/Pocket.php:93
+#: controllers/importations/Pocket.php:94
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 

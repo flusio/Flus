@@ -47,7 +47,8 @@ class Opml
      *    If the user is not connected
      * @response 400
      *    If the CSRF token is invalid or if an import of opml type already exists
-     * @response 200
+     * @response 302 /opml
+     *    On success
      */
     public function import($request)
     {
@@ -127,8 +128,6 @@ class Opml
         $importator_job = new jobs\OpmlImportator();
         $importator_job->performLater($importation->id);
 
-        return Response::ok('importations/opml/show.phtml', [
-            'importation' => $importation,
-        ]);
+        return Response::redirect('opml');
     }
 }

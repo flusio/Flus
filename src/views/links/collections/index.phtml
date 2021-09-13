@@ -37,7 +37,7 @@
                     id="collection-ids"
                     class="collections-selector__data"
                     name="collection_ids[]"
-                    data-target="collections-selector.data"
+                    data-collections-selector-target="data"
                     multiple
                     required
                     tabindex="-1"
@@ -49,10 +49,10 @@
                     <?php endforeach; ?>
                 </select>
 
-                <ul class="collections-selector__list" data-target="collections-selector.list"></ul>
+                <ul class="collections-selector__list" data-collections-selector-target="list"></ul>
 
                 <select
-                    data-target="collections-selector.select"
+                    data-collections-selector-target="select"
                     data-action="collections-selector#attach"
                     aria-label="<?= _('Select a collection') ?>"
                 >

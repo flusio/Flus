@@ -21,12 +21,12 @@
         <meta name="msapplication-TileImage" content="<?= url_static('icons/icon-144.png') ?>">
         <meta name="msapplication-TileColor" content="#00d0ad">
 
-        <link rel="stylesheet" href="<?= url_asset('stylesheets/application.css') ?>" data-turbolinks-track="reload">
+        <link rel="stylesheet" href="<?= url_asset('stylesheets/application.css') ?>" data-turbo-track="reload">
 
         <script id="javascript-configuration" type="application/json">
             <?= $this->safe('javascript_configuration') ?>
         </script>
-        <script src="<?= url_asset('javascripts/application.js') ?>" data-turbolinks-track="reload" defer></script>
+        <script src="<?= url_asset('javascripts/application.js') ?>" data-turbo-track="reload" defer></script>
 
         <meta name="csrf-param" content="csrf" />
         <meta name="csrf-token" content="<?= $csrf_token ?>" />
@@ -39,7 +39,7 @@
             class="no-mobile accessibility-nav anchor--action"
             href="#main-content"
             tabindex="0"
-            data-turbolinks="false"
+            data-turbo="false"
             data-controller="skip-nav"
             data-action="skip-nav#skip"
         >
@@ -193,10 +193,10 @@
                             <a
                                 href="<?= $back['href'] ?>"
                                 data-controller="back-anchor"
-                                data-back-anchor-type="<?= $back['js-back-anchor-type'] ?>"
-                                data-back-anchor-replace="href"
+                                data-back-anchor-type-value="<?= $back['js-back-anchor-type'] ?>"
+                                data-back-anchor-replace-value="href"
                                 <?php if (isset($back['js-back-anchor-mode'])): ?>
-                                    data-back-anchor-mode="<?= $back['js-back-anchor-mode'] ?>"
+                                    data-back-anchor-mode-value="<?= $back['js-back-anchor-mode'] ?>"
                                 <?php endif; ?>
                             >
                                 <?= icon('arrow-left') ?>
@@ -230,7 +230,7 @@
         >
             <section
                 class="modal__box"
-                data-target="modal.box"
+                data-modal-target="box"
                 role="document"
             >
                 <header class="modal__header">
@@ -245,7 +245,10 @@
                     </button>
                 </header>
 
-                <div data-target="modal.body" class="modal__body">
+                <div data-modal-target="body" class="modal__body">
+                    <turbo-frame id="modal-content" data-modal-target="content" target="_top">
+                        <div class="spinner"></div>
+                    </turbo-frame>
                 </div>
             </section>
         </div>

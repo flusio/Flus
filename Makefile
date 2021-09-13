@@ -92,7 +92,9 @@ ifndef VERSION
 endif
 	echo $(VERSION) > VERSION.txt
 	rm -rf public/assets/*
+	@docker-compose -p flusio -f docker/docker-compose.yml stop bundler
 	$(NPM) run build
+	@docker-compose -p flusio -f docker/docker-compose.yml start bundler
 	$(EDITOR) CHANGELOG.md
 	git add .
 	git commit -m "release: Publish version v$(VERSION)"
