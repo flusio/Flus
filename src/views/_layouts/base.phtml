@@ -1,26 +1,26 @@
 <?php
-    if (!$no_layout) {
-        if ($current_user && !$current_user->isBlocked()) {
-            $layout_name = 'connected.phtml';
-        } elseif ($current_user) {
-            $layout_name = 'connected_blocked.phtml';
-        } else {
-            $layout_name = 'not_connected.phtml';
-        }
-
-        $this->layout($layout_name, [
-            // The title can be considered as safe since it's already sanitized in
-            // the calling view.
-            'title' => $this->safe('title'),
-            'current_locale' => $current_locale,
-            'current_tab' => $current_tab ?? null,
-            'current_page' => $current_page ?? null,
-            'canonical' => $canonical,
-            'feed' => $feed ?? [],
-            'open_graph' => $open_graph ?? [],
-            'back' => $back ?? null,
-        ]);
+    if ($turbo_frame) {
+        $layout_name = 'turbo_frame.phtml';
+    } elseif ($current_user && !$current_user->isBlocked()) {
+        $layout_name = 'connected.phtml';
+    } elseif ($current_user) {
+        $layout_name = 'connected_blocked.phtml';
+    } else {
+        $layout_name = 'not_connected.phtml';
     }
+
+    $this->layout($layout_name, [
+        // The title can be considered as safe since it's already sanitized in
+        // the calling view.
+        'title' => $this->safe('title'),
+        'current_locale' => $current_locale,
+        'current_tab' => $current_tab ?? null,
+        'current_page' => $current_page ?? null,
+        'canonical' => $canonical,
+        'feed' => $feed ?? [],
+        'open_graph' => $open_graph ?? [],
+        'back' => $back ?? null,
+    ]);
 
     echo $this->safe('content');
 ?>

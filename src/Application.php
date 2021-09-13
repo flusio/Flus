@@ -103,7 +103,7 @@ class Application
             'current_user' => $current_user,
             'now' => \Minz\Time::now(),
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
-            'no_layout' => $request->header('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest',
+            'turbo_frame' => $request->header('HTTP_TURBO_FRAME'),
             'demo' => $app_conf['demo'],
             'registrations_opened' => $app_conf['registrations_opened'],
         ]);

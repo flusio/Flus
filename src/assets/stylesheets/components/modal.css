@@ -32,6 +32,8 @@
 
     background-color: var(--color-white);
     box-shadow: 0 0 10px var(--color-grey-7);
+
+    scroll-margin-top: var(--space-medium);
 }
 
 @media (min-width: 800px) {

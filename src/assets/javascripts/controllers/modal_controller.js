@@ -15,16 +15,69 @@ const FOCUSABLE_ELEMENTS = [
 // - Myself: https://github.com/lessy-community/lessy/blob/master/client/src/components/Ly/LyModal.vue
 export default class extends Controller {
     static get targets () {
-        return ['box', 'body'];
+        return ['box', 'body', 'content'];
     }
 
     connect () {
         this.element.addEventListener('open-modal', this.open.bind(this));
-        this.element.addEventListener('update-modal', this.update.bind(this));
 
         // handle modal shortcuts
         this.element.addEventListener('keydown', this.trapEscape.bind(this));
         this.element.addEventListener('keydown', this.trapFocus.bind(this));
+
+        // set focus elements when the modal is loaded
+        document.documentElement.addEventListener('turbo:frame-render', (event) => {
+            if (event.target === this.contentTarget) {
+                this.setFocus();
+                this.boxTarget.scrollIntoView(true);
+            }
+        });
+    }
+
+    setFocus () {
+        // We want to get the first and last focusable elements in the modal...
+        // ... start by getting the list of potential focusable elements...
+        const focusableElements = Array.from(this.boxTarget.querySelectorAll(FOCUSABLE_ELEMENTS));
+        // ... there's always at least one focusable element (i.e. the close button)...
+        this.firstFocusableElement = focusableElements[0];
+        // ... but we don't know what the last focusable element is, and it
+        // might be hidden (so the focus will not be given), so we iterate
+        // backwards to find the last "real" focusable element.
+        for (let index = focusableElements.length - 1; index >= 0; index--) {
+            const element = focusableElements[index];
+            element.focus();
+
+            if (document.activeElement === element) {
+                this.lastFocusableElement = element;
+                break;
+            }
+        }
+
+        // We want to give the focus to the "first" element of the modal which
+        // is the close button in the header. But this is not the ideal
+        // candidate for the focus because it's not part of the modal body.
+        // In consequence, if we have more than one focusable elements (i.e.
+        // there's at least one in the body), we give the focus to the second
+        // element.
+        if (focusableElements.length > 1) {
+            focusableElements.shift();
+        }
+
+        let hasFocus = false;
+        for (const element of focusableElements) {
+            element.focus();
+
+            // the element might still not have the focus, if it's hidden for instance
+            if (document.activeElement === element) {
+                hasFocus = true;
+                break;
+            }
+        };
+
+        if (!hasFocus) {
+            // still no focus? Let’s focus the close button then!
+            this.firstFocusableElement.focus();
+        }
     }
 
     open (event) {
@@ -35,49 +88,11 @@ export default class extends Controller {
         layout.setAttribute('aria-hidden', true);
         document.body.classList.add('modal-opened');
 
-        // set the modal content
-        this.setContent(event.detail.content);
+        // load the modal content via turbo-frame
+        this.contentTarget.setAttribute('src', event.detail.href);
 
         // remember the current element to give it the focus back on close
-        this.focusBackElement = event.detail.src;
-    }
-
-    update (event) {
-        const isOpened = this.element.getAttribute('aria-hidden');
-
-        if (isOpened) {
-            this.setContent(event.detail.content);
-            this.focusBackElement = event.detail.src;
-        }
-    }
-
-    setContent (content) {
-        // set the content to the modal body
-        if (content) {
-            this.bodyTarget.innerHTML = content;
-            this.bodyTarget.classList.add('modal__body--has-content');
-        } else {
-            this.bodyTarget.innerHTML = '<div class="spinner"></div>';
-            this.bodyTarget.classList.remove('modal__body--has-content');
-        }
-
-        // get first and last focusable elements in the modal. There's always
-        // at least one focusable element (i.e. the close button).
-        const focusableElements = this.boxTarget.querySelectorAll(FOCUSABLE_ELEMENTS);
-        this.firstFocusableElement = focusableElements[0];
-        this.lastFocusableElement = focusableElements[focusableElements.length - 1];
-
-        // We want to give the focus to the "first" element of the modal which
-        // is the close button in the header. But this is not the ideal
-        // candidate for the focus because it's not part of the modal body.
-        // In consequence, if we have more than one focusable elements (i.e.
-        // there's at least one in the body), we give the focus to the second
-        // element.
-        if (focusableElements.length > 1) {
-            focusableElements[1].focus();
-        } else {
-            this.firstFocusableElement.focus();
-        }
+        this.focusBackElement = event.detail.target;
     }
 
     closeOnMask (event) {
@@ -97,10 +112,11 @@ export default class extends Controller {
         layout.setAttribute('aria-hidden', false);
         document.body.classList.remove('modal-opened');
 
-        // remove the content with a timeout to wait for the modal close
+        // unload the turbo-frame with a timeout to wait for the modal close
         // animation
         setTimeout(() => {
-            this.setContent(null);
+            this.contentTarget.setAttribute('src', '');
+            this.contentTarget.innerHTML = '<div class="spinner"></div>';
         }, 300);
 
         // give the focus back to the link/button that opened the modal
