@@ -6,7 +6,7 @@
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type="link,collection">
+<div class="section" data-controller="back-storage" data-back-storage-type-value="link,collection">
     <div class="section__title">
         <h1 id="modal-title"><?= _('New link') ?></h1>
     </div>
@@ -106,7 +106,7 @@
                         <button
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
-                            data-modal-opener-href="<?= url('link collections', ['id' => $existing_link->id, 'from' => url('show search link', ['url' => $existing_link->url])]) ?>"
+                            data-modal-opener-href-value="<?= url('link collections', ['id' => $existing_link->id, 'from' => url('show search link', ['url' => $existing_link->url])]) ?>"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                         >
@@ -156,7 +156,7 @@
                         <button
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
-                            data-modal-opener-href="<?= url('obtaining link', ['id' => $default_link->id, 'from' => url('show search link', ['url' => $default_link->url])]) ?>"
+                            data-modal-opener-href-value="<?= url('obtaining link', ['id' => $default_link->id, 'from' => url('show search link', ['url' => $default_link->url])]) ?>"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                         >

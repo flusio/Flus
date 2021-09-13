@@ -1,15 +1,20 @@
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
+    static values = {
+        mode: String,
+        timeout: Number,
+    }
+
     connect () {
-        const mode = this.data.get('mode');
-        if (mode === 'timeout') {
+        if (this.modeValue === 'timeout') {
             let timeout;
-            if (this.data.has('timeout')) {
-                timeout = parseInt(this.data.get('timeout'), 10);
+            if (this.hasTimeoutValue) {
+                timeout = this.timeoutValue;
             } else {
                 timeout = 500;
             }
+
             window.setTimeout(() => {
                 this.submit();
             }, timeout);

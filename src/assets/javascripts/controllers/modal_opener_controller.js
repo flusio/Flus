@@ -1,6 +1,10 @@
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
+    static values = {
+        href: String,
+    }
+
     fetch (event) {
         event.preventDefault();
 
@@ -13,7 +17,7 @@ export default class extends Controller {
         });
         modal.dispatchEvent(openModalEvent);
 
-        const destination = this.data.get('href');
+        const destination = this.hrefValue;
         const init = {
             headers: new Headers({
                 'X-Requested-With': 'XMLHttpRequest',

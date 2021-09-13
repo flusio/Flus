@@ -38,7 +38,7 @@
             class="form-group group-selector <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>"
             data-controller="group-selector"
         >
-            <div class="group-selector__group-input" data-target="group-selector.groupInput">
+            <div class="group-selector__group-input" data-group-selector-target="groupInput">
                 <label for="name">
                     <?= _('How to name the group?') ?>
                     <span class="label__help">
@@ -55,7 +55,7 @@
                     autocomplete="off"
                     autofocus
                     maxlength="<?= $name_max_length ?>"
-                    data-target="group-selector.input"
+                    data-group-selector-target="input"
                 />
 
                 <datalist id="group-names">
@@ -65,13 +65,13 @@
                 </datalist>
             </div>
 
-            <div class="group-selector__group-select" data-target="group-selector.groupSelect">
+            <div class="group-selector__group-select" data-group-selector-target="groupSelect">
                 <label for="name">
                     <?= _('Select a group') ?>
                 </label>
 
                 <div class="form-group__stack">
-                    <select id="name" name="name" data-target="group-selector.select">
+                    <select id="name" name="name" data-group-selector-target="select">
                         <option <?= $name === '' ? 'selected' : '' ?> value="">
                             <?= _('No groups') ?>
                         </option>

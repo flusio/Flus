@@ -39,8 +39,8 @@
              method="get"
              action="<?= url('pocket') ?>"
              data-controller="autosubmit"
-             data-autosubmit-mode="timeout"
-             data-autosubmit-timeout="4000"
+             data-autosubmit-mode-value="timeout"
+             data-autosubmit-timeout-value="4000"
         >
         </form>
     <?php elseif ($importation && $importation->status === 'finished'): ?>
@@ -91,7 +91,7 @@
                     id="ignore-tags"
                     name="ignore_tags"
                     checked
-                    data-target="pocket-option.checkbox"
+                    data-pocket-option-target="checkbox"
                     data-action="pocket-option#changeCaption"
                     aria-describedby="ignore-tags-caption"
                 />
@@ -101,11 +101,11 @@
                 </label>
 
                 <p class="form-group__caption pocket-option__caption" id="ignore-tags-caption">
-                    <span data-target="pocket-option.captionTrue">
+                    <span data-pocket-option-target="captionTrue">
                         <?= _f('%s will import your links in a collection named “Pocket links”, your tags will be ignored.', $brand) ?>
                     </span>
 
-                    <span data-target="pocket-option.captionFalse">
+                    <span data-pocket-option-target="captionFalse">
                         <?= _f('%s will import your links in a collection named “Pocket links” and in collections named after your tags (not recommended if you have a lot of tags).', $brand) ?>
                     </span>
                 </p>
@@ -117,7 +117,7 @@
                     id="import-bookmarks"
                     name="import_bookmarks"
                     checked
-                    data-target="pocket-option.checkbox"
+                    data-pocket-option-target="checkbox"
                     data-action="pocket-option#changeCaption"
                     aria-describedby="import-bookmarks-caption"
                 />
@@ -127,11 +127,11 @@
                 </label>
 
                 <p class="form-group__caption pocket-option__caption" id="import-bookmarks-caption">
-                    <span data-target="pocket-option.captionTrue">
+                    <span data-pocket-option-target="captionTrue">
                         <?= _f('%s will import your non-archived Pocket links in your bookmarks.', $brand) ?>
                     </span>
 
-                    <span data-target="pocket-option.captionFalse">
+                    <span data-pocket-option-target="captionFalse">
                         <?= _f('%s will leave your bookmarks unchanged.', $brand) ?>
                     </span>
                 </p>
@@ -143,7 +143,7 @@
                     id="import-favorites"
                     name="import_favorites"
                     checked
-                    data-target="pocket-option.checkbox"
+                    data-pocket-option-target="checkbox"
                     data-action="pocket-option#changeCaption"
                     aria-describedby="import-favorites-caption"
                 />
@@ -153,11 +153,11 @@
                 </label>
 
                 <p class="form-group__caption pocket-option__caption" id="import-favorites-caption">
-                    <span data-target="pocket-option.captionTrue">
+                    <span data-pocket-option-target="captionTrue">
                         <?= _f('%s doesn’t provide favorites, but it’ll import them in a collection named “Pocket favorites”.', $brand) ?>
                     </span>
 
-                    <span data-target="pocket-option.captionFalse">
+                    <span data-pocket-option-target="captionFalse">
                         <?= _f('%s doesn’t provide favorites, so they’ll be ignored.', $brand) ?>
                     </span>
                 </p>

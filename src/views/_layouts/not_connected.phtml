@@ -139,10 +139,10 @@
                             <a
                                 href="<?= $back['href'] ?>"
                                 data-controller="back-anchor"
-                                data-back-anchor-type="<?= $back['js-back-anchor-type'] ?>"
-                                data-back-anchor-replace="href"
+                                data-back-anchor-type-value="<?= $back['js-back-anchor-type'] ?>"
+                                data-back-anchor-replace-value="href"
                                 <?php if (isset($back['js-back-anchor-mode'])): ?>
-                                    data-back-anchor-mode="<?= $back['js-back-anchor-mode'] ?>"
+                                    data-back-anchor-mode-value="<?= $back['js-back-anchor-mode'] ?>"
                                 <?php endif; ?>
                             >
                                 <?= icon('arrow-left') ?>
@@ -184,7 +184,7 @@
         >
             <section
                 class="modal__box"
-                data-target="modal.box"
+                data-modal-target="box"
                 role="document"
             >
                 <header class="modal__header">
@@ -199,7 +199,7 @@
                     </button>
                 </header>
 
-                <div data-target="modal.body" class="modal__body">
+                <div data-modal-target="body" class="modal__body">
                 </div>
             </section>
         </div>

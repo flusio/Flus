@@ -1,8 +1,12 @@
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
+    static values = {
+        type: String,
+    }
+
     initialize () {
-        const types = this.data.get('type').split(',');
+        const types = this.typeValue.split(',');
         const currentPath = window.location.pathname + window.location.search;
         types.forEach((type) => {
             window.localStorage.setItem('back-' + type.trim(), currentPath);

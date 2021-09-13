@@ -1,9 +1,12 @@
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
+    static values = {
+        message: String,
+    }
+
     confirm (event) {
-        const message = event.target.dataset.message;
-        if (!confirm(message)) {
+        if (!confirm(this.messageValue)) {
             event.preventDefault();
         }
     }

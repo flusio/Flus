@@ -39,8 +39,8 @@
              method="get"
              action="<?= url('opml') ?>"
              data-controller="autosubmit"
-             data-autosubmit-mode="timeout"
-             data-autosubmit-timeout="4000"
+             data-autosubmit-mode-value="timeout"
+             data-autosubmit-timeout-value="4000"
         >
         </form>
     <?php elseif ($importation && $importation->status === 'finished'): ?>
@@ -96,7 +96,7 @@
                 id="opml"
                 accept=".opml, .xml"
                 data-action="autosubmit#submit"
-                data-target="form-file.file"
+                data-form-file-target="file"
                 hidden
             />
 

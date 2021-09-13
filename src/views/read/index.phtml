@@ -19,7 +19,7 @@
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type="link">
+<div class="section" data-controller="back-storage" data-back-storage-type-value="link">
     <div class="section__title">
         <h1><?= protect($collection->name()) ?></h1>
     </div>
@@ -102,7 +102,7 @@
                                     class="popup__item popup__item--button"
                                     data-controller="modal-opener"
                                     data-action="modal-opener#fetch"
-                                    data-modal-opener-href="<?= url('edit link', ['id' => $link->id, 'from' => url('read list', $current_url_params)]) ?>"
+                                    data-modal-opener-href-value="<?= url('edit link', ['id' => $link->id, 'from' => url('read list', $current_url_params)]) ?>"
                                     aria-haspopup="dialog"
                                     aria-controls="modal"
                                 >
@@ -111,12 +111,12 @@
                                 </button>
 
                                 <div data-controller="copy-to-clipboard">
-                                    <input type="hidden" value="<?= protect($link->url) ?>" data-target="copy-to-clipboard.copyable" />
+                                    <input type="hidden" value="<?= protect($link->url) ?>" data-copy-to-clipboard-target="copyable" />
 
                                     <button
                                         class="popup__item popup__item--button share__button"
                                         data-action="copy-to-clipboard#copy"
-                                        data-target="copy-to-clipboard.feedback"
+                                        data-copy-to-clipboard-target="feedback"
                                     >
                                         <?= icon('copy-to-clipboard') ?>
                                         <?= _('Copy the external link') ?>
@@ -129,7 +129,7 @@
                             class="button--ghost button--smaller"
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
-                            data-modal-opener-href="<?= url('link collections', ['id' => $link->id, 'from' => url('read list', $current_url_params)]) ?>"
+                            data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'from' => url('read list', $current_url_params)]) ?>"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                             title="<?= _('Manage collections') ?>"

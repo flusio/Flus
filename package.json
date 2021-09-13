@@ -35,7 +35,7 @@
     "stylelint-order": "^4.1.0"
   },
   "dependencies": {
-    "stimulus": "^1.1.1",
+    "stimulus": "^2.0.0",
     "turbolinks": "^5.2.0"
   }
 }
