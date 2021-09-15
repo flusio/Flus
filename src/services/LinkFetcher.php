@@ -154,7 +154,9 @@ class LinkFetcher
             $response = \SpiderBits\Response::fromText($cached_response);
         } elseif (!$is_rate_limited) {
             // ... or via HTTP
-            $options = [];
+            $options = [
+                'max_size' => 20 * 1024 * 1024,
+            ];
             if ($this->isTwitter($url)) {
                 // If we fetch Twitter, we need to alter our user agent to get
                 // server-side rendered content.

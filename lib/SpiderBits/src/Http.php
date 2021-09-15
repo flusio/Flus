@@ -106,6 +106,19 @@ class Http
             curl_setopt($curl_handle, CURLOPT_INTERFACE, $options['interface']);
         }
 
+        if (isset($options['max_size'])) {
+            $max_size = $options['max_size'];
+            curl_setopt($curl_handle, CURLOPT_BUFFERSIZE, 128);
+            curl_setopt($curl_handle, CURLOPT_NOPROGRESS, false);
+            curl_setopt(
+                $curl_handle,
+                CURLOPT_PROGRESSFUNCTION,
+                function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($max_size) {
+                    return ($downloaded > $max_size) ? 1 : 0;
+                }
+            );
+        }
+
         if (isset($options['headers'])) {
             $request_headers = array_merge($this->headers, $options['headers']);
         } else {

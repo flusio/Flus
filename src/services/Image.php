@@ -68,7 +68,10 @@ class Image
 
         models\FetchLog::log($image_url, 'image');
         try {
-            $response = $this->http->get($image_url);
+            $options = [
+                'max_size' => 20 * 1024 * 1024,
+            ];
+            $response = $this->http->get($image_url, [], $options);
         } catch (\SpiderBits\HttpError $e) {
             return '';
         }

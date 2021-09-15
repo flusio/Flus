@@ -300,7 +300,9 @@ class FeedFetcher
             $response = \SpiderBits\Response::fromText($cached_response);
         } elseif (!$is_rate_limited) {
             // ... or via HTTP
-            $options = [];
+            $options = [
+                'max_size' => 20 * 1024 * 1024,
+            ];
             if ($selected_ip) {
                 $options['interface'] = $selected_ip;
                 models\FetchLog::log($url, 'feed', $selected_ip);
