@@ -71,7 +71,9 @@ class Help
         $usage .= "  users create             Create a user\n";
         $usage .= "      --email=EMAIL\n";
         $usage .= "      --password=PASSWORD\n";
-        $usage .= "      --username=USERNAME  where USERNAME is a 50-chars max string";
+        $usage .= "      --username=USERNAME  where USERNAME is a 50-chars max string\n";
+        $usage .= "  users export             Export the data of the given user in the current directory\n";
+        $usage .= "      --id=ID              where ID is the id of the user to export";
 
         return Response::text(200, $usage);
     }

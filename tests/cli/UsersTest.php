@@ -3,6 +3,7 @@
 namespace flusio\cli;
 
 use flusio\models;
+use flusio\utils;
 
 class UsersTest extends \PHPUnit\Framework\TestCase
 {
@@ -209,5 +210,41 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 400, 'The `since` parameter must be greater or equal to 1.');
         $this->assertTrue(models\User::exists($user_id));
+    }
+
+    public function testExportCreatesTheDataFileAndRendersCorrectly()
+    {
+        $tmp_path = \Minz\Configuration::$tmp_path;
+        $current_path = $tmp_path . '/' . md5(rand());
+        @mkdir($current_path, 0777, true);
+        @chdir($current_path);
+        $user_id = $this->create('user');
+
+        $response = $this->appRun('cli', '/users/export', [
+            'id' => $user_id,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'User’s data have been exported successfully');
+        $output = $response->render();
+        $success = preg_match('/^.*\((?P<filepath>.*)\).$/', $output, $matches);
+        $this->assertSame(1, $success, 'Output must match the regex');
+        $this->assertTrue(file_exists($matches['filepath']), 'Data file must exist');
+    }
+
+    public function testExportFailsIfUserDoesNotExist()
+    {
+        $tmp_path = \Minz\Configuration::$tmp_path;
+        $current_path = $tmp_path . '/' . md5(rand());
+        @mkdir($current_path, 0777, true);
+        @chdir($current_path);
+        $user_id = utils\Random::hex(32);
+
+        $response = $this->appRun('cli', '/users/export', [
+            'id' => $user_id,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseEquals($response, "User {$user_id} doesn’t exist.");
     }
 }
