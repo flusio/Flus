@@ -6,7 +6,7 @@ $db_name = 'flusio_development';
 
 $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 
-$flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt'));
+$flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-dev';
 $user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio)";
 
 $feeds_sync_count = max(1, intval($dotenv->pop('JOB_FEEDS_SYNC_COUNT', '1')));
