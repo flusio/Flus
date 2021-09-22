@@ -19,6 +19,18 @@ class Entry
     /** @var string */
     public $link = '';
 
+    /** @var string[] */
+    public $links = [];
+
+    /** @var string[] */
+    public $categories = [];
+
     /** @var \DateTime */
     public $published_at = null;
+
+    /** @var string */
+    public $content_type = 'text';
+
+    /** @var string */
+    public $content = ''; // Warning: content is not suitable to be displayed, it should be sanitized first!
 }
