@@ -12,43 +12,65 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
 
-    /**
-     * @before
-     */
-    public function changeCurrentDirectoryToTmp()
-    {
-        $tmp_path = \Minz\Configuration::$tmp_path;
-        $current_path = $tmp_path . '/' . md5(rand());
-        @mkdir($current_path, 0777, true);
-        @chdir($current_path);
-    }
+    /** @var string */
+    private $exportations_path;
 
     /**
-     * @before
+     * @beforeClass
      */
-    public function setRouterToUrl()
+    public static function setRouterToUrl()
     {
         $router = new \Minz\Router();
         \flusio\Routes::load($router);
         \Minz\Url::setRouter($router);
     }
 
+    /**
+     * @before
+     */
+    public function setExportationsPath()
+    {
+        $tmp_path = \Minz\Configuration::$tmp_path;
+        $this->exportations_path = $tmp_path . '/' . md5(rand());
+        @mkdir($this->exportations_path, 0777, true);
+    }
+
+    public function testConstructFailsIfPathDoesNotExist()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('The path does not exist');
+
+        new DataExporter('not a path');
+    }
+
+    public function testConstructFailsIfPathIsNotADirectory()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('The path is not a directory');
+
+        $tmp_path = \Minz\Configuration::$tmp_path;
+        $path = $tmp_path . '/' . md5(rand());
+        touch($path);
+
+        new DataExporter($path);
+    }
+
     public function testExportReturnsTheDataFilepath()
     {
         $this->freeze($this->fake('dateTime'));
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
 
         $filepath = $data_exporter->export($user_id);
 
         $datetime = \Minz\Time::now()->format('Y-m-d_H\hi');
-        $expected_filepath = getcwd() . "/{$datetime}_{$user_id}_data.zip";
+        $expected_filepath = $this->exportations_path . "/{$datetime}_{$user_id}_data.zip";
         $this->assertSame($expected_filepath, $filepath);
     }
 
     public function testExportCreatesTheDataFile()
     {
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
 
         $filepath = $data_exporter->export($user_id);
@@ -58,7 +80,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
     public function testExportCreatesMetadata()
     {
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
 
         $filepath = $data_exporter->export($user_id);
@@ -70,7 +92,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
     public function testExportCreatesOpmlFile()
     {
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
         $group_name = $this->fake('sentence');
         $feed_url = $this->fake('url');
@@ -133,7 +155,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
     public function testExportCreatesBookmarksFile()
     {
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $bookmarks = $user->bookmarks();
@@ -163,7 +185,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
     public function testExportCreatesNewsFile()
     {
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $news = $user->news();
@@ -193,7 +215,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
     public function testExportCreatesReadFile()
     {
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $read_list = $user->readList();
@@ -223,7 +245,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
     public function testExportCreatesNeverFile()
     {
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
         $never_list = $user->neverList();
@@ -253,7 +275,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
     public function testExportCreatesCollectionsFiles()
     {
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
         $topic_label = $this->fake('word');
         $group_name = $this->fake('word');
@@ -313,7 +335,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
     public function testExportCreatesMessagesFiles()
     {
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = $this->create('user');
         $link_url = $this->fake('url');
         $message_content = $this->fake('paragraph');
@@ -347,7 +369,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('The user does not exist');
 
-        $data_exporter = new DataExporter();
+        $data_exporter = new DataExporter($this->exportations_path);
         $user_id = utils\Random::hex(32);
 
         $data_exporter->export($user_id);
@@ -357,8 +379,8 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     {
         $zip_archive = new \ZipArchive();
         $zip_archive->open($zip_filepath);
-        $zip_archive->extractTo(getcwd());
-        $filepath = getcwd() . '/' . $filename;
+        $zip_archive->extractTo($this->exportations_path);
+        $filepath = $this->exportations_path . '/' . $filename;
 
         $this->assertTrue(file_exists($filepath), "File {$filename} does not exist in the ZIP archive.");
 

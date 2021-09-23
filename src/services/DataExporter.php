@@ -7,6 +7,27 @@ use flusio\utils;
 
 class DataExporter
 {
+    /** @var string */
+    private $exportations_path;
+
+    /**
+     * @param string $exportations_path
+     *
+     * @throws RuntimeException if the path doesn't exist or is not a directory
+     */
+    public function __construct($exportations_path)
+    {
+        if (!file_exists($exportations_path)) {
+            throw new \RuntimeException('The path does not exist');
+        }
+
+        if (!is_dir($exportations_path)) {
+            throw new \RuntimeException('The path is not a directory');
+        }
+
+        $this->exportations_path = $exportations_path;
+    }
+
     /**
      * Export data of the given user.
      *
@@ -45,8 +66,7 @@ class DataExporter
 
         $now = \Minz\Time::now();
         $now_formatted = \Minz\Time::now()->format('Y-m-d_H\hi');
-        $output_path = getcwd();
-        $filepath = "{$output_path}/{$now_formatted}_{$user->id}_data.zip";
+        $filepath = "{$this->exportations_path}/{$now_formatted}_{$user->id}_data.zip";
 
         $zip_archive = new \ZipArchive();
         $zip_archive->open($filepath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
