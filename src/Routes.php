@@ -80,6 +80,11 @@ class Routes
         $router->addRoute('get', '/opml', 'importations/Opml#show', 'opml');
         $router->addRoute('post', '/opml', 'importations/Opml#import', 'import opml');
 
+        // Exportations
+        $router->addRoute('get', '/exportations', 'Exportations#show', 'exportation');
+        $router->addRoute('post', '/exportations', 'Exportations#create', 'create exportation');
+        $router->addRoute('get', '/exportations/download', 'Exportations#download', 'download exportation');
+
         // News page
         $router->addRoute('get', '/news', 'News#show', 'news');
         $router->addRoute('post', '/news', 'News#create', 'fill news');

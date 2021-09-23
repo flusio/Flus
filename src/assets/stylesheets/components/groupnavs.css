@@ -80,6 +80,10 @@
 }
 
 .groupnav__item--import .groupnav__anchor {
+    background-image: url("../../icons/upload.svg");
+}
+
+.groupnav__item--data .groupnav__anchor {
     background-image: url("../../icons/backup.svg");
 }
 
