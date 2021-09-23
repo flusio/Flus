@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-09-13 16:34+0200\n"
-"PO-Revision-Date: 2021-09-13 16:34+0200\n"
+"POT-Creation-Date: 2021-09-23 10:12+0200\n"
+"PO-Revision-Date: 2021-09-23 10:12+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -705,17 +705,17 @@ msgstr ""
 msgid "Delete the collection"
 msgstr "Supprimer la collection"
 
-#: views/collections/feed.atom.xml.phtml:30
+#: views/collections/feed.atom.xml.phtml:39
 #, php-format
 msgid "“%s”"
 msgstr "« %s »"
 
-#: views/collections/feed.atom.xml.phtml:31
+#: views/collections/feed.atom.xml.phtml:40
 #, php-format
 msgid "Read this on <a href=\"%s\">%s</a>."
 msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
 
-#: views/collections/feed.atom.xml.phtml:32
+#: views/collections/feed.atom.xml.phtml:41
 #, php-format
 msgid "My comments on <a href=\"%s\">%s</a>."
 msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
@@ -1208,15 +1208,15 @@ msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
 msgid "Delete the link"
 msgstr "Supprimer le lien"
 
+#: views/links/exportation.atom.xml.phtml:26 views/links/feed.atom.xml.phtml:24
+#, php-format
+msgid "Comment by %s"
+msgstr "Commentaire par %s"
+
 #: views/links/feed.atom.xml.phtml:3
 #, php-format
 msgid "Comments on %s"
 msgstr "Commentaires sur %s"
-
-#: views/links/feed.atom.xml.phtml:19
-#, php-format
-msgid "Comment by %s"
-msgstr "Commentaire par %s"
 
 #: views/links/new.phtml:31 views/links/searches/show.phtml:25
 msgid "What’s the <abbr>URL</abbr> of the link?"

@@ -52,6 +52,17 @@ class RdfParser
 
             if ($node->tagName === 'link') {
                 $feed->link = $node->nodeValue;
+                $feed->links['alternate'] = $node->nodeValue;
+            }
+
+            if ($node->tagName === 'atom:link') {
+                $rel = $node->getAttribute('rel');
+                if (!$rel) {
+                    $rel = 'alternate';
+                }
+
+                $href = $node->getAttribute('href');
+                $feed->links[$rel] = $href;
             }
         }
 
@@ -100,6 +111,36 @@ class RdfParser
             if ($node->tagName === 'link') {
                 $entry->link = $node->nodeValue;
                 $entry->id = $node->nodeValue;
+                $entry->links['alternate'] = $node->nodeValue;
+            }
+
+            if ($node->tagName === 'source') {
+                $entry->links['via'] = $node->getAttribute('url');
+            }
+
+            if ($node->tagName === 'atom:link') {
+                $rel = $node->getAttribute('rel');
+                if (!$rel) {
+                    $rel = 'alternate';
+                }
+
+                $href = $node->getAttribute('href');
+                $entry->links[$rel] = $href;
+            }
+
+            if ($node->tagName === 'category') {
+                $category = $node->nodeValue;
+                $entry->categories[$category] = $category;
+            }
+
+            if ($node->tagName === 'description' && !$entry->content) {
+                $entry->content = $node->nodeValue;
+                $entry->content_type = 'html';
+            }
+
+            if ($node->tagName === 'content:encoded') {
+                $entry->content = $node->nodeValue;
+                $entry->content_type = 'html';
             }
         }
 

@@ -19,6 +19,12 @@ class Feed
     /** @var string */
     public $link = '';
 
+    /** @var string[] */
+    public $links = [];
+
+    /** @var string[] */
+    public $categories = [];
+
     /** @var \SpiderBits\feeds\Entry[] */
     public $entries = [];
 
@@ -101,6 +107,8 @@ class Feed
             $this->title,
             $this->description,
             $this->link,
+            $this->links,
+            $this->categories,
             $this->entries,
         ]));
     }

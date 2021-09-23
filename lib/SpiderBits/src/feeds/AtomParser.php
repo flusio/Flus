@@ -44,13 +44,26 @@ class AtomParser
                 $feed->description = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
             }
 
-            $rel = $node->getAttribute('rel');
-            if (
-                $node->tagName === 'link' &&
-                ($rel === '' || $rel === 'alternate') &&
-                !$feed->link
-            ) {
-                $feed->link = $node->getAttribute('href');
+            if ($node->tagName === 'link') {
+                $rel = $node->getAttribute('rel');
+                if (!$rel) {
+                    $rel = 'alternate';
+                }
+
+                $href = $node->getAttribute('href');
+                $feed->links[$rel] = $href;
+                if ($rel === 'alternate' && !$feed->link) {
+                    $feed->link = $href;
+                }
+            }
+
+            if ($node->tagName === 'category') {
+                $term = $node->getAttribute('term');
+                $label = $node->getAttribute('label');
+                if (!$label) {
+                    $label = $term;
+                }
+                $feed->categories[$term] = $label;
             }
 
             if ($node->tagName === 'entry') {
@@ -99,13 +112,37 @@ class AtomParser
                 }
             }
 
-            $rel = $node->getAttribute('rel');
-            if (
-                $node->tagName === 'link' &&
-                ($rel === '' || $rel === 'alternate') &&
-                !$entry->link
-            ) {
-                $entry->link = $node->getAttribute('href');
+            if ($node->tagName === 'link') {
+                $rel = $node->getAttribute('rel');
+                if (!$rel) {
+                    $rel = 'alternate';
+                }
+
+                $href = $node->getAttribute('href');
+                $entry->links[$rel] = $href;
+                if ($rel === 'alternate' && !$entry->link) {
+                    $entry->link = $href;
+                }
+            }
+
+            if ($node->tagName === 'category') {
+                $term = $node->getAttribute('term');
+                $label = $node->getAttribute('label');
+                if (!$label) {
+                    $label = $term;
+                }
+                $entry->categories[$term] = $label;
+            }
+
+            if ($node->tagName === 'content') {
+                $type = $node->getAttribute('type');
+                if ($type) {
+                    $entry->content_type = $type;
+                } else {
+                    $entry->content_type = 'text';
+                }
+
+                $entry->content = $node->nodeValue;
             }
         }
 

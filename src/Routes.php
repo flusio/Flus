@@ -169,6 +169,7 @@ class Routes
         $router->addRoute('cli', '/users', 'Users#index');
         $router->addRoute('cli', '/users/create', 'Users#create');
         $router->addRoute('cli', '/users/clean', 'Users#clean');
+        $router->addRoute('cli', '/users/export', 'Users#export');
 
         $router->addRoute('cli', '/features', 'FeatureFlags#index');
         $router->addRoute('cli', '/features/flags', 'FeatureFlags#flags');

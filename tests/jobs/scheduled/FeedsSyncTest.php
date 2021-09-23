@@ -299,7 +299,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         // collection would be different. To do so, the feed can’t contain
         // random content (or we would have to calcule the feed hash, which is
         // a bit tedious here).
-        $feed_hash = '9d433d21e9a066bb07601ff20efb8ab99d91a0ac7ce7187b246a4a365d197c33';
+        $feed_hash = 'e49327a0fed52c5b7b7e5c15994035da151f6db289fced6eccc7528b0da01b53';
         $collection_id = $this->create('collection', [
             'type' => 'feed',
             'name' => $expected_name,

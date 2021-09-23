@@ -24,7 +24,10 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('carnet de flus', $feed->title);
         $this->assertSame('Le blog de Flus', $feed->description);
         $this->assertSame('https://flus.fr/carnet/', $feed->link);
-        $this->assertSame('12792f8856392d5df73011747701cad0b8f3898f6e3df7bad870c09af2e7abfb', $feed->hash());
+        $this->assertSame('https://flus.fr/carnet/', $feed->links['alternate']);
+        $this->assertSame('https://flus.fr/carnet/feeds/all.atom.xml', $feed->links['self']);
+        $this->assertSame('https://websub.flus.io/', $feed->links['hub']);
+        $this->assertSame(0, count($feed->categories));
         $this->assertSame(10, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame(
@@ -33,7 +36,15 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertSame('urn:uuid:7e0b078e-c996-5c76-a529-c420d03672d2', $entry->id);
         $this->assertSame('https://flus.fr/carnet/recap-1.html', $entry->link);
+        $this->assertSame('https://flus.fr/carnet/recap-1.html', $entry->links['alternate']);
+        $this->assertStringContainsString(
+            '<p>J’ai démarré mon activité de micro-entrepreneur début novembre',
+            $entry->content
+        );
+        $this->assertSame('html', $entry->content_type);
         $this->assertSame(1576319400, $entry->published_at->getTimestamp());
+        $this->assertSame(0, count($entry->categories));
+        $this->assertSame('00f9aa3dd1cedf999f3480b60d57c4662a8539ce05f245ca8698e543fc59ec93', $feed->hash());
     }
 
     public function testFromTextWithFramablog()
@@ -45,13 +56,30 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Framablog', $feed->title);
         $this->assertSame('La route est longue mais la voie est libre…', $feed->description);
         $this->assertSame('https://framablog.org', $feed->link);
-        $this->assertSame('02ae42d737f69788d0ad7abadc5d1af66a3c0c6f8fee3eee8e291bcb1675f8a2', $feed->hash());
+        $this->assertSame('https://framablog.org', $feed->links['alternate']);
+        $this->assertSame('https://framablog.org/feed/', $feed->links['self']);
+        $this->assertSame(0, count($feed->categories));
         $this->assertSame(10, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame('Khrys’presso du lundi 15 mars 2021', $entry->title);
+        $this->assertStringContainsString(
+            '<p>Tous les liens listés ci-dessous sont <em>a priori</em> accessibles librement.',
+            $entry->content
+        );
         $this->assertSame('https://framablog.org/?p=24275', $entry->id);
         $this->assertSame('https://framablog.org/2021/03/15/khryspresso-du-lundi-15-mars-2021/', $entry->link);
+        $this->assertSame(
+            'https://framablog.org/2021/03/15/khryspresso-du-lundi-15-mars-2021/',
+            $entry->links['alternate']
+        );
+        $this->assertSame(
+            'https://framablog.org/2021/03/15/khryspresso-du-lundi-15-mars-2021/#respond',
+            $entry->links['replies']
+        );
         $this->assertSame(1615790521, $entry->published_at->getTimestamp());
+        $this->assertSame(12, count($entry->categories));
+        $this->assertSame('Claviers invités', $entry->categories['Claviers invités']);
+        $this->assertSame('7c03c7e75fcee0c8afe15e71e6a5f8bd1dd091275c4b527c167dfa7c13b9fdb5', $feed->hash());
     }
 
     public function testFromTextWithLaverty()
@@ -63,8 +91,14 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame("Stories by L'avertY on Medium", $feed->title);
         $this->assertSame("Stories by L'avertY on Medium", $feed->description);
         $this->assertSame('https://medium.com/@lavertygrenoble?source=rss-644186d8e612------2', $feed->link);
-        $this->assertSame('a3306abac98216226c130c441c509d8165bc6bd48d2fc2a35bc1b19a420da424', $feed->hash());
+        $this->assertSame(
+            'https://medium.com/@lavertygrenoble?source=rss-644186d8e612------2',
+            $feed->links['alternate']
+        );
+        $this->assertSame('https://medium.com/feed/@lavertygrenoble', $feed->links['self']);
+        $this->assertSame('http://medium.superfeedr.com', $feed->links['hub']);
         $this->assertSame(10, count($feed->entries));
+        $this->assertSame(0, count($feed->categories));
         $entry = $feed->entries[0];
         $this->assertSame('« L’idée est d’éviter des montagnes d’emballages jetables »', $entry->title);
         $this->assertSame('https://medium.com/p/82370c70e84', $entry->id);
@@ -72,7 +106,19 @@ class FeedTest extends \PHPUnit\Framework\TestCase
             'https://medium.com/@lavertygrenoble/lid%C3%A9e-est-d-%C3%A9viter-des-montagnes-d-emballages-jetables-82370c70e84?source=rss-644186d8e612------2', // phpcs:ignore Generic.Files.LineLength.TooLong
             $entry->link
         );
+        $this->assertSame(
+            'https://medium.com/@lavertygrenoble/lid%C3%A9e-est-d-%C3%A9viter-des-montagnes-d-emballages-jetables-82370c70e84?source=rss-644186d8e612------2', // phpcs:ignore Generic.Files.LineLength.TooLong
+            $entry->links['alternate']
+        );
+        $this->assertStringContainsString(
+            '<h3>📣 « L’idée est d’éviter des montagnes d’emballages jetables »</h3>',
+            $entry->content
+        );
+        $this->assertSame('html', $entry->content_type);
         $this->assertSame(1614070752, $entry->published_at->getTimestamp());
+        $this->assertSame(5, count($entry->categories));
+        $this->assertSame('grenoble', $entry->categories['grenoble']);
+        $this->assertSame('58620704546afb2128dadb6a9a7a3c9f0e400cf95c8d48be8fd86ab45da7b165', $feed->hash());
     }
 
     public function testFromTextWithVimeoSudWeb()
@@ -84,13 +130,20 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $feed->title);
         $this->assertSame('', $feed->description);
         $this->assertSame('https://vimeo.com', $feed->link);
-        $this->assertSame('80170aee19f582433edff7a3a0bd01dee218baaf037b674bbcf36951ea756a32', $feed->hash());
+        $this->assertSame('https://vimeo.com', $feed->links['alternate']);
+        $this->assertSame('https://vimeo.com', $feed->links['self']);
+        $this->assertSame('https://pubsubhubbub.appspot.com/', $feed->links['hub']);
+        $this->assertSame(0, count($feed->categories));
         $this->assertSame(25, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame('', $entry->title);
         $this->assertSame('tag:vimeo,2019-04-09:clip329347268', $entry->id);
         $this->assertSame('https://vimeo.com/329347268', $entry->link);
+        $this->assertSame('', $entry->content);
+        $this->assertSame('html', $entry->content_type);
         $this->assertSame(1554818042, $entry->published_at->getTimestamp());
+        $this->assertSame(0, count($entry->categories));
+        $this->assertSame('ec42d965b28efa4710e421be54d9ccabca4160814a579961ad678228ad8aef36', $feed->hash());
     }
 
     public function testFromTextWithOatmeal()
@@ -105,13 +158,21 @@ class FeedTest extends \PHPUnit\Framework\TestCase
             $feed->description
         );
         $this->assertSame('http://theoatmeal.com/', $feed->link);
-        $this->assertSame('17c3581eaf1f7487002b45f0d95e1454c47c5c0ff1880801147cd1707a0513f5', $feed->hash());
+        $this->assertSame('http://theoatmeal.com/', $feed->links['alternate']);
+        $this->assertSame(0, count($feed->categories));
         $this->assertSame(9, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame('A Little Wordy', $entry->title);
         $this->assertSame('http://expktns.co/OatmealALW', $entry->link);
         $this->assertSame('http://expktns.co/OatmealALW', $entry->id);
+        $this->assertStringContainsString(
+            '<a href="http://expktns.co/OatmealALW">View on my website</a>',
+            $entry->content
+        );
+        $this->assertSame('html', $entry->content_type);
         $this->assertSame(1618335907, $entry->published_at->getTimestamp());
+        $this->assertSame(0, count($entry->categories));
+        $this->assertSame('4d417e6c0d5101aa223aab83504b267f061abbc43ad5acbd5d5fb65d0b91aefc', $feed->hash());
     }
 
     public function testFromTextWithBlogBasilesimon()
@@ -123,13 +184,26 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Basile Simon (blog)', $feed->title);
         $this->assertSame('', $feed->description);
         $this->assertSame('https://blog.basilesimon.fr/', $feed->link);
-        $this->assertSame('6a66825b0276e772e26801212b5e8194177c29e222ce0d5815b75dc1d42c308e', $feed->hash());
+        $this->assertSame('https://blog.basilesimon.fr/', $feed->links['alternate']);
+        $this->assertSame('https://blog.basilesimon.fr/atom.xml', $feed->links['self']);
+        $this->assertSame(0, count($feed->categories));
         $this->assertSame(10, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame('Good busy and Toolkit progress - weeknotes #33', $entry->title);
-        $this->assertSame('https://blog.basilesimon.fr/2021/05/14/weeknotes-33/?utm_medium=rss', $entry->link);
+        $this->assertSame(
+            'https://blog.basilesimon.fr/2021/05/14/weeknotes-33/?utm_medium=rss',
+            $entry->link
+        );
+        $this->assertSame(
+            'https://blog.basilesimon.fr/2021/05/14/weeknotes-33/?utm_medium=rss',
+            $entry->links['alternate']
+        );
         $this->assertSame('https://blog.basilesimon.fr/2021/05/14/weeknotes-33', $entry->id);
+        $this->assertSame('', $entry->content);
+        $this->assertSame('html', $entry->content_type);
         $this->assertSame(1620943200, $entry->published_at->getTimestamp());
+        $this->assertSame(0, count($entry->categories));
+        $this->assertSame('a92e7df76dcdabe9f70d7eaf2798b2a6190608d1b1a37f41a12897c0e00d2dc0', $feed->hash());
     }
 
     public function testFromTextWithEmptyRss()
@@ -139,8 +213,10 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $feed->title);
         $this->assertSame('', $feed->description);
         $this->assertSame('', $feed->link);
-        $this->assertSame('c2e757d5ae22ca73ac263e99aa8e2ee1b31ee8c746be5d3d6e94950d715d20d7', $feed->hash());
+        $this->assertSame(0, count($feed->links));
         $this->assertSame(0, count($feed->entries));
+        $this->assertSame(0, count($feed->categories));
+        $this->assertSame('4a022608d595e9000d1f1be22a0a6a0763ad853d2417b1c8ea0ea12bd047bdcd', $feed->hash());
     }
 
     public function testFromTextFailsWithEmptyString()

@@ -4,6 +4,7 @@ namespace flusio\cli;
 
 use Minz\Response;
 use flusio\models;
+use flusio\services;
 use flusio\utils;
 
 /**
@@ -109,5 +110,30 @@ class Users
             $text = "{$number_to_delete} users have been deleted.";
         }
         return Response::text(200, $text);
+    }
+
+    /**
+     * Export data of the given user.
+     *
+     * @request_param string id
+     *     The id of the user to export data.
+     *
+     * @response 404
+     *     If the user doesn't exist
+     * @response 200
+     *     On sucess
+     */
+    public function export($request)
+    {
+        $user_id = $request->param('id');
+        $user = models\User::find($user_id);
+        if (!$user) {
+            return Response::text(404, "User {$user_id} doesn’t exist.");
+        }
+
+        $data_exporter = new services\DataExporter();
+        $data_filepath = $data_exporter->export($user->id);
+
+        return Response::text(200, "User’s data have been exported successfully ({$data_filepath}).");
     }
 }

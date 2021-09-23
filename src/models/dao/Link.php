@@ -111,6 +111,32 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return links of the given user which have at least one comment.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listWithCommentsForUser($user_id)
+    {
+        $sql = <<<SQL
+            SELECT l.*
+            FROM links l, messages m
+
+            WHERE l.id = m.link_id
+            AND l.user_id = :user_id
+
+            ORDER BY l.created_at DESC, l.id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Count links within the given collection
      *
      * @param string $collection_id
