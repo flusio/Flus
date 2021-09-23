@@ -10,6 +10,7 @@ $ ./docker/bin/php
 $ ./docker/bin/npm
 $ ./docker/bin/composer
 $ ./docker/bin/cli
+$ ./docker/bin/psql
 ```
 
 They only delegate the commands to their respective containers via `docker-compose`.
