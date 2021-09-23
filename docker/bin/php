@@ -1,3 +1,11 @@
 #!/bin/bash
 
-USER=$(id -u):$(id -g) docker-compose -p flusio -f ./docker/docker-compose.yml run --rm --no-deps php php "$@"
+flusio-compose () {
+    docker-compose -p flusio -f ./docker/docker-compose.yml "$@"
+}
+
+if [ -z `flusio-compose ps -q php` ] || [ -z `docker ps -q --no-trunc | grep $(flusio-compose ps -q php)` ]; then
+    USER=$(id -u):$(id -g) flusio-compose run --rm --no-deps php php "$@"
+else
+    USER=$(id -u):$(id -g) flusio-compose exec php php "$@"
+fi
