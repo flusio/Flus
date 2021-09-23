@@ -133,6 +133,7 @@ class Application
         $path = $request->path();
         $path_is_authorized = (
             utils\Belt::startsWith($path, '/my/') ||
+            utils\Belt::startsWith($path, '/exportation') ||
             utils\Belt::startsWith($path, '/logout') ||
             utils\Belt::startsWith($path, '/terms') ||
             utils\Belt::startsWith($path, '/onboarding') ||
@@ -163,6 +164,7 @@ class Application
         $path = $request->path();
         $path_is_authorized = (
             utils\Belt::startsWith($path, '/my/') ||
+            utils\Belt::startsWith($path, '/exportation') ||
             utils\Belt::startsWith($path, '/logout') ||
             utils\Belt::startsWith($path, '/terms') ||
             utils\Belt::startsWith($path, '/onboarding') ||

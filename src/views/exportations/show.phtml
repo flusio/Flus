@@ -1,0 +1,97 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Download your data'),
+        'canonical' => url_full('exportation'),
+        'back' => [
+            'href' => url('account'),
+            'label' => _('Account'),
+        ],
+    ]);
+?>
+
+<div class="section section--small section--longbottom">
+    <div class="section__title">
+        <h1><?= _('Download your data') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('You can download your data in order to migrate to a different tool.') ?>
+    </p>
+
+    <?php if ($error): ?>
+        <p class="form__error">
+            <?= $error ?>
+        </p>
+    <?php endif; ?>
+
+    <?php if ($exportation && $exportation->status === 'ongoing'): ?>
+        <p class="paragraph--featured">
+            <?= _('We’re creating your archive…') ?>
+        </p>
+
+        <div class="spinner"></div>
+
+        <p class="paragraph--placeholder">
+            <?= _('This might take several minutes, please wait.') ?>
+        </p>
+
+        <form
+             method="get"
+             action="<?= url('exportation') ?>"
+             data-controller="autosubmit"
+             data-autosubmit-mode-value="timeout"
+             data-autosubmit-timeout-value="4000"
+        >
+        </form>
+    <?php elseif ($exportation && $exportation->status === 'finished'): ?>
+        <p class="paragraph--featured">
+            <a class="anchor--action" href="<?= url('download exportation') ?>">
+                <?= _('Download your data archive') ?>
+            </a>
+        </p>
+
+        <p class="paragraph--centered paragraph--secondary">
+            <i>
+                <?= _f('generated on %s', _d($exportation->created_at, '%d %b %Y')) ?>
+            </i>
+        </p>
+
+        <form method="post" action="<?= url('create exportation') ?>">
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+            <div class="form__actions">
+                <button type="submit">
+                    <?= _('Generate a new data archive') ?>
+                </button>
+            </div>
+        </form>
+    <?php elseif ($exportation && $exportation->status === 'error'): ?>
+        <p class="paragraph--featured">
+            <?= _('Oops, a problem occured during the exportation.') ?>
+        </p>
+
+        <p class="paragraph--centered">
+            <?= protect($exportation->error) ?>
+        </p>
+
+        <form method="post" action="<?= url('create exportation') ?>">
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Generate a new data archive') ?>
+                </button>
+            </div>
+        </form>
+    <?php else: ?>
+        <form method="post" action="<?= url('create exportation') ?>">
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Generate a data archive') ?>
+                </button>
+            </div>
+        </form>
+    <?php endif; ?>
+</div>
