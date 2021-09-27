@@ -176,7 +176,7 @@
             </small>
         </p>
     <?php else: ?>
-        <form method="post" action="<?= url('request pocket access') ?>">
+        <form method="post" action="<?= url('request pocket access') ?>" data-turbo="false">
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
             <div class="form__actions">
