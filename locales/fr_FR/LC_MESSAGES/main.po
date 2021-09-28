@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-09-28 10:14+0200\n"
-"PO-Revision-Date: 2021-09-28 10:15+0200\n"
+"POT-Creation-Date: 2021-09-28 10:18+0200\n"
+"PO-Revision-Date: 2021-09-28 10:19+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -480,11 +480,10 @@ msgstr "Vous devez valider votre compte&nbsp;→"
 msgid "Collections"
 msgstr "Collections"
 
-#: views/_layouts/connected.phtml:120 views/links/new.phtml:3
-#: views/links/new.phtml:16 views/links/searches/show.phtml:3
-#: views/links/searches/show.phtml:11
-msgid "New link"
-msgstr "Nouveau lien"
+#: views/_layouts/connected.phtml:120 views/collections/groups/edit.phtml:88
+#: views/links/searches/show.phtml:3 views/links/searches/show.phtml:11
+msgid "New"
+msgstr "Nouveau"
 
 #: views/_layouts/connected.phtml:129 views/_layouts/connected.phtml:132
 #: views/_layouts/connected_blocked.phtml:88
@@ -761,10 +760,6 @@ msgstr "Sélectionner un groupe"
 #: views/collections/groups/edit.phtml:76
 msgid "No groups"
 msgstr "Aucun groupe"
-
-#: views/collections/groups/edit.phtml:88
-msgid "New"
-msgstr "Nouveau"
 
 #: views/collections/images/edit.phtml:3 views/collections/images/edit.phtml:14
 msgid "Collection illustration"
@@ -1257,7 +1252,11 @@ msgstr "Commentaire par %s"
 msgid "Comments on %s"
 msgstr "Commentaires sur %s"
 
-#: views/links/new.phtml:31 views/links/searches/show.phtml:25
+#: views/links/new.phtml:3 views/links/new.phtml:16
+msgid "New link"
+msgstr "Nouveau lien"
+
+#: views/links/new.phtml:31
 msgid "What’s the address of the link?"
 msgstr "Quelle est l’adresse du lien ?"
 
@@ -1288,6 +1287,10 @@ msgstr "Enregistrer"
 #: views/links/obtentions/new.phtml:92 views/links/searches/show.phtml:164
 msgid "Add"
 msgstr "Ajouter"
+
+#: views/links/searches/show.phtml:25
+msgid "What’s the address of the link or feed?"
+msgstr "Quelle est l’adresse du lien ou du flux ?"
 
 #: views/links/searches/show.phtml:40 views/links/searches/show.phtml:54
 msgid "Search"

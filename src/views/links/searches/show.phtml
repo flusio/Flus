@@ -1,6 +1,6 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('New link'),
+        'title' => _('New'),
         'canonical' => url_full('show search link'),
         'current_page' => 'search link',
     ]);
@@ -8,7 +8,7 @@
 
 <div class="section" data-controller="back-storage" data-back-storage-type-value="link,collection">
     <div class="section__title">
-        <h1 id="modal-title"><?= _('New link') ?></h1>
+        <h1 id="modal-title"><?= _('New') ?></h1>
     </div>
 
     <form method="post" action="<?= url('search link') ?>">
@@ -22,7 +22,7 @@
 
         <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
             <label for="url">
-                <?= _('What’s the address of the link?') ?>
+                <?= _('What’s the address of the link or feed?') ?>
             </label>
 
             <div class="form-group__stack">
