@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-09-23 19:41+0200\n"
-"PO-Revision-Date: 2021-09-23 19:43+0200\n"
+"POT-Creation-Date: 2021-09-28 10:14+0200\n"
+"PO-Revision-Date: 2021-09-28 10:15+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1258,8 +1258,8 @@ msgid "Comments on %s"
 msgstr "Commentaires sur %s"
 
 #: views/links/new.phtml:31 views/links/searches/show.phtml:25
-msgid "What’s the <abbr>URL</abbr> of the link?"
-msgstr "Quelle est l’<abbr>URL</abbr> du lien ?"
+msgid "What’s the address of the link?"
+msgstr "Quelle est l’adresse du lien ?"
 
 #: views/links/new.phtml:53
 msgid ""
@@ -1787,11 +1787,11 @@ msgstr ""
 
 #: views/onboarding/step3.phtml:40
 msgid ""
-"Note: when you’re being asked for a “<abbr>URL</abbr>”, you’re supposed to "
-"copy-paste the content of the bar at the top of your browser."
+"Note: when you’re being asked for an address, you’re supposed to copy-paste "
+"the content of the <abbr>URL</abbr> bar at the top of your browser."
 msgstr ""
-"Note : lorsque l’on vous demande une « <abbr>URL</abbr> », vous devez copier-"
-"coller le contenu de la barre en haut de votre navigateur Internet."
+"Note : lorsque l’on vous demande une adresse, vous devez copier-coller le "
+"contenu de la barre <abbr>URL</abbr> en haut de votre navigateur Internet."
 
 #: views/onboarding/step3.phtml:45
 msgid ""
@@ -1803,11 +1803,11 @@ msgstr ""
 
 #: views/onboarding/step3.phtml:51
 msgid ""
-"It should look like this in Firefox. In this example, the <abbr>URL</abbr> "
-"is <code>https://contributopia.org/fr/</code>"
+"It should look like this in Firefox. In this example, the address is "
+"<code>https://contributopia.org/fr/</code>"
 msgstr ""
-"Cela devrait ressembler à ça dans Firefox. Dans cet exemple, l’<abbr>URL</"
-"abbr> est <code>https://contributopia.org/fr/</code>"
+"Cela devrait ressembler à ça dans Firefox. Dans cet exemple, l’adresse est "
+"<code>https://contributopia.org/fr/</code>"
 
 #: views/onboarding/step4.phtml:3 views/onboarding/step4.phtml:11
 msgid "Collections and feeds"
@@ -1860,10 +1860,10 @@ msgstr ""
 #: views/onboarding/step4.phtml:48
 msgid ""
 "A screenshot showing the result when searching for the “https://flus.fr” "
-"URL: a link and a feed to follow"
+"address: a link and a feed to follow"
 msgstr ""
-"Une capture d’écran montrant le résultat quand on cherche « https://flus."
-"fr » : un lien et un flux à suivre"
+"Une capture d’écran montrant le résultat quand on cherche l’adresse "
+"« https://flus.fr » : un lien et un flux à suivre"
 
 #: views/onboarding/step4.phtml:55
 msgid ""
