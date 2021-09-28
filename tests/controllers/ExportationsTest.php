@@ -68,7 +68,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'exportations/show.phtml');
-        $this->assertResponseContains($response, 'Download your data archive');
+        $this->assertResponseContains($response, 'Downloading your data');
     }
 
     public function testShowRendersCorrectlyIfAnExportationIsError()

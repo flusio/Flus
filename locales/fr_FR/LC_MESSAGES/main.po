@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-09-28 10:18+0200\n"
-"PO-Revision-Date: 2021-09-28 10:19+0200\n"
+"POT-Creation-Date: 2021-09-28 10:33+0200\n"
+"PO-Revision-Date: 2021-09-28 10:33+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -966,8 +966,7 @@ msgid "There’s no topics to show."
 msgstr "Il n’y a aucune thématique à afficher."
 
 #: views/exportations/show.phtml:3 views/exportations/show.phtml:14
-#: views/my/account/show.phtml:78
-msgid "Download your data"
+msgid "Downloading your data"
 msgstr "Téléchargement de vos données"
 
 #: views/exportations/show.phtml:7 views/importations/opml/show.phtml:7
@@ -992,8 +991,8 @@ msgid "This might take several minutes, please wait."
 msgstr "Cela pourrait prendre plusieurs minutes, merci d’attendre."
 
 #: views/exportations/show.phtml:49
-msgid "Download your data archive"
-msgstr "Télécharger votre archive de données"
+msgid "Download your archive"
+msgstr "Télécharger votre archive"
 
 #: views/exportations/show.phtml:55
 #, php-format
@@ -1474,6 +1473,10 @@ msgstr "Importer vos données depuis Pocket"
 #: views/my/account/show.phtml:71
 msgid "Import your data from an <abbr>OPML</abbr> file"
 msgstr "Importer vos données depuis un fichier <abbr>OPML</abbr>"
+
+#: views/my/account/show.phtml:78
+msgid "Download your data"
+msgstr "Télécharger vos données"
 
 #: views/my/account/show.phtml:84
 msgid "Delete your account?"
