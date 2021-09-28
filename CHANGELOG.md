@@ -1,5 +1,31 @@
 # Changelog of flusio
 
+## 2021-09-28 - v0.33
+
+### News
+
+- Allow users to export their data
+- Provide CLI users' data exportation
+
+### Improvements
+
+- Change the wording of "New link" to "New"
+- Change the wording of URL to address
+
+### Bug fixes
+
+- Fix redirection to Pocket
+
+### Misc
+
+- Limit download size in fetchers
+- Enhance links and collections feeds
+- Enhance feed parsers
+- Provide a Docker psql command
+- Execute docker bins in running containers if any
+- Fix a Http test
+- Alter version in development and test environments
+
 ## 2021-09-13 - v0.32
 
 ### News
