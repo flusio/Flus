@@ -45,7 +45,7 @@
         </form>
     <?php elseif ($exportation && $exportation->status === 'finished'): ?>
         <p class="paragraph--featured">
-            <a class="anchor--action" href="<?= url('download exportation') ?>">
+            <a class="anchor--action" href="<?= url('download exportation') ?>" data-turbo="false">
                 <?= _('Download your archive') ?>
             </a>
         </p>
