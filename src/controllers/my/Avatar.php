@@ -62,9 +62,11 @@ class Avatar
         }
 
         $media_path = \Minz\Configuration::$application['media_path'];
-        $avatars_path = "{$media_path}/avatars/";
-        if (!file_exists($avatars_path)) {
-            @mkdir($avatars_path, 0755, true);
+        $subpath = utils\Belt::filenameToSubpath($user->id);
+        $avatars_path = "{$media_path}/avatars";
+        $avatar_path = "{$avatars_path}/{$subpath}";
+        if (!file_exists($avatar_path)) {
+            @mkdir($avatar_path, 0755, true);
         }
 
         $image_data = $avatar_file->content();
@@ -83,11 +85,12 @@ class Avatar
         $image->resize(150, 150);
 
         if ($user->avatar_filename) {
-            @unlink($avatars_path . $user->avatar_filename);
+            $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
+            @unlink("{$avatars_path}/{$subpath}/{$user->avatar_filename}");
         }
 
         $image_filename = "{$user->id}.{$image_type}";
-        $image->save($avatars_path . $image_filename);
+        $image->save("{$avatar_path}/{$image_filename}");
 
         $user->avatar_filename = $image_filename;
         $user->save();

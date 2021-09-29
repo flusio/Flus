@@ -3,6 +3,7 @@
 namespace flusio\services;
 
 use flusio\models;
+use flusio\utils;
 
 class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 {
@@ -163,9 +164,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $image_filename = $link->image_filename;
         $this->assertNotNull($image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
-        $card_filepath = "{$media_path}/cards/{$image_filename}";
-        $cover_filepath = "{$media_path}/covers/{$image_filename}";
-        $large_filepath = "{$media_path}/large/{$image_filename}";
+        $subpath = utils\Belt::filenameToSubpath($image_filename);
+        $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
+        $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
+        $large_filepath = "{$media_path}/large/{$subpath}/{$image_filename}";
         $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));

@@ -5,6 +5,7 @@ namespace flusio\controllers\my;
 use flusio\auth;
 use flusio\models;
 use flusio\services;
+use flusio\utils;
 
 class AccountTest extends \PHPUnit\Framework\TestCase
 {
@@ -184,9 +185,11 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $image_path = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $media_path = \Minz\Configuration::$application['media_path'];
         $avatar_filename = $this->fake('md5') . '.png';
-        $avatar_path = "{$media_path}/avatars/{$avatar_filename}";
-        @mkdir(\Minz\Configuration::$application['media_path'] . '/avatars');
-        copy($image_path, $avatar_path);
+        $subpath = utils\Belt::filenameToSubpath($avatar_filename);
+        $avatar_path = "{$media_path}/avatars/{$subpath}";
+        $avatar_filepath = "{$avatar_path}/{$avatar_filename}";
+        @mkdir($avatar_path, 0755, true);
+        copy($image_path, $avatar_filepath);
 
         $password = $this->fake('password');
         $user = $this->login([
@@ -194,14 +197,14 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'avatar_filename' => $avatar_filename,
         ]);
 
-        $this->assertTrue(file_exists($avatar_path));
+        $this->assertTrue(file_exists($avatar_filepath));
 
         $response = $this->appRun('post', '/my/account/deletion', [
             'csrf' => $user->csrf,
             'password' => $password,
         ]);
 
-        $this->assertFalse(file_exists($avatar_path));
+        $this->assertFalse(file_exists($avatar_filepath));
     }
 
     public function testDeleteRedirectsToLoginIfUserIsNotConnected()

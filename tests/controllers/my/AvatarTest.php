@@ -4,6 +4,7 @@ namespace flusio\controllers\my;
 
 use flusio\auth;
 use flusio\models;
+use flusio\utils;
 
 class AvatarTest extends \PHPUnit\Framework\TestCase
 {
@@ -37,7 +38,8 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $user = auth\CurrentUser::reload();
         $this->assertSame($user->id . '.png', $user->avatar_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
-        $avatar_path = "{$media_path}/avatars/{$user->avatar_filename}";
+        $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
+        $avatar_path = "{$media_path}/avatars/{$subpath}/{$user->avatar_filename}";
         $this->assertTrue(file_exists($avatar_path));
     }
 
@@ -49,8 +51,11 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         // JPG instead of PNG: we just want to check that the file is deleted.
         $media_path = \Minz\Configuration::$application['media_path'];
         $previous_avatar_filename = $this->fake('md5') . '.jpg';
-        $previous_avatar_path = "{$media_path}/avatars/{$previous_avatar_filename}";
-        copy($image_filepath, $previous_avatar_path);
+        $subpath = utils\Belt::filenameToSubpath($previous_avatar_filename);
+        $previous_avatar_path = "{$media_path}/avatars/{$subpath}";
+        $previous_avatar_filepath = "{$previous_avatar_path}/{$previous_avatar_filename}";
+        @mkdir($previous_avatar_path, 0755, true);
+        copy($image_filepath, $previous_avatar_filepath);
 
         $user = $this->login([
             'avatar_filename' => $previous_avatar_filename,
@@ -68,9 +73,10 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/my/profile');
         $user = auth\CurrentUser::reload();
         $this->assertSame($user->id . '.png', $user->avatar_filename);
-        $avatar_path = "{$media_path}/avatars/{$user->avatar_filename}";
-        $this->assertTrue(file_exists($avatar_path));
-        $this->assertFalse(file_exists($previous_avatar_path));
+        $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
+        $avatar_filepath = "{$media_path}/avatars/{$subpath}/{$user->avatar_filename}";
+        $this->assertTrue(file_exists($avatar_filepath));
+        $this->assertFalse(file_exists($previous_avatar_filepath));
     }
 
     public function testUpdateRedirectsToLoginIfNotConnected()

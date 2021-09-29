@@ -109,9 +109,10 @@ function url_media($type, $filename, $default = 'default-card.png')
     }
 
     $media_path = \Minz\Configuration::$application['media_path'];
-    $filepath = "{$media_path}/{$type}/{$filename}";
+    $subpath = \flusio\utils\Belt::filenameToSubpath($filename);
+    $filepath = "{$media_path}/{$type}/{$subpath}/{$filename}";
     $modification_time = @filemtime($filepath);
-    $file_url = \Minz\Url::path() . "/media/{$type}/{$filename}";
+    $file_url = \Minz\Url::path() . "/media/{$type}/{$subpath}/{$filename}";
     if ($modification_time) {
         return $file_url . '?' . $modification_time;
     } else {

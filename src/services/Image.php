@@ -33,15 +33,6 @@ class Image
         $this->path_cards = "{$media_path}/cards";
         $this->path_covers = "{$media_path}/covers";
         $this->path_large = "{$media_path}/large";
-        if (!file_exists($this->path_cards)) {
-            @mkdir($this->path_cards, 0755, true);
-        }
-        if (!file_exists($this->path_covers)) {
-            @mkdir($this->path_covers, 0755, true);
-        }
-        if (!file_exists($this->path_large)) {
-            @mkdir($this->path_large, 0755, true);
-        }
     }
 
     /**
@@ -55,9 +46,24 @@ class Image
     public function generatePreviews($image_url)
     {
         $url_hash = \SpiderBits\Cache::hash($image_url);
-        $card_image_filepath = $this->path_cards . '/' . $url_hash;
-        $cover_image_filepath = $this->path_covers . '/' . $url_hash;
-        $large_image_filepath = $this->path_large . '/' . $url_hash;
+        $subpath = utils\Belt::filenameToSubpath($url_hash);
+        $path_card = "{$this->path_cards}/{$subpath}";
+        $path_cover = "{$this->path_covers}/{$subpath}";
+        $path_large = "{$this->path_large}/{$subpath}";
+        $card_image_filepath = "{$path_card}/{$url_hash}";
+        $cover_image_filepath = "{$path_cover}/{$url_hash}";
+        $large_image_filepath = "{$path_large}/{$url_hash}";
+
+        if (!file_exists($path_card)) {
+            @mkdir($path_card, 0755, true);
+        }
+        if (!file_exists($path_cover)) {
+            @mkdir($path_cover, 0755, true);
+        }
+        if (!file_exists($path_large)) {
+            @mkdir($path_large, 0755, true);
+        }
+
         $card_file_exists = glob($card_image_filepath . '.*');
         $cover_file_exists = glob($cover_image_filepath . '.*');
         $large_file_exists = glob($large_image_filepath . '.*');

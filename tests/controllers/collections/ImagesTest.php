@@ -3,6 +3,7 @@
 namespace flusio\controllers\collections;
 
 use flusio\models;
+use flusio\utils;
 
 class ImagesTest extends \PHPUnit\Framework\TestCase
 {
@@ -117,9 +118,10 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $collection = models\Collection::find($collection_id);
         $this->assertNotNull($collection->image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
-        $card_filepath = "{$media_path}/cards/{$collection->image_filename}";
-        $cover_filepath = "{$media_path}/covers/{$collection->image_filename}";
-        $large_filepath = "{$media_path}/large/{$collection->image_filename}";
+        $subpath = utils\Belt::filenameToSubpath($collection->image_filename);
+        $card_filepath = "{$media_path}/cards/{$subpath}/{$collection->image_filename}";
+        $cover_filepath = "{$media_path}/covers/{$subpath}/{$collection->image_filename}";
+        $large_filepath = "{$media_path}/large/{$subpath}/{$collection->image_filename}";
         $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));

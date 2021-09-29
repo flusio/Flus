@@ -119,4 +119,24 @@ class Belt
             return $host;
         }
     }
+
+    /**
+     * Return a subpath from a file name (used for media files).
+     *
+     * The name must contain at least 9 characters, excluding the dots. The
+     * function returns an empty string otherwise.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function filenameToSubpath($filename)
+    {
+        $name = str_replace('.', '', $filename);
+        if (strlen($name) < 9) {
+            return '';
+        }
+
+        return substr($name, 0, 3) . '/' . substr($name, 3, 3) . '/' . substr($name, 6, 3);
+    }
 }

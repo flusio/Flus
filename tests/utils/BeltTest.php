@@ -259,4 +259,31 @@ class BeltTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('', $host);
     }
+
+    public function testFilenameToSubpath()
+    {
+        $filename = 'abcdefghijklmnop.png';
+
+        $subpath = Belt::filenameToSubpath($filename);
+
+        $this->assertSame('abc/def/ghi', $subpath);
+    }
+
+    public function testFilenameToSubpathRemovesDot()
+    {
+        $filename = 'abcdef.png';
+
+        $subpath = Belt::filenameToSubpath($filename);
+
+        $this->assertSame('abc/def/png', $subpath);
+    }
+
+    public function testFilenameToSubpathReturnsEmptyStringWithLessThanNineCharacters()
+    {
+        $filename = 'abcde.png';
+
+        $subpath = Belt::filenameToSubpath($filename);
+
+        $this->assertSame('', $subpath);
+    }
 }

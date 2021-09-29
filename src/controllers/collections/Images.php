@@ -5,6 +5,7 @@ namespace flusio\controllers\collections;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
+use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -114,14 +115,15 @@ class Images
         }
 
         $media_path = \Minz\Configuration::$application['media_path'];
-        $cards_path = "{$media_path}/cards/";
-        $covers_path = "{$media_path}/covers/";
-        $large_path = "{$media_path}/large/";
-        if (!file_exists($cards_path)) {
-            @mkdir($cards_path, 0755, true);
+        $subpath = utils\Belt::filenameToSubpath($collection->id);
+        $card_path = "{$media_path}/cards/{$subpath}/";
+        $cover_path = "{$media_path}/covers/{$subpath}/";
+        $large_path = "{$media_path}/large/{$subpath}/";
+        if (!file_exists($card_path)) {
+            @mkdir($card_path, 0755, true);
         }
-        if (!file_exists($covers_path)) {
-            @mkdir($covers_path, 0755, true);
+        if (!file_exists($cover_path)) {
+            @mkdir($cover_path, 0755, true);
         }
         if (!file_exists($large_path)) {
             @mkdir($large_path, 0755, true);
@@ -150,14 +152,14 @@ class Images
         $large_image->resize(1100, 250);
 
         if ($collection->image_filename) {
-            @unlink($cards_path . $collection->image_filename);
-            @unlink($covers_path . $collection->image_filename);
+            @unlink($card_path . $collection->image_filename);
+            @unlink($cover_path . $collection->image_filename);
             @unlink($large_path . $collection->image_filename);
         }
 
         $image_filename = "{$collection->id}.{$image_type}";
-        $card_image->save($cards_path . $image_filename);
-        $cover_image->save($covers_path . $image_filename);
+        $card_image->save($card_path . $image_filename);
+        $cover_image->save($cover_path . $image_filename);
         $large_image->save($large_path . $image_filename);
 
         $collection->image_filename = $image_filename;
