@@ -99,6 +99,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertSame('Carnet de Flus', $collection->name);
+        $this->assertSame('atom', $collection->feed_type);
         $this->assertNotNull($collection->image_fetched_at);
         $this->assertNotNull($collection->image_filename);
         $this->assertNull($collection->locked_at);

@@ -79,6 +79,7 @@ class FeedFetcher
         }
 
         $collection->feed_last_hash = $feed_hash;
+        $collection->feed_type = $feed->type;
 
         $title = substr(trim($feed->title), 0, models\Collection::NAME_MAX_LENGTH);
         if ($title) {

@@ -30,6 +30,7 @@ class AtomParser
     public static function parse($dom_document)
     {
         $feed = new Feed();
+        $feed->type = 'atom';
 
         foreach ($dom_document->documentElement->childNodes as $node) {
             if (!($node instanceof \DOMElement)) {

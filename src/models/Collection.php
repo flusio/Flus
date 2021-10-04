@@ -75,6 +75,10 @@ class Collection extends \Minz\Model
             'type' => 'string',
         ],
 
+        'feed_type' => [
+            'type' => 'string',
+        ],
+
         'feed_site_url' => [
             'type' => 'string',
         ],

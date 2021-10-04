@@ -119,6 +119,7 @@ CREATE TABLE collections (
     group_id TEXT REFERENCES groups ON DELETE SET NULL ON UPDATE CASCADE,
 
     feed_url TEXT,
+    feed_type TEXT,
     feed_site_url TEXT,
     feed_last_hash TEXT,
     feed_fetched_code INTEGER NOT NULL DEFAULT 0,

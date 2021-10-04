@@ -1,0 +1,30 @@
+<?php
+
+namespace flusio\migrations;
+
+class Migration202110040001AddFeedTypeToCollections
+{
+    public function migrate()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            ALTER TABLE collections
+            ADD COLUMN feed_type TEXT;
+        SQL);
+
+        return true;
+    }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            ALTER TABLE collections
+            DROP COLUMN feed_type;
+        SQL);
+
+        return true;
+    }
+}

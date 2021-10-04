@@ -11,6 +11,9 @@ namespace SpiderBits\feeds;
 class Feed
 {
     /** @var string */
+    public $type = '';
+
+    /** @var string */
     public $title = '';
 
     /** @var string */

@@ -30,6 +30,7 @@ class RdfParser
     public static function parse($dom_document)
     {
         $feed = new Feed();
+        $feed->type = 'rdf';
 
         $rss_node = $dom_document->documentElement;
         $channel_node = $rss_node->getElementsByTagName('channel')->item(0);

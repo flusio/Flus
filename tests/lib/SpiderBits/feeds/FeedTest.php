@@ -21,6 +21,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 
         $feed = Feed::fromText($feed_as_string);
 
+        $this->assertSame('atom', $feed->type);
         $this->assertSame('carnet de flus', $feed->title);
         $this->assertSame('Le blog de Flus', $feed->description);
         $this->assertSame('https://flus.fr/carnet/', $feed->link);
@@ -53,6 +54,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 
         $feed = Feed::fromText($feed_as_string);
 
+        $this->assertSame('rss', $feed->type);
         $this->assertSame('Framablog', $feed->title);
         $this->assertSame('La route est longue mais la voie est libre…', $feed->description);
         $this->assertSame('https://framablog.org', $feed->link);
@@ -88,6 +90,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 
         $feed = Feed::fromText($feed_as_string);
 
+        $this->assertSame('rss', $feed->type);
         $this->assertSame("Stories by L'avertY on Medium", $feed->title);
         $this->assertSame("Stories by L'avertY on Medium", $feed->description);
         $this->assertSame('https://medium.com/@lavertygrenoble?source=rss-644186d8e612------2', $feed->link);
@@ -127,6 +130,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 
         $feed = Feed::fromText($feed_as_string);
 
+        $this->assertSame('rss', $feed->type);
         $this->assertSame('', $feed->title);
         $this->assertSame('', $feed->description);
         $this->assertSame('https://vimeo.com', $feed->link);
@@ -152,6 +156,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 
         $feed = Feed::fromText($feed_as_string);
 
+        $this->assertSame('rdf', $feed->type);
         $this->assertSame('The Oatmeal - Comics, Quizzes, & Stories', $feed->title);
         $this->assertSame(
             'The oatmeal tastes better than stale skittles found under the couch cushions',
@@ -181,6 +186,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 
         $feed = Feed::fromText($feed_as_string);
 
+        $this->assertSame('atom', $feed->type);
         $this->assertSame('Basile Simon (blog)', $feed->title);
         $this->assertSame('', $feed->description);
         $this->assertSame('https://blog.basilesimon.fr/', $feed->link);
@@ -212,6 +218,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 
         $feed = Feed::fromText($feed_as_string);
 
+        $this->assertSame('atom', $feed->type);
         $this->assertSame('A feed with milliseconds', $feed->title);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
