@@ -1,5 +1,23 @@
 # Changelog of flusio
 
+## 2021-10-04 - v0.34
+
+### Improvements
+
+- Deduplicate feeds with same name on search page
+
+### Bug fixes
+
+- Fix URLs in OPML exportation
+- Make parsing of feeds dates more robust
+- Support `APP_PATH` correctly
+
+### Misc
+
+- Reorganize media files
+- Add type `rss` to OPML export
+- Store feeds type
+
 ## 2021-09-28 - v0.33
 
 ### News
