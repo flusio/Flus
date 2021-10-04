@@ -110,6 +110,46 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString($name, $output);
     }
 
+    public function testShowHidesDuplicatedFeeds()
+    {
+        $user = $this->login();
+        $support_user = models\User::supportUser();
+        $name = $this->fake('sentence');
+        $feed_url_rss = $this->fakeUnique('url');
+        $feed_url_atom = $this->fakeUnique('url');
+        $collection_rss_id = $this->create('collection', [
+            'type' => 'feed',
+            'user_id' => $support_user->id,
+            'is_public' => 1,
+            'name' => $name,
+            'feed_url' => $feed_url_rss,
+        ]);
+        $collection_atom_id = $this->create('collection', [
+            'type' => 'feed',
+            'user_id' => $support_user->id,
+            'is_public' => 1,
+            'name' => $name,
+            'feed_url' => $feed_url_atom,
+        ]);
+        $link_url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $support_user->id,
+            'url' => $link_url,
+            'is_hidden' => 0,
+            'url_feeds' => "[\"{$feed_url_rss}\", \"{$feed_url_atom}\"]",
+        ]);
+
+        $response = $this->appRun('get', '/links/search', [
+            'url' => $link_url,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $collection_rss_id);
+        // Only the first feed is considered if name are the same but feed
+        // types differ.
+        $this->assertResponseNotContains($response, $collection_atom_id);
+    }
+
     public function testShowDoesNotDisplaysHiddenDefaultLink()
     {
         $user = $this->login();

@@ -49,11 +49,18 @@ class Searches
 
         $feeds = [];
         if ($default_link) {
-            $feeds = models\Collection::daoToList(
+            $associated_feeds = models\Collection::daoToList(
                 'listFeedsWithNumberLinks',
                 $support_user->id,
                 $default_link->feedUrls()
             );
+
+            // Deduplicate feeds with same names
+            foreach ($associated_feeds as $feed) {
+                if (!isset($feeds[$feed->name])) {
+                    $feeds[$feed->name] = $feed;
+                }
+            }
         }
 
         return Response::ok('links/searches/show.phtml', [
