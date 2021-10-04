@@ -206,6 +206,18 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('a92e7df76dcdabe9f70d7eaf2798b2a6190608d1b1a37f41a12897c0e00d2dc0', $feed->hash());
     }
 
+    public function testFromTextWithDatesWithMilliseconds()
+    {
+        $feed_as_string = file_get_contents(self::$examples_path . '/dates-with-milliseconds.atom.xml');
+
+        $feed = Feed::fromText($feed_as_string);
+
+        $this->assertSame('A feed with milliseconds', $feed->title);
+        $this->assertSame(1, count($feed->entries));
+        $entry = $feed->entries[0];
+        $this->assertSame(1633339200, $entry->published_at->getTimestamp());
+    }
+
     public function testFromTextWithEmptyRss()
     {
         $feed = Feed::fromText('<rss></rss>');

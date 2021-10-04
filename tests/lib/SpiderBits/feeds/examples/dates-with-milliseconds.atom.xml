@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://some.site.com</id>
+    <title>A feed with milliseconds</title>
+    <updated>2021-10-04T07:41:59.527Z</updated>
+    <author>
+        <name>An author</name>
+    </author>
+    <link rel="alternate" href="https://some.site.com"/>
+    <link rel="self" href="https://some.site.com/feed.atom"/>
+    <entry>
+        <title>My article</title>
+        <id>https://some.site.com/my-article</id>
+        <link href="https://some.site.com/my-article"/>
+        <updated>2021-10-04T09:20:00.000Z</updated>
+        <content type="html"></content>
+    </entry>
+</feed>

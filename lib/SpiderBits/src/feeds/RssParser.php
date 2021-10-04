@@ -104,10 +104,7 @@ class RssParser
             }
 
             if ($node->tagName === 'pubDate') {
-                $published_at = \DateTime::createFromFormat(
-                    \DateTimeInterface::RSS,
-                    $node->nodeValue
-                );
+                $published_at = Date::parse($node->nodeValue);
                 if ($published_at) {
                     $entry->published_at = $published_at;
                 }
