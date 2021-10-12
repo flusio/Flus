@@ -259,6 +259,17 @@ class Link extends \Minz\DatabaseModel
         }
 
         $sql = <<<SQL
+            WITH excluded_links AS (
+                SELECT l_exclude.url
+                FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
+
+                WHERE c_exclude.user_id = :user_id
+                AND (c_exclude.type = 'bookmarks' OR c_exclude.type = 'read' OR c_exclude.type = 'never')
+
+                AND lc_exclude.link_id = l_exclude.id
+                AND lc_exclude.collection_id = c_exclude.id
+            )
+
             SELECT l.*, lc.created_at AS published_at, 'followed' AS via_type, c.id AS via_collection_id
             FROM links l, collections c, links_to_collections lc, followed_collections fc
 
@@ -271,16 +282,7 @@ class Link extends \Minz\DatabaseModel
             AND l.is_hidden = false
             AND c.is_public = true
 
-            AND l.url NOT IN (
-                SELECT l_exclude.url
-                FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
-
-                WHERE c_exclude.user_id = :user_id
-                AND (c_exclude.type = 'bookmarks' OR c_exclude.type = 'read' OR c_exclude.type = 'never')
-
-                AND lc_exclude.link_id = l_exclude.id
-                AND lc_exclude.collection_id = c_exclude.id
-            )
+            AND NOT EXISTS (SELECT 1 FROM excluded_links WHERE l.url = excluded_links.url)
 
             {$where_placeholder}
 
