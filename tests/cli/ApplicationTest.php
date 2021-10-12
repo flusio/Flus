@@ -4,7 +4,7 @@ namespace flusio\cli;
 
 class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
 
     public function testRunDoesntFail()
     {

@@ -12,7 +12,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 

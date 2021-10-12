@@ -4,7 +4,7 @@ namespace flusio\controllers\collections;
 
 class DiscoveryTest extends \PHPUnit\Framework\TestCase
 {
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 

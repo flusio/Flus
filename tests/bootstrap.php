@@ -8,6 +8,11 @@ include $app_path . '/autoload.php';
 \Minz\Environment::initialize();
 \Minz\Environment::startSession();
 
+\Minz\Database::reset();
+$schema = @file_get_contents(\Minz\Configuration::$schema_path);
+$database = \Minz\Database::get();
+$database->exec($schema);
+
 $faker = \Faker\Factory::create();
 
 $faker_seed = getenv('SEED');

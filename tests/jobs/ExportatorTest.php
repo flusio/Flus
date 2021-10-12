@@ -8,7 +8,7 @@ use flusio\utils;
 class ExportatorTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
 
     /**
      * @beforeClass

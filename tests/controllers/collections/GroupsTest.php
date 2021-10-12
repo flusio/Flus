@@ -10,7 +10,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testEditRendersCorrectly()

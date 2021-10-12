@@ -6,11 +6,11 @@ use flusio\models;
 
 class LinksTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 

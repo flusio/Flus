@@ -11,7 +11,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 

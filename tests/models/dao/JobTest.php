@@ -5,7 +5,7 @@ namespace flusio\models\dao;
 class JobTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 

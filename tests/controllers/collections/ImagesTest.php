@@ -12,7 +12,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\FilesHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testEditRendersCorrectly()

@@ -9,7 +9,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\FilesHelper;
     use \Minz\Tests\ResponseAsserts;

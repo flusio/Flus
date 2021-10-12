@@ -16,6 +16,17 @@ class SystemTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @afterClass
+     */
+    public static function recreateDatabase()
+    {
+        \Minz\Database::reset();
+        $schema = @file_get_contents(\Minz\Configuration::$schema_path);
+        $database = \Minz\Database::get();
+        $database->exec($schema);
+    }
+
+    /**
      * @before
      */
     public function uninstall()

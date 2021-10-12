@@ -9,7 +9,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\FilesHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
 
     /**
      * @beforeClass

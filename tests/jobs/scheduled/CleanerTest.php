@@ -8,7 +8,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
 
     public function testQueue()

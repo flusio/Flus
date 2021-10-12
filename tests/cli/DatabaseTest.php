@@ -15,6 +15,17 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
         self::$application = new \flusio\cli\Application();
     }
 
+    /**
+     * @afterClass
+     */
+    public static function recreateDatabase()
+    {
+        \Minz\Database::reset();
+        $schema = @file_get_contents(\Minz\Configuration::$schema_path);
+        $database = \Minz\Database::get();
+        $database->exec($schema);
+    }
+
     public function testStatusCanConnectToTheDatabase()
     {
         $response = $this->appRun('cli', '/database/status');

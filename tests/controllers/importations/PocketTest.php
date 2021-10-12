@@ -12,7 +12,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     use \tests\LoginHelper;
     use \tests\FlashAsserts;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\InitializerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
