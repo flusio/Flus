@@ -142,6 +142,7 @@ class Routes
         $router->addRoute('post', '/messages/:id/delete', 'Messages#delete', 'delete message');
 
         // Groups
+        $router->addRoute('get', '/groups/:id/collections', 'groups/Collections#index', 'group collections');
         $router->addRoute('get', '/groups/:id/edit', 'Groups#edit', 'edit group');
         $router->addRoute('post', '/groups/:id/edit', 'Groups#update', 'update group');
         $router->addRoute('post', '/groups/:id/delete', 'Groups#delete', 'delete group');

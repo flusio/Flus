@@ -8,6 +8,11 @@ namespace flusio\auth;
  */
 class GroupsAccess
 {
+    public static function canView($user, $group)
+    {
+        return $user && $group && $user->id === $group->user_id;
+    }
+
     public static function canUpdate($user, $group)
     {
         return $user && $group && $user->id === $group->user_id;
