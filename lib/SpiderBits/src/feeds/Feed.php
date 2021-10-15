@@ -92,6 +92,7 @@ class Feed
         return (
             strpos($content_type, 'application/atom+xml') !== false ||
             strpos($content_type, 'application/rss+xml') !== false ||
+            strpos($content_type, 'application/x-rss+xml') !== false ||
             strpos($content_type, 'application/rdf+xml') !== false ||
             strpos($content_type, 'application/xml') !== false ||
             strpos($content_type, 'text/xml') !== false ||
