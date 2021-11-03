@@ -143,6 +143,9 @@ class JobsWorker
         while (true) {
             yield $this->run($request);
 
+            $database = \Minz\Database::get();
+            $database->close();
+
             if (!$this->exit_watch) {
                 sleep(5);
             }
