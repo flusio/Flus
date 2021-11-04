@@ -264,6 +264,20 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 400, 'The username must be less than 50 characters');
     }
 
+    public function testCreateFailsIfUsernameContainsAnAt()
+    {
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => \Minz\CSRF::generate(),
+            'username' => $this->fake('name') . '@',
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
+        ]);
+
+        $this->assertSame(0, models\User::count());
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The username cannot contain the character ‘@’.');
+    }
+
     public function testCreateFailsIfEmailIsMissing()
     {
         $response = $this->appRun('post', '/registration', [

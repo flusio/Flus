@@ -110,7 +110,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en_GB', $user->locale);
     }
 
-    public function testUpdateFailsIfUsernameIsInvalid()
+    public function testUpdateFailsIfUsernameIsTooLong()
     {
         $old_username = $this->fakeUnique('username');
         $new_username = $this->fake('sentence', 50, false);
@@ -126,6 +126,28 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'The username must be less than 50 characters');
+        $user = auth\CurrentUser::reload();
+        $this->assertSame($old_username, $user->username);
+        $this->assertSame('en_GB', $user->locale);
+    }
+
+    public function testUpdateFailsIfUsernameContainsAnAt()
+    {
+        $old_username = $this->fakeUnique('username');
+        $new_username = $this->fakeUnique('username') . '@';
+        $user = $this->login([
+            'username' => $old_username,
+            'locale' => 'en_GB',
+        ]);
+
+        $response = $this->appRun('post', '/my/profile', [
+            'csrf' => $user->csrf,
+            'username' => $new_username,
+            'locale' => 'fr_FR',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The username cannot contain the character ‘@’');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
         $this->assertSame('en_GB', $user->locale);

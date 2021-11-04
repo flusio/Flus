@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-10-12 17:15+0200\n"
-"PO-Revision-Date: 2021-10-12 17:15+0200\n"
+"POT-Creation-Date: 2021-11-04 15:38+0100\n"
+"PO-Revision-Date: 2021-11-04 15:39+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -90,7 +90,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:58 models/User.php:445
+#: controllers/Passwords.php:58 models/User.php:451
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -307,27 +307,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:439
-msgid "The username is required."
-msgstr "Le nom d’utilisateur·ice est obligatoire."
-
-#: models/User.php:441
+#: models/User.php:413
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:443
+#: models/User.php:417
+msgid "The username cannot contain the character ‘@’."
+msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
+
+#: models/User.php:447
+msgid "The username is required."
+msgstr "Le nom d’utilisateur·ice est obligatoire."
+
+#: models/User.php:449
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:447
+#: models/User.php:453
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:449
+#: models/User.php:455
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:451
+#: models/User.php:457
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 

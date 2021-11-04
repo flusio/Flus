@@ -409,7 +409,15 @@ class User extends \Minz\Model
      */
     public static function validateUsername($username)
     {
-        return mb_strlen($username) <= 50;
+        if (mb_strlen($username) > 50) {
+            return _('The username must be less than 50 characters.');
+        }
+
+        if (utils\Belt::contains($username, '@')) {
+            return _('The username cannot contain the character ‘@’.');
+        }
+
+        return true;
     }
 
     /**
@@ -437,8 +445,6 @@ class User extends \Minz\Model
 
             if ($property === 'username' && $code === 'required') {
                 $formatted_error = _('The username is required.');
-            } elseif ($property === 'username') {
-                $formatted_error = _('The username must be less than 50 characters.');
             } elseif ($property === 'email' && $code === 'required') {
                 $formatted_error = _('The address email is required.');
             } elseif ($property === 'email') {
