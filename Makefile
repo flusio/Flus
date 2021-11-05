@@ -54,9 +54,9 @@ update: setup ## Update the application
 .PHONY: rollback
 rollback: ## Reverse the last migration
 ifdef STEPS
-	$(CLI) system rollback --steps=$(STEPS)
+	$(CLI) migrations rollback --steps=$(STEPS)
 else
-	$(CLI) system rollback
+	$(CLI) migrations rollback
 endif
 
 .PHONY: reset

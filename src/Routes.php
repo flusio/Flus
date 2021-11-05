@@ -169,8 +169,10 @@ class Routes
         $router->addRoute('cli', '/system', 'System#show');
         $router->addRoute('cli', '/system/secret', 'System#secret');
         $router->addRoute('cli', '/system/setup', 'System#setup');
-        $router->addRoute('cli', '/system/rollback', 'System#rollback');
         $router->addRoute('cli', '/database/status', 'Database#status');
+
+        $router->addRoute('cli', '/migrations/apply', 'Migrations#apply');
+        $router->addRoute('cli', '/migrations/rollback', 'Migrations#rollback');
 
         $router->addRoute('cli', '/users', 'Users#index');
         $router->addRoute('cli', '/users/create', 'Users#create');
