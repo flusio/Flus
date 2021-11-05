@@ -11,6 +11,88 @@ use Minz\Response;
 class Migrations
 {
     /**
+     * List the migrations.
+     *
+     * @response 200
+     */
+    public function index()
+    {
+        $app_path = \Minz\Configuration::$app_path;
+        $migrations_path = $app_path . '/src/migrations';
+        $migrator = new \Minz\Migrator($migrations_path);
+        $versions = array_keys($migrator->migrations());
+        return Response::text(200, implode("\n", $versions));
+    }
+
+    /**
+     * Create a new migration file.
+     *
+     * @request_param string name
+     *
+     * @response 400 If name is empty
+     * @response 200
+     */
+    public function create($request)
+    {
+        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
+
+        $name = $request->param('name');
+        $name = preg_replace('/[^a-zA-Z0-9]/', '', $name);
+        if (!$name) {
+            return Response::text(400, 'Migration name cannot be empty.');
+        }
+
+        $now = \Minz\Time::now()->format('Ymd');
+        for ($i = 1; $i <= 9999; $i++) {
+            $number = $now . str_pad($i, 4, '0', STR_PAD_LEFT);
+            $base_version = "Migration{$number}";
+            $existing_migration = glob("{$migrations_path}/{$base_version}*");
+
+            if (!$existing_migration) {
+                $version = "{$base_version}{$name}";
+                break;
+            }
+        }
+
+        $migration_path = "{$migrations_path}/{$version}.php";
+        $migration_as_text = <<<PHP
+            <?php
+
+            namespace flusio\migrations;
+
+            class {$version}
+            {
+                public function migrate()
+                {
+                    // \$database = \Minz\Database::get();
+
+                    // \$database->exec(<<<'SQL'
+                    // SQL);
+
+                    return false;
+                }
+
+                public function rollback()
+                {
+                    // \$database = \Minz\Database::get();
+
+                    // \$database->exec(<<<'SQL'
+                    // SQL);
+
+                    return false;
+                }
+            }
+            PHP;
+
+        $result = @file_put_contents($migration_path, $migration_as_text);
+        if ($result === false) {
+            return Response::text(500, 'Cannot create the migration file.'); // @codeCoverageIgnore
+        }
+
+        return Response::text(200, "{$version} migration has been created.");
+    }
+
+    /**
      * Execute the migrations under src/migrations/. The version is stored in
      * the data/migrations_version.txt file.
      *

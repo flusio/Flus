@@ -36,6 +36,79 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
         \Minz\Database::drop();
     }
 
+    public function testIndexRendersCorrectly()
+    {
+        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
+        $migrator = new \Minz\Migrator($migrations_path);
+        $expected_output = implode("\n", array_keys($migrator->migrations()));
+
+        $response = $this->appRun('cli', '/migrations');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, $expected_output);
+    }
+
+    public function testCreateGeneratesANewMigrationAndRendersCorrectly()
+    {
+        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
+        $now = \Minz\Time::now();
+        $name = 'CreateUsers';
+        $expected_version = "Migration{$now->format('Ymd')}0001{$name}";
+        $migration_path = "{$migrations_path}/{$expected_version}.php";
+
+        $response = $this->appRun('cli', '/migrations/create', [
+            'name' => $name,
+        ]);
+
+        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
+        $migrator = new \Minz\Migrator($migrations_path);
+        $last_version = $migrator->lastVersion();
+        @unlink($migration_path);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, "{$expected_version} migration has been created");
+        $this->assertSame($last_version, $expected_version);
+    }
+
+    public function testCreateAdaptsVersionNumberWhenCalledSeveralTimes()
+    {
+        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
+        $now = \Minz\Time::now();
+        $name = 'CreateUsers';
+        $expected_version_1 = "Migration{$now->format('Ymd')}0001{$name}";
+        $expected_version_2 = "Migration{$now->format('Ymd')}0002{$name}";
+        $migration_path_1 = "{$migrations_path}/{$expected_version_1}.php";
+        $migration_path_2 = "{$migrations_path}/{$expected_version_2}.php";
+
+        $this->appRun('cli', '/migrations/create', [
+            'name' => $name,
+        ]);
+        $response = $this->appRun('cli', '/migrations/create', [
+            'name' => $name,
+        ]);
+
+        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
+        $migrator = new \Minz\Migrator($migrations_path);
+        $last_version = $migrator->lastVersion();
+        @unlink($migration_path_1);
+        @unlink($migration_path_2);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, "{$expected_version_2} migration has been created");
+        $this->assertSame($last_version, $expected_version_2);
+    }
+
+    public function testCreateFailsIfNameIsEmpty()
+    {
+        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
+        $name = '';
+
+        $response = $this->appRun('cli', '/migrations/create', [
+            'name' => $name,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, "Migration name cannot be empty");
+    }
+
     public function testAllMigrationsCanBeApplied()
     {
         $migration_file = \Minz\Configuration::$data_path . '/migrations_version.txt';

@@ -48,7 +48,10 @@ class Help
         $usage .= "  jobs watch               Wait and execute jobs\n";
         $usage .= "      [--queue=TEXT]       where TEXT is one of default, mailers, importators, fetchers or all\n";
         $usage .= "\n";
+        $usage .= "  migrations               List the migrations\n";
         $usage .= "  migrations apply         Apply the migrations\n";
+        $usage .= "  migrations create        Create a migration\n";
+        $usage .= "      --name=TEXT          where TEXT is the name of the migration (e.g. CreateUsers)\n";
         $usage .= "  migrations rollback      Reverse the last migration\n";
         $usage .= "      [--steps=NUMBER]     where NUMBER is the number of rollbacks to apply (default is 1)\n";
         $usage .= "\n";
