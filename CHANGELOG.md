@@ -1,5 +1,22 @@
 # Changelog of flusio
 
+## 2021-11-05 - v0.35
+
+### Improvements
+
+- Improve performance when listing links from followed
+- Delay groups loading on collections page
+- Forbid ‘@’ character in usernames
+
+### Misc
+
+- Handle `x-rss+xml` mime type for RSS
+- Close DB connections in jobs workers
+- Update README.md
+- Update index `links_fetched_at`
+- Cache NPM on GitHub CI
+- Improve performance of tests
+
 ## 2021-10-04 - v0.34
 
 ### Improvements
