@@ -1,27 +1,27 @@
 <h1 align="center">flusio</h1>
 
 <p align="center">
-    <strong>A social media to soothe our online relationship with the news.</strong>
+    <strong>Aggregate, save and share news links from all over the Web.</strong>
 </p>
 
 ---
 
-flusio is another yet social media. It brings together social bookmarking and
-Web syndication to allow communities to stay up to date with the news and to
-enhance their knowledge.
+flusio brings together news feed aggregation and social bookmarking in a modern
+way. It is designed as a simple, yet complete tool for organising the links you
+gather around the Web. It comes with four main features:
+
+- the **feeds aggregation** (<abbr>RSS</abbr> and Atom) to follow any website,
+  podcast or video channel in one place;
+- the **bookmarks** to save the articles to read later;
+- the **news** to keep control over your feed;
+- the **collections** to organise and share links with others.
+
+You can try flusio for free at [demo.flus.fr](https://demo.flus.fr/).
 
 It’s [free/libre software](https://en.wikipedia.org/wiki/Free_software)
 (politically speaking) while being supported by a micro-enterprise to ensure
 its viability. The main service is available to French people at [flus.fr](https://flus.fr).
-You can help to fund the development, by taking a subscription to the service.
-
-flusio comes with three main features:
-
-- the **Bookmarks** to save the articles to read later;
-- the **News** to read within your available time;
-- the thematic **Collections** to organise the information.
-
-More is coming such as feed aggregation and community discussions.
+You can help to fund the development by taking a subscription to the service.
 
 flusio is licensed under [AGPL 3](/LICENSE.txt).
 
