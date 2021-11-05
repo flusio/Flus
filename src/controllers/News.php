@@ -77,7 +77,6 @@ class News
         if ($type === 'newsfeed') {
             $options = [
                 'number_links' => 9,
-                'until' => \Minz\Time::ago(3, 'days'),
                 'from' => 'followed',
             ];
         } elseif ($type === 'short') {

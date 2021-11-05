@@ -17,7 +17,6 @@ class NewsPicker
         'number_links' => 9,
         'min_duration' => null,
         'max_duration' => null,
-        'until' => null,
         'from' => 'bookmarks',
     ];
 
@@ -51,14 +50,12 @@ class NewsPicker
                 $this->user->id,
                 $this->options['min_duration'],
                 $this->options['max_duration'],
-                $this->options['until']
             );
         } else {
             $db_links = $link_dao->listFromFollowedCollectionsForNews(
                 $this->user->id,
                 $this->options['min_duration'],
                 $this->options['max_duration'],
-                $this->options['until']
             );
         }
 

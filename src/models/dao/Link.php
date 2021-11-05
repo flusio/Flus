@@ -174,11 +174,10 @@ class Link extends \Minz\DatabaseModel
      * @param string $user_id
      * @param integer|null $min_duration
      * @param integer|null $max_duration
-     * @param \DateTime|null $until
      *
      * @return array
      */
-    public function listFromBookmarksForNews($user_id, $min_duration, $max_duration, $until)
+    public function listFromBookmarksForNews($user_id, $min_duration, $max_duration)
     {
         $where_placeholder = '';
         $values = [
@@ -193,11 +192,6 @@ class Link extends \Minz\DatabaseModel
         if ($max_duration !== null) {
             $where_placeholder .= 'AND l.reading_time < :max_duration ';
             $values[':max_duration'] = $max_duration;
-        }
-
-        if ($until !== null) {
-            $where_placeholder .= 'AND lc.created_at >= :until ';
-            $values[':until'] = $until->format(\Minz\Model::DATETIME_FORMAT);
         }
 
         $sql = <<<SQL
@@ -232,11 +226,10 @@ class Link extends \Minz\DatabaseModel
      * @param string $user_id
      * @param integer|null $min_duration
      * @param integer|null $max_duration
-     * @param \DateTime|null $until
      *
      * @return array
      */
-    public function listFromFollowedCollectionsForNews($user_id, $min_duration, $max_duration, $until)
+    public function listFromFollowedCollectionsForNews($user_id, $min_duration, $max_duration)
     {
         $where_placeholder = '';
         $values = [
@@ -253,10 +246,10 @@ class Link extends \Minz\DatabaseModel
             $values[':max_duration'] = $max_duration;
         }
 
-        if ($until !== null) {
-            $where_placeholder .= 'AND lc.created_at >= :until ';
-            $values[':until'] = $until->format(\Minz\Model::DATETIME_FORMAT);
-        }
+        $where_placeholder .= <<<'SQL'
+            AND lc.created_at >= :until
+        SQL;
+        $values[':until'] = \Minz\Time::ago(3, 'days')->format(\Minz\Model::DATETIME_FORMAT);
 
         $sql = <<<SQL
             WITH excluded_links AS (
