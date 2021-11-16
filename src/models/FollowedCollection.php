@@ -12,6 +12,8 @@ class FollowedCollection extends \Minz\Model
 {
     use DaoConnector;
 
+    public const VALID_TIME_FILTERS = ['strict', 'normal', 'all'];
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'integer',
@@ -34,7 +36,25 @@ class FollowedCollection extends \Minz\Model
         'group_id' => [
             'type' => 'string',
         ],
+
+        'time_filter' => [
+            'type' => 'string',
+            'required' => true,
+            'validator' => '\flusio\models\FollowedCollection::validateTimeFilter',
+        ],
     ];
+
+    /**
+     * Initialize the model with default values.
+     *
+     * @param mixed $values
+     */
+    public function __construct($values)
+    {
+        parent::__construct(array_merge([
+            'time_filter' => 'normal',
+        ], $values));
+    }
 
     /**
      * @param string $user_id
@@ -48,5 +68,41 @@ class FollowedCollection extends \Minz\Model
             'user_id' => $user_id,
             'collection_id' => $collection_id,
         ]);
+    }
+
+    /**
+     * @param string $time_filter
+     * @return boolean
+     */
+    public static function validateTimeFilter($time_filter)
+    {
+        return in_array($time_filter, self::VALID_TIME_FILTERS);
+    }
+
+    /**
+     * Return a list of errors (if any). The array keys indicated the concerned
+     * property.
+     *
+     * @return string[]
+     */
+    public function validate()
+    {
+        $formatted_errors = [];
+
+        foreach (parent::validate() as $property => $error) {
+            $code = $error['code'];
+
+            if ($property === 'time_filter' && $code === 'required') {
+                $formatted_error = _('The filter is required.');
+            } elseif ($property === 'time_filter') {
+                $formatted_error = _('The filter is invalid.');
+            } else {
+                $formatted_error = $error['description']; // @codeCoverageIgnore
+            }
+
+            $formatted_errors[$property] = $formatted_error;
+        }
+
+        return $formatted_errors;
     }
 }
