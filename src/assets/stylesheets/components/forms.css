@@ -18,7 +18,8 @@ label {
     padding-left: var(--space-small);
 }
 
-.label--checkbox {
+.label--checkbox,
+.label--radio {
     margin-bottom: 0;
 }
 
@@ -59,7 +60,8 @@ textarea {
  *
  * @see https://www.a11ywithlindsey.com/blog/create-custom-keyboard-accesible-checkboxes
  */
-input[type='checkbox'] {
+input[type="checkbox"],
+input[type="radio"] {
     position: absolute;
 
     overflow: hidden;
@@ -69,7 +71,8 @@ input[type='checkbox'] {
     height: 1px;
 }
 
-input[type="checkbox"] + label {
+input[type="checkbox"] + label,
+input[type="radio"] + label {
     position: relative;
 
     display: inline-flex;
@@ -77,7 +80,8 @@ input[type="checkbox"] + label {
     align-items: center;
 }
 
-input[type="checkbox"] + label::before {
+input[type="checkbox"] + label::before,
+input[type="radio"] + label::before {
     content: ' ';
 
     position: relative;
@@ -97,22 +101,30 @@ input[type="checkbox"] + label::before {
         background-color 0.2s ease-in-out;
 }
 
-input[type='checkbox']:hover + label::before,
-input[type='checkbox']:focus + label::before {
+input[type="radio"] + label::before {
+    border-radius: 50%;
+}
+
+input[type="checkbox"]:hover + label::before,
+input[type="checkbox"]:focus + label::before,
+input[type="radio"]:hover + label::before,
+input[type="radio"]:focus + label::before {
     background-color: var(--color-turquoise-1);
     border-color: var(--color-turquoise-6);
 }
 
-input[type='checkbox']:focus + label::before {
+input[type="checkbox"]:focus + label::before {
     box-shadow: 0 0 0 1px var(--color-purple-5);
 }
 
-input[type="checkbox"]:checked + label::before {
+input[type="checkbox"]:checked + label::before,
+input[type="radio"]:checked + label::before {
     background-color: var(--color-turquoise-3);
     border-color: var(--color-turquoise-8);
 }
 
-input[type="checkbox"]:checked + label::after {
+input[type="checkbox"]:checked + label::after,
+input[type="radio"]:checked + label::after {
     content: '';
 
     position: absolute;
@@ -126,6 +138,16 @@ input[type="checkbox"]:checked + label::after {
     border-left: var(--border-width) solid var(--color-text);
 
     transform: rotate(-45deg);
+}
+
+input[type="radio"]:checked + label::after {
+    height: 1.5rem;
+    margin-top: 0;
+
+    background-color: var(--color-text);
+    border-top: var(--border-width) solid var(--color-text);
+    border-right: var(--border-width) solid var(--color-text);
+    border-radius: 50%;
 }
 
 .form-group--invalid input,
