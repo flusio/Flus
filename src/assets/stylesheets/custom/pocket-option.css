@@ -1,8 +1,0 @@
-.pocket-option__caption {
-    margin-top: 0;
-    padding-left: calc(2 * var(--space-small) + 2.5rem);
-}
-
-.pocket-option__caption::before {
-    content: '➜';
-}

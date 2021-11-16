@@ -267,6 +267,15 @@ legend {
     font-size: var(--size-small);
 }
 
+.form-group__caption--alt {
+    margin-top: 0;
+    padding-left: calc(2 * var(--space-small) + 2.5rem);
+}
+
+.form-group__caption--alt::before {
+    content: '➜';
+}
+
 .form-group__error {
     margin-top: var(--space-small);
     margin-bottom: var(--space-small);
