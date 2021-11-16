@@ -29,7 +29,7 @@
         position: absolute;
         bottom: auto;
 
-        width: 27rem;
+        min-width: 27rem;
 
         font-size: var(--size-small);
 
@@ -114,6 +114,12 @@
     transition:
         background-color 0.1s ease-in-out,
         border-color 0.1s ease-in-out;
+}
+
+@media (min-width: 800px) {
+    .popup__item {
+        white-space: nowrap;
+    }
 }
 
 .popup__item:hover,
