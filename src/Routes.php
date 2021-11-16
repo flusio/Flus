@@ -108,6 +108,8 @@ class Routes
         $router->addRoute('get', '/collections/:id/follow', 'collections/Followers#show', 'login to follow collection');
         $router->addRoute('post', '/collections/:id/follow', 'collections/Followers#create', 'follow collection');
         $router->addRoute('post', '/collections/:id/unfollow', 'collections/Followers#delete', 'unfollow collection');
+        $router->addRoute('get', '/collections/:id/filter', 'collections/Filters#edit', 'edit collection filter');
+        $router->addRoute('post', '/collections/:id/filter', 'collections/Filters#update', 'update collection filter');
         $router->addRoute('get', '/collections/:id/group', 'collections/Groups#edit', 'edit group collection');
         $router->addRoute('post', '/collections/:id/group', 'collections/Groups#update', 'update group collection');
         $router->addRoute('get', '/collections/:id/image', 'collections/Images#edit', 'edit image collection');

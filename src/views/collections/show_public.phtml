@@ -120,6 +120,18 @@
                                 class="popup__item popup__item--button"
                                 data-controller="modal-opener"
                                 data-action="modal-opener#fetch"
+                                data-modal-opener-href-value="<?= url('edit collection filter', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                                aria-haspopup="dialog"
+                                aria-controls="modal"
+                            >
+                                <?= icon('slider') ?>
+                                <?= _('Configure the time filter') ?>
+                            </button>
+
+                            <button
+                                class="popup__item popup__item--button"
+                                data-controller="modal-opener"
+                                data-action="modal-opener#fetch"
                                 data-modal-opener-href-value="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
                                 aria-haspopup="dialog"
                                 aria-controls="modal"
