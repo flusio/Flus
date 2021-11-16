@@ -6,6 +6,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
 
     /**
      * @beforeClass
@@ -51,7 +52,10 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateGeneratesANewMigrationAndRendersCorrectly()
     {
         $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
-        $now = \Minz\Time::now();
+        // make sure to be in the future or the version may change if a
+        // migration has been created today
+        $now = \Minz\Time::fromNow(42, 'days');
+        $this->freeze($now);
         $name = 'CreateUsers';
         $expected_version = "Migration{$now->format('Ymd')}0001{$name}";
         $migration_path = "{$migrations_path}/{$expected_version}.php";
@@ -72,7 +76,10 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateAdaptsVersionNumberWhenCalledSeveralTimes()
     {
         $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
-        $now = \Minz\Time::now();
+        // make sure to be in the future or the version may change if a
+        // migration has been created today
+        $now = \Minz\Time::fromNow(42, 'days');
+        $this->freeze($now);
         $name = 'CreateUsers';
         $expected_version_1 = "Migration{$now->format('Ymd')}0001{$name}";
         $expected_version_2 = "Migration{$now->format('Ymd')}0002{$name}";
