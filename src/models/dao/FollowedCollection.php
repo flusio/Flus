@@ -17,7 +17,7 @@ class FollowedCollection extends \Minz\DatabaseModel
      */
     public function __construct()
     {
-        $properties = ['id', 'created_at', 'user_id', 'collection_id', 'group_id'];
+        $properties = array_keys(\flusio\models\FollowedCollection::PROPERTIES);
         parent::__construct('followed_collections', 'id', $properties);
     }
 }

@@ -83,7 +83,6 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -91,7 +90,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
         $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
-        $this->assertSame(0, $followed_collection_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
 
         $response = $this->appRun('post', "/collections/{$collection_id}/follow", [
             'csrf' => $user->csrf,
@@ -99,16 +98,15 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, $from);
-        $this->assertSame(1, $followed_collection_dao->count());
-        $db_followed_collection = $followed_collection_dao->listAll()[0];
-        $this->assertSame($user->id, $db_followed_collection['user_id']);
-        $this->assertSame($collection_id, $db_followed_collection['collection_id']);
+        $this->assertSame(1, models\FollowedCollection::count());
+        $followed_collection = models\FollowedCollection::take();
+        $this->assertSame($user->id, $followed_collection->user_id);
+        $this->assertSame($collection_id, $followed_collection->collection_id);
     }
 
     public function testCreateRedirectsIfNotConnected()
     {
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -123,14 +121,13 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
 
         $from_encoded = urlencode($from);
         $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
-        $this->assertSame(0, $followed_collection_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
     }
 
     public function testCreateFailsIfCollectionDoesNotExist()
     {
         $user = $this->login();
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -144,14 +141,13 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertSame(0, $followed_collection_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
     }
 
     public function testCreateFailsIfUserHasNoAccess()
     {
         $user = $this->login();
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -165,14 +161,13 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertSame(0, $followed_collection_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -187,14 +182,13 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, $from);
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
-        $this->assertSame(0, $followed_collection_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
     }
 
     public function testDeleteMakesUserUnfollowingAndRedirects()
     {
         $user = $this->login();
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -212,14 +206,13 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, $from);
-        $this->assertSame(0, $followed_collection_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
     }
 
     public function testDeleteRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -238,14 +231,13 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
 
         $from_encoded = urlencode($from);
         $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
-        $this->assertSame(1, $followed_collection_dao->count());
+        $this->assertSame(1, models\FollowedCollection::count());
     }
 
     public function testDeleteFailsIfCollectionDoesNotExist()
     {
         $user = $this->login();
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -263,14 +255,13 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertSame(1, $followed_collection_dao->count());
+        $this->assertSame(1, models\FollowedCollection::count());
     }
 
     public function testDeleteFailsIfUserHasNoAccess()
     {
         $user = $this->login();
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -288,14 +279,13 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $this->assertSame(1, $followed_collection_dao->count());
+        $this->assertSame(1, models\FollowedCollection::count());
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
         $owner_id = $this->create('user');
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $collection_id = $this->create('collection', [
             'user_id' => $owner_id,
             'type' => 'collection',
@@ -314,6 +304,6 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, $from);
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
-        $this->assertSame(1, $followed_collection_dao->count());
+        $this->assertSame(1, models\FollowedCollection::count());
     }
 }
