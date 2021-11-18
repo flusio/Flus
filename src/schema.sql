@@ -159,6 +159,8 @@ CREATE TABLE links (
 CREATE INDEX idx_links_user_id_url ON links(user_id, url);
 CREATE INDEX idx_links_fetched_at ON links(fetched_at) WHERE fetched_at IS NULL;
 CREATE INDEX idx_links_fetched_code ON links(fetched_code) WHERE fetched_code < 200 OR fetched_code >= 300;
+CREATE INDEX idx_links_via_link_id ON links(via_link_id) WHERE via_link_id IS NOT NULL;
+CREATE INDEX idx_links_via_collection_id ON links(via_collection_id) WHERE via_collection_id IS NOT NULL;
 
 CREATE TABLE links_to_collections (
     id SERIAL PRIMARY KEY,
