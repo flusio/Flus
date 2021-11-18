@@ -75,8 +75,11 @@ class Application
         }
         utils\Locale::setCurrentLocale($locale);
 
-        // Force CSRF token to avoid weird issues when user did nothing for a while
+        $beta_enabled = false;
         if ($current_user) {
+            $beta_enabled = models\FeatureFlag::isEnabled('beta', $current_user->id);
+
+            // Force CSRF token to avoid weird issues when user did nothing for a while
             \Minz\CSRF::set($current_user->csrf);
         }
 
@@ -101,6 +104,7 @@ class Application
             'available_locales' => utils\Locale::availableLocales(),
             'current_locale' => $locale,
             'current_user' => $current_user,
+            'beta_enabled' => $beta_enabled,
             'now' => \Minz\Time::now(),
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
             'turbo_frame' => $request->header('HTTP_TURBO_FRAME'),

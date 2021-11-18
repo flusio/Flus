@@ -258,8 +258,7 @@ class User extends \Minz\Model
      */
     public function isFollowing($collection_id)
     {
-        $followed_collection_dao = new dao\FollowedCollection();
-        $followed_collection = $followed_collection_dao->findBy([
+        $followed_collection = FollowedCollection::findBy([
             'user_id' => $this->id,
             'collection_id' => $collection_id,
         ]);
@@ -278,12 +277,8 @@ class User extends \Minz\Model
      */
     public function follow($collection_id)
     {
-        $followed_collection_dao = new dao\FollowedCollection();
-        return $followed_collection_dao->create([
-            'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
-            'user_id' => $this->id,
-            'collection_id' => $collection_id,
-        ]);
+        $followed_collection = FollowedCollection::init($this->id, $collection_id);
+        return $followed_collection->save();
     }
 
     /**
@@ -296,12 +291,11 @@ class User extends \Minz\Model
      */
     public function unfollow($collection_id)
     {
-        $followed_collection_dao = new dao\FollowedCollection();
-        $followed_collection = $followed_collection_dao->findBy([
+        $followed_collection = FollowedCollection::findBy([
             'user_id' => $this->id,
             'collection_id' => $collection_id,
         ]);
-        $followed_collection_dao->delete($followed_collection['id']);
+        FollowedCollection::delete($followed_collection->id);
     }
 
     /**

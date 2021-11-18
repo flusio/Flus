@@ -295,21 +295,19 @@ class Collection extends \Minz\Model
      */
     public function groupForUser($user_id)
     {
-        $group_id = null;
         if ($this->user_id === $user_id) {
-            $group_id = $this->group_id;
+            return Group::find($this->group_id);
         } else {
-            $followed_collection_dao = new dao\FollowedCollection();
-            $db_followed_collection = $followed_collection_dao->findBy([
+            $followed_collection = FollowedCollection::findBy([
                 'user_id' => $user_id,
                 'collection_id' => $this->id,
             ]);
-            if ($db_followed_collection) {
-                $group_id = $db_followed_collection['group_id'];
+            if ($followed_collection) {
+                return Group::find($followed_collection->group_id);
             }
         }
 
-        return Group::find($group_id);
+        return null;
     }
 
     /**

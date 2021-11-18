@@ -7,8 +7,9 @@ use flusio\models;
 class NewsPickerTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\TimeHelper;
 
     private $user;
     private $other_user;
@@ -51,6 +52,10 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
     public function testPickSelectsFromFollowed()
     {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 3);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
@@ -64,6 +69,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
             'link_id' => $link_id,
         ]);
@@ -148,21 +154,20 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_id_2, $db_links[0]['id']);
     }
 
-    public function testPickRespectsUntil()
+    public function testPickRespectsFromFollowedIfOldLinksButWithTimeFilterAll()
     {
-        $until = $this->fake('datetime');
-        $created_at_1 = clone $until;
-        $created_at_1->modify('-1 second');
-        $created_at_2 = clone $until;
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 9999);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
+        // time_filter 'all' will search links until 3 days before the date
+        // when the user started to follow the collection
+        $delta_followed_days = $this->fake('numberBetween', 0, 3);
+        $followed_at = \Minz\Time::ago($days_ago - $delta_followed_days, 'days');
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
-            'until' => $until,
         ]);
-        $link_id_1 = $this->create('link', [
-            'user_id' => $this->other_user->id,
-            'is_hidden' => 0,
-        ]);
-        $link_id_2 = $this->create('link', [
+        $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
             'is_hidden' => 0,
         ]);
@@ -172,28 +177,31 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
-            'created_at' => $created_at_1->format(\Minz\Model::DATETIME_FORMAT),
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
-            'link_id' => $link_id_1,
-        ]);
-        $this->create('link_to_collection', [
-            'created_at' => $created_at_2->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id_2,
+            'link_id' => $link_id,
         ]);
         $this->create('followed_collection', [
+            'created_at' => $followed_at->format(\Minz\Model::DATETIME_FORMAT),
             'user_id' => $this->user->id,
             'collection_id' => $collection_id,
+            'time_filter' => 'all',
         ]);
 
         $db_links = $news_picker->pick();
 
         $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id_2, $db_links[0]['id']);
+        $this->assertSame($link_id, $db_links[0]['id']);
+        $this->assertSame('followed', $db_links[0]['via_type']);
+        $this->assertSame($collection_id, $db_links[0]['via_collection_id']);
     }
 
     public function testPickDoesNotSelectFromBookmarksIfNotSelected()
     {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 3);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
@@ -205,6 +213,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'type' => 'bookmarks',
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $bookmarks_id,
             'link_id' => $link_id,
         ]);
@@ -216,6 +225,10 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
     public function testPickDoesNotSelectFromFollowedIfNotSelected()
     {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 3);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user, [
             'from' => 'bookmarks',
         ]);
@@ -229,6 +242,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
             'link_id' => $link_id,
         ]);
@@ -242,8 +256,79 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($db_links));
     }
 
+    public function testPickDoesNotPickFromFollowedIfTooOld()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 4, 9999);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
+        $news_picker = new NewsPicker($this->user, [
+            'from' => 'followed',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $this->other_user->id,
+            'is_hidden' => 0,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $this->user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $db_links = $news_picker->pick();
+
+        $this->assertSame(0, count($db_links));
+    }
+
+    public function testPickDoesNotSelectFromFollowedIfTooOldWithTimeFilterStrict()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $hours_ago = $this->fake('numberBetween', 25, 72);
+        $published_at = \Minz\Time::ago($hours_ago, 'hours');
+        $news_picker = new NewsPicker($this->user, [
+            'from' => 'followed',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $this->other_user->id,
+            'is_hidden' => 0,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $this->user->id,
+            'collection_id' => $collection_id,
+            'time_filter' => 'strict',
+        ]);
+
+        $db_links = $news_picker->pick();
+
+        $this->assertSame(0, count($db_links));
+    }
+
     public function testPickDoesNotSelectFromFollowedIfLinkIsHidden()
     {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 3);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
@@ -257,6 +342,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
             'link_id' => $link_id,
         ]);
@@ -272,6 +358,10 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
     public function testPickDoesNotSelectFromFollowedIfCollectionIsPrivate()
     {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 3);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
@@ -285,6 +375,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => 0,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
             'link_id' => $link_id,
         ]);
@@ -300,6 +391,10 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
     public function testPickDoesNotSelectFromFollowedIfUrlInBookmarks()
     {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 3);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
@@ -320,6 +415,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
             'link_id' => $link_id,
         ]);
@@ -339,6 +435,10 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
     public function testPickDoesNotSelectFromFollowedIfUrlInReadList()
     {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 3);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
@@ -359,6 +459,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
             'link_id' => $link_id,
         ]);
@@ -376,14 +477,25 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($db_links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfInBookmarks()
+    public function testPickDoesNotSelectFromFollowedIfUrlInNeverList()
     {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 3);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
+        $never_list = $this->user->neverList();
+        $url = $this->fake('url');
         $link_id = $this->create('link', [
             'user_id' => $this->other_user->id,
+            'url' => $url,
             'is_hidden' => 0,
+        ]);
+        $owned_link_id = $this->create('link', [
+            'user_id' => $this->user->id,
+            'url' => $url,
         ]);
         $collection_id = $this->create('collection', [
             'user_id' => $this->other_user->id,
@@ -391,20 +503,17 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => 1,
         ]);
         $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
             'collection_id' => $collection_id,
             'link_id' => $link_id,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $never_list->id,
+            'link_id' => $owned_link_id,
         ]);
         $this->create('followed_collection', [
             'user_id' => $this->user->id,
             'collection_id' => $collection_id,
-        ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $this->user->id,
-            'type' => 'bookmarks',
-        ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $bookmarks_id,
-            'link_id' => $link_id,
         ]);
 
         $db_links = $news_picker->pick();

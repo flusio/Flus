@@ -153,14 +153,12 @@ class Groups
             $collection->group_id = $group_id;
             $collection->save();
         } else {
-            $followed_collection_dao = new models\dao\FollowedCollection();
-            $db_followed_collection = $followed_collection_dao->findBy([
+            $followed_collection = models\FollowedCollection::findBy([
                 'user_id' => $user->id,
                 'collection_id' => $collection->id,
             ]);
-            $followed_collection_dao->update($db_followed_collection['id'], [
-                'group_id' => $group_id,
-            ]);
+            $followed_collection->group_id = $group_id;
+            $followed_collection->save();
         }
 
         return Response::found($from);

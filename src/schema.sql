@@ -173,6 +173,7 @@ CREATE INDEX idx_links_to_collections_collection_id ON links_to_collections(coll
 CREATE TABLE followed_collections (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
+    time_filter TEXT NOT NULL DEFAULT 'normal',
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
     collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE,
     group_id TEXT REFERENCES groups ON DELETE SET NULL ON UPDATE CASCADE

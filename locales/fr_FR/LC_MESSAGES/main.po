@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-11-04 15:38+0100\n"
-"PO-Revision-Date: 2021-11-04 15:39+0100\n"
+"POT-Creation-Date: 2021-11-18 15:18+0100\n"
+"PO-Revision-Date: 2021-11-18 15:18+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -42,7 +42,8 @@ msgstr "Afficher"
 #: controllers/Groups.php:90 controllers/Links.php:153 controllers/News.php:73
 #: controllers/Passwords.php:80 controllers/Passwords.php:183
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
-#: controllers/Support.php:70 controllers/collections/Followers.php:80
+#: controllers/Support.php:70 controllers/collections/Filters.php:104
+#: controllers/collections/Followers.php:80
 #: controllers/collections/Followers.php:124
 #: controllers/collections/Groups.php:121
 #: controllers/collections/Images.php:113 controllers/links/Messages.php:72
@@ -90,7 +91,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:58 models/User.php:451
+#: controllers/Passwords.php:58 models/User.php:445
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -263,13 +264,21 @@ msgstr "Liens à ne jamais lire"
 msgid "News"
 msgstr "Journal"
 
-#: models/Collection.php:407 models/Group.php:125
+#: models/Collection.php:405 models/Group.php:125
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:409
+#: models/Collection.php:407
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
+
+#: models/FollowedCollection.php:96
+msgid "The filter is required."
+msgstr "Le filtre est obligatoire."
+
+#: models/FollowedCollection.php:98
+msgid "The filter is invalid."
+msgstr "Le filtre est invalide."
 
 #: models/Group.php:128
 #, php-format
@@ -307,31 +316,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:413
+#: models/User.php:407
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:417
+#: models/User.php:411
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:447
+#: models/User.php:441
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:449
+#: models/User.php:443
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:453
+#: models/User.php:447
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:455
+#: models/User.php:449
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:457
+#: models/User.php:451
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -612,7 +621,7 @@ msgid "Add a link"
 msgstr "Ajouter un lien"
 
 #: views/bookmarks/index.phtml:71 views/collections/show.phtml:196
-#: views/collections/show_public.phtml:226 views/links/searches/show.phtml:90
+#: views/collections/show_public.phtml:240 views/links/searches/show.phtml:90
 #: views/links/searches/show.phtml:147 views/links/show.phtml:35
 #: views/links/show_public.phtml:48 views/news/show.phtml:55
 #: views/read/index.phtml:69
@@ -620,7 +629,7 @@ msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
 #: views/bookmarks/index.phtml:81 views/collections/show.phtml:206
-#: views/collections/show_public.phtml:237 views/links/searches/show.phtml:100
+#: views/collections/show_public.phtml:251 views/links/searches/show.phtml:100
 #: views/news/show.phtml:80 views/read/index.phtml:79
 #, php-format
 msgid "%d comment"
@@ -651,7 +660,7 @@ msgid "Manage collections"
 msgstr "Gérer les collections"
 
 #: views/bookmarks/index.phtml:163 views/collections/show.phtml:284
-#: views/collections/show_public.phtml:253 views/links/show.phtml:51
+#: views/collections/show_public.phtml:267 views/links/show.phtml:51
 #: views/links/show_public.phtml:64 views/news/show.phtml:163
 #: views/read/index.phtml:152
 msgid "read"
@@ -661,8 +670,8 @@ msgstr "lire"
 msgid "Collection edition"
 msgstr "Modification d'une collection"
 
-#: views/collections/edit.phtml:8 views/collections/groups/edit.phtml:7
-#: views/collections/images/edit.phtml:7
+#: views/collections/edit.phtml:8 views/collections/filters/edit.phtml:7
+#: views/collections/groups/edit.phtml:7 views/collections/images/edit.phtml:7
 msgid "Collection"
 msgstr "Collection"
 
@@ -694,10 +703,10 @@ msgstr "Ses thématiques"
 msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
-#: views/collections/edit.phtml:124 views/collections/groups/edit.phtml:103
-#: views/groups/edit.phtml:56 views/links/collections/index.phtml:68
-#: views/links/edit.phtml:69 views/my/profile/show.phtml:121
-#: views/my/security/show_confirmed.phtml:97
+#: views/collections/edit.phtml:124 views/collections/filters/edit.phtml:102
+#: views/collections/groups/edit.phtml:103 views/groups/edit.phtml:56
+#: views/links/collections/index.phtml:68 views/links/edit.phtml:69
+#: views/my/profile/show.phtml:121 views/my/security/show_confirmed.phtml:97
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -727,6 +736,52 @@ msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
 #, php-format
 msgid "My comments on <a href=\"%s\">%s</a>."
 msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
+
+#: views/collections/filters/edit.phtml:3
+#: views/collections/filters/edit.phtml:14
+msgid "News time filter"
+msgstr "Filtre temporel du journal"
+
+#: views/collections/filters/edit.phtml:23
+msgid "Choose how to filter links of the current collection in the news."
+msgstr ""
+"Choisissez comment filtrer les liens de cette collection dans le journal."
+
+#: views/collections/filters/edit.phtml:54
+msgid "Strict"
+msgstr "Strict"
+
+#: views/collections/filters/edit.phtml:58
+msgid ""
+"You’ll receive the links published during the last 24 hours (recommended for "
+"high-traffic feeds)."
+msgstr ""
+"Vous recevrez les liens publiés durant les 24 dernières heures (recommandé "
+"pour les flux à fort trafic)."
+
+#: views/collections/filters/edit.phtml:73
+msgid "Normal"
+msgstr "Normal"
+
+#: views/collections/filters/edit.phtml:77
+msgid ""
+"You’ll receive the links published during the last 3 days (recommended for "
+"most of the feeds)."
+msgstr ""
+"Vous recevrez les liens publiés durant les 3 derniers jours (recommandé pour "
+"la plupart des flux)."
+
+#: views/collections/filters/edit.phtml:92
+msgid "All"
+msgstr "Tout"
+
+#: views/collections/filters/edit.phtml:96
+msgid ""
+"You’ll receive all the published links (recommended if you don’t want to "
+"miss anything)."
+msgstr ""
+"Vous recevrez tous les liens publiés (recommandé si vous souhaitez ne rien "
+"manquer)."
 
 #: views/collections/followers/show.phtml:4
 #: views/collections/followers/show.phtml:10
@@ -886,7 +941,7 @@ msgstr "créée par vous"
 msgid "Actions"
 msgstr "Actions"
 
-#: views/collections/show.phtml:104 views/collections/show_public.phtml:128
+#: views/collections/show.phtml:104 views/collections/show_public.phtml:142
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
@@ -894,7 +949,7 @@ msgstr "Placer dans un groupe"
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
-#: views/collections/show.phtml:129 views/collections/show_public.phtml:140
+#: views/collections/show.phtml:129 views/collections/show_public.phtml:154
 msgid "Copy the link"
 msgstr "Copier le lien"
 
@@ -926,16 +981,20 @@ msgstr ""
 msgid "Created by %s"
 msgstr "Créée par %s"
 
-#: views/collections/show_public.phtml:150 views/links/searches/show.phtml:199
+#: views/collections/show_public.phtml:129
+msgid "Configure the time filter"
+msgstr "Configurer le filtre temporel"
+
+#: views/collections/show_public.phtml:164 views/links/searches/show.phtml:199
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:161
-#: views/collections/show_public.phtml:175 views/links/searches/show.phtml:208
+#: views/collections/show_public.phtml:175
+#: views/collections/show_public.phtml:189 views/links/searches/show.phtml:208
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:263
+#: views/collections/show_public.phtml:277
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 

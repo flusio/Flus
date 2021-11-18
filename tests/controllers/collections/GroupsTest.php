@@ -239,10 +239,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Group::count());
         $collection = models\Collection::find($collection_id);
         $this->assertNull($collection->group_id);
-        $followed_collection_dao = new models\dao\FollowedCollection();
         $group = models\Group::take();
-        $db_followed_collection = $followed_collection_dao->find($followed_collection_id);
-        $this->assertSame($group->id, $db_followed_collection['group_id']);
+        $followed_collection = models\FollowedCollection::find($followed_collection_id);
+        $this->assertSame($group->id, $followed_collection->group_id);
     }
 
     public function testUpdateUnsetsGroupIfNameIsEmpty()
