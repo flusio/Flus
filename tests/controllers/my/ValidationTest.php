@@ -266,7 +266,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     public function testResendEmailSendsAnEmailAndRedirects()
     {
         $email = $this->fake('email');
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        $minutes = $this->fake('numberBetween', 31, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
