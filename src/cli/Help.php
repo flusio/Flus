@@ -71,8 +71,6 @@ class Help
         $usage .= "      [--image_url=URL]    where URL is an optional illustration image\n";
         $usage .= "\n";
         $usage .= "  users                    List all the users\n";
-        $usage .= "  users clean              Clean not validated users created NUMBER months ago\n";
-        $usage .= "      [--since=NUMBER]     where NUMBER is the number of months, greater than 0 (default is 1)\n";
         $usage .= "  users create             Create a user\n";
         $usage .= "      --email=EMAIL\n";
         $usage .= "      --password=PASSWORD\n";

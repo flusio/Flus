@@ -82,37 +82,6 @@ class Users
     }
 
     /**
-     * Clean not validated users created some months ago.
-     *
-     * @request_param integer since Number of months since the creation, default is 1
-     *
-     * @response 200
-     * @response 400 If since parameter is less than 1
-     */
-    public function clean($request)
-    {
-        $since = $request->paramInteger('since', 1);
-        if ($since < 1) {
-            return Response::text(400, 'The `since` parameter must be greater or equal to 1.');
-        }
-
-        $users = models\User::daoToList('listNotValidatedOlderThan', $since, 'month');
-        $users_ids = array_column($users, 'id');
-
-        $number_to_delete = count($users_ids);
-        if ($number_to_delete > 0) {
-            models\User::delete($users_ids);
-        }
-
-        if ($number_to_delete === 1) {
-            $text = '1 user has been deleted.';
-        } else {
-            $text = "{$number_to_delete} users have been deleted.";
-        }
-        return Response::text(200, $text);
-    }
-
-    /**
      * Export data of the given user.
      *
      * @request_param string id

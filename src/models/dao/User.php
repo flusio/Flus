@@ -55,25 +55,6 @@ class User extends \Minz\DatabaseModel
     }
 
     /**
-     * Return not validated users older than the given time.
-     *
-     * @see \Minz\Time::ago
-     *
-     * @param integer $number
-     * @param string $unit
-     *
-     * @return array
-     */
-    public function listNotValidatedOlderThan($number, $unit)
-    {
-        $date = \Minz\Time::ago($number, $unit)->format(\Minz\Model::DATETIME_FORMAT);
-        $sql = "SELECT * FROM users WHERE validated_at IS NULL AND created_at <= ?";
-        $statement = $this->prepare($sql);
-        $statement->execute([$date]);
-        return $statement->fetchAll();
-    }
-
-    /**
      * Delete not validated users older than the given date.
      *
      * @param \DateTime $date
