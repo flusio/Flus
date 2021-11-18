@@ -7,8 +7,8 @@ use flusio\models;
 class CleanerTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
     public function testQueue()
@@ -128,6 +128,54 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue(models\Session::exists($session_id));
         $this->assertTrue(models\Token::exists($token));
+    }
+
+    public function testPerformDeletesOldInvalidatedUsers()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $months = $this->fake('numberBetween', 7, 24);
+        $created_at = \Minz\Time::ago($months, 'months');
+        $user_id = $this->create('user', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => null,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertFalse(models\User::exists($user_id));
+    }
+
+    public function testPerformKeepsOldValidatedUsers()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $months = $this->fake('numberBetween', 7, 24);
+        $created_at = \Minz\Time::ago($months, 'months');
+        $user_id = $this->create('user', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\User::exists($user_id));
+    }
+
+    public function testPerformKeepsRecentInvalidatedUsers()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $months = $this->fake('numberBetween', 0, 6);
+        $created_at = \Minz\Time::ago($months, 'months');
+        $user_id = $this->create('user', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'validated_at' => null,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\User::exists($user_id));
     }
 
     public function testPerformDeletesDataIfDemoIsEnabled()

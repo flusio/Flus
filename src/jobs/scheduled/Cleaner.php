@@ -42,6 +42,7 @@ class Cleaner extends jobs\Job
         models\FetchLog::daoCall('deleteOlderThan', \Minz\Time::ago(3, 'days'));
         models\Token::daoCall('deleteExpired');
         models\Session::daoCall('deleteExpired');
+        models\User::daoCall('deleteNotValidatedOlderThan', \Minz\Time::ago(6, 'months'));
 
         if (\Minz\Configuration::$application['demo']) {
             // with these two delete, the other tables should be deleted in cascade

@@ -74,6 +74,27 @@ class User extends \Minz\DatabaseModel
     }
 
     /**
+     * Delete not validated users older than the given date.
+     *
+     * @param \DateTime $date
+     *
+     * @return boolean True on success
+     */
+    public function deleteNotValidatedOlderThan($date)
+    {
+        $sql = <<<SQL
+            DELETE FROM users
+            WHERE validated_at IS NULL
+            AND created_at < ?
+        SQL;
+
+        $statement = $this->prepare($sql);
+        return $statement->execute([
+            $date->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+    }
+
+    /**
      * Return a user by its session token.
      *
      * The token must not be invalidated, and should not have expired. In these
