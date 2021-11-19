@@ -1,5 +1,31 @@
 # Changelog of flusio
 
+## 2021-11-19 - v0.36
+
+### News
+
+- Allow to configure a time filter per collection (behind a feature flag)
+
+### Improvements
+
+- Improve popup items on big screens
+
+### Bug fixes
+
+- Fix performance issue when deleting links
+- Fix a test of validation email
+- Fix migrations create tests
+
+### Misc
+
+- Autoclean old invalidated users
+- Autoclean old unused feeds and links
+- Unlock jobs, links and collections if locked for more than an hour
+- Update the `idx_links_fetched_code` index
+- Allow to list subscriptions with CLI
+- Provide a command to generate migration files
+- Remove CLI users clean command
+
 ## 2021-11-05 - v0.35
 
 ### Improvements
