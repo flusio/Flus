@@ -492,13 +492,16 @@ class Collection extends \Minz\DatabaseModel
             UPDATE collections
             SET locked_at = :locked_at
             WHERE id = :collection_id
-            AND locked_at IS NULL
+            AND (locked_at IS NULL OR locked_at <= :lock_timeout)
         SQL;
 
+        $now = \Minz\Time::now();
+        $lock_timeout = \Minz\Time::ago(1, 'hour');
         $statement = $this->prepare($sql);
         $statement->execute([
-            ':locked_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            ':locked_at' => $now->format(\Minz\Model::DATETIME_FORMAT),
             ':collection_id' => $collection_id,
+            ':lock_timeout' => $lock_timeout->format(\Minz\Model::DATETIME_FORMAT),
         ]);
         return $statement->rowCount() === 1;
     }

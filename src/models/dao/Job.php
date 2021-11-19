@@ -29,8 +29,9 @@ class Job extends \Minz\DatabaseModel
     }
 
     /**
-     * Return the next available job (i.e. to perform and not locked) in the
-     * given queue. If queue is equal to 'all', it looks for all queues.
+     * Return the next available job (i.e. to perform and not locked during the
+     * last hour) in the given queue. If queue is equal to 'all', it looks for
+     * all queues.
      *
      * @param string queue
      *
@@ -38,23 +39,27 @@ class Job extends \Minz\DatabaseModel
      */
     public function findNextJob($queue)
     {
-        $now = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
-        $values = [$now];
+        $now = \Minz\Time::now();
+        $lock_timeout = \Minz\Time::ago(1, 'hour');
+        $values = [
+            ':perform_at' => $now->format(\Minz\Model::DATETIME_FORMAT),
+            ':lock_timeout' => $lock_timeout->format(\Minz\Model::DATETIME_FORMAT),
+        ];
+
         $queue_placeholder = '';
         if ($queue !== 'all') {
-            $queue_placeholder = 'AND queue = ?';
-            $values[] = $queue;
+            $queue_placeholder = 'AND queue = :queue';
+            $values[':queue'] = $queue;
         }
 
         $sql = <<<SQL
             SELECT * FROM jobs
-            WHERE locked_at IS NULL
-            AND perform_at <= ?
+            WHERE (locked_at IS NULL OR locked_at <= :lock_timeout)
+            AND perform_at <= :perform_at
             AND (number_attempts <= 25 OR frequency != '')
             {$queue_placeholder}
             ORDER BY frequency, created_at;
         SQL;
-
 
         $statement = $this->prepare($sql);
         $statement->execute($values);
@@ -69,8 +74,8 @@ class Job extends \Minz\DatabaseModel
     /**
      * Lock the given job.
      *
-     * The lock fail if a lock is already set. This method also increment the
-     * number_attempts value.
+     * The lock fails if a lock was already set in the last hour. This method
+     * also increments the number_attempts value.
      *
      * @return boolean True if the lock suceeded, else false
      */
@@ -78,15 +83,18 @@ class Job extends \Minz\DatabaseModel
     {
         $sql = <<<SQL
             UPDATE {$this->table_name}
-            SET locked_at = ?, number_attempts = number_attempts + 1
-            WHERE {$this->primary_key_name} = ?
-            AND locked_at IS NULL
+            SET locked_at = :locked_at, number_attempts = number_attempts + 1
+            WHERE {$this->primary_key_name} = :id
+            AND (locked_at IS NULL OR locked_at <= :lock_timeout)
         SQL;
 
+        $now = \Minz\Time::now();
+        $lock_timeout = \Minz\Time::ago(1, 'hour');
         $statement = $this->prepare($sql);
         $statement->execute([
-            \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
-            $job_id,
+            ':locked_at' => $now->format(\Minz\Model::DATETIME_FORMAT),
+            ':lock_timeout' => $lock_timeout->format(\Minz\Model::DATETIME_FORMAT),
+            ':id' => $job_id,
         ]);
         return $statement->rowCount() === 1;
     }

@@ -8,8 +8,8 @@ use flusio\models;
 class JobsWorkerTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\MailerAsserts;
@@ -251,14 +251,17 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
 
     public function testRunDoesNotSelectLockedJob()
     {
+        $this->freeze($this->fake('dateTime'));
         $job_dao = new models\dao\Job();
         $token = $this->create('token');
         $user_id = $this->create('user', [
             'validation_token' => $token,
         ]);
+        $minutes = $this->fake('numberBetween', 0, 59);
+        $locked_at = \Minz\Time::ago($minutes, 'minutes');
         $job_id = $this->create('job', [
             'perform_at' => \Minz\Time::ago(1, 'second')->format(\Minz\Model::DATETIME_FORMAT),
-            'locked_at' => $this->fake('iso8601'),
+            'locked_at' => $locked_at->format(\Minz\Model::DATETIME_FORMAT),
             'number_attempts' => $this->fake('numberBetween', 0, 25),
             'handler' => json_encode([
                 'job_class' => 'flusio\jobs\Mailer',

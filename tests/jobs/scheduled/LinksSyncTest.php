@@ -7,8 +7,8 @@ use flusio\models;
 class LinksSyncTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
     /**
@@ -277,25 +277,83 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($fetched_count, $link->fetched_count);
     }
 
-    public function testPerformDoesNotFetchLinksIfLocked()
+    public function testPerformDoesNotFetchLinkIfLockedDuringLastHour()
     {
+        $this->freeze($this->fake('dateTime'));
+        $minutes = $this->fake('numberBetween', 0, 59);
+        $locked_at = \Minz\Time::ago($minutes, 'minutes');
+        $url = 'https://github.com/flusio/flusio';
         $link_id = $this->create('link', [
-            'url' => 'https://github.com/flusio/flusio',
-            'title' => 'https://github.com/flusio/flusio',
+            'url' => $url,
+            'title' => $url,
             'fetched_at' => null,
             'fetched_code' => 0,
             'fetched_count' => 0,
-            'locked_at' => $this->fake('iso8601'),
+            'locked_at' => $locked_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
         $links_fetcher_job = new LinksSync();
+        $title = $this->fake('sentence');
+        $hash = \SpiderBits\Cache::hash($url);
+        $raw_response = <<<TEXT
+        HTTP/2 200 OK
+        Content-Type: text/html
+
+        <html>
+            <head>
+                <title>{$title}</title>
+            </head>
+        </html>
+        TEXT;
+        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $cache->save($hash, $raw_response);
 
         $links_fetcher_job->perform();
 
         $link = models\Link::find($link_id);
-        $this->assertSame('https://github.com/flusio/flusio', $link->title);
+        $this->assertNotSame($title, $link->title);
         $this->assertNull($link->fetched_at);
         $this->assertSame(0, $link->fetched_code);
         $this->assertSame(0, $link->fetched_count);
         $this->assertNotNull($link->locked_at);
+    }
+
+    public function testPerformFetchesLinkIfLockedAfterAnHour()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $minutes = $this->fake('numberBetween', 60, 1000);
+        $locked_at = \Minz\Time::ago($minutes, 'minutes');
+        $url = 'https://github.com/flusio/flusio';
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'title' => $url,
+            'fetched_at' => null,
+            'fetched_code' => 0,
+            'fetched_count' => 0,
+            'locked_at' => $locked_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $links_fetcher_job = new LinksSync();
+        $title = $this->fake('sentence');
+        $hash = \SpiderBits\Cache::hash($url);
+        $raw_response = <<<TEXT
+        HTTP/2 200 OK
+        Content-Type: text/html
+
+        <html>
+            <head>
+                <title>{$title}</title>
+            </head>
+        </html>
+        TEXT;
+        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $cache->save($hash, $raw_response);
+
+        $links_fetcher_job->perform();
+
+        $link = models\Link::find($link_id);
+        $this->assertSame($title, $link->title);
+        $this->assertNotNull($link->fetched_at);
+        $this->assertSame(200, $link->fetched_code);
+        $this->assertSame(1, $link->fetched_count);
+        $this->assertNull($link->locked_at);
     }
 }

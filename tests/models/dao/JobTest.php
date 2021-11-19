@@ -126,6 +126,27 @@ class JobTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($job_id, $db_job['id']);
     }
 
+    public function testFindNextJobReturnsLockedJobsAfterAnHour()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $minutes_ago = $this->fake('randomNumber');
+        $number_attempts = $this->fake('numberBetween', 0, 25);
+        $minutes = $this->fake('numberBetween', 60, 1000);
+        $locked_at = \Minz\Time::ago($minutes, 'minutes');
+        $job_dao = new Job();
+        $job_id = $this->create('job', [
+            'perform_at' => \Minz\Time::ago($minutes_ago, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => $locked_at->format(\Minz\Model::DATETIME_FORMAT),
+            'number_attempts' => $number_attempts,
+            'frequency' => '',
+        ]);
+
+        $db_job = $job_dao->findNextJob('all');
+
+        $this->assertSame($job_id, $db_job['id']);
+    }
+
     public function testFindNextJobDoesNotReturnJobWithFuturePerformAt()
     {
         $now = $this->fake('dateTime');
@@ -192,7 +213,8 @@ class JobTest extends \PHPUnit\Framework\TestCase
         $this->freeze($now);
         $minutes_ago = $this->fake('randomNumber');
         $number_attempts = $this->fake('numberBetween', 0, 25);
-        $locked_at = $this->fake('dateTime');
+        $minutes = $this->fake('numberBetween', 0, 59);
+        $locked_at = \Minz\Time::ago($minutes, 'minutes');
         $job_dao = new Job();
         $job_id = $this->create('job', [
             'perform_at' => \Minz\Time::ago($minutes_ago, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
@@ -239,11 +261,31 @@ class JobTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(13, $db_job['number_attempts']);
     }
 
+    public function testLockReturnsTrueIfLockedAfterAnHour()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $minutes = $this->fake('numberBetween', 60, 1000);
+        $expected_locked_at = \Minz\Time::ago($minutes, 'minutes');
+        $job_dao = new Job();
+        $job_id = $this->create('job', [
+            'locked_at' => $expected_locked_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $is_locked = $job_dao->lock($job_id);
+
+        $this->assertTrue($is_locked);
+        $db_job = $job_dao->find($job_id);
+        $locked_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['locked_at']);
+        $this->assertSame($now->getTimestamp(), $locked_at->getTimestamp());
+    }
+
     public function testLockReturnsFalseIfAlreadyLocked()
     {
         $now = $this->fake('dateTime');
-        $expected_locked_at = $this->fake('dateTime');
         $this->freeze($now);
+        $minutes = $this->fake('numberBetween', 0, 59);
+        $expected_locked_at = \Minz\Time::ago($minutes, 'minutes');
         $job_dao = new Job();
         $job_id = $this->create('job', [
             'locked_at' => $expected_locked_at->format(\Minz\Model::DATETIME_FORMAT),
