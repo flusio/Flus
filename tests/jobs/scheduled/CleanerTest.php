@@ -178,6 +178,135 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\User::exists($user_id));
     }
 
+    public function testPerformDeletesOldEnoughUnfollowedFeeds()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $support_user = models\User::supportUser();
+        $days = $this->fake('numberBetween', 8, 100);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $collection_id = $this->create('collection', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $support_user->id,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertFalse(models\Collection::exists($collection_id));
+    }
+
+    public function testPerformKeepsOldEnoughFollowedFeeds()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $support_user = models\User::supportUser();
+        $user_id = $this->create('user');
+        $days = $this->fake('numberBetween', 8, 100);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $collection_id = $this->create('collection', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $support_user->id,
+        ]);
+        $this->create('followed_collection', [
+            'collection_id' => $collection_id,
+            'user_id' => $user_id,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\Collection::exists($collection_id));
+    }
+
+    public function testPerformKeepsRecentUnfollowedFeeds()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $support_user = models\User::supportUser();
+        $days = $this->fake('numberBetween', 0, 7);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $collection_id = $this->create('collection', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $support_user->id,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\Collection::exists($collection_id));
+    }
+
+    public function testPerformDeletesOldEnoughNotStoredLinks()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $support_user = models\User::supportUser();
+        $days = $this->fake('numberBetween', 8, 100);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $link_id = $this->create('link', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $support_user->id,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertFalse(models\Link::exists($link_id));
+    }
+
+    public function testPerformKeepsOldEnoughStoredLinks()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $support_user = models\User::supportUser();
+        $days = $this->fake('numberBetween', 8, 100);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $link_id = $this->create('link', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $support_user->id,
+        ]);
+        $collection_id = $this->create('collection');
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\Link::exists($link_id));
+    }
+
+    public function testPerformKeepsRecentNotStoredLinks()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $support_user = models\User::supportUser();
+        $days = $this->fake('numberBetween', 0, 7);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $link_id = $this->create('link', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $support_user->id,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\Link::exists($link_id));
+    }
+
+    public function testPerformKeepsOldEnoughNotStoredLinksIfNotOwnedBySupportUser()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $user_id = $this->create('user');
+        $days = $this->fake('numberBetween', 8, 100);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $link_id = $this->create('link', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'user_id' => $user_id,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\Link::exists($link_id));
+    }
+
     public function testPerformDeletesDataIfDemoIsEnabled()
     {
         \Minz\Configuration::$application['demo'] = true;
@@ -201,11 +330,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['demo'] = false;
 
-        $this->assertSame(1, models\User::count());
+        $this->assertSame(2, models\User::count()); // count the support and demo users
         $this->assertSame(4, models\Collection::count());
         $this->assertSame(0, models\Token::count());
         $this->assertSame(0, models\Link::count());
-        $user = models\User::take();
+        $user = models\User::take(1);
         $this->assertNotSame($user_id, $user->id);
         $this->assertSame('demo@flus.io', $user->email);
         $this->assertTrue($user->verifyPassword('demo'));
@@ -253,7 +382,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job->perform();
 
-        $this->assertSame(1, models\User::count());
+        $this->assertSame(2, models\User::count()); // include the support user
         $this->assertSame(1, models\Collection::count());
         $this->assertSame(1, models\Token::count());
         $this->assertSame(1, models\Link::count());

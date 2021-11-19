@@ -39,15 +39,22 @@ class Cleaner extends jobs\Job
         $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
         $cache->clean();
 
+        $support_user = models\User::supportUser();
+
         models\FetchLog::daoCall('deleteOlderThan', \Minz\Time::ago(3, 'days'));
         models\Token::daoCall('deleteExpired');
         models\Session::daoCall('deleteExpired');
         models\User::daoCall('deleteNotValidatedOlderThan', \Minz\Time::ago(6, 'months'));
+        models\Collection::daoCall('deleteUnfollowedOlderThan', $support_user->id, \Minz\Time::ago(7, 'days'));
+        models\Link::daoCall('deleteNotStoredOlderThan', $support_user->id, \Minz\Time::ago(7, 'days'));
 
         if (\Minz\Configuration::$application['demo']) {
             // with these two delete, the other tables should be deleted in cascade
             models\Token::deleteAll();
             models\User::deleteAll();
+
+            // reinitialize the support user
+            models\User::supportUser();
 
             $user = models\User::init('Abby', 'demo@flus.io', 'demo');
             $user->validated_at = \Minz\Time::now();
