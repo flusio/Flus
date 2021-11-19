@@ -6,15 +6,17 @@ namespace flusio;
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Routes
+class Router
 {
     /**
-     * Load the routes into the router (doesn't contain CLI routes)
+     * Return the application router (doesn't contain CLI routes)
      *
-     * @param \Minz\Router $router
+     * @return \Minz\Router
      */
-    public static function load($router)
+    public static function load()
     {
+        $router = new \Minz\Router();
+
         $router->addRoute('get', '/', 'Pages#home', 'home');
         $router->addRoute('get', '/terms', 'Pages#terms', 'terms');
         $router->addRoute('get', '/app.webmanifest', 'Pages#webmanifest', 'webmanifest');
@@ -156,15 +158,19 @@ class Routes
 
         // This should be used only for source mapping
         $router->addRoute('get', '/src/assets/*', 'Assets#show');
+
+        return $router;
     }
 
     /**
-     * Load the CLI routes into the router (contain app routes)
+     * Return the CLI router (containing app routes)
      *
-     * @param \Minz\Router $router
+     * @return \Minz\Router
      */
-    public static function loadCli($router)
+    public static function loadCli()
     {
+        $router = self::load();
+
         $router->addRoute('cli', '/', 'Help#show');
         $router->addRoute('cli', '/help', 'Help#show');
 
@@ -201,6 +207,6 @@ class Routes
         $router->addRoute('cli', '/jobs/unlock', 'JobsWorker#unlock');
         $router->addRoute('cli', '/jobs/watch', 'JobsWorker#watch');
 
-        self::load($router);
+        return $router;
     }
 }

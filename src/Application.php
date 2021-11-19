@@ -32,9 +32,7 @@ class Application
         // This provides utility functions to be used in the Views
         include_once('utils/view_helpers.php');
 
-        // Load the router with its routes
-        $router = new \Minz\Router();
-        Routes::load($router);
+        $router = Router::load();
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
     }

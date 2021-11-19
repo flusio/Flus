@@ -20,9 +20,7 @@ class Application
      */
     public function __construct()
     {
-        // Load the router with its routes
-        $router = new \Minz\Router();
-        \flusio\Routes::loadCli($router);
+        $router = \flusio\Router::loadCli();
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
     }

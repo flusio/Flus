@@ -15,8 +15,7 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
      */
     public static function setRouterToUrl()
     {
-        $router = new \Minz\Router();
-        \flusio\Routes::load($router);
+        $router = \flusio\Router::load();
         \Minz\Url::setRouter($router);
     }
 
