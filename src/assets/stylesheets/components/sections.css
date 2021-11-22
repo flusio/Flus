@@ -80,8 +80,8 @@
 
 @media (min-width: 800px) {
     .section__intro {
-        margin-top: var(--space-larger);
-        margin-bottom: var(--space-larger);
+        margin-top: calc(var(--space-medium) * 2.5);
+        margin-bottom: calc(var(--space-medium) * 2.5);
     }
 }
 
