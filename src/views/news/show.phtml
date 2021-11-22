@@ -24,7 +24,7 @@
                         tabindex="-1"
                         href="<?= protect($link->url) ?>"
                     >
-                        <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" />
+                        <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" loading="lazy" />
                     </a>
 
                     <time class="card__image-overlay" datetime="<?= _d($link->published_at, '%Y-%m-%d') ?>">
