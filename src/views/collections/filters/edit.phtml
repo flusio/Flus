@@ -1,6 +1,6 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('News time filter'),
+        'title' => _('Settings for the news'),
         'canonical' => url_full('edit collection filter', ['id' => $collection->id]),
         'back' => [
             'href' => url('collection', ['id' => $collection->id]),
@@ -11,18 +11,12 @@
 
 <div class="section section--small">
     <div class="section__title">
-        <h1 id="modal-title"><?= _('News time filter') ?></h1>
+        <h1 id="modal-title"><?= _('Settings for the news') ?></h1>
     </div>
 
-    <div class="section__intro">
-        <p>
-            <?= protect($collection->name) ?>
-        </p>
-
-        <p>
-            <?= _('Choose how to filter links of the current collection in the news.') ?>
-        </p>
-    </div>
+    <p class="section__intro">
+        <?= protect($collection->name) ?>
+    </p>
 
     <form method="post" action="<?= url('update collection filter', ['id' => $collection->id]) ?>">
         <?php if ($error): ?>
@@ -31,71 +25,75 @@
             </p>
         <?php endif; ?>
 
-        <?php if (isset($errors['time_filter'])): ?>
-            <p class="form__error">
-                <?= $errors['time_filter'] ?>
-            </p>
-        <?php endif; ?>
-
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
 
-        <div class="form-group">
-            <input
-                type="radio"
-                id="time-filter-strict"
-                name="time_filter"
-                value="strict"
-                <?= $time_filter === 'strict' ? 'checked' : '' ?>
-                aria-describedby="time-filter-strict-caption"
-            />
+        <fieldset>
+            <legend><?= _('How to filter the links from this feed in the news?') ?></legend>
 
-            <label class="label--radio" for="time-filter-strict">
-                <?= _('Strict') ?>
-            </label>
+            <?php if (isset($errors['time_filter'])): ?>
+                <p class="form__error">
+                    <?= $errors['time_filter'] ?>
+                </p>
+            <?php endif; ?>
 
-            <p class="form-group__caption form-group__caption--alt" id="time-filter-strict-caption">
-                <?= _('You’ll receive the links published during the last 24 hours (recommended for high-traffic feeds).') ?>
-            </p>
-        </div>
+            <div class="form-group">
+                <input
+                    type="radio"
+                    id="time-filter-strict"
+                    name="time_filter"
+                    value="strict"
+                    <?= $time_filter === 'strict' ? 'checked' : '' ?>
+                    aria-describedby="time-filter-strict-caption"
+                />
 
-        <div class="form-group">
-            <input
-                type="radio"
-                id="time-filter-normal"
-                name="time_filter"
-                value="normal"
-                <?= $time_filter === 'normal' ? 'checked' : '' ?>
-                aria-describedby="time-filter-normal-caption"
-            />
+                <label class="label--radio" for="time-filter-strict">
+                    <?= _('Strict') ?>
+                </label>
 
-            <label class="label--radio" for="time-filter-normal">
-                <?= _('Normal') ?>
-            </label>
+                <p class="form-group__caption form-group__caption--alt" id="time-filter-strict-caption">
+                    <?= _('You’ll receive the links published during the last 24 hours (recommended for high-traffic feeds).') ?>
+                </p>
+            </div>
 
-            <p class="form-group__caption form-group__caption--alt" id="time-filter-normal-caption">
-                <?= _('You’ll receive the links published during the last 3 days (recommended for most of the feeds).') ?>
-            </p>
-        </div>
+            <div class="form-group">
+                <input
+                    type="radio"
+                    id="time-filter-normal"
+                    name="time_filter"
+                    value="normal"
+                    <?= $time_filter === 'normal' ? 'checked' : '' ?>
+                    aria-describedby="time-filter-normal-caption"
+                />
 
-        <div class="form-group">
-            <input
-                type="radio"
-                id="time-filter-all"
-                name="time_filter"
-                value="all"
-                <?= $time_filter === 'all' ? 'checked' : '' ?>
-                aria-describedby="time-filter-all-caption"
-            />
+                <label class="label--radio" for="time-filter-normal">
+                    <?= _('Normal') ?>
+                </label>
 
-            <label class="label--radio" for="time-filter-all">
-                <?= _('All') ?>
-            </label>
+                <p class="form-group__caption form-group__caption--alt" id="time-filter-normal-caption">
+                    <?= _('You’ll receive the links published during the last 3 days (recommended for most of the feeds).') ?>
+                </p>
+            </div>
 
-            <p class="form-group__caption form-group__caption--alt" id="time-filter-all-caption">
-                <?= _('You’ll receive all the published links (recommended if you don’t want to miss anything).') ?>
-            </p>
-        </div>
+            <div class="form-group">
+                <input
+                    type="radio"
+                    id="time-filter-all"
+                    name="time_filter"
+                    value="all"
+                    <?= $time_filter === 'all' ? 'checked' : '' ?>
+                    aria-describedby="time-filter-all-caption"
+                />
+
+                <label class="label--radio" for="time-filter-all">
+                    <?= _('All') ?>
+                </label>
+
+                <p class="form-group__caption form-group__caption--alt" id="time-filter-all-caption">
+                    <?= _('You’ll receive all the published links (recommended if you don’t want to miss anything).') ?>
+                </p>
+            </div>
+        </fieldset>
 
         <div class="form__actions">
             <button type="submit" class="button--primary">

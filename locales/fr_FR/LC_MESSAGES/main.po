@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2021-11-18 15:18+0100\n"
-"PO-Revision-Date: 2021-11-18 15:18+0100\n"
+"POT-Creation-Date: 2021-11-22 16:56+0100\n"
+"PO-Revision-Date: 2021-11-22 16:57+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -703,7 +703,7 @@ msgstr "Ses thématiques"
 msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
-#: views/collections/edit.phtml:124 views/collections/filters/edit.phtml:102
+#: views/collections/edit.phtml:124 views/collections/filters/edit.phtml:100
 #: views/collections/groups/edit.phtml:103 views/groups/edit.phtml:56
 #: views/links/collections/index.phtml:68 views/links/edit.phtml:69
 #: views/my/profile/show.phtml:121 views/my/security/show_confirmed.phtml:97
@@ -739,19 +739,18 @@ msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
 
 #: views/collections/filters/edit.phtml:3
 #: views/collections/filters/edit.phtml:14
-msgid "News time filter"
-msgstr "Filtre temporel du journal"
+msgid "Settings for the news"
+msgstr "Réglages pour le journal"
 
-#: views/collections/filters/edit.phtml:23
-msgid "Choose how to filter links of the current collection in the news."
-msgstr ""
-"Choisissez comment filtrer les liens de cette collection dans le journal."
+#: views/collections/filters/edit.phtml:32
+msgid "How to filter the links from this feed in the news?"
+msgstr "Comment filtrer les liens de ce flux dans le journal ?"
 
-#: views/collections/filters/edit.phtml:54
+#: views/collections/filters/edit.phtml:51
 msgid "Strict"
 msgstr "Strict"
 
-#: views/collections/filters/edit.phtml:58
+#: views/collections/filters/edit.phtml:55
 msgid ""
 "You’ll receive the links published during the last 24 hours (recommended for "
 "high-traffic feeds)."
@@ -759,11 +758,11 @@ msgstr ""
 "Vous recevrez les liens publiés durant les 24 dernières heures (recommandé "
 "pour les flux à fort trafic)."
 
-#: views/collections/filters/edit.phtml:73
+#: views/collections/filters/edit.phtml:70
 msgid "Normal"
 msgstr "Normal"
 
-#: views/collections/filters/edit.phtml:77
+#: views/collections/filters/edit.phtml:74
 msgid ""
 "You’ll receive the links published during the last 3 days (recommended for "
 "most of the feeds)."
@@ -771,11 +770,11 @@ msgstr ""
 "Vous recevrez les liens publiés durant les 3 derniers jours (recommandé pour "
 "la plupart des flux)."
 
-#: views/collections/filters/edit.phtml:92
+#: views/collections/filters/edit.phtml:89
 msgid "All"
 msgstr "Tout"
 
-#: views/collections/filters/edit.phtml:96
+#: views/collections/filters/edit.phtml:93
 msgid ""
 "You’ll receive all the published links (recommended if you don’t want to "
 "miss anything)."
@@ -982,8 +981,8 @@ msgid "Created by %s"
 msgstr "Créée par %s"
 
 #: views/collections/show_public.phtml:129
-msgid "Configure the time filter"
-msgstr "Configurer le filtre temporel"
+msgid "Adjust for the news"
+msgstr "Régler pour le journal"
 
 #: views/collections/show_public.phtml:164 views/links/searches/show.phtml:199
 msgid "Unfollow"
