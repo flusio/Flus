@@ -241,44 +241,50 @@
 
             <div class="cards cards--centered">
                 <div class="card card--action">
-                    <button class="card__button" name="type" value="newsfeed">
+                    <button class="card__button news-selection__button" name="type" value="newsfeed">
                         <img
-                            class="card__image"
+                            class="card__image news-selection__image"
                             alt=""
                             src="<?= url_static('illustrations/newspaper.svg') ?>"
                             height="200"
                         />
 
-                        <strong class="news-selection__title"><?= _('the latest publications') ?></strong>
-                        <small class="text--secondary"><?= _('from your followed collections') ?></small>
+                        <div class="news-selection__description">
+                            <strong class="news-selection__title"><?= _('the latest publications') ?></strong>
+                            <small class="text--secondary"><?= _('from your followed collections') ?></small>
+                        </div>
                     </button>
                 </div>
 
                 <div class="card card--action">
-                    <button class="card__button" name="type" value="short">
+                    <button class="card__button news-selection__button" name="type" value="short">
                         <img
-                            class="card__image"
+                            class="card__image news-selection__image"
                             alt=""
                             src="<?= url_static('illustrations/reading.svg') ?>"
                             height="200"
                         />
 
-                        <strong class="news-selection__title"><?= _('3 links of -10 minutes') ?></strong>
-                        <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+                        <div class="news-selection__description">
+                            <strong class="news-selection__title"><?= _('3 links of -10 minutes') ?></strong>
+                            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+                        </div>
                     </button>
                 </div>
 
                 <div class="card card--action">
-                    <button class="card__button" name="type" value="long">
+                    <button class="card__button news-selection__button" name="type" value="long">
                         <img
-                            class="card__image"
+                            class="card__image news-selection__image"
                             alt=""
                             src="<?= url_static('illustrations/cup-of-tea.svg') ?>"
                             height="200"
                         />
 
-                        <strong class="news-selection__title"><?= _('1 link of +10 minutes') ?></strong>
-                        <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+                        <div class="news-selection__description">
+                            <strong class="news-selection__title"><?= _('1 link of +10 minutes') ?></strong>
+                            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+                        </div>
                     </button>
                 </div>
             </div>
