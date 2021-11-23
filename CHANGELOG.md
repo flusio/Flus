@@ -1,5 +1,18 @@
 # Changelog of flusio
 
+## 2021-11-23 - v0.37
+
+### News
+
+- Enable the time filters for everyone
+
+### Improvements
+
+- Decrease the space taken by the news buttons
+- Lazy load links images
+- Improve the UX of time filters
+- Decrease the padding around the sections intro
+
 ## 2021-11-19 - v0.36
 
 ### News
