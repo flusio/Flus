@@ -17,6 +17,38 @@ use flusio\utils;
 class Links
 {
     /**
+     * List the links page of the current user (it shows the owned collections
+     * in fact).
+     *
+     * @response 302 /login?redirect_to=/links
+     *     if the user is not connected
+     * @response 200
+     */
+    public function index($request)
+    {
+        $user = auth\CurrentUser::get();
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => \Minz\Url::for('links')]);
+        }
+
+        $bookmarks = $user->bookmarks();
+        $read_list = $user->readList();
+        $no_group_collections = models\Collection::daoToList('listInGroup', $user->id, null);
+        models\Collection::sort($no_group_collections, $user->locale);
+
+        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        models\Group::sort($groups, $user->locale);
+
+        return Response::ok('links/index.phtml', [
+            'bookmarks' => $bookmarks,
+            'read_list' => $read_list,
+            'no_group_collections' => $no_group_collections,
+            'groups' => $groups,
+        ]);
+    }
+
+    /**
      * Show a link page.
      *
      * @request_param string id
