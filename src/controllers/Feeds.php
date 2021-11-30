@@ -29,15 +29,29 @@ class Feeds
             return Response::redirect('login', ['redirect_to' => \Minz\Url::for('feeds')]);
         }
 
-        $no_group_followed_collections = models\Collection::daoToList('listFollowedInGroup', $user->id, null);
-        models\Collection::sort($no_group_followed_collections, $user->locale);
-
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
         models\Group::sort($groups, $user->locale);
 
+        $collections = models\Collection::daoToList('listForFeedsPage', $user->id);
+        $collections_by_group_ids = [];
+        $collections_no_group = [];
+        foreach ($collections as $collection) {
+            if ($collection->group_id) {
+                $collections_by_group_ids[$collection->group_id][] = $collection;
+            } else {
+                $collections_no_group[] = $collection;
+            }
+        }
+
+        foreach ($collections_by_group_ids as &$collections_of_group) {
+            models\Collection::sort($collections_of_group, $user->locale);
+        }
+        models\Collection::sort($collections_no_group, $user->locale);
+
         return Response::ok('feeds/index.phtml', [
-            'no_group_followed_collections' => $no_group_followed_collections,
             'groups' => $groups,
+            'collections_no_group' => $collections_no_group,
+            'collections_by_group_ids' => $collections_by_group_ids,
         ]);
     }
 }

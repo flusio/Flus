@@ -34,17 +34,32 @@ class Links
 
         $bookmarks = $user->bookmarks();
         $read_list = $user->readList();
-        $no_group_collections = models\Collection::daoToList('listInGroup', $user->id, null);
-        models\Collection::sort($no_group_collections, $user->locale);
 
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
         models\Group::sort($groups, $user->locale);
 
+        $collections = models\Collection::daoToList('listForLinksPage', $user->id);
+        $collections_by_group_ids = [];
+        $collections_no_group = [];
+        foreach ($collections as $collection) {
+            if ($collection->group_id) {
+                $collections_by_group_ids[$collection->group_id][] = $collection;
+            } else {
+                $collections_no_group[] = $collection;
+            }
+        }
+
+        foreach ($collections_by_group_ids as &$collections_of_group) {
+            models\Collection::sort($collections_of_group, $user->locale);
+        }
+        models\Collection::sort($collections_no_group, $user->locale);
+
         return Response::ok('links/index.phtml', [
             'bookmarks' => $bookmarks,
             'read_list' => $read_list,
-            'no_group_collections' => $no_group_collections,
             'groups' => $groups,
+            'collections_no_group' => $collections_no_group,
+            'collections_by_group_ids' => $collections_by_group_ids,
         ]);
     }
 

@@ -222,6 +222,63 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
+     * Returns the collections for the given user. The number of links of each
+     * collection is added.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listForLinksPage($user_id)
+    {
+        $values = [':user_id' => $user_id];
+
+        $sql = <<<SQL
+            SELECT c.*, (
+                SELECT COUNT(lc.*) FROM links_to_collections lc
+                WHERE lc.collection_id = c.id
+            ) AS number_links
+            FROM collections c
+            WHERE user_id = :user_id
+            AND type = 'collection'
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute($values);
+        return $statement->fetchAll();
+    }
+
+    /**
+     * Returns the collections for the given user. The number of links of each
+     * collection is added.
+     *
+     * @param string $user_id
+     *
+     * @return array
+     */
+    public function listForFeedsPage($user_id)
+    {
+        $values = [':user_id' => $user_id];
+
+        $sql = <<<SQL
+            SELECT c.*, (
+                SELECT COUNT(l.id) FROM links l, links_to_collections lc
+                WHERE lc.collection_id = c.id
+                AND lc.link_id = l.id
+                AND l.is_hidden = false
+            ) AS number_links, fc.group_id
+            FROM collections c, followed_collections fc
+            WHERE fc.user_id = :user_id
+            AND fc.collection_id = c.id
+            AND c.is_public = true
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute($values);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Returns the list of feed collections for the given user id and feed URLs.
      * The number of links of each collection is added.
      *
