@@ -154,6 +154,8 @@ class Router
 
         // Feeds
         $router->addRoute('get', '/feeds', 'Feeds#index', 'feeds');
+        $router->addRoute('get', '/feeds/new', 'Feeds#new', 'new feed');
+        $router->addRoute('post', '/feeds/new', 'Feeds#create', 'create feed');
 
         // Discovery
         $router->addRoute('get', '/discovery', 'Discovery#show', 'discovery');
