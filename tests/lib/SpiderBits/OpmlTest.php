@@ -73,6 +73,23 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://marienfressinaud.fr/', $outlines[2]['htmlUrl']);
     }
 
+    public function testFromTextHandlesMissingHead()
+    {
+        $string = <<<OPML
+            <?xml version="1.0" encoding="UTF-8"?>
+            <opml version="2.0">
+                <body>
+                    <outline text="carnet de flus" type="rss" xmlUrl="https://flus.fr/carnet/feeds/all.atom.xml" />
+                </body>
+            </opml>
+        OPML;
+
+        $opml = Opml::fromText($string);
+
+        $this->assertSame(1, count($opml->outlines));
+        $this->assertSame('carnet de flus', $opml->outlines[0]['text']);
+    }
+
     public function testFromTextIgnoresNotOutlineElements()
     {
         $string = <<<OPML

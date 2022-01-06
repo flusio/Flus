@@ -62,7 +62,6 @@ class Opml
     {
         return (
             $dom_document->documentElement->tagName === 'opml' &&
-            $dom_document->getElementsByTagName('head')->count() === 1 &&
             $dom_document->getElementsByTagName('body')->count() === 1
         );
     }
