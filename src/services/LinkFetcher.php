@@ -161,7 +161,7 @@ class LinkFetcher
                 // If we fetch Twitter, we need to alter our user agent to get
                 // server-side rendered content.
                 // @see https://stackoverflow.com/a/64332370
-                $options['user_agent'] = $this->http->user_agent . ' (compatible; Googlebot/2.1)';
+                $options['user_agent'] = $this->http->user_agent . ' (compatible; bot)';
             }
 
             if ($selected_ip) {
