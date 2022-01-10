@@ -1,0 +1,171 @@
+<?php
+
+namespace flusio\controllers;
+
+use Minz\Response;
+use flusio\auth;
+use flusio\models;
+use flusio\services;
+use flusio\utils;
+
+/**
+ * @author  Marien Fressinaud <dev@marienfressinaud.fr>
+ * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
+ */
+class Feeds
+{
+    /**
+     * List the followed feeds/collections of the current user.
+     *
+     * @response 302 /login?redirect_to=/feeds
+     *     if the user is not connected
+     * @response 200
+     */
+    public function index($request)
+    {
+        $user = auth\CurrentUser::get();
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => \Minz\Url::for('feeds')]);
+        }
+
+        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        models\Group::sort($groups, $user->locale);
+
+        $collections = models\Collection::daoToList('listForFeedsPage', $user->id);
+        $collections_by_group_ids = [];
+        $collections_no_group = [];
+        foreach ($collections as $collection) {
+            if ($collection->group_id) {
+                $collections_by_group_ids[$collection->group_id][] = $collection;
+            } else {
+                $collections_no_group[] = $collection;
+            }
+        }
+
+        foreach ($collections_by_group_ids as &$collections_of_group) {
+            models\Collection::sort($collections_of_group, $user->locale);
+        }
+        models\Collection::sort($collections_no_group, $user->locale);
+
+        return Response::ok('feeds/index.phtml', [
+            'groups' => $groups,
+            'collections_no_group' => $collections_no_group,
+            'collections_by_group_ids' => $collections_by_group_ids,
+        ]);
+    }
+
+    /**
+     * Show the page to add a feed.
+     *
+     * @request_param string from The page to redirect to after creation
+     *
+     * @response 302 /login?redirect_to=:from if not connected
+     * @response 200
+     */
+    public function new($request)
+    {
+        $user = auth\CurrentUser::get();
+        $from = $request->param('from');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        return Response::ok('feeds/new.phtml', [
+            'url' => '',
+            'from' => $from,
+        ]);
+    }
+
+    /**
+     * Create a feed if needed, and add the current user as a follower.
+     *
+     * @request_param string csrf
+     * @request_param string url It must be a valid non-empty URL
+     * @request_param string from The page to redirect to after creation
+     *
+     * @response 302 /login?redirect_to=:from if not connected
+     * @response 400 if CSRF or the url is invalid
+     * @response 302 :from on success
+     */
+    public function create($request)
+    {
+        $user = auth\CurrentUser::get();
+        $url = $request->param('url', '');
+        $from = $request->param('from');
+        $csrf = $request->param('csrf');
+
+        $url = \SpiderBits\Url::sanitize($url);
+        $support_user = models\User::supportUser();
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            return Response::badRequest('feeds/new.phtml', [
+                'url' => $url,
+                'from' => $from,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        $default_link = models\Link::findBy([
+            'user_id' => $support_user->id,
+            'url' => $url,
+        ]);
+        if (!$default_link) {
+            $default_link = models\Link::init($url, $support_user->id, false);
+        }
+
+        $errors = $default_link->validate();
+        if ($errors) {
+            return Response::badRequest('feeds/new.phtml', [
+                'url' => $url,
+                'from' => $from,
+                'errors' => $errors,
+            ]);
+        }
+
+        $link_fetcher_service = new services\LinkFetcher([
+            'timeout' => 10,
+            'rate_limit' => false,
+        ]);
+        $link_fetcher_service->fetch($default_link);
+
+        $feed_urls = $default_link->feedUrls();
+        if (count($feed_urls) === 0) {
+            return Response::badRequest('feeds/new.phtml', [
+                'url' => $url,
+                'from' => $from,
+                'errors' => [
+                    'url' => _('There is no valid feeds at this address.'),
+                ],
+            ]);
+        }
+
+        $feed_url = $feed_urls[0];
+        $feed = models\Collection::findBy([
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+            'user_id' => $support_user->id,
+        ]);
+        if (!$feed) {
+            $feed_fetcher_service = new services\FeedFetcher([
+                'timeout' => 10,
+                'rate_limit' => false,
+            ]);
+
+            $feed = models\Collection::initFeed($support_user->id, $feed_url);
+            $feed_fetcher_service->fetch($feed);
+        }
+
+        $is_following = $user->isFollowing($feed->id);
+        if (!$is_following) {
+            $user->follow($feed->id);
+        }
+
+        return Response::found($from);
+    }
+}

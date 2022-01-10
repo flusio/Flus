@@ -86,27 +86,51 @@
                         </span>
                     </a>
 
-                    <a
-                        class="header__link <?= $current_tab === 'bookmarks' ? 'header__link--active' : '' ?>"
-                        <?= $current_page === 'bookmarks' ? 'aria-current="page"' : '' ?>
-                        href="<?= url('bookmarks') ?>"
-                    >
-                        <?= icon('bookmark') ?>
-                        <span class="no-mobile">
-                            <?= _('Bookmarks') ?>
-                        </span>
-                    </a>
+                    <?php if ($beta_enabled): ?>
+                        <a
+                            class="header__link <?= $current_tab === 'links' ? 'header__link--active' : '' ?>"
+                            <?= $current_page === 'links' ? 'aria-current="page"' : '' ?>
+                            href="<?= url('links') ?>"
+                        >
+                            <?= icon('link') ?>
+                            <span class="no-mobile">
+                                <?= _('My links') ?>
+                            </span>
+                        </a>
 
-                    <a
-                        class="header__link <?= $current_tab === 'collections' ? 'header__link--active' : '' ?>"
-                        <?= $current_page === 'collections' ? 'aria-current="page"' : '' ?>
-                        href="<?= url('collections') ?>"
-                    >
-                        <?= icon('collection') ?>
-                        <span class="no-mobile">
-                            <?= _('Collections') ?>
-                        </span>
-                    </a>
+                        <a
+                            class="header__link <?= $current_tab === 'feeds' ? 'header__link--active' : '' ?>"
+                            <?= $current_page === 'feeds' ? 'aria-current="page"' : '' ?>
+                            href="<?= url('feeds') ?>"
+                        >
+                            <?= icon('feed') ?>
+                            <span class="no-mobile">
+                                <?= _('Feeds') ?>
+                            </span>
+                        </a>
+                    <?php else: ?>
+                        <a
+                            class="header__link <?= $current_tab === 'bookmarks' ? 'header__link--active' : '' ?>"
+                            <?= $current_page === 'bookmarks' ? 'aria-current="page"' : '' ?>
+                            href="<?= url('bookmarks') ?>"
+                        >
+                            <?= icon('bookmark') ?>
+                            <span class="no-mobile">
+                                <?= _('Bookmarks') ?>
+                            </span>
+                        </a>
+
+                        <a
+                            class="header__link <?= $current_tab === 'collections' ? 'header__link--active' : '' ?>"
+                            <?= $current_page === 'collections' ? 'aria-current="page"' : '' ?>
+                            href="<?= url('collections') ?>"
+                        >
+                            <?= icon('collection') ?>
+                            <span class="no-mobile">
+                                <?= _('Collections') ?>
+                            </span>
+                        </a>
+                    <?php endif; ?>
 
                     <div class="header__separator no-mobile"></div>
 

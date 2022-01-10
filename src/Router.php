@@ -120,6 +120,7 @@ class Router
         $router->addRoute('get', '/read', 'collections/Read#index', 'read list');
 
         // Links
+        $router->addRoute('get', '/links', 'Links#index', 'links');
         $router->addRoute('get', '/links/new', 'Links#new', 'new link');
         $router->addRoute('post', '/links/new', 'Links#create', 'create link');
         $router->addRoute('get', '/links/search', 'links/Searches#show', 'show search link');
@@ -150,6 +151,11 @@ class Router
         $router->addRoute('get', '/groups/:id/edit', 'Groups#edit', 'edit group');
         $router->addRoute('post', '/groups/:id/edit', 'Groups#update', 'update group');
         $router->addRoute('post', '/groups/:id/delete', 'Groups#delete', 'delete group');
+
+        // Feeds
+        $router->addRoute('get', '/feeds', 'Feeds#index', 'feeds');
+        $router->addRoute('get', '/feeds/new', 'Feeds#new', 'new feed');
+        $router->addRoute('post', '/feeds/new', 'Feeds#create', 'create feed');
 
         // Discovery
         $router->addRoute('get', '/discovery', 'Discovery#show', 'discovery');

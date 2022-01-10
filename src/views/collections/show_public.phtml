@@ -1,6 +1,7 @@
 <?php
     $owner = $collection->owner();
 
+    $current_tab = 'collections';
     if ($collection->type === 'feed') {
         $open_graph = [
             'title' => $collection->name,
@@ -13,6 +14,10 @@
             'url' => $collection->feed_url,
             'title' => _f('Syndication feed of %s', $collection->name),
         ];
+
+        if ($beta_enabled) {
+            $current_tab = 'feeds';
+        }
     } else {
         $open_graph = [
             'title' => $collection->name,
@@ -43,7 +48,7 @@
     $this->layout('base.phtml', [
         'title' => $collection->name,
         'canonical' => url_full('collection', $current_url_params),
-        'current_tab' => 'collections',
+        'current_tab' => $current_tab,
         'feed' => $feed,
         'open_graph' => $open_graph,
         'back' => [
@@ -84,7 +89,9 @@
         <?php if ($collection->type === 'feed'): ?>
             <div class="collection__details">
                 <p class="collection__feed">
-                    <?= icon('feed') ?>
+                    <?php if (!$beta_enabled): ?>
+                        <?= icon('feed') ?>
+                    <?php endif; ?>
                     <?php if ($collection->feed_site_url): ?>
                         <?= _f('Feed from <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', protect($collection->feed_site_url), protect($collection->feedWebsite())) ?>
                     <?php else: ?>
@@ -158,7 +165,11 @@
                                 <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
 
                                 <button class="popup__item popup__item--button">
-                                    <?= icon('eye-hide') ?>
+                                    <?php if ($beta_enabled): ?>
+                                        <?= icon('feed-stop') ?>
+                                    <?php else: ?>
+                                        <?= icon('eye-hide') ?>
+                                    <?php endif; ?>
                                     <?= _('Unfollow') ?>
                                 </button>
                             </form>
@@ -169,7 +180,11 @@
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                         <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
                         <button class="button--small">
-                            <?= icon('eye') ?>
+                            <?php if ($beta_enabled): ?>
+                                <?= icon('feed') ?>
+                            <?php else: ?>
+                                <?= icon('eye') ?>
+                            <?php endif; ?>
                             <?= _('Follow') ?>
                         </button>
                     </form>
@@ -183,7 +198,11 @@
                     aria-haspopup="dialog"
                     aria-controls="modal"
                 >
-                    <?= icon('eye') ?>
+                    <?php if ($beta_enabled): ?>
+                        <?= icon('feed') ?>
+                    <?php else: ?>
+                        <?= icon('eye') ?>
+                    <?php endif; ?>
                     <?= _('Follow') ?>
                 </button>
             <?php endif; ?>

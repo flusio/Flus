@@ -16,6 +16,7 @@ class Collections
      * List the collections of a group
      *
      * @request_param string id
+     * @request_param string only One of: followed, owned or all (default)
      *
      * @response 302 /login?redirect_to=/groups/:id/collections
      *     If not connected
@@ -28,6 +29,7 @@ class Collections
     {
         $user = auth\CurrentUser::get();
         $group_id = $request->param('id');
+        $only = $request->param('only', 'all');
 
         if (!$user) {
             return Response::redirect('login', [
@@ -40,10 +42,24 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
-        return Response::ok('groups/collections/index.phtml', [
+        if (!in_array($only, ['followed', 'owned', 'all'])) {
+            $only = 'all';
+        }
+
+        $variables = [
             'group' => $group,
-            'collections' => $group->collections(),
-            'followed_collections' => $group->followedCollections(),
-        ]);
+            'followed_collections' => [],
+            'collections' => [],
+        ];
+
+        if ($only === 'owned' || $only === 'all') {
+            $variables['collections'] = $group->collections();
+        }
+
+        if ($only === 'followed' || $only === 'all') {
+            $variables['followed_collections'] = $group->followedCollections();
+        }
+
+        return Response::ok('groups/collections/index.phtml', $variables);
     }
 }
