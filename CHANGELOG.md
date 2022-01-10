@@ -1,5 +1,21 @@
 # Changelog of flusio
 
+## 2022-01-10 - v0.38
+
+### News
+
+- Reorganize the navigation (beta)
+
+### Improvements
+
+- Improve support for invalid OPMLs
+- Improve the feed icon
+
+### Bug fixes
+
+- Fix support of unicode through the application
+- Fix Twitter fetching
+
 ## 2021-11-23 - v0.37
 
 ### News
