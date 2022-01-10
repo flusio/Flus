@@ -1,6 +1,7 @@
 <?php
     $owner = $collection->owner();
 
+    $current_tab = 'collections';
     if ($collection->type === 'feed') {
         $open_graph = [
             'title' => $collection->name,
@@ -13,6 +14,10 @@
             'url' => $collection->feed_url,
             'title' => _f('Syndication feed of %s', $collection->name),
         ];
+
+        if ($beta_enabled) {
+            $current_tab = 'feeds';
+        }
     } else {
         $open_graph = [
             'title' => $collection->name,
@@ -43,7 +48,7 @@
     $this->layout('base.phtml', [
         'title' => $collection->name,
         'canonical' => url_full('collection', $current_url_params),
-        'current_tab' => 'collections',
+        'current_tab' => $current_tab,
         'feed' => $feed,
         'open_graph' => $open_graph,
         'back' => [

@@ -49,8 +49,17 @@ class Importations
             return Response::found($from);
         }
 
+        $importation_type = $importation->type;
+
         models\Importation::delete($importation->id);
 
-        return Response::redirect('collections');
+        $beta_enabled = models\FeatureFlag::isEnabled('beta', $user->id);
+        if ($beta_enabled && $importation_type === 'pocket') {
+            return Response::redirect('links');
+        } elseif ($beta_enabled && $importation_type === 'opml') {
+            return Response::redirect('feeds');
+        } else {
+            return Response::redirect('collections');
+        }
     }
 }
