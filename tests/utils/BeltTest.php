@@ -224,6 +224,38 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('foobar', $result);
     }
 
+    public function testCut()
+    {
+        $string = 'foobarbaz';
+        $size = 3;
+
+        $new_string = Belt::cut($string, $size);
+
+        $this->assertSame('foo', $new_string);
+    }
+
+    public function testCutHandlesMultiBytesStringCorrectly()
+    {
+        // U+0800 is encoded on 3 bytes in UTF-8, usual PHP functions such as
+        // substr cannot work properly with it
+        $string = "\u{0800}\u{0800}\u{0800}\u{0800}\u{0800}";
+        $size = 3;
+
+        $new_string = Belt::cut($string, $size);
+
+        $this->assertSame("\u{0800}\u{0800}\u{0800}", $new_string);
+    }
+
+    public function testCutWithNegativeSize()
+    {
+        $string = 'foobarbaz';
+        $size = -3;
+
+        $new_string = Belt::cut($string, $size);
+
+        $this->assertSame('foobar', $new_string);
+    }
+
     public function testHost()
     {
         $url = 'https://flus.fr';

@@ -777,6 +777,54 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($feed_url, $collection->feed_site_url);
     }
 
+    public function testPerformHandlesLongMultiByteFeedTitle()
+    {
+        // In a first version of the code, titles were trimed with `substr`
+        // which should be used only on single-byte encodings. Otherwise, it
+        // can cut the strings between the bytes. This led to the database
+        // rejecting invalid strings.
+        // In this example, Unicode codepoint U+0800 is encoded on 3-bytes, so
+        // substr would cut between bytes (3 not being a multiple of 100),
+        // while mb_substr handles the size correctly.
+        $title = str_repeat("\u{0800}", models\Collection::NAME_MAX_LENGTH);
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+            'feed_fetched_at' => \Minz\Time::ago(2, 'hours')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $user_id = $this->create('user', [
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+        $this->create('followed_collection', [
+            'collection_id' => $collection_id,
+            'user_id' => $user_id,
+        ]);
+        $hash = \SpiderBits\Cache::hash($feed_url);
+        $raw_response = <<<XML
+        HTTP/2 200 OK
+        Content-Type: application/xml
+
+        <?xml version='1.0' encoding='UTF-8'?>
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <title>{$title}</title>
+            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
+            <updated>2021-03-30T11:26:00+02:00</updated>
+        </feed>
+
+        XML;
+        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $cache->save($hash, $raw_response);
+        $feeds_sync_job = new FeedsSync();
+
+        $feeds_sync_job->perform();
+
+        $collection = models\Collection::find($collection_id);
+        $this->assertSame($title, $collection->name);
+    }
+
     public function testPerformDoesNotFetchFeedIfLockedDuringLastHour()
     {
         $this->freeze($this->fake('dateTime'));

@@ -199,7 +199,7 @@ class Collection extends \Minz\Model
     {
         $feed_url = \SpiderBits\Url::sanitize($feed_url);
         return new self([
-            'name' => substr($feed_url, 0, self::NAME_MAX_LENGTH),
+            'name' => utils\Belt::cut($feed_url, self::NAME_MAX_LENGTH),
             'feed_url' => $feed_url,
             'type' => 'feed',
             'user_id' => $user_id,

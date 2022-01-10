@@ -65,7 +65,7 @@ class OpmlImportator extends Job
                 // If there is a group name, we want to make sure it exists in
                 // database, and get its id to attach it to the followed
                 // collection.
-                $group_name = substr($group_name, 0, models\Group::NAME_MAX_LENGTH);
+                $group_name = utils\Belt::cut($group_name, models\Group::NAME_MAX_LENGTH);
                 $group = models\Group::init($user->id, $group_name);
                 $existing_group = models\Group::findBy([
                     'name' => $group->name,

@@ -98,6 +98,19 @@ class Belt
     }
 
     /**
+     * Keep only the first $size characters of a string.
+     *
+     * @param string $string The string to shorten
+     * @param integer $size The max size of the final string
+     *
+     * @return string
+     */
+    public static function cut($string, $size)
+    {
+        return mb_substr($string, 0, $size);
+    }
+
+    /**
      * Extract the host from a URL. If the host starts with "www.", they are
      * removed from the host.
      *

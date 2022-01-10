@@ -15,7 +15,7 @@ class Email
      */
     public static function sanitize($email)
     {
-        return strtolower(self::emailToPunycode(trim($email)));
+        return self::emailToPunycode(mb_strtolower(trim($email)));
     }
 
     /**
