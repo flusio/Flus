@@ -89,7 +89,9 @@
         <?php if ($collection->type === 'feed'): ?>
             <div class="collection__details">
                 <p class="collection__feed">
-                    <?= icon('feed') ?>
+                    <?php if (!$beta_enabled): ?>
+                        <?= icon('feed') ?>
+                    <?php endif; ?>
                     <?php if ($collection->feed_site_url): ?>
                         <?= _f('Feed from <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', protect($collection->feed_site_url), protect($collection->feedWebsite())) ?>
                     <?php else: ?>
@@ -163,7 +165,11 @@
                                 <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
 
                                 <button class="popup__item popup__item--button">
-                                    <?= icon('eye-hide') ?>
+                                    <?php if ($beta_enabled): ?>
+                                        <?= icon('feed-stop') ?>
+                                    <?php else: ?>
+                                        <?= icon('eye-hide') ?>
+                                    <?php endif; ?>
                                     <?= _('Unfollow') ?>
                                 </button>
                             </form>
@@ -174,7 +180,11 @@
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                         <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
                         <button class="button--small">
-                            <?= icon('eye') ?>
+                            <?php if ($beta_enabled): ?>
+                                <?= icon('feed') ?>
+                            <?php else: ?>
+                                <?= icon('eye') ?>
+                            <?php endif; ?>
                             <?= _('Follow') ?>
                         </button>
                     </form>
@@ -188,7 +198,11 @@
                     aria-haspopup="dialog"
                     aria-controls="modal"
                 >
-                    <?= icon('eye') ?>
+                    <?php if ($beta_enabled): ?>
+                        <?= icon('feed') ?>
+                    <?php else: ?>
+                        <?= icon('eye') ?>
+                    <?php endif; ?>
                     <?= _('Follow') ?>
                 </button>
             <?php endif; ?>
