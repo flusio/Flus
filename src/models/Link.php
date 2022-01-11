@@ -192,6 +192,18 @@ class Link extends \Minz\Model
     }
 
     /**
+     * Return whether the given user has read the URL or not.
+     *
+     * @param string $user_id
+     *
+     * @return boolean
+     **/
+    public function hasUserReadUrl($user_id)
+    {
+        return Link::daoCall('hasUserReadUrl', $user_id, $this->url);
+    }
+
+    /**
      * Return the list of feeds URLs if any
      *
      * @return string[]

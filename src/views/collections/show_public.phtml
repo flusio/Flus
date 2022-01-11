@@ -219,6 +219,7 @@
     <?php if ($links): ?>
         <div class="cards cards--centered">
             <?php foreach ($links as $link): ?>
+                <?php $has_read_url = $current_user && $link->hasUserReadUrl($current_user->id); ?>
                 <div class="card">
                     <a
                         class="anchor--hidden"
@@ -259,6 +260,10 @@
                                 </span>
                             <?php else: ?>
                                 <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                            <?php endif; ?>
+
+                            <?php if ($has_read_url): ?>
+                                &nbsp;<span title="<?= _('You read this link.') ?>" aria-label="<?= _('You read this link.') ?>"><?= icon('check') ?></span>
                             <?php endif; ?>
                         </p>
 
