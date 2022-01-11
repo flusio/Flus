@@ -1,7 +1,6 @@
 <?php
     $owner = $collection->owner();
 
-    $current_tab = 'collections';
     if ($collection->type === 'feed') {
         $open_graph = [
             'title' => $collection->name,
@@ -14,10 +13,6 @@
             'url' => $collection->feed_url,
             'title' => _f('Syndication feed of %s', $collection->name),
         ];
-
-        if ($beta_enabled) {
-            $current_tab = 'feeds';
-        }
     } else {
         $open_graph = [
             'title' => $collection->name,
@@ -30,6 +25,12 @@
             'url' => url_full('collection feed', ['id' => $collection->id]),
             'title' => _f('Syndication feed of %s', $collection->name),
         ];
+    }
+
+    if ($beta_enabled) {
+        $current_tab = 'feeds';
+    } else {
+        $current_tab = 'collections';
     }
 
     if ($collection->image_filename) {

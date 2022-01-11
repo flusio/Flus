@@ -18,10 +18,16 @@
         $open_graph['image'] = url_media_full('cards', $topic->image_filename);
     }
 
+    if ($beta_enabled) {
+        $current_tab = 'feeds';
+    } else {
+        $current_tab = 'collections';
+    }
+
     $this->layout('base.phtml', [
         'title' => $topic->label,
         'canonical' => url_full('topic', $current_url_params),
-        'current_tab' => 'collections',
+        'current_tab' => $current_tab,
         'open_graph' => $open_graph,
         'back' => [
             'href' => url('discovery'),

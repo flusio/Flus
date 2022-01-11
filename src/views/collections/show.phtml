@@ -14,6 +14,10 @@
             'url' => url_full('collection feed', ['id' => $collection->id]),
             'title' => _f('Syndication feed of %s', $collection->name),
         ];
+
+        if ($beta_enabled) {
+            $current_tab = 'links';
+        }
     }
 
     if ($pagination->isCurrentFirstPage()) {
