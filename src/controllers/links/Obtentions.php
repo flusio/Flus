@@ -154,18 +154,10 @@ class Obtentions
             ]);
         }
 
-        // First, save the link (if a Link with matching URL exists, just get
-        // this link and optionally change its is_hidden status)
-        if ($existing_link) {
-            $new_link = $existing_link;
-        } else {
-            $new_link = models\Link::copy($link, $user->id);
-        }
-        $new_link->is_hidden = filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN);
+        $new_link = $user->obtainLink($link);
+        $new_link->is_hidden = $is_hidden;
         $new_link->save();
 
-        // Attach the link to the given collections (and potentially forget the
-        // old ones)
         models\LinkToCollection::setCollections($new_link->id, $collection_ids);
 
         return Response::found($from);

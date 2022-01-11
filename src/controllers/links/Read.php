@@ -23,7 +23,7 @@ class Read
      * @response 302 /login?redirect_to=:from
      *     if not connected
      * @response 404
-     *     if the link doesn't exist, or is not associated to the current user
+     *     if the link doesn't exist, or is not accessible to the current user
      * @response 302 :from
      * @flash error
      *     if CSRF is invalid
@@ -47,8 +47,13 @@ class Read
         }
 
         $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
+        if (!auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
+        }
+
+        $link = $user->obtainLink($link);
+        if (!$link->created_at) {
+            $link->save();
         }
 
         models\LinkToCollection::markAsRead($user, [$link->id]);
@@ -66,7 +71,7 @@ class Read
      * @response 302 /login?redirect_to=:from
      *     if not connected
      * @response 404
-     *     if the link doesn't exist, or is not associated to the current user
+     *     if the link doesn't exist, or is not accessible to the current user
      * @response 302 :from
      * @flash error
      *     if CSRF is invalid
@@ -90,8 +95,13 @@ class Read
         }
 
         $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
+        if (!auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
+        }
+
+        $link = $user->obtainLink($link);
+        if (!$link->created_at) {
+            $link->save();
         }
 
         models\LinkToCollection::markToReadLater($user, [$link->id]);
@@ -109,7 +119,7 @@ class Read
      * @response 302 /login?redirect_to=:from
      *     if not connected
      * @response 404
-     *     if the link doesn't exist, or is not associated to the current user
+     *     if the link doesn't exist, or is not accessible to the current user
      * @response 302 :from
      * @flash error
      *     if CSRF is invalid
@@ -133,8 +143,13 @@ class Read
         }
 
         $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
+        if (!auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
+        }
+
+        $link = $user->obtainLink($link);
+        if (!$link->created_at) {
+            $link->save();
         }
 
         models\LinkToCollection::markToNeverRead($user, [$link->id]);

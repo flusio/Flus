@@ -169,6 +169,38 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return whether the given user has read the URL or not.
+     *
+     * @param string $user_id
+     * @param string $url
+     *
+     * @return boolean
+     **/
+    public function hasUserReadUrl($user_id, $url)
+    {
+        $sql = <<<SQL
+            SELECT 1
+            FROM links l, links_to_collections lc, collections c
+
+            WHERE l.id = lc.link_id
+            AND c.id = lc.collection_id
+
+            AND c.user_id = :user_id
+            AND l.url = :url
+
+            AND c.type = 'read'
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':url' => $url,
+        ]);
+        $result = $statement->fetchColumn();
+        return $result === 1;
+    }
+
+    /**
      * Return links listed in bookmarks of the given user, ordered randomly.
      *
      * @param string $user_id
