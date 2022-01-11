@@ -269,6 +269,17 @@
                                         <?= _('Copy the external link') ?>
                                     </button>
                                 </div>
+
+                                <?php if (!$has_read_url): ?>
+                                    <form method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => url('collection', $current_url_params)]) ?>">
+                                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+                                        <button class="popup__item popup__item--button">
+                                            <?= icon('check') ?>
+                                            <?= _('Mark as read') ?>
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
                             </nav>
                         </details>
 
