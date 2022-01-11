@@ -69,7 +69,11 @@
                                     <?= _f('via <strong><a class="anchor--hidden" href="%s">%s</a></strong>', url('collection', ['id' => $via_collection->id]), protect($via_collection->name())) ?>
                                 <?php endif; ?>
                             <?php elseif ($link->via_type === 'followed'): ?>
-                                <?= _('via a <strong>followed collection</strong> (deleted)') ?>
+                                <?php if ($beta_enabled): ?>
+                                    <?= _('via a <strong>followed feed</strong> (deleted)') ?>
+                                <?php else: ?>
+                                    <?= _('via a <strong>followed collection</strong> (deleted)') ?>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </p>
 
@@ -251,7 +255,11 @@
 
                         <div class="news-selection__description">
                             <strong class="news-selection__title"><?= _('the latest publications') ?></strong>
-                            <small class="text--secondary"><?= _('from your followed collections') ?></small>
+                            <?php if ($beta_enabled): ?>
+                                <small class="text--secondary"><?= _('from your followed feeds') ?></small>
+                            <?php else: ?>
+                                <small class="text--secondary"><?= _('from your followed collections') ?></small>
+                            <?php endif; ?>
                         </div>
                     </button>
                 </div>
