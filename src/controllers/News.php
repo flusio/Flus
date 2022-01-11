@@ -100,24 +100,7 @@ class News
 
         foreach ($db_links as $db_link) {
             $news_link = new models\Link($db_link);
-            $existing_link = models\Link::findBy([
-                'user_id' => $user->id,
-                'url' => $news_link->url,
-            ]);
-
-            if ($news_link->user_id === $user->id) {
-                // This is our link, just work with it!
-                $link = $news_link;
-            } elseif ($existing_link) {
-                // The news link is owned by another user, but we have a link
-                // with the same URL, so let's work with this one.
-                $link = $existing_link;
-            } else {
-                // The news link is owned by another user and we don't have a
-                // link with the same URL, so we copy the news link for our
-                // current user.
-                $link = models\Link::copy($news_link, $user->id);
-            }
+            $link = $user->obtainLink($news_link);
 
             // Let's update the "via" info which will be used on the news page
             $link->via_type = $news_link->via_type;

@@ -51,19 +51,9 @@ class Read
             return Response::notFound('not_found.phtml');
         }
 
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
-            // The link is not owned by the current user, so we need to get one
-            // he owns
-            $owned_link = models\Link::findBy([
-                'user_id' => $user->id,
-                'url' => $link->url,
-            ]);
-            if ($owned_link) {
-                $link = $owned_link;
-            } else {
-                $link = models\Link::copy($link, $user->id);
-                $link->save();
-            }
+        $link = $user->obtainLink($link);
+        if (!$link->created_at) {
+            $link->save();
         }
 
         models\LinkToCollection::markAsRead($user, [$link->id]);
@@ -109,19 +99,9 @@ class Read
             return Response::notFound('not_found.phtml');
         }
 
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
-            // The link is not owned by the current user, so we need to get one
-            // he owns
-            $owned_link = models\Link::findBy([
-                'user_id' => $user->id,
-                'url' => $link->url,
-            ]);
-            if ($owned_link) {
-                $link = $owned_link;
-            } else {
-                $link = models\Link::copy($link, $user->id);
-                $link->save();
-            }
+        $link = $user->obtainLink($link);
+        if (!$link->created_at) {
+            $link->save();
         }
 
         models\LinkToCollection::markToReadLater($user, [$link->id]);
@@ -167,19 +147,9 @@ class Read
             return Response::notFound('not_found.phtml');
         }
 
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
-            // The link is not owned by the current user, so we need to get one
-            // he owns
-            $owned_link = models\Link::findBy([
-                'user_id' => $user->id,
-                'url' => $link->url,
-            ]);
-            if ($owned_link) {
-                $link = $owned_link;
-            } else {
-                $link = models\Link::copy($link, $user->id);
-                $link->save();
-            }
+        $link = $user->obtainLink($link);
+        if (!$link->created_at) {
+            $link->save();
         }
 
         models\LinkToCollection::markToNeverRead($user, [$link->id]);

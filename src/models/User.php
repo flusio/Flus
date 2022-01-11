@@ -299,6 +299,35 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return a link owned by the user with the same URL as the given one.
+     *
+     * If the link is already owned, it's returned as it is. If a user already
+     * has a link with the same URL, it's fetched from the database. Otherwise,
+     * the link is copied to the user links but it's not saved in database
+     * yet! (created_at will be null then)
+     *
+     * @param \flusio\models\Link $link
+     *
+     * @return \flusio\models\Link $link
+     */
+    public function obtainLink($link)
+    {
+        if ($this->id === $link->user_id) {
+            return $link;
+        }
+
+        $owned_link = Link::findBy([
+            'user_id' => $this->id,
+            'url' => $link->url,
+        ]);
+        if ($owned_link) {
+            return $owned_link;
+        } else {
+            return Link::copy($link, $this->id);
+        }
+    }
+
+    /**
      * Set login credentials.
      *
      * The password is not changed if empty.
