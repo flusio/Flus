@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 const FOCUSABLE_ELEMENTS = [
     'a[href]:not([tabindex="-1"])',

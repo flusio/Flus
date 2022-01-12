@@ -1,5 +1,5 @@
 import * as Turbo from '@hotwired/turbo'; // eslint-disable-line no-unused-vars
-import { Application } from 'stimulus';
+import { Application } from '@hotwired/stimulus';
 
 import AutosubmitController from 'js/controllers/autosubmit_controller.js';
 import BackAnchorController from 'js/controllers/back_anchor_controller.js';

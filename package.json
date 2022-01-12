@@ -36,7 +36,7 @@
     "stylelint-order": "^4.1.0"
   },
   "dependencies": {
-    "@hotwired/turbo": "^7.0.0-rc.3",
-    "stimulus": "^2.0.0"
+    "@hotwired/stimulus": "^3.0.1",
+    "@hotwired/turbo": "^7.1.0"
   }
 }
