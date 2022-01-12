@@ -1,0 +1,10 @@
+<turbo-stream action="replace" target="modal-feeds-new">
+    <template>
+        <?= $this->include('feeds/_new.phtml', [
+            'url' => $url,
+            'from' => $from,
+            'errors' => $errors,
+            'error' => $error,
+        ]); ?>
+    </template>
+</turbo-stream>

@@ -58,7 +58,8 @@ class Feeds
     /**
      * Show the page to add a feed.
      *
-     * @request_param string from The page to redirect to after creation
+     * @request_param string from
+     *     The page to redirect to after creation (default is /feeds)
      *
      * @response 302 /login?redirect_to=:from if not connected
      * @response 200
@@ -66,7 +67,7 @@ class Feeds
     public function new($request)
     {
         $user = auth\CurrentUser::get();
-        $from = $request->param('from');
+        $from = $request->param('from', \Minz\Url::for('feeds'));
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -103,8 +104,18 @@ class Feeds
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
+        if ($request->isAccepting('text/vnd.turbo-stream.html')) {
+            // This allows to display the errors within the modal instead of
+            // sending a whole new page. This is a bit hacky so I'm going
+            // to use this method only where absolutely needed.
+            // @see https://github.com/hotwired/turbo/issues/138#issuecomment-847699281
+            $view_file = 'feeds/new.turbo_stream.phtml';
+        } else {
+            $view_file = 'feeds/new.phtml';
+        }
+
         if (!\Minz\CSRF::validate($csrf)) {
-            return Response::badRequest('feeds/new.phtml', [
+            return Response::badRequest($view_file, [
                 'url' => $url,
                 'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -121,7 +132,7 @@ class Feeds
 
         $errors = $default_link->validate();
         if ($errors) {
-            return Response::badRequest('feeds/new.phtml', [
+            return Response::badRequest($view_file, [
                 'url' => $url,
                 'from' => $from,
                 'errors' => $errors,
@@ -136,7 +147,7 @@ class Feeds
 
         $feed_urls = $default_link->feedUrls();
         if (count($feed_urls) === 0) {
-            return Response::badRequest('feeds/new.phtml', [
+            return Response::badRequest($view_file, [
                 'url' => $url,
                 'from' => $from,
                 'errors' => [

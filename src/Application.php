@@ -35,6 +35,8 @@ class Application
         $router = Router::load();
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
+
+        \Minz\Output\View::$extensions_to_content_types['.turbo_stream.phtml'] = 'text/vnd.turbo-stream.html';
     }
 
     /**
