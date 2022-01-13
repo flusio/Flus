@@ -83,7 +83,24 @@ class Read
         }
 
         $collection = models\Collection::find($collection_id);
-        if (!auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+        $links = [];
+        if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+            $links = $collection->links();
+        } elseif ($user->isFollowing($collection->id)) {
+            // This loop is not efficient since the collection may contain a
+            // lot of links. If it becomes an issue, it could be fixed by
+            // getting the differnce between the collection URLs and the user'
+            // URLs. The result could then be inserted in DB with a bulk
+            // operation.
+            // See also similar loops in later() and never() methods.
+            foreach ($collection->visibleLinks() as $link) {
+                $new_link = $user->obtainLink($link);
+                if (!$new_link->created_at) {
+                    $new_link->save();
+                }
+                $links[] = $new_link;
+            }
+        } else {
             return Response::notFound('not_found.phtml');
         }
 
@@ -92,7 +109,7 @@ class Read
             return Response::found($from);
         }
 
-        $link_ids = array_column($collection->links(), 'id');
+        $link_ids = array_column($links, 'id');
         models\LinkToCollection::markAsRead($user, $link_ids);
 
         return Response::found($from);
@@ -127,7 +144,18 @@ class Read
         }
 
         $collection = models\Collection::find($collection_id);
-        if (!auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+        $links = [];
+        if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+            $links = $collection->links();
+        } elseif ($user->isFollowing($collection->id)) {
+            foreach ($collection->visibleLinks() as $link) {
+                $new_link = $user->obtainLink($link);
+                if (!$new_link->created_at) {
+                    $new_link->save();
+                }
+                $links[] = $new_link;
+            }
+        } else {
             return Response::notFound('not_found.phtml');
         }
 
@@ -136,7 +164,7 @@ class Read
             return Response::found($from);
         }
 
-        $link_ids = array_column($collection->links(), 'id');
+        $link_ids = array_column($links, 'id');
         models\LinkToCollection::markToReadLater($user, $link_ids);
 
         return Response::found($from);
@@ -171,7 +199,18 @@ class Read
         }
 
         $collection = models\Collection::find($collection_id);
-        if (!auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+        $links = [];
+        if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+            $links = $collection->links();
+        } elseif ($user->isFollowing($collection->id)) {
+            foreach ($collection->visibleLinks() as $link) {
+                $new_link = $user->obtainLink($link);
+                if (!$new_link->created_at) {
+                    $new_link->save();
+                }
+                $links[] = $new_link;
+            }
+        } else {
             return Response::notFound('not_found.phtml');
         }
 
@@ -180,7 +219,7 @@ class Read
             return Response::found($from);
         }
 
-        $link_ids = array_column($collection->links(), 'id');
+        $link_ids = array_column($links, 'id');
         models\LinkToCollection::markToNeverRead($user, $link_ids);
 
         return Response::found($from);

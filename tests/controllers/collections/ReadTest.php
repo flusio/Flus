@@ -127,6 +127,49 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($exists_in_bookmarks, 'The link should not be in bookmarks.');
     }
 
+    public function testCreateMarksLinksAsReadFromFollowed()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $other_user = models\User::find($other_user_id);
+        $read_list = $user->readList();
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user->id,
+            'url' => $url,
+            'is_hidden' => 0,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user->id,
+            'is_public' => 1,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/read", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('news'),
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->assertNotNull($new_link);
+        $link_to_read_list = models\LinkToCollection::findBy([
+            'link_id' => $new_link->id,
+            'collection_id' => $read_list->id,
+        ]);
+        $this->assertNotNull($link_to_read_list, 'The link should be in read list.');
+    }
+
     public function testCreateRedirectsToLoginIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -272,6 +315,49 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
     }
 
+    public function testLaterMarksLinksToReadLaterFromFollowed()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $other_user = models\User::find($other_user_id);
+        $bookmarks = $user->bookmarks();
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user->id,
+            'url' => $url,
+            'is_hidden' => 0,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user->id,
+            'is_public' => 1,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/read/later", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('news'),
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->assertNotNull($new_link);
+        $link_to_bookmarks = models\LinkToCollection::findBy([
+            'link_id' => $new_link->id,
+            'collection_id' => $bookmarks->id,
+        ]);
+        $this->assertNotNull($link_to_bookmarks, 'The link should be in the bookmarks.');
+    }
+
     public function testLaterRedirectsToLoginIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -392,6 +478,49 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertFalse($exists_in_news, 'The link should no longer be in news.');
         $this->assertFalse($exists_in_bookmarks, 'The link should no longer be in bookmarks.');
+        $this->assertNotNull($link_to_never_list, 'The link should be in the never list.');
+    }
+
+    public function testNeverMarksLinksToNeverReadFromFollowed()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $other_user = models\User::find($other_user_id);
+        $never_list = $user->neverList();
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user->id,
+            'url' => $url,
+            'is_hidden' => 0,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user->id,
+            'is_public' => 1,
+        ]);
+        $link_to_news_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/read/never", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('news'),
+        ]);
+
+        $this->assertResponse($response, 302, '/news');
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->assertNotNull($new_link);
+        $link_to_never_list = models\LinkToCollection::findBy([
+            'link_id' => $new_link->id,
+            'collection_id' => $never_list->id,
+        ]);
         $this->assertNotNull($link_to_never_list, 'The link should be in the never list.');
     }
 
