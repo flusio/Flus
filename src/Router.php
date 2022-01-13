@@ -46,7 +46,7 @@ class Router
         $router->addRoute('post', '/onboarding/locale', 'Onboarding#updateLocale', 'onboarding update locale');
 
         // "My" section
-        $router->addRoute('get', '/my/profile', 'my/Profile#show', 'profile');
+        $router->addRoute('get', '/my/profile', 'my/Profile#edit', 'edit profile');
         $router->addRoute('post', '/my/profile', 'my/Profile#update', 'update profile');
         $router->addRoute('post', '/my/profile/avatar', 'my/Avatar#update', 'update avatar');
 

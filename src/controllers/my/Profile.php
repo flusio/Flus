@@ -16,23 +16,23 @@ use flusio\utils;
 class Profile
 {
     /**
-     * Show the main profile page.
+     * Show the form to edit the current user’s profile.
      *
      * @response 302 /login?redirect_to=/my/profile
      *    If the user is not connected
      * @response 200
      *    On success
      */
-    public function show()
+    public function edit()
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('profile'),
+                'redirect_to' => \Minz\Url::for('edit profile'),
             ]);
         }
 
-        return Response::ok('my/profile/show.phtml', [
+        return Response::ok('my/profile/edit.phtml', [
             'username' => $user->username,
             'locale' => $user->locale,
         ]);
@@ -61,12 +61,12 @@ class Profile
         $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('profile'),
+                'redirect_to' => \Minz\Url::for('edit profile'),
             ]);
         }
 
         if (!\Minz\CSRF::validate($csrf)) {
-            return Response::badRequest('my/profile/show.phtml', [
+            return Response::badRequest('my/profile/edit.phtml', [
                 'username' => $username,
                 'locale' => $locale,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -86,7 +86,7 @@ class Profile
             // (referenced by the CurrentUser::$instance)
             $user->username = $old_username;
             $user->locale = $old_locale;
-            return Response::badRequest('my/profile/show.phtml', [
+            return Response::badRequest('my/profile/edit.phtml', [
                 'username' => $username,
                 'locale' => $locale,
                 'errors' => $errors,
@@ -96,6 +96,6 @@ class Profile
         $user->save();
         utils\Locale::setCurrentLocale($locale);
 
-        return Response::redirect('profile');
+        return Response::redirect('edit profile');
     }
 }

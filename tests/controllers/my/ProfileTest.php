@@ -15,17 +15,17 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testEditRendersCorrectly()
     {
         $this->login();
 
         $response = $this->appRun('get', '/my/profile');
 
         $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'my/profile/show.phtml');
+        $this->assertPointer($response, 'my/profile/edit.phtml');
     }
 
-    public function testShowRedirectsToLoginIfUserNotConnected()
+    public function testEditRedirectsToLoginIfUserNotConnected()
     {
         $response = $this->appRun('get', '/my/profile');
 
