@@ -304,7 +304,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', "/collections/{$collection_id}/feed.atom.xml");
 
         $this->assertResponse($response, 200, $link_title);
-        $this->assertPointer($response, 'collections/feed.atom.xml');
+        $this->assertPointer($response, 'collections/feed.atom.xml.php');
         $content_type = $response->headers(true)['Content-Type'];
         $this->assertSame('application/atom+xml', $content_type);
     }

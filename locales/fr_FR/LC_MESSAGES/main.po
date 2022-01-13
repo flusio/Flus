@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-11 15:58+0100\n"
-"PO-Revision-Date: 2022-01-11 15:58+0100\n"
+"POT-Creation-Date: 2022-01-13 12:41+0100\n"
+"PO-Revision-Date: 2022-01-13 12:41+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -38,9 +38,9 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:116 controllers/Collections.php:323
-#: controllers/Feeds.php:110 controllers/Groups.php:90
-#: controllers/Links.php:200 controllers/News.php:73
+#: controllers/Collections.php:116 controllers/Collections.php:321
+#: controllers/Feeds.php:121 controllers/Groups.php:90
+#: controllers/Links.php:198 controllers/News.php:73
 #: controllers/Passwords.php:80 controllers/Passwords.php:183
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Filters.php:104
@@ -57,19 +57,19 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:129 controllers/Collections.php:338
+#: controllers/Collections.php:129 controllers/Collections.php:336
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:398 controllers/Exportations.php:74
+#: controllers/Collections.php:396 controllers/Exportations.php:74
 #: controllers/Groups.php:161 controllers/Importations.php:48
-#: controllers/Links.php:332 controllers/Links.php:379
+#: controllers/Links.php:330 controllers/Links.php:377
 #: controllers/Messages.php:47 controllers/Sessions.php:191
 #: controllers/importations/Opml.php:78 controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
 #: controllers/links/Collections.php:114 controllers/links/Read.php:45
-#: controllers/links/Read.php:95 controllers/links/Read.php:145
+#: controllers/links/Read.php:93 controllers/links/Read.php:141
 #: controllers/my/Avatar.php:43 controllers/news/Read.php:40
 #: controllers/news/Read.php:75 controllers/news/Read.php:110
 msgid "A security verification failed."
@@ -79,7 +79,7 @@ msgstr "Une vérification de sécurité a échoué."
 msgid "You already have an ongoing exportation."
 msgstr "Vous avez déjà une exportation en cours."
 
-#: controllers/Feeds.php:143
+#: controllers/Feeds.php:154
 msgid "There is no valid feeds at this address."
 msgstr "Aucun flux valide n’a été détecté à cette adresse."
 
@@ -87,11 +87,11 @@ msgstr "Aucun flux valide n’a été détecté à cette adresse."
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
-#: controllers/Links.php:225 controllers/links/Obtentions.php:138
+#: controllers/Links.php:223 controllers/links/Obtentions.php:138
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:238 controllers/links/Collections.php:109
+#: controllers/Links.php:236 controllers/links/Collections.php:109
 #: controllers/links/Obtentions.php:152
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
@@ -467,6 +467,31 @@ msgstr "Petit conseil : il est peut-être l’heure de prendre une pause ?"
 msgid "For your entertainment, a choupisson : 🦔"
 msgstr "Pour vous divertir, un choupisson : 🦔"
 
+#: views/collections/feed.atom.xml.php:39
+#, php-format
+msgid "“%s”"
+msgstr "« %s »"
+
+#: views/collections/feed.atom.xml.php:40
+#, php-format
+msgid "Read this on <a href=\"%s\">%s</a>."
+msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
+
+#: views/collections/feed.atom.xml.php:41
+#, php-format
+msgid "My comments on <a href=\"%s\">%s</a>."
+msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
+
+#: views/links/exportation.atom.xml.php:26 views/links/feed.atom.xml.php:24
+#, php-format
+msgid "Comment by %s"
+msgstr "Commentaire par %s"
+
+#: views/links/feed.atom.xml.php:3
+#, php-format
+msgid "Comments on %s"
+msgstr "Commentaires sur %s"
+
 #: views/_layouts/connected.phtml:46 views/_layouts/connected_blocked.phtml:42
 #: views/_layouts/not_connected.phtml:60 views/_layouts/onboarding.phtml:42
 msgid "Skip to main content"
@@ -520,8 +545,8 @@ msgstr "Nouveau"
 #: views/bookmarks/index.phtml:109 views/collections/show.phtml:84
 #: views/collections/show.phtml:238 views/collections/show.phtml:242
 #: views/collections/show_public.phtml:119
-#: views/collections/show_public.phtml:286
-#: views/collections/show_public.phtml:290 views/links/show.phtml:80
+#: views/collections/show_public.phtml:288
+#: views/collections/show_public.phtml:292 views/links/show.phtml:80
 #: views/links/show.phtml:84 views/read/index.phtml:102
 #: views/read/index.phtml:106
 msgid "Open the menu"
@@ -647,7 +672,7 @@ msgid "Add a link"
 msgstr "Ajouter un lien"
 
 #: views/bookmarks/index.phtml:83 views/collections/show.phtml:206
-#: views/collections/show_public.phtml:259 views/links/searches/show.phtml:90
+#: views/collections/show_public.phtml:261 views/links/searches/show.phtml:90
 #: views/links/searches/show.phtml:147 views/links/show.phtml:35
 #: views/links/show_public.phtml:48 views/news/show.phtml:55
 #: views/read/index.phtml:80
@@ -655,7 +680,7 @@ msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
 #: views/bookmarks/index.phtml:93 views/collections/show.phtml:220
-#: views/collections/show_public.phtml:274 views/links/searches/show.phtml:100
+#: views/collections/show_public.phtml:276 views/links/searches/show.phtml:100
 #: views/news/show.phtml:84 views/read/index.phtml:90
 #, php-format
 msgid "%d comment"
@@ -672,12 +697,12 @@ msgid "Edit"
 msgstr "Modifier"
 
 #: views/bookmarks/index.phtml:136 views/collections/show.phtml:269
-#: views/collections/show_public.phtml:305 views/read/index.phtml:133
+#: views/collections/show_public.phtml:307 views/read/index.phtml:133
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
 #: views/bookmarks/index.phtml:145 views/collections/show.phtml:279
-#: views/collections/show_public.phtml:315
+#: views/collections/show_public.phtml:317
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
@@ -688,7 +713,7 @@ msgid "Manage collections"
 msgstr "Gérer les collections"
 
 #: views/bookmarks/index.phtml:175 views/collections/show.phtml:309
-#: views/collections/show_public.phtml:329 views/links/show.phtml:51
+#: views/collections/show_public.phtml:331 views/links/show.phtml:51
 #: views/links/show_public.phtml:64 views/news/show.phtml:167
 #: views/read/index.phtml:163
 msgid "read"
@@ -749,21 +774,6 @@ msgstr ""
 #: views/collections/edit.phtml:142
 msgid "Delete the collection"
 msgstr "Supprimer la collection"
-
-#: views/collections/feed.atom.xml.phtml:39
-#, php-format
-msgid "“%s”"
-msgstr "« %s »"
-
-#: views/collections/feed.atom.xml.phtml:40
-#, php-format
-msgid "Read this on <a href=\"%s\">%s</a>."
-msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
-
-#: views/collections/feed.atom.xml.phtml:41
-#, php-format
-msgid "My comments on <a href=\"%s\">%s</a>."
-msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
 
 #: views/collections/filters/edit.phtml:3
 #: views/collections/filters/edit.phtml:14
@@ -978,7 +988,7 @@ msgstr "Changer l’illustration"
 msgid "Copy the link"
 msgstr "Copier le lien"
 
-#: views/collections/show.phtml:213 views/collections/show_public.phtml:266
+#: views/collections/show.phtml:213 views/collections/show_public.phtml:268
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
@@ -1014,16 +1024,16 @@ msgstr "Créée par %s"
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show_public.phtml:174 views/links/searches/show.phtml:203
+#: views/collections/show_public.phtml:176 views/links/searches/show.phtml:203
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:189
-#: views/collections/show_public.phtml:207 views/links/searches/show.phtml:216
+#: views/collections/show_public.phtml:191
+#: views/collections/show_public.phtml:209 views/links/searches/show.phtml:216
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:339
+#: views/collections/show_public.phtml:341
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -1106,6 +1116,26 @@ msgstr "Oups, un problème est survenu durant l’exportation."
 msgid "Generate a data archive"
 msgstr "Générer une archive de données"
 
+#: views/feeds/_new.phtml:4 views/feeds/new.phtml:3
+msgid "New feed"
+msgstr "Nouveau flux"
+
+#: views/feeds/_new.phtml:19
+msgid "What’s the address of the website or feed to follow?"
+msgstr "Quelle est l’adresse du site ou du flux à suivre ?"
+
+#: views/feeds/_new.phtml:41 views/links/new.phtml:53
+msgid ""
+"It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
+"browser."
+msgstr ""
+"Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
+"votre navigateur."
+
+#: views/feeds/_new.phtml:47
+msgid "Add the feed"
+msgstr "Ajouter le flux"
+
 #: views/feeds/index.phtml:17
 msgid "All the feeds that you follow are listed here."
 msgstr "Tous les flux que vous suivez sont listés ici."
@@ -1118,26 +1148,6 @@ msgstr "<a href=\"%s\">Découvrez des flux de collections</a>"
 #: views/feeds/index.phtml:37
 msgid "Add a feed"
 msgstr "Ajouter un flux"
-
-#: views/feeds/new.phtml:3 views/feeds/new.phtml:15
-msgid "New feed"
-msgstr "Nouveau flux"
-
-#: views/feeds/new.phtml:30
-msgid "What’s the address of the website or feed to follow?"
-msgstr "Quelle est l’adresse du site ou du flux à suivre ?"
-
-#: views/feeds/new.phtml:52 views/links/new.phtml:53
-msgid ""
-"It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
-"browser."
-msgstr ""
-"Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
-"votre navigateur."
-
-#: views/feeds/new.phtml:58
-msgid "Add the feed"
-msgstr "Ajouter le flux"
 
 #: views/groups/edit.phtml:3 views/groups/edit.phtml:14
 msgid "Group edition"
@@ -1368,16 +1378,6 @@ msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
 #: views/links/edit.phtml:95
 msgid "Delete the link"
 msgstr "Supprimer le lien"
-
-#: views/links/exportation.atom.xml.phtml:26 views/links/feed.atom.xml.phtml:24
-#, php-format
-msgid "Comment by %s"
-msgstr "Commentaire par %s"
-
-#: views/links/feed.atom.xml.phtml:3
-#, php-format
-msgid "Comments on %s"
-msgstr "Commentaires sur %s"
 
 #: views/links/index.phtml:16
 msgid "Organize your links in your bookmarks and your collections."

@@ -104,7 +104,7 @@ class DataExporter
         $no_group_followed_collections = models\Collection::daoToList('listFollowedInGroup', $user->id, null);
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
 
-        $view = new \Minz\Output\View('collections/followed.opml.xml', [
+        $view = new \Minz\Output\View('collections/followed.opml.xml.php', [
             'brand' => \Minz\Configuration::$application['brand'],
             'now' => \Minz\Time::now(),
             'no_group_followed_collections' => $no_group_followed_collections,
@@ -123,7 +123,7 @@ class DataExporter
      */
     private function generateCollection($collection)
     {
-        $view = new \Minz\Output\View('collections/exportation.atom.xml', [
+        $view = new \Minz\Output\View('collections/exportation.atom.xml.php', [
             'brand' => \Minz\Configuration::$application['brand'],
             'user_agent' => \Minz\Configuration::$application['user_agent'],
             'collection' => $collection,
@@ -143,7 +143,7 @@ class DataExporter
      */
     private function generateLink($link)
     {
-        $view = new \Minz\Output\View('links/exportation.atom.xml', [
+        $view = new \Minz\Output\View('links/exportation.atom.xml.php', [
             'brand' => \Minz\Configuration::$application['brand'],
             'user_agent' => \Minz\Configuration::$application['user_agent'],
             'link' => $link,

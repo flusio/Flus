@@ -199,7 +199,7 @@ class Collections
         if ($is_atom_feed) {
             $locale = $collection->owner()->locale;
             utils\Locale::setCurrentLocale($locale);
-            return Response::ok('collections/feed.atom.xml', [
+            return Response::ok('collections/feed.atom.xml.php', [
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->visibleLinks(),

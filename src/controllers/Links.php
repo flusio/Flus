@@ -94,7 +94,7 @@ class Links
         if ($is_atom_feed) {
             $locale = $link->owner()->locale;
             utils\Locale::setCurrentLocale($locale);
-            return Response::ok('links/feed.atom.xml', [
+            return Response::ok('links/feed.atom.xml.php', [
                 'link' => $link,
                 'messages' => $link->messages(),
                 'user_agent' => \Minz\Configuration::$application['user_agent'],

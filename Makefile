@@ -75,7 +75,7 @@ test: ## Run the test suite
 
 .PHONY: lint
 lint: ## Run the linters on the PHP and JS files
-	$(PHP) ./vendor/bin/phpcs --extensions=php --standard=PSR12 ./src ./tests ./lib/SpiderBits
+	$(PHP) ./vendor/bin/phpcs --extensions=php --ignore=./src/views/ --standard=PSR12 ./src ./tests ./lib/SpiderBits
 	$(NPM) run lint-js
 	$(NPM) run lint-css
 
