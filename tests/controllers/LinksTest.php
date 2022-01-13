@@ -78,9 +78,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', "/links/{$link_id}/feed.atom.xml");
 
         $this->assertResponse($response, 200, nl2br($content));
-        $this->assertPointer($response, 'links/feed.atom.xml.phtml');
+        $this->assertPointer($response, 'links/feed.atom.xml');
         $content_type = $response->headers(true)['Content-Type'];
-        $this->assertSame('application/atom+xml;charset=UTF-8', $content_type);
+        $this->assertSame('application/atom+xml', $content_type);
     }
 
     public function testShowRendersCorrectlyIfNotHiddenAndNotConnected()

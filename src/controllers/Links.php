@@ -94,13 +94,11 @@ class Links
         if ($is_atom_feed) {
             $locale = $link->owner()->locale;
             utils\Locale::setCurrentLocale($locale);
-            $response = Response::ok('links/feed.atom.xml.phtml', [
+            return Response::ok('links/feed.atom.xml', [
                 'link' => $link,
                 'messages' => $link->messages(),
                 'user_agent' => \Minz\Configuration::$application['user_agent'],
             ]);
-            $response->setHeader('Content-Type', 'application/atom+xml;charset=UTF-8');
-            return $response;
         } elseif ($can_update) {
             $collections = $link->collections();
             models\Collection::sort($collections, $user->locale);

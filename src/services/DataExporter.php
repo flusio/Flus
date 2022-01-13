@@ -123,7 +123,7 @@ class DataExporter
      */
     private function generateCollection($collection)
     {
-        $view = new \Minz\Output\View('collections/exportation.atom.xml.phtml', [
+        $view = new \Minz\Output\View('collections/exportation.atom.xml', [
             'brand' => \Minz\Configuration::$application['brand'],
             'user_agent' => \Minz\Configuration::$application['user_agent'],
             'collection' => $collection,
@@ -143,7 +143,7 @@ class DataExporter
      */
     private function generateLink($link)
     {
-        $view = new \Minz\Output\View('links/exportation.atom.xml.phtml', [
+        $view = new \Minz\Output\View('links/exportation.atom.xml', [
             'brand' => \Minz\Configuration::$application['brand'],
             'user_agent' => \Minz\Configuration::$application['user_agent'],
             'link' => $link,

@@ -199,14 +199,12 @@ class Collections
         if ($is_atom_feed) {
             $locale = $collection->owner()->locale;
             utils\Locale::setCurrentLocale($locale);
-            $response = Response::ok('collections/feed.atom.xml.phtml', [
+            return Response::ok('collections/feed.atom.xml', [
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->visibleLinks(),
                 'user_agent' => \Minz\Configuration::$application['user_agent'],
             ]);
-            $response->setHeader('Content-Type', 'application/atom+xml;charset=UTF-8');
-            return $response;
         } elseif ($can_update) {
             return Response::ok('collections/show.phtml', [
                 'collection' => $collection,
