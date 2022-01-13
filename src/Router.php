@@ -193,6 +193,7 @@ class Router
         $router->addRoute('cli', '/users', 'Users#index');
         $router->addRoute('cli', '/users/create', 'Users#create');
         $router->addRoute('cli', '/users/export', 'Users#export');
+        $router->addRoute('cli', '/users/validate', 'Users#validate');
 
         $router->addRoute('cli', '/features', 'FeatureFlags#index');
         $router->addRoute('cli', '/features/flags', 'FeatureFlags#flags');

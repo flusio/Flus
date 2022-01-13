@@ -8,11 +8,11 @@ use flusio\utils;
 class UsersTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\TimeHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
 
     /**
      * @beforeClass
@@ -166,5 +166,85 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 404);
         $this->assertResponseEquals($response, "User {$user_id} doesn’t exist.");
+    }
+
+    public function testValidateValidatesUser()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $user_id = $this->create('user', [
+            'validated_at' => null,
+        ]);
+
+        $response = $this->appRun('cli', '/users/validate', [
+            'id' => $user_id,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "User {$user_id} is now validated.");
+        $user = models\User::find($user_id);
+        $this->assertEquals(\Minz\Time::now(), $user->validated_at);
+    }
+
+    public function testValidateSetsSubscriptionAccountId()
+    {
+        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        $user_id = $this->create('user', [
+            'validated_at' => null,
+            'subscription_account_id' => null,
+        ]);
+
+        $response = $this->appRun('cli', '/users/validate', [
+            'id' => $user_id,
+        ]);
+
+        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+
+        $user = models\User::find($user_id);
+        $this->assertNotNull($user->subscription_account_id);
+    }
+
+    public function testValidateDeletesToken()
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        $token_id = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $user_id = $this->create('user', [
+            'validated_at' => null,
+            'validation_token' => $token_id,
+        ]);
+
+        $response = $this->appRun('cli', '/users/validate', [
+            'id' => $user_id,
+        ]);
+
+        $token = models\Token::find($token_id);
+        $user = models\User::find($user_id);
+        $this->assertNull($token);
+        $this->assertNull($user->validation_token);
+    }
+
+    public function testValidateFailsIfUserDoesNotExist()
+    {
+        $response = $this->appRun('cli', '/users/validate', [
+            'id' => 'not-an-id',
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseEquals($response, 'User not-an-id doesn’t exist.');
+    }
+
+    public function testValidateFailsIfAlreadyValidated()
+    {
+        $user_id = $this->create('user', [
+            'validated_at' => $this->fake('iso8601'),
+        ]);
+
+        $response = $this->appRun('cli', '/users/validate', [
+            'id' => $user_id,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseEquals($response, "User {$user_id} has already been validated.");
     }
 }

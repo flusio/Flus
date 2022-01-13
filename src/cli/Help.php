@@ -82,7 +82,9 @@ class Help
         $usage .= "      --password=PASSWORD\n";
         $usage .= "      --username=USERNAME  where USERNAME is a 50-chars max string\n";
         $usage .= "  users export             Export the data of the given user in the current directory\n";
-        $usage .= "      --id=ID              where ID is the id of the user to export";
+        $usage .= "      --id=ID              where ID is the id of the user to export\n";
+        $usage .= "  users validate           Validate a user account\n";
+        $usage .= "      --id=ID              where ID is the id of the user to validate\n";
 
         return Response::text(200, $usage);
     }

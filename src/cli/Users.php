@@ -106,4 +106,57 @@ class Users
 
         return Response::text(200, "User’s data have been exported successfully ({$data_filepath}).");
     }
+
+    /**
+     * Validate the given user.
+     *
+     * @request_param string id
+     *     The id of the user to validate.
+     *
+     * @response 404
+     *     If the user doesn't exist
+     * @response 400
+     *     If the user has already been validated
+     * @response 200
+     *     On sucess
+     */
+    public function validate($request)
+    {
+        $user_id = $request->param('id');
+        $user = models\User::find($user_id);
+        if (!$user) {
+            return Response::text(404, "User {$user_id} doesn’t exist.");
+        }
+
+        if ($user->validated_at) {
+            return Response::text(400, "User {$user_id} has already been validated.");
+        }
+
+        $token = models\Token::find($user->validation_token);
+        if ($token) {
+            models\Token::delete($token->token);
+            $user->validation_token = null;
+        }
+
+        $user->validated_at = \Minz\Time::now();
+
+        $app_conf = \Minz\Configuration::$application;
+        if ($app_conf['subscriptions_enabled']) {
+            $subscriptions_service = new services\Subscriptions(
+                $app_conf['subscriptions_host'],
+                $app_conf['subscriptions_private_key']
+            );
+            $account = $subscriptions_service->account($user->email);
+            if ($account) {
+                $user->subscription_account_id = $account['id'];
+                $user->subscription_expired_at = $account['expired_at'];
+            } else {
+                \Minz\Log::error("Can’t get a subscription account for user {$user->id}."); // @codeCoverageIgnore
+            }
+        }
+
+        $user->save();
+
+        return Response::text(200, "User {$user_id} is now validated.");
+    }
 }
