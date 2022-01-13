@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-13 16:22+0100\n"
-"PO-Revision-Date: 2022-01-13 16:22+0100\n"
+"POT-Creation-Date: 2022-01-13 16:38+0100\n"
+"PO-Revision-Date: 2022-01-13 16:38+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -44,8 +44,8 @@ msgstr "Afficher"
 #: controllers/Passwords.php:80 controllers/Passwords.php:183
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Filters.php:104
-#: controllers/collections/Followers.php:80
-#: controllers/collections/Followers.php:124
+#: controllers/collections/Followers.php:48
+#: controllers/collections/Followers.php:92
 #: controllers/collections/Groups.php:121
 #: controllers/collections/Images.php:113 controllers/links/Messages.php:72
 #: controllers/links/Obtentions.php:125 controllers/links/Searches.php:105
@@ -597,13 +597,11 @@ msgstr "Fermer cette fenêtre"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:95
-#: views/collections/followers/show.phtml:30 views/registrations/new.phtml:147
+#: views/_layouts/not_connected.phtml:95 views/registrations/new.phtml:147
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:99
-#: views/collections/followers/show.phtml:23 views/sessions/new.phtml:92
+#: views/_layouts/not_connected.phtml:99 views/sessions/new.phtml:92
 msgid "Login"
 msgstr "Se connecter"
 
@@ -820,20 +818,6 @@ msgid ""
 msgstr ""
 "Vous recevrez tous les liens publiés (recommandé si vous souhaitez ne rien "
 "manquer)."
-
-#: views/collections/followers/show.phtml:4
-#: views/collections/followers/show.phtml:10
-#, php-format
-msgid "Follow “%s” on %s"
-msgstr "Suivez « %s » sur %s"
-
-#: views/collections/followers/show.phtml:15
-msgid "You must log in to follow this feed."
-msgstr "Vous devez être connecté·e pour suivre ce flux."
-
-#: views/collections/followers/show.phtml:17
-msgid "You must log in to follow this collection."
-msgstr "Vous devez être connecté·e pour suivre cette collection."
 
 #: views/collections/groups/edit.phtml:3 views/collections/groups/edit.phtml:14
 msgid "Collection group"

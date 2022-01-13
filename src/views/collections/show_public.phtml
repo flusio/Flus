@@ -207,7 +207,7 @@
                     class="button--small"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
-                    data-modal-opener-href-value="<?= url('login to follow collection', ['id' => $collection->id]) ?>"
+                    data-modal-opener-href-value="<?= url('login', ['redirect_to' => url('collection', $current_url_params)]) ?>"
                     aria-haspopup="dialog"
                     aria-controls="modal"
                 >
