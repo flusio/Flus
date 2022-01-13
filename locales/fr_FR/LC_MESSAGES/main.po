@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-13 12:41+0100\n"
-"PO-Revision-Date: 2022-01-13 12:41+0100\n"
+"POT-Creation-Date: 2022-01-13 13:09+0100\n"
+"PO-Revision-Date: 2022-01-13 13:09+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -40,7 +40,7 @@ msgstr "Afficher"
 
 #: controllers/Collections.php:116 controllers/Collections.php:321
 #: controllers/Feeds.php:121 controllers/Groups.php:90
-#: controllers/Links.php:198 controllers/News.php:73
+#: controllers/Links.php:198 controllers/News.php:77
 #: controllers/Passwords.php:80 controllers/Passwords.php:183
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Filters.php:104
@@ -65,13 +65,14 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:330 controllers/Links.php:377
 #: controllers/Messages.php:47 controllers/Sessions.php:191
-#: controllers/importations/Opml.php:78 controllers/importations/Pocket.php:102
+#: controllers/collections/Read.php:108 controllers/collections/Read.php:163
+#: controllers/collections/Read.php:218 controllers/importations/Opml.php:78
+#: controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
 #: controllers/links/Collections.php:114 controllers/links/Read.php:45
 #: controllers/links/Read.php:93 controllers/links/Read.php:141
-#: controllers/my/Avatar.php:43 controllers/news/Read.php:40
-#: controllers/news/Read.php:75 controllers/news/Read.php:110
+#: controllers/my/Avatar.php:43
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -545,8 +546,8 @@ msgstr "Nouveau"
 #: views/bookmarks/index.phtml:109 views/collections/show.phtml:84
 #: views/collections/show.phtml:238 views/collections/show.phtml:242
 #: views/collections/show_public.phtml:119
-#: views/collections/show_public.phtml:288
-#: views/collections/show_public.phtml:292 views/links/show.phtml:80
+#: views/collections/show_public.phtml:298
+#: views/collections/show_public.phtml:302 views/links/show.phtml:80
 #: views/links/show.phtml:84 views/read/index.phtml:102
 #: views/read/index.phtml:106
 msgid "Open the menu"
@@ -672,7 +673,7 @@ msgid "Add a link"
 msgstr "Ajouter un lien"
 
 #: views/bookmarks/index.phtml:83 views/collections/show.phtml:206
-#: views/collections/show_public.phtml:261 views/links/searches/show.phtml:90
+#: views/collections/show_public.phtml:271 views/links/searches/show.phtml:90
 #: views/links/searches/show.phtml:147 views/links/show.phtml:35
 #: views/links/show_public.phtml:48 views/news/show.phtml:55
 #: views/read/index.phtml:80
@@ -680,7 +681,7 @@ msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
 #: views/bookmarks/index.phtml:93 views/collections/show.phtml:220
-#: views/collections/show_public.phtml:276 views/links/searches/show.phtml:100
+#: views/collections/show_public.phtml:286 views/links/searches/show.phtml:100
 #: views/news/show.phtml:84 views/read/index.phtml:90
 #, php-format
 msgid "%d comment"
@@ -697,12 +698,12 @@ msgid "Edit"
 msgstr "Modifier"
 
 #: views/bookmarks/index.phtml:136 views/collections/show.phtml:269
-#: views/collections/show_public.phtml:307 views/read/index.phtml:133
+#: views/collections/show_public.phtml:317 views/read/index.phtml:133
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
 #: views/bookmarks/index.phtml:145 views/collections/show.phtml:279
-#: views/collections/show_public.phtml:317
+#: views/collections/show_public.phtml:327
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
@@ -713,7 +714,7 @@ msgid "Manage collections"
 msgstr "Gérer les collections"
 
 #: views/bookmarks/index.phtml:175 views/collections/show.phtml:309
-#: views/collections/show_public.phtml:331 views/links/show.phtml:51
+#: views/collections/show_public.phtml:341 views/links/show.phtml:51
 #: views/links/show_public.phtml:64 views/news/show.phtml:167
 #: views/read/index.phtml:163
 msgid "read"
@@ -988,7 +989,7 @@ msgstr "Changer l’illustration"
 msgid "Copy the link"
 msgstr "Copier le lien"
 
-#: views/collections/show.phtml:213 views/collections/show_public.phtml:268
+#: views/collections/show.phtml:213 views/collections/show_public.phtml:278
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
@@ -1024,16 +1025,20 @@ msgstr "Créée par %s"
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show_public.phtml:176 views/links/searches/show.phtml:203
+#: views/collections/show_public.phtml:172 views/news/show.phtml:193
+msgid "Mark all as read"
+msgstr "Tout marquer comme lu"
+
+#: views/collections/show_public.phtml:186 views/links/searches/show.phtml:203
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:191
-#: views/collections/show_public.phtml:209 views/links/searches/show.phtml:216
+#: views/collections/show_public.phtml:201
+#: views/collections/show_public.phtml:219 views/links/searches/show.phtml:216
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:341
+#: views/collections/show_public.phtml:351
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -1768,10 +1773,6 @@ msgstr "Ajouter aux collections"
 #: views/news/show.phtml:183
 msgid "Empty the news"
 msgstr "Vider le journal"
-
-#: views/news/show.phtml:193
-msgid "Mark all as read"
-msgstr "Tout marquer comme lu"
 
 #: views/news/show.phtml:202
 msgid "Read the links later"
