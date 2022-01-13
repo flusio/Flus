@@ -19,7 +19,7 @@ class Collections
      * Show the page to update the link collections
      *
      * @request_param string id
-     * @request_param string mode Either 'normal' (default) or 'news'
+     * @request_param string mode Either 'normal' (default), 'adding' or 'news'
      * @request_param string from
      *
      * @response 302 /login?redirect_to=:from
@@ -61,6 +61,16 @@ class Collections
                 'comment' => '',
                 'from' => $from,
             ]);
+        } elseif ($mode === 'adding') {
+            $collections = $user->collections();
+            models\Collection::sort($collections, $user->locale);
+
+            return Response::ok('links/collections/index_adding.phtml', [
+                'link' => $link,
+                'collection_ids' => array_column($link->collections(), 'id'),
+                'collections' => $collections,
+                'from' => $from,
+            ]);
         } else {
             $collections = $user->collections();
             models\Collection::sort($collections, $user->locale);
@@ -79,13 +89,14 @@ class Collections
      *
      * News mode allows to set is_hidden and add a comment. It also removes the
      * link from the news and from bookmarks and adds it to the read list.
+     * Adding mode allows to set is_hidden.
      *
      * @request_param string csrf
      * @request_param string id
      * @request_param string[] collection_ids
      * @request_param boolean is_hidden
      * @request_param string comment
-     * @request_param string mode Either 'normal' (default) or 'news'
+     * @request_param string mode Either 'normal' (default), 'adding' or 'news'
      * @request_param string from
      *
      * @response 302 /login?redirect_to=:from
@@ -133,7 +144,10 @@ class Collections
 
         models\LinkToCollection::setCollections($link->id, $new_collection_ids);
 
-        if ($mode === 'news') {
+        if ($mode === 'adding') {
+            $link->is_hidden = $is_hidden;
+            $link->save();
+        } elseif ($mode === 'news') {
             $link->is_hidden = $is_hidden;
             $link->save();
 

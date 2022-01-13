@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-13 16:38+0100\n"
-"PO-Revision-Date: 2022-01-13 16:38+0100\n"
+"POT-Creation-Date: 2022-01-13 17:16+0100\n"
+"PO-Revision-Date: 2022-01-13 17:16+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -70,7 +70,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
-#: controllers/links/Collections.php:130 controllers/links/Read.php:45
+#: controllers/links/Collections.php:141 controllers/links/Read.php:45
 #: controllers/links/Read.php:93 controllers/links/Read.php:141
 #: controllers/my/Avatar.php:43
 msgid "A security verification failed."
@@ -92,7 +92,7 @@ msgstr "Vous avez déjà un groupe portant le même nom."
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:236 controllers/links/Collections.php:125
+#: controllers/Links.php:236 controllers/links/Collections.php:136
 #: controllers/links/Obtentions.php:152
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
@@ -530,6 +530,7 @@ msgstr "Flux"
 #: views/collections/index.phtml:12 views/collections/new.phtml:8
 #: views/groups/collections/index.phtml:8
 #: views/links/collections/index.phtml:26
+#: views/links/collections/index_adding.phtml:27
 #: views/links/collections/index_news.phtml:34 views/links/new.phtml:58
 #: views/links/obtentions/new.phtml:32
 msgid "Collections"
@@ -1326,12 +1327,15 @@ msgstr "Une erreur est survenue pendant le traitement de votre requête."
 msgid "Link collections"
 msgstr "Collections du lien"
 
-#: views/links/collections/index.phtml:7 views/links/edit.phtml:7
+#: views/links/collections/index.phtml:7
+#: views/links/collections/index_adding.phtml:7 views/links/edit.phtml:7
 msgid "Link"
 msgstr "Lien"
 
 #: views/links/collections/index.phtml:57
 #: views/links/collections/index.phtml:60
+#: views/links/collections/index_adding.phtml:58
+#: views/links/collections/index_adding.phtml:61
 #: views/links/collections/index_news.phtml:65
 #: views/links/collections/index_news.phtml:68 views/links/new.phtml:89
 #: views/links/new.phtml:92 views/links/obtentions/new.phtml:63
@@ -1339,20 +1343,27 @@ msgstr "Lien"
 msgid "Select a collection"
 msgstr "Sélectionner une collection"
 
+#: views/links/collections/index_adding.phtml:3
+#: views/links/collections/index_adding.phtml:14
 #: views/links/collections/index_news.phtml:3
 #: views/links/collections/index_news.phtml:15
 #: views/links/obtentions/new.phtml:3 views/links/obtentions/new.phtml:14
 msgid "Add to your collections"
 msgstr "Ajouter à vos collections"
 
-#: views/links/collections/index_news.phtml:76 views/links/show.phtml:128
-msgid "What do you think?"
-msgstr "Qu’en pensez-vous ?"
-
+#: views/links/collections/index_adding.phtml:76
 #: views/links/collections/index_news.phtml:99 views/links/edit.phtml:63
 #: views/links/new.phtml:107 views/links/obtentions/new.phtml:81
 msgid "Hide this link in public collections"
 msgstr "Masquer ce lien dans les collections publiques"
+
+#: views/links/collections/index_adding.phtml:82 views/links/new.phtml:113
+msgid "Add the link"
+msgstr "Ajouter le lien"
+
+#: views/links/collections/index_news.phtml:76 views/links/show.phtml:128
+msgid "What do you think?"
+msgstr "Qu’en pensez-vous ?"
 
 #: views/links/collections/index_news.phtml:105
 msgid "Save and mark as read"
@@ -1389,10 +1400,6 @@ msgstr "Nouveau lien"
 #: views/links/new.phtml:31
 msgid "What’s the address of the link?"
 msgstr "Quelle est l’adresse du lien ?"
-
-#: views/links/new.phtml:113
-msgid "Add the link"
-msgstr "Ajouter le lien"
 
 #: views/links/new.phtml:120 views/onboarding/step3.phtml:57
 msgid "Make your life easier by using the Web extension on"

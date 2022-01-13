@@ -1,0 +1,86 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Add to your collections'),
+        'canonical' => url_full('link collections', ['id' => $link->id, 'mode' => 'adding']),
+        'back' => [
+            'href' => url('link', ['id' => $link->id]),
+            'label' => _('Link'),
+        ],
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1 id="modal-title"><?= _('Add to your collections') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= protect($link->title) ?>
+    </p>
+
+    <form method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
+        <input type="hidden" name="mode" value="adding" />
+
+        <fieldset>
+            <legend><?= _('Collections') ?></legend>
+
+            <?php if (isset($errors['collection_ids'])): ?>
+                <p class="form-group__error">
+                    <?= icon('error') ?>
+                    <?= $errors['collection_ids'] ?>
+                </p>
+            <?php endif; ?>
+
+            <div class="collections-selector" data-controller="collections-selector">
+                <select
+                    id="collection-ids"
+                    class="collections-selector__data"
+                    name="collection_ids[]"
+                    data-collections-selector-target="data"
+                    multiple
+                    required
+                    tabindex="-1"
+                >
+                    <?php foreach ($collections as $collection): ?>
+                        <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
+                            <?= protect($collection->name()) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <ul class="collections-selector__list" data-collections-selector-target="list"></ul>
+
+                <select
+                    data-collections-selector-target="select"
+                    data-action="collections-selector#attach"
+                    aria-label="<?= _('Select a collection') ?>"
+                >
+                    <option selected disabled>
+                        <?= _('Select a collection') ?>
+                    </option>
+                </select>
+            </div>
+        </fieldset>
+
+        <div class="form-group">
+            <input
+                type="checkbox"
+                id="is-hidden"
+                name="is_hidden"
+                <?= $link->is_hidden ? 'checked' : '' ?>
+            />
+
+            <label class="label--checkbox" for="is-hidden">
+                <?= _('Hide this link in public collections') ?>
+            </label>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Add the link') ?>
+            </button>
+        </div>
+    </form>
+</div>

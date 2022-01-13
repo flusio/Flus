@@ -47,6 +47,40 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'links/collections/index.phtml');
     }
 
+    public function testIndexRendersCorrectlyInModeAdding()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('words', 3, true);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $collection_id_1 = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'bookmarks',
+        ]);
+        $collection_id_2 = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $collection_id_3 = $this->create('collection', [
+            'user_id' => $user->id,
+            'name' => $collection_name,
+            'type' => 'collection',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id_1,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/collections", [
+            'from' => \Minz\Url::for('bookmarks'),
+            'mode' => 'adding',
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Add the link');
+    }
+
     public function testIndexRendersCorrectlyInModeNews()
     {
         $user = $this->login();
@@ -229,6 +263,31 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_collection);
         $this->assertTrue(models\LinkToCollection::exists($link_to_news));
         $this->assertTrue(models\LinkToCollection::exists($link_to_read_list));
+    }
+
+    public function testUpdateInModeAddingAcceptsIsHiden()
+    {
+        $user = $this->login();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $is_hidden = $this->fake('boolean');
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+            'collection_ids' => [$collection_id],
+            'is_hidden' => $is_hidden,
+            'mode' => 'adding',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $link = models\Link::find($link_id);
+        $this->assertSame($is_hidden, $link->is_hidden);
     }
 
     public function testUpdateInModeNewsAcceptsComment()
