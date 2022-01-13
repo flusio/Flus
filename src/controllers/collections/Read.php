@@ -53,4 +53,175 @@ class Read
             'pagination' => $pagination,
         ]);
     }
+
+    /**
+     * Mark links of the collection as read and remove them from bookmarks.
+     *
+     * @request_param string id
+     * @request_param string csrf
+     * @request_param string from
+     *
+     * @response 302 /login?redirect_to=:from
+     *     if not connected
+     * @response 404
+     *     if the collection doesn’t exist or is inaccessible
+     * @response 302 :from
+     * @flash error
+     *     if CSRF is invalid
+     * @response 302 :from
+     *     on success
+     */
+    public function create($request)
+    {
+        $user = auth\CurrentUser::get();
+        $from = $request->param('from');
+        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        $collection = models\Collection::find($collection_id);
+        $links = [];
+        if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+            $links = $collection->links();
+        } elseif ($user->isFollowing($collection->id)) {
+            // This loop is not efficient since the collection may contain a
+            // lot of links. If it becomes an issue, it could be fixed by
+            // getting the differnce between the collection URLs and the user'
+            // URLs. The result could then be inserted in DB with a bulk
+            // operation.
+            // See also similar loops in later() and never() methods.
+            foreach ($collection->visibleLinks() as $link) {
+                $new_link = $user->obtainLink($link);
+                if (!$new_link->created_at) {
+                    $new_link->save();
+                }
+                $links[] = $new_link;
+            }
+        } else {
+            return Response::notFound('not_found.phtml');
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $link_ids = array_column($links, 'id');
+        models\LinkToCollection::markAsRead($user, $link_ids);
+
+        return Response::found($from);
+    }
+
+    /**
+     * Remove links of the collection from news and add them to bookmarks.
+     *
+     * @request_param string id
+     * @request_param string csrf
+     * @request_param string from
+     *
+     * @response 302 /login?redirect_to=:from
+     *     if not connected
+     * @response 404
+     *     if the collection doesn’t exist or is inaccessible
+     * @response 302 :from
+     * @flash error
+     *     if CSRF is invalid
+     * @response 302 :from
+     *     on success
+     */
+    public function later($request)
+    {
+        $user = auth\CurrentUser::get();
+        $from = $request->param('from');
+        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        $collection = models\Collection::find($collection_id);
+        $links = [];
+        if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+            $links = $collection->links();
+        } elseif ($user->isFollowing($collection->id)) {
+            foreach ($collection->visibleLinks() as $link) {
+                $new_link = $user->obtainLink($link);
+                if (!$new_link->created_at) {
+                    $new_link->save();
+                }
+                $links[] = $new_link;
+            }
+        } else {
+            return Response::notFound('not_found.phtml');
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $link_ids = array_column($links, 'id');
+        models\LinkToCollection::markToReadLater($user, $link_ids);
+
+        return Response::found($from);
+    }
+
+    /**
+     * Remove links of the collection from news and bookmarks and add them to the never list.
+     *
+     * @request_param string id
+     * @request_param string csrf
+     * @request_param string from
+     *
+     * @response 302 /login?redirect_to=:from
+     *     if not connected
+     * @response 404
+     *     if the collection doesn’t exist or is inaccessible
+     * @response 302 :from
+     * @flash error
+     *     if CSRF is invalid
+     * @response 302 :from
+     *     on success
+     */
+    public function never($request)
+    {
+        $user = auth\CurrentUser::get();
+        $from = $request->param('from');
+        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        $collection = models\Collection::find($collection_id);
+        $links = [];
+        if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+            $links = $collection->links();
+        } elseif ($user->isFollowing($collection->id)) {
+            foreach ($collection->visibleLinks() as $link) {
+                $new_link = $user->obtainLink($link);
+                if (!$new_link->created_at) {
+                    $new_link->save();
+                }
+                $links[] = $new_link;
+            }
+        } else {
+            return Response::notFound('not_found.phtml');
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $link_ids = array_column($links, 'id');
+        models\LinkToCollection::markToNeverRead($user, $link_ids);
+
+        return Response::found($from);
+    }
 }

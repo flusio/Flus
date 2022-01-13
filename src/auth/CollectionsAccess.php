@@ -30,6 +30,15 @@ class CollectionsAccess
         );
     }
 
+    public static function canUpdateRead($user, $collection)
+    {
+        return (
+            $user && $collection &&
+            $user->id === $collection->user_id &&
+            ($collection->type === 'collection' || $collection->type === 'news')
+        );
+    }
+
     public static function canDelete($user, $collection)
     {
         return (

@@ -34,6 +34,7 @@ class News
 
         $news = $user->news();
         return Response::ok('news/show.phtml', [
+            'news' => $news,
             'links' => $news->links(),
             'has_collections' => count($user->collections(true)) > 0,
             'no_news' => utils\Flash::pop('no_news'),
@@ -65,8 +66,11 @@ class News
         $type = $request->param('type');
         $csrf = $request->param('csrf');
 
+        $news = $user->news();
+
         if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('news/show.phtml', [
+                'news' => $news,
                 'links' => [],
                 'has_collections' => count($user->collections(true)) > 0,
                 'no_news' => false,
