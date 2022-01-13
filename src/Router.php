@@ -91,9 +91,6 @@ class Router
         $router->addRoute('get', '/news', 'News#show', 'news');
         $router->addRoute('post', '/news', 'News#create', 'fill news');
 
-        // Bookmarks
-        $router->addRoute('get', '/bookmarks', 'Bookmarks#index', 'bookmarks');
-
         // Collections
         $router->addRoute('get', '/collections', 'Collections#index', 'collections');
         $router->addRoute('get', '/collections/new', 'Collections#new', 'new collection');
@@ -116,6 +113,7 @@ class Router
         $router->addRoute('post', '/collections/:id/read/later', 'collections/Read#later', 'read collection later');
         $router->addRoute('post', '/collections/:id/read/never', 'collections/Read#never', 'never read collection');
 
+        $router->addRoute('get', '/bookmarks', 'Bookmarks#index', 'bookmarks');
         $router->addRoute('get', '/read', 'collections/Read#index', 'read list');
 
         // Links
