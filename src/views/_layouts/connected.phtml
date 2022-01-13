@@ -160,14 +160,25 @@
                         <nav class="popup__container popup__container--left">
                             <div class="popup__title"><?= protect($current_user->username) ?></div>
 
-                            <a
-                                class="popup__item popup__item--link"
-                                <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
-                                href="<?= url('edit profile') ?>"
-                            >
-                                <?= icon('avatar') ?>
-                                <?= _('Profile') ?>
-                            </a>
+                            <?php if ($beta_enabled): ?>
+                                <a
+                                    class="popup__item popup__item--link"
+                                    <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
+                                    href="<?= url('profile', ['id' => $current_user->id]) ?>"
+                                >
+                                    <?= icon('avatar') ?>
+                                    <?= _('Profile') ?>
+                                </a>
+                            <?php else: ?>
+                                <a
+                                    class="popup__item popup__item--link"
+                                    <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
+                                    href="<?= url('edit profile') ?>"
+                                >
+                                    <?= icon('avatar') ?>
+                                    <?= _('Profile') ?>
+                                </a>
+                            <?php endif; ?>
 
                             <a
                                 class="popup__item popup__item--link"

@@ -138,6 +138,15 @@ class User extends \Minz\Model
     }
 
     /**
+     * @return boolean
+     */
+    public function isSupportUser()
+    {
+        $support_email = \Minz\Configuration::$application['support_email'];
+        return $this->email === $support_email;
+    }
+
+    /**
      * Initialize all the default collections for the current user
      */
     public function initDefaultCollections()
@@ -248,6 +257,19 @@ class User extends \Minz\Model
                 'type' => ['bookmarks', 'collection'],
             ]);
         }
+    }
+
+    /**
+     * Return the list of collections published by the user
+     *
+     * @param boolean $count_hidden_links
+     *     Indicate if number_links should include hidden links
+     *
+     * @return \flusio\models\Collection[]
+     */
+    public function publicCollections($count_hidden_links)
+    {
+        return Collection::daoToList('listPublicWithNumberLinksByUser', $this->id, $count_hidden_links);
     }
 
     /**
