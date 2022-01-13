@@ -38,7 +38,15 @@ class Collections
         }
 
         $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
+        if (
+            !auth\LinksAccess::canUpdate($user, $link) &&
+            auth\LinksAccess::canView($user, $link)
+        ) {
+            $link = $user->obtainLink($link);
+            if (!$link->created_at) {
+                $link->save();
+            }
+        } elseif (!auth\LinksAccess::canUpdate($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -101,7 +109,15 @@ class Collections
         }
 
         $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
+        if (
+            !auth\LinksAccess::canUpdate($user, $link) &&
+            auth\LinksAccess::canView($user, $link)
+        ) {
+            $link = $user->obtainLink($link);
+            if (!$link->created_at) {
+                $link->save();
+            }
+        } elseif (!auth\LinksAccess::canUpdate($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 

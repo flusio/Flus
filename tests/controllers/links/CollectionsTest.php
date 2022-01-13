@@ -81,6 +81,41 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'What do you think?');
     }
 
+    public function testIndexCopiesNotOwnedAndAccessibleLinks()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_name = $this->fake('words', 3, true);
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'is_hidden' => 0,
+            'url' => $url,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'is_public' => 1,
+            'name' => $collection_name,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/collections", [
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseNotContains($response, $collection_name);
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->assertNotNull($new_link);
+    }
+
     public function testIndexRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -100,13 +135,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
     }
 
-    public function testIndexFailsIfLinkIsNotFound()
+    public function testIndexFailsIfLinkIsNotAccessible()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
         $collection_name = $this->fake('words', 3, true);
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
+            'is_hidden' => 1,
         ]);
         $this->create('collection', [
             'user_id' => $other_user_id,
@@ -268,6 +304,66 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_read_list);
     }
 
+    public function testUpdateCopiesNotOwnedAndAccessibleLinks()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'url' => $url,
+            'is_hidden' => 0,
+        ]);
+        $other_collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $owned_collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $other_collection_id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+            'collection_ids' => [$owned_collection_id],
+        ]);
+
+        $this->assertResponse($response, 302, '/bookmarks');
+        // The initial link didn't change of collections
+        $link_to_other_collection = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $other_collection_id,
+        ]);
+        $link_to_owned_collection = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $owned_collection_id,
+        ]);
+        $this->assertNotNull($link_to_other_collection);
+        $this->assertNull($link_to_owned_collection);
+        // But a new link exists, attached to the owned collection
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->assertNotNull($new_link);
+        $new_link_to_other_collection = models\LinkToCollection::findBy([
+            'link_id' => $new_link->id,
+            'collection_id' => $other_collection_id,
+        ]);
+        $new_link_to_owned_collection = models\LinkToCollection::findBy([
+            'link_id' => $new_link->id,
+            'collection_id' => $owned_collection_id,
+        ]);
+        $this->assertNull($new_link_to_other_collection);
+        $this->assertNotNull($new_link_to_owned_collection);
+    }
+
     public function testUpdateRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -306,12 +402,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_collection_2);
     }
 
-    public function testUpdateFailsIfLinkIsNotFound()
+    public function testUpdateFailsIfLinkIsNotAccessible()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
+            'is_hidden' => 1,
         ]);
         $collection_id_1 = $this->create('collection', [
             'user_id' => $other_user_id,

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-13 13:09+0100\n"
-"PO-Revision-Date: 2022-01-13 13:09+0100\n"
+"POT-Creation-Date: 2022-01-13 16:22+0100\n"
+"PO-Revision-Date: 2022-01-13 16:22+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -70,7 +70,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
-#: controllers/links/Collections.php:114 controllers/links/Read.php:45
+#: controllers/links/Collections.php:130 controllers/links/Read.php:45
 #: controllers/links/Read.php:93 controllers/links/Read.php:141
 #: controllers/my/Avatar.php:43
 msgid "A security verification failed."
@@ -92,7 +92,7 @@ msgstr "Vous avez déjà un groupe portant le même nom."
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:236 controllers/links/Collections.php:109
+#: controllers/Links.php:236 controllers/links/Collections.php:125
 #: controllers/links/Obtentions.php:152
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
@@ -546,8 +546,8 @@ msgstr "Nouveau"
 #: views/bookmarks/index.phtml:109 views/collections/show.phtml:84
 #: views/collections/show.phtml:238 views/collections/show.phtml:242
 #: views/collections/show_public.phtml:119
-#: views/collections/show_public.phtml:298
-#: views/collections/show_public.phtml:302 views/links/show.phtml:80
+#: views/collections/show_public.phtml:299
+#: views/collections/show_public.phtml:303 views/links/show.phtml:80
 #: views/links/show.phtml:84 views/read/index.phtml:102
 #: views/read/index.phtml:106
 msgid "Open the menu"
@@ -698,12 +698,12 @@ msgid "Edit"
 msgstr "Modifier"
 
 #: views/bookmarks/index.phtml:136 views/collections/show.phtml:269
-#: views/collections/show_public.phtml:317 views/read/index.phtml:133
+#: views/collections/show_public.phtml:318 views/read/index.phtml:133
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
 #: views/bookmarks/index.phtml:145 views/collections/show.phtml:279
-#: views/collections/show_public.phtml:327
+#: views/collections/show_public.phtml:328
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
@@ -714,7 +714,7 @@ msgid "Manage collections"
 msgstr "Gérer les collections"
 
 #: views/bookmarks/index.phtml:175 views/collections/show.phtml:309
-#: views/collections/show_public.phtml:341 views/links/show.phtml:51
+#: views/collections/show_public.phtml:358 views/links/show.phtml:51
 #: views/links/show_public.phtml:64 views/news/show.phtml:167
 #: views/read/index.phtml:163
 msgid "read"
@@ -1038,7 +1038,13 @@ msgstr "Ne plus suivre"
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:351
+#: views/collections/show_public.phtml:342
+#: views/collections/show_public.phtml:346 views/news/show.phtml:150
+#: views/news/show.phtml:154
+msgid "Add to collections"
+msgstr "Ajouter aux collections"
+
+#: views/collections/show_public.phtml:368
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -1765,10 +1771,6 @@ msgstr "et lire plus tard"
 #: views/news/show.phtml:136
 msgid "and never see again"
 msgstr "et ne plus revoir"
-
-#: views/news/show.phtml:150 views/news/show.phtml:154
-msgid "Add to collections"
-msgstr "Ajouter aux collections"
 
 #: views/news/show.phtml:183
 msgid "Empty the news"
