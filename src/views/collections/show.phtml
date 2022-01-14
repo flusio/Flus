@@ -43,7 +43,7 @@
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type-value="link">
+<div class="section" data-controller="back-storage" data-back-storage-type-value="link,profile">
     <?php if ($collection->image_filename): ?>
         <img
             class="section__image"
@@ -71,7 +71,11 @@
                     </span>
                 <?php endif; ?>
 
-                <?= _f('created by you') ?>
+                <?php if ($beta_enabled): ?>
+                    <?= _f('created by <a href="%s">you</a>', url('profile', ['id' => $current_user->id])) ?>
+                <?php else: ?>
+                    <?= _f('created by you') ?>
+                <?php endif; ?>
             </p>
         </div>
 

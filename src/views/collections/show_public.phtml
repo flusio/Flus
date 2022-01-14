@@ -61,7 +61,7 @@
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type-value="link">
+<div class="section" data-controller="back-storage" data-back-storage-type-value="link,profile">
     <?php if ($collection->image_filename): ?>
         <img
             class="section__image"
@@ -103,7 +103,11 @@
         <?php else: ?>
             <div class="collection__details">
                 <p class="collection__owner">
-                    <?= _f('Created by %s', protect($owner->username)) ?>
+                    <?php if ($beta_enabled): ?>
+                        <?= _f('Created by <a href="%s">%s</a>', url('profile', ['id' => $owner->id]), protect($owner->username)) ?>
+                    <?php else: ?>
+                        <?= _f('Created by %s', protect($owner->username)) ?>
+                    <?php endif; ?>
                 </p>
             </div>
         <?php endif; ?>
