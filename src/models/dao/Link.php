@@ -81,41 +81,72 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return links within the given collection
+     * Return links of the given collection with its computed properties.
      *
-     * You can pass an offset and a limit to paginate the results. It is not
-     * paginated by default.
+     * Links are sorted by published_at if the property is included, or by
+     * created_at otherwise.
      *
      * @param string $collection_id
-     * @param boolean $visible_only
-     * @param integer $offset
-     * @param integer|string $limit
+     *     The collection id the links must match.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
+     * @param array $options
+     *     Custom options to filter links. Possible options are:
+     *     - hidden (boolean, default to true), indicates if hidden links must be included
+     *     - offset (integer, default to 0), the offset for pagination
+     *     - limit (integer|string, default to 'ALL') the limit for pagination
      *
      * @return array
      */
-    public function listByCollectionIdWithNumberComments($collection_id, $visible_only, $offset = 0, $limit = 'ALL')
+    public function listComputedByCollectionId($collection_id, $selected_computed_props, $options = [])
     {
+        $default_options = [
+            'hidden' => true,
+            'offset' => 0,
+            'limit' => 'ALL',
+        ];
+        $options = array_merge($default_options, $options);
+
         $values = [
             ':collection_id' => $collection_id,
-            ':offset' => $offset,
+            ':offset' => $options['offset'],
         ];
 
+        $published_at_clause = '';
+        $order_by_clause = 'ORDER BY l.created_at DESC, l.id';
+        if (in_array('published_at', $selected_computed_props)) {
+            $published_at_clause = ', lc.created_at AS published_at';
+            $order_by_clause = 'ORDER BY lc.created_at DESC, l.id';
+        }
+
+        $number_comments_clause = '';
+        if (in_array('number_comments', $selected_computed_props)) {
+            $number_comments_clause = <<<'SQL'
+                , (
+                    SELECT COUNT(*) FROM messages m
+                    WHERE m.link_id = l.id
+                ) AS number_comments
+            SQL;
+        }
+
         $visibility_clause = '';
-        if ($visible_only) {
+        if (!$options['hidden']) {
             $visibility_clause = 'AND l.is_hidden = false';
         }
 
         $limit_clause = '';
-        if ($limit !== 'ALL') {
+        if ($options['limit'] !== 'ALL') {
             $limit_clause = 'LIMIT :limit';
-            $values[':limit'] = $limit;
+            $values[':limit'] = $options['limit'];
         }
 
         $sql = <<<SQL
-            SELECT l.*, lc.created_at AS published_at, (
-                SELECT COUNT(m.*) FROM messages m
-                WHERE m.link_id = l.id
-            ) AS number_comments
+            SELECT
+                l.*
+                {$published_at_clause}
+                {$number_comments_clause}
             FROM links l, links_to_collections lc
 
             WHERE l.id = lc.link_id
@@ -123,7 +154,7 @@ class Link extends \Minz\DatabaseModel
 
             {$visibility_clause}
 
-            ORDER BY lc.created_at DESC, l.id
+            {$order_by_clause}
             OFFSET :offset
             {$limit_clause}
         SQL;

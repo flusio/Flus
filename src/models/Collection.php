@@ -251,12 +251,16 @@ class Collection extends \Minz\Model
      */
     public function links($offset = 0, $limit = 'ALL')
     {
+        $options = [
+            'hidden' => true,
+            'offset' => $offset,
+            'limit' => $limit,
+        ];
         return Link::daoToList(
-            'listByCollectionIdWithNumberComments',
+            'listComputedByCollectionId',
             $this->id,
-            false,
-            $offset,
-            $limit
+            ['published_at', 'number_comments'],
+            $options
         );
     }
 
@@ -273,12 +277,16 @@ class Collection extends \Minz\Model
      */
     public function visibleLinks($offset = 0, $limit = 'ALL')
     {
+        $options = [
+            'hidden' => false,
+            'offset' => $offset,
+            'limit' => $limit,
+        ];
         return Link::daoToList(
-            'listByCollectionIdWithNumberComments',
+            'listComputedByCollectionId',
             $this->id,
-            true,
-            $offset,
-            $limit
+            ['published_at', 'number_comments'],
+            $options
         );
     }
 
