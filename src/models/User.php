@@ -95,7 +95,7 @@ class User extends \Minz\Model
     {
         $expired_at = \Minz\Time::fromNow(1, 'month');
         parent::__construct(array_merge([
-            'id' => utils\Random::hex(32),
+            'id' => utils\Random::timebased(),
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'username' => '',
             'email' => '',

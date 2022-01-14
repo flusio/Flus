@@ -31,7 +31,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
     '\flusio\models\dao\User',
     [
         'id' => function () {
-            return \flusio\utils\Random::hex(32);
+            return \flusio\utils\Random::timebased();
         },
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
