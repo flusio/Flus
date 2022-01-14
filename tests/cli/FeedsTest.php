@@ -178,7 +178,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, "Feed {$collection_id} ({$feed_url}) has been synchronized.");
         $collection = models\Collection::find($collection_id);
         $this->assertSame('Carnet de Flus', $collection->name);
-        $links_number = count($collection->links());
+        $links_number = count($collection->links([]));
         $this->assertGreaterThan(0, $links_number);
     }
 
@@ -240,7 +240,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertSame($expected_name, $collection->name);
-        $link = $collection->links()[0];
+        $link = $collection->links([])[0];
         $this->assertSame($expected_title, $link->title);
     }
 
@@ -286,7 +286,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertNotSame($not_expected_name, $collection->name);
-        $link = $collection->links()[0];
+        $link = $collection->links([])[0];
         $this->assertNotSame($not_expected_title, $link->title);
     }
 

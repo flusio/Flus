@@ -35,7 +35,7 @@ class News
         $news = $user->news();
         return Response::ok('news/show.phtml', [
             'news' => $news,
-            'links' => $news->links(),
+            'links' => $news->links(['published_at', 'number_comments']),
             'has_collections' => count($user->collections(true)) > 0,
             'no_news' => utils\Flash::pop('no_news'),
         ]);

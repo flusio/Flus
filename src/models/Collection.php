@@ -239,46 +239,22 @@ class Collection extends \Minz\Model
     }
 
     /**
-     * Return the list of links attached to this collection.
+     * Return links of the current collection.
      *
-     * You can pass an offset and a limit to paginate the results. It is not
-     * paginated by default.
+     * @see \flusio\models\dao\Link::listComputedByCollectionId
      *
-     * @param integer $offset
-     * @param integer|string $limit
-     *
-     * @return \flusio\models\Link[]
-     */
-    public function links($offset = 0, $limit = 'ALL')
-    {
-        return Link::daoToList(
-            'listByCollectionIdWithNumberComments',
-            $this->id,
-            false,
-            $offset,
-            $limit
-        );
-    }
-
-    /**
-     * Return the list of not hidden links attached to this collection
-     *
-     * You can pass an offset and a limit to paginate the results. It is not
-     * paginated by default.
-     *
-     * @param integer $offset
-     * @param integer|string $limit
+     * @param string[] $selected_computed_props
+     * @param array $options
      *
      * @return \flusio\models\Link[]
      */
-    public function visibleLinks($offset = 0, $limit = 'ALL')
+    public function links($selected_computed_props, $options = [])
     {
         return Link::daoToList(
-            'listByCollectionIdWithNumberComments',
+            'listComputedByCollectionId',
             $this->id,
-            true,
-            $offset,
-            $limit
+            $selected_computed_props,
+            $options
         );
     }
 

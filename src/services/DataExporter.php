@@ -59,7 +59,7 @@ class DataExporter
             $files["collections/{$collection->id}.atom.xml"] = $this->generateCollection($collection);
         }
 
-        $links = models\Link::daoToList('listWithCommentsForUser', $user->id);
+        $links = models\Link::daoToList('listByUserIdWithComments', $user->id);
         foreach ($links as $link) {
             $files["messages/{$link->id}.atom.xml"] = $this->generateLink($link);
         }
@@ -128,7 +128,7 @@ class DataExporter
             'user_agent' => \Minz\Configuration::$application['user_agent'],
             'collection' => $collection,
             'topics' => $collection->topics(),
-            'links' => $collection->links(),
+            'links' => $collection->links(['published_at']),
         ]);
 
         return $view->render();

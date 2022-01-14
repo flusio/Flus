@@ -181,7 +181,7 @@ class Collections
             ]);
         }
 
-        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, !$can_update);
+        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, ['hidden' => $can_update]);
         $pagination_page = intval($request->param('page', 1));
         $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!
         $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
@@ -202,7 +202,10 @@ class Collections
             return Response::ok('collections/feed.atom.xml.php', [
                 'collection' => $collection,
                 'topics' => $topics,
-                'links' => $collection->visibleLinks(),
+                'links' => $collection->links(
+                    ['published_at'],
+                    ['hidden' => false]
+                ),
                 'user_agent' => \Minz\Configuration::$application['user_agent'],
             ]);
         } elseif ($can_update) {
@@ -210,8 +213,11 @@ class Collections
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->links(
-                    $pagination->currentOffset(),
-                    $pagination->numberPerPage()
+                    ['published_at', 'number_comments'],
+                    [
+                        'offset' => $pagination->currentOffset(),
+                        'limit' => $pagination->numberPerPage()
+                    ]
                 ),
                 'pagination' => $pagination,
             ]);
@@ -219,9 +225,13 @@ class Collections
             return Response::ok('collections/show_public.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
-                'links' => $collection->visibleLinks(
-                    $pagination->currentOffset(),
-                    $pagination->numberPerPage()
+                'links' => $collection->links(
+                    ['published_at', 'number_comments'],
+                    [
+                        'hidden' => false,
+                        'offset' => $pagination->currentOffset(),
+                        'limit' => $pagination->numberPerPage()
+                    ]
                 ),
                 'pagination' => $pagination,
             ]);

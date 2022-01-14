@@ -37,10 +37,10 @@ class Searches
         $url = $request->param('url', '');
         $url = \SpiderBits\Url::sanitize($url);
 
-        $existing_link = models\Link::daoToModel('findByWithNumberComments', [
+        $existing_link = models\Link::daoToModel('findComputedBy', [
             'url' => $url,
             'user_id' => $user->id,
-        ]);
+        ], ['number_comments']);
         $default_link = models\Link::findBy([
             'url' => $url,
             'user_id' => $support_user->id,
