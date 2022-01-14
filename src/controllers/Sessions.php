@@ -100,6 +100,15 @@ class Sessions
             ]);
         }
 
+        if ($user->isSupportUser()) {
+            return Response::badRequest('sessions/new.phtml', [
+                'email' => $email,
+                'password' => $password,
+                'redirect_to' => $redirect_to,
+                'error' => _('What are you trying to do? You can’t login to the support account.'),
+            ]);
+        }
+
         if (!$user->verifyPassword($password)) {
             return Response::badRequest('sessions/new.phtml', [
                 'email' => $email,

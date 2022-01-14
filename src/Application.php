@@ -54,6 +54,19 @@ class Application
         }
         $current_user = auth\CurrentUser::get();
 
+        // A malicious user succeeded to logged in as the support user? He
+        // should not pass.
+        if ($current_user && $current_user->isSupportUser()) {
+            $current_session_token = auth\CurrentUser::sessionToken();
+            $session = models\Session::findBy(['token' => $current_session_token]);
+            models\Session::delete($session->id);
+            auth\CurrentUser::reset();
+
+            $response = \Minz\Response::redirect('login');
+            $response->removeCookie('flusio_session_token');
+            return $response;
+        }
+
         // Redirect the user if she didn't validated its account after the
         // first day.
         if ($current_user && $this->mustRedirectToValidation($request, $current_user)) {
