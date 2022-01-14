@@ -117,7 +117,7 @@ class Link extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listWithCommentsForUser($user_id)
+    public function listByUserIdWithComments($user_id)
     {
         $sql = <<<SQL
             SELECT l.*
@@ -334,7 +334,7 @@ class Link extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listIdsByUrlsForUser($user_id)
+    public function listUrlsToIdsByUserId($user_id)
     {
         $sql = <<<SQL
             SELECT id, url FROM links
@@ -360,7 +360,7 @@ class Link extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listIdsByUrlsForCollection($collection_id)
+    public function listUrlsToIdsByCollectionId($collection_id)
     {
         $sql = <<<SQL
             SELECT l.id, l.url FROM links l, links_to_collections lc
@@ -387,7 +387,7 @@ class Link extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listUrlsByEntryIdsForCollection($collection_id)
+    public function listEntryIdsToUrlsByCollectionId($collection_id)
     {
         $sql = <<<SQL
             SELECT l.id, l.url, l.feed_entry_id

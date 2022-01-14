@@ -102,8 +102,8 @@ class FeedFetcher
 
         $collection->save();
 
-        $link_ids_by_urls = models\Link::daoCall('listIdsByUrlsForCollection', $collection->id);
-        $link_urls_by_entry_ids = models\Link::daoCall('listUrlsByEntryIdsForCollection', $collection->id);
+        $link_ids_by_urls = models\Link::daoCall('listUrlsToIdsByCollectionId', $collection->id);
+        $link_urls_by_entry_ids = models\Link::daoCall('listEntryIdsToUrlsByCollectionId', $collection->id);
 
         $links_columns = [];
         $links_to_create = [];

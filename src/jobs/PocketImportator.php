@@ -125,7 +125,7 @@ class PocketImportator extends Job
         }
 
         // This will be used to check if URL has already been added by the user
-        $link_ids_by_urls = models\Link::daoCall('listIdsByUrlsForUser', $user->id);
+        $link_ids_by_urls = models\Link::daoCall('listUrlsToIdsByUserId', $user->id);
         // ... or collection already exists
         $collection_ids_by_names = models\Collection::daoCall('listIdsByNamesForUser', $user->id);
 
