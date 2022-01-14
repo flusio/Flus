@@ -26,6 +26,7 @@
         enctype="multipart/form-data"
     >
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
 
         <img class="form-avatar__photo" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
 
@@ -65,6 +66,7 @@
 
     <form method="post" action="<?= url('update profile') ?>">
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
 
         <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">
             <label for="username">
