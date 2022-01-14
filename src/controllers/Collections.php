@@ -213,10 +213,11 @@ class Collections
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->links(
-                    ['published_at', 'number_comments'],
+                    ['published_at', 'number_comments', 'is_read'],
                     [
                         'offset' => $pagination->currentOffset(),
-                        'limit' => $pagination->numberPerPage()
+                        'limit' => $pagination->numberPerPage(),
+                        'context_user_id' => $user->id,
                     ]
                 ),
                 'pagination' => $pagination,
@@ -226,11 +227,12 @@ class Collections
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->links(
-                    ['published_at', 'number_comments'],
+                    ['published_at', 'number_comments', 'is_read'],
                     [
                         'hidden' => false,
                         'offset' => $pagination->currentOffset(),
-                        'limit' => $pagination->numberPerPage()
+                        'limit' => $pagination->numberPerPage(),
+                        'context_user_id' => $user ? $user->id : '',
                     ]
                 ),
                 'pagination' => $pagination,

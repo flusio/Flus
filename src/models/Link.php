@@ -98,6 +98,11 @@ class Link extends \Minz\Model
             'type' => 'integer',
             'computed' => true,
         ],
+
+        'is_read' => [
+            'type' => 'boolean',
+            'computed' => true,
+        ],
     ];
 
     /**
@@ -189,18 +194,6 @@ class Link extends \Minz\Model
             return null;
         }
         return Collection::find($this->via_collection_id);
-    }
-
-    /**
-     * Return whether the given user has read the URL or not.
-     *
-     * @param string $user_id
-     *
-     * @return boolean
-     **/
-    public function hasUserReadUrl($user_id)
-    {
-        return Link::daoCall('hasUserReadUrl', $user_id, $this->url);
     }
 
     /**

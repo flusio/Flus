@@ -36,18 +36,20 @@ class Link extends \Minz\DatabaseModel
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
+     * @param array $options
+     *     Custom options to filter links. Possible option is:
+     *     - context_user_id (string, default to ''), is_read refers to this user id
      *
      * @return array
      */
-    public function findComputedBy($values, $selected_computed_props)
+    public function findComputedBy($values, $selected_computed_props, $options = [])
     {
+        $default_options = [
+            'context_user_id' => '',
+        ];
+        $options = array_merge($default_options, $options);
+
         $parameters = [];
-        $where_statement_as_array = [];
-        foreach ($values as $property => $parameter) {
-            $parameters[] = $parameter;
-            $where_statement_as_array[] = "{$property} = ?";
-        }
-        $where_statement = implode(' AND ', $where_statement_as_array);
 
         // Note that publication date is usually computed by considering the
         // date of association with a collection. Without collection, we
@@ -67,11 +69,47 @@ class Link extends \Minz\DatabaseModel
             SQL;
         }
 
+        $read_links_clause = '';
+        $is_read_clause = '';
+        if (in_array('is_read', $selected_computed_props)) {
+            $read_links_clause = <<<'SQL'
+                WITH read_links AS (
+                    SELECT l_read.url
+                    FROM links l_read, collections c_read, links_to_collections lc_read
+
+                    WHERE c_read.user_id = ?
+                    AND c_read.type = 'read'
+
+                    AND lc_read.link_id = l_read.id
+                    AND lc_read.collection_id = c_read.id
+                )
+            SQL;
+
+            $is_read_clause = <<<'SQL'
+                , (
+                    SELECT 1 FROM read_links
+                    WHERE read_links.url = l.url
+                ) AS is_read
+            SQL;
+
+            $parameters[] = $options['context_user_id'];
+        }
+
+        $where_statement_as_array = [];
+        foreach ($values as $property => $parameter) {
+            $parameters[] = $parameter;
+            $where_statement_as_array[] = "{$property} = ?";
+        }
+        $where_statement = implode(' AND ', $where_statement_as_array);
+
         $sql = <<<SQL
+            {$read_links_clause}
+
             SELECT
                 l.*
                 {$published_at_clause}
                 {$number_comments_clause}
+                {$is_read_clause}
             FROM links l
             WHERE {$where_statement}
         SQL;
@@ -103,6 +141,7 @@ class Link extends \Minz\DatabaseModel
      *     - hidden (boolean, default to true), indicates if hidden links must be included
      *     - offset (integer, default to 0), the offset for pagination
      *     - limit (integer|string, default to 'ALL') the limit for pagination
+     *     - context_user_id (string, default to ''), is_read refers to this user id
      *
      * @return array
      */
@@ -112,6 +151,7 @@ class Link extends \Minz\DatabaseModel
             'hidden' => true,
             'offset' => 0,
             'limit' => 'ALL',
+            'context_user_id' => '',
         ];
         $options = array_merge($default_options, $options);
 
@@ -137,6 +177,32 @@ class Link extends \Minz\DatabaseModel
             SQL;
         }
 
+        $read_links_clause = '';
+        $is_read_clause = '';
+        if (in_array('is_read', $selected_computed_props)) {
+            $read_links_clause = <<<'SQL'
+                WITH read_links AS (
+                    SELECT l_read.url
+                    FROM links l_read, collections c_read, links_to_collections lc_read
+
+                    WHERE c_read.user_id = :user_id
+                    AND c_read.type = 'read'
+
+                    AND lc_read.link_id = l_read.id
+                    AND lc_read.collection_id = c_read.id
+                )
+            SQL;
+
+            $is_read_clause = <<<'SQL'
+                , (
+                    SELECT 1 FROM read_links
+                    WHERE read_links.url = l.url
+                ) AS is_read
+            SQL;
+
+            $values[':user_id'] = $options['context_user_id'];
+        }
+
         $visibility_clause = '';
         if (!$options['hidden']) {
             $visibility_clause = 'AND l.is_hidden = false';
@@ -149,10 +215,13 @@ class Link extends \Minz\DatabaseModel
         }
 
         $sql = <<<SQL
+            {$read_links_clause}
+
             SELECT
                 l.*
                 {$published_at_clause}
                 {$number_comments_clause}
+                {$is_read_clause}
             FROM links l, links_to_collections lc
 
             WHERE l.id = lc.link_id
@@ -208,37 +277,5 @@ class Link extends \Minz\DatabaseModel
             ':collection_id' => $collection_id,
         ]);
         return intval($statement->fetchColumn());
-    }
-
-    /**
-     * Return whether the given user has read the URL or not.
-     *
-     * @param string $user_id
-     * @param string $url
-     *
-     * @return boolean
-     **/
-    public function hasUserReadUrl($user_id, $url)
-    {
-        $sql = <<<SQL
-            SELECT 1
-            FROM links l, links_to_collections lc, collections c
-
-            WHERE l.id = lc.link_id
-            AND c.id = lc.collection_id
-
-            AND c.user_id = :user_id
-            AND l.url = :url
-
-            AND c.type = 'read'
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([
-            ':user_id' => $user_id,
-            ':url' => $url,
-        ]);
-        $result = $statement->fetchColumn();
-        return $result === 1;
     }
 }

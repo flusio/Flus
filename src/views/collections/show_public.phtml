@@ -235,7 +235,6 @@
     <?php if ($links): ?>
         <div class="cards cards--centered">
             <?php foreach ($links as $link): ?>
-                <?php $has_read_url = $current_user && $link->hasUserReadUrl($current_user->id); ?>
                 <div class="card">
                     <a
                         class="anchor--hidden"
@@ -278,7 +277,7 @@
                                 <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
                             <?php endif; ?>
 
-                            <?php if ($has_read_url): ?>
+                            <?php if ($link->is_read): ?>
                                 &nbsp;<span title="<?= _('You read this link.') ?>" aria-label="<?= _('You read this link.') ?>"><?= icon('check') ?></span>
                             <?php endif; ?>
                         </p>
@@ -323,7 +322,7 @@
                                         </button>
                                     </div>
 
-                                    <?php if ($current_user && !$has_read_url): ?>
+                                    <?php if ($current_user && !$link->is_read): ?>
                                         <form method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => url('collection', $current_url_params)]) ?>">
                                             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
