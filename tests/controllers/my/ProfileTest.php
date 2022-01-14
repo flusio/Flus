@@ -15,19 +15,23 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testEditRendersCorrectly()
     {
         $this->login();
 
-        $response = $this->appRun('get', '/my/profile');
+        $response = $this->appRun('get', '/my/profile', [
+            'from' => \Minz\Url::for('edit profile'),
+        ]);
 
         $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'my/profile/show.phtml');
+        $this->assertPointer($response, 'my/profile/edit.phtml');
     }
 
-    public function testShowRedirectsToLoginIfUserNotConnected()
+    public function testEditRedirectsToLoginIfUserNotConnected()
     {
-        $response = $this->appRun('get', '/my/profile');
+        $response = $this->appRun('get', '/my/profile', [
+            'from' => \Minz\Url::for('edit profile'),
+        ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
     }
@@ -45,6 +49,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'fr_FR',
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/profile');
@@ -63,6 +68,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'username' => $this->fake('username'),
             'locale' => 'fr_FR',
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
@@ -81,6 +87,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'csrf' => \Minz\CSRF::generate(),
             'username' => $new_username,
             'locale' => 'fr_FR',
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
@@ -102,6 +109,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
             'username' => $new_username,
             'locale' => 'fr_FR',
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 400, 'A security verification failed');
@@ -123,6 +131,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'fr_FR',
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 400, 'The username must be less than 50 characters');
@@ -144,6 +153,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'fr_FR',
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -164,6 +174,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'locale' => 'fr_FR',
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 400, 'The username is required');
@@ -184,6 +195,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 400, 'The locale is required');
@@ -205,6 +217,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'username' => $new_username,
             'locale' => 'not a locale',
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 400, 'The locale is invalid');

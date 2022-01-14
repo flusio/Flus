@@ -17,14 +17,15 @@ class Avatar
      * Set the avatar of the current user
      *
      * @request_param string csrf
+     * @request_param string from
      * @request_param file avatar
      *
-     * @response 302 /login?redirect_to=/my/profile
+     * @response 302 /login?redirect_to=:from
      *     If the user is not connected
-     * @response 302
+     * @response 302 :from
      * @flash error
      *     If the CSRF or avatar are invalid
-     * @response 302 /my/profile
+     * @response 302 :from
      *     On success
      */
     public function update($request)
@@ -32,33 +33,32 @@ class Avatar
         $user = auth\CurrentUser::get();
         $avatar_file = $request->paramFile('avatar');
         $csrf = $request->param('csrf');
+        $from = $request->param('from');
 
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('profile'),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
-            return Response::redirect('profile');
+            return Response::found($from);
         }
 
         if (!$avatar_file) {
             utils\Flash::set('error', _('The file is required.'));
-            return Response::redirect('profile');
+            return Response::found($from);
         }
 
         if ($avatar_file->isTooLarge()) {
             utils\Flash::set('error', _('This file is too large.'));
-            return Response::redirect('profile');
+            return Response::found($from);
         } elseif ($avatar_file->error) {
             $error = $avatar_file->error;
             utils\Flash::set(
                 'error',
                 vsprintf(_('This file cannot be uploaded (error %d).'), [$error])
             );
-            return Response::redirect('profile');
+            return Response::found($from);
         }
 
         $media_path = \Minz\Configuration::$application['media_path'];
@@ -79,7 +79,7 @@ class Avatar
 
         if ($image_type !== 'png' && $image_type !== 'jpeg') {
             utils\Flash::set('error', _('The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>.'));
-            return Response::redirect('profile');
+            return Response::found($from);
         }
 
         $image->resize(150, 150);
@@ -95,6 +95,6 @@ class Avatar
         $user->avatar_filename = $image_filename;
         $user->save();
 
-        return Response::redirect('profile');
+        return Response::found($from);
     }
 }

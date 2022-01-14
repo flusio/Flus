@@ -156,6 +156,45 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
+     * Returns the list of public collections of the given user
+     *
+     * @param string $user_id
+     * @param boolean $count_hidden_links
+     *     Indicate if number_links should include hidden links
+     *
+     * @return array
+     */
+    public function listPublicWithNumberLinksByUser($user_id, $count_hidden_links)
+    {
+        $is_hidden_placeholder = '';
+        if (!$count_hidden_links) {
+            $is_hidden_placeholder = 'AND l.is_hidden = false';
+        }
+
+        $sql = <<<SQL
+            SELECT c.*, COUNT(lc.*) AS number_links
+            FROM collections c, links_to_collections lc, links l
+
+            WHERE c.id = lc.collection_id
+            AND l.id = lc.link_id
+
+            AND c.is_public = true
+            AND c.type = 'collection'
+            {$is_hidden_placeholder}
+
+            AND c.user_id = :user_id
+
+            GROUP BY c.id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Count the collections attached to the given topic
      *
      * @param string $topic_id

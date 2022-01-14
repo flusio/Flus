@@ -95,7 +95,7 @@ class User extends \Minz\Model
     {
         $expired_at = \Minz\Time::fromNow(1, 'month');
         parent::__construct(array_merge([
-            'id' => utils\Random::hex(32),
+            'id' => utils\Random::timebased(),
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'username' => '',
             'email' => '',
@@ -135,6 +135,15 @@ class User extends \Minz\Model
             'password_hash' => self::passwordHash($default_password),
             'validated_at' => \Minz\Time::now(),
         ]);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSupportUser()
+    {
+        $support_email = \Minz\Configuration::$application['support_email'];
+        return $this->email === $support_email;
     }
 
     /**
@@ -248,6 +257,19 @@ class User extends \Minz\Model
                 'type' => ['bookmarks', 'collection'],
             ]);
         }
+    }
+
+    /**
+     * Return the list of collections published by the user
+     *
+     * @param boolean $count_hidden_links
+     *     Indicate if number_links should include hidden links
+     *
+     * @return \flusio\models\Collection[]
+     */
+    public function publicCollections($count_hidden_links)
+    {
+        return Collection::daoToList('listPublicWithNumberLinksByUser', $this->id, $count_hidden_links);
     }
 
     /**

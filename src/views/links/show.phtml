@@ -14,7 +14,7 @@
     ]);
 ?>
 
-<div class="section">
+<div class="section section--longbottom" data-controller="back-storage" data-back-storage-type-value="profile">
     <?php if ($link->image_filename): ?>
         <img
             class="section__image"
@@ -60,11 +60,23 @@
             <article class="message" id="message-<?= $message->id ?>">
                 <header class="message__header header">
                     <div class="header__container header__container--centered">
-                        <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+                        <?php if ($beta_enabled): ?>
+                            <a tabindex="-1" href="<?= url('profile', ['id' => $user->id]) ?>">
+                                <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+                            </a>
 
-                        <div class="message__author">
-                            <?= protect($user->username) ?>
-                        </div>
+                            <div class="message__author">
+                                <a class="anchor--hidden" href="<?= url('profile', ['id' => $user->id]) ?>">
+                                    <?= protect($user->username) ?>
+                                </a>
+                            </div>
+                        <?php else: ?>
+                            <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+
+                            <div class="message__author">
+                                <?= protect($user->username) ?>
+                            </div>
+                        <?php endif; ?>
 
                         <div class="header__separator"></div>
 

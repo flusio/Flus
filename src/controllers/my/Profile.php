@@ -16,25 +16,28 @@ use flusio\utils;
 class Profile
 {
     /**
-     * Show the main profile page.
+     * Show the form to edit the current user’s profile.
      *
-     * @response 302 /login?redirect_to=/my/profile
+     * @request_param string from (default is /my/profile)
+     *
+     * @response 302 /login?redirect_to=:from
      *    If the user is not connected
      * @response 200
      *    On success
      */
-    public function show()
+    public function edit($request)
     {
+        $from = $request->param('from', \Minz\Url::for('edit profile'));
+
         $user = auth\CurrentUser::get();
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('profile'),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        return Response::ok('my/profile/show.phtml', [
+        return Response::ok('my/profile/edit.phtml', [
             'username' => $user->username,
             'locale' => $user->locale,
+            'from' => $from,
         ]);
     }
 
@@ -44,12 +47,13 @@ class Profile
      * @request_param string csrf
      * @request_param string username
      * @request_param string locale
+     * @request_param string from
      *
-     * @response 302 /login?redirect_to=/my/profile
+     * @response 302 /login?redirect_to=:from
      *     If the user is not connected
      * @response 400
      *     If the CSRF, username or locale are invalid
-     * @response 302 /my/profile
+     * @response 302 :from
      *     On success
      */
     public function update($request)
@@ -57,18 +61,18 @@ class Profile
         $username = $request->param('username');
         $locale = $request->param('locale');
         $csrf = $request->param('csrf');
+        $from = $request->param('from');
 
         $user = auth\CurrentUser::get();
         if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('profile'),
-            ]);
+            return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         if (!\Minz\CSRF::validate($csrf)) {
-            return Response::badRequest('my/profile/show.phtml', [
+            return Response::badRequest('my/profile/edit.phtml', [
                 'username' => $username,
                 'locale' => $locale,
+                'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
@@ -86,9 +90,10 @@ class Profile
             // (referenced by the CurrentUser::$instance)
             $user->username = $old_username;
             $user->locale = $old_locale;
-            return Response::badRequest('my/profile/show.phtml', [
+            return Response::badRequest('my/profile/edit.phtml', [
                 'username' => $username,
                 'locale' => $locale,
+                'from' => $from,
                 'errors' => $errors,
             ]);
         }
@@ -96,6 +101,6 @@ class Profile
         $user->save();
         utils\Locale::setCurrentLocale($locale);
 
-        return Response::redirect('profile');
+        return Response::found($from);
     }
 }

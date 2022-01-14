@@ -45,11 +45,13 @@ class Router
         $router->addRoute('get', '/onboarding', 'Onboarding#show', 'onboarding');
         $router->addRoute('post', '/onboarding/locale', 'Onboarding#updateLocale', 'onboarding update locale');
 
-        // "My" section
-        $router->addRoute('get', '/my/profile', 'my/Profile#show', 'profile');
+        // Profile
+        $router->addRoute('get', '/p/:id', 'Profiles#show', 'profile');
+        $router->addRoute('get', '/my/profile', 'my/Profile#edit', 'edit profile');
         $router->addRoute('post', '/my/profile', 'my/Profile#update', 'update profile');
         $router->addRoute('post', '/my/profile/avatar', 'my/Avatar#update', 'update avatar');
 
+        // "My" section
         $router->addRoute('get', '/my/info.json', 'my/Info#show', 'profile info');
 
         $router->addRoute('get', '/my/security', 'my/Security#show', 'security');

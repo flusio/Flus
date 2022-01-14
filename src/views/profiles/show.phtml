@@ -1,0 +1,91 @@
+<?php
+    $open_graph = [
+        'title' => _f('%s on %s', $user->username, $brand),
+        'description' => _f('Discover %s’s collections on %s.', $user->username, $brand),
+        'locale' => $user->locale,
+        'url' => url_full('profile', ['id' => $user->id]),
+    ];
+
+    $this->layout('base.phtml', [
+        'title' => $user->username,
+        'canonical' => url_full('profile', ['id' => $user->id]),
+        'current_page' => $is_current_user_profile ? 'profile' : '',
+        'open_graph' => $open_graph,
+        'back' => [
+            'href' => url('home'),
+            'label' => _('Back'),
+            'js-back-anchor-type' => 'profile',
+            'js-back-anchor-mode' => 'hide-if-none',
+        ],
+    ]);
+?>
+
+<div class="section section--longbottom" data-controller="back-storage" data-back-storage-type-value="collection">
+    <img class="form-avatar__photo" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+
+    <div class="section__title">
+        <h1><?= protect($user->username) ?></h1>
+    </div>
+
+    <?php if ($is_current_user_profile): ?>
+        <div class="profile__meta">
+            <p class="profile__details">
+                <?= _('This is your public profile!') ?>
+            </p>
+
+            <div class="profile__actions">
+                <button
+                    class="button--small"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="<?= url('edit profile', ['from' => url('profile', ['id' => $user->id])]) ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    <?= icon('pencil') ?>
+                    <?= _('Edit') ?>
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($collections): ?>
+        <div class="cards cards--centered">
+            <?php foreach ($collections as $collection): ?>
+                <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>');">
+                    <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+                        <div class="card__title">
+                            <?= protect($collection->name) ?>
+                        </div>
+
+                        <p class="card__text card__text--oneline">
+                            <?php
+                                if ($collection->type === 'feed'):
+                                    $via = _f('Feed %s', protect($collection->feedWebsite()));
+                                else:
+                                    $via = _f('By %s', protect($collection->owner()->username));
+                                endif;
+
+                                if ($collection->number_links === 0):
+                                    $number_links = _('no links');
+                                else:
+                                    $number_links = _nf('%d link', '%d links', $collection->number_links, $collection->number_links);
+                                endif;
+                            ?>
+
+                            <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
+                        </p>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php elseif ($is_current_user_profile): ?>
+        <p class="paragraph--placeholder">
+            <?= _('You didn’t publish any collections yet.') ?>
+        </p>
+    <?php else: ?>
+        <p class="paragraph--placeholder">
+            <?= _('This user didn’t publish any collections yet.') ?>
+        </p>
+    <?php endif; ?>
+</div>

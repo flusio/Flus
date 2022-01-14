@@ -32,6 +32,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile/avatar', [
             'csrf' => $user->csrf,
             'avatar' => $file,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
@@ -68,6 +69,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile/avatar', [
             'csrf' => $user->csrf,
             'avatar' => $file,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
@@ -95,6 +97,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile/avatar', [
             'csrf' => 'a token',
             'avatar' => $file,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
@@ -117,6 +120,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile/avatar', [
             'csrf' => 'not the token',
             'avatar' => $file,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
@@ -133,6 +137,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('post', '/my/profile/avatar', [
             'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
@@ -156,6 +161,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile/avatar', [
             'csrf' => $user->csrf,
             'avatar' => $file,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
@@ -180,6 +186,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile/avatar', [
             'csrf' => $user->csrf,
             'avatar' => $file,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
@@ -206,6 +213,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile/avatar', [
             'csrf' => $user->csrf,
             'avatar' => $file,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
@@ -232,6 +240,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('post', '/my/profile/avatar', [
             'csrf' => $user->csrf,
             'avatar' => $file,
+            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponse($response, 302, '/my/profile');
