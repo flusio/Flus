@@ -181,7 +181,7 @@ class Collections
             ]);
         }
 
-        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, !$can_update);
+        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, ['hidden' => $can_update]);
         $pagination_page = intval($request->param('page', 1));
         $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!
         $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);

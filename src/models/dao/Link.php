@@ -171,17 +171,25 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Count links within the given collection
+     * Count links of the given collection.
      *
      * @param string $collection_id
-     * @param boolean $visible_only
+     *     The collection id the links must match.
+     * @param array $options
+     *     Custom options to filter links. Possible option is:
+     *     - hidden (boolean, default to true), indicates if hidden links must be included
      *
      * @return array
      */
-    public function countByCollectionId($collection_id, $visible_only)
+    public function countByCollectionId($collection_id, $options = [])
     {
+        $default_options = [
+            'hidden' => true,
+        ];
+        $options = array_merge($default_options, $options);
+
         $visibility_clause = '';
-        if ($visible_only) {
+        if (!$options['hidden']) {
             $visibility_clause = 'AND l.is_hidden = false';
         }
 
