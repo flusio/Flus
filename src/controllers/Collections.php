@@ -202,7 +202,10 @@ class Collections
             return Response::ok('collections/feed.atom.xml.php', [
                 'collection' => $collection,
                 'topics' => $topics,
-                'links' => $collection->visibleLinks(),
+                'links' => $collection->links(
+                    ['published_at'],
+                    ['hidden' => false]
+                ),
                 'user_agent' => \Minz\Configuration::$application['user_agent'],
             ]);
         } elseif ($can_update) {
@@ -210,8 +213,11 @@ class Collections
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->links(
-                    $pagination->currentOffset(),
-                    $pagination->numberPerPage()
+                    ['published_at', 'number_comments'],
+                    [
+                        'offset' => $pagination->currentOffset(),
+                        'limit' => $pagination->numberPerPage()
+                    ]
                 ),
                 'pagination' => $pagination,
             ]);
@@ -219,9 +225,13 @@ class Collections
             return Response::ok('collections/show_public.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
-                'links' => $collection->visibleLinks(
-                    $pagination->currentOffset(),
-                    $pagination->numberPerPage()
+                'links' => $collection->links(
+                    ['published_at', 'number_comments'],
+                    [
+                        'hidden' => false,
+                        'offset' => $pagination->currentOffset(),
+                        'limit' => $pagination->numberPerPage()
+                    ]
                 ),
                 'pagination' => $pagination,
             ]);

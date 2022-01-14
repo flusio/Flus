@@ -30,7 +30,7 @@ class Bookmarks
         $bookmarks = $user->bookmarks();
         return Response::ok('bookmarks/index.phtml', [
             'collection' => $bookmarks,
-            'links' => $bookmarks->links(),
+            'links' => $bookmarks->links(['published_at', 'number_comments']),
         ]);
     }
 }

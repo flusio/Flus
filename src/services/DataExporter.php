@@ -128,7 +128,7 @@ class DataExporter
             'user_agent' => \Minz\Configuration::$application['user_agent'],
             'collection' => $collection,
             'topics' => $collection->topics(),
-            'links' => $collection->links(),
+            'links' => $collection->links(['published_at']),
         ]);
 
         return $view->render();

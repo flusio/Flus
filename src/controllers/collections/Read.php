@@ -47,8 +47,11 @@ class Read
         return Response::ok('read/index.phtml', [
             'collection' => $read_list,
             'links' => $read_list->links(
-                $pagination->currentOffset(),
-                $pagination->numberPerPage()
+                ['published_at', 'number_comments'],
+                [
+                    'offset' => $pagination->currentOffset(),
+                    'limit' => $pagination->numberPerPage()
+                ]
             ),
             'pagination' => $pagination,
         ]);
@@ -85,7 +88,7 @@ class Read
         $collection = models\Collection::find($collection_id);
         $links = [];
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links();
+            $links = $collection->links([]);
         } elseif ($user->isFollowing($collection->id)) {
             // This loop is not efficient since the collection may contain a
             // lot of links. If it becomes an issue, it could be fixed by
@@ -93,7 +96,7 @@ class Read
             // URLs. The result could then be inserted in DB with a bulk
             // operation.
             // See also similar loops in later() and never() methods.
-            foreach ($collection->visibleLinks() as $link) {
+            foreach ($collection->links([], ['hidden' => false]) as $link) {
                 $new_link = $user->obtainLink($link);
                 if (!$new_link->created_at) {
                     $new_link->save();
@@ -146,9 +149,9 @@ class Read
         $collection = models\Collection::find($collection_id);
         $links = [];
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links();
+            $links = $collection->links([]);
         } elseif ($user->isFollowing($collection->id)) {
-            foreach ($collection->visibleLinks() as $link) {
+            foreach ($collection->links([], ['hidden' => false]) as $link) {
                 $new_link = $user->obtainLink($link);
                 if (!$new_link->created_at) {
                     $new_link->save();
@@ -201,9 +204,9 @@ class Read
         $collection = models\Collection::find($collection_id);
         $links = [];
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links();
+            $links = $collection->links([]);
         } elseif ($user->isFollowing($collection->id)) {
-            foreach ($collection->visibleLinks() as $link) {
+            foreach ($collection->links([], ['hidden' => false]) as $link) {
                 $new_link = $user->obtainLink($link);
                 if (!$new_link->created_at) {
                     $new_link->save();
