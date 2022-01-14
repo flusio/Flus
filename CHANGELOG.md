@@ -1,5 +1,38 @@
 # Changelog of flusio
 
+## 2022-01-14 - v0.39
+
+### News
+
+- Display an icon to distinguish read links
+- Allow to mark a link as read on collections pages
+- Allow to mark a followed collection as read
+- Allow to obtain a link from a public collection
+- Add public profile pages (beta)
+
+### Security
+
+- Improve security around the support user
+
+### Improvements
+
+- Change the icon of the action of adding a new link in collections
+- Add a separator above the unfollow button
+- Homogeneize the login modal look
+- Display "new feed" errors in the modal (beta)
+- Use "followed feeds" wording (beta)
+
+### Bug fixes
+
+- Allow blocked users to contact the support
+- Fix some incorrect current\_tab for collections (beta)
+
+### Misc
+
+- Provide CLI to validate a user
+- Update Stimulus and Turbo dependencies
+- Update parcel to v2.2.0
+
 ## 2022-01-10 - v0.38
 
 ### News
