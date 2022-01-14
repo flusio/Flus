@@ -22,13 +22,18 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
-     * Return link with computed number_comments
+     * Return a link with its computed properties.
      *
      * @param array $values
+     *     The conditions the link must match.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
      *
      * @return array
      */
-    public function findByWithNumberComments($values)
+    public function findComputedBy($values, $selected_computed_props)
     {
         $parameters = [];
         $where_statement_as_array = [];
@@ -38,11 +43,29 @@ class Link extends \Minz\DatabaseModel
         }
         $where_statement = implode(' AND ', $where_statement_as_array);
 
+        // Note that publication date is usually computed by considering the
+        // date of association with a collection. Without collection, we
+        // consider its date of insertion in the database.
+        $published_at_clause = '';
+        if (in_array('published_at', $selected_computed_props)) {
+            $published_at_clause = ', l.created_at AS published_at';
+        }
+
+        $number_comments_clause = '';
+        if (in_array('number_comments', $selected_computed_props)) {
+            $number_comments_clause = <<<'SQL'
+                , (
+                    SELECT COUNT(*) FROM messages m
+                    WHERE m.link_id = l.id
+                ) AS number_comments
+            SQL;
+        }
+
         $sql = <<<SQL
-            SELECT l.*, (
-                SELECT COUNT(*) FROM messages m
-                WHERE m.link_id = l.id
-            ) AS number_comments
+            SELECT
+                l.*
+                {$published_at_clause}
+                {$number_comments_clause}
             FROM links l
             WHERE {$where_statement}
         SQL;
