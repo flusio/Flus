@@ -142,6 +142,7 @@ class Application
             utils\Belt::startsWith($path, '/logout') ||
             utils\Belt::startsWith($path, '/terms') ||
             utils\Belt::startsWith($path, '/onboarding') ||
+            utils\Belt::startsWith($path, '/support') ||
             utils\Belt::startsWith($path, '/src/assets')
         );
         return !$path_is_authorized;
@@ -173,6 +174,7 @@ class Application
             utils\Belt::startsWith($path, '/logout') ||
             utils\Belt::startsWith($path, '/terms') ||
             utils\Belt::startsWith($path, '/onboarding') ||
+            utils\Belt::startsWith($path, '/support') ||
             utils\Belt::startsWith($path, '/src/assets')
         );
         return !$path_is_authorized;
