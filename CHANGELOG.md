@@ -1,5 +1,20 @@
 # Changelog of flusio
 
+## 2022-01-15 - v0.40
+
+### News
+
+- Allow to remove link from the read list
+
+### Improvements
+
+- Improve performance on various collections pages
+- Revert delaying groups loading on /collections
+
+### Misc
+
+- Refactor and clean a LOT of code
+
 ## 2022-01-14 - v0.39
 
 ### News
