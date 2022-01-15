@@ -39,9 +39,12 @@ class Collections
             ],
         );
         $no_group_followed_collections = models\Collection::daoToList(
-            'listFollowedByUserIdAndGroupIdWithNumberLinks',
+            'listComputedFollowedByUserId',
             $user->id,
-            null
+            ['number_links'],
+            [
+                'group' => null,
+            ]
         );
         models\Collection::sort($no_group_collections, $user->locale);
         models\Collection::sort($no_group_followed_collections, $user->locale);

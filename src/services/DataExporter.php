@@ -102,9 +102,12 @@ class DataExporter
     private function generateOpml($user)
     {
         $no_group_followed_collections = models\Collection::daoToList(
-            'listFollowedByUserIdAndGroupIdWithNumberLinks',
+            'listComputedFollowedByUserId',
             $user->id,
-            null
+            [],
+            [
+                'group' => null,
+            ]
         );
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
 

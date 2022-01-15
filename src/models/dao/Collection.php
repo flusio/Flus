@@ -158,84 +158,81 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Return all the followed collections of the given user with their number
-     * of visible links.
+     * Return the collections followed by the given user with its computed properties.
+     *
+     * Only public collections are returned. That means if a user started to
+     * follow a collection when it was public, if is_public is changed to
+     * false, the user will not be able to see the collections anymore.
      *
      * @param string $user_id
+     *     The id of the user who follows the collections.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
+     * @param array $options
+     *     Custom options to filter links. Possible options is:
+     *     - group (string|null, default to 'ANY'), allows to filter by a group
+     *       id, 'ANY' to not filter, null to filter collections with no groups
      *
      * @return array
      */
-    public function listForFeedsPage($user_id)
+    public function listComputedFollowedByUserId($user_id, $selected_computed_props, $options = [])
     {
-        $values = [':user_id' => $user_id];
+        $default_options = [
+            'group' => 'ANY',
+        ];
+        $options = array_merge($default_options, $options);
 
-        $sql = <<<SQL
-            SELECT c.*, COUNT(lc.id) AS number_links, fc.group_id
-            FROM collections c, followed_collections fc
+        $parameters = [
+            ':user_id' => $user_id,
+        ];
 
-            LEFT JOIN links_to_collections lc
-            ON lc.collection_id = fc.collection_id
+        $number_links_clause = '';
+        $join_clause = '';
+        $group_by_clause = '';
+        if (in_array('number_links', $selected_computed_props)) {
+            $number_links_clause = ', COUNT(l.*) AS number_links';
+            $join_clause = <<<SQL
+                LEFT JOIN links_to_collections lc
+                ON lc.collection_id = fc.collection_id
 
-            LEFT JOIN links l
-            ON lc.link_id = l.id
-            AND l.is_hidden = false
+                LEFT JOIN links l
+                ON lc.link_id = l.id
+                AND l.is_hidden = false
+            SQL;
+            $group_by_clause = 'GROUP BY c.id, fc.group_id';
+        }
 
-            WHERE fc.collection_id = c.id
-            AND fc.user_id = :user_id
-
-            AND c.is_public = true
-
-            GROUP BY c.id, fc.group_id
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute($values);
-        return $statement->fetchAll();
-    }
-
-    /**
-     * Return the followed collections of the given user and in the given group.
-     *
-     * If group id is null, it returns the collections in no groups.
-     *
-     * @param string $user_id
-     * @param string $group_id
-     *
-     * @return array
-     */
-    public function listFollowedByUserIdAndGroupIdWithNumberLinks($user_id, $group_id)
-    {
-        $values = [':user_id' => $user_id];
-
-        if ($group_id) {
-            $group_placeholder = 'AND fc.group_id = :group_id';
-            $values[':group_id'] = $group_id;
-        } else {
-            $group_placeholder = 'AND fc.group_id IS NULL';
+        $group_clause = '';
+        if (!$options['group']) {
+            $group_clause = 'AND fc.group_id IS NULL';
+        } elseif ($options['group'] !== 'ANY') {
+            $group_clause = 'AND fc.group_id = :group_id';
+            $parameters[':group_id'] = $options['group'];
         }
 
         $sql = <<<SQL
-            SELECT c.*, COUNT(lc.id) AS number_links, fc.group_id
+            SELECT
+                c.*,
+                fc.group_id
+                {$number_links_clause}
             FROM collections c, followed_collections fc
 
-            LEFT JOIN links_to_collections lc
-            ON lc.collection_id = fc.collection_id
-
-            LEFT JOIN links l
-            ON lc.link_id = l.id
-            AND l.is_hidden = false
+            {$join_clause}
 
             WHERE fc.collection_id = c.id
             AND fc.user_id = :user_id
 
             AND c.is_public = true
-            {$group_placeholder}
 
-            GROUP BY c.id, fc.group_id
+            {$group_clause}
+
+            {$group_by_clause}
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute($values);
+        $statement->execute($parameters);
         return $statement->fetchAll();
     }
 
