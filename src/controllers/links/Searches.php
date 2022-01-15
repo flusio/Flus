@@ -50,9 +50,9 @@ class Searches
         $feeds = [];
         if ($default_link) {
             $associated_feeds = models\Collection::daoToList(
-                'listByUserIdAndFeedUrlsWithNumberLinks',
-                $support_user->id,
-                $default_link->feedUrls()
+                'listComputedFeedsByFeedUrls',
+                $default_link->feedUrls(),
+                ['number_links']
             );
 
             // Deduplicate feeds with same names
