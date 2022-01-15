@@ -32,11 +32,7 @@ class Feeds
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
         models\Group::sort($groups, $user->locale);
 
-        $collections = models\Collection::daoToList(
-            'listComputedFollowedByUserId',
-            $user->id,
-            ['number_links']
-        );
+        $collections = $user->followedCollections(['number_links']);
         $collections_by_group_ids = [];
         $collections_no_group = [];
         foreach ($collections as $collection) {

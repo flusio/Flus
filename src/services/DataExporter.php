@@ -54,7 +54,7 @@ class DataExporter
         $files['read.atom.xml'] = $this->generateCollection($user->readList());
         $files['never.atom.xml'] = $this->generateCollection($user->neverList());
 
-        $collections = $user->collections(true);
+        $collections = $user->collections();
         foreach ($collections as $collection) {
             $files["collections/{$collection->id}.atom.xml"] = $this->generateCollection($collection);
         }
@@ -101,14 +101,9 @@ class DataExporter
      */
     private function generateOpml($user)
     {
-        $no_group_followed_collections = models\Collection::daoToList(
-            'listComputedFollowedByUserId',
-            $user->id,
-            [],
-            [
-                'group' => null,
-            ]
-        );
+        $no_group_followed_collections = $user->followedCollections([], [
+            'group' => null,
+        ]);
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
 
         $view = new \Minz\Output\View('collections/followed.opml.xml.php', [

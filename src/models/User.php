@@ -238,45 +238,42 @@ class User extends \Minz\Model
     }
 
     /**
-     * Return the list of collections created by the user
+     * Return the collections of the user.
      *
-     * @param boolean $exclude_bookmarks Default is false.
+     * @see \flusio\models\dao\Collection::listComputedByUserId
      *
-     * @return \flusio\models\Collection[]
-     */
-    public function collections($exclude_bookmarks = false)
-    {
-        if ($exclude_bookmarks) {
-            return Collection::listBy([
-                'user_id' => $this->id,
-                'type' => 'collection',
-            ]);
-        } else {
-            return Collection::listBy([
-                'user_id' => $this->id,
-                'type' => ['bookmarks', 'collection'],
-            ]);
-        }
-    }
-
-    /**
-     * Return the list of collections published by the user
-     *
-     * @param boolean $count_hidden_links
-     *     Indicate if number_links should include hidden links
+     * @param string[] $selected_computed_props
+     * @param array $options
      *
      * @return \flusio\models\Collection[]
      */
-    public function publicCollections($count_hidden_links)
+    public function collections($selected_computed_props = [], $options = [])
     {
         return Collection::daoToList(
             'listComputedByUserId',
             $this->id,
-            ['number_links'],
-            [
-                'count_hidden' => $count_hidden_links,
-                'private' => false,
-            ],
+            $selected_computed_props,
+            $options
+        );
+    }
+
+    /**
+     * Return the collections followed by the user.
+     *
+     * @see \flusio\models\dao\Collection::listComputedFollowedByUserId
+     *
+     * @param string[] $selected_computed_props
+     * @param array $options
+     *
+     * @return \flusio\models\Collection[]
+     */
+    public function followedCollections($selected_computed_props = [], $options = [])
+    {
+        return Collection::daoToList(
+            'listComputedFollowedByUserId',
+            $this->id,
+            $selected_computed_props,
+            $options
         );
     }
 

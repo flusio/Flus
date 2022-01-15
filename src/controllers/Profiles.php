@@ -35,7 +35,10 @@ class Profiles
         $current_user = auth\CurrentUser::get();
         $is_current_user_profile = $current_user && $current_user->id === $user->id;
         $count_hidden_links = $is_current_user_profile;
-        $collections = $user->publicCollections($count_hidden_links);
+        $collections = $user->collections(['number_links'], [
+            'private' => false,
+            'count_hidden' => $count_hidden_links,
+        ]);
         models\Collection::sort($collections, utils\Locale::currentLocale());
 
         return Response::ok('profiles/show.phtml', [

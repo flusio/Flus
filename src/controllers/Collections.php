@@ -30,22 +30,12 @@ class Collections
             ]);
         }
 
-        $no_group_collections = models\Collection::daoToList(
-            'listComputedByUserId',
-            $user->id,
-            ['number_links'],
-            [
-                'group' => null,
-            ],
-        );
-        $no_group_followed_collections = models\Collection::daoToList(
-            'listComputedFollowedByUserId',
-            $user->id,
-            ['number_links'],
-            [
-                'group' => null,
-            ]
-        );
+        $no_group_collections = $user->collections(['number_links'], [
+            'group' => null,
+        ]);
+        $no_group_followed_collections = $user->followedCollections(['number_links'], [
+            'group' => null,
+        ]);
         models\Collection::sort($no_group_collections, $user->locale);
         models\Collection::sort($no_group_followed_collections, $user->locale);
 
