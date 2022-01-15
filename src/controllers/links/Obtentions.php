@@ -140,7 +140,7 @@ class Obtentions
             ]);
         }
 
-        if (!models\Collection::daoCall('existForUser', $user->id, $collection_ids)) {
+        if (!models\Collection::daoCall('doesUserOwnCollections', $user->id, $collection_ids)) {
             return Response::badRequest('links/obtentions/new.phtml', [
                 'link' => $link,
                 'is_hidden' => $is_hidden,

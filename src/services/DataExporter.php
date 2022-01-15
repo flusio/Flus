@@ -101,7 +101,11 @@ class DataExporter
      */
     private function generateOpml($user)
     {
-        $no_group_followed_collections = models\Collection::daoToList('listFollowedInGroup', $user->id, null);
+        $no_group_followed_collections = models\Collection::daoToList(
+            'listFollowedByUserIdAndGroupIdWithNumberLinks',
+            $user->id,
+            null
+        );
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
 
         $view = new \Minz\Output\View('collections/followed.opml.xml.php', [

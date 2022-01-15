@@ -132,7 +132,7 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
-        if (!models\Collection::daoCall('existForUser', $user->id, $new_collection_ids)) {
+        if (!models\Collection::daoCall('doesUserOwnCollections', $user->id, $new_collection_ids)) {
             utils\Flash::set('error', _('One of the associated collection doesn’t exist.'));
             return Response::found($from);
         }

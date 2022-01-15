@@ -50,7 +50,7 @@ class Searches
         $feeds = [];
         if ($default_link) {
             $associated_feeds = models\Collection::daoToList(
-                'listFeedsWithNumberLinks',
+                'listByUserIdAndFeedUrlsWithNumberLinks',
                 $support_user->id,
                 $default_link->feedUrls()
             );

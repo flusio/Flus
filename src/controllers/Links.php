@@ -225,7 +225,7 @@ class Links
             ]);
         }
 
-        if (!models\Collection::daoCall('existForUser', $user->id, $collection_ids)) {
+        if (!models\Collection::daoCall('doesUserOwnCollections', $user->id, $collection_ids)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_hidden' => $is_hidden,

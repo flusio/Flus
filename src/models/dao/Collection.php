@@ -95,7 +95,7 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the list of collections attached to the given link
+     * Return the list of collections attached to the given link.
      *
      * @param string $link_id
      *
@@ -117,7 +117,7 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the list of collections attached to the given topic
+     * Return the list of public collections attached to the given topic.
      *
      * @param string $topic_id
      * @param integer $pagination_offset
@@ -125,7 +125,7 @@ class Collection extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listPublicWithNumberLinksByTopic($topic_id, $pagination_offset, $pagination_limit)
+    public function listPublicByTopicIdWithNumberLinks($topic_id, $pagination_offset, $pagination_limit)
     {
         $sql = <<<'SQL'
             SELECT c.*, COUNT(lc.*) AS number_links
@@ -156,7 +156,7 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the list of public collections of the given user
+     * Return the list of public collections of the given user.
      *
      * @param string $user_id
      * @param boolean $count_hidden_links
@@ -164,7 +164,7 @@ class Collection extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listPublicWithNumberLinksByUser($user_id, $count_hidden_links)
+    public function listPublicByUserIdWithNumberLinks($user_id, $count_hidden_links)
     {
         $is_hidden_placeholder = '';
         if (!$count_hidden_links) {
@@ -195,13 +195,13 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Count the collections attached to the given topic
+     * Count the public collections attached to the given topic.
      *
      * @param string $topic_id
      *
-     * @return array
+     * @return integer
      */
-    public function countPublicByTopic($topic_id)
+    public function countPublicByTopicId($topic_id)
     {
         $sql = <<<'SQL'
             SELECT COUNT(DISTINCT c.id)
@@ -224,16 +224,16 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the collections in the given group. The number of links of each
-     * collection is added. If group id is null, it returns collections in no
-     * groups.
+     * Return the collections of the given user and in the given group.
+     *
+     * If group id is null, it returns the collections in no groups.
      *
      * @param string $user_id
      * @param string $group_id
      *
      * @return array
      */
-    public function listInGroup($user_id, $group_id)
+    public function listByUserIdAndGroupIdWithNumberLinks($user_id, $group_id)
     {
         $values = [':user_id' => $user_id];
 
@@ -261,8 +261,7 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the collections for the given user. The number of links of each
-     * collection is added.
+     * Return all the collections of the given user with their number of links.
      *
      * @param string $user_id
      *
@@ -288,8 +287,8 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the collections for the given user. The number of links of each
-     * collection is added.
+     * Return all the followed collections of the given user with their number
+     * of visible links.
      *
      * @param string $user_id
      *
@@ -318,15 +317,14 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the list of feed collections for the given user id and feed URLs.
-     * The number of links of each collection is added.
+     * Return the list of feeds of the given user and with the given feed URLs.
      *
      * @param string $user_id
      * @param string[] $feed_urls
      *
      * @return array
      */
-    public function listFeedsWithNumberLinks($user_id, $feed_urls)
+    public function listByUserIdAndFeedUrlsWithNumberLinks($user_id, $feed_urls)
     {
         if (!$feed_urls) {
             return [];
@@ -356,16 +354,16 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Returns the followed collections in the given group. The number of links
-     * of each collection is added. If group id is null, it returns collections
-     * in no groups.
+     * Return the followed collections of the given user and in the given group.
+     *
+     * If group id is null, it returns the collections in no groups.
      *
      * @param string $user_id
      * @param string $group_id
      *
      * @return array
      */
-    public function listFollowedInGroup($user_id, $group_id)
+    public function listFollowedByUserIdAndGroupIdWithNumberLinks($user_id, $group_id)
     {
         $values = [':user_id' => $user_id];
 
@@ -396,14 +394,14 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Return if collection ids exist for the given user.
+     * Return whether the given user owns the given collections or not.
      *
      * @param string $user_id
      * @param string[] $collection_ids
      *
      * @return boolean True if all the ids exist
      */
-    public function existForUser($user_id, $collection_ids)
+    public function doesUserOwnCollections($user_id, $collection_ids)
     {
         if (empty($collection_ids)) {
             return true;
@@ -423,7 +421,7 @@ class Collection extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listIdsByNamesForUser($user_id)
+    public function listNamesToIdsByUserId($user_id)
     {
         $sql = <<<SQL
             SELECT id, name FROM collections
@@ -449,7 +447,7 @@ class Collection extends \Minz\DatabaseModel
      *
      * @return array
      */
-    public function listIdsByFeedUrlsForUser($user_id)
+    public function listFeedUrlsToIdsByUserId($user_id)
     {
         $sql = <<<SQL
             SELECT id, feed_url FROM collections

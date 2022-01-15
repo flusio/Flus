@@ -32,7 +32,7 @@ class Topics
             return Response::notFound('not_found.phtml');
         }
 
-        $number_collections = models\Collection::daoCall('countPublicByTopic', $topic->id);
+        $number_collections = $topic->countPublicCollections();
 
         $pagination = new utils\Pagination($number_collections, 30, $pagination_page);
         if ($pagination_page !== $pagination->currentPage()) {
@@ -43,7 +43,7 @@ class Topics
         }
 
         $collections = models\Collection::daoToList(
-            'listPublicWithNumberLinksByTopic',
+            'listPublicByTopicIdWithNumberLinks',
             $topic->id,
             $pagination->currentOffset(),
             $pagination->numberPerPage()

@@ -68,7 +68,11 @@ class Group extends \Minz\Model
      */
     public function collections()
     {
-        $collections = Collection::daoToList('listInGroup', $this->user_id, $this->id);
+        $collections = Collection::daoToList(
+            'listByUserIdAndGroupIdWithNumberLinks',
+            $this->user_id,
+            $this->id
+        );
         Collection::sort($collections, utils\Locale::currentLocale());
         return $collections;
     }
@@ -80,7 +84,11 @@ class Group extends \Minz\Model
      */
     public function followedCollections()
     {
-        $collections = Collection::daoToList('listFollowedInGroup', $this->user_id, $this->id);
+        $collections = Collection::daoToList(
+            'listFollowedByUserIdAndGroupIdWithNumberLinks',
+            $this->user_id,
+            $this->id
+        );
         Collection::sort($collections, utils\Locale::currentLocale());
         return $collections;
     }
