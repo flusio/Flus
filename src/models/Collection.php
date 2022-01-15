@@ -248,7 +248,7 @@ class Collection extends \Minz\Model
      *
      * @return \flusio\models\Link[]
      */
-    public function links($selected_computed_props, $options = [])
+    public function links($selected_computed_props = [], $options = [])
     {
         return Link::daoToList(
             'listComputedByCollectionId',

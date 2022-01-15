@@ -29,7 +29,7 @@ class Info
         }
 
         $bookmarks = $user->bookmarks();
-        $links = $bookmarks->links([]);
+        $links = $bookmarks->links();
         $json_output = json_encode([
             'csrf' => $user->csrf,
             'bookmarks_id' => $bookmarks->id,

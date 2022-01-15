@@ -88,7 +88,7 @@ class Read
         $collection = models\Collection::find($collection_id);
         $links = [];
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links([]);
+            $links = $collection->links();
         } elseif ($user->isFollowing($collection->id)) {
             // This loop is not efficient since the collection may contain a
             // lot of links. If it becomes an issue, it could be fixed by
@@ -149,7 +149,7 @@ class Read
         $collection = models\Collection::find($collection_id);
         $links = [];
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links([]);
+            $links = $collection->links();
         } elseif ($user->isFollowing($collection->id)) {
             foreach ($collection->links([], ['hidden' => false]) as $link) {
                 $new_link = $user->obtainLink($link);
@@ -204,7 +204,7 @@ class Read
         $collection = models\Collection::find($collection_id);
         $links = [];
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links([]);
+            $links = $collection->links();
         } elseif ($user->isFollowing($collection->id)) {
             foreach ($collection->links([], ['hidden' => false]) as $link) {
                 $new_link = $user->obtainLink($link);

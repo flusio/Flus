@@ -103,7 +103,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection->image_fetched_at);
         $this->assertNotNull($collection->image_filename);
         $this->assertNull($collection->locked_at);
-        $links_number = count($collection->links([]));
+        $links_number = count($collection->links());
         $this->assertGreaterThan(0, $links_number);
     }
 
@@ -209,7 +209,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertSame($expected_name, $collection->name);
-        $link = $collection->links([])[0];
+        $link = $collection->links()[0];
         $this->assertSame($expected_title, $link->title);
     }
 
@@ -287,7 +287,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertSame($expected_name, $collection->name);
-        $links_number = count($collection->links([]));
+        $links_number = count($collection->links());
         $this->assertSame(0, $links_number);
     }
 
@@ -497,7 +497,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feeds_sync_job->perform();
 
         $collection = models\Collection::find($collection_id);
-        $this->assertEmpty($collection->links([]));
+        $this->assertEmpty($collection->links());
     }
 
     public function testPerformIgnoresEntriesIfUrlExistsInCollection()
@@ -611,7 +611,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feeds_sync_job->perform();
 
         $collection = models\Collection::find($collection_id);
-        $link = $collection->links([])[0];
+        $link = $collection->links()[0];
         $this->assertSame($link->url, $link->feed_entry_id);
     }
 
@@ -725,7 +725,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertSame('https://flus.fr/carnet/', $collection->feed_site_url);
-        $link = $collection->links([])[0];
+        $link = $collection->links()[0];
         $this->assertSame('https://flus.fr/carnet/nouveautes-mars-2021.html', $link->url);
     }
 
@@ -878,7 +878,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertNotSame($name, $collection->name);
-        $this->assertEmpty($collection->links([]));
+        $this->assertEmpty($collection->links());
     }
 
     public function testPerformFetchesFeedIfLockedAfterAnHour()
@@ -934,7 +934,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $collection = models\Collection::find($collection_id);
         $this->assertSame($expected_name, $collection->name);
-        $link = $collection->links([])[0];
+        $link = $collection->links()[0];
         $this->assertSame($expected_title, $link->title);
     }
 }
