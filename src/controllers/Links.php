@@ -36,7 +36,7 @@ class Links
         $read_list = $user->readList();
 
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
-        models\Group::sort($groups, $user->locale);
+        utils\Sorter::localeSort($groups, 'name');
 
         $collections = $user->collections(['number_links']);
         $collections_by_group_ids = [];
@@ -50,9 +50,9 @@ class Links
         }
 
         foreach ($collections_by_group_ids as &$collections_of_group) {
-            models\Collection::sort($collections_of_group, $user->locale);
+            utils\Sorter::localeSort($collections_of_group, 'name');
         }
-        models\Collection::sort($collections_no_group, $user->locale);
+        utils\Sorter::localeSort($collections_no_group, 'name');
 
         return Response::ok('links/index.phtml', [
             'bookmarks' => $bookmarks,
@@ -101,7 +101,7 @@ class Links
             ]);
         } elseif ($can_update) {
             $collections = $link->collections();
-            models\Collection::sort($collections, $user->locale);
+            utils\Sorter::localeSort($collections, 'name');
 
             return Response::ok('links/show.phtml', [
                 'link' => $link,
@@ -138,8 +138,9 @@ class Links
         }
 
         $bookmarks = $user->bookmarks();
-        $collections = array_merge([$bookmarks], $user->collections());
-        models\Collection::sort($collections, $user->locale);
+        $collections = $user->collections();
+        utils\Sorter::localeSort($collections, 'name');
+        $collections = array_merge([$bookmarks], $collections);
 
         $default_collection_id = $request->param('collection_id');
         if ($default_collection_id) {
@@ -186,8 +187,9 @@ class Links
         }
 
         $bookmarks = $user->bookmarks();
-        $collections = array_merge([$bookmarks], $user->collections());
-        models\Collection::sort($collections, $user->locale);
+        $collections = $user->collections();
+        utils\Sorter::localeSort($collections, 'name');
+        $collections = array_merge([$bookmarks], $collections);
 
         if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('links/new.phtml', [

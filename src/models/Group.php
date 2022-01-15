@@ -76,7 +76,7 @@ class Group extends \Minz\Model
                 'group' => $this->id,
             ]
         );
-        Collection::sort($collections, utils\Locale::currentLocale());
+        utils\Sorter::localeSort($collections, 'name');
         return $collections;
     }
 
@@ -95,22 +95,8 @@ class Group extends \Minz\Model
                 'group' => $this->id,
             ]
         );
-        Collection::sort($collections, utils\Locale::currentLocale());
+        utils\Sorter::localeSort($collections, 'name');
         return $collections;
-    }
-
-    /**
-     * Sort groups based on given locale
-     *
-     * @param \flusio\models\Group[] $groups
-     * @param string $locale
-     */
-    public static function sort(&$groups, $locale)
-    {
-        $collator = new \Collator($locale);
-        usort($groups, function ($group1, $group2) use ($collator) {
-            return $collator->compare($group1->name, $group2->name);
-        });
     }
 
     /**

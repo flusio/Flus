@@ -325,28 +325,6 @@ class Collection extends \Minz\Model
     }
 
     /**
-     * Sort collections based on given locale
-     *
-     * @param \flusio\models\Collection[] $collections
-     * @param string $locale
-     */
-    public static function sort(&$collections, $locale)
-    {
-        $collator = new \Collator($locale);
-        usort($collections, function ($collection1, $collection2) use ($collator) {
-            if ($collection1->type === 'bookmarks') {
-                return -1;
-            }
-
-            if ($collection2->type === 'bookmarks') {
-                return 1;
-            }
-
-            return $collator->compare($collection1->name, $collection2->name);
-        });
-    }
-
-    /**
      * @param string $type
      * @return boolean
      */

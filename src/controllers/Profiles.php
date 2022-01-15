@@ -39,7 +39,7 @@ class Profiles
             'private' => false,
             'count_hidden' => $count_hidden_links,
         ]);
-        models\Collection::sort($collections, utils\Locale::currentLocale());
+        utils\Sorter::localeSort($collections, 'name');
 
         return Response::ok('profiles/show.phtml', [
             'user' => $user,

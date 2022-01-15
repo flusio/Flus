@@ -48,8 +48,7 @@ class Topics
             $pagination->currentOffset(),
             $pagination->numberPerPage()
         );
-        $locale = utils\Locale::currentLocale();
-        models\Collection::sort($collections, $locale);
+        utils\Sorter::localeSort($collections, 'name');
 
         return Response::ok('topics/show.phtml', [
             'topic' => $topic,

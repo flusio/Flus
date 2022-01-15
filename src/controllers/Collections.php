@@ -36,11 +36,11 @@ class Collections
         $no_group_followed_collections = $user->followedCollections(['number_links'], [
             'group' => null,
         ]);
-        models\Collection::sort($no_group_collections, $user->locale);
-        models\Collection::sort($no_group_followed_collections, $user->locale);
+        utils\Sorter::localeSort($no_group_collections, 'name');
+        utils\Sorter::localeSort($no_group_followed_collections, 'name');
 
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
-        models\Group::sort($groups, $user->locale);
+        utils\Sorter::localeSort($groups, 'name');
 
         return Response::ok('collections/index.phtml', [
             'read_list' => $user->readList(),
@@ -66,7 +66,7 @@ class Collections
         }
 
         $topics = models\Topic::listAll();
-        models\Topic::sort($topics, $user->locale);
+        utils\Sorter::localeSort($topics, 'label');
 
         return Response::ok('collections/new.phtml', [
             'name' => '',
@@ -107,7 +107,7 @@ class Collections
         $csrf = $request->param('csrf');
 
         $topics = models\Topic::listAll();
-        models\Topic::sort($topics, $user->locale);
+        utils\Sorter::localeSort($topics, 'label');
 
         if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('collections/new.phtml', [
@@ -197,7 +197,7 @@ class Collections
         }
 
         $topics = $collection->topics();
-        models\Topic::sort($topics, utils\Locale::currentLocale());
+        utils\Sorter::localeSort($topics, 'label');
 
         $is_atom_feed = utils\Belt::endsWith($request->path(), 'feed.atom.xml');
         if ($is_atom_feed) {
@@ -267,7 +267,7 @@ class Collections
         $collection = models\Collection::find($collection_id);
         if (auth\CollectionsAccess::canUpdate($user, $collection)) {
             $topics = models\Topic::listAll();
-            models\Topic::sort($topics, $user->locale);
+            utils\Sorter::localeSort($topics, 'label');
 
             return Response::ok('collections/edit.phtml', [
                 'collection' => $collection,
@@ -316,7 +316,7 @@ class Collections
         }
 
         $topics = models\Topic::listAll();
-        models\Topic::sort($topics, $user->locale);
+        utils\Sorter::localeSort($topics, 'label');
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');

@@ -59,20 +59,6 @@ class Topic extends \Minz\Model
     }
 
     /**
-     * Sort topics based on given locale
-     *
-     * @param \flusio\models\Topic[] $topics
-     * @param string $locale
-     */
-    public static function sort(&$topics, $locale)
-    {
-        $collator = new \Collator($locale);
-        usort($topics, function ($topic1, $topic2) use ($collator) {
-            return $collator->compare($topic1->label, $topic2->label);
-        });
-    }
-
-    /**
      * Return the number of public collections attached to this topic
      *
      * @return integer

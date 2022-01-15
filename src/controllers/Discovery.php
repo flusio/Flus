@@ -20,8 +20,7 @@ class Discovery
     public function show($request)
     {
         $topics = models\Topic::listAll();
-        $locale = utils\Locale::currentLocale();
-        models\Topic::sort($topics, $locale);
+        utils\Sorter::localeSort($topics, 'label');
 
         return Response::ok('discovery/show.phtml', [
             'topics' => $topics,

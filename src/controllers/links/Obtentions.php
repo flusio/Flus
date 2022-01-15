@@ -5,6 +5,7 @@ namespace flusio\controllers\links;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
+use flusio\utils;
 
 /**
  * Handle requests to obtain a link from another user.
@@ -43,8 +44,9 @@ class Obtentions
         }
 
         $bookmarks = $user->bookmarks();
-        $collections = array_merge([$bookmarks], $user->collections());
-        models\Collection::sort($collections, $user->locale);
+        $collections = $user->collections();
+        utils\Sorter::localeSort($collections, 'name');
+        $collections = array_merge([$bookmarks], $collections);
 
         // $link should be owned by a different user, but the current user can
         // also have a link with the same URL in its collections.
@@ -108,8 +110,9 @@ class Obtentions
         }
 
         $bookmarks = $user->bookmarks();
-        $collections = array_merge([$bookmarks], $user->collections());
-        models\Collection::sort($collections, $user->locale);
+        $collections = $user->collections();
+        utils\Sorter::localeSort($collections, 'name');
+        $collections = array_merge([$bookmarks], $collections);
 
         $existing_link = models\Link::findBy([
             'url' => $link->url,

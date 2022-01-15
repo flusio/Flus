@@ -5,6 +5,7 @@ namespace flusio\controllers\collections;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
+use flusio\utils;
 
 class Groups
 {
@@ -53,7 +54,7 @@ class Groups
         $groups = models\Group::daoToList('listBy', [
             'user_id' => $user->id,
         ]);
-        models\Group::sort($groups, $user->locale);
+        utils\Sorter::localeSort($groups, 'name');
 
         return Response::ok('collections/groups/edit.phtml', [
             'collection' => $collection,
@@ -109,7 +110,7 @@ class Groups
         $groups = models\Group::daoToList('listBy', [
             'user_id' => $user->id,
         ]);
-        models\Group::sort($groups, $user->locale);
+        utils\Sorter::localeSort($groups, 'name');
 
         if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('collections/groups/edit.phtml', [

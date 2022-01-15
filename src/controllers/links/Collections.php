@@ -52,7 +52,7 @@ class Collections
 
         if ($mode === 'news') {
             $collections = $user->collections();
-            models\Collection::sort($collections, $user->locale);
+            utils\Sorter::localeSort($collections, 'name');
 
             return Response::ok('links/collections/index_news.phtml', [
                 'link' => $link,
@@ -63,8 +63,9 @@ class Collections
             ]);
         } elseif ($mode === 'adding') {
             $bookmarks = $user->bookmarks();
-            $collections = array_merge([$bookmarks], $user->collections());
-            models\Collection::sort($collections, $user->locale);
+            $collections = $user->collections();
+            utils\Sorter::localeSort($collections, 'name');
+            $collections = array_merge([$bookmarks], $collections);
 
             return Response::ok('links/collections/index_adding.phtml', [
                 'link' => $link,
@@ -74,8 +75,9 @@ class Collections
             ]);
         } else {
             $bookmarks = $user->bookmarks();
-            $collections = array_merge([$bookmarks], $user->collections());
-            models\Collection::sort($collections, $user->locale);
+            $collections = $user->collections();
+            utils\Sorter::localeSort($collections, 'name');
+            $collections = array_merge([$bookmarks], $collections);
 
             return Response::ok('links/collections/index.phtml', [
                 'link' => $link,

@@ -30,7 +30,7 @@ class Feeds
         }
 
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
-        models\Group::sort($groups, $user->locale);
+        utils\Sorter::localeSort($groups, 'name');
 
         $collections = $user->followedCollections(['number_links']);
         $collections_by_group_ids = [];
@@ -44,9 +44,9 @@ class Feeds
         }
 
         foreach ($collections_by_group_ids as &$collections_of_group) {
-            models\Collection::sort($collections_of_group, $user->locale);
+            utils\Sorter::localeSort($collections_of_group, 'name');
         }
-        models\Collection::sort($collections_no_group, $user->locale);
+        utils\Sorter::localeSort($collections_no_group, 'name');
 
         return Response::ok('feeds/index.phtml', [
             'groups' => $groups,

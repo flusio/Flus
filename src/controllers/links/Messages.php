@@ -62,11 +62,8 @@ class Messages
         }
 
         if (!\Minz\CSRF::validate($csrf)) {
-            $collections = $link->collections();
-            models\Collection::sort($collections, $user->locale);
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
-                'collections' => $collections,
                 'messages' => $link->messages(),
                 'comment' => $content,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -76,11 +73,8 @@ class Messages
         $message = models\Message::init($user->id, $link->id, $content);
         $errors = $message->validate();
         if ($errors) {
-            $collections = $link->collections();
-            models\Collection::sort($collections, $user->locale);
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
-                'collections' => $collections,
                 'messages' => $link->messages(),
                 'comment' => $content,
                 'errors' => $errors,
