@@ -123,6 +123,27 @@ class LinkToCollection extends \Minz\Model
     }
 
     /**
+     * Mark the links as unread for the current user.
+     *
+     * When a link is marked as unread, it is removed from the user's read
+     * list.
+     *
+     * You MUST be sure the links are owned by the user when you call this
+     * method.
+     *
+     * @param \flusio\models\User $user
+     * @param string[] $link_ids
+     */
+    public static function markAsUnread($user, $link_ids)
+    {
+        $read_list = $user->readList();
+
+        foreach ($link_ids as $link_id) {
+            self::daoCall('detach', $link_id, [$read_list->id]);
+        }
+    }
+
+    /**
      * Attach the collections to the given link and remove old ones if any.
      *
      * This method will not detach the link from the read list, nor news, even

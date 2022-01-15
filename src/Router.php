@@ -135,6 +135,7 @@ class Router
         $router->addRoute('post', '/links/:id/read', 'links/Read#create', 'mark link as read');
         $router->addRoute('post', '/links/:id/read/later', 'links/Read#later', 'read link later');
         $router->addRoute('post', '/links/:id/read/never', 'links/Read#never', 'mark link to never read');
+        $router->addRoute('post', '/links/:id/read/delete', 'links/Read#delete', 'mark link as unread');
 
         // Link collections
         $router->addRoute('get', '/links/:id/collections', 'links/Collections#index', 'link collections');

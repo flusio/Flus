@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-15 20:59+0100\n"
-"PO-Revision-Date: 2022-01-15 20:59+0100\n"
+"POT-Creation-Date: 2022-01-15 21:44+0100\n"
+"PO-Revision-Date: 2022-01-15 21:44+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -72,7 +72,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/importations/Pocket.php:241
 #: controllers/links/Collections.php:145 controllers/links/Read.php:45
 #: controllers/links/Read.php:93 controllers/links/Read.php:141
-#: controllers/my/Avatar.php:43
+#: controllers/links/Read.php:189 controllers/my/Avatar.php:43
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -549,8 +549,8 @@ msgstr "Nouveau"
 #: views/_layouts/connected.phtml:153 views/_layouts/connected.phtml:156
 #: views/_layouts/connected_blocked.phtml:88
 #: views/_layouts/connected_blocked.phtml:91 views/collections/show.phtml:88
-#: views/collections/show_public.phtml:123 views/links/_link.phtml:122
-#: views/links/_link.phtml:126 views/links/show.phtml:92
+#: views/collections/show_public.phtml:123 views/links/_link.phtml:123
+#: views/links/_link.phtml:127 views/links/show.phtml:92
 #: views/links/show.phtml:96
 msgid "Open the menu"
 msgstr "Ouvrir le menu"
@@ -910,7 +910,7 @@ msgstr "Actions"
 
 #: views/collections/show.phtml:105 views/groups/_group.phtml:23
 #: views/groups/_group.phtml:37 views/groups/_group_deprecated.phtml:23
-#: views/groups/_group_deprecated.phtml:37 views/links/_link.phtml:142
+#: views/groups/_group_deprecated.phtml:37 views/links/_link.phtml:143
 #: views/links/searches/show.phtml:114 views/profiles/show.phtml:46
 msgid "Edit"
 msgstr "Modifier"
@@ -1267,17 +1267,17 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/links/_link.phtml:49 views/links/searches/show.phtml:90
+#: views/links/_link.phtml:50 views/links/searches/show.phtml:90
 #: views/links/searches/show.phtml:147 views/links/show.phtml:35
 #: views/links/show_public.phtml:48
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/links/_link.phtml:56
+#: views/links/_link.phtml:57
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.phtml:63
+#: views/links/_link.phtml:64
 #, php-format
 msgid ""
 "via your <strong><a class=\"anchor--hidden\" href=\"%s\">bookmarks</a></"
@@ -1285,7 +1285,7 @@ msgid ""
 msgstr ""
 "via vos <strong><a class=\"anchor--hidden\" href=\"%s\">signets</a></strong>"
 
-#: views/links/_link.phtml:68
+#: views/links/_link.phtml:69
 #, php-format
 msgid ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> by <a "
@@ -1294,74 +1294,78 @@ msgstr ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> de <a "
 "class=\"anchor--hidden\" href=\"%s\">%s</a>"
 
-#: views/links/_link.phtml:76
+#: views/links/_link.phtml:77
 #, php-format
 msgid ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> by %s"
 msgstr ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> de %s"
 
-#: views/links/_link.phtml:83
+#: views/links/_link.phtml:84
 #, php-format
 msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
-#: views/links/_link.phtml:90
+#: views/links/_link.phtml:91
 msgid "via a <strong>followed feed</strong> (deleted)"
 msgstr "via un <strong>flux suivi</strong> (supprimé)"
 
-#: views/links/_link.phtml:92
+#: views/links/_link.phtml:93
 msgid "via a <strong>followed collection</strong> (deleted)"
 msgstr "via une <strong>collection suivie</strong> (supprimée)"
 
-#: views/links/_link.phtml:102 views/links/searches/show.phtml:100
+#: views/links/_link.phtml:103 views/links/searches/show.phtml:100
 #, php-format
 msgid "%d comment"
 msgid_plural "%d comments"
 msgstr[0] "%d commentaire"
 msgstr[1] "%d commentaires"
 
-#: views/links/_link.phtml:107
+#: views/links/_link.phtml:108
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.phtml:155
+#: views/links/_link.phtml:156
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:165
+#: views/links/_link.phtml:166
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:177 views/links/_link.phtml:181
+#: views/links/_link.phtml:179
+msgid "Remove from read list"
+msgstr "Retirer des liens lus"
+
+#: views/links/_link.phtml:191 views/links/_link.phtml:195
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/links/_link.phtml:188
+#: views/links/_link.phtml:202
 msgid "Remove from the news…"
 msgstr "Retirer du journal…"
 
-#: views/links/_link.phtml:196
+#: views/links/_link.phtml:210
 msgid "and mark as read"
 msgstr "et marquer comme lu"
 
-#: views/links/_link.phtml:205
+#: views/links/_link.phtml:219
 msgid "and read later"
 msgstr "et lire plus tard"
 
-#: views/links/_link.phtml:216
+#: views/links/_link.phtml:230
 msgid "and never see again"
 msgstr "et ne plus revoir"
 
-#: views/links/_link.phtml:231 views/links/_link.phtml:236
+#: views/links/_link.phtml:245 views/links/_link.phtml:250
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/links/_link.phtml:231 views/links/_link.phtml:241
+#: views/links/_link.phtml:245 views/links/_link.phtml:255
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/links/_link.phtml:255 views/links/show.phtml:51
+#: views/links/_link.phtml:269 views/links/show.phtml:51
 #: views/links/show_public.phtml:64
 msgid "read"
 msgstr "lire"

@@ -156,4 +156,47 @@ class Read
 
         return Response::found($from);
     }
+
+    /**
+     * Mark a link as unread by removing it from read list.
+     *
+     * @request_param string csrf
+     * @request_param string id
+     * @request_param string from
+     *
+     * @response 302 /login?redirect_to=:from
+     *     if not connected
+     * @response 404
+     *     if the link doesn't exist, or is not accessible to the current user
+     * @response 302 :from
+     * @flash error
+     *     if CSRF is invalid
+     * @response 302 :from
+     *     on success
+     */
+    public function delete($request)
+    {
+        $user = auth\CurrentUser::get();
+        $from = $request->param('from');
+        $link_id = $request->param('id');
+        $csrf = $request->param('csrf');
+
+        if (!$user) {
+            return Response::redirect('login', ['redirect_to' => $from]);
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        $link = models\Link::find($link_id);
+        if (!auth\LinksAccess::canUpdate($user, $link)) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        models\LinkToCollection::markAsUnread($user, [$link->id]);
+
+        return Response::found($from);
+    }
 }

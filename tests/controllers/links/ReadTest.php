@@ -580,4 +580,92 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNull($link_to_never_list);
     }
+
+    public function testDeleteMarksAsUnread()
+    {
+        $user = $this->login();
+        $read_list = $user->readList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_read_list_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read/delete", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertFalse(models\LinkToCollection::exists($link_to_read_list_id));
+    }
+
+    public function testDeleteRedirectsToLoginIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $read_list = $user->readList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_read_list_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read/delete", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertTrue(models\LinkToCollection::exists($link_to_read_list_id));
+    }
+
+    public function testDeleteFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $read_list = $user->readList();
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+        $link_to_read_list_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read/delete", [
+            'csrf' => 'not the token',
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertFlash('error', 'A security verification failed.');
+        $this->assertTrue(models\LinkToCollection::exists($link_to_read_list_id));
+    }
+
+    public function testDeleteFailsIfNotOwned()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $other_user = models\User::find($other_user_id);
+        $read_list = $other_user->readList();
+        $link_id = $this->create('link', [
+            'user_id' => $other_user->id,
+        ]);
+        $link_to_read_list_id = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $read_list->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/read/delete", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue(models\LinkToCollection::exists($link_to_read_list_id));
+    }
 }
