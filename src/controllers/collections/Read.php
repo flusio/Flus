@@ -47,10 +47,11 @@ class Read
         return Response::ok('read/index.phtml', [
             'collection' => $read_list,
             'links' => $read_list->links(
-                ['published_at', 'number_comments'],
+                ['published_at', 'number_comments', 'is_read'],
                 [
                     'offset' => $pagination->currentOffset(),
-                    'limit' => $pagination->numberPerPage()
+                    'limit' => $pagination->numberPerPage(),
+                    'context_user_id' => $user->id,
                 ]
             ),
             'pagination' => $pagination,
