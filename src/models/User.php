@@ -269,7 +269,15 @@ class User extends \Minz\Model
      */
     public function publicCollections($count_hidden_links)
     {
-        return Collection::daoToList('listPublicByUserIdWithNumberLinks', $this->id, $count_hidden_links);
+        return Collection::daoToList(
+            'listComputedByUserId',
+            $this->id,
+            ['number_links'],
+            [
+                'count_hidden' => $count_hidden_links,
+                'private' => false,
+            ],
+        );
     }
 
     /**

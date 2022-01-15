@@ -38,7 +38,11 @@ class Links
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
         models\Group::sort($groups, $user->locale);
 
-        $collections = models\Collection::daoToList('listForLinksPage', $user->id);
+        $collections = models\Collection::daoToList(
+            'listComputedByUserId',
+            $user->id,
+            ['number_links']
+        );
         $collections_by_group_ids = [];
         $collections_no_group = [];
         foreach ($collections as $collection) {

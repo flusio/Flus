@@ -31,9 +31,12 @@ class Collections
         }
 
         $no_group_collections = models\Collection::daoToList(
-            'listByUserIdAndGroupIdWithNumberLinks',
+            'listComputedByUserId',
             $user->id,
-            null
+            ['number_links'],
+            [
+                'group' => null,
+            ],
         );
         $no_group_followed_collections = models\Collection::daoToList(
             'listFollowedByUserIdAndGroupIdWithNumberLinks',

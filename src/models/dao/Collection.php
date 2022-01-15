@@ -54,110 +54,106 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Return the list of public collections of the given user.
+     * Return the collections of the given user with its computed properties.
      *
      * @param string $user_id
-     * @param boolean $count_hidden_links
-     *     Indicate if number_links should include hidden links
+     *     The user id that the collections must match.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
+     * @param array $options
+     *     Custom options to filter links. Possible options are:
+     *     - private (boolean, default to true), indicates if private
+     *       collections must be included. If private are excluded and
+     *       number_links property is selected, empty public collections are
+     *       not returned either.
+     *     - count_hidden (boolean, default to true), indicates if hidden links
+     *       must be counted
+     *     - group (string|null, default to 'ANY'), allows to filter by a group
+     *       id, 'ANY' to not filter, null to filter collections with no groups
      *
      * @return array
      */
-    public function listPublicByUserIdWithNumberLinks($user_id, $count_hidden_links)
+    public function listComputedByUserId($user_id, $selected_computed_props, $options = [])
     {
-        $is_hidden_placeholder = '';
-        if (!$count_hidden_links) {
-            $is_hidden_placeholder = 'AND l.is_hidden = false';
-        }
+        $default_options = [
+            'private' => true,
+            'count_hidden' => true,
+            'group' => 'ANY',
+        ];
+        $options = array_merge($default_options, $options);
 
-        $sql = <<<SQL
-            SELECT c.*, COUNT(lc.*) AS number_links
-            FROM collections c, links_to_collections lc, links l
-
-            WHERE c.id = lc.collection_id
-            AND l.id = lc.link_id
-
-            AND c.is_public = true
-            AND c.type = 'collection'
-            {$is_hidden_placeholder}
-
-            AND c.user_id = :user_id
-
-            GROUP BY c.id
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute([
+        $parameters = [
             ':user_id' => $user_id,
-        ]);
-        return $statement->fetchAll();
-    }
+        ];
 
-    /**
-     * Return the collections of the given user and in the given group.
-     *
-     * If group id is null, it returns the collections in no groups.
-     *
-     * @param string $user_id
-     * @param string $group_id
-     *
-     * @return array
-     */
-    public function listByUserIdAndGroupIdWithNumberLinks($user_id, $group_id)
-    {
-        $values = [':user_id' => $user_id];
+        $number_links_clause = '';
+        $join_clause = '';
+        $group_by_clause = '';
+        if (in_array('number_links', $selected_computed_props)) {
+            $number_links_clause = ', COUNT(lc.*) AS number_links';
+            $join_clause = <<<SQL
+                LEFT JOIN links_to_collections lc
+                ON lc.collection_id = c.id
+            SQL;
+            $group_by_clause = 'GROUP BY c.id';
 
-        if ($group_id) {
-            $group_placeholder = 'AND c.group_id = :group_id';
-            $values[':group_id'] = $group_id;
-        } else {
-            $group_placeholder = 'AND c.group_id IS NULL';
+            if (!$options['count_hidden']) {
+                $number_links_clause = ', COUNT(l.*) AS number_links';
+
+                $join_clause .= <<<SQL
+                    \n
+                    LEFT JOIN links l
+                    ON lc.link_id = l.id
+                    AND l.is_hidden = false
+                SQL;
+            }
+        }
+
+        $group_clause = '';
+        if (!$options['group']) {
+            $group_clause = 'AND c.group_id IS NULL';
+        } elseif ($options['group'] !== 'ANY') {
+            $group_clause = 'AND c.group_id = :group_id';
+            $parameters[':group_id'] = $options['group'];
+        }
+
+        $private_clause = '';
+        $non_empty_clause = '';
+        if (!$options['private']) {
+            $private_clause = 'AND c.is_public = true';
+
+            if (in_array('number_links', $selected_computed_props)) {
+                $non_empty_clause = 'HAVING COUNT(lc.*) > 0';
+
+                if (!$options['count_hidden']) {
+                    $non_empty_clause = 'HAVING COUNT(l.*) > 0';
+                }
+            }
         }
 
         $sql = <<<SQL
-            SELECT c.*, COUNT(lc.id) AS number_links
+            SELECT
+                c.*
+                {$number_links_clause}
             FROM collections c
 
-            LEFT JOIN links_to_collections lc
-            ON lc.collection_id = c.id
-
-            WHERE c.user_id = :user_id
-            AND c.type = 'collection'
-            {$group_placeholder}
-
-            GROUP BY c.id
-        SQL;
-
-        $statement = $this->prepare($sql);
-        $statement->execute($values);
-        return $statement->fetchAll();
-    }
-
-    /**
-     * Return all the collections of the given user with their number of links.
-     *
-     * @param string $user_id
-     *
-     * @return array
-     */
-    public function listForLinksPage($user_id)
-    {
-        $values = [':user_id' => $user_id];
-
-        $sql = <<<SQL
-            SELECT c.*, COUNT(lc.id) AS number_links
-            FROM collections c
-
-            LEFT JOIN links_to_collections lc
-            ON lc.collection_id = c.id
+            {$join_clause}
 
             WHERE c.user_id = :user_id
             AND c.type = 'collection'
 
-            GROUP BY c.id
+            {$group_clause}
+            {$private_clause}
+
+            {$group_by_clause}
+
+            {$non_empty_clause}
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute($values);
+        $statement->execute($parameters);
         return $statement->fetchAll();
     }
 

@@ -69,9 +69,12 @@ class Group extends \Minz\Model
     public function collections()
     {
         $collections = Collection::daoToList(
-            'listByUserIdAndGroupIdWithNumberLinks',
+            'listComputedByUserId',
             $this->user_id,
-            $this->id
+            ['number_links'],
+            [
+                'group' => $this->id,
+            ]
         );
         Collection::sort($collections, utils\Locale::currentLocale());
         return $collections;
