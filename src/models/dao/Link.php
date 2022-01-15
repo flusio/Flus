@@ -155,7 +155,7 @@ class Link extends \Minz\DatabaseModel
         ];
         $options = array_merge($default_options, $options);
 
-        $values = [
+        $parameters = [
             ':collection_id' => $collection_id,
             ':offset' => $options['offset'],
         ];
@@ -200,7 +200,7 @@ class Link extends \Minz\DatabaseModel
                 ) AS is_read
             SQL;
 
-            $values[':user_id'] = $options['context_user_id'];
+            $parameters[':user_id'] = $options['context_user_id'];
         }
 
         $visibility_clause = '';
@@ -211,7 +211,7 @@ class Link extends \Minz\DatabaseModel
         $limit_clause = '';
         if ($options['limit'] !== 'ALL') {
             $limit_clause = 'LIMIT :limit';
-            $values[':limit'] = $options['limit'];
+            $parameters[':limit'] = $options['limit'];
         }
 
         $sql = <<<SQL
@@ -235,7 +235,7 @@ class Link extends \Minz\DatabaseModel
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute($values);
+        $statement->execute($parameters);
         return $statement->fetchAll();
     }
 
