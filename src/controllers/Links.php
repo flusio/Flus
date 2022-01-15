@@ -39,27 +39,14 @@ class Links
         utils\Sorter::localeSort($groups, 'name');
 
         $collections = $user->collections(['number_links']);
-        $collections_by_group_ids = [];
-        $collections_no_group = [];
-        foreach ($collections as $collection) {
-            if ($collection->group_id) {
-                $collections_by_group_ids[$collection->group_id][] = $collection;
-            } else {
-                $collections_no_group[] = $collection;
-            }
-        }
-
-        foreach ($collections_by_group_ids as &$collections_of_group) {
-            utils\Sorter::localeSort($collections_of_group, 'name');
-        }
-        utils\Sorter::localeSort($collections_no_group, 'name');
+        utils\Sorter::localeSort($collections, 'name');
+        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
         return Response::ok('links/index.phtml', [
             'bookmarks' => $bookmarks,
             'read_list' => $read_list,
             'groups' => $groups,
-            'collections_no_group' => $collections_no_group,
-            'collections_by_group_ids' => $collections_by_group_ids,
+            'groups_to_collections' => $groups_to_collections,
         ]);
     }
 
