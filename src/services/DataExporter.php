@@ -101,16 +101,15 @@ class DataExporter
      */
     private function generateOpml($user)
     {
-        $no_group_followed_collections = $user->followedCollections([], [
-            'group' => null,
-        ]);
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        $collections = $user->followedCollections();
+        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
         $view = new \Minz\Output\View('collections/followed.opml.xml.php', [
             'brand' => \Minz\Configuration::$application['brand'],
             'now' => \Minz\Time::now(),
-            'no_group_followed_collections' => $no_group_followed_collections,
             'groups' => $groups,
+            'groups_to_collections' => $groups_to_collections,
         ]);
 
         return $view->render();

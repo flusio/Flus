@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-14 11:34+0100\n"
-"PO-Revision-Date: 2022-01-14 11:35+0100\n"
+"POT-Creation-Date: 2022-01-15 18:02+0100\n"
+"PO-Revision-Date: 2022-01-15 18:02+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -38,17 +38,17 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:116 controllers/Collections.php:321
-#: controllers/Feeds.php:121 controllers/Groups.php:90
-#: controllers/Links.php:198 controllers/News.php:77
+#: controllers/Collections.php:119 controllers/Collections.php:336
+#: controllers/Feeds.php:108 controllers/Groups.php:90
+#: controllers/Links.php:188 controllers/News.php:77
 #: controllers/Passwords.php:80 controllers/Passwords.php:183
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Filters.php:104
 #: controllers/collections/Followers.php:48
 #: controllers/collections/Followers.php:92
-#: controllers/collections/Groups.php:121
-#: controllers/collections/Images.php:113 controllers/links/Messages.php:72
-#: controllers/links/Obtentions.php:125 controllers/links/Searches.php:105
+#: controllers/collections/Groups.php:122
+#: controllers/collections/Images.php:113 controllers/links/Messages.php:69
+#: controllers/links/Obtentions.php:130 controllers/links/Searches.php:105
 #: controllers/my/Account.php:103 controllers/my/Profile.php:76
 #: controllers/my/Security.php:79 controllers/my/Security.php:150
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
@@ -57,20 +57,20 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:129 controllers/Collections.php:336
+#: controllers/Collections.php:132 controllers/Collections.php:351
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:396 controllers/Exportations.php:74
+#: controllers/Collections.php:411 controllers/Exportations.php:74
 #: controllers/Groups.php:161 controllers/Importations.php:48
-#: controllers/Links.php:330 controllers/Links.php:377
+#: controllers/Links.php:320 controllers/Links.php:367
 #: controllers/Messages.php:47 controllers/Sessions.php:200
-#: controllers/collections/Read.php:108 controllers/collections/Read.php:163
-#: controllers/collections/Read.php:218 controllers/importations/Opml.php:78
+#: controllers/collections/Read.php:111 controllers/collections/Read.php:166
+#: controllers/collections/Read.php:221 controllers/importations/Opml.php:78
 #: controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
-#: controllers/links/Collections.php:141 controllers/links/Read.php:45
+#: controllers/links/Collections.php:145 controllers/links/Read.php:45
 #: controllers/links/Read.php:93 controllers/links/Read.php:141
 #: controllers/my/Avatar.php:43
 msgid "A security verification failed."
@@ -80,7 +80,7 @@ msgstr "Une vérification de sécurité a échoué."
 msgid "You already have an ongoing exportation."
 msgstr "Vous avez déjà une exportation en cours."
 
-#: controllers/Feeds.php:154
+#: controllers/Feeds.php:141
 msgid "There is no valid feeds at this address."
 msgstr "Aucun flux valide n’a été détecté à cette adresse."
 
@@ -88,16 +88,16 @@ msgstr "Aucun flux valide n’a été détecté à cette adresse."
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
-#: controllers/Links.php:223 controllers/links/Obtentions.php:138
+#: controllers/Links.php:213 controllers/links/Obtentions.php:143
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:236 controllers/links/Collections.php:136
-#: controllers/links/Obtentions.php:152
+#: controllers/Links.php:226 controllers/links/Collections.php:140
+#: controllers/links/Obtentions.php:157
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:58 models/User.php:496
+#: controllers/Passwords.php:58 models/User.php:501
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -276,11 +276,11 @@ msgstr "Liens à ne jamais lire"
 msgid "News"
 msgstr "Journal"
 
-#: models/Collection.php:405 models/Group.php:125
+#: models/Collection.php:359 models/Group.php:87
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:407
+#: models/Collection.php:361
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
@@ -292,67 +292,67 @@ msgstr "Le filtre est obligatoire."
 msgid "The filter is invalid."
 msgstr "Le filtre est invalide."
 
-#: models/Group.php:128
+#: models/Group.php:90
 #, php-format
 msgid "The name must be less than %d characters."
 msgstr "Le nom ne doit pas faire plus de %d caractères."
 
-#: models/Link.php:263
+#: models/Link.php:256
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:265
+#: models/Link.php:258
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:284
+#: models/Link.php:277
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:289
+#: models/Link.php:282
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:293
+#: models/Link.php:286
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
 "sensible."
 
-#: models/Topic.php:108
+#: models/Topic.php:94
 msgid "The label is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Topic.php:111
+#: models/Topic.php:97
 #, php-format
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:458
+#: models/User.php:463
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:462
+#: models/User.php:467
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:492
+#: models/User.php:497
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:494
+#: models/User.php:499
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:498
+#: models/User.php:503
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:500
+#: models/User.php:505
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:502
+#: models/User.php:507
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -534,7 +534,6 @@ msgstr "Flux"
 
 #: views/_layouts/connected.phtml:130 views/collections/index.phtml:3
 #: views/collections/index.phtml:12 views/collections/new.phtml:8
-#: views/groups/collections/index.phtml:8
 #: views/links/collections/index.phtml:26
 #: views/links/collections/index_adding.phtml:27
 #: views/links/collections/index_news.phtml:34 views/links/new.phtml:58
@@ -551,10 +550,10 @@ msgstr "Nouveau"
 #: views/_layouts/connected_blocked.phtml:88
 #: views/_layouts/connected_blocked.phtml:91 views/bookmarks/index.phtml:105
 #: views/bookmarks/index.phtml:109 views/collections/show.phtml:88
-#: views/collections/show.phtml:242 views/collections/show.phtml:246
+#: views/collections/show.phtml:241 views/collections/show.phtml:245
 #: views/collections/show_public.phtml:123
-#: views/collections/show_public.phtml:303
-#: views/collections/show_public.phtml:307 views/links/show.phtml:92
+#: views/collections/show_public.phtml:302
+#: views/collections/show_public.phtml:306 views/links/show.phtml:92
 #: views/links/show.phtml:96 views/read/index.phtml:102
 #: views/read/index.phtml:106
 msgid "Open the menu"
@@ -677,16 +676,16 @@ msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/bookmarks/index.phtml:83 views/collections/show.phtml:210
-#: views/collections/show_public.phtml:275 views/links/searches/show.phtml:90
+#: views/bookmarks/index.phtml:83 views/collections/show.phtml:209
+#: views/collections/show_public.phtml:274 views/links/searches/show.phtml:90
 #: views/links/searches/show.phtml:147 views/links/show.phtml:35
 #: views/links/show_public.phtml:48 views/news/show.phtml:55
 #: views/read/index.phtml:80
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/bookmarks/index.phtml:93 views/collections/show.phtml:224
-#: views/collections/show_public.phtml:290 views/links/searches/show.phtml:100
+#: views/bookmarks/index.phtml:93 views/collections/show.phtml:223
+#: views/collections/show_public.phtml:289 views/links/searches/show.phtml:100
 #: views/news/show.phtml:102 views/read/index.phtml:90
 #, php-format
 msgid "%d comment"
@@ -694,32 +693,32 @@ msgid_plural "%d comments"
 msgstr[0] "%d commentaire"
 msgstr[1] "%d commentaires"
 
-#: views/bookmarks/index.phtml:124 views/collections/index.phtml:146
-#: views/collections/index.phtml:160 views/collections/show.phtml:105
-#: views/collections/show.phtml:261 views/groups/_group.phtml:23
-#: views/groups/_group.phtml:37 views/links/searches/show.phtml:114
+#: views/bookmarks/index.phtml:124 views/collections/show.phtml:105
+#: views/collections/show.phtml:260 views/groups/_group.phtml:23
+#: views/groups/_group.phtml:37 views/groups/_group_deprecated.phtml:23
+#: views/groups/_group_deprecated.phtml:37 views/links/searches/show.phtml:114
 #: views/profiles/show.phtml:46 views/read/index.phtml:121
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/bookmarks/index.phtml:136 views/collections/show.phtml:273
-#: views/collections/show_public.phtml:322 views/read/index.phtml:133
+#: views/bookmarks/index.phtml:136 views/collections/show.phtml:272
+#: views/collections/show_public.phtml:321 views/read/index.phtml:133
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/bookmarks/index.phtml:145 views/collections/show.phtml:283
-#: views/collections/show_public.phtml:332
+#: views/bookmarks/index.phtml:145 views/collections/show.phtml:282
+#: views/collections/show_public.phtml:331
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
 #: views/bookmarks/index.phtml:158 views/bookmarks/index.phtml:162
-#: views/collections/show.phtml:297 views/collections/show.phtml:301
+#: views/collections/show.phtml:296 views/collections/show.phtml:300
 #: views/read/index.phtml:146 views/read/index.phtml:150
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/bookmarks/index.phtml:175 views/collections/show.phtml:313
-#: views/collections/show_public.phtml:362 views/links/show.phtml:51
+#: views/bookmarks/index.phtml:175 views/collections/show.phtml:312
+#: views/collections/show_public.phtml:361 views/links/show.phtml:51
 #: views/links/show_public.phtml:64 views/news/show.phtml:185
 #: views/read/index.phtml:163
 msgid "read"
@@ -886,19 +885,19 @@ msgstr "<a href=\"%s\">Découvrez plus de collections</a>"
 msgid "Create a collection"
 msgstr "Créer une collection"
 
-#: views/collections/index.phtml:50 views/collections/index.phtml:104
-#: views/feeds/index.phtml:57 views/groups/_group.phtml:54
-#: views/groups/_group.phtml:75 views/groups/collections/index.phtml:24
-#: views/groups/collections/index.phtml:67 views/links/index.phtml:72
+#: views/collections/index.phtml:52 views/collections/index.phtml:108
+#: views/feeds/index.phtml:59 views/groups/_group.phtml:54
+#: views/groups/_group.phtml:75 views/groups/_group_deprecated.phtml:53
+#: views/groups/_group_deprecated.phtml:96 views/links/index.phtml:74
 #: views/links/searches/show.phtml:182 views/profiles/show.phtml:70
 #: views/topics/show.phtml:70
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/index.phtml:52 views/collections/index.phtml:106
-#: views/feeds/index.phtml:59 views/groups/_group.phtml:56
-#: views/groups/_group.phtml:77 views/groups/collections/index.phtml:26
-#: views/groups/collections/index.phtml:69 views/links/index.phtml:74
+#: views/collections/index.phtml:54 views/collections/index.phtml:110
+#: views/feeds/index.phtml:61 views/groups/_group.phtml:56
+#: views/groups/_group.phtml:77 views/groups/_group_deprecated.phtml:55
+#: views/groups/_group_deprecated.phtml:98 views/links/index.phtml:76
 #: views/links/searches/show.phtml:184 views/profiles/show.phtml:72
 #: views/topics/show.phtml:72
 #, php-format
@@ -907,30 +906,30 @@ msgid_plural "%d links"
 msgstr[0] "%d lien"
 msgstr[1] "%d liens"
 
-#: views/collections/index.phtml:57 views/collections/show.phtml:70
-#: views/groups/_group.phtml:61 views/groups/collections/index.phtml:31
-#: views/links/index.phtml:79
+#: views/collections/index.phtml:59 views/collections/show.phtml:70
+#: views/groups/_group.phtml:61 views/groups/_group_deprecated.phtml:60
+#: views/links/index.phtml:81
 msgid "public"
 msgstr "public"
 
-#: views/collections/index.phtml:72 views/links/index.phtml:54
+#: views/collections/index.phtml:74 views/links/index.phtml:54
 msgid "All your links marked as read"
 msgstr "Tous vos liens marqués comme lu"
 
-#: views/collections/index.phtml:84 views/groups/collections/index.phtml:47
+#: views/collections/index.phtml:88 views/groups/_group_deprecated.phtml:76
 msgid "Followed collections"
 msgstr "Collections suivies"
 
-#: views/collections/index.phtml:98 views/feeds/index.phtml:51
-#: views/groups/_group.phtml:69 views/groups/collections/index.phtml:61
+#: views/collections/index.phtml:102 views/feeds/index.phtml:53
+#: views/groups/_group.phtml:69 views/groups/_group_deprecated.phtml:90
 #: views/links/searches/show.phtml:179 views/profiles/show.phtml:64
 #: views/topics/show.phtml:64
 #, php-format
 msgid "Feed %s"
 msgstr "Flux %s"
 
-#: views/collections/index.phtml:100 views/feeds/index.phtml:53
-#: views/groups/_group.phtml:71 views/groups/collections/index.phtml:63
+#: views/collections/index.phtml:104 views/feeds/index.phtml:55
+#: views/groups/_group.phtml:71 views/groups/_group_deprecated.phtml:92
 #: views/profiles/show.phtml:66 views/topics/show.phtml:66
 #, php-format
 msgid "By %s"
@@ -988,11 +987,11 @@ msgstr "Changer l’illustration"
 msgid "Copy the link"
 msgstr "Copier le lien"
 
-#: views/collections/show.phtml:217 views/collections/show_public.phtml:282
+#: views/collections/show.phtml:216 views/collections/show_public.phtml:281
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/collections/show.phtml:229
+#: views/collections/show.phtml:228
 msgid "hidden"
 msgstr "masqué"
 
@@ -1042,13 +1041,13 @@ msgstr "Ne plus suivre"
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:346
-#: views/collections/show_public.phtml:350 views/news/show.phtml:168
+#: views/collections/show_public.phtml:345
+#: views/collections/show_public.phtml:349 views/news/show.phtml:168
 #: views/news/show.phtml:172
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/collections/show_public.phtml:372
+#: views/collections/show_public.phtml:371
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 

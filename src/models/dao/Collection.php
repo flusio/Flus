@@ -70,8 +70,6 @@ class Collection extends \Minz\DatabaseModel
      *       not returned either.
      *     - count_hidden (boolean, default to true), indicates if hidden links
      *       must be counted
-     *     - group (string|null, default to 'ANY'), allows to filter by a group
-     *       id, 'ANY' to not filter, null to filter collections with no groups
      *
      * @return array
      */
@@ -80,7 +78,6 @@ class Collection extends \Minz\DatabaseModel
         $default_options = [
             'private' => true,
             'count_hidden' => true,
-            'group' => 'ANY',
         ];
         $options = array_merge($default_options, $options);
 
@@ -111,14 +108,6 @@ class Collection extends \Minz\DatabaseModel
             }
         }
 
-        $group_clause = '';
-        if (!$options['group']) {
-            $group_clause = 'AND c.group_id IS NULL';
-        } elseif ($options['group'] !== 'ANY') {
-            $group_clause = 'AND c.group_id = :group_id';
-            $parameters[':group_id'] = $options['group'];
-        }
-
         $private_clause = '';
         $non_empty_clause = '';
         if (!$options['private']) {
@@ -144,7 +133,6 @@ class Collection extends \Minz\DatabaseModel
             WHERE c.user_id = :user_id
             AND c.type = 'collection'
 
-            {$group_clause}
             {$private_clause}
 
             {$group_by_clause}
@@ -170,20 +158,11 @@ class Collection extends \Minz\DatabaseModel
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
-     * @param array $options
-     *     Custom options to filter links. Possible options is:
-     *     - group (string|null, default to 'ANY'), allows to filter by a group
-     *       id, 'ANY' to not filter, null to filter collections with no groups
      *
      * @return array
      */
-    public function listComputedFollowedByUserId($user_id, $selected_computed_props, $options = [])
+    public function listComputedFollowedByUserId($user_id, $selected_computed_props)
     {
-        $default_options = [
-            'group' => 'ANY',
-        ];
-        $options = array_merge($default_options, $options);
-
         $parameters = [
             ':user_id' => $user_id,
         ];
@@ -204,14 +183,6 @@ class Collection extends \Minz\DatabaseModel
             $group_by_clause = 'GROUP BY c.id, fc.group_id';
         }
 
-        $group_clause = '';
-        if (!$options['group']) {
-            $group_clause = 'AND fc.group_id IS NULL';
-        } elseif ($options['group'] !== 'ANY') {
-            $group_clause = 'AND fc.group_id = :group_id';
-            $parameters[':group_id'] = $options['group'];
-        }
-
         $sql = <<<SQL
             SELECT
                 c.*,
@@ -225,8 +196,6 @@ class Collection extends \Minz\DatabaseModel
             AND fc.user_id = :user_id
 
             AND c.is_public = true
-
-            {$group_clause}
 
             {$group_by_clause}
         SQL;

@@ -6,7 +6,8 @@
     </head>
 
     <body>
-        <?php foreach ($no_group_followed_collections as $collection): ?>
+        <?php $collections = $groups_to_collections[null] ?? []; ?>
+        <?php foreach ($collections as $collection): ?>
             <?php if ($collection->type === 'feed'): ?>
                 <outline type="rss" text="<?= protect($collection->name) ?>" xmlUrl="<?= protect($collection->feed_url) ?>" htmlUrl="<?= protect($collection->feed_site_url) ?>" />
             <?php else: ?>
@@ -16,7 +17,8 @@
 
         <?php foreach ($groups as $group): ?>
             <outline text="<?= protect($group->name) ?>">
-                <?php foreach ($group->followedCollections() as $collection): ?>
+                <?php $collections = $groups_to_collections[$group->id] ?? []; ?>
+                <?php foreach ($collections as $collection): ?>
                     <?php if ($collection->type === 'feed'): ?>
                         <outline type="rss" text="<?= protect($collection->name) ?>" xmlUrl="<?= protect($collection->feed_url) ?>" htmlUrl="<?= protect($collection->feed_site_url) ?>" />
                     <?php else: ?>

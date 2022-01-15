@@ -30,23 +30,22 @@ class Collections
             ]);
         }
 
-        $no_group_collections = $user->collections(['number_links'], [
-            'group' => null,
-        ]);
-        $no_group_followed_collections = $user->followedCollections(['number_links'], [
-            'group' => null,
-        ]);
-        utils\Sorter::localeSort($no_group_collections, 'name');
-        utils\Sorter::localeSort($no_group_followed_collections, 'name');
-
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
         utils\Sorter::localeSort($groups, 'name');
 
+        $collections = $user->collections(['number_links']);
+        $followed_collections = $user->followedCollections(['number_links']);
+        utils\Sorter::localeSort($collections, 'name');
+        utils\Sorter::localeSort($followed_collections, 'name');
+
+        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
+        $groups_to_followed_collections = utils\Grouper::groupBy($followed_collections, 'group_id');
+
         return Response::ok('collections/index.phtml', [
             'read_list' => $user->readList(),
-            'no_group_collections' => $no_group_collections,
-            'no_group_followed_collections' => $no_group_followed_collections,
             'groups' => $groups,
+            'groups_to_collections' => $groups_to_collections,
+            'groups_to_followed_collections' => $groups_to_followed_collections,
         ]);
     }
 

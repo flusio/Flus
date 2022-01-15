@@ -39,58 +39,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($db_collections));
     }
 
-    public function testListComputedByUserIdCanFilterByGroupId()
-    {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $group_id = $this->create('group', [
-            'user_id' => $user_id,
-        ]);
-        $collection_id_1 = $this->create('collection', [
-            'user_id' => $user_id,
-            'type' => 'collection',
-            'group_id' => $group_id,
-        ]);
-        $collection_id_2 = $this->create('collection', [
-            'user_id' => $user_id,
-            'type' => 'collection',
-            'group_id' => null,
-        ]);
-
-        $db_collections = $dao->listComputedByUserId($user_id, [], [
-            'group' => $group_id,
-        ]);
-
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id_1, $db_collections[0]['id']);
-    }
-
-    public function testListComputedByUserIdCanFilterByNullGroupId()
-    {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $group_id = $this->create('group', [
-            'user_id' => $user_id,
-        ]);
-        $collection_id_1 = $this->create('collection', [
-            'user_id' => $user_id,
-            'type' => 'collection',
-            'group_id' => $group_id,
-        ]);
-        $collection_id_2 = $this->create('collection', [
-            'user_id' => $user_id,
-            'type' => 'collection',
-            'group_id' => null,
-        ]);
-
-        $db_collections = $dao->listComputedByUserId($user_id, [], [
-            'group' => null,
-        ]);
-
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id_2, $db_collections[0]['id']);
-    }
-
     public function testListComputedByUserIdCanExcludePrivateCollections()
     {
         $dao = new Collection();
@@ -239,80 +187,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $db_collections = $dao->listComputedFollowedByUserId($user_id, []);
 
         $this->assertSame(0, count($db_collections));
-    }
-
-    public function testListComputedFollowedByUserIdCanFilterByGroupId()
-    {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id_1 = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'type' => 'collection',
-            'is_public' => 1,
-        ]);
-        $collection_id_2 = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'type' => 'collection',
-            'is_public' => 1,
-        ]);
-        $group_id = $this->create('group', [
-            'user_id' => $user_id,
-        ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_1,
-            'user_id' => $user_id,
-            'group_id' => $group_id,
-        ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_2,
-            'user_id' => $user_id,
-            'group_id' => null,
-        ]);
-
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, [], [
-            'group' => $group_id,
-        ]);
-
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id_1, $db_collections[0]['id']);
-    }
-
-    public function testListComputedFollowedByUserIdCanFilterByNullGroupId()
-    {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id_1 = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'type' => 'collection',
-            'is_public' => 1,
-        ]);
-        $collection_id_2 = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'type' => 'collection',
-            'is_public' => 1,
-        ]);
-        $group_id = $this->create('group', [
-            'user_id' => $user_id,
-        ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_1,
-            'user_id' => $user_id,
-            'group_id' => $group_id,
-        ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_2,
-            'user_id' => $user_id,
-            'group_id' => null,
-        ]);
-
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, [], [
-            'group' => null,
-        ]);
-
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id_2, $db_collections[0]['id']);
     }
 
     public function testListComputedFollowedByUserIdCanReturnNumberLinks()
