@@ -41,31 +41,10 @@
             <?php $collections = $groups_to_collections[null] ?? []; ?>
 
             <?php foreach ($collections as $collection): ?>
-                <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>');">
-                    <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                        <div class="card__title">
-                            <?= protect($collection->name) ?>
-                        </div>
-
-                        <p class="card__text card__text--oneline">
-                            <?php
-                                if ($collection->type === 'feed'):
-                                    $via = _f('Feed %s', protect($collection->feedWebsite()));
-                                else:
-                                    $via = _f('By %s', protect($collection->owner()->username));
-                                endif;
-
-                                if ($collection->number_links === 0):
-                                    $number_links = _('no links');
-                                else:
-                                    $number_links = _nf('%d link', '%d links', $collection->number_links, $collection->number_links);
-                                endif;
-                            ?>
-
-                            <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
-                        </p>
-                    </a>
-                </div>
+                <?= $this->include('collections/_collection.phtml', [
+                    'display_mode' => 'public',
+                    'collection' => $collection,
+                ]) ?>
             <?php endforeach; ?>
 
             <?php for ($i = 0; $i < (3 - ((count($collections) + 1) % 3)); $i++): ?>
@@ -76,14 +55,12 @@
 
     <?php foreach ($groups as $group): ?>
         <?php if (isset($groups_to_collections[$group->id])): ?>
-            <?php
-                echo $this->include('groups/_group.phtml', [
-                    'display_mode' => 'followed',
-                    'group' => $group,
-                    'collections' => $groups_to_collections[$group->id],
-                    'from' => url('feeds'),
-                ]);
-            ?>
+            <?= $this->include('groups/_group.phtml', [
+                'display_mode' => 'public',
+                'group' => $group,
+                'collections' => $groups_to_collections[$group->id],
+                'from' => url('feeds'),
+            ]) ?>
         <?php endif; ?>
     <?php endforeach; ?>
 </div>

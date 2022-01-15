@@ -63,27 +63,10 @@
         <section class="group">
             <div class="cards">
                 <?php foreach ($collections as $collection): ?>
-                    <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>');">
-                        <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                            <div class="card__title">
-                                <?= protect($collection->name) ?>
-                            </div>
-
-                            <p class="card__text">
-                                <?php if ($collection->number_links === 0): ?>
-                                    <?= _('no links') ?>
-                                <?php else: ?>
-                                    <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
-                                <?php endif; ?>
-
-                                <?php if ($collection->is_public): ?>
-                                    <span class="sticker sticker--right">
-                                        <?= _('public') ?>
-                                    </span>
-                                <?php endif; ?>
-                            </p>
-                        </a>
-                    </div>
+                    <?= $this->include('collections/_collection.phtml', [
+                        'display_mode' => 'owned',
+                        'collection' => $collection,
+                    ]) ?>
                 <?php endforeach; ?>
 
                 <?php for ($i = 0; $i < (3 - (count($collections) % 3)); $i++): ?>
@@ -95,14 +78,12 @@
 
     <?php foreach ($groups as $group): ?>
         <?php if (isset($groups_to_collections[$group->id])): ?>
-            <?php
-                echo $this->include('groups/_group.phtml', [
-                    'display_mode' => 'owned',
-                    'group' => $group,
-                    'collections' => $groups_to_collections[$group->id],
-                    'from' => url('links'),
-                ]);
-            ?>
+            <?= $this->include('groups/_group.phtml', [
+                'display_mode' => 'owned',
+                'group' => $group,
+                'collections' => $groups_to_collections[$group->id],
+                'from' => url('links'),
+            ]) ?>
         <?php endif; ?>
     <?php endforeach; ?>
 
