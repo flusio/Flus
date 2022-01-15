@@ -42,7 +42,8 @@ class Obtentions
             return Response::notFound('not_found.phtml');
         }
 
-        $collections = $user->collections();
+        $bookmarks = $user->bookmarks();
+        $collections = array_merge([$bookmarks], $user->collections());
         models\Collection::sort($collections, $user->locale);
 
         // $link should be owned by a different user, but the current user can
@@ -106,7 +107,8 @@ class Obtentions
             return Response::notFound('not_found.phtml');
         }
 
-        $collections = $user->collections();
+        $bookmarks = $user->bookmarks();
+        $collections = array_merge([$bookmarks], $user->collections());
         models\Collection::sort($collections, $user->locale);
 
         $existing_link = models\Link::findBy([
@@ -140,7 +142,7 @@ class Obtentions
             ]);
         }
 
-        if (!models\Collection::daoCall('existForUser', $user->id, $collection_ids)) {
+        if (!models\Collection::daoCall('doesUserOwnCollections', $user->id, $collection_ids)) {
             return Response::badRequest('links/obtentions/new.phtml', [
                 'link' => $link,
                 'is_hidden' => $is_hidden,

@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\models\dao\links;
+namespace flusio\models\dao;
 
 /**
  * Add methods providing SQL queries specific to the lock system.
@@ -11,18 +11,18 @@ namespace flusio\models\dao\links;
 trait LockQueries
 {
     /**
-     * Lock a link
+     * Lock a resource (it must have a locked_at property).
      *
-     * @param string $link_id
+     * @param string $id
      *
      * @return boolean True if the lock is successful, false otherwise
      */
-    public function lock($link_id)
+    public function lock($id)
     {
         $sql = <<<SQL
-            UPDATE links
+            UPDATE {$this->table_name}
             SET locked_at = :locked_at
-            WHERE id = :link_id
+            WHERE id = :id
             AND (locked_at IS NULL OR locked_at <= :lock_timeout)
         SQL;
 
@@ -31,30 +31,30 @@ trait LockQueries
         $statement = $this->prepare($sql);
         $statement->execute([
             ':locked_at' => $now->format(\Minz\Model::DATETIME_FORMAT),
-            ':link_id' => $link_id,
+            ':id' => $id,
             ':lock_timeout' => $lock_timeout->format(\Minz\Model::DATETIME_FORMAT),
         ]);
         return $statement->rowCount() === 1;
     }
 
     /**
-     * Unlock a link
+     * Unlock a resource (it must have a locked_at property).
      *
-     * @param string $link_id
+     * @param string $id
      *
      * @return boolean True if the unlock is successful, false otherwise
      */
-    public function unlock($link_id)
+    public function unlock($id)
     {
         $sql = <<<SQL
-            UPDATE links
+            UPDATE {$this->table_name}
             SET locked_at = null
-            WHERE id = :link_id
+            WHERE id = :id
         SQL;
 
         $statement = $this->prepare($sql);
         $statement->execute([
-            ':link_id' => $link_id,
+            ':id' => $id,
         ]);
         return $statement->rowCount() === 1;
     }

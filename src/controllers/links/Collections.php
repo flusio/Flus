@@ -51,7 +51,7 @@ class Collections
         }
 
         if ($mode === 'news') {
-            $collections = $user->collections(true);
+            $collections = $user->collections();
             models\Collection::sort($collections, $user->locale);
 
             return Response::ok('links/collections/index_news.phtml', [
@@ -62,7 +62,8 @@ class Collections
                 'from' => $from,
             ]);
         } elseif ($mode === 'adding') {
-            $collections = $user->collections();
+            $bookmarks = $user->bookmarks();
+            $collections = array_merge([$bookmarks], $user->collections());
             models\Collection::sort($collections, $user->locale);
 
             return Response::ok('links/collections/index_adding.phtml', [
@@ -72,7 +73,8 @@ class Collections
                 'from' => $from,
             ]);
         } else {
-            $collections = $user->collections();
+            $bookmarks = $user->bookmarks();
+            $collections = array_merge([$bookmarks], $user->collections());
             models\Collection::sort($collections, $user->locale);
 
             return Response::ok('links/collections/index.phtml', [
@@ -132,7 +134,7 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
-        if (!models\Collection::daoCall('existForUser', $user->id, $new_collection_ids)) {
+        if (!models\Collection::daoCall('doesUserOwnCollections', $user->id, $new_collection_ids)) {
             utils\Flash::set('error', _('One of the associated collection doesn’t exist.'));
             return Response::found($from);
         }

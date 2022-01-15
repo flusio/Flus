@@ -79,7 +79,7 @@ class Topic extends \Minz\Model
      */
     public function countPublicCollections()
     {
-        return Collection::daoCall('countPublicByTopic', $this->id);
+        return Collection::daoCall('countPublicByTopicId', $this->id);
     }
 
     /**

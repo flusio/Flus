@@ -238,38 +238,43 @@ class User extends \Minz\Model
     }
 
     /**
-     * Return the list of collections created by the user
+     * Return the collections of the user.
      *
-     * @param boolean $exclude_bookmarks Default is false.
+     * @see \flusio\models\dao\Collection::listComputedByUserId
+     *
+     * @param string[] $selected_computed_props
+     * @param array $options
      *
      * @return \flusio\models\Collection[]
      */
-    public function collections($exclude_bookmarks = false)
+    public function collections($selected_computed_props = [], $options = [])
     {
-        if ($exclude_bookmarks) {
-            return Collection::listBy([
-                'user_id' => $this->id,
-                'type' => 'collection',
-            ]);
-        } else {
-            return Collection::listBy([
-                'user_id' => $this->id,
-                'type' => ['bookmarks', 'collection'],
-            ]);
-        }
+        return Collection::daoToList(
+            'listComputedByUserId',
+            $this->id,
+            $selected_computed_props,
+            $options
+        );
     }
 
     /**
-     * Return the list of collections published by the user
+     * Return the collections followed by the user.
      *
-     * @param boolean $count_hidden_links
-     *     Indicate if number_links should include hidden links
+     * @see \flusio\models\dao\Collection::listComputedFollowedByUserId
+     *
+     * @param string[] $selected_computed_props
+     * @param array $options
      *
      * @return \flusio\models\Collection[]
      */
-    public function publicCollections($count_hidden_links)
+    public function followedCollections($selected_computed_props = [], $options = [])
     {
-        return Collection::daoToList('listPublicWithNumberLinksByUser', $this->id, $count_hidden_links);
+        return Collection::daoToList(
+            'listComputedFollowedByUserId',
+            $this->id,
+            $selected_computed_props,
+            $options
+        );
     }
 
     /**

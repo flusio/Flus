@@ -38,7 +38,7 @@ class Links
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
         models\Group::sort($groups, $user->locale);
 
-        $collections = models\Collection::daoToList('listForLinksPage', $user->id);
+        $collections = $user->collections(['number_links']);
         $collections_by_group_ids = [];
         $collections_no_group = [];
         foreach ($collections as $collection) {
@@ -137,15 +137,15 @@ class Links
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        $collections = $user->collections();
+        $bookmarks = $user->bookmarks();
+        $collections = array_merge([$bookmarks], $user->collections());
         models\Collection::sort($collections, $user->locale);
 
         $default_collection_id = $request->param('collection_id');
         if ($default_collection_id) {
             $default_collection_ids = [$default_collection_id];
         } else {
-            $bookmarks_collection = $user->bookmarks();
-            $default_collection_ids = [$bookmarks_collection->id];
+            $default_collection_ids = [$bookmarks->id];
         }
 
         return Response::ok('links/new.phtml', [
@@ -185,7 +185,8 @@ class Links
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        $collections = $user->collections();
+        $bookmarks = $user->bookmarks();
+        $collections = array_merge([$bookmarks], $user->collections());
         models\Collection::sort($collections, $user->locale);
 
         if (!\Minz\CSRF::validate($csrf)) {
@@ -225,7 +226,7 @@ class Links
             ]);
         }
 
-        if (!models\Collection::daoCall('existForUser', $user->id, $collection_ids)) {
+        if (!models\Collection::daoCall('doesUserOwnCollections', $user->id, $collection_ids)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_hidden' => $is_hidden,

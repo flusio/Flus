@@ -36,7 +36,7 @@ class News
         return Response::ok('news/show.phtml', [
             'news' => $news,
             'links' => $news->links(['published_at', 'number_comments']),
-            'has_collections' => count($user->collections(true)) > 0,
+            'has_collections' => count($user->collections()) > 0,
             'no_news' => utils\Flash::pop('no_news'),
         ]);
     }
@@ -72,7 +72,7 @@ class News
             return Response::badRequest('news/show.phtml', [
                 'news' => $news,
                 'links' => [],
-                'has_collections' => count($user->collections(true)) > 0,
+                'has_collections' => count($user->collections()) > 0,
                 'no_news' => false,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
