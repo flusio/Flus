@@ -104,15 +104,17 @@ class Collection extends \Minz\DatabaseModel
     public function listByLinkId($link_id)
     {
         $sql = <<<'SQL'
-            SELECT * FROM collections
-            WHERE id IN (
-                SELECT collection_id FROM links_to_collections
-                WHERE link_id = ?
-            )
+            SELECT c.*
+            FROM collections c, links_to_collections lc
+
+            WHERE lc.collection_id = c.id
+            AND lc.link_id = :link_id
         SQL;
 
         $statement = $this->prepare($sql);
-        $statement->execute([$link_id]);
+        $statement->execute([
+            ':link_id' => $link_id,
+        ]);
         return $statement->fetchAll();
     }
 
@@ -238,21 +240,24 @@ class Collection extends \Minz\DatabaseModel
         $values = [':user_id' => $user_id];
 
         if ($group_id) {
-            $group_placeholder = 'AND group_id = :group_id';
+            $group_placeholder = 'AND c.group_id = :group_id';
             $values[':group_id'] = $group_id;
         } else {
-            $group_placeholder = 'AND group_id IS NULL';
+            $group_placeholder = 'AND c.group_id IS NULL';
         }
 
         $sql = <<<SQL
-            SELECT c.*, (
-                SELECT COUNT(*) FROM links_to_collections l
-                WHERE c.id = l.collection_id
-            ) AS number_links
+            SELECT c.*, COUNT(lc.id) AS number_links
             FROM collections c
-            WHERE user_id = :user_id
-            AND type = 'collection'
+
+            LEFT JOIN links_to_collections lc
+            ON lc.collection_id = c.id
+
+            WHERE c.user_id = :user_id
+            AND c.type = 'collection'
             {$group_placeholder}
+
+            GROUP BY c.id
         SQL;
 
         $statement = $this->prepare($sql);
@@ -272,13 +277,16 @@ class Collection extends \Minz\DatabaseModel
         $values = [':user_id' => $user_id];
 
         $sql = <<<SQL
-            SELECT c.*, (
-                SELECT COUNT(lc.*) FROM links_to_collections lc
-                WHERE lc.collection_id = c.id
-            ) AS number_links
+            SELECT c.*, COUNT(lc.id) AS number_links
             FROM collections c
-            WHERE user_id = :user_id
-            AND type = 'collection'
+
+            LEFT JOIN links_to_collections lc
+            ON lc.collection_id = c.id
+
+            WHERE c.user_id = :user_id
+            AND c.type = 'collection'
+
+            GROUP BY c.id
         SQL;
 
         $statement = $this->prepare($sql);
@@ -299,16 +307,22 @@ class Collection extends \Minz\DatabaseModel
         $values = [':user_id' => $user_id];
 
         $sql = <<<SQL
-            SELECT c.*, (
-                SELECT COUNT(l.id) FROM links l, links_to_collections lc
-                WHERE lc.collection_id = c.id
-                AND lc.link_id = l.id
-                AND l.is_hidden = false
-            ) AS number_links, fc.group_id
+            SELECT c.*, COUNT(lc.id) AS number_links, fc.group_id
             FROM collections c, followed_collections fc
-            WHERE fc.user_id = :user_id
-            AND fc.collection_id = c.id
+
+            LEFT JOIN links_to_collections lc
+            ON lc.collection_id = fc.collection_id
+
+            LEFT JOIN links l
+            ON lc.link_id = l.id
+            AND l.is_hidden = false
+
+            WHERE fc.collection_id = c.id
+            AND fc.user_id = :user_id
+
             AND c.is_public = true
+
+            GROUP BY c.id, fc.group_id
         SQL;
 
         $statement = $this->prepare($sql);
@@ -338,7 +352,7 @@ class Collection extends \Minz\DatabaseModel
             FROM collections c
 
             LEFT JOIN links_to_collections lc
-            ON c.id = lc.collection_id
+            ON lc.collection_id = c.id
 
             WHERE c.user_id = ?
             AND c.type = 'feed'
@@ -375,17 +389,23 @@ class Collection extends \Minz\DatabaseModel
         }
 
         $sql = <<<SQL
-            SELECT c.*, (
-                SELECT COUNT(l.id) FROM links l, links_to_collections lc
-                WHERE lc.collection_id = c.id
-                AND lc.link_id = l.id
-                AND l.is_hidden = false
-            ) AS number_links
+            SELECT c.*, COUNT(lc.id) AS number_links, fc.group_id
             FROM collections c, followed_collections fc
-            WHERE fc.user_id = :user_id
-            AND fc.collection_id = c.id
+
+            LEFT JOIN links_to_collections lc
+            ON lc.collection_id = fc.collection_id
+
+            LEFT JOIN links l
+            ON lc.link_id = l.id
+            AND l.is_hidden = false
+
+            WHERE fc.collection_id = c.id
+            AND fc.user_id = :user_id
+
             AND c.is_public = true
             {$group_placeholder}
+
+            GROUP BY c.id, fc.group_id
         SQL;
 
         $statement = $this->prepare($sql);
