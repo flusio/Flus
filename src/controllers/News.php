@@ -23,7 +23,7 @@ class News
      *     if not connected
      * @response 200
      */
-    public function show()
+    public function index()
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -33,7 +33,7 @@ class News
         }
 
         $news = $user->news();
-        return Response::ok('news/show.phtml', [
+        return Response::ok('news/index.phtml', [
             'news' => $news,
             'links' => $news->links(['published_at', 'number_comments']),
             'has_collections' => count($user->collections()) > 0,
@@ -69,7 +69,7 @@ class News
         $news = $user->news();
 
         if (!\Minz\CSRF::validate($csrf)) {
-            return Response::badRequest('news/show.phtml', [
+            return Response::badRequest('news/index.phtml', [
                 'news' => $news,
                 'links' => [],
                 'has_collections' => count($user->collections()) > 0,

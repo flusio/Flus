@@ -90,7 +90,7 @@ class Router
         $router->addRoute('get', '/exportations/download', 'Exportations#download', 'download exportation');
 
         // News page
-        $router->addRoute('get', '/news', 'News#show', 'news');
+        $router->addRoute('get', '/news', 'News#index', 'news');
         $router->addRoute('post', '/news', 'News#create', 'fill news');
 
         // Collections

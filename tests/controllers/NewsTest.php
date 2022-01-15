@@ -15,7 +15,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersNewsLinksCorrectly()
+    public function testIndexRendersNewsLinksCorrectly()
     {
         $user = $this->login();
         $news = $user->news();
@@ -32,10 +32,11 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', '/news');
 
         $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'news/index.phtml');
         $this->assertResponseContains($response, $title);
     }
 
-    public function testShowRendersIfViaBookmarks()
+    public function testIndexRendersIfViaBookmarks()
     {
         $user = $this->login();
         $news = $user->news();
@@ -56,7 +57,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, "via your <strong>{$bookmarks_anchor}</strong>");
     }
 
-    public function testShowRendersIfViaFollowedCollections()
+    public function testIndexRendersIfViaFollowedCollections()
     {
         $user = $this->login();
         $username = $this->fake('username');
@@ -88,7 +89,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong> by {$username}");
     }
 
-    public function testShowRendersTipsIfNoNewsFlash()
+    public function testIndexRendersTipsIfNoNewsFlash()
     {
         $user = $this->login();
         $news = $user->news();
@@ -105,7 +106,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'We haven’t found any relevant links for the moment.');
     }
 
-    public function testShowHidesAddToCollectionsIfUserHasNoCollections()
+    public function testIndexHidesAddToCollectionsIfUserHasNoCollections()
     {
         $user = $this->login();
         $news = $user->news();
@@ -125,7 +126,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, 'Add to collections');
     }
 
-    public function testShowRedirectsIfNotConnected()
+    public function testIndexRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
         $user = models\User::find($user_id);
