@@ -10,7 +10,7 @@ namespace flusio\models\dao;
  */
 class Link extends \Minz\DatabaseModel
 {
-    use BulkHelper;
+    use BulkQueries;
     use links\CleanerQueries;
     use links\DataExporterQueries;
     use links\FetcherQueries;

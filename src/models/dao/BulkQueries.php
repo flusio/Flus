@@ -6,7 +6,7 @@ namespace flusio\models\dao;
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait BulkHelper
+trait BulkQueries
 {
     /**
      * Insert in DB all the given objects.
