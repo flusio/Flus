@@ -90,7 +90,7 @@ class Router
         $router->addRoute('get', '/exportations/download', 'Exportations#download', 'download exportation');
 
         // News page
-        $router->addRoute('get', '/news', 'News#show', 'news');
+        $router->addRoute('get', '/news', 'News#index', 'news');
         $router->addRoute('post', '/news', 'News#create', 'fill news');
 
         // Collections
@@ -116,7 +116,7 @@ class Router
         $router->addRoute('post', '/collections/:id/read/never', 'collections/Read#never', 'never read collection');
 
         $router->addRoute('get', '/bookmarks', 'Bookmarks#index', 'bookmarks');
-        $router->addRoute('get', '/read', 'collections/Read#index', 'read list');
+        $router->addRoute('get', '/read', 'Read#index', 'read list');
 
         // Links
         $router->addRoute('get', '/links', 'Links#index', 'links');

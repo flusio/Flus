@@ -52,31 +52,10 @@
     <?php if ($collections): ?>
         <div class="cards cards--centered">
             <?php foreach ($collections as $collection): ?>
-                <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>');">
-                    <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
-                        <div class="card__title">
-                            <?= protect($collection->name) ?>
-                        </div>
-
-                        <p class="card__text card__text--oneline">
-                            <?php
-                                if ($collection->type === 'feed'):
-                                    $via = _f('Feed %s', protect($collection->feedWebsite()));
-                                else:
-                                    $via = _f('By %s', protect($collection->owner()->username));
-                                endif;
-
-                                if ($collection->number_links === 0):
-                                    $number_links = _('no links');
-                                else:
-                                    $number_links = _nf('%d link', '%d links', $collection->number_links, $collection->number_links);
-                                endif;
-                            ?>
-
-                            <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
-                        </p>
-                    </a>
-                </div>
+                <?= $this->include('collections/_collection.phtml', [
+                    'display_mode' => 'public',
+                    'collection' => $collection,
+                ]) ?>
             <?php endforeach; ?>
         </div>
     <?php elseif ($is_current_user_profile): ?>
