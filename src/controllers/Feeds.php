@@ -71,11 +71,11 @@ class Feeds
      *
      * @request_param string csrf
      * @request_param string url It must be a valid non-empty URL
-     * @request_param string from The page to redirect to after creation
+     * @request_param string from The page to redirect to if not connected
      *
      * @response 302 /login?redirect_to=:from if not connected
      * @response 400 if CSRF or the url is invalid
-     * @response 302 :from on success
+     * @response 302 /collections/:id on success
      */
     public function create($request)
     {
@@ -164,6 +164,6 @@ class Feeds
             $user->follow($feed->id);
         }
 
-        return Response::found($from);
+        return Response::redirect('collection', ['id' => $feed->id]);
     }
 }
