@@ -123,6 +123,14 @@ trait DaoConnector
     }
 
     /**
+     * @see \Minz\DatabaseModel::countBy
+     */
+    public static function countBy($values)
+    {
+        return self::daoCall('countBy', $values);
+    }
+
+    /**
      * @see \Minz\DatabaseModel::exists
      */
     public static function exists($primary_keys)
