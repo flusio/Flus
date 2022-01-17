@@ -5,6 +5,7 @@ namespace flusio\cli;
 use Minz\Response;
 use flusio\jobs;
 use flusio\models;
+use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -145,6 +146,12 @@ class JobsWorker
 
             $database = \Minz\Database::get();
             $database->close();
+
+            // the locale can be changed during a job operation
+            $cli_locale = \Minz\Configuration::$application['cli_locale'];
+            if ($cli_locale) {
+                utils\Locale::setCurrentLocale($cli_locale);
+            }
 
             if (!$this->exit_watch) {
                 sleep(5);
