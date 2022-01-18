@@ -105,7 +105,6 @@ class FeedFetcher
         $link_ids_by_urls = models\Link::daoCall('listUrlsToIdsByCollectionId', $collection->id);
         $link_urls_by_entry_ids = models\Link::daoCall('listEntryIdsToUrlsByCollectionId', $collection->id);
 
-        $links_columns = [];
         $links_to_create = [];
         $links_to_collections_to_create = [];
 
@@ -173,14 +172,7 @@ class FeedFetcher
                 $link->created_at = \Minz\Time::now();
                 $link->feed_entry_id = $feed_entry_id;
 
-                $db_link = $link->toValues();
-                $links_to_create = array_merge(
-                    $links_to_create,
-                    array_values($db_link)
-                );
-                if (!$links_columns) {
-                    $links_columns = array_keys($db_link);
-                }
+                $links_to_create[] = $link;
 
                 $link_ids_by_urls[$link->url] = $link->id;
                 $link_urls_by_entry_ids[$link->url] = $link->feed_entry_id;
@@ -192,13 +184,7 @@ class FeedFetcher
             $links_to_collections_to_create[] = $collection->id;
         }
 
-        if ($links_to_create) {
-            models\Link::daoCall(
-                'bulkInsert',
-                $links_columns,
-                $links_to_create
-            );
-        }
+        models\Link::bulkInsert($links_to_create);
 
         if ($links_to_collections_to_create) {
             models\LinkToCollection::daoCall(

@@ -12,11 +12,12 @@ trait BulkQueries
      * Insert in DB all the given objects.
      *
      * No validation are done on this insert, you must be sure they are valid
-     * values. Rows are not inserted on conflict, but no exceptions are raised
-     * either.
+     * values. Rows are not inserted (silently) on conflict.
      *
      * @param string[] $columns
      * @param array $values
+     *
+     * @throws \PDOException if an error occurs during the insertion
      *
      * @return boolean True on success
      */

@@ -11,6 +11,7 @@ use flusio\utils;
 class Link extends \Minz\Model
 {
     use DaoConnector;
+    use BulkDaoConnector;
 
     public const PROPERTIES = [
         'id' => [
