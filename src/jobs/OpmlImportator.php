@@ -55,7 +55,6 @@ class OpmlImportator extends Job
         $feed_urls_by_groups = $this->loadUrlsFromOutlines($opml->outlines, '');
 
         $collection_ids_by_feed_urls = models\Collection::daoCall('listFeedUrlsToIdsByUserId', $support_user->id);
-        $collections_columns = [];
         $collections_to_create = [];
         $followed_collections_to_create = [];
 
@@ -88,16 +87,7 @@ class OpmlImportator extends Job
                     $collection = models\Collection::initFeed($support_user->id, $feed_url);
                     $collection->created_at = \Minz\Time::now();
 
-                    $db_collection = $collection->toValues();
-                    $collections_to_create = array_merge(
-                        $collections_to_create,
-                        array_values($db_collection)
-                    );
-
-                    // we need to remember the order of columns
-                    if (!$collections_columns) {
-                        $collections_columns = array_keys($db_collection);
-                    }
+                    $collections_to_create[] = $collection;
 
                     $collection_ids_by_feed_urls[$feed_url] = $collection->id;
                     $collection_id = $collection->id;
@@ -110,13 +100,7 @@ class OpmlImportator extends Job
             }
         }
 
-        if ($collections_to_create) {
-            models\Collection::daoCall(
-                'bulkInsert',
-                $collections_columns,
-                $collections_to_create
-            );
-        }
+        models\Collection::bulkInsert($collections_to_create);
 
         if ($followed_collections_to_create) {
             $followed_collections_dao = new models\dao\FollowedCollection();

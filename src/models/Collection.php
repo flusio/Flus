@@ -13,6 +13,7 @@ use flusio\utils;
 class Collection extends \Minz\Model
 {
     use DaoConnector;
+    use BulkDaoConnector;
 
     public const VALID_TYPES = ['bookmarks', 'news', 'read', 'never', 'collection', 'feed'];
 

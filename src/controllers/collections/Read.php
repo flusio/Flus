@@ -46,19 +46,17 @@ class Read
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
             $links = $collection->links();
         } elseif ($user->isFollowing($collection->id)) {
-            // This loop is not efficient since the collection may contain a
-            // lot of links. If it becomes an issue, it could be fixed by
-            // getting the differnce between the collection URLs and the user'
-            // URLs. The result could then be inserted in DB with a bulk
-            // operation.
-            // See also similar loops in later() and never() methods.
-            foreach ($collection->links([], ['hidden' => false]) as $link) {
-                $new_link = $user->obtainLink($link);
-                if (!$new_link->created_at) {
-                    $new_link->save();
+            $collection_links = $collection->links([], ['hidden' => false]);
+            $links = $user->obtainLinks($collection_links);
+
+            $links_to_create = [];
+            foreach ($links as $link) {
+                if (!$link->created_at) {
+                    $link->created_at = \Minz\Time::now();
+                    $links_to_create[] = $link;
                 }
-                $links[] = $new_link;
             }
+            models\Link::bulkInsert($links_to_create);
         } else {
             return Response::notFound('not_found.phtml');
         }
@@ -107,13 +105,17 @@ class Read
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
             $links = $collection->links();
         } elseif ($user->isFollowing($collection->id)) {
-            foreach ($collection->links([], ['hidden' => false]) as $link) {
-                $new_link = $user->obtainLink($link);
-                if (!$new_link->created_at) {
-                    $new_link->save();
+            $collection_links = $collection->links([], ['hidden' => false]);
+            $links = $user->obtainLinks($collection_links);
+
+            $links_to_create = [];
+            foreach ($links as $link) {
+                if (!$link->created_at) {
+                    $link->created_at = \Minz\Time::now();
+                    $links_to_create[] = $link;
                 }
-                $links[] = $new_link;
             }
+            models\Link::bulkInsert($links_to_create);
         } else {
             return Response::notFound('not_found.phtml');
         }
@@ -162,13 +164,17 @@ class Read
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
             $links = $collection->links();
         } elseif ($user->isFollowing($collection->id)) {
-            foreach ($collection->links([], ['hidden' => false]) as $link) {
-                $new_link = $user->obtainLink($link);
-                if (!$new_link->created_at) {
-                    $new_link->save();
+            $collection_links = $collection->links([], ['hidden' => false]);
+            $links = $user->obtainLinks($collection_links);
+
+            $links_to_create = [];
+            foreach ($links as $link) {
+                if (!$link->created_at) {
+                    $link->created_at = \Minz\Time::now();
+                    $links_to_create[] = $link;
                 }
-                $links[] = $new_link;
             }
+            models\Link::bulkInsert($links_to_create);
         } else {
             return Response::notFound('not_found.phtml');
         }

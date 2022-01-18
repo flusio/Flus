@@ -32,23 +32,23 @@ class LinkToCollection extends \Minz\Model
     ];
 
     /**
-     * Attach the collections to the given link.
+     * Attach the collections to the given links.
      *
-     * Return true if collection_ids is empty.
+     * Return true if link_ids or collection_ids is empty.
      *
-     * @param string $link_id
+     * @param string[] $link_ids
      * @param string[] $collection_ids
      * @param \DateTime $created_at Value to set as created_at, "now" by default
      *
      * @return boolean True on success
      */
-    public static function attach($link_id, $collection_ids, $created_at = null)
+    public static function attach($link_ids, $collection_ids, $created_at = null)
     {
-        if (!$collection_ids) {
+        if (!$link_ids || !$collection_ids) {
             return true;
         }
 
-        return self::daoCall('attach', $link_id, $collection_ids, $created_at);
+        return self::daoCall('attach', $link_ids, $collection_ids, $created_at);
     }
 
     /**
@@ -69,10 +69,8 @@ class LinkToCollection extends \Minz\Model
         $bookmarks = $user->bookmarks();
         $news = $user->news();
 
-        foreach ($link_ids as $link_id) {
-            self::daoCall('attach', $link_id, [$read_list->id]);
-            self::daoCall('detach', $link_id, [$bookmarks->id, $news->id]);
-        }
+        self::daoCall('attach', $link_ids, [$read_list->id]);
+        self::daoCall('detach', $link_ids, [$bookmarks->id, $news->id]);
     }
 
     /**
@@ -92,10 +90,8 @@ class LinkToCollection extends \Minz\Model
         $bookmarks = $user->bookmarks();
         $news = $user->news();
 
-        foreach ($link_ids as $link_id) {
-            self::daoCall('attach', $link_id, [$bookmarks->id]);
-            self::daoCall('detach', $link_id, [$news->id]);
-        }
+        self::daoCall('attach', $link_ids, [$bookmarks->id]);
+        self::daoCall('detach', $link_ids, [$news->id]);
     }
 
     /**
@@ -116,10 +112,8 @@ class LinkToCollection extends \Minz\Model
         $news = $user->news();
         $never_list = $user->neverList();
 
-        foreach ($link_ids as $link_id) {
-            self::daoCall('attach', $link_id, [$never_list->id]);
-            self::daoCall('detach', $link_id, [$bookmarks->id, $news->id]);
-        }
+        self::daoCall('attach', $link_ids, [$never_list->id]);
+        self::daoCall('detach', $link_ids, [$bookmarks->id, $news->id]);
     }
 
     /**
@@ -138,9 +132,7 @@ class LinkToCollection extends \Minz\Model
     {
         $read_list = $user->readList();
 
-        foreach ($link_ids as $link_id) {
-            self::daoCall('detach', $link_id, [$read_list->id]);
-        }
+        self::daoCall('detach', $link_ids, [$read_list->id]);
     }
 
     /**
@@ -167,11 +159,11 @@ class LinkToCollection extends \Minz\Model
         $database->beginTransaction();
 
         if ($ids_to_attach) {
-            self::daoCall('attach', $link_id, $ids_to_attach);
+            self::daoCall('attach', [$link_id], $ids_to_attach);
         }
 
         if ($ids_to_detach) {
-            self::daoCall('detachCollections', $link_id, $ids_to_detach);
+            self::daoCall('detachCollections', [$link_id], $ids_to_detach);
         }
 
         return $database->commit();

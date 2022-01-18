@@ -113,7 +113,7 @@ class News
             $link->save();
 
             // And don't forget to add the link to the news collection!
-            models\LinkToCollection::attach($link->id, [$news->id], $news_link->published_at);
+            models\LinkToCollection::attach([$link->id], [$news->id], $news_link->published_at);
         }
 
         if (!$db_links) {

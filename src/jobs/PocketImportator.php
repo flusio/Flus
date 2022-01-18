@@ -133,9 +133,7 @@ class PocketImportator extends Job
         // don't create links, collections and their relation on the fly because
         // it would be too intensive. We rather prefer to insert them all at
         // once (see calls to `bulkInsert` below).
-        $links_columns = [];
         $links_to_create = [];
-        $collections_columns = [];
         $collections_to_create = [];
         $links_to_collections_to_create = [];
 
@@ -162,17 +160,7 @@ class PocketImportator extends Job
                         $collection = models\Collection::init($user->id, $tag, '', false);
                         $collection->created_at = \Minz\Time::now();
 
-                        // export its values and merge them in the values array
-                        $db_collection = $collection->toValues();
-                        $collections_to_create = array_merge(
-                            $collections_to_create,
-                            array_values($db_collection)
-                        );
-
-                        // we need to remember the order of columns
-                        if (!$collections_columns) {
-                            $collections_columns = array_keys($db_collection);
-                        }
+                        $collections_to_create[] = $collection;
 
                         // add the collection to the map array to avoid
                         // creating it again next time we find it
@@ -206,19 +194,7 @@ class PocketImportator extends Job
                 // first, or it would fail because of the not-null constraint.
                 $link->created_at = \Minz\Time::now();
 
-                // Then, add the link properties values to the list
-                $db_link = $link->toValues();
-                $links_to_create = array_merge(
-                    $links_to_create,
-                    array_values($db_link)
-                );
-
-                // If not done yet, we have to store the columns order. The
-                // order don’t change from a link to another, otherwise it
-                // would be impossible to use the bulkInsert
-                if (!$links_columns) {
-                    $links_columns = array_keys($db_link);
-                }
+                $links_to_create[] = $link;
 
                 $link_ids_by_urls[$link->url] = $link->id;
                 $link_id = $link->id;
@@ -245,21 +221,8 @@ class PocketImportator extends Job
         }
 
         // Finally, let the big import (in DB) begin!
-        if ($links_to_create) {
-            models\Link::daoCall(
-                'bulkInsert',
-                $links_columns,
-                $links_to_create
-            );
-        }
-
-        if ($collections_to_create) {
-            models\Collection::daoCall(
-                'bulkInsert',
-                $collections_columns,
-                $collections_to_create
-            );
-        }
+        models\Link::bulkInsert($links_to_create);
+        models\Collection::bulkInsert($collections_to_create);
 
         if ($links_to_collections_to_create) {
             models\LinkToCollection::daoCall(
