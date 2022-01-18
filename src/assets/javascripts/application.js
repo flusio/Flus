@@ -2,8 +2,7 @@ import * as Turbo from '@hotwired/turbo'; // eslint-disable-line no-unused-vars
 import { Application } from '@hotwired/stimulus';
 
 import AutosubmitController from 'js/controllers/autosubmit_controller.js';
-import BackAnchorController from 'js/controllers/back_anchor_controller.js';
-import BackStorageController from 'js/controllers/back_storage_controller.js';
+import BackButtonController from 'js/controllers/back_button_controller.js';
 import CollectionsSelectorController from 'js/controllers/collections_selector_controller.js';
 import ConfirmationController from 'js/controllers/confirmation_controller.js';
 import CopyToClipboardController from 'js/controllers/copy_to_clipboard_controller.js';
@@ -22,8 +21,7 @@ window.jsConfiguration = JSON.parse(document.getElementById('javascript-configur
 
 const application = Application.start();
 application.register('autosubmit', AutosubmitController);
-application.register('back-anchor', BackAnchorController);
-application.register('back-storage', BackStorageController);
+application.register('back-button', BackButtonController);
 application.register('collections-selector', CollectionsSelectorController);
 application.register('confirmation', ConfirmationController);
 application.register('copy-to-clipboard', CopyToClipboardController);

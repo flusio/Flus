@@ -146,29 +146,22 @@
             </header>
 
             <main id="main-content" class="layout__main" tabindex="-1">
-                <?php if ($back): ?>
-                    <nav class="layout__back">
-                        <?php if (isset($back['js-back-anchor-type'])): ?>
-                            <a
-                                href="<?= $back['href'] ?>"
-                                data-controller="back-anchor"
-                                data-back-anchor-type-value="<?= $back['js-back-anchor-type'] ?>"
-                                data-back-anchor-replace-value="href"
-                                <?php if (isset($back['js-back-anchor-mode'])): ?>
-                                    data-back-anchor-mode-value="<?= $back['js-back-anchor-mode'] ?>"
-                                <?php endif; ?>
-                            >
-                                <?= icon('arrow-left') ?>
-                                <?= $back['label'] ?>
-                            </a>
-                        <?php else: ?>
-                            <a href="<?= $back['href'] ?>">
-                                <?= icon('arrow-left') ?>
-                                <?= $back['label'] ?>
-                            </a>
-                        <?php endif; ?>
-                    </nav>
-                <?php endif; ?>
+                <nav
+                    class="layout__back"
+                    data-controller="back-button"
+                    data-action="popstate@window->back-button#handlePopstate"
+                    data-back-button-page-title-value="<?= $title ?>"
+                    data-back-button-clear-history-value="<?= $enable_back ? 'false' : 'true' ?>"
+                >
+                    <a
+                        href="#"
+                        data-back-button-target="button"
+                        data-action="back-button#handleClick"
+                    >
+                        <?= icon('arrow-left') ?>
+                        <?= _('Back') ?>
+                    </a>
+                </nav>
 
                 <section class="layout__content">
                     <?= $this->safe('content') ?>

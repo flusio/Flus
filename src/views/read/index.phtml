@@ -7,30 +7,15 @@
         ];
     }
 
-    if ($beta_enabled) {
-        $current_tab = 'links';
-        $back = [
-            'href' => url('links'),
-            'label' => _('Back'),
-        ];
-    } else {
-        $current_tab = 'collections';
-        $back = [
-            'href' => url('collections'),
-            'label' => _('Back'),
-        ];
-    }
-
     $this->layout('base.phtml', [
         'title' => $collection->name(),
         'canonical' => url_full('read list', $current_url_params),
-        'current_tab' => $current_tab,
+        'current_tab' => $beta_enabled ? 'links' : 'collections',
         'current_page' => 'collections',
-        'back' => $back,
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type-value="link">
+<div class="section">
     <div class="section__title">
         <h1><?= protect($collection->name()) ?></h1>
     </div>

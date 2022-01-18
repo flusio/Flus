@@ -1,25 +1,14 @@
 <?php
-    if ($beta_enabled) {
-        $current_tab = 'links';
-        $back = [
-            'href' => url('links'),
-            'label' => _('Back'),
-        ];
-    } else {
-        $current_tab = 'bookmarks';
-        $back = [];
-    }
-
     $this->layout('base.phtml', [
         'title' => _('Bookmarks'),
         'canonical' => url_full('bookmarks'),
-        'current_tab' => $current_tab,
+        'current_tab' => $beta_enabled ? 'links' : 'bookmarks',
         'current_page' => 'bookmarks',
-        'back' => $back,
+        'back' => $beta_enabled,
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type-value="link">
+<div class="section">
     <div class="section__title">
         <h1><?= protect($collection->name()) ?></h1>
     </div>

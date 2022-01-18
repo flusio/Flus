@@ -11,16 +11,10 @@
         'canonical' => url_full('profile', ['id' => $user->id]),
         'current_page' => $is_current_user_profile ? 'profile' : '',
         'open_graph' => $open_graph,
-        'back' => [
-            'href' => url('home'),
-            'label' => _('Back'),
-            'js-back-anchor-type' => 'profile',
-            'js-back-anchor-mode' => 'hide-if-none',
-        ],
     ]);
 ?>
 
-<div class="section section--longbottom" data-controller="back-storage" data-back-storage-type-value="collection">
+<div class="section section--longbottom">
     <img class="form-avatar__photo" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
 
     <div class="section__title">

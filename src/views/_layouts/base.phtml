@@ -19,7 +19,7 @@
         'canonical' => $canonical,
         'feed' => $feed ?? [],
         'open_graph' => $open_graph ?? [],
-        'back' => $back ?? null,
+        'enable_back' => $enable_back ?? true,
     ]);
 
     echo $this->safe('content');

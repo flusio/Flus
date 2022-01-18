@@ -6,15 +6,10 @@
             'url' => url_full('link feed', ['id' => $link->id]),
             'title' => _f('Syndication feed of comments on %s', $link->title),
         ],
-        'back' => [
-            'href' => url('news'),
-            'label' => _('Back'),
-            'js-back-anchor-type' => 'link',
-        ],
     ]);
 ?>
 
-<div class="section section--longbottom" data-controller="back-storage" data-back-storage-type-value="profile">
+<div class="section section--longbottom">
     <?php if ($link->image_filename): ?>
         <img
             class="section__image"

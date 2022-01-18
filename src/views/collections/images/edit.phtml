@@ -2,10 +2,6 @@
     $this->layout('base.phtml', [
         'title' => _('Collection illustration'),
         'canonical' => url_full('edit image collection', ['id' => $collection->id]),
-        'back' => [
-            'href' => url('collection', ['id' => $collection->id]),
-            'label' => _('Collection'),
-        ],
     ]);
 ?>
 

@@ -18,16 +18,10 @@
             'title' => _f('Syndication feed of comments on %s', $link->title),
         ],
         'open_graph' => $open_graph,
-        'back' => [
-            'href' => url('home'),
-            'label' => _('Back'),
-            'js-back-anchor-type' => 'link',
-            'js-back-anchor-mode' => 'hide-if-none',
-        ],
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type-value="profile">
+<div class="section">
     <?php if ($link->image_filename): ?>
         <img
             class="section__image"

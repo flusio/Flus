@@ -34,16 +34,10 @@
         'canonical' => url_full('collection', $current_url_params),
         'current_tab' => $current_tab,
         'feed' => $feed,
-        'back' => [
-            'href' => url('collections'),
-            'label' => _('Back'),
-            'js-back-anchor-type' => 'collection',
-            'js-back-anchor-mode' => 'hide-if-none',
-        ],
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type-value="link,profile">
+<div class="section">
     <?php if ($collection->image_filename): ?>
         <img
             class="section__image"

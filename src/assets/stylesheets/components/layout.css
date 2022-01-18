@@ -74,14 +74,21 @@
 }
 
 .layout__back a {
+    overflow: hidden;
+
     display: inline-block;
+    max-width: 100%;
     padding-top: var(--space-medium);
     padding-right: var(--space-medium);
     padding-bottom: var(--space-medium);
+
+    text-overflow: ellipsis;
+    vertical-align: top;
+    white-space: nowrap;
 }
 
 @media (min-width: 800px) {
-    .layout--connected:not(.layout--blocked) .layout__back a {
+    .layout--connected:not(.layout--blocked) .layout__back {
         margin-top: calc(var(--space-medium) * -1);
     }
 }

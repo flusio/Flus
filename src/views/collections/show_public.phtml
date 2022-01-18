@@ -52,16 +52,10 @@
         'current_tab' => $current_tab,
         'feed' => $feed,
         'open_graph' => $open_graph,
-        'back' => [
-            'href' => url('home'),
-            'label' => _('Back'),
-            'js-back-anchor-type' => 'collection',
-            'js-back-anchor-mode' => 'hide-if-none',
-        ],
     ]);
 ?>
 
-<div class="section" data-controller="back-storage" data-back-storage-type-value="link,profile">
+<div class="section">
     <?php if ($collection->image_filename): ?>
         <img
             class="section__image"

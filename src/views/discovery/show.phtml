@@ -1,32 +1,15 @@
 <?php
-    $back = null;
-    $current_tab = 'collections';
-    if ($current_user) {
-        $back = [
-            'href' => url('collections'),
-            'label' => _('Your collections'),
-        ];
-
-        if ($beta_enabled) {
-            $current_tab = 'feeds';
-            $back = [
-                'href' => url('feeds'),
-                'label' => _('Back'),
-            ];
-        }
-    }
-
     $this->layout('base.phtml', [
         'title' => _('Discover collections'),
         'canonical' => url_full('discovery'),
-        'current_tab' => $current_tab,
+        'current_tab' => $beta_enabled ? 'feeds' : 'collections',
         'open_graph' => [
             'title' => _('Discover collections'),
             'description' => _f('Discover the public collections on %s.', $brand),
             'locale' => $current_locale,
             'url' => url_full('discovery'),
         ],
-        'back' => $back,
+        'back' => $current_user ? true : false,
     ]);
 ?>
 
