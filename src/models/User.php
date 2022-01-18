@@ -326,12 +326,67 @@ class User extends \Minz\Model
     }
 
     /**
-     * Return a link owned by the user with the same URL as the given one.
+     * Return links owned by the user with the same URLs as the given ones.
      *
-     * If the link is already owned, it's returned as it is. If a user already
+     * If a link is already owned, it's returned as it is. If a user already
      * has a link with the same URL, it's fetched from the database. Otherwise,
      * the link is copied to the user links but it's not saved in database
      * yet! (created_at will be null then)
+     *
+     * Order of links is not preserved!
+     *
+     * @param \flusio\models\Link[] $links
+     *
+     * @return \flusio\models\Link[]
+     */
+    public function obtainLinks($links)
+    {
+        // First, dispatch the links in two lists: owned and not owned links.
+        $owned_links = [];
+        $not_owned_links = [];
+        foreach ($links as $link) {
+            if ($this->id === $link->user_id) {
+                $owned_links[] = $link;
+            } else {
+                $not_owned_links[] = $link;
+            }
+        }
+
+        if (count($owned_links) === count($links)) {
+            // All the links are owned, so we have nothing more to do
+            return $links;
+        }
+
+        // Complete the owned_links list with links owned by the user, from the
+        // database.
+        $related_links = Link::listBy([
+            'user_id' => $this->id,
+            'url' => array_column($not_owned_links, 'url'),
+        ]);
+        $owned_links = array_merge($owned_links, $related_links);
+
+        if (count($owned_links) === count($links)) {
+            return $owned_links;
+        }
+
+        // The last not owned links must be copied to the current user. These
+        // links will not have created_at set because they are not present in
+        // the database: they must be saved!
+        $new_links = [];
+        $related_urls = array_column($related_links, 'url');
+        foreach ($not_owned_links as $link) {
+            if (!in_array($link->url, $related_urls)) {
+                $new_links[] = Link::copy($link, $this->id);
+            }
+        }
+
+        return array_merge($owned_links, $new_links);
+    }
+
+    /**
+     * Return a link owned by the user with the same URL as the given one.
+     *
+     * @see \flusio\models\Link::obtainLinks
      *
      * @param \flusio\models\Link $link
      *
@@ -339,19 +394,7 @@ class User extends \Minz\Model
      */
     public function obtainLink($link)
     {
-        if ($this->id === $link->user_id) {
-            return $link;
-        }
-
-        $owned_link = Link::findBy([
-            'user_id' => $this->id,
-            'url' => $link->url,
-        ]);
-        if ($owned_link) {
-            return $owned_link;
-        } else {
-            return Link::copy($link, $this->id);
-        }
+        return $this->obtainLinks([$link])[0];
     }
 
     /**
