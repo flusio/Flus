@@ -242,7 +242,7 @@ class Links
             $link_fetcher_service->fetch($link);
         }
 
-        models\LinkToCollection::attach($link->id, $collection_ids);
+        models\LinkToCollection::attach([$link->id], $collection_ids);
 
         return Response::found($from);
     }

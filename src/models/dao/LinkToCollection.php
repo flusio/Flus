@@ -22,28 +22,30 @@ class LinkToCollection extends \Minz\DatabaseModel
     }
 
     /**
-     * Attach the collections to the given link.
+     * Attach the collections to the given links.
      *
-     * @param string $link_id
+     * @param string[] $link_ids
      * @param string[] $collection_ids
      * @param \DateTime $created_at Value to set as created_at, "now" by default
      *
      * @return boolean True on success
      */
-    public function attach($link_id, $collection_ids, $created_at = null)
+    public function attach($link_ids, $collection_ids, $created_at = null)
     {
         if (!$created_at) {
             $created_at = \Minz\Time::now();
         }
         $values_as_question_marks = [];
         $values = [];
-        foreach ($collection_ids as $collection_id) {
-            $values_as_question_marks[] = '(?, ?, ?)';
-            $values = array_merge($values, [
-                $created_at->format(\Minz\Model::DATETIME_FORMAT),
-                $link_id,
-                $collection_id,
-            ]);
+        foreach ($link_ids as $link_id) {
+            foreach ($collection_ids as $collection_id) {
+                $values_as_question_marks[] = '(?, ?, ?)';
+                $values = array_merge($values, [
+                    $created_at->format(\Minz\Model::DATETIME_FORMAT),
+                    $link_id,
+                    $collection_id,
+                ]);
+            }
         }
         $values_placeholder = implode(", ", $values_as_question_marks);
 
@@ -59,20 +61,22 @@ class LinkToCollection extends \Minz\DatabaseModel
     }
 
     /**
-     * Detach the collections from the given link.
+     * Detach the collections from the given links.
      *
-     * @param string $link_id
+     * @param string[] $link_ids
      * @param string[] $collection_ids
      *
      * @return boolean True on success
      */
-    public function detach($link_id, $collection_ids)
+    public function detach($link_ids, $collection_ids)
     {
         $values_as_question_marks = [];
         $values = [];
-        foreach ($collection_ids as $collection_id) {
-            $values_as_question_marks[] = '(link_id = ? AND collection_id = ?)';
-            $values = array_merge($values, [$link_id, $collection_id]);
+        foreach ($link_ids as $link_id) {
+            foreach ($collection_ids as $collection_id) {
+                $values_as_question_marks[] = '(link_id = ? AND collection_id = ?)';
+                $values = array_merge($values, [$link_id, $collection_id]);
+            }
         }
         $values_placeholder = implode(' OR ', $values_as_question_marks);
 
@@ -86,21 +90,23 @@ class LinkToCollection extends \Minz\DatabaseModel
     }
 
     /**
-     * Detach the collections from the given link (only collections of type
+     * Detach the collections from the given links (only collections of type
      * 'collection' and 'bookmarks').
      *
-     * @param string $link_id
+     * @param string[] $link_ids
      * @param string[] $collection_ids
      *
      * @return boolean True on success
      */
-    public function detachCollections($link_id, $collection_ids)
+    public function detachCollections($link_ids, $collection_ids)
     {
         $values_as_question_marks = [];
         $values = [];
-        foreach ($collection_ids as $collection_id) {
-            $values_as_question_marks[] = '(link_id = ? AND collection_id = ?)';
-            $values = array_merge($values, [$link_id, $collection_id]);
+        foreach ($link_ids as $link_id) {
+            foreach ($collection_ids as $collection_id) {
+                $values_as_question_marks[] = '(link_id = ? AND collection_id = ?)';
+                $values = array_merge($values, [$link_id, $collection_id]);
+            }
         }
         $values_placeholder = implode(' OR ', $values_as_question_marks);
 
