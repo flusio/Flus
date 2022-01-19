@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:7.3-fpm
 
 ENV COMPOSER_HOME /tmp
 
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
         libwebp-dev \
     && pecl install xdebug \
     && docker-php-ext-configure intl \
-    && docker-php-ext-configure gd --with-webp --with-jpeg --with-freetype \
+    && docker-php-ext-configure gd --with-webp-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-freetype-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) intl gettext pcntl zip pdo pdo_pgsql gd \
     && docker-php-ext-enable xdebug \
     && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
