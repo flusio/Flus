@@ -22,10 +22,15 @@ class Opml
      *
      * @return \SpiderBits\Opml
      */
-    public static function fromText($feed_as_string)
+    public static function fromText($opml_as_string)
     {
+        $opml_as_string = trim($opml_as_string);
+        if (!$opml_as_string) {
+            throw new \DomainException('The string must not be empty.');
+        }
+
         $dom_document = new \DOMDocument();
-        $result = @$dom_document->loadXML(trim($feed_as_string));
+        $result = @$dom_document->loadXML($opml_as_string);
         if (!$result) {
             throw new \DomainException('Can’t parse the given string.');
         }

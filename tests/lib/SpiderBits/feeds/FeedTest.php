@@ -241,7 +241,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
     public function testFromTextFailsWithEmptyString()
     {
         $this->expectException(\DomainException::class);
-        $this->expectExceptionMessage('Can’t parse the given string.');
+        $this->expectExceptionMessage('The string must not be empty.');
 
         Feed::fromText('');
     }

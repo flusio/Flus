@@ -42,8 +42,13 @@ class Feed
      */
     public static function fromText($feed_as_string)
     {
+        $feed_as_string = trim($feed_as_string);
+        if (!$feed_as_string) {
+            throw new \DomainException('The string must not be empty.');
+        }
+
         $dom_document = new \DOMDocument();
-        $result = @$dom_document->loadXML(trim($feed_as_string));
+        $result = @$dom_document->loadXML($feed_as_string);
         if (!$result) {
             throw new \DomainException('Can’t parse the given string.');
         }

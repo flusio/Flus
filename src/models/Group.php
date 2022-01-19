@@ -86,7 +86,7 @@ class Group extends \Minz\Model
             if ($property === 'name' && $code === 'required') {
                 $formatted_error = _('The name is required.');
             } elseif ($property === 'name') {
-                $formatted_error = vsprintf(
+                $formatted_error = sprintf(
                     _('The name must be less than %d characters.'),
                     self::NAME_MAX_LENGTH
                 );

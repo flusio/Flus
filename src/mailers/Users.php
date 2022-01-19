@@ -32,7 +32,7 @@ class Users extends \Minz\Mailer
         utils\Locale::setCurrentLocale($user->locale);
 
         $brand = \Minz\Configuration::$application['brand'];
-        $subject = vsprintf(_('[%s] Confirm your account'), $brand);
+        $subject = sprintf(_('[%s] Confirm your account'), $brand);
         $this->setBody(
             'mailers/users/account_validation_email.phtml',
             'mailers/users/account_validation_email.txt',
@@ -65,7 +65,7 @@ class Users extends \Minz\Mailer
         utils\Locale::setCurrentLocale($user->locale);
 
         $brand = \Minz\Configuration::$application['brand'];
-        $subject = vsprintf(_('[%s] Reset your password'), $brand);
+        $subject = sprintf(_('[%s] Reset your password'), $brand);
         $this->setBody(
             'mailers/users/reset_password_email.phtml',
             'mailers/users/reset_password_email.txt',
