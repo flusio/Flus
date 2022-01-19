@@ -69,6 +69,10 @@ class User extends \Minz\Model
             'required' => true,
         ],
 
+        'autoload_modal' => [
+            'type' => 'string',
+        ],
+
         'pocket_username' => [
             'type' => 'string',
         ],
@@ -102,6 +106,7 @@ class User extends \Minz\Model
             'password_hash' => '',
             'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
             'csrf' => utils\Random::hex(64),
+            'autoload_modal' => '',
         ], $values));
     }
 

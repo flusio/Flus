@@ -56,6 +56,7 @@ class Application
         $current_user = auth\CurrentUser::get();
         $beta_enabled = false;
         $locale = utils\Locale::DEFAULT_LOCALE;
+        $autoload_modal_url = null;
 
         // Setup current localization
         if ($current_user) {
@@ -121,6 +122,7 @@ class Application
             'current_locale' => $locale,
             'current_user' => $current_user,
             'beta_enabled' => $beta_enabled,
+            'autoload_modal_url' => $autoload_modal_url,
             'now' => \Minz\Time::now(),
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
             'turbo_frame' => $request->header('HTTP_TURBO_FRAME'),
