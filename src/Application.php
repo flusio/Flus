@@ -96,6 +96,12 @@ class Application
 
             $beta_enabled = models\FeatureFlag::isEnabled('beta', $current_user->id);
 
+            if ($beta_enabled && $current_user->autoload_modal === 'showcase navigation') {
+                $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'navigation']);
+                $current_user->autoload_modal = '';
+                $current_user->save();
+            }
+
             // Force CSRF token to avoid weird issues when user did nothing for a while
             \Minz\CSRF::set($current_user->csrf);
         }

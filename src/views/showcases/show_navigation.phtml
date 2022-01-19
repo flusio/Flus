@@ -1,0 +1,42 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('A new navigation is available'),
+        'canonical' => url_full('showcase', ['id' => 'navigation']),
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _('A new navigation is available') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('Something has changed!') ?>
+    </p>
+
+    <p>
+        <?= _('<strong>The navigation has been revised to make it more intuitive.</strong> The things you own are now separated from the things you follow.') ?>
+    </p>
+
+    <img
+        class="illustration illustration--centered"
+        alt="<?= _('The navigation bar showing three tabs: News, My links and Feeds') ?>"
+        src="<?= url_static("showcases/navigation.{$current_locale}.png") ?>"
+    />
+
+    <p>
+        <?= _('Your bookmarks, read links and your own collections are now under the “My links” tab. Followed collections and feeds are only one concept and can be found under the “Feeds” tab.') ?>
+    </p>
+
+    <p>
+        <?= _('Don’t hesitate <strong>to give feedback</strong> from the “Support” menu!') ?>
+    </p>
+
+    <form method="get" action="">
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Got it!') ?>
+            </button>
+        </div>
+    </form>
+</div>
