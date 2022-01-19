@@ -325,6 +325,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
             ['application/x-rss+xml'],
             ['application/rdf+xml'],
             ['application/xml'],
+            ['text/rss+xml'],
             ['text/xml'],
             ['text/plain'],
         ];
