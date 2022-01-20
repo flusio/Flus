@@ -1,5 +1,25 @@
 # Changelog of flusio
 
+## 2022-01-20 - v0.41
+
+### News
+
+- List last shared links on profile pages (beta)
+- Add Atom feed to profiles (beta)
+
+### Improvements
+
+- Improve performance on "Mark all as read"
+- Display info about the new navigation (beta)
+- Redirect to the feed once added (beta)
+
+### Misc
+
+- Refactor and fix back navigation
+- Support text/rss+xml content type
+- Add support for PHP 8
+- Reset the locale after each job operation
+
 ## 2022-01-15 - v0.40
 
 ### News
