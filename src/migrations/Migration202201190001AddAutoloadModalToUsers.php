@@ -1,0 +1,32 @@
+<?php
+
+namespace flusio\migrations;
+
+class Migration202201190001AddAutoloadModalToUsers
+{
+    public function migrate()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            ALTER TABLE users
+            ADD COLUMN autoload_modal TEXT NOT NULL DEFAULT '';
+
+            UPDATE users SET autoload_modal = 'showcase navigation';
+        SQL);
+
+        return true;
+    }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            ALTER TABLE users
+            DROP COLUMN autoload_modal
+        SQL);
+
+        return true;
+    }
+}

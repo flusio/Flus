@@ -14,6 +14,10 @@ const FOCUSABLE_ELEMENTS = [
 // - Sabe: https://sabe.io/tutorials/how-to-create-modal-popup-box
 // - Myself: https://github.com/lessy-community/lessy/blob/master/client/src/components/Ly/LyModal.vue
 export default class extends Controller {
+    static values = {
+        autoload: String,
+    }
+
     static get targets () {
         return ['box', 'body', 'content'];
     }
@@ -32,6 +36,16 @@ export default class extends Controller {
                 this.boxTarget.scrollIntoView(true);
             }
         });
+
+        if (this.autoloadValue) {
+            const openModalEvent = new CustomEvent('open-modal', {
+                detail: {
+                    target: this.element,
+                    href: this.autoloadValue,
+                },
+            });
+            this.element.dispatchEvent(openModalEvent);
+        }
     }
 
     setFocus () {

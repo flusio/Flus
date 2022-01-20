@@ -52,31 +52,11 @@ class Application
         if (!auth\CurrentUser::sessionToken()) {
             auth\CurrentUser::setSessionToken($request->cookie('flusio_session_token'));
         }
+
         $current_user = auth\CurrentUser::get();
-
-        // A malicious user succeeded to logged in as the support user? He
-        // should not pass.
-        if ($current_user && $current_user->isSupportUser()) {
-            $current_session_token = auth\CurrentUser::sessionToken();
-            $session = models\Session::findBy(['token' => $current_session_token]);
-            models\Session::delete($session->id);
-            auth\CurrentUser::reset();
-
-            $response = \Minz\Response::redirect('login');
-            $response->removeCookie('flusio_session_token');
-            return $response;
-        }
-
-        // Redirect the user if she didn't validated its account after the
-        // first day.
-        if ($current_user && $this->mustRedirectToValidation($request, $current_user)) {
-            return \Minz\Response::redirect('account validation');
-        }
-
-        // Redirect the user if its subscription is overdue
-        if ($current_user && $this->mustRedirectToAccount($request, $current_user)) {
-            return \Minz\Response::redirect('account');
-        }
+        $beta_enabled = false;
+        $locale = utils\Locale::DEFAULT_LOCALE;
+        $autoload_modal_url = null;
 
         // Setup current localization
         if ($current_user) {
@@ -89,9 +69,38 @@ class Application
         }
         utils\Locale::setCurrentLocale($locale);
 
-        $beta_enabled = false;
         if ($current_user) {
+            // A malicious user succeeded to logged in as the support user? He
+            // should not pass.
+            if ($current_user->isSupportUser()) {
+                $current_session_token = auth\CurrentUser::sessionToken();
+                $session = models\Session::findBy(['token' => $current_session_token]);
+                models\Session::delete($session->id);
+                auth\CurrentUser::reset();
+
+                $response = \Minz\Response::redirect('login');
+                $response->removeCookie('flusio_session_token');
+                return $response;
+            }
+
+            // Redirect the user if she didn't validated its account after the
+            // first day.
+            if ($this->mustRedirectToValidation($request, $current_user)) {
+                return \Minz\Response::redirect('account validation');
+            }
+
+            // Redirect the user if its subscription is overdue
+            if ($this->mustRedirectToAccount($request, $current_user)) {
+                return \Minz\Response::redirect('account');
+            }
+
             $beta_enabled = models\FeatureFlag::isEnabled('beta', $current_user->id);
+
+            if ($beta_enabled && $current_user->autoload_modal === 'showcase navigation') {
+                $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'navigation']);
+                $current_user->autoload_modal = '';
+                $current_user->save();
+            }
 
             // Force CSRF token to avoid weird issues when user did nothing for a while
             \Minz\CSRF::set($current_user->csrf);
@@ -119,6 +128,7 @@ class Application
             'current_locale' => $locale,
             'current_user' => $current_user,
             'beta_enabled' => $beta_enabled,
+            'autoload_modal_url' => $autoload_modal_url,
             'now' => \Minz\Time::now(),
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
             'turbo_frame' => $request->header('HTTP_TURBO_FRAME'),

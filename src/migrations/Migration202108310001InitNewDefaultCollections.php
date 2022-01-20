@@ -12,19 +12,24 @@ class Migration202108310001InitNewDefaultCollections
         $collections_columns = [];
         $collections_to_create = [];
 
-        $users = models\User::listAll();
-        $support_user = models\User::supportUser();
+        $support_email = \Minz\Configuration::$application['support_email'];
+
+        $dao_user = new models\dao\User();
+        $db_users = $dao_user->listAll();
+        $db_support_user = $dao_user->findBy([
+            'email' => utils\Email::sanitize($support_email),
+        ]);
         $now = \Minz\Time::now();
 
-        foreach ($users as $user) {
-            if ($user->id === $support_user->id) {
+        foreach ($db_users as $db_user) {
+            if ($db_user['id'] === $db_support_user['id']) {
                 continue;
             }
 
-            utils\Locale::setCurrentLocale($user->locale);
+            utils\Locale::setCurrentLocale($db_user['locale']);
 
-            $news = models\Collection::initNews($user->id);
-            $read_list = models\Collection::initReadList($user->id);
+            $news = models\Collection::initNews($db_user['id']);
+            $read_list = models\Collection::initReadList($db_user['id']);
             $news->created_at = $now;
             $read_list->created_at = $now;
 

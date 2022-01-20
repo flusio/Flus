@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-18 16:29+0100\n"
-"PO-Revision-Date: 2022-01-18 16:29+0100\n"
+"POT-Creation-Date: 2022-01-19 17:19+0100\n"
+"PO-Revision-Date: 2022-01-19 17:19+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -41,7 +41,7 @@ msgstr "Cacher"
 #: assets/javascripts/controllers/input_password_controller.js:25
 #: views/my/account/deletion.phtml:50 views/my/security/show_confirmed.phtml:79
 #: views/my/security/show_to_confirm.phtml:50 views/passwords/edit.phtml:53
-#: views/registrations/new.phtml:106 views/sessions/new.phtml:78
+#: views/registrations/new.phtml:107 views/sessions/new.phtml:79
 msgid "Show"
 msgstr "Afficher"
 
@@ -72,8 +72,8 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:320 controllers/Links.php:367
 #: controllers/Messages.php:47 controllers/Sessions.php:200
-#: controllers/collections/Read.php:67 controllers/collections/Read.php:122
-#: controllers/collections/Read.php:177 controllers/importations/Opml.php:78
+#: controllers/collections/Read.php:65 controllers/collections/Read.php:124
+#: controllers/collections/Read.php:183 controllers/importations/Opml.php:78
 #: controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
@@ -104,7 +104,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:58 models/User.php:501
+#: controllers/Passwords.php:58 models/User.php:549
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -264,30 +264,30 @@ msgstr "[%s] Confirmer votre compte"
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
-#: models/Collection.php:145 models/Collection.php:221
+#: models/Collection.php:146 models/Collection.php:222
 #: views/_layouts/connected.phtml:119 views/bookmarks/index.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:159 models/Collection.php:223
+#: models/Collection.php:160 models/Collection.php:224
 msgid "Links read"
 msgstr "Liens lus"
 
-#: models/Collection.php:173
+#: models/Collection.php:174
 msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
-#: models/Collection.php:187 models/Collection.php:225
+#: models/Collection.php:188 models/Collection.php:226
 #: views/_layouts/connected.phtml:85 views/news/index.phtml:3
 #: views/news/index.phtml:13
 msgid "News"
 msgstr "Journal"
 
-#: models/Collection.php:359 models/Group.php:87
+#: models/Collection.php:360 models/Group.php:87
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:361
+#: models/Collection.php:362
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
@@ -304,23 +304,23 @@ msgstr "Le filtre est invalide."
 msgid "The name must be less than %d characters."
 msgstr "Le nom ne doit pas faire plus de %d caractères."
 
-#: models/Link.php:256
+#: models/Link.php:257
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:258
+#: models/Link.php:259
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:277
+#: models/Link.php:278
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:282
+#: models/Link.php:283
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:286
+#: models/Link.php:287
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -335,31 +335,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:463
+#: models/User.php:511
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:467
+#: models/User.php:515
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:497
+#: models/User.php:545
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:499
+#: models/User.php:547
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:503
+#: models/User.php:551
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:505
+#: models/User.php:553
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:507
+#: models/User.php:555
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -540,7 +540,7 @@ msgid "Feeds"
 msgstr "Flux"
 
 #: views/_layouts/connected.phtml:130 views/collections/index.phtml:3
-#: views/collections/index.phtml:12 views/links/collections/index.phtml:22
+#: views/collections/index.phtml:13 views/links/collections/index.phtml:22
 #: views/links/collections/index_adding.phtml:23
 #: views/links/collections/index_news.phtml:30 views/links/new.phtml:53
 #: views/links/obtentions/new.phtml:28
@@ -593,11 +593,11 @@ msgstr "Support"
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:269 views/_layouts/not_connected.phtml:188
+#: views/_layouts/connected.phtml:272 views/_layouts/not_connected.phtml:188
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:270 views/_layouts/not_connected.phtml:189
+#: views/_layouts/connected.phtml:273 views/_layouts/not_connected.phtml:189
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -605,11 +605,11 @@ msgstr "Fermer cette fenêtre"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:95 views/registrations/new.phtml:147
+#: views/_layouts/not_connected.phtml:95 views/registrations/new.phtml:148
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:99 views/sessions/new.phtml:92
+#: views/_layouts/not_connected.phtml:99 views/sessions/new.phtml:93
 msgid "Login"
 msgstr "Se connecter"
 
@@ -837,26 +837,26 @@ msgstr "Formats <abbr>PNG</abbr> ou <abbr>JPG</abbr> seulement."
 msgid "The minimum recommended dimensions are 1100x400px."
 msgstr "Les dimensions minimales recommandées sont de 1100x400px."
 
-#: views/collections/index.phtml:17
+#: views/collections/index.phtml:18
 msgid "Collections allow to group links by topics and to find them easily."
 msgstr ""
 "Les collections permettent de grouper les liens par thématiques et de les "
 "retrouver facilement."
 
-#: views/collections/index.phtml:21
+#: views/collections/index.phtml:22
 #, php-format
 msgid "<a href=\"%s\">Discover more collections</a>"
 msgstr "<a href=\"%s\">Découvrez plus de collections</a>"
 
-#: views/collections/index.phtml:37 views/links/index.phtml:32
+#: views/collections/index.phtml:38 views/links/index.phtml:32
 msgid "Create a collection"
 msgstr "Créer une collection"
 
-#: views/collections/index.phtml:57 views/links/index.phtml:55
+#: views/collections/index.phtml:58 views/links/index.phtml:55
 msgid "All your links marked as read"
 msgstr "Tous vos liens marqués comme lu"
 
-#: views/collections/index.phtml:71 views/groups/_group_deprecated.phtml:59
+#: views/collections/index.phtml:72 views/groups/_group_deprecated.phtml:59
 msgid "Followed collections"
 msgstr "Collections suivies"
 
@@ -1571,7 +1571,7 @@ msgstr "Votre mot de passe"
 
 #: views/my/account/deletion.phtml:47 views/my/security/show_confirmed.phtml:76
 #: views/my/security/show_to_confirm.phtml:47 views/passwords/edit.phtml:50
-#: views/registrations/new.phtml:103 views/sessions/new.phtml:75
+#: views/registrations/new.phtml:104 views/sessions/new.phtml:76
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
@@ -1651,7 +1651,7 @@ msgstr ""
 msgid "Your name"
 msgstr "Votre nom"
 
-#: views/my/profile/edit.phtml:75 views/registrations/new.phtml:31
+#: views/my/profile/edit.phtml:75 views/registrations/new.phtml:32
 #, php-format
 msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
@@ -1664,11 +1664,11 @@ msgstr "Votre langue"
 msgid "You can change your login details here."
 msgstr "Vous pouvez changer vos identifiants de connexion ici."
 
-#: views/my/security/show_confirmed.phtml:29 views/registrations/new.phtml:55
+#: views/my/security/show_confirmed.phtml:29 views/registrations/new.phtml:56
 msgid "Your email address"
 msgstr "Votre adresse courriel"
 
-#: views/my/security/show_confirmed.phtml:49 views/registrations/new.phtml:75
+#: views/my/security/show_confirmed.phtml:49 views/registrations/new.phtml:76
 msgid ""
 "We only send emails necessary for the operation of the service, or in the "
 "event of a problem with your account."
@@ -2079,7 +2079,7 @@ msgstr "Vous êtes en train de modifier le mot de passe de %s."
 msgid "Your new password"
 msgstr "Votre nouveau mot de passe"
 
-#: views/passwords/edit.phtml:31 views/registrations/new.phtml:83
+#: views/passwords/edit.phtml:31 views/registrations/new.phtml:84
 msgid "(recommended at least 8 characters)"
 msgstr "(recommandé au moins 8 caractères)"
 
@@ -2087,29 +2087,29 @@ msgstr "(recommandé au moins 8 caractères)"
 msgid "Change your password"
 msgstr "Modifier votre mot de passe"
 
-#: views/passwords/forgot.phtml:3 views/passwords/forgot.phtml:10
+#: views/passwords/forgot.phtml:3 views/passwords/forgot.phtml:11
 msgid "Reset your password"
 msgstr "Réinitialiser votre mot de passe"
 
-#: views/passwords/forgot.phtml:14
+#: views/passwords/forgot.phtml:15
 msgid "We’ll send you an email with a link to reset your password."
 msgstr ""
 "Nous allons vous envoyer un courriel pour réinitialiser votre mot de passe."
 
-#: views/passwords/forgot.phtml:27
+#: views/passwords/forgot.phtml:28
 msgid "We’ve sent you an email to reset your password."
 msgstr ""
 "Nous vous avons envoyé un courriel pour réinitialiser votre mot de passe."
 
-#: views/passwords/forgot.phtml:33 views/sessions/new.phtml:33
+#: views/passwords/forgot.phtml:34 views/sessions/new.phtml:34
 msgid "Email address"
 msgstr "Adresse courriel"
 
-#: views/passwords/forgot.phtml:56
+#: views/passwords/forgot.phtml:57
 msgid "Send the reset email"
 msgstr "Envoyer le courriel de réinitialisation"
 
-#: views/passwords/forgot.phtml:63
+#: views/passwords/forgot.phtml:64
 msgid "Remember password?"
 msgstr "Mot de passe retrouvé ?"
 
@@ -2134,26 +2134,26 @@ msgstr "Cet·te utilisateur·ice n’a pas encore publié de collection."
 msgid "Find here all the links you’ve marked as read."
 msgstr "Retrouvez ici tous les liens que vous avez marqués comme lu."
 
-#: views/registrations/new.phtml:3 views/registrations/new.phtml:11
+#: views/registrations/new.phtml:3 views/registrations/new.phtml:12
 msgid "Registration"
 msgstr "Inscription"
 
-#: views/registrations/new.phtml:16
+#: views/registrations/new.phtml:17
 #, php-format
 msgid "First month is free. <a href=\"%s\">Learn more about pricing.</a>"
 msgstr ""
 "Le premier mois est gratuit. <a href=\"%s\">En savoir plus sur les tarifs.</"
 "a>"
 
-#: views/registrations/new.phtml:29
+#: views/registrations/new.phtml:30
 msgid "How should we name you?"
 msgstr "Comment devons-nous vous appeler ?"
 
-#: views/registrations/new.phtml:81
+#: views/registrations/new.phtml:82
 msgid "And a password"
 msgstr "Et un mot de passe"
 
-#: views/registrations/new.phtml:121
+#: views/registrations/new.phtml:122
 #, php-format
 msgid ""
 "Before going any further, please read <a href=\"%s\" target=\"_blank\">the "
@@ -2163,33 +2163,77 @@ msgstr ""
 "\"_blank\">les conditions générales d’utilisation</a> pour vous assurer que "
 "celles-ci vous conviennent."
 
-#: views/registrations/new.phtml:133
+#: views/registrations/new.phtml:134
 msgid "Accept the terms of service"
 msgstr "Accepter les conditions générales d’utilisation"
 
-#: views/registrations/new.phtml:154
+#: views/registrations/new.phtml:155
 msgid "Already an account?"
 msgstr "Déjà un compte ?"
 
-#: views/sessions/new.phtml:3 views/sessions/new.phtml:11
+#: views/sessions/new.phtml:3 views/sessions/new.phtml:12
 msgid "Log in"
 msgstr "Connexion"
 
-#: views/sessions/new.phtml:17
+#: views/sessions/new.phtml:18
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
 
-#: views/sessions/new.phtml:56
+#: views/sessions/new.phtml:57
 msgid "Password"
 msgstr "Mot de passe"
 
-#: views/sessions/new.phtml:99
+#: views/sessions/new.phtml:100
 msgid "Forgot password?"
 msgstr "Mot de passe oublié ?"
 
-#: views/sessions/new.phtml:106
+#: views/sessions/new.phtml:107
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
+
+#: views/showcases/show_navigation.phtml:3
+#: views/showcases/show_navigation.phtml:10
+msgid "A new navigation is available"
+msgstr "Une nouvelle navigation est disponible"
+
+#: views/showcases/show_navigation.phtml:14
+msgid "Something has changed!"
+msgstr "Quelque chose a changé !"
+
+#: views/showcases/show_navigation.phtml:18
+msgid ""
+"<strong>The navigation has been revised to make it more intuitive.</strong> "
+"The things you own are now separated from the things you follow."
+msgstr ""
+"<strong>La navigation a été revue pour la rendre plus intuitive.</strong> "
+"Les choses que vous possédez sont désormais séparées des choses que vous "
+"suivez."
+
+#: views/showcases/show_navigation.phtml:23
+msgid "The navigation bar showing three tabs: News, My links and Feeds"
+msgstr ""
+"La barre de navigation qui montre trois onglets : Journal, Mes liens et Flux"
+
+#: views/showcases/show_navigation.phtml:28
+msgid ""
+"Your bookmarks, read links and your own collections are now under the “My "
+"links” tab. Followed collections and feeds are only one concept and can be "
+"found under the “Feeds” tab."
+msgstr ""
+"Vos signets, liens lus et vos propres collections se trouvent maintenant "
+"dans l’onglet « Mes liens ». Les collections et les flux suivis ne sont plus "
+"qu’un seul concept et peuvent être retrouvés dans l’onglet « Flux »."
+
+#: views/showcases/show_navigation.phtml:32
+msgid ""
+"Don’t hesitate <strong>to give feedback</strong> from the “Support” menu!"
+msgstr ""
+"N’hésitez pas <strong>à faire des retours</strong> depuis le menu "
+"« Support » !"
+
+#: views/showcases/show_navigation.phtml:38
+msgid "Got it!"
+msgstr "C’est noté !"
 
 #: views/support/show.phtml:15
 msgid ""

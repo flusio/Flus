@@ -28,9 +28,12 @@ CREATE TABLE users (
     locale TEXT NOT NULL DEFAULT 'en_GB',
     avatar_filename TEXT,
     csrf TEXT NOT NULL DEFAULT '',
+    autoload_modal TEXT NOT NULL DEFAULT '',
+
     validated_at TIMESTAMPTZ,
     validation_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE,
     reset_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE,
+
     subscription_account_id TEXT,
     subscription_expired_at TIMESTAMPTZ
         NOT NULL

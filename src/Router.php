@@ -25,6 +25,8 @@ class Router
         $router->addRoute('get', '/support', 'Support#show', 'support');
         $router->addRoute('post', '/support', 'Support#create', 'call support');
 
+        $router->addRoute('get', '/showcases/:id', 'Showcases#show', 'showcase');
+
         // Registration
         $router->addRoute('get', '/registration', 'Registrations#new', 'registration');
         $router->addRoute('post', '/registration', 'Registrations#create', 'create user');

@@ -251,6 +251,9 @@
             role="dialog"
             data-controller="modal"
             data-action="click->modal#closeOnMask"
+            <?php if ($autoload_modal_url): ?>
+                data-modal-autoload-value="<?= $autoload_modal_url ?>"
+            <?php endif; ?>
             aria-labelledby="modal-title"
             aria-modal="true"
             aria-hidden="true"
