@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-20 16:19+0100\n"
-"PO-Revision-Date: 2022-01-20 16:20+0100\n"
+"POT-Creation-Date: 2022-01-20 16:59+0100\n"
+"PO-Revision-Date: 2022-01-20 16:59+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -903,7 +903,7 @@ msgstr "Actions"
 #: views/collections/show.phtml:99 views/groups/_group.phtml:23
 #: views/groups/_group.phtml:37 views/groups/_group_deprecated.phtml:23
 #: views/groups/_group_deprecated.phtml:37 views/links/_link.phtml:143
-#: views/links/searches/show.phtml:115 views/profiles/show.phtml:40
+#: views/links/searches/show.phtml:115 views/profiles/show.phtml:43
 msgid "Edit"
 msgstr "Modifier"
 
@@ -2118,23 +2118,28 @@ msgstr "Mot de passe retrouvé ?"
 msgid "Discover %s’s collections on %s."
 msgstr "Découvrez les collections de %s sur %s."
 
-#: views/profiles/show.phtml:27
+#: views/profiles/show.phtml:30
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
 
-#: views/profiles/show.phtml:48
+#: views/profiles/show.phtml:51
 msgid "Last shared links"
 msgstr "Derniers liens partagés"
 
-#: views/profiles/show.phtml:64
-msgid "You didn’t shared any links yet."
-msgstr "Vous n’avez pas encore partagé de lien."
+#: views/profiles/show.phtml:67
+#, php-format
+msgid ""
+"You didn’t share any links yet. Start by <a href=\"%s\">creating a public "
+"collection</a>."
+msgstr ""
+"Vous n’avez pas encore partagé de lien. Commencez par <a href=\"%s\">créer "
+"une collection publique</a>."
 
-#: views/profiles/show.phtml:68
-msgid "This user didn’t shared any links yet."
+#: views/profiles/show.phtml:71
+msgid "This user didn’t share any links yet."
 msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
 
-#: views/profiles/show.phtml:74
+#: views/profiles/show.phtml:77
 msgid "Published collections"
 msgstr "Collections publiées"
 

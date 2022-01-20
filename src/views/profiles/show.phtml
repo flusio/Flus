@@ -5,6 +5,9 @@
         'locale' => $user->locale,
         'url' => url_full('profile', ['id' => $user->id]),
     ];
+    if ($user->avatar_filename) {
+        $open_graph['image'] = url_media_full('avatars', $user->avatar_filename);
+    }
 
     $this->layout('base.phtml', [
         'title' => $user->username,
@@ -55,17 +58,17 @@
                     'from' => url('profile', ['id' => $user->id]),
                     'display_comments' => true,
                     'display_mark_as_read' => $current_user && !$link->is_read,
-                    'collections_mode' => 'adding',
+                    'collections_mode' => $is_current_user_profile ? 'managing' : 'adding',
                 ]) ?>
             <?php endforeach; ?>
         </div>
     <?php elseif ($is_current_user_profile): ?>
         <p class="paragraph--placeholder">
-            <?= _('You didn’t shared any links yet.') ?>
+            <?= _f('You didn’t share any links yet. Start by <a href="%s">creating a public collection</a>.', url('links')) ?>
         </p>
     <?php else: ?>
         <p class="paragraph--placeholder">
-            <?= _('This user didn’t shared any links yet.') ?>
+            <?= _('This user didn’t share any links yet.') ?>
         </p>
     <?php endif; ?>
 
