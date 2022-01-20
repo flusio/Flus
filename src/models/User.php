@@ -243,6 +243,26 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the links of the user.
+     *
+     * @see \flusio\models\dao\Link::listComputedByUserId
+     *
+     * @param string[] $selected_computed_props
+     * @param array $options
+     *
+     * @return \flusio\models\Link[]
+     */
+    public function links($selected_computed_props = [], $options = [])
+    {
+        return Link::daoToList(
+            'listComputedByUserId',
+            $this->id,
+            $selected_computed_props,
+            $options
+        );
+    }
+
+    /**
      * Return the collections of the user.
      *
      * @see \flusio\models\dao\Collection::listComputedByUserId

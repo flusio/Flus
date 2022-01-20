@@ -125,6 +125,137 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return links of the given user with its computed properties.
+     *
+     * Links are sorted by published_at if the property is included, or by
+     * created_at otherwise.
+     *
+     * @param string $user_id
+     *     The user id the links must match.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
+     * @param array $options
+     *     Custom options to filter links. Possible options are:
+     *     - unshared (boolean, default to true), indicates if unshared links
+     *       must be included. Shared links are visible and are included in one
+     *       public collection at least.
+     *     - offset (integer, default to 0), the offset for pagination
+     *     - limit (integer|string, default to 'ALL') the limit for pagination
+     *     - context_user_id (string, default to ''), is_read refers to this user id
+     *
+     * @return array
+     */
+    public function listComputedByUserId($user_id, $selected_computed_props, $options = [])
+    {
+        $default_options = [
+            'unshared' => true,
+            'offset' => 0,
+            'limit' => 'ALL',
+            'context_user_id' => '',
+        ];
+        $options = array_merge($default_options, $options);
+
+        $parameters = [
+            ':user_id' => $user_id,
+            ':offset' => $options['offset'],
+        ];
+
+        $published_at_clause = '';
+        $order_by_clause = 'ORDER BY l.created_at DESC, l.id';
+        if (in_array('published_at', $selected_computed_props)) {
+            $published_at_clause = ', l.created_at AS published_at';
+        }
+
+        $number_comments_clause = '';
+        if (in_array('number_comments', $selected_computed_props)) {
+            $number_comments_clause = <<<'SQL'
+                , (
+                    SELECT COUNT(*) FROM messages m
+                    WHERE m.link_id = l.id
+                ) AS number_comments
+            SQL;
+        }
+
+        $read_links_clause = '';
+        $is_read_clause = '';
+        if (in_array('is_read', $selected_computed_props)) {
+            $read_links_clause = <<<'SQL'
+                WITH read_links AS (
+                    SELECT l_read.url
+                    FROM links l_read, collections c_read, links_to_collections lc_read
+
+                    WHERE c_read.user_id = :context_user_id
+                    AND c_read.type = 'read'
+
+                    AND lc_read.link_id = l_read.id
+                    AND lc_read.collection_id = c_read.id
+                )
+            SQL;
+
+            $is_read_clause = <<<'SQL'
+                , (
+                    SELECT true FROM read_links
+                    WHERE read_links.url = l.url
+                ) AS is_read
+            SQL;
+
+            $parameters[':context_user_id'] = $options['context_user_id'];
+        }
+
+        $visibility_clause = '';
+        $join_clause = '';
+        if (!$options['unshared']) {
+            $visibility_clause = 'AND l.is_hidden = false';
+            $join_clause = <<<SQL
+                INNER JOIN links_to_collections lc
+                ON lc.link_id = l.id
+
+                INNER JOIN collections c
+                ON lc.collection_id = c.id
+                AND c.is_public = true
+            SQL;
+
+            if (in_array('published_at', $selected_computed_props)) {
+                $published_at_clause = ', lc.created_at AS published_at';
+                $order_by_clause = 'ORDER BY lc.created_at DESC, l.id';
+            }
+        }
+
+        $limit_clause = '';
+        if ($options['limit'] !== 'ALL') {
+            $limit_clause = 'LIMIT :limit';
+            $parameters[':limit'] = $options['limit'];
+        }
+
+        $sql = <<<SQL
+            {$read_links_clause}
+
+            SELECT
+                l.*
+                {$published_at_clause}
+                {$number_comments_clause}
+                {$is_read_clause}
+            FROM links l
+
+            {$join_clause}
+
+            WHERE l.user_id = :user_id
+
+            {$visibility_clause}
+
+            {$order_by_clause}
+            OFFSET :offset
+            {$limit_clause}
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute($parameters);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Return links of the given collection with its computed properties.
      *
      * Links are sorted by published_at if the property is included, or by

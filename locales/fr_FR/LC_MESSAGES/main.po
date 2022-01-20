@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-19 17:19+0100\n"
-"PO-Revision-Date: 2022-01-19 17:19+0100\n"
+"POT-Creation-Date: 2022-01-20 16:19+0100\n"
+"PO-Revision-Date: 2022-01-20 16:20+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -104,7 +104,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:58 models/User.php:549
+#: controllers/Passwords.php:58 models/User.php:569
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -335,31 +335,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:511
+#: models/User.php:531
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:515
+#: models/User.php:535
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:545
+#: models/User.php:565
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:547
+#: models/User.php:567
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:551
+#: models/User.php:571
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:553
+#: models/User.php:573
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:555
+#: models/User.php:575
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -2122,13 +2122,21 @@ msgstr "Découvrez les collections de %s sur %s."
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
 
-#: views/profiles/show.phtml:57
-msgid "You didn’t publish any collections yet."
-msgstr "Vous n’avez pas encore publié de collection."
+#: views/profiles/show.phtml:48
+msgid "Last shared links"
+msgstr "Derniers liens partagés"
 
-#: views/profiles/show.phtml:61
-msgid "This user didn’t publish any collections yet."
-msgstr "Cet·te utilisateur·ice n’a pas encore publié de collection."
+#: views/profiles/show.phtml:64
+msgid "You didn’t shared any links yet."
+msgstr "Vous n’avez pas encore partagé de lien."
+
+#: views/profiles/show.phtml:68
+msgid "This user didn’t shared any links yet."
+msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
+
+#: views/profiles/show.phtml:74
+msgid "Published collections"
+msgstr "Collections publiées"
 
 #: views/read/index.phtml:24
 msgid "Find here all the links you’ve marked as read."

@@ -43,8 +43,38 @@
         </div>
     <?php endif; ?>
 
+    <?php if ($links): ?>
+        <h2 class="group__subtitle">
+            <?= _('Last shared links') ?>
+        </h2>
+
+        <div class="cards">
+            <?php foreach ($links as $link): ?>
+                <?= $this->include('links/_link.phtml', [
+                    'link' => $link,
+                    'from' => url('profile', ['id' => $user->id]),
+                    'display_comments' => true,
+                    'display_mark_as_read' => $current_user && !$link->is_read,
+                    'collections_mode' => 'adding',
+                ]) ?>
+            <?php endforeach; ?>
+        </div>
+    <?php elseif ($is_current_user_profile): ?>
+        <p class="paragraph--placeholder">
+            <?= _('You didn’t shared any links yet.') ?>
+        </p>
+    <?php else: ?>
+        <p class="paragraph--placeholder">
+            <?= _('This user didn’t shared any links yet.') ?>
+        </p>
+    <?php endif; ?>
+
     <?php if ($collections): ?>
-        <div class="cards cards--centered">
+        <h2 class="group__subtitle">
+            <?= _('Published collections') ?>
+        </h2>
+
+        <div class="cards">
             <?php foreach ($collections as $collection): ?>
                 <?= $this->include('collections/_collection.phtml', [
                     'display_mode' => 'public',
@@ -52,13 +82,5 @@
                 ]) ?>
             <?php endforeach; ?>
         </div>
-    <?php elseif ($is_current_user_profile): ?>
-        <p class="paragraph--placeholder">
-            <?= _('You didn’t publish any collections yet.') ?>
-        </p>
-    <?php else: ?>
-        <p class="paragraph--placeholder">
-            <?= _('This user didn’t publish any collections yet.') ?>
-        </p>
     <?php endif; ?>
 </div>
