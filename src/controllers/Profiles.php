@@ -35,23 +35,38 @@ class Profiles
         $current_user = auth\CurrentUser::get();
         $is_current_user_profile = $current_user && $current_user->id === $user->id;
 
-        $links = $user->links(['published_at', 'number_comments', 'is_read'], [
-            'unshared' => false,
-            'limit' => 6,
-            'context_user_id' => $current_user ? $current_user->id : null,
-        ]);
+        $is_atom_feed = utils\Belt::endsWith($request->path(), 'feed.atom.xml');
+        if ($is_atom_feed) {
+            utils\Locale::setCurrentLocale($user->locale);
+            $links = $user->links(['published_at'], [
+                'unshared' => false,
+                'limit' => 30,
+            ]);
 
-        $collections = $user->collections(['number_links'], [
-            'private' => false,
-            'count_hidden' => $is_current_user_profile,
-        ]);
-        utils\Sorter::localeSort($collections, 'name');
+            return Response::ok('profiles/feed.atom.xml.php', [
+                'user' => $user,
+                'links' => $links,
+                'user_agent' => \Minz\Configuration::$application['user_agent'],
+            ]);
+        } else {
+            $links = $user->links(['published_at', 'number_comments', 'is_read'], [
+                'unshared' => false,
+                'limit' => 6,
+                'context_user_id' => $current_user ? $current_user->id : null,
+            ]);
 
-        return Response::ok('profiles/show.phtml', [
-            'user' => $user,
-            'links' => $links,
-            'collections' => $collections,
-            'is_current_user_profile' => $is_current_user_profile,
-        ]);
+            $collections = $user->collections(['number_links'], [
+                'private' => false,
+                'count_hidden' => $is_current_user_profile,
+            ]);
+            utils\Sorter::localeSort($collections, 'name');
+
+            return Response::ok('profiles/show.phtml', [
+                'user' => $user,
+                'links' => $links,
+                'collections' => $collections,
+                'is_current_user_profile' => $is_current_user_profile,
+            ]);
+        }
     }
 }

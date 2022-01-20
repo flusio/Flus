@@ -501,6 +501,20 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return a tag URI that can be used as Atom id
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc4151.txt
+     *
+     * @return string
+     */
+    public function tagUri()
+    {
+        $host = \Minz\Configuration::$url_options['host'];
+        $date = $this->created_at->format('Y-m-d');
+        return "tag:{$host},{$date}:users/{$this->id}";
+    }
+
+    /**
      * Return a password hash. If password is empty, password_hash will be empty as well.
      *
      * @param string $password

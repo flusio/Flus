@@ -49,6 +49,7 @@ class Router
 
         // Profile
         $router->addRoute('get', '/p/:id', 'Profiles#show', 'profile');
+        $router->addRoute('get', '/p/:id/feed.atom.xml', 'Profiles#show', 'profile feed');
         $router->addRoute('get', '/my/profile', 'my/Profile#edit', 'edit profile');
         $router->addRoute('post', '/my/profile', 'my/Profile#update', 'update profile');
         $router->addRoute('post', '/my/profile/avatar', 'my/Avatar#update', 'update avatar');

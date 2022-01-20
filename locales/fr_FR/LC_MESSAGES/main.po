@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-20 16:59+0100\n"
-"PO-Revision-Date: 2022-01-20 16:59+0100\n"
+"POT-Creation-Date: 2022-01-20 17:19+0100\n"
+"PO-Revision-Date: 2022-01-20 17:19+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -104,7 +104,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:58 models/User.php:569
+#: controllers/Passwords.php:58 models/User.php:583
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -335,31 +335,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:531
+#: models/User.php:545
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:535
+#: models/User.php:549
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:565
+#: models/User.php:579
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:567
+#: models/User.php:581
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:571
+#: models/User.php:585
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:573
+#: models/User.php:587
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:575
+#: models/User.php:589
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -481,17 +481,17 @@ msgstr "Petit conseil : il est peut-être l’heure de prendre une pause ?"
 msgid "For your entertainment, a choupisson : 🦔"
 msgstr "Pour vous divertir, un choupisson : 🦔"
 
-#: views/collections/feed.atom.xml.php:39
+#: views/collections/feed.atom.xml.php:39 views/profiles/feed.atom.xml.php:32
 #, php-format
 msgid "“%s”"
 msgstr "« %s »"
 
-#: views/collections/feed.atom.xml.php:40
+#: views/collections/feed.atom.xml.php:40 views/profiles/feed.atom.xml.php:33
 #, php-format
 msgid "Read this on <a href=\"%s\">%s</a>."
 msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
 
-#: views/collections/feed.atom.xml.php:41
+#: views/collections/feed.atom.xml.php:41 views/profiles/feed.atom.xml.php:34
 #, php-format
 msgid "My comments on <a href=\"%s\">%s</a>."
 msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
@@ -882,7 +882,7 @@ msgstr "Créer la collection"
 
 #: views/collections/show.phtml:6 views/collections/show.phtml:15
 #: views/collections/show_public.phtml:14
-#: views/collections/show_public.phtml:26
+#: views/collections/show_public.phtml:26 views/profiles/show.phtml:18
 #, php-format
 msgid "Syndication feed of %s"
 msgstr "Flux de syndication de %s"
@@ -903,7 +903,7 @@ msgstr "Actions"
 #: views/collections/show.phtml:99 views/groups/_group.phtml:23
 #: views/groups/_group.phtml:37 views/groups/_group_deprecated.phtml:23
 #: views/groups/_group_deprecated.phtml:37 views/links/_link.phtml:143
-#: views/links/searches/show.phtml:115 views/profiles/show.phtml:43
+#: views/links/searches/show.phtml:115 views/profiles/show.phtml:47
 msgid "Edit"
 msgstr "Modifier"
 
@@ -2118,15 +2118,15 @@ msgstr "Mot de passe retrouvé ?"
 msgid "Discover %s’s collections on %s."
 msgstr "Découvrez les collections de %s sur %s."
 
-#: views/profiles/show.phtml:30
+#: views/profiles/show.phtml:34
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
 
-#: views/profiles/show.phtml:51
+#: views/profiles/show.phtml:55
 msgid "Last shared links"
 msgstr "Derniers liens partagés"
 
-#: views/profiles/show.phtml:67
+#: views/profiles/show.phtml:71
 #, php-format
 msgid ""
 "You didn’t share any links yet. Start by <a href=\"%s\">creating a public "
@@ -2135,11 +2135,11 @@ msgstr ""
 "Vous n’avez pas encore partagé de lien. Commencez par <a href=\"%s\">créer "
 "une collection publique</a>."
 
-#: views/profiles/show.phtml:71
+#: views/profiles/show.phtml:75
 msgid "This user didn’t share any links yet."
 msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
 
-#: views/profiles/show.phtml:77
+#: views/profiles/show.phtml:81
 msgid "Published collections"
 msgstr "Collections publiées"
 
