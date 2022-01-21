@@ -253,4 +253,104 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_id_2, $db_links[0]['id']);
         $this->assertSame($link_id_1, $db_links[1]['id']);
     }
+
+    public function testListComputedByUserIdDoesNotDuplicateLinks()
+    {
+        $dao = new Link();
+        $user_id = $this->create('user');
+        $today = \Minz\Time::relative('today');
+        $yesterday = \Minz\Time::relative('today -1 day');
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'is_hidden' => 0,
+        ]);
+        $public_collection_id_1 = $this->create('collection', [
+            'user_id' => $user_id,
+            'is_public' => 1,
+        ]);
+        $public_collection_id_2 = $this->create('collection', [
+            'user_id' => $user_id,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $public_collection_id_1,
+            'created_at' => $today->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $public_collection_id_2,
+            'created_at' => $yesterday->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $db_links = $dao->listComputedByUserId($user_id, ['published_at'], [
+            'unshared' => false,
+        ]);
+
+        $this->assertSame(1, count($db_links));
+        $link_published_at = date_create_from_format(
+            \Minz\Model::DATETIME_FORMAT,
+            $db_links[0]['published_at']
+        );
+        $this->assertEquals($today, $link_published_at);
+    }
+
+    public function testListComputedByUserIdLimitsResultsAfterDeduplication()
+    {
+        $dao = new Link();
+        $user_id = $this->create('user');
+        $today = \Minz\Time::relative('today');
+        $yesterday = \Minz\Time::relative('today -1 day');
+        $two_days_ago = \Minz\Time::relative('today -2 days');
+        $three_days_ago = \Minz\Time::relative('today -3 days');
+        $link_id_1 = $this->create('link', [
+            'user_id' => $user_id,
+            'is_hidden' => 0,
+        ]);
+        $link_id_2 = $this->create('link', [
+            'user_id' => $user_id,
+            'is_hidden' => 0,
+        ]);
+        $link_id_3 = $this->create('link', [
+            'user_id' => $user_id,
+            'is_hidden' => 0,
+        ]);
+        $public_collection_id_1 = $this->create('collection', [
+            'user_id' => $user_id,
+            'is_public' => 1,
+        ]);
+        $public_collection_id_2 = $this->create('collection', [
+            'user_id' => $user_id,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_1,
+            'collection_id' => $public_collection_id_2,
+            'created_at' => $three_days_ago->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_2,
+            'collection_id' => $public_collection_id_1,
+            'created_at' => $two_days_ago->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_3,
+            'collection_id' => $public_collection_id_1,
+            'created_at' => $yesterday->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_1,
+            'collection_id' => $public_collection_id_1,
+            'created_at' => $today->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $db_links = $dao->listComputedByUserId($user_id, ['published_at'], [
+            'unshared' => false,
+            'limit' => 2,
+        ]);
+
+        $this->assertSame(2, count($db_links));
+        $this->assertEquals($link_id_1, $db_links[0]['id']);
+        $this->assertEquals($link_id_3, $db_links[1]['id']);
+    }
 }
