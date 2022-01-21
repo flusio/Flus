@@ -25,8 +25,10 @@ class Collection extends \Minz\DatabaseModel
      */
     public function __construct()
     {
-        $properties = array_keys(\flusio\models\Collection::PROPERTIES);
-        parent::__construct('collections', 'id', $properties);
+        $properties = array_filter(\flusio\models\Collection::PROPERTIES, function ($declaration) {
+            return !isset($declaration['computed']) || !$declaration['computed'];
+        });
+        parent::__construct('collections', 'id', array_keys($properties));
     }
 
     /**

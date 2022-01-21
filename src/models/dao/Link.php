@@ -23,8 +23,10 @@ class Link extends \Minz\DatabaseModel
      */
     public function __construct()
     {
-        $properties = array_keys(\flusio\models\Link::PROPERTIES);
-        parent::__construct('links', 'id', $properties);
+        $properties = array_filter(\flusio\models\Link::PROPERTIES, function ($declaration) {
+            return !isset($declaration['computed']) || !$declaration['computed'];
+        });
+        parent::__construct('links', 'id', array_keys($properties));
     }
 
     /**
