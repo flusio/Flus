@@ -9,10 +9,11 @@ use flusio\utils;
 class PocketTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \tests\LoginHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\ApplicationHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
+    use \tests\MockHttpHelper;
+    use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
@@ -238,6 +239,14 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testRequestAccessSetRequestTokenAndRedirectsUser()
     {
+        $code = $this->fake('uuid');
+        $this->mockHttpWithResponse('https://getpocket.com/v3/oauth/request', <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {"code": "{$code}"}
+            TEXT
+        );
         $user = $this->login([
             'pocket_request_token' => null,
         ]);
@@ -247,13 +256,12 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $user = models\User::find($user->id);
-        $this->assertNotNull($user->pocket_request_token);
-
+        $this->assertSame($code, $user->pocket_request_token);
         $auth_url = urlencode(\Minz\Url::absoluteFor('pocket auth'));
         $expected_url = 'https://getpocket.com/auth/authorize';
         $expected_url .= "?request_token={$user->pocket_request_token}";
         $expected_url .= "&redirect_uri={$auth_url}";
-        $this->assertResponse($response, 302, $expected_url);
+        $this->assertResponseCode($response, 302, $expected_url);
     }
 
     public function testRequestAccessRedirectsToLoginIfNotConnected()

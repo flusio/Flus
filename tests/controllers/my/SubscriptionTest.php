@@ -7,12 +7,13 @@ use flusio\services;
 
 class SubscriptionTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
+    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -33,10 +34,24 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateSetsSubscriptionProperties()
     {
-        $expired_at = new \DateTime('1970-01-01');
+        $email = $this->fake('email');
+        $account_id = $this->fake('uuid');
+        $expired_at = $this->fake('dateTime');
+        $subscription_api_url = "https://next.flus.io/api/account?email={$email}";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "id": "{$account_id}",
+                "expired_at": "{$expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+            }
+            TEXT
+        );
         $user = $this->login([
+            'email' => $email,
             'subscription_account_id' => null,
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_expired_at' => $this->fake('iso8601'),
             'validated_at' => $this->fake('iso8601'),
         ]);
 
@@ -46,11 +61,8 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 302, '/my/account');
         $user = models\User::find($user->id);
-        $this->assertNotNull($user->subscription_account_id);
-        $this->assertNotSame(
-            $expired_at->getTimestamp(),
-            $user->subscription_expired_at->getTimestamp()
-        );
+        $this->assertSame($account_id, $user->subscription_account_id);
+        $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
     public function testCreateDoesNothingIfUserAlreadyHasAccountId()
@@ -199,24 +211,25 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testRedirectRedirectsToLoginUrl()
     {
-        $app_conf = \Minz\Configuration::$application;
-        $subscriptions_service = new services\Subscriptions(
-            $app_conf['subscriptions_host'],
-            $app_conf['subscriptions_private_key']
+        $account_id = $this->fake('uuid');
+        $redirection_url = $this->fake('url');
+        $subscription_api_url = "https://next.flus.io/api/account/login-url?account_id={$account_id}&service=flusio";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "url": "{$redirection_url}"
+            }
+            TEXT
         );
-        $account = $subscriptions_service->account($this->fake('email'));
         $this->login([
-            'subscription_account_id' => $account['id'],
+            'subscription_account_id' => $account_id,
         ]);
 
         $response = $this->appRun('get', '/my/account/subscription');
 
-        $this->assertResponse($response, 302);
-        $response_headers = $response->headers(true);
-        $this->assertStringContainsString(
-            $app_conf['subscriptions_host'],
-            $response_headers['Location']
-        );
+        $this->assertResponseCode($response, 302, $redirection_url);
     }
 
     public function testRedirectRedirectsIfNotConnected()

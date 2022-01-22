@@ -9,10 +9,11 @@ use flusio\utils;
 
 class AccountTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
+    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
@@ -115,26 +116,29 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testShowSyncsExpiredAtIfOverdue()
     {
-        $app_conf = \Minz\Configuration::$application;
-        $subscriptions_service = new services\Subscriptions(
-            $app_conf['subscriptions_host'],
-            $app_conf['subscriptions_private_key']
+        $old_expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
+        $new_expired_at = $this->fake('dateTime');
+        $account_id = $this->fake('uuid');
+        $subscription_api_url = "https://next.flus.io/api/account/expired-at?account_id={$account_id}";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "expired_at": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+            }
+            TEXT
         );
-        $account = $subscriptions_service->account($this->fake('email'));
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
         $user = $this->login([
-            'subscription_account_id' => $account['id'],
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_account_id' => $account_id,
+            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
             'validated_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('get', '/my/account');
 
         $user = models\User::find($user->id);
-        $this->assertNotSame(
-            $expired_at->getTimestamp(),
-            $user->subscription_expired_at->getTimestamp()
-        );
+        $this->assertEquals($new_expired_at, $user->subscription_expired_at);
     }
 
     public function testShowRedirectsToLoginIfUserNotConnected()

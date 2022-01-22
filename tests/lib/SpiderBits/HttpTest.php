@@ -5,55 +5,43 @@ namespace SpiderBits;
 class HttpTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-
-    public const TESTS_HOST = 'httpbin.org';
-
-    /**
-     * @dataProvider getProvider
-     */
-    public function testGet($url, $expected_code, $expected_text, $expected_headers)
-    {
-        $http = new Http();
-
-        $response = $http->get($url);
-
-        $this->assertSame($expected_code, $response->status);
-        $this->assertStringContainsString($expected_text, $response->data);
-        foreach ($expected_headers as $field_name => $field_value) {
-            $this->assertArrayHasKey($field_name, $response->headers);
-            $this->assertSame($field_value, $response->headers[$field_name]);
-        }
-    }
+    use \tests\MockHttpHelper;
 
     public function testGetWithParameters()
     {
         $http = new Http();
-        $url = 'https://' . self::TESTS_HOST . '/get';
+        $url = $this->fake('url');
         $parameters = [
             'foo' => 'bar',
             'baz' => 'quz',
         ];
+        $expected_url = $url . '?foo=bar&baz=quz';
+        $this->mockHttpWithEcho($expected_url);
 
         $response = $http->get($url, $parameters);
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
-        $this->assertSame($url . '?foo=bar&baz=quz', $data['url']);
+        $this->assertSame($expected_url, $data['url']);
+        $this->assertSame($parameters['foo'], $data['args']['foo']);
+        $this->assertSame($parameters['baz'], $data['args']['baz']);
     }
 
     public function testGetWithMixedParameters()
     {
         $http = new Http();
-        $url = 'https://' . self::TESTS_HOST . '/get?foo=bar';
+        $url = $this->fake('url') . '/get?foo=bar';
         $parameters = [
             'baz' => 'quz',
         ];
+        $expected_url = $url . '&baz=quz';
+        $this->mockHttpWithEcho($expected_url);
 
         $response = $http->get($url, $parameters);
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
-        $this->assertSame($url . '&baz=quz', $data['url']);
+        $this->assertSame($expected_url, $data['url']);
     }
 
     public function testGetWithAuthBasic()
@@ -61,7 +49,8 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $http = new Http();
         $user = 'john';
         $pass = 'secret';
-        $url = 'https://' . self::TESTS_HOST . "/basic-auth/{$user}/{$pass}";
+        $url = $this->fake('url');
+        $this->mockHttpWithEcho($url);
 
         $response = $http->get($url, [], [
             'auth_basic' => $user . ':' . $pass,
@@ -69,7 +58,6 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
-        $this->assertTrue($data['authenticated']);
         $this->assertSame($user, $data['user']);
     }
 
@@ -79,7 +67,8 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $headers = [
             'X-Custom' => 'foo',
         ];
-        $url = 'https://' . self::TESTS_HOST . '/get';
+        $url = $this->fake('url');
+        $this->mockHttpWithEcho($url);
 
         $response = $http->get($url, [], [
             'headers' => $headers,
@@ -87,7 +76,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
-        $this->assertSame('foo', $data['headers']['X-Custom']);
+        $this->assertSame('foo', $data['headers']['HTTP_X_CUSTOM']);
     }
 
     public function testGetWithSettingGlobalHeaders()
@@ -96,20 +85,22 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $http->headers = [
             'X-Custom' => 'foo',
         ];
-        $url = 'https://' . self::TESTS_HOST . '/get';
+        $url = $this->fake('url');
+        $this->mockHttpWithEcho($url);
 
         $response = $http->get($url);
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
-        $this->assertSame('foo', $data['headers']['X-Custom']);
+        $this->assertSame('foo', $data['headers']['HTTP_X_CUSTOM']);
     }
 
     public function testGetWithSettingUserAgent()
     {
         $http = new Http();
-        $url = 'https://' . self::TESTS_HOST . '/get';
         $user_agent = $this->fake('userAgent');
+        $url = $this->fake('url');
+        $this->mockHttpWithEcho($url);
 
         $response = $http->get($url, [], [
             'user_agent' => $user_agent,
@@ -117,7 +108,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
-        $this->assertSame($user_agent, $data['headers']['User-Agent']);
+        $this->assertSame($user_agent, $data['headers']['HTTP_USER_AGENT']);
     }
 
     public function testGetFailing()
@@ -130,31 +121,15 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $http->get('not-a-host');
     }
 
-    /**
-     * @dataProvider postProvider
-     */
-    public function testPost($url, $expected_code, $expected_text, $expected_headers)
-    {
-        $http = new Http();
-
-        $response = $http->post($url);
-
-        $this->assertSame($expected_code, $response->status);
-        $this->assertStringContainsString($expected_text, $response->data);
-        foreach ($expected_headers as $field_name => $field_value) {
-            $this->assertArrayHasKey($field_name, $response->headers);
-            $this->assertSame($field_value, $response->headers[$field_name]);
-        }
-    }
-
     public function testPostWithParameters()
     {
         $http = new Http();
-        $url = 'https://' . self::TESTS_HOST . '/post';
+        $url = $this->fake('url');
         $parameters = [
             'foo' => 'bar',
             'baz' => 'quz',
         ];
+        $this->mockHttpWithEcho($url);
 
         $response = $http->post($url, $parameters);
 
@@ -162,43 +137,5 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $data = json_decode($response->data, true);
         $this->assertSame($parameters['foo'], $data['form']['foo']);
         $this->assertSame($parameters['baz'], $data['form']['baz']);
-    }
-
-    public function getProvider()
-    {
-        return [
-            [
-                'https://' . self::TESTS_HOST . '/get',
-                200,
-                self::TESTS_HOST,
-                ['content-type' => 'application/json'],
-            ],
-            [
-                'https://' . self::TESTS_HOST . '/status/404',
-                404,
-                '',
-                ['content-type' => 'text/html; charset=utf-8'],
-            ],
-            [
-                // redirections seem to fail on httpbin.org, so test let's test
-                // with my own domain (http is redirected to https)
-                'http://flus.fr/',
-                200,
-                'Flus, prenez le temps de suivre l’actualité',
-                ['content-type' => 'text/html;charset=UTF-8'],
-            ],
-        ];
-    }
-
-    public function postProvider()
-    {
-        return [
-            [
-                'https://' . self::TESTS_HOST . '/post',
-                200,
-                self::TESTS_HOST,
-                ['content-type' => 'application/json'],
-            ],
-        ];
     }
 }

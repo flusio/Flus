@@ -9,6 +9,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
+    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -188,7 +189,22 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     public function testValidateSetsSubscriptionAccountId()
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        $email = $this->fake('email');
+        $account_id = $this->fake('uuid');
+        $expired_at = $this->fake('dateTime');
+        $url = "https://next.flus.io/api/account?email={$email}";
+        $this->mockHttpWithResponse($url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "id": "{$account_id}",
+                "expired_at": "{$expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+            }
+            TEXT
+        );
         $user_id = $this->create('user', [
+            'email' => $email,
             'validated_at' => null,
             'subscription_account_id' => null,
         ]);
@@ -200,7 +216,8 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
 
         $user = models\User::find($user_id);
-        $this->assertNotNull($user->subscription_account_id);
+        $this->assertSame($account_id, $user->subscription_account_id);
+        $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
     public function testValidateDeletesToken()
