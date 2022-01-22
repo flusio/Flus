@@ -182,6 +182,8 @@ class Router
         $router->addRoute('cli', '/', 'Help#show');
         $router->addRoute('cli', '/help', 'Help#show');
 
+        $router->addRoute('cli', '/debug/url', 'Debug#url');
+
         $router->addRoute('cli', '/system', 'System#show');
         $router->addRoute('cli', '/system/secret', 'System#secret');
         $router->addRoute('cli', '/system/setup', 'System#setup');
