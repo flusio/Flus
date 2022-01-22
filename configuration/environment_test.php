@@ -53,6 +53,7 @@ return [
         'server_ips' => $server_ips,
         'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY'),
         'cli_locale' => $dotenv->pop('CLI_LOCALE'),
+        'mock_host' => $dotenv->pop('MOCK_HOST'),
     ],
 
     'database' => [

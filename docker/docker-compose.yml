@@ -15,9 +15,11 @@ services:
             - composer:/tmp
         environment:
             - SEED
+            - MOCK_HOST=http://mock_server:8001
         user: $USER
         links:
             - database
+            - mock_server
 
     job_worker:
         image: flusio_php:dev
@@ -32,6 +34,19 @@ services:
         user: $USER
         links:
             - database
+
+    mock_server:
+        image: flusio_php:dev
+        build:
+            context: .
+            dockerfile: Dockerfile.php
+        restart: unless-stopped
+        command: php -t . -S 0.0.0.0:8001 ./tests/mock_server.php
+        ports:
+            - "8001:8001"
+        volumes:
+            - ..:/var/www/html:z
+        user: $USER
 
     database:
         image: postgres:12-alpine
