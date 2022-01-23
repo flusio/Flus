@@ -1,7 +1,7 @@
 # How to run the test suite
 
-Obviously, you should make sure to have a running development environment
-first.
+Obviously, you should make sure to have a running [development
+environment](/docs/development.md) first.
 
 The tests can be simply executed with:
 
@@ -13,9 +13,12 @@ If you want to filter the tests to run, you can use the `FILE` and/or the
 `FILTER` environment variables:
 
 ```console
-$ make test FILE=./tests/PagesTest.php
-$ make test FILTER=testHome
+$ make test FILE=tests/PagesTest.php
+$ make test FILE=tests/PagesTest.php FILTER=testHome
 ```
+
+Some tests require the [mock\_server](/tests/mock_server.php) to run. It's
+automatically started if you use the Docker environment.
 
 A code coverage analysis is generated under the `coverage/` folder and can be
 opened with your browser:
