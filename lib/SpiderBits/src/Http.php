@@ -19,6 +19,9 @@ class Http
     /** @var array */
     public $headers = [];
 
+    /** @var string */
+    public static $mock_host = '';
+
     /**
      * Make a GET HTTP request.
      *
@@ -74,6 +77,11 @@ class Http
      */
     private function request($method, $url, $parameters = [], $options = [])
     {
+        if (self::$mock_host) {
+            $encoded_url = urlencode($url);
+            $url = self::$mock_host . '?url=' . $encoded_url;
+        }
+
         if (isset($options['user_agent'])) {
             $user_agent = $options['user_agent'];
         } else {

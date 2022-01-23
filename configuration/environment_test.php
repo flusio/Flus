@@ -52,7 +52,8 @@ return [
         'links_sync_count' => $links_sync_count,
         'server_ips' => $server_ips,
         'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY'),
-        'cli_locale' => $dotenv->pop('CLI_LOCALE'),
+        'cli_locale' => 'en_GB',
+        'mock_host' => $dotenv->pop('MOCK_HOST'),
     ],
 
     'database' => [

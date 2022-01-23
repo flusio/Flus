@@ -8,8 +8,9 @@ use flusio\utils;
 class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\MockHttpHelper;
+    use \Minz\Tests\FactoriesHelper;
 
     /**
      * @before
@@ -25,7 +26,8 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     public function testFetchSavesNewLinkInfo()
     {
         $link_fetcher_service = new LinkFetcher();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $url,
@@ -35,14 +37,15 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service->fetch($link);
 
         $link = models\Link::find($link_id);
-        $this->assertStringContainsString('flusio/flusio', $link->title);
+        $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
     }
 
     public function testFetchSavesResponseInCache()
     {
         $link_fetcher_service = new LinkFetcher();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $url,
@@ -88,6 +91,8 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchFetchesTwitterCorrectly()
     {
+        // This test must not be mocked since we want to test the real response
+        // of Twitter.
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://twitter.com/flus_fr/status/1272070701193797634';
         $link_id = $this->create('link', [
@@ -151,7 +156,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     public function testFetchDownloadsOpenGraphIllustration()
     {
         $link_fetcher_service = new LinkFetcher();
-        $url = 'https://flus.fr/carnet/flus-media-social-citoyen.html';
+        $url = 'https://flus.fr/carnet/index.html';
+        $card_url = 'https://flus.fr/carnet/card.png';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $this->mockHttpWithFile($card_url, 'public/static/og-card.png');
         $link_id = $this->create('link', [
             'url' => $url,
             'image_filename' => null,
@@ -162,7 +170,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::find($link_id);
         $image_filename = $link->image_filename;
-        $this->assertNotNull($image_filename);
+        $this->assertNotEmpty($image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
@@ -176,7 +184,14 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     public function testFetchDoesNotSaveResponseInCacheIfResponseIsInError()
     {
         $link_fetcher_service = new LinkFetcher();
-        $url = 'https://github.com/flusio/flusio/not-a-valid-url';
+        $url = 'https://flus.fr/does_not_exist.html';
+        $this->mockHttpWithResponse($url, <<<TEXT
+            HTTP/2 404
+            content-type: text/plain
+
+            Page not found
+            TEXT
+        );
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $url,
@@ -211,6 +226,13 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/does_not_exist.html';
+        $this->mockHttpWithResponse($url, <<<TEXT
+            HTTP/2 404
+            content-type: text/plain
+
+            Page not found
+            TEXT
+        );
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $url,

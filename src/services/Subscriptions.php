@@ -54,6 +54,10 @@ class Subscriptions
 
         if ($response->success) {
             $data = json_decode($response->data, true);
+            if (!$data) {
+                return null;
+            }
+
             $data['expired_at'] = date_create_from_format(
                 \Minz\Model::DATETIME_FORMAT,
                 $data['expired_at']
@@ -87,6 +91,10 @@ class Subscriptions
 
         if ($response->success) {
             $data = json_decode($response->data, true);
+            if (!$data) {
+                return null;
+            }
+
             return $data['url'];
         } else {
             return null;
@@ -115,6 +123,10 @@ class Subscriptions
 
         if ($response->success) {
             $data = json_decode($response->data, true);
+            if (!$data) {
+                return null;
+            }
+
             return date_create_from_format(
                 \Minz\Model::DATETIME_FORMAT,
                 $data['expired_at']

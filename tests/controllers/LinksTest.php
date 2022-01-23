@@ -6,12 +6,13 @@ use flusio\models;
 
 class LinksTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
+    use \tests\InitializerHelper;
+    use \tests\LoginHelper;
+    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -233,7 +234,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
         ]);
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $from = \Minz\Url::for('bookmarks');
 
         $this->assertSame(0, models\Link::count());
@@ -252,7 +254,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::take();
         $this->assertResponse($response, 302, $from);
         $this->assertSame($url, $link->url);
-        $this->assertStringContainsString('flusio/flusio', $link->title);
+        $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame($user->id, $link->user_id);
         $this->assertContains($collection_id, array_column($link->collections(), 'id'));

@@ -8,6 +8,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
+    use \tests\MockHttpHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
@@ -79,9 +80,11 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerform()
     {
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $link_id = $this->create('link', [
-            'url' => 'https://github.com/flusio/flusio',
-            'title' => 'https://github.com/flusio/flusio',
+            'url' => $url,
+            'title' => $url,
             'fetched_at' => null,
             'fetched_code' => 0,
             'fetched_count' => 0,
@@ -91,7 +94,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $links_fetcher_job->perform();
 
         $link = models\Link::find($link_id);
-        $this->assertStringContainsString('flusio/flusio', $link->title);
+        $this->assertSame('Carnet de Flus', $link->title);
         $this->assertNotNull($link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame(1, $link->fetched_count);
@@ -119,7 +122,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformSavesResponseInCache()
     {
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $url,
@@ -202,9 +206,11 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $interval_to_wait = 5 + pow($fetched_count, 4);
         $seconds = $this->fake('numberBetween', $interval_to_wait + 1, $interval_to_wait + 9000);
         $fetched_at = \Minz\Time::ago($seconds, 'seconds');
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $link_id = $this->create('link', [
-            'url' => 'https://github.com/flusio/flusio',
-            'title' => 'https://github.com/flusio/flusio',
+            'url' => $url,
+            'title' => $url,
             'fetched_at' => $fetched_at->format(\Minz\Model::DATETIME_FORMAT),
             'fetched_code' => 404,
             'fetched_error' => 'not found',
@@ -215,8 +221,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $links_fetcher_job->perform();
 
         $link = models\Link::find($link_id);
-        $this->assertStringContainsString('flusio/flusio', $link->title);
-        $this->assertNotSame($fetched_at->getTimestamp(), $link->fetched_at->getTimestamp());
+        $this->assertSame('Carnet de Flus', $link->title);
+        $this->assertNotEquals($fetched_at, $link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
         $this->assertNull($link->fetched_error);
         $this->assertSame($fetched_count + 1, $link->fetched_count);

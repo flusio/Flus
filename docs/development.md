@@ -29,7 +29,7 @@ $ make install
 This command will run the `composer` and `npm` install commands to download the
 PHP and JS dependencies.
 
-Once this is done, you should start the webserver and the database:
+Once this is done, you should start the services:
 
 ```console
 $ make start
@@ -122,3 +122,10 @@ $ npm run watch
 ```
 
 You can finally access flusio at [localhost:8000](http://localhost:8000).
+
+Please note that some tests require the [mock\_server](/tests/mock_server.php)
+to run:
+
+```console
+$ php -t . -S localhost:8001 tests/mock_server.php
+```

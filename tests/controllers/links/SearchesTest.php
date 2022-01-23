@@ -6,12 +6,24 @@ use flusio\models;
 
 class SearchesTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
+    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
+
+    /**
+     * @before
+     */
+    public function emptyCachePath()
+    {
+        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
+    }
 
     public function testShowRendersCorrectly()
     {
@@ -188,6 +200,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $support_user = models\User::supportUser();
         $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $this->assertSame(0, models\Link::count());
 
@@ -211,6 +224,8 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $url = 'https://flus.fr/carnet/';
         $url_feed = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $this->mockHttpWithFixture($url_feed, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $this->assertSame(0, models\Collection::count());
 
@@ -233,6 +248,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $support_user = models\User::supportUser();
         $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('post', '/links/search', [
             'csrf' => $user->csrf,
@@ -256,6 +272,19 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $support_user = models\User::supportUser();
         $url = 'https://www.youtube.com/playlist?list=PLdhqndoLhA_7mQKanRpMGscqEgejpEWaJ';
+        $this->mockHttpWithResponse($url, <<<TEXT
+            HTTP/2 200
+            Content-type: text/html
+
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <title>Je me suis (encore) perdu.e sur internet - saison 2</title>
+                </head>
+                <body></body>
+            </html>
+            TEXT
+        );
 
         $response = $this->appRun('post', '/links/search', [
             'csrf' => $user->csrf,
@@ -274,7 +303,8 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $link_id = $this->create('link', [
             'user_id' => $support_user->id,
             'url' => $url,
@@ -291,7 +321,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Link::count());
         $link = models\Link::find($link_id);
-        $this->assertStringContainsString('flusio/flusio', $link->title);
+        $this->assertStringContainsString('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
     }
 

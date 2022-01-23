@@ -7,15 +7,16 @@ use flusio\utils;
 
 class ValidationTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
+    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\TimeHelper;
-    use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
+    use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
 
     /**
      * @before
@@ -120,15 +121,29 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     public function testShowWithTokenSetsSubscriptionAccountId()
     {
         $this->freeze($this->fake('dateTime'));
-
+        $email = $this->fake('email');
+        $account_id = $this->fake('uuid');
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        $subscription_api_url = "https://next.flus.io/api/account?email={$email}";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "id": "{$account_id}",
+                "expired_at": "{$expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+            }
+            TEXT
+        );
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
         $user_id = $this->create('user', [
+            'email' => $email,
             'validated_at' => null,
             'validation_token' => $token,
             'subscription_account_id' => null,
+            'subscription_expired_at' => $this->fake('iso8601'),
         ]);
 
         $response = $this->appRun('get', '/my/account/validation', [
@@ -136,7 +151,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $user = models\User::find($user_id);
-        $this->assertNotNull($user->subscription_account_id);
+        $this->assertSame($account_id, $user->subscription_account_id);
+        $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
     public function testShowWithTokenRedirectsIfRegistrationAlreadyValidated()

@@ -8,6 +8,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
+    use \tests\MockHttpHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
@@ -79,7 +80,12 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerform()
     {
+        $url = 'https://flus.fr/carnet/';
+        $card_url = 'https://flus.fr/carnet/card.png';
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $this->mockHttpWithFile($card_url, 'public/static/og-card.png');
+        $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
         $collection_id = $this->create('collection', [
             'type' => 'feed',
             'name' => $this->fake('sentence'),
@@ -101,10 +107,10 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame('atom', $collection->feed_type);
         $this->assertNotNull($collection->image_fetched_at);
-        $this->assertNotNull($collection->image_filename);
+        $this->assertNotEmpty($collection->image_filename);
         $this->assertNull($collection->locked_at);
         $links_number = count($collection->links());
-        $this->assertGreaterThan(0, $links_number);
+        $this->assertSame(3, $links_number);
     }
 
     public function testPerformLogsFetch()
@@ -138,6 +144,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
     public function testPerformSavesResponseInCache()
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
         $collection_id = $this->create('collection', [
             'type' => 'feed',
             'name' => $this->fake('sentence'),

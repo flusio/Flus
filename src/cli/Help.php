@@ -24,6 +24,9 @@ class Help
         $usage .= "\n";
         $usage .= "  database status          Return the status of the DB connection\n";
         $usage .= "\n";
+        $usage .= "  debug url                Show the HTTP response returned by an URL\n";
+        $usage .= "      --url=TEXT           where TEXT is an external URL\n";
+        $usage .= "\n";
         $usage .= "  features                 List the available features types\n";
         $usage .= "  features flags           List the enabled feature flags\n";
         $usage .= "  features enable          Enable a feature flag for a user\n";
