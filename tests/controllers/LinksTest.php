@@ -26,6 +26,46 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testIndexRendersCorrectly()
+    {
+        $user = $this->login();
+        $group_name = $this->fake('words', 3, true);
+        $group_id = $this->create('group', [
+            'name' => $group_name,
+            'user_id' => $user->id,
+        ]);
+        $collection_name_1 = $this->fake('words', 3, true);
+        $this->create('collection', [
+            'name' => $collection_name_1,
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $collection_name_2 = $this->fake('words', 3, true);
+        $this->create('collection', [
+            'name' => $collection_name_2,
+            'group_id' => $group_id,
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('get', '/links');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'links/index.phtml');
+        $this->assertResponseContains($response, $group_name);
+        $this->assertResponseContains($response, $collection_name_1);
+        $this->assertResponseContains($response, $collection_name_2);
+        $this->assertResponseContains($response, 'Your links to read later');
+        $this->assertResponseContains($response, 'All your links marked as read');
+    }
+
+    public function testIndexRedirectsToLoginIfNotConnected()
+    {
+        $response = $this->appRun('get', '/links');
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks');
+    }
+
     public function testShowRendersCorrectly()
     {
         $title = $this->fake('words', 3, true);

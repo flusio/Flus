@@ -17,8 +17,8 @@ use flusio\utils;
 class Links
 {
     /**
-     * List the links page of the current user (it shows the owned collections
-     * in fact).
+     * Display the links page of the current user (it shows the owned
+     * collections in fact).
      *
      * @response 302 /login?redirect_to=/links
      *     if the user is not connected
