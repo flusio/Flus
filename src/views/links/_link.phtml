@@ -22,7 +22,7 @@
         <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" loading="lazy" />
     </a>
 
-    <time class="card__image-overlay" datetime="<?= _d($link->published_at, '%Y-%m-%d') ?>">
+    <time class="card__image-overlay" datetime="<?= _d($link->published_at, '%FT%T') ?>" title="<?= _d($link->published_at, '%d %b %Y, %H:%M') ?>">
         <?php if ($now->format('Y') === $link->published_at->format('Y')): ?>
             <?= _d($link->published_at, '%d %b') ?>
         <?php else: ?>
