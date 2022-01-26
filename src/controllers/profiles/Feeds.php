@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers;
+namespace flusio\controllers\profiles;
 
 use Minz\Response;
 use flusio\auth;
@@ -11,10 +11,10 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Profiles
+class Feeds
 {
     /**
-     * Show the public profile page of a user.
+     * Show the feed of a user.
      *
      * @request_param string id
      *
@@ -28,30 +28,37 @@ class Profiles
     {
         $user_id = $request->param('id');
         $user = models\User::find($user_id);
+
         if (!$user || $user->isSupportUser()) {
             return Response::notFound('not_found.phtml');
         }
 
-        $current_user = auth\CurrentUser::get();
-        $is_current_user_profile = $current_user && $current_user->id === $user->id;
-
-        $links = $user->links(['published_at', 'number_comments', 'is_read'], [
+        utils\Locale::setCurrentLocale($user->locale);
+        $links = $user->links(['published_at'], [
             'unshared' => false,
-            'limit' => 6,
-            'context_user_id' => $current_user ? $current_user->id : null,
+            'limit' => 30,
         ]);
 
-        $collections = $user->collections(['number_links'], [
-            'private' => false,
-            'count_hidden' => $is_current_user_profile,
-        ]);
-        utils\Sorter::localeSort($collections, 'name');
-
-        return Response::ok('profiles/show.phtml', [
+        return Response::ok('profiles/feeds/show.atom.xml.php', [
             'user' => $user,
             'links' => $links,
-            'collections' => $collections,
-            'is_current_user_profile' => $is_current_user_profile,
+            'user_agent' => \Minz\Configuration::$application['user_agent'],
         ]);
+    }
+
+    /**
+     * Alias for the show method.
+     *
+     * @request_param string id
+     *
+     * @response 301 /p/:id/feed.atom.xml
+     */
+    public function alias($request)
+    {
+        $user_id = $request->param('id');
+        $url = \Minz\Url::for('profile feed', ['id' => $user_id]);
+        $response = new Response(301);
+        $response->setHeader('Location', $url);
+        return $response;
     }
 }

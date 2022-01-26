@@ -27,34 +27,6 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $username);
     }
 
-    public function testShowRendersFeedCorrectly()
-    {
-        $user_id = $this->create('user');
-        $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
-            'type' => 'collection',
-            'is_public' => 1,
-        ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
-            'title' => $link_title,
-        ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
-        ]);
-
-        $response = $this->appRun('get', "/p/{$user_id}/feed.atom.xml");
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'profiles/feed.atom.xml.php');
-        $this->assertResponseContains($response, $link_title);
-        $content_type = $response->headers(true)['Content-Type'];
-        $this->assertSame('application/atom+xml', $content_type);
-    }
-
     public function testShowDisplaysAnEditButtonIfConnectedToItsOwnPage()
     {
         $user = $this->login();

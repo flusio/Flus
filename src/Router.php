@@ -49,7 +49,8 @@ class Router
 
         // Profile
         $router->addRoute('get', '/p/:id', 'Profiles#show', 'profile');
-        $router->addRoute('get', '/p/:id/feed.atom.xml', 'Profiles#show', 'profile feed');
+        $router->addRoute('get', '/p/:id/feed.atom.xml', 'profiles/Feeds#show', 'profile feed');
+        $router->addRoute('get', '/p/:id/feed', 'profiles/Feeds#alias');
         $router->addRoute('get', '/my/profile', 'my/Profile#edit', 'edit profile');
         $router->addRoute('post', '/my/profile', 'my/Profile#update', 'update profile');
         $router->addRoute('post', '/my/profile/avatar', 'my/Avatar#update', 'update avatar');
@@ -102,7 +103,8 @@ class Router
         $router->addRoute('post', '/collections/new', 'Collections#create', 'create collection');
         $router->addRoute('get', '/collections/discover', 'collections/Discovery#show', 'discover collections');
         $router->addRoute('get', '/collections/:id', 'Collections#show', 'collection');
-        $router->addRoute('get', '/collections/:id/feed.atom.xml', 'Collections#show', 'collection feed');
+        $router->addRoute('get', '/collections/:id/feed.atom.xml', 'collections/Feeds#show', 'collection feed');
+        $router->addRoute('get', '/collections/:id/feed', 'collections/Feeds#alias');
         $router->addRoute('get', '/collections/:id/edit', 'Collections#edit', 'edit collection');
         $router->addRoute('post', '/collections/:id/edit', 'Collections#update', 'update collection');
         $router->addRoute('post', '/collections/:id/delete', 'Collections#delete', 'delete collection');
@@ -128,7 +130,8 @@ class Router
         $router->addRoute('get', '/links/search', 'links/Searches#show', 'show search link');
         $router->addRoute('post', '/links/search', 'links/Searches#create', 'search link');
         $router->addRoute('get', '/links/:id', 'Links#show', 'link');
-        $router->addRoute('get', '/links/:id/feed.atom.xml', 'Links#show', 'link feed');
+        $router->addRoute('get', '/links/:id/feed.atom.xml', 'links/Feeds#show', 'link feed');
+        $router->addRoute('get', '/links/:id/feed', 'links/Feeds#alias');
         $router->addRoute('get', '/links/:id/edit', 'Links#edit', 'edit link');
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');

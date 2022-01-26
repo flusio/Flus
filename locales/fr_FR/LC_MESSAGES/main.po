@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-20 17:19+0100\n"
-"PO-Revision-Date: 2022-01-20 17:19+0100\n"
+"POT-Creation-Date: 2022-01-26 13:45+0100\n"
+"PO-Revision-Date: 2022-01-26 13:45+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -45,9 +45,9 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:119 controllers/Collections.php:336
+#: controllers/Collections.php:119 controllers/Collections.php:323
 #: controllers/Feeds.php:108 controllers/Groups.php:90
-#: controllers/Links.php:188 controllers/News.php:77
+#: controllers/Links.php:179 controllers/News.php:77
 #: controllers/Passwords.php:80 controllers/Passwords.php:183
 #: controllers/Registrations.php:103 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Filters.php:104
@@ -64,13 +64,13 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:132 controllers/Collections.php:351
+#: controllers/Collections.php:132 controllers/Collections.php:338
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:411 controllers/Exportations.php:74
+#: controllers/Collections.php:398 controllers/Exportations.php:74
 #: controllers/Groups.php:161 controllers/Importations.php:48
-#: controllers/Links.php:320 controllers/Links.php:367
+#: controllers/Links.php:311 controllers/Links.php:358
 #: controllers/Messages.php:47 controllers/Sessions.php:200
 #: controllers/collections/Read.php:65 controllers/collections/Read.php:124
 #: controllers/collections/Read.php:183 controllers/importations/Opml.php:78
@@ -95,11 +95,11 @@ msgstr "Aucun flux valide n’a été détecté à cette adresse."
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
-#: controllers/Links.php:213 controllers/links/Obtentions.php:143
+#: controllers/Links.php:204 controllers/links/Obtentions.php:143
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:226 controllers/links/Collections.php:140
+#: controllers/Links.php:217 controllers/links/Collections.php:140
 #: controllers/links/Obtentions.php:157
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
@@ -481,27 +481,31 @@ msgstr "Petit conseil : il est peut-être l’heure de prendre une pause ?"
 msgid "For your entertainment, a choupisson : 🦔"
 msgstr "Pour vous divertir, un choupisson : 🦔"
 
-#: views/collections/feed.atom.xml.php:39 views/profiles/feed.atom.xml.php:32
+#: views/collections/feeds/show.atom.xml.php:39
+#: views/profiles/feeds/show.atom.xml.php:32
 #, php-format
 msgid "“%s”"
 msgstr "« %s »"
 
-#: views/collections/feed.atom.xml.php:40 views/profiles/feed.atom.xml.php:33
+#: views/collections/feeds/show.atom.xml.php:40
+#: views/profiles/feeds/show.atom.xml.php:33
 #, php-format
 msgid "Read this on <a href=\"%s\">%s</a>."
 msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
 
-#: views/collections/feed.atom.xml.php:41 views/profiles/feed.atom.xml.php:34
+#: views/collections/feeds/show.atom.xml.php:41
+#: views/profiles/feeds/show.atom.xml.php:34
 #, php-format
 msgid "My comments on <a href=\"%s\">%s</a>."
 msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
 
-#: views/links/exportation.atom.xml.php:26 views/links/feed.atom.xml.php:24
+#: views/links/exportation.atom.xml.php:26
+#: views/links/feeds/show.atom.xml.php:24
 #, php-format
 msgid "Comment by %s"
 msgstr "Commentaire par %s"
 
-#: views/links/feed.atom.xml.php:3
+#: views/links/feeds/show.atom.xml.php:3
 #, php-format
 msgid "Comments on %s"
 msgstr "Commentaires sur %s"

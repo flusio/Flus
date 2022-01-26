@@ -77,16 +77,7 @@ class Links
             ]);
         }
 
-        $is_atom_feed = utils\Belt::endsWith($request->path(), 'feed.atom.xml');
-        if ($is_atom_feed) {
-            $locale = $link->owner()->locale;
-            utils\Locale::setCurrentLocale($locale);
-            return Response::ok('links/feed.atom.xml.php', [
-                'link' => $link,
-                'messages' => $link->messages(),
-                'user_agent' => \Minz\Configuration::$application['user_agent'],
-            ]);
-        } elseif ($can_update) {
+        if ($can_update) {
             $collections = $link->collections();
             utils\Sorter::localeSort($collections, 'name');
 

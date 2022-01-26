@@ -198,20 +198,7 @@ class Collections
         $topics = $collection->topics();
         utils\Sorter::localeSort($topics, 'label');
 
-        $is_atom_feed = utils\Belt::endsWith($request->path(), 'feed.atom.xml');
-        if ($is_atom_feed) {
-            $locale = $collection->owner()->locale;
-            utils\Locale::setCurrentLocale($locale);
-            return Response::ok('collections/feed.atom.xml.php', [
-                'collection' => $collection,
-                'topics' => $topics,
-                'links' => $collection->links(
-                    ['published_at'],
-                    ['hidden' => false]
-                ),
-                'user_agent' => \Minz\Configuration::$application['user_agent'],
-            ]);
-        } elseif ($can_update) {
+        if ($can_update) {
             return Response::ok('collections/show.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
