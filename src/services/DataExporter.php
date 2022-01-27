@@ -112,7 +112,7 @@ class DataExporter
             'groups_to_collections' => $groups_to_collections,
         ]);
 
-        return $view->render();
+        return self::formatXML($view->render());
     }
 
     /**
@@ -132,7 +132,7 @@ class DataExporter
             'links' => $collection->links(['published_at']),
         ]);
 
-        return $view->render();
+        return self::formatXML($view->render());
     }
 
     /**
@@ -151,6 +151,33 @@ class DataExporter
             'messages' => $link->messages(),
         ]);
 
-        return $view->render();
+        return self::formatXML($view->render());
+    }
+
+    /**
+     * Return a formatted version of a XML string.
+     *
+     * If an error occurs, the initial XML is returned as is.
+     *
+     * @param string $xml_as_string
+     *
+     * @return string
+     */
+    private static function formatXML($xml_as_string)
+    {
+        $dom_document = new \DOMDocument();
+        $dom_document->preserveWhiteSpace = false;
+        $dom_document->formatOutput = true;
+        $result = @$dom_document->loadXML($xml_as_string);
+        if (!$result) {
+            return $xml_as_string;
+        }
+
+        $formatted_xml = $dom_document->saveXML();
+        if (!$formatted_xml) {
+            return $xml_as_string;
+        }
+
+        return $formatted_xml;
     }
 }
