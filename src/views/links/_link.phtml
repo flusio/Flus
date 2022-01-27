@@ -22,11 +22,11 @@
         <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" loading="lazy" />
     </a>
 
-    <time class="card__image-overlay" datetime="<?= _d($link->published_at, '%FT%T') ?>" title="<?= _d($link->published_at, '%d %b %Y, %H:%M') ?>">
+    <time class="card__image-overlay" datetime="<?= $link->published_at->format(DATE_ATOM) ?>" title="<?= _date($link->published_at, 'dd MMM Y, HH:mm') ?>">
         <?php if ($now->format('Y') === $link->published_at->format('Y')): ?>
-            <?= _d($link->published_at, '%d %b') ?>
+            <?= _date($link->published_at, 'dd MMM') ?>
         <?php else: ?>
-            <?= _d($link->published_at, '%d %b %Y') ?>
+            <?= _date($link->published_at, 'dd MMM Y') ?>
         <?php endif; ?>
     </time>
 

@@ -9,6 +9,33 @@
  */
 
 /**
+ * Format a datetime.
+ *
+ * @see https://www.php.net/manual/class.intldateformatter.php
+ * @see https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+ *
+ * @param \DateTime $date
+ *     The datetime to format
+ * @param string $format
+ *     The format following ICU Datetime format syntax
+ *
+ * @return string
+ */
+function _date($date, $format)
+{
+    $current_locale = \flusio\utils\Locale::currentLocale();
+    $formatter = new IntlDateFormatter(
+        $current_locale,
+        IntlDateFormatter::FULL,
+        IntlDateFormatter::FULL,
+        null,
+        null,
+        $format
+    );
+    return $formatter->format($date);
+}
+
+/**
  * Format a DateTime according to current day (designed for Message dates)
  *
  * @param \DateTime $date
@@ -17,11 +44,13 @@
  */
 function format_message_date($date)
 {
-    $today = new \DateTime('today');
+    $today = \Minz\Time::relative('today');
     if ($date >= $today) {
-        return strftime('%H:%M', $date->getTimestamp());
+        return _date($date, 'HH:mm');
+    } elseif ($date->format('Y') === $today->format('Y')) {
+        return _date($date, 'dd MMM, HH:mm');
     } else {
-        return strftime('%d %b %H:%M', $date->getTimestamp());
+        return _date($date, 'dd MMM Y, HH:mm');
     }
 }
 

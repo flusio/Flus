@@ -12,16 +12,16 @@
     </div>
 
     <p class="section__intro">
-        <?= _f('You are registered since %s.', _d($current_user->created_at, '%d %B %Y')) ?>
+        <?= _f('You are registered since %s.', _date($current_user->created_at, 'dd MMMM Y')) ?>
 
         <?php if ($subscriptions_enabled): ?>
             <br />
             <?php if ($current_user->isSubscriptionExempted()): ?>
                 <?= _('You have a <strong>free subscription</strong>!&nbsp;😊') ?>
             <?php elseif ($current_user->isSubscriptionOverdue()): ?>
-                <?= _f('<strong>Your subscription expired on %s.</strong>', _d($current_user->subscription_expired_at, '%d %B %Y')) ?>
+                <?= _f('<strong>Your subscription expired on %s.</strong>', _date($current_user->subscription_expired_at, 'dd MMMM Y')) ?>
             <?php else: ?>
-                <?= _f('Your subscription will expire on <strong>%s.</strong>', _d($current_user->subscription_expired_at, '%d %B %Y')) ?>
+                <?= _f('Your subscription will expire on <strong>%s.</strong>', _date($current_user->subscription_expired_at, 'dd MMMM Y')) ?>
             <?php endif; ?>
         <?php endif; ?>
     </p>
