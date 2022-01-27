@@ -117,10 +117,12 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->create('followed_collection', [
             'user_id' => $user_id,
             'collection_id' => $collection_1_id,
+            'time_filter' => 'all',
         ]);
         $this->create('followed_collection', [
             'user_id' => $user_id,
             'collection_id' => $collection_2_id,
+            'time_filter' => 'strict',
         ]);
         $this->create('followed_collection', [
             'user_id' => $user_id,
@@ -138,9 +140,11 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $collection_1_url = \Minz\Url::absoluteFor('collection', ['id' => $collection_1_id]);
         $this->assertSame($collection_1_url_feed, $opml->outlines[0]['xmlUrl']);
         $this->assertSame($collection_1_url, $opml->outlines[0]['htmlUrl']);
+        $this->assertSame('/flusio/filters/all', $opml->outlines[0]['category']);
 
         $this->assertSame($feed_url, $opml->outlines[1]['xmlUrl']);
         $this->assertSame($feed_site_url, $opml->outlines[1]['htmlUrl']);
+        $this->assertSame('/flusio/filters/strict', $opml->outlines[1]['category']);
 
         $this->assertSame($group_name, $opml->outlines[2]['text']);
         $this->assertSame(1, count($opml->outlines[2]['outlines']));

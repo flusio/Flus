@@ -67,11 +67,6 @@ class Collection extends \Minz\Model
             'type' => 'string',
         ],
 
-        'number_links' => [
-            'type' => 'integer',
-            'computed' => true,
-        ],
-
         'feed_url' => [
             'type' => 'string',
         ],
@@ -98,6 +93,16 @@ class Collection extends \Minz\Model
 
         'feed_fetched_error' => [
             'type' => 'string',
+        ],
+
+        'number_links' => [
+            'type' => 'integer',
+            'computed' => true,
+        ],
+
+        'time_filter' => [
+            'type' => 'string',
+            'computed' => true,
         ],
     ];
 

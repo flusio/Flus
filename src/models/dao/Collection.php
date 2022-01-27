@@ -185,11 +185,17 @@ class Collection extends \Minz\DatabaseModel
             $group_by_clause = 'GROUP BY c.id, fc.group_id';
         }
 
+        $time_filter_clause = '';
+        if (in_array('time_filter', $selected_computed_props)) {
+            $time_filter_clause = ', fc.time_filter AS time_filter';
+        }
+
         $sql = <<<SQL
             SELECT
                 c.*,
                 fc.group_id
                 {$number_links_clause}
+                {$time_filter_clause}
             FROM collections c, followed_collections fc
 
             {$join_clause}

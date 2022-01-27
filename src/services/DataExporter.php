@@ -102,7 +102,7 @@ class DataExporter
     private function generateOpml($user)
     {
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
-        $collections = $user->followedCollections();
+        $collections = $user->followedCollections(['time_filter']);
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
         $view = new \Minz\Output\View('collections/followed.opml.xml.php', [

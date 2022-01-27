@@ -8,22 +8,18 @@
     <body>
         <?php $collections = $groups_to_collections[null] ?? []; ?>
         <?php foreach ($collections as $collection): ?>
-            <?php if ($collection->type === 'feed'): ?>
-                <outline type="rss" text="<?= protect($collection->name) ?>" xmlUrl="<?= protect($collection->feed_url) ?>" htmlUrl="<?= protect($collection->feed_site_url) ?>" />
-            <?php else: ?>
-                <outline type="rss" text="<?= protect($collection->name) ?>" xmlUrl="<?= url_full('collection feed', ['id' => $collection->id]) ?>" htmlUrl="<?= url_full('collection', ['id' => $collection->id]) ?>" />
-            <?php endif; ?>
+            <?= $this->include('collections/_collection.opml.xml.php', [
+                'collection' => $collection,
+            ]) ?>
         <?php endforeach; ?>
 
         <?php foreach ($groups as $group): ?>
             <outline text="<?= protect($group->name) ?>">
                 <?php $collections = $groups_to_collections[$group->id] ?? []; ?>
                 <?php foreach ($collections as $collection): ?>
-                    <?php if ($collection->type === 'feed'): ?>
-                        <outline type="rss" text="<?= protect($collection->name) ?>" xmlUrl="<?= protect($collection->feed_url) ?>" htmlUrl="<?= protect($collection->feed_site_url) ?>" />
-                    <?php else: ?>
-                        <outline type="rss" text="<?= protect($collection->name) ?>" xmlUrl="<?= url_full('collection feed', ['id' => $collection->id]) ?>" htmlUrl="<?= url_full('collection', ['id' => $collection->id]) ?>" />
-                    <?php endif; ?>
+                    <?= $this->include('collections/_collection.opml.xml.php', [
+                        'collection' => $collection,
+                    ]) ?>
                 <?php endforeach; ?>
             </outline>
         <?php endforeach; ?>
