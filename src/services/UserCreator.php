@@ -2,6 +2,7 @@
 
 namespace flusio\services;
 
+use flusio\jobs;
 use flusio\models;
 use flusio\utils;
 
@@ -55,6 +56,30 @@ class UserCreator
 
         $shares = models\Collection::init($user->id, _('My shares'), '', true);
         $shares->save();
+
+        // Load default feeds
+        $default_opml_filepath = \Minz\Configuration::$data_path . '/default-feeds.opml.xml';
+        if (file_exists($default_opml_filepath)) {
+            $importations_filepath = \Minz\Configuration::$data_path . '/importations';
+            if (!file_exists($importations_filepath)) {
+                @mkdir($importations_filepath);
+            }
+
+            $user_opml_filepath = "{$importations_filepath}/opml_{$user->id}.xml";
+            $copy_is_ok = copy($default_opml_filepath, $user_opml_filepath);
+            if (!$copy_is_ok) {
+                \Minz\Log::error("Default OPML file can’t be copied to {$user_opml_filepath}");
+                return $user;
+            }
+
+            $importation = models\Importation::init('opml', $user->id, [
+                'opml_filepath' => $user_opml_filepath,
+            ]);
+            $importation->save();
+            $importator_job = new jobs\OpmlImportator();
+            $importator_job->perform($importation->id);
+            models\Importation::delete($importation->id);
+        }
 
         return $user;
     }

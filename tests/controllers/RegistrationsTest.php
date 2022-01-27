@@ -155,6 +155,44 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/onboarding');
     }
 
+    public function testCreateAddFollowedCollectionsIfDefaultFeedsExist()
+    {
+        $default_feeds_path = \Minz\Configuration::$data_path . '/default-feeds.opml.xml';
+        file_put_contents($default_feeds_path, <<<OPML
+            <?xml version="1.0" encoding="UTF-8"?>
+            <opml version="2.0">
+                <head></head>
+                <body>
+                    <outline
+                        type="rss"
+                        text="Carnet de Flus"
+                        xmlUrl="https://flus.fr/carnet/feeds/all.atom.xml"
+                        htmlUrl="https://flus.fr/carnet/"
+                    />
+                </body>
+            </opml>
+            OPML
+        );
+        $email = $this->fake('email');
+
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => \Minz\CSRF::generate(),
+            'username' => $this->fake('name'),
+            'email' => $email,
+            'password' => $this->fake('password'),
+        ]);
+
+        @unlink($default_feeds_path);
+        $this->assertResponse($response, 302, '/onboarding');
+        $user = models\User::findBy(['email' => $email]);
+        $feed = models\Collection::findBy([
+            'feed_url' => 'https://flus.fr/carnet/feeds/all.atom.xml',
+        ]);
+        $this->assertNotNull($user);
+        $this->assertNotNull($feed);
+        $this->assertTrue($user->isFollowing($feed->id));
+    }
+
     public function testCreateRedirectsToHomeIfConnected()
     {
         $this->login();
