@@ -46,7 +46,7 @@ class UserCreator
         $user->save();
 
         // Init default collections
-        $user->bookmarks();
+        $bookmarks = $user->bookmarks();
         $user->news();
         $user->readList();
         $user->neverList();
@@ -65,6 +65,19 @@ class UserCreator
                 $opml_importator_service->importForUser($user);
             } catch (OpmlImportatorError $e) {
                 \Minz\Log::error("Error while importing default feeds for user {$user->id}: {$e->getMessage()}");
+                // Don't pass the error to the parent as it's a "minor" issue
+                // (the user actually exists and is functional)
+            }
+        }
+
+        // Load default bookmarks
+        $default_bookmarks_filepath = \Minz\Configuration::$data_path . '/default-bookmarks.atom.xml';
+        if (file_exists($default_bookmarks_filepath)) {
+            try {
+                $atom_importator_service = new AtomImportator($default_bookmarks_filepath);
+                $atom_importator_service->importForCollection($bookmarks);
+            } catch (AtomImportatorError $e) {
+                \Minz\Log::error("Error while importing default bookmarks for user {$user->id}: {$e->getMessage()}");
                 // Don't pass the error to the parent as it's a "minor" issue
                 // (the user actually exists and is functional)
             }

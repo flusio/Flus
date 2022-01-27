@@ -193,6 +193,43 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->isFollowing($feed->id));
     }
 
+    public function testCreateImportsBookmarksIfDefaultBookmarksExist()
+    {
+        $default_bookmarks_path = \Minz\Configuration::$data_path . '/default-bookmarks.atom.xml';
+        file_put_contents($default_bookmarks_path, <<<TXT
+            <?xml version="1.0" encoding="UTF-8"?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+              <title>Bookmarks</title>
+              <entry>
+                <title>Bilan 2021</title>
+                <id>tag:localhost,2022-01-28:links/1723190948473041017</id>
+                <link href="https://flus.fr/carnet/bilan-2021.html" rel="alternate" type="text/html"/>
+                <published>2022-01-28T09:42:30+00:00</published>
+                <updated>2022-01-28T09:42:30+00:00</updated>
+              </entry>
+            </feed>
+            TXT
+        );
+        $email = $this->fake('email');
+
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => \Minz\CSRF::generate(),
+            'username' => $this->fake('name'),
+            'email' => $email,
+            'password' => $this->fake('password'),
+        ]);
+
+        @unlink($default_bookmarks_path);
+        $this->assertResponse($response, 302, '/onboarding');
+        $user = models\User::findBy(['email' => $email]);
+        $this->assertNotNull($user);
+        $bookmarks = $user->bookmarks();
+        $links = $bookmarks->links();
+        $this->assertSame(1, count($links));
+        $this->assertSame('Bilan 2021', $links[0]->title);
+        $this->assertSame('https://flus.fr/carnet/bilan-2021.html', $links[0]->url);
+    }
+
     public function testCreateRedirectsToHomeIfConnected()
     {
         $this->login();
