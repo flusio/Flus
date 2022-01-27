@@ -6,6 +6,7 @@ use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
 use flusio\models;
+use flusio\services;
 use flusio\utils;
 
 /**
@@ -104,36 +105,6 @@ class Registrations
             ]);
         }
 
-        $user = models\User::init($username, $email, $password);
-        $user->locale = utils\Locale::currentLocale();
-
-        $errors = $user->validate();
-        if ($errors) {
-            return Response::badRequest('registrations/new.phtml', [
-                'has_terms' => $has_terms,
-                'username' => $username,
-                'email' => $email,
-                'password' => $password,
-                'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
-                'subscriptions_host' => $app_conf['subscriptions_host'],
-                'errors' => $errors,
-            ]);
-        }
-
-        if (models\User::findBy(['email' => $user->email])) {
-            return Response::badRequest('registrations/new.phtml', [
-                'has_terms' => $has_terms,
-                'username' => $username,
-                'email' => $email,
-                'password' => $password,
-                'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
-                'subscriptions_host' => $app_conf['subscriptions_host'],
-                'errors' => [
-                    'email' => _('An account already exists with this email address.'),
-                ],
-            ]);
-        }
-
         if ($has_terms && !$accept_terms) {
             return Response::badRequest('registrations/new.phtml', [
                 'has_terms' => $has_terms,
@@ -148,13 +119,26 @@ class Registrations
             ]);
         }
 
+        try {
+            $user = services\UserCreator::create($username, $email, $password);
+        } catch (services\UserCreatorError $e) {
+            return Response::badRequest('registrations/new.phtml', [
+                'has_terms' => $has_terms,
+                'username' => $username,
+                'email' => $email,
+                'password' => $password,
+                'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
+                'subscriptions_host' => $app_conf['subscriptions_host'],
+                'errors' => $e->errors(),
+            ]);
+        }
+
+        // Initialize the validation token
         $validation_token = models\Token::init(1, 'day', 16);
         $validation_token->save();
 
         $user->validation_token = $validation_token->token;
         $user->save();
-
-        $user->initDefaultCollections();
 
         // Initialize the current session
         $session_token = models\Token::init(1, 'month');

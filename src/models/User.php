@@ -152,17 +152,6 @@ class User extends \Minz\Model
     }
 
     /**
-     * Initialize all the default collections for the current user
-     */
-    public function initDefaultCollections()
-    {
-        $this->bookmarks();
-        $this->news();
-        $this->readList();
-        $this->neverList();
-    }
-
-    /**
      * Return the user' bookmarks collection
      *
      * @return \flusio\models\Collection
