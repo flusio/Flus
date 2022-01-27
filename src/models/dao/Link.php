@@ -76,7 +76,7 @@ class Link extends \Minz\DatabaseModel
         if (in_array('is_read', $selected_computed_props)) {
             $read_links_clause = <<<'SQL'
                 WITH read_links AS (
-                    SELECT l_read.url
+                    SELECT DISTINCT l_read.url
                     FROM links l_read, collections c_read, links_to_collections lc_read
 
                     WHERE c_read.user_id = ?
@@ -197,7 +197,7 @@ class Link extends \Minz\DatabaseModel
         if (in_array('is_read', $selected_computed_props)) {
             $read_links_clause = <<<'SQL'
                 WITH read_links AS (
-                    SELECT l_read.url
+                    SELECT DISTINCT l_read.url
                     FROM links l_read, collections c_read, links_to_collections lc_read
 
                     WHERE c_read.user_id = :context_user_id
@@ -367,7 +367,7 @@ class Link extends \Minz\DatabaseModel
         if (in_array('is_read', $selected_computed_props)) {
             $read_links_clause = <<<'SQL'
                 WITH read_links AS (
-                    SELECT l_read.url
+                    SELECT DISTINCT l_read.url
                     FROM links l_read, collections c_read, links_to_collections lc_read
 
                     WHERE c_read.user_id = :user_id
