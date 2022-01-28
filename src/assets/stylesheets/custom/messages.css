@@ -22,8 +22,13 @@
 }
 
 .message__content {
+    overflow: hidden;
+
     margin-left: 5rem;
     padding: var(--space-smaller);
+
+    text-overflow: ellipsis;
+    word-wrap: break-word;
 }
 
 @media (min-width: 800px) {
