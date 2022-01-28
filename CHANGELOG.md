@@ -1,5 +1,28 @@
 # Changelog of flusio
 
+## 2022-01-28 - v0.42
+
+### News
+
+- Allow to init new users with default data (cf. production documentation)
+
+### Improvements
+
+- Display publication date on hover
+- Add /feed URL alias to the feeds
+
+### Bug fixes
+
+- Remove duplicated links from profile page
+- Break long words in comments
+- Handle duplicated read links
+
+### Misc
+
+- Export time filters in OPML file
+- Format exported XML files nicely
+- Add a mechanism to mock HTTP requests during tests
+
 ## 2022-01-20 - v0.41
 
 ### News
