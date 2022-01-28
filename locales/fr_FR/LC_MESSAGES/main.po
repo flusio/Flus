@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-01-26 13:45+0100\n"
-"PO-Revision-Date: 2022-01-26 13:45+0100\n"
+"POT-Creation-Date: 2022-01-28 11:30+0100\n"
+"PO-Revision-Date: 2022-01-28 11:30+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -49,7 +49,7 @@ msgstr "Afficher"
 #: controllers/Feeds.php:108 controllers/Groups.php:90
 #: controllers/Links.php:179 controllers/News.php:77
 #: controllers/Passwords.php:80 controllers/Passwords.php:183
-#: controllers/Registrations.php:103 controllers/Sessions.php:85
+#: controllers/Registrations.php:104 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Filters.php:104
 #: controllers/collections/Followers.php:48
 #: controllers/collections/Followers.php:92
@@ -104,7 +104,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:58 models/User.php:583
+#: controllers/Passwords.php:58 models/User.php:572
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -123,11 +123,7 @@ msgid "The token has expired, you should reset your password again."
 msgstr ""
 "Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
 
-#: controllers/Registrations.php:132 controllers/my/Security.php:94
-msgid "An account already exists with this email address."
-msgstr "Un compte existe déjà avec cette adresse courriel."
-
-#: controllers/Registrations.php:146
+#: controllers/Registrations.php:117
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
@@ -193,6 +189,10 @@ msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 #: controllers/my/Security.php:68
 msgid "You must confirm your password."
 msgstr "Vous devez confirmer votre mot de passe."
+
+#: controllers/my/Security.php:94 services/UserCreator.php:42
+msgid "An account already exists with this email address."
+msgstr "Un compte existe déjà avec cette adresse courriel."
 
 #: controllers/my/Subscription.php:83
 msgid ""
@@ -264,30 +264,30 @@ msgstr "[%s] Confirmer votre compte"
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
-#: models/Collection.php:146 models/Collection.php:222
+#: models/Collection.php:151 models/Collection.php:227
 #: views/_layouts/connected.phtml:119 views/bookmarks/index.phtml:3
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:160 models/Collection.php:224
+#: models/Collection.php:165 models/Collection.php:229
 msgid "Links read"
 msgstr "Liens lus"
 
-#: models/Collection.php:174
+#: models/Collection.php:179
 msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
-#: models/Collection.php:188 models/Collection.php:226
+#: models/Collection.php:193 models/Collection.php:231
 #: views/_layouts/connected.phtml:85 views/news/index.phtml:3
 #: views/news/index.phtml:13
 msgid "News"
 msgstr "Journal"
 
-#: models/Collection.php:360 models/Group.php:87
+#: models/Collection.php:365 models/Group.php:87
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:362
+#: models/Collection.php:367
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
@@ -335,31 +335,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:545
+#: models/User.php:534
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:549
+#: models/User.php:538
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:579
+#: models/User.php:568
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:581
+#: models/User.php:570
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:585
+#: models/User.php:574
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:587
+#: models/User.php:576
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:589
+#: models/User.php:578
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -420,6 +420,14 @@ msgstr ""
 "Erreur Pocket : mauvaise configuration, merci de contacter le support (code "
 "erreur %d)."
 
+#: services/UserCreator.php:54
+msgid "My favourites"
+msgstr "Mes favoris"
+
+#: services/UserCreator.php:57
+msgid "My shares"
+msgstr "Mes partages"
+
 #: utils/Browser.php:36
 msgid "Unknown browser"
 msgstr "Navigateur inconnu"
@@ -433,16 +441,16 @@ msgstr "plateforme inconnue"
 msgid "%s on %s"
 msgstr "%s sur %s"
 
-#: utils/view_helpers.php:63
+#: utils/view_helpers.php:92
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:65
+#: utils/view_helpers.php:94
 #, php-format
 msgid "%d&nbsp;min"
 msgstr "%d&nbsp;min"
 
-#: utils/view_helpers.php:199
+#: utils/view_helpers.php:228
 #, php-format
 msgid ""
 "Gently advice: add links to <a href=\"%s\">your bookmarks</a> to read them "
@@ -451,7 +459,7 @@ msgstr ""
 "Petit conseil : placez des liens dans <a href=\"%s\">vos signets</a> pour "
 "les lire plus tard."
 
-#: utils/view_helpers.php:200
+#: utils/view_helpers.php:229
 #, php-format
 msgid ""
 "Gently advice: explore <a href=\"%s\">public collections</a> to discover new "
@@ -460,24 +468,24 @@ msgstr ""
 "Petit conseil : explorez <a href=\"%s\">les collections publiques</a> pour "
 "découvrir du nouveau contenu."
 
-#: utils/view_helpers.php:201
+#: utils/view_helpers.php:230
 msgid "Gently advice: be curious!"
 msgstr "Petit conseil : soyez curieuses et curieux !"
 
-#: utils/view_helpers.php:202
+#: utils/view_helpers.php:231
 msgid "Gently advice: ad blockers protect your privacy on Internet."
 msgstr ""
 "Petit conseil : les bloqueurs de pub protègent votre vie privée sur Internet."
 
-#: utils/view_helpers.php:203
+#: utils/view_helpers.php:232
 msgid "Gently advice: remember to drink water regularly."
 msgstr "Petit conseil : pensez à boire de l’eau régulièrement."
 
-#: utils/view_helpers.php:204
+#: utils/view_helpers.php:233
 msgid "Gently advice: it might be time for a break?"
 msgstr "Petit conseil : il est peut-être l’heure de prendre une pause ?"
 
-#: utils/view_helpers.php:205
+#: utils/view_helpers.php:234
 msgid "For your entertainment, a choupisson : 🦔"
 msgstr "Pour vous divertir, un choupisson : 🦔"
 

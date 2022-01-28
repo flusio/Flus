@@ -331,7 +331,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['demo'] = false;
 
         $this->assertSame(2, models\User::count()); // count the support and demo users
-        $this->assertSame(4, models\Collection::count());
+        $this->assertGreaterThan(0, models\Collection::count());
         $this->assertSame(0, models\Token::count());
         $this->assertSame(0, models\Link::count());
         $user = models\User::take(1);

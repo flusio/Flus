@@ -4,6 +4,7 @@ namespace flusio\jobs\scheduled;
 
 use flusio\jobs;
 use flusio\models;
+use flusio\services;
 use flusio\utils;
 
 /**
@@ -56,12 +57,10 @@ class Cleaner extends jobs\Job
             // reinitialize the support user
             models\User::supportUser();
 
-            $user = models\User::init('Abby', 'demo@flus.io', 'demo');
+            // Initialize a default (validated) user
+            $user = services\UserCreator::create('Alix', 'demo@flus.io', 'demo');
             $user->validated_at = \Minz\Time::now();
-            $user->locale = utils\Locale::currentLocale();
             $user->save();
-
-            $user->initDefaultCollections();
         }
     }
 }

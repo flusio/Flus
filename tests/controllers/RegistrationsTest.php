@@ -155,6 +155,81 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/onboarding');
     }
 
+    public function testCreateAddFollowedCollectionsIfDefaultFeedsExist()
+    {
+        $default_feeds_path = \Minz\Configuration::$data_path . '/default-feeds.opml.xml';
+        file_put_contents($default_feeds_path, <<<OPML
+            <?xml version="1.0" encoding="UTF-8"?>
+            <opml version="2.0">
+                <head></head>
+                <body>
+                    <outline
+                        type="rss"
+                        text="Carnet de Flus"
+                        xmlUrl="https://flus.fr/carnet/feeds/all.atom.xml"
+                        htmlUrl="https://flus.fr/carnet/"
+                    />
+                </body>
+            </opml>
+            OPML
+        );
+        $email = $this->fake('email');
+
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => \Minz\CSRF::generate(),
+            'username' => $this->fake('name'),
+            'email' => $email,
+            'password' => $this->fake('password'),
+        ]);
+
+        @unlink($default_feeds_path);
+        $this->assertResponse($response, 302, '/onboarding');
+        $user = models\User::findBy(['email' => $email]);
+        $feed = models\Collection::findBy([
+            'feed_url' => 'https://flus.fr/carnet/feeds/all.atom.xml',
+        ]);
+        $this->assertNotNull($user);
+        $this->assertNotNull($feed);
+        $this->assertTrue($user->isFollowing($feed->id));
+    }
+
+    public function testCreateImportsBookmarksIfDefaultBookmarksExist()
+    {
+        $default_bookmarks_path = \Minz\Configuration::$data_path . '/default-bookmarks.atom.xml';
+        file_put_contents($default_bookmarks_path, <<<TXT
+            <?xml version="1.0" encoding="UTF-8"?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+              <title>Bookmarks</title>
+              <entry>
+                <title>Bilan 2021</title>
+                <id>tag:localhost,2022-01-28:links/1723190948473041017</id>
+                <link href="https://flus.fr/carnet/bilan-2021.html" rel="alternate" type="text/html"/>
+                <published>2022-01-28T09:42:30+00:00</published>
+                <updated>2022-01-28T09:42:30+00:00</updated>
+              </entry>
+            </feed>
+            TXT
+        );
+        $email = $this->fake('email');
+
+        $response = $this->appRun('post', '/registration', [
+            'csrf' => \Minz\CSRF::generate(),
+            'username' => $this->fake('name'),
+            'email' => $email,
+            'password' => $this->fake('password'),
+        ]);
+
+        @unlink($default_bookmarks_path);
+        $this->assertResponse($response, 302, '/onboarding');
+        $user = models\User::findBy(['email' => $email]);
+        $this->assertNotNull($user);
+        $bookmarks = $user->bookmarks();
+        $links = $bookmarks->links();
+        $this->assertSame(1, count($links));
+        $this->assertSame('Bilan 2021', $links[0]->title);
+        $this->assertSame('https://flus.fr/carnet/bilan-2021.html', $links[0]->url);
+    }
+
     public function testCreateRedirectsToHomeIfConnected()
     {
         $this->login();
@@ -184,7 +259,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/onboarding');
-        $this->assertSame(4, models\Collection::count());
+        $this->assertGreaterThan(0, models\Collection::count());
         $user = auth\CurrentUser::get();
         $bookmarks = models\Collection::findBy([
             'user_id' => $user->id,

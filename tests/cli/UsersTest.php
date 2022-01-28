@@ -95,7 +95,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertSame(4, models\Collection::count());
+        $this->assertGreaterThan(0, models\Collection::count());
         $user = models\User::take();
         $bookmarks = models\Collection::findBy([
             'user_id' => $user->id,

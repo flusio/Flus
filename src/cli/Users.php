@@ -64,19 +64,16 @@ class Users
         $email = $request->param('email');
         $password = $request->param('password');
 
-        $user = models\User::init($username, $email, $password);
-        $user->validated_at = \Minz\Time::now();
-        $user->locale = utils\Locale::currentLocale();
-
-        $errors = $user->validate();
-        if ($errors) {
-            $errors = implode(' ', $errors);
+        try {
+            $user = services\UserCreator::create($username, $email, $password);
+        } catch (services\UserCreatorError $e) {
+            $errors = implode(' ', $e->errors());
             return Response::text(400, "User creation failed: {$errors}");
         }
 
+        // Immediately validate the user since we created it manually
+        $user->validated_at = \Minz\Time::now();
         $user->save();
-
-        $user->initDefaultCollections();
 
         return Response::text(200, "User {$user->username} ({$user->email}) has been created.");
     }
