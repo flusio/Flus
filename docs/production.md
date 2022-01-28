@@ -198,7 +198,7 @@ setup a cron task:
 It will find and run a single job every minute. It’s less efficient than a
 service, but it should work.
 
-## Bonus: Create topics
+## Optional: Create topics
 
 Topics are used to categorize collections. They only can be created by the
 administrator with the CLI for now:
@@ -229,14 +229,14 @@ listing them:
 flusio# sudo -u www-data php cli topics
 ```
 
-## Bonus: Configure Pocket
+## Optional: Configure Pocket
 
 flusio allows users to import their data from Pocket. First, you have to
 [create a Pocket app](https://getpocket.com/developer/apps/new). It will give
 you a "consumer key". Set this key in the `APP_POCKET_CONSUMER_KEY` variable of
 your `.env` file. That’s all!
 
-## Bonus: Configure Browscap
+## Optional: Configure Browscap
 
 We use Browscap to identify the users’ sessions via their user agent. flusio
 can work without Browscap but the sessions will be identified as `Unknown
@@ -264,20 +264,36 @@ Don’t forget to restart PHP:
 
 You can find more information on Browscap at [php.net/browscap](https://php.net/browscap).
 
-## Bonus: Set a brand name
+## Optional: Set a brand name
 
 The generic brand name is “flusio”, but you might want to change it to
 distinguish your instance from the other ones. This is pretty simple: uncomment
 the `APP_BRAND` variable in your `.env` file, and set the name of your choice.
 It’s recommended to choose a short name.
 
-## Bonus: Add terms of service
+## Optional: Add terms of service
 
 If your instance is opened, you may want to ask your users to accept the terms
 of your service. For this, you must create the `policies/terms.html` file which
 only accepts HTML. A checkbox should be added on the registration form then.
 
-## Bonus: Close the registrations
+## Optional: Declare default feeds and bookmarks
+
+When users register to the service, they can automatically subscribe to
+defaults feeds or get default bookmarks.
+
+Default feeds can be declared as an OPML file under the data folder:
+`data/defaut-feeds.opml.xml`.
+
+Default bookmarks can be declared as an Atom file under the data folder:
+`data/defaut-bookmarks.atom.xml`.
+
+To generate these files, the easiest is to create a trash account, subscribe to
+the feeds and add bookmarks. Then, export your data via “Account & data”,
+“Download your data”. You’ll find a `followed.opml.xml` and a
+`bookmarks.atom.xml` files in the archive: that's the ones you’re looking for.
+
+## Optional: Close the registrations
 
 You might want to setup a private instance of flusio. The registrations can be
 closed by setting the environment variable `APP_OPEN_REGISTRATIONS` to `false`.
@@ -289,7 +305,7 @@ CLI:
 flusio# sudo -u www-data php cli users create --username=Abby --email=email@example.com --password=secret
 ```
 
-## Bonus: Change CLI default locale
+## Optional: Change CLI default locale
 
 You can force the locale of CLI commands by setting the `CLI_LOCALE`
 environment variable:
@@ -301,7 +317,7 @@ CLI_LOCALE=fr_FR
 Note the commands feedback are not translated. It can be used to choose the
 locale of a user created via the CLI or seeds for instance.
 
-## Bonus: Configure a demo server
+## Optional: Configure a demo server
 
 If you need to configure a demo server (this is probably NOT the case), you can
 simply set the `APP_DEMO` variable to `true` in the `.env` file. It will add a
@@ -309,7 +325,7 @@ banner at the top of the screen to warn users that data are reset every night.
 It will also consider the account with the `demo@flus.io` email as the demo
 account. The reset is done through a scheduled job managed by flusio.
 
-## Bonus: Enable subscriptions
+## Optional: Enable subscriptions
 
 **This feature is not designed to be reused outside of the [flus.fr](https://flus.fr)
 service.**
