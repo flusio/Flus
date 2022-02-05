@@ -153,6 +153,42 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(410, $link->fetched_code);
     }
 
+    public function testFetchHandlesMissingContentType()
+    {
+        $link_fetcher_service = new LinkFetcher();
+        $url = 'https://flus.fr/carnet/';
+        // I wanted to test with no Content-type at all, but the mock_server
+        // (via the PHP built-in server) returns a content-type by default.
+        $this->mockHttpWithResponse($url, <<<TEXT
+            HTTP/2 200
+            server: nginx
+            date: Fri, 21 Jan 2022 15:21:03 GMT
+            content-type:
+
+            <!DOCTYPE html>
+            <html lang="fr">
+                <head>
+                    <meta charset="utf-8">
+                    <title>Carnet de Flus</title>
+                </head>
+
+                <body></body>
+            </html>
+            TEXT
+        );
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'title' => $url,
+        ]);
+        $link = models\Link::find($link_id);
+
+        $link_fetcher_service->fetch($link);
+
+        $link = models\Link::find($link_id);
+        $this->assertSame('Carnet de Flus', $link->title);
+        $this->assertSame(200, $link->fetched_code);
+    }
+
     public function testFetchDownloadsOpenGraphIllustration()
     {
         $link_fetcher_service = new LinkFetcher();

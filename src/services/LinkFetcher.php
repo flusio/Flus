@@ -219,8 +219,9 @@ class LinkFetcher
             return $info;
         }
 
-        if (!utils\Belt::contains($content_type, 'text/html')) {
-            // We operate on HTML only
+        if ($content_type && !utils\Belt::contains($content_type, 'text/html')) {
+            // We operate on HTML only. If content type is not declared, we
+            // examine data hoping for HTML.
             return $info; // @codeCoverageIgnore
         }
 
