@@ -7,14 +7,14 @@ use flusio\models;
 
 class SecurityTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\TimeHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
 
     public function testShowRendersCorrectlyIfPasswordIsConfirmed()
     {
@@ -26,8 +26,9 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/security');
 
-        $this->assertResponse($response, 200, 'You can change your login details here');
-        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'You can change your login details here');
+        $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
     }
 
     public function testShowRendersConfirmFormIfPasswordWasNeverConfirmed()
@@ -38,8 +39,9 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/security');
 
-        $this->assertResponse($response, 200, 'We need you to confirm your password');
-        $this->assertPointer($response, 'my/security/show_to_confirm.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'We need you to confirm your password');
+        $this->assertResponsePointer($response, 'my/security/show_to_confirm.phtml');
     }
 
     public function testShowRendersConfirmFormIfPasswordIsNotConfirmed()
@@ -52,15 +54,16 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/security');
 
-        $this->assertResponse($response, 200, 'We need you to confirm your password');
-        $this->assertPointer($response, 'my/security/show_to_confirm.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'We need you to confirm your password');
+        $this->assertResponsePointer($response, 'my/security/show_to_confirm.phtml');
     }
 
     public function testShowRedirectsIfUserIsNotConnected()
     {
         $response = $this->appRun('get', '/my/security');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
     }
 
     public function testUpdateChangesEmailAndPasswordAndRedirects()
@@ -188,7 +191,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $new_password,
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
         $user = auth\CurrentUser::reload();
         $this->assertNull($user);
         $user = models\User::find($user_id);
@@ -215,8 +218,9 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $new_password,
         ]);
 
-        $this->assertResponse($response, 400, 'You must confirm your password');
-        $this->assertPointer($response, 'my/security/show_to_confirm.phtml');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'You must confirm your password');
+        $this->assertResponsePointer($response, 'my/security/show_to_confirm.phtml');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -241,8 +245,9 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $new_password,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
-        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
+        $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -270,8 +275,9 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $new_password,
         ]);
 
-        $this->assertResponse($response, 400, 'An account already exists with this email address');
-        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'An account already exists with this email address');
+        $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -296,8 +302,9 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $new_password,
         ]);
 
-        $this->assertResponse($response, 400, 'The address email is invalid');
-        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The address email is invalid');
+        $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -321,8 +328,9 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $new_password,
         ]);
 
-        $this->assertResponse($response, 400, 'The address email is required');
-        $this->assertPointer($response, 'my/security/show_confirmed.phtml');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The address email is required');
+        $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -343,7 +351,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 302, '/my/security');
+        $this->assertResponseCode($response, 302, '/my/security');
         $session = auth\CurrentUser::session();
         $now = \Minz\Time::now();
         $this->assertSame($now->getTimestamp(), $session->confirmed_password_at->getTimestamp());
@@ -362,7 +370,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
     }
 
     public function testConfirmPasswordFailsIfCsrfIsInvalid()
@@ -379,7 +387,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 302, '/my/security');
+        $this->assertResponseCode($response, 302, '/my/security');
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $session = auth\CurrentUser::session();
         $this->assertNull($session->confirmed_password_at);
@@ -399,7 +407,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => 'not the password',
         ]);
 
-        $this->assertResponse($response, 302, '/my/security');
+        $this->assertResponseCode($response, 302, '/my/security');
         $this->assertFlash('errors', [
             'password_hash' => 'The password is incorrect.',
         ]);

@@ -19,6 +19,7 @@ class HelpTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('cli', '/');
 
-        $this->assertResponse($response, 200, 'Usage: php cli COMMAND [--OPTION=VALUE]...');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Usage: php cli COMMAND [--OPTION=VALUE]...');
     }
 }

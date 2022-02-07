@@ -6,11 +6,11 @@ use flusio\models;
 
 class ObtentionsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testNewRendersCorrectly()
@@ -26,8 +26,9 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/obtain");
 
-        $this->assertResponse($response, 200, $title);
-        $this->assertPointer($response, 'links/obtentions/new.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $title);
+        $this->assertResponsePointer($response, 'links/obtentions/new.phtml');
     }
 
     public function testNewRendersCorrectlyIfExistingLink()
@@ -51,8 +52,9 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$initial_link_id}/obtain");
 
-        $this->assertResponse($response, 200, $title);
-        $this->assertPointer($response, 'links/obtentions/new.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $title);
+        $this->assertResponsePointer($response, 'links/obtentions/new.phtml');
     }
 
     public function testNewRedirectsIfNotConnected()
@@ -71,7 +73,7 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $encoded_from = urlencode($from);
-        $this->assertResponse($response, 302, "/login?redirect_to={$encoded_from}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$encoded_from}");
     }
 
     public function testNewFailsIfLinkIsHidden()
@@ -87,7 +89,7 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/obtain");
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testCreateCreatesALinkAndRedirects()
@@ -116,7 +118,7 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(2, models\Link::count());
 
-        $this->assertResponse($response, 302, $from);
+        $this->assertResponseCode($response, 302, $from);
         $initial_link = models\Link::find($link_id);
         $new_link = models\Link::findBy(['user_id' => $user->id]);
         $link_to_collection = models\LinkToCollection::take();
@@ -169,7 +171,7 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(2, models\Link::count());
 
-        $this->assertResponse($response, 302, $from);
+        $this->assertResponseCode($response, 302, $from);
         $existing_link = models\Link::find($existing_link_id);
         $this->assertTrue($existing_link->is_hidden);
         $this->assertFalse(models\LinkToCollection::exists($link_to_collection_id));
@@ -207,7 +209,7 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $encoded_from = urlencode($from);
-        $this->assertResponse($response, 302, "/login?redirect_to={$encoded_from}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$encoded_from}");
         $this->assertSame(1, models\Link::count());
     }
 
@@ -235,7 +237,7 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertSame(1, models\Link::count());
     }
 
@@ -263,7 +265,8 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(1, models\Link::count());
     }
 
@@ -291,7 +294,8 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'The link must be associated to a collection.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The link must be associated to a collection.');
         $this->assertSame(1, models\Link::count());
     }
 
@@ -319,7 +323,8 @@ class ObtentionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
         $this->assertSame(1, models\Link::count());
     }
 }

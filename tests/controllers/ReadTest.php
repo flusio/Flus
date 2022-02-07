@@ -49,7 +49,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/read');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fread');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fread');
     }
 
     public function testIndexRedirectsIfPageOutOfBound()

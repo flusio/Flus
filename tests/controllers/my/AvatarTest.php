@@ -8,10 +8,10 @@ use flusio\utils;
 
 class AvatarTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\FilesHelper;
@@ -35,7 +35,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponse($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, '/my/profile');
         $user = auth\CurrentUser::reload();
         $this->assertSame($user->id . '.png', $user->avatar_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
@@ -72,7 +72,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponse($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, '/my/profile');
         $user = auth\CurrentUser::reload();
         $this->assertSame($user->id . '.png', $user->avatar_filename);
         $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
@@ -100,7 +100,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
         $user = models\User::find($user_id);
         $this->assertNull($user->avatar_filename);
     }
@@ -123,7 +123,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponse($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, '/my/profile');
         $this->assertFlash('error', 'A security verification failed.');
         $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
@@ -140,7 +140,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponse($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, '/my/profile');
         $this->assertFlash('error', 'The file is required.');
         $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
@@ -164,7 +164,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponse($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, '/my/profile');
         $this->assertFlash('error', 'The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>.');
         $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
@@ -189,7 +189,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponse($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, '/my/profile');
         $this->assertFlash('error', 'This file cannot be uploaded (error -1).');
         $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
@@ -216,7 +216,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponse($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, '/my/profile');
         $this->assertFlash('error', 'This file is too large.');
         $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);
@@ -243,7 +243,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponse($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, '/my/profile');
         $this->assertFlash('error', "This file cannot be uploaded (error {$error}).");
         $user = auth\CurrentUser::reload();
         $this->assertNull($user->avatar_filename);

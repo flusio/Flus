@@ -7,12 +7,12 @@ use flusio\utils;
 
 class NewsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testIndexRendersNewsLinksCorrectly()
@@ -344,7 +344,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'short',
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
         $link = models\Link::find($link_id);
         $this->assertSame('', $link->via_type);
         $this->assertNull($link->via_link_id);

@@ -30,7 +30,8 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('cli', '/database/status');
 
-        $this->assertResponse($response, 200, 'Database status: OK');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Database status: OK');
     }
 
     public function testStatusFailsWithWrongCredentials()
@@ -41,7 +42,8 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/database/status');
 
-        $this->assertResponse($response, 500, 'Database status: An error occured during database initialization');
+        $this->assertResponseCode($response, 500);
+        $this->assertResponseContains($response, 'Database status: An error occured during database initialization');
 
         \Minz\Configuration::$database = $initial_database_conf;
     }

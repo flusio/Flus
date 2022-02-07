@@ -44,23 +44,20 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/users');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
         $expected_output = <<<TEXT
         {$user_id_1} {$created_at_1->format('Y-m-d')} {$email_1}
         {$user_id_2} {$created_at_2->format('Y-m-d')} {$email_2} (not validated)
         TEXT;
-        $output = $response->render();
-        $this->assertSame($expected_output, $output);
+        $this->assertResponseEquals($response, $expected_output);
     }
 
     public function testIndexShowsIfNoUsers()
     {
         $response = $this->appRun('cli', '/users');
 
-        $this->assertResponse($response, 200);
-        $expected_output = 'No users';
-        $output = $response->render();
-        $this->assertSame($expected_output, $output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'No users');
     }
 
     public function testCreateCreatesAValidatedUser()
@@ -77,7 +74,8 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 200, "User {$username} ({$email}) has been created");
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "User {$username} ({$email}) has been created.");
         $this->assertSame(1, models\User::count());
         $user = models\User::take();
         $this->assertSame($username, $user->username);
@@ -129,7 +127,8 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 400, 'User creation failed: The username is required.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseEquals($response, 'User creation failed: The username is required.');
         $this->assertSame(0, models\User::count());
     }
 

@@ -47,7 +47,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/validation');
 
-        $this->assertResponse($response, 200, 'Didn’t receive the email? Resend it');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Didn’t receive the email? Resend it');
     }
 
     public function testShowWithoutTokenAndNotConnectedRedirectsToLogin()
@@ -63,7 +64,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/validation');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fvalidation');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fvalidation');
     }
 
     public function testShowWithValidationEmailSentStatusRendersCorrectly()
@@ -82,7 +83,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/validation');
 
-        $this->assertResponse($response, 200, "We’ve just sent you an email at {$email}");
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, "We’ve just sent you an email at {$email}");
     }
 
     public function testShowRedirectsIfUserConnectedAndRegistrationAlreadyValidated()
@@ -93,7 +95,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/validation');
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
     }
 
     public function testShowWithTokenRendersCorrectlyAndValidatesRegistration()
@@ -113,7 +115,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             't' => $token,
         ]);
 
-        $this->assertResponse($response, 200, 'Your account is now validated');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Your account is now validated');
         $user = models\User::find($user_id);
         $this->assertEquals(\Minz\Time::now(), $user->validated_at);
     }
@@ -172,7 +175,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             't' => $token,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
     }
 
     public function testShowWithTokenDeletesToken()
@@ -215,7 +218,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             't' => $token,
         ]);
 
-        $this->assertResponse($response, 400, 'The token has expired or has been invalidated');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The token has expired or has been invalidated');
         $user = models\User::find($user_id);
         $this->assertNull($user->validated_at);
     }
@@ -238,7 +242,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             't' => $token,
         ]);
 
-        $this->assertResponse($response, 400, 'The token has expired or has been invalidated');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The token has expired or has been invalidated');
         $user = models\User::find($user_id);
         $this->assertNull($user->validated_at);
     }
@@ -254,7 +259,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             't' => $token,
         ]);
 
-        $this->assertResponse($response, 404, 'The token doesn’t exist');
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseContains($response, 'The token doesn’t exist');
     }
 
     public function testShowWithTokenFailsIfTokenDoesNotExist()
@@ -274,7 +280,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             't' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 404, 'The token doesn’t exist');
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseContains($response, 'The token doesn’t exist');
         $user = models\User::find($user_id);
         $this->assertNull($user->validated_at);
     }
@@ -299,7 +306,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFlash('status', 'validation_email_sent');
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
@@ -324,7 +331,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'from' => '/about',
         ]);
 
-        $this->assertResponse($response, 302, '/about');
+        $this->assertResponseCode($response, 302, '/about');
         $this->assertFlash('status', 'validation_email_sent');
     }
 
@@ -404,7 +411,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertEmailsCount(0);
     }
 
@@ -423,7 +430,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $this->assertEmailsCount(0);
     }
@@ -434,7 +441,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'csrf' => \Minz\CSRF::generate(),
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2F');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertEmailsCount(0);
     }
 }

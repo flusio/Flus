@@ -32,7 +32,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/news');
         $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
         $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $link_id,
@@ -64,7 +64,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/news');
         $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks_id);
         $this->assertFalse($exists_in_bookmarks, 'The link should not be in bookmarks.');
     }
@@ -99,7 +99,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/news');
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
             'url' => $url,
@@ -131,7 +131,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fnews');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
         $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
         $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $link_id,
@@ -161,7 +161,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
         $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $link_id,
@@ -189,7 +189,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
         $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
         $link_to_read_list = models\LinkToCollection::findBy([
@@ -287,7 +287,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/news');
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
             'url' => $url,
@@ -349,7 +349,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
         $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $link_id,
@@ -377,7 +377,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/news');
         $this->assertFlash('error', 'A security verification failed.');
         $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
         $link_to_bookmarks = models\LinkToCollection::findBy([
@@ -453,7 +453,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('news'),
         ]);
 
-        $this->assertResponse($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/news');
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
             'url' => $url,

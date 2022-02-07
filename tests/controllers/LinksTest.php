@@ -78,8 +78,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}");
 
-        $this->assertResponse($response, 200, $title);
-        $this->assertPointer($response, 'links/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $title);
+        $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
     public function testShowDisplaysMessages()
@@ -97,7 +98,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}");
 
-        $this->assertResponse($response, 200, nl2br($content));
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, nl2br($content));
     }
 
     public function testShowRendersCorrectlyIfNotHiddenAndNotConnected()
@@ -111,8 +113,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}");
 
-        $this->assertResponse($response, 200, $title);
-        $this->assertPointer($response, 'links/show_public.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $title);
+        $this->assertResponsePointer($response, 'links/show_public.phtml');
     }
 
     public function testShowRendersCorrectlyIfNotHiddenAndDoesNotOwnTheLink()
@@ -129,8 +132,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}");
 
-        $this->assertResponse($response, 200, $title);
-        $this->assertPointer($response, 'links/show_public.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $title);
+        $this->assertResponsePointer($response, 'links/show_public.phtml');
     }
 
     public function testShowRedirectsIfHiddenAndNotConnected()
@@ -145,7 +149,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}");
 
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
     }
 
     public function testShowFailsIfTheLinkDoesNotExist()
@@ -154,7 +158,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/links/not-a-valid-id');
 
-        $this->assertResponse($response, 404, 'This page doesn’t exist.');
+        $this->assertResponseCode($response, 404);
     }
 
     public function testShowFailsIfUserDoesNotOwnThePrivateLink()
@@ -170,7 +174,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}");
 
-        $this->assertResponse($response, 404, 'This page doesn’t exist.');
+        $this->assertResponseCode($response, 404);
     }
 
     public function testNewRendersCorrectly()
@@ -186,8 +190,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 200, 'New link');
-        $this->assertPointer($response, 'links/new.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'New link');
+        $this->assertResponsePointer($response, 'links/new.phtml');
         $variables = $response->output()->variables();
         $this->assertContains($bookmarks_collection_id, $variables['collection_ids']);
     }
@@ -207,7 +212,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 200, $url);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $url);
     }
 
     public function testNewPrefillsCollection()
@@ -241,7 +247,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $from_encoded = urlencode($from);
-        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
     public function testCreateCreatesLinkAndRedirects()
@@ -268,7 +274,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\LinkToCollection::count());
 
         $link = models\Link::take();
-        $this->assertResponse($response, 302, $from);
+        $this->assertResponseCode($response, 302, $from);
         $this->assertSame($url, $link->url);
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
@@ -413,7 +419,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $from_encoded = urlencode($from);
-        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
         $this->assertSame(0, models\Link::count());
     }
 
@@ -432,7 +438,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Link::count());
     }
 
@@ -451,7 +458,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'Link scheme must be either http or https.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Link scheme must be either http or https.');
         $this->assertSame(0, models\Link::count());
     }
 
@@ -469,7 +477,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'The link is required.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The link is required.');
         $this->assertSame(0, models\Link::count());
     }
 
@@ -489,7 +498,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'One of the associated collection doesn’t exist.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, models\Link::count());
     }
 
@@ -505,7 +515,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'The link must be associated to a collection.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The link must be associated to a collection.');
         $this->assertSame(0, models\Link::count());
     }
 
@@ -519,8 +530,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/edit");
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'links/edit.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'links/edit.phtml');
     }
 
     public function testEditFailsIfNotConnected()
@@ -533,7 +544,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/edit");
 
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
     }
 
     public function testEditFailsIfTheLinkDoesNotExist()
@@ -542,7 +553,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/links/not-a-valid-id/edit');
 
-        $this->assertResponse($response, 404, 'This page doesn’t exist.');
+        $this->assertResponseCode($response, 404);
     }
 
     public function testEditFailsIfUserDoesNotOwnTheLink()
@@ -556,7 +567,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/links/{$link_id}/edit");
 
-        $this->assertResponse($response, 404, 'This page doesn’t exist.');
+        $this->assertResponseCode($response, 404);
     }
 
     public function testUpdateChangesTheTitleAndRedirects()
@@ -579,7 +590,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'is_hidden' => $new_hidden,
         ]);
 
-        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertResponseCode($response, 302, "/links/{$link_id}");
         $link = models\Link::find($link_id);
         $this->assertSame($new_title, $link->title);
         $this->assertTrue($link->is_hidden);
@@ -607,7 +618,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, $from);
+        $this->assertResponseCode($response, 302, $from);
         $link = models\Link::find($link_id);
         $this->assertSame($new_title, $link->title);
         $this->assertTrue($link->is_hidden);
@@ -629,7 +640,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertResponseCode($response, 302, "/links/{$link_id}");
         $this->assertFlash('error', 'A security verification failed.');
         $link = models\Link::find($link_id);
         $this->assertSame($old_title, $link->title);
@@ -651,7 +662,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertResponseCode($response, 302, "/links/{$link_id}");
         $this->assertFlash('errors', [
             'title' => 'The title is required.',
         ]);
@@ -675,7 +686,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
         $link = models\Link::find($link_id);
         $this->assertSame($old_title, $link->title);
     }
@@ -696,7 +707,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 404, 'This page doesn’t exist.');
+        $this->assertResponseCode($response, 404);
         $link = models\Link::find($link_id);
         $this->assertSame($old_title, $link->title);
     }
@@ -718,7 +729,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponse($response, 404, 'This page doesn’t exist.');
+        $this->assertResponseCode($response, 404);
         $link = models\Link::find($link_id);
         $this->assertSame($old_title, $link->title);
     }
@@ -735,7 +746,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => "/links/{$link_id}",
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\Link::exists($link_id));
     }
 
@@ -752,7 +763,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'redirect_to' => '/bookmarks',
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
     }
 
     public function testDeleteRedirectsIfNotConnected()
@@ -769,7 +780,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => "/links/{$link_id}",
         ]);
 
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
         $this->assertTrue(models\Link::exists($link_id));
     }
 
@@ -786,7 +797,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => "/links/{$link_id}",
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertTrue(models\Link::exists($link_id));
     }
 
@@ -802,7 +813,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => "/links/{$link_id}",
         ]);
 
-        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertResponseCode($response, 302, "/links/{$link_id}");
         $this->assertTrue(models\Link::exists($link_id));
         $this->assertFlash('error', 'A security verification failed.');
     }

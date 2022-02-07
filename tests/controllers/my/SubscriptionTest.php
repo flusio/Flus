@@ -59,7 +59,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 302, '/my/account');
+        $this->assertResponseCode($response, 302, '/my/account');
         $user = models\User::find($user->id);
         $this->assertSame($account_id, $user->subscription_account_id);
         $this->assertEquals($expired_at, $user->subscription_expired_at);
@@ -79,7 +79,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 302, '/my/account');
+        $this->assertResponseCode($response, 302, '/my/account');
         $user = models\User::find($user->id);
         $this->assertSame($account_id, $user->subscription_account_id);
         $this->assertSame(
@@ -102,7 +102,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'a token',
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
         $user = models\User::find($user_id);
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -125,7 +125,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 302, '/my/account');
+        $this->assertResponseCode($response, 302, '/my/account');
         $user = models\User::find($user->id);
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -147,7 +147,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 302, '/my/account');
+        $this->assertResponseCode($response, 302, '/my/account');
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $user = models\User::find($user->id);
         $this->assertNull($user->subscription_account_id);
@@ -174,7 +174,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['subscriptions_private_key'] = $old_private_key;
 
-        $this->assertResponse($response, 302, '/my/account');
+        $this->assertResponseCode($response, 302, '/my/account');
         $this->assertFlash(
             'error',
             'An error occured when getting you a subscription account, please contact the support.'
@@ -242,7 +242,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/subscription');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
     }
 
     public function testRedirectFailsIfUserHasNoAccountId()
@@ -253,7 +253,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/subscription');
 
-        $this->assertResponse($response, 400);
+        $this->assertResponseCode($response, 400);
     }
 
     public function testRedirectFailsIfUserHasInvalidAccountId()
@@ -264,7 +264,8 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/subscription');
 
-        $this->assertResponse($response, 500, 'please contact the support');
+        $this->assertResponseCode($response, 500);
+        $this->assertResponseContains($response, 'please contact the support');
     }
 
     public function testRedirectFailsIfSubscriptionsAreDisabled()
@@ -278,6 +279,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/subscription');
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 }

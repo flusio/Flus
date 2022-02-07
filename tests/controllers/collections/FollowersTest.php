@@ -6,12 +6,12 @@ use flusio\models;
 
 class FollowersTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testCreateMakesUserFollowingAndRedirects()
@@ -32,7 +32,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, $from);
+        $this->assertResponseCode($response, 302, $from);
         $this->assertSame(1, models\FollowedCollection::count());
         $followed_collection = models\FollowedCollection::take();
         $this->assertSame($user->id, $followed_collection->user_id);
@@ -55,7 +55,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $from_encoded = urlencode($from);
-        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -75,7 +75,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -95,7 +95,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -115,7 +115,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, $from);
+        $this->assertResponseCode($response, 302, $from);
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $this->assertSame(0, models\FollowedCollection::count());
     }
@@ -140,7 +140,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, $from);
+        $this->assertResponseCode($response, 302, $from);
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -165,7 +165,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $from_encoded = urlencode($from);
-        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
         $this->assertSame(1, models\FollowedCollection::count());
     }
 
@@ -189,7 +189,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertSame(1, models\FollowedCollection::count());
     }
 
@@ -213,7 +213,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertSame(1, models\FollowedCollection::count());
     }
 
@@ -237,7 +237,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, $from);
+        $this->assertResponseCode($response, 302, $from);
         $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
         $this->assertSame(1, models\FollowedCollection::count());
     }

@@ -4,9 +4,9 @@ namespace flusio\controllers;
 
 class PagesTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
@@ -14,7 +14,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/');
 
-        $this->assertResponse($response, 302, '/login');
+        $this->assertResponseCode($response, 302, '/login');
     }
 
     public function testHomeRedirectsToNewsIfConnected()
@@ -23,7 +23,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/');
 
-        $this->assertResponse($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/news');
     }
 
     public function testTermsRendersCorrectlyWhenTermsExist()
@@ -35,7 +35,8 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/terms');
 
         @unlink($terms_path);
-        $this->assertResponse($response, 200, 'Terms of service');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Terms of service');
     }
 
     public function testTermsFailsIfTermsDoNotExist()
@@ -46,6 +47,6 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/terms');
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 }

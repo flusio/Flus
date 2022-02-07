@@ -34,8 +34,9 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 200, $url);
-        $this->assertPointer($response, 'links/searches/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $url);
+        $this->assertResponsePointer($response, 'links/searches/show.phtml');
     }
 
     public function testShowDisplaysDefaultLink()
@@ -55,7 +56,8 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 200, $title);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $title);
     }
 
     public function testShowDisplaysExistingLinkOverDefaultLink()
@@ -81,10 +83,9 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 200);
-        $output = $response->render();
-        $this->assertStringContainsString($existing_title, $output);
-        $this->assertStringNotContainsString($default_title, $output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $existing_title);
+        $this->assertResponseNotContains($response, $default_title);
     }
 
     public function testShowDisplaysFeedCollections()
@@ -117,9 +118,8 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 200);
-        $output = $response->render();
-        $this->assertStringContainsString($name, $output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $name);
     }
 
     public function testShowHidesDuplicatedFeeds()
@@ -179,9 +179,8 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 200);
-        $output = $response->render();
-        $this->assertStringNotContainsString($title, $output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseNotContains($response, $title);
     }
 
     public function testShowRedirectsIfNotConnected()
@@ -192,7 +191,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Flinks%2Fsearch');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks%2Fsearch');
     }
 
     public function testCreateCreatesALinkAndFetchesIt()
@@ -210,7 +209,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $encoded_url = urlencode($url);
-        $this->assertResponse($response, 302, "/links/search?url={$encoded_url}");
+        $this->assertResponseCode($response, 302, "/links/search?url={$encoded_url}");
         $link = models\Link::findBy(['url' => $url]);
         $this->assertSame($support_user->id, $link->user_id);
         $this->assertSame('Carnet de Flus', $link->title);
@@ -363,7 +362,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Flinks%2Fsearch');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks%2Fsearch');
         $this->assertSame(0, models\Link::count());
     }
 
@@ -380,7 +379,8 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Link::count());
     }
 
@@ -397,7 +397,8 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $this->assertResponse($response, 400, 'The link is required.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The link is required.');
         $this->assertSame(0, models\Link::count());
     }
 }

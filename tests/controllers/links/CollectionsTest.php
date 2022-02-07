@@ -6,12 +6,12 @@ use flusio\models;
 
 class CollectionsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testIndexRendersCorrectly()
@@ -43,8 +43,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponse($response, 200, $collection_name);
-        $this->assertPointer($response, 'links/collections/index.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $collection_name);
+        $this->assertResponsePointer($response, 'links/collections/index.phtml');
     }
 
     public function testIndexRendersCorrectlyInModeAdding()
@@ -166,7 +167,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
     }
 
     public function testIndexFailsIfLinkIsNotAccessible()
@@ -187,7 +188,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testUpdateChangesCollectionsAndRedirects()
@@ -215,7 +216,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id_2],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
         $link_to_collection_1 = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id_1,
@@ -255,7 +256,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
         $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id,
@@ -351,7 +352,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'mode' => 'news',
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
         $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks_id);
         $exists_in_news = models\LinkToCollection::exists($link_to_news_id);
         $link_to_read_list = models\LinkToCollection::findBy([
@@ -393,7 +394,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$owned_collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
         // The initial link didn't change of collections
         $link_to_other_collection = models\LinkToCollection::findBy([
             'link_id' => $link_id,
@@ -448,7 +449,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id_2],
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
         $link_to_collection_1 = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id_1,
@@ -488,7 +489,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id_2],
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $link_to_collection_1 = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $collection_id_1,
@@ -519,7 +520,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
         $this->assertFlash('error', 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, models\LinkToCollection::count());
     }
@@ -541,7 +542,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_ids' => [$collection_id],
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
         $this->assertFlash('error', 'A security verification failed.');
         $this->assertSame(0, models\LinkToCollection::count());
     }

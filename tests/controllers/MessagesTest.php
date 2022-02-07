@@ -6,12 +6,12 @@ use flusio\models;
 
 class MessagesTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testDeleteDeletesMessageAndRedirects()
@@ -25,7 +25,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\Message::exists($message_id));
     }
 
@@ -41,7 +41,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'redirect_to' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponse($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/bookmarks');
         $this->assertFalse(models\Message::exists($message_id));
     }
 
@@ -58,7 +58,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'a token',
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2F');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue(models\Message::exists($message_id));
     }
 
@@ -74,7 +74,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertTrue(models\Message::exists($message_id));
     }
 
@@ -89,7 +89,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFlash('error', 'A security verification failed.');
         $this->assertTrue(models\Message::exists($message_id));
     }

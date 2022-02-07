@@ -7,9 +7,9 @@ use flusio\models;
 class DiscoveryTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
@@ -39,7 +39,7 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $topic_label);
         $this->assertResponseContains($response, '1 collection');
-        $this->assertPointer($response, 'discovery/show.phtml');
+        $this->assertResponsePointer($response, 'discovery/show.phtml');
     }
 
     public function testShowDoesNotCountCollectionIfEmpty()

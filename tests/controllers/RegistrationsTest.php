@@ -7,21 +7,21 @@ use flusio\models;
 
 class RegistrationsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\TimeHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\MailerAsserts;
+    use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
 
     public function testNewRendersCorrectly()
     {
         $response = $this->appRun('get', '/registration');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
     }
 
     public function testNewRedirectsToHomeIfConnected()
@@ -30,7 +30,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/registration');
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
     }
 
     public function testNewRedirectsToLoginIfRegistrationsAreClosed()
@@ -40,7 +40,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', '/registration');
 
         \Minz\Configuration::$application['registrations_opened'] = true;
-        $this->assertResponse($response, 302, '/login');
+        $this->assertResponseCode($response, 302, '/login');
     }
 
     public function testCreateCreatesAUserAndRedirects()
@@ -55,7 +55,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\User::count());
-        $this->assertResponse($response, 302, '/onboarding');
+        $this->assertResponseCode($response, 302, '/onboarding');
     }
 
     public function testCreateCreatesARegistrationValidationToken()
@@ -152,7 +152,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         @unlink($terms_path);
         $this->assertSame(1, models\User::count());
-        $this->assertResponse($response, 302, '/onboarding');
+        $this->assertResponseCode($response, 302, '/onboarding');
     }
 
     public function testCreateAddFollowedCollectionsIfDefaultFeedsExist()
@@ -183,7 +183,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         @unlink($default_feeds_path);
-        $this->assertResponse($response, 302, '/onboarding');
+        $this->assertResponseCode($response, 302, '/onboarding');
         $user = models\User::findBy(['email' => $email]);
         $feed = models\Collection::findBy([
             'feed_url' => 'https://flus.fr/carnet/feeds/all.atom.xml',
@@ -220,7 +220,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         @unlink($default_bookmarks_path);
-        $this->assertResponse($response, 302, '/onboarding');
+        $this->assertResponseCode($response, 302, '/onboarding');
         $user = models\User::findBy(['email' => $email]);
         $this->assertNotNull($user);
         $bookmarks = $user->bookmarks();
@@ -244,7 +244,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\User::count());
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
     }
 
     public function testCreateCreatesDefaultCollections()
@@ -258,7 +258,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertResponse($response, 302, '/onboarding');
+        $this->assertResponseCode($response, 302, '/onboarding');
         $this->assertGreaterThan(0, models\Collection::count());
         $user = auth\CurrentUser::get();
         $bookmarks = models\Collection::findBy([
@@ -295,7 +295,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         \Minz\Configuration::$application['registrations_opened'] = true;
-        $this->assertResponse($response, 302, '/login');
+        $this->assertResponseCode($response, 302, '/login');
         $this->assertSame(0, models\User::count());
     }
 
@@ -311,7 +311,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(0, models\User::count());
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
     }
 
     public function testCreateFailsIfUsernameIsMissing()
@@ -323,7 +324,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(0, models\User::count());
-        $this->assertResponse($response, 400, 'The username is required');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The username is required');
     }
 
     public function testCreateFailsIfUsernameIsTooLong()
@@ -336,7 +338,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(0, models\User::count());
-        $this->assertResponse($response, 400, 'The username must be less than 50 characters');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The username must be less than 50 characters');
     }
 
     public function testCreateFailsIfUsernameContainsAnAt()
@@ -361,7 +364,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(0, models\User::count());
-        $this->assertResponse($response, 400, 'The address email is required');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The address email is required');
     }
 
     public function testCreateFailsIfEmailIsInvalid()
@@ -374,7 +378,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(0, models\User::count());
-        $this->assertResponse($response, 400, 'The address email is invalid');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The address email is invalid');
     }
 
     public function testCreateFailsIfEmailAlreadyExistsAndValidated()
@@ -393,7 +398,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\User::count());
-        $this->assertResponse($response, 400, 'An account already exists with this email address');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'An account already exists with this email address');
     }
 
     public function testCreateFailsIfPasswordIsMissing()
@@ -405,7 +411,8 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(0, models\User::count());
-        $this->assertResponse($response, 400, 'The password is required');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The password is required');
     }
 
     public function testCreateFailsIfAcceptTermsIsFalseAndTermsExist()
@@ -424,6 +431,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         @unlink($terms_path);
         $this->assertSame(0, models\User::count());
-        $this->assertResponse($response, 400, 'You must accept the terms of service');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'You must accept the terms of service');
     }
 }

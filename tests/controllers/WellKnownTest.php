@@ -11,6 +11,6 @@ class WellKnownTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/.well-known/change-password');
 
-        $this->assertResponse($response, 302, '/my/security');
+        $this->assertResponseCode($response, 302, '/my/security');
     }
 }

@@ -7,9 +7,9 @@ use flusio\models;
 class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
+    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
-    use \tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -24,9 +24,8 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('cli', '/features');
 
-        $this->assertResponse($response, 200);
-        $output = $response->render();
-        $this->assertSame('beta', $output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'beta');
     }
 
     public function testFlagsRendersCorrectly()
@@ -42,18 +41,16 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/features/flags');
 
-        $this->assertResponse($response, 200);
-        $output = $response->render();
-        $this->assertSame("beta {$user_id} {$email}", $output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "beta {$user_id} {$email}");
     }
 
     public function testFlagsDisplaysIfNoFeatureFlags()
     {
         $response = $this->appRun('cli', '/features/flags');
 
-        $this->assertResponse($response, 200);
-        $output = $response->render();
-        $this->assertSame('No feature flags', $output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'No feature flags');
     }
 
     public function testEnableCreatesAFeatureFlagAndRendersCorrectly()
@@ -70,7 +67,8 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user_id,
         ]);
 
-        $this->assertResponse($response, 200, "beta is enabled for user {$user_id} ({$email})");
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "beta is enabled for user {$user_id} ({$email})");
         $this->assertSame(1, models\FeatureFlag::count());
     }
 
@@ -86,7 +84,8 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user_id,
         ]);
 
-        $this->assertResponse($response, 400, 'not a type is not a valid feature flag type');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseEquals($response, 'not a type is not a valid feature flag type');
         $this->assertSame(0, models\FeatureFlag::count());
     }
 
@@ -97,7 +96,8 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
             'user_id' => 'not an id',
         ]);
 
-        $this->assertResponse($response, 404, 'User not an id doesn’t exist');
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseEquals($response, 'User not an id doesn’t exist');
         $this->assertSame(0, models\FeatureFlag::count());
     }
 
@@ -119,7 +119,8 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user_id,
         ]);
 
-        $this->assertResponse($response, 200, "beta is disabled for user {$user_id} ({$email})");
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "beta is disabled for user {$user_id} ({$email})");
         $this->assertSame(0, models\FeatureFlag::count());
     }
 
@@ -141,7 +142,8 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
             'user_id' => 'not an id',
         ]);
 
-        $this->assertResponse($response, 404, 'User not an id doesn’t exist');
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseEquals($response, 'User not an id doesn’t exist');
         $this->assertSame(1, models\FeatureFlag::count());
     }
 
@@ -159,7 +161,8 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user_id,
         ]);
 
-        $this->assertResponse($response, 400, "Feature flag beta isn’t enabled for user {$user_id}");
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseEquals($response, "Feature flag beta isn’t enabled for user {$user_id}");
         $this->assertSame(0, models\FeatureFlag::count());
     }
 }

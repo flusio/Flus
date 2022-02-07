@@ -8,9 +8,9 @@ use flusio\utils;
 class TopicsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -45,10 +45,9 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/topics');
 
-        $this->assertResponse($response, 200);
-        $output = $response->render();
-        $this->assertStringContainsString($label1, $output);
-        $this->assertStringContainsString($label2, $output);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $label1);
+        $this->assertResponseContains($response, $label2);
     }
 
     public function testCreateCreatesATopicAndRendersCorrectly()
@@ -61,7 +60,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'label' => $label,
         ]);
 
-        $this->assertResponse($response, 200, 'has been created');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'has been created');
         $this->assertSame(1, models\Topic::count());
     }
 
@@ -98,7 +98,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'label' => $label,
         ]);
 
-        $this->assertResponse($response, 400, "The label must be less than {$label_max_size} characters.");
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, "The label must be less than {$label_max_size} characters.");
         $this->assertSame(0, models\Topic::count());
     }
 
@@ -108,7 +109,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'label' => '',
         ]);
 
-        $this->assertResponse($response, 400, "The label is required.");
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, "The label is required.");
         $this->assertSame(0, models\Topic::count());
     }
 
@@ -125,7 +127,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'label' => $new_label,
         ]);
 
-        $this->assertResponse($response, 200, 'has been updated');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'has been updated');
         $topic = models\Topic::find($topic_id);
         $this->assertSame($new_label, $topic->label);
     }
@@ -143,7 +146,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'image_url' => $image_url,
         ]);
 
-        $this->assertResponse($response, 200, 'has been updated');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'has been updated');
         $topic = models\Topic::find($topic_id);
         $image_filename = $topic->image_filename;
         $this->assertNotSame($old_image_filename, $image_filename);
@@ -170,7 +174,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'label' => $new_label,
         ]);
 
-        $this->assertResponse($response, 200, 'has been updated');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'has been updated');
         $topic = models\Topic::find($topic_id);
         $this->assertSame($old_label, $topic->label);
     }
@@ -188,7 +193,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'label' => $new_label,
         ]);
 
-        $this->assertResponse($response, 404, 'Topic id `not an id` does not exist.');
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseEquals($response, 'Topic id `not an id` does not exist.');
         $topic = models\Topic::find($topic_id);
         $this->assertSame($old_label, $topic->label);
     }
@@ -208,7 +214,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'label' => $new_label,
         ]);
 
-        $this->assertResponse($response, 400, "The label must be less than {$label_max_size} characters.");
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, "The label must be less than {$label_max_size} characters.");
         $topic = models\Topic::find($topic_id);
         $this->assertSame($old_label, $topic->label);
     }
@@ -223,7 +230,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'id' => $topic_id,
         ]);
 
-        $this->assertResponse($response, 200, 'has been deleted');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'has been deleted');
         $this->assertSame(0, models\Topic::count());
     }
 
@@ -235,7 +243,8 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
             'id' => 'not an id',
         ]);
 
-        $this->assertResponse($response, 404, 'Topic id `not an id` does not exist.');
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseEquals($response, 'Topic id `not an id` does not exist.');
         $this->assertSame(1, models\Topic::count());
     }
 }

@@ -6,12 +6,12 @@ use flusio\models;
 
 class ImportationsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testDeleteDeletesImportationAndRedirects()
@@ -26,7 +26,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('pocket'),
         ]);
 
-        $this->assertResponse($response, 302, '/collections');
+        $this->assertResponseCode($response, 302, '/collections');
         $this->assertFalse(models\Importation::exists($importation_id));
     }
 
@@ -44,7 +44,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('pocket'),
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fpocket');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket');
         $this->assertTrue(models\Importation::exists($importation_id));
     }
 
@@ -61,7 +61,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('pocket'),
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertTrue(models\Importation::exists($importation_id));
     }
 
@@ -77,7 +77,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('pocket'),
         ]);
 
-        $this->assertResponse($response, 302, '/pocket');
+        $this->assertResponseCode($response, 302, '/pocket');
         $this->assertFlash('error', 'A security verification failed.');
         $this->assertTrue(models\Importation::exists($importation_id));
     }

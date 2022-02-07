@@ -4,9 +4,9 @@ namespace flusio\controllers\my;
 
 class InfoTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -35,7 +35,8 @@ class InfoTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/info.json');
 
-        $this->assertResponse($response, 200, null, [
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/json',
         ]);
         $output = json_decode($response->render(), true);
@@ -48,6 +49,6 @@ class InfoTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('get', '/my/info.json');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Finfo.json');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Finfo.json');
     }
 }

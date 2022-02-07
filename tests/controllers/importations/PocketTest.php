@@ -43,8 +43,9 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/pocket');
 
-        $this->assertResponse($response, 200, 'Importation from Pocket');
-        $this->assertPointer($response, 'importations/pocket/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Importation from Pocket');
+        $this->assertResponsePointer($response, 'importations/pocket/show.phtml');
     }
 
     public function testShowIfImportationIsOngoing()
@@ -58,7 +59,8 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/pocket');
 
-        $this->assertResponse($response, 200, 'We’re importing your data from Pocket');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'We’re importing your data from Pocket');
     }
 
     public function testShowIfImportationIsFinished()
@@ -72,7 +74,8 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/pocket');
 
-        $this->assertResponse($response, 200, 'We’ve imported your data from Pocket.');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'We’ve imported your data from Pocket.');
     }
 
     public function testShowIfImportationIsInError()
@@ -88,14 +91,15 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/pocket');
 
-        $this->assertResponse($response, 200, $error);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $error);
     }
 
     public function testShowRedirectsToLoginIfNotConnected()
     {
         $response = $this->appRun('get', '/pocket');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fpocket');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket');
     }
 
     public function testShowFailsIfPocketNotConfigured()
@@ -105,7 +109,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/pocket');
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testImportRegistersAPocketImportatorJobAndRedirects()
@@ -151,7 +155,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fpocket');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -171,7 +175,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -190,7 +194,8 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, 'You didn’t authorize us to access your Pocket data');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'You didn’t authorize us to access your Pocket data');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -209,7 +214,8 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -232,7 +238,8 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, 'You already have an ongoing Pocket importation');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'You already have an ongoing Pocket importation');
         $this->assertSame(1, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -274,7 +281,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'a token',
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fpocket');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket');
         $user = models\User::find($user_id);
         $this->assertNull($user->pocket_request_token);
     }
@@ -289,7 +296,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 302, '/pocket');
+        $this->assertResponseCode($response, 302, '/pocket');
         $this->assertFlash('error', 'A security verification failed.');
         $user = models\User::find($user->id);
         $this->assertNull($user->pocket_request_token);
@@ -306,7 +313,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $user = models\User::find($user->id);
         $this->assertNull($user->pocket_request_token);
     }
@@ -319,15 +326,16 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/pocket/auth');
 
-        $this->assertResponse($response, 200, 'Please wait while we’re verifying access to Pocket');
-        $this->assertPointer($response, 'importations/pocket/authorization.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Please wait while we’re verifying access to Pocket');
+        $this->assertResponsePointer($response, 'importations/pocket/authorization.phtml');
     }
 
     public function testAuthorizationRedirectsToLoginIfNotConnected()
     {
         $response = $this->appRun('get', '/pocket/auth');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fpocket%2Fauth');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket%2Fauth');
     }
 
     public function testAuthorizationRedirectsIfUserHasNoRequestToken()
@@ -338,7 +346,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/pocket/auth');
 
-        $this->assertResponse($response, 302, '/pocket');
+        $this->assertResponseCode($response, 302, '/pocket');
     }
 
     public function testAuthorizationFailsIfPocketNotConfigured()
@@ -350,7 +358,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/pocket/auth');
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testAuthorizeRedirectsToLoginIfNotConnected()
@@ -363,7 +371,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'some token',
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fpocket%2Fauth');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket%2Fauth');
     }
 
     public function testAuthorizeRedirectsIfUserHasNoRequestToken()
@@ -376,7 +384,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 302, '/pocket');
+        $this->assertResponseCode($response, 302, '/pocket');
     }
 
     public function testAuthorizeFailsIfPocketNotConfigured()
@@ -390,7 +398,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testAuthorizeFailsIfCsrfIsInvalid()
@@ -403,6 +411,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
     }
 }

@@ -39,8 +39,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'my/account/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'my/account/show.phtml');
     }
 
     public function testShowRendersIfSubscriptionIsNotOverdue()
@@ -54,7 +54,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account');
 
-        $this->assertResponse($response, 200, 'Your subscription will expire on');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Your subscription will expire on');
     }
 
     public function testShowRendersIfSubscriptionIsOverdue()
@@ -68,7 +69,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account');
 
-        $this->assertResponse($response, 200, 'Your subscription expired on');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Your subscription expired on');
     }
 
     public function testShowRendersIfSubscriptionIsExempted()
@@ -82,7 +84,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account');
 
-        $this->assertResponse($response, 200, 'You have a <strong>free subscription</strong>');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'You have a <strong>free subscription</strong>');
     }
 
     public function testShowRendersIfUserHasNoSubscriptionAccountId()
@@ -96,7 +99,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account');
 
-        $this->assertResponse($response, 200, 'Create your payment account');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Create your payment account');
     }
 
     public function testShowRendersIfUserIsNotValidated()
@@ -111,7 +115,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account');
 
-        $this->assertResponse($response, 200, 'Validate your account');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Validate your account');
     }
 
     public function testShowSyncsExpiredAtIfOverdue()
@@ -145,7 +150,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('get', '/my/account');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
     }
 
     public function testDeletionRendersCorrectly()
@@ -154,15 +159,15 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/my/account/deletion');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'my/account/deletion.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'my/account/deletion.phtml');
     }
 
     public function testDeletionRedirectsToLoginIfUserNotConnected()
     {
         $response = $this->appRun('get', '/my/account/deletion');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fdeletion');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fdeletion');
     }
 
     public function testDeleteRedirectsToLoginAndDeletesTheUser()
@@ -177,7 +182,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 302, '/login');
+        $this->assertResponseCode($response, 302, '/login');
         $this->assertFlash('status', 'user_deleted');
         $this->assertFalse(models\User::exists($user->id));
         $this->assertNull(auth\CurrentUser::get());
@@ -218,7 +223,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fdeletion');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fdeletion');
     }
 
     public function testDeleteDeletesSessionsAssociatedToTheUser()
@@ -250,7 +255,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'password' => 'not the password',
         ]);
 
-        $this->assertResponse($response, 400, 'The password is incorrect.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The password is incorrect.');
         $this->assertTrue(models\User::exists($user->id));
     }
 
@@ -266,7 +272,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertTrue(models\User::exists($user->id));
     }
 
@@ -286,7 +293,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         \Minz\Configuration::$application['demo'] = false;
-        $this->assertResponse($response, 400, 'Sorry but you cannot delete the demo account 😉');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Sorry but you cannot delete the demo account 😉');
         $this->assertTrue(models\User::exists($user->id));
     }
 }

@@ -6,11 +6,11 @@ use flusio\models;
 
 class OnboardingTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
@@ -19,8 +19,8 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/onboarding');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'onboarding/step1.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'onboarding/step1.phtml');
     }
 
     /**
@@ -34,15 +34,15 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
             'step' => $step,
         ]);
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, "onboarding/step{$step}.phtml");
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, "onboarding/step{$step}.phtml");
     }
 
     public function testShowRedirectsIfNotConnected()
     {
         $response = $this->appRun('GET', '/onboarding');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fonboarding');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fonboarding');
     }
 
     /**
@@ -56,7 +56,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
             'step' => $step,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testUpdateLocaleChangeLocaleAndRedirect()
@@ -70,7 +70,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
             'locale' => 'fr_FR',
         ]);
 
-        $this->assertResponse($response, 302, '/onboarding');
+        $this->assertResponseCode($response, 302, '/onboarding');
         $user = models\User::find($user->id);
         $this->assertSame('fr_FR', $user->locale);
     }
@@ -87,7 +87,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
             'locale' => 'fr_FR',
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fonboarding');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fonboarding');
         $user = models\User::find($user_id);
         $this->assertSame('en_GB', $user->locale);
     }
@@ -103,7 +103,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
             'locale' => 'fr_FR',
         ]);
 
-        $this->assertResponse($response, 302, '/onboarding');
+        $this->assertResponseCode($response, 302, '/onboarding');
         $user = models\User::find($user->id);
         $this->assertSame('en_GB', $user->locale);
     }
@@ -119,7 +119,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
             'locale' => 'not a locale',
         ]);
 
-        $this->assertResponse($response, 302, '/onboarding');
+        $this->assertResponseCode($response, 302, '/onboarding');
         $user = models\User::find($user->id);
         $this->assertSame('en_GB', $user->locale);
     }

@@ -54,7 +54,7 @@ class SystemTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('cli', '/system/secret');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
         $output = trim($response->render());
         $this->assertTrue(strlen($output) >= 128);
     }
@@ -68,11 +68,13 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         $response_generator = $this->appRun('cli', '/system/setup');
         $response = $response_generator->current();
 
-        $this->assertResponse($response, 200, 'The system has been initialized.');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'The system has been initialized.');
         $this->assertTrue(file_exists($migration_file));
         $response_generator->next();
         $response = $response_generator->current();
-        $this->assertResponse($response, 200, 'Seeds loaded.');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'Seeds loaded.');
     }
 
     public function testSetupWhenCallingTwice()
@@ -83,7 +85,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         $response_generator = $this->appRun('cli', '/system/setup');
         $response = $response_generator->current();
 
-        $this->assertResponse($response, 200, 'Your system is already up to date.');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'Your system is already up to date.');
     }
 
     public function testSetupWithMigrations()
@@ -95,6 +98,6 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         $response_generator = $this->appRun('cli', '/system/setup');
         $response = $response_generator->current();
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
     }
 }

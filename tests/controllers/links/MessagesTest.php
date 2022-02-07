@@ -6,9 +6,9 @@ use flusio\models;
 
 class MessagesTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -17,7 +17,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('get', '/links/an_id/messages');
 
-        $this->assertResponse($response, 302, '/links/an_id');
+        $this->assertResponseCode($response, 302, '/links/an_id');
     }
 
     public function testCreateCreatesMessageAndRedirects()
@@ -37,7 +37,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'content' => $content,
         ]);
 
-        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertResponseCode($response, 302, "/links/{$link_id}");
         $this->assertSame(1, models\Message::count());
         $message = models\Message::take();
         $this->assertSame($content, $message->content);
@@ -61,7 +61,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'content' => $content,
         ]);
 
-        $this->assertResponse($response, 302, "/links/{$link_id}");
+        $this->assertResponseCode($response, 302, "/links/{$link_id}");
         $this->assertSame(0, models\Message::count());
     }
 
@@ -82,7 +82,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'content' => $content,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertSame(0, models\Message::count());
     }
 
@@ -103,7 +103,8 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'content' => $content,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Message::count());
     }
 
@@ -124,7 +125,8 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'content' => $content,
         ]);
 
-        $this->assertResponse($response, 400, 'The message is required');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The message is required');
         $this->assertSame(0, models\Message::count());
     }
 }

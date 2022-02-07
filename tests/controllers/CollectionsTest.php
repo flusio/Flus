@@ -6,12 +6,12 @@ use flusio\models;
 
 class CollectionsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testIndexRendersCorrectly()
@@ -32,11 +32,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/collections');
 
-        $this->assertResponse($response, 200);
-        $response_output = $response->render();
-        $this->assertStringContainsString($collection_name_1, $response_output);
-        $this->assertStringContainsString($collection_name_2, $response_output);
-        $this->assertPointer($response, 'collections/index.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $collection_name_1);
+        $this->assertResponseContains($response, $collection_name_2);
+        $this->assertResponsePointer($response, 'collections/index.phtml');
     }
 
     public function testIndexRendersFollowedCollections()
@@ -57,8 +56,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/collections');
 
-        $response_output = $response->render();
-        $this->assertStringContainsString($collection_name, $response_output);
+        $this->assertResponseContains($response, $collection_name);
     }
 
     public function testIndexDoesNotRenderFollowedCollectionsIfNotPublic()
@@ -81,15 +79,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/collections');
 
-        $response_output = $response->render();
-        $this->assertStringNotContainsString($collection_name, $response_output);
+        $this->assertResponseNotContains($response, $collection_name);
     }
 
     public function testIndexRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/collections');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fcollections');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fcollections');
     }
 
     public function testNewRendersCorrectly()
@@ -98,8 +95,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/collections/new');
 
-        $this->assertResponse($response, 200, 'New collection');
-        $this->assertPointer($response, 'collections/new.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'New collection');
+        $this->assertResponsePointer($response, 'collections/new.phtml');
     }
 
     public function testNewRendersTopics()
@@ -112,14 +110,15 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/collections/new');
 
-        $this->assertResponse($response, 200, $label);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $label);
     }
 
     public function testNewRedirectsIfNotConnected()
     {
         $response = $this->appRun('get', '/collections/new');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fcollections%2Fnew');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fcollections%2Fnew');
     }
 
     public function testCreateCreatesCollectionAndRedirects()
@@ -138,7 +137,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Collection::count());
         $collection = models\Collection::take();
-        $this->assertResponse($response, 302, "/collections/{$collection->id}");
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
         $this->assertSame($name, $collection->name);
         $this->assertSame($description, $collection->description);
         $this->assertFalse($collection->is_public);
@@ -190,7 +189,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'description' => $description,
         ]);
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fcollections%2Fnew');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fcollections%2Fnew');
         $this->assertSame(0, models\Collection::count());
     }
 
@@ -206,7 +205,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'description' => $description,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Collection::count());
     }
 
@@ -222,7 +222,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'description' => $description,
         ]);
 
-        $this->assertResponse($response, 400, 'The name must be less than 100 characters');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The name must be less than 100 characters');
         $this->assertSame(0, models\Collection::count());
     }
 
@@ -236,7 +237,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'description' => $description,
         ]);
 
-        $this->assertResponse($response, 400, 'The name is required');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The name is required');
         $this->assertSame(0, models\Collection::count());
     }
 
@@ -254,7 +256,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'topic_ids' => ['not an id'],
         ]);
 
-        $this->assertResponse($response, 400, 'One of the associated topic doesn’t exist.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'One of the associated topic doesn’t exist.');
         $this->assertSame(0, models\Collection::count());
     }
 
@@ -278,8 +281,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/collections/{$collection_id}");
 
-        $this->assertResponse($response, 200, $link_title);
-        $this->assertPointer($response, 'collections/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponsePointer($response, 'collections/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfPublicAndNotConnected()
@@ -303,8 +307,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/collections/{$collection_id}");
 
-        $this->assertResponse($response, 200, $link_title);
-        $this->assertPointer($response, 'collections/show_public.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponsePointer($response, 'collections/show_public.phtml');
     }
 
     public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink()
@@ -329,8 +334,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/collections/{$collection_id}");
 
-        $this->assertResponse($response, 200, $link_title);
-        $this->assertPointer($response, 'collections/show_public.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponsePointer($response, 'collections/show_public.phtml');
     }
 
     public function testShowHidesHiddenLinksInPublicCollections()
@@ -354,7 +360,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/collections/{$collection_id}");
 
-        $this->assertStringNotContainsString($link_title, $response->render());
+        $this->assertResponseNotContains($response, $link_title);
     }
 
     public function testShowRedirectsIfPageIsOutOfBound()
@@ -379,7 +385,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'page' => 0,
         ]);
 
-        $this->assertResponse($response, 302, "/collections/{$collection_id}?page=1");
+        $this->assertResponseCode($response, 302, "/collections/{$collection_id}?page=1");
     }
 
     public function testShowRedirectsIfPrivateAndNotConnected()
@@ -393,7 +399,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', "/collections/{$collection_id}");
 
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}");
     }
 
     public function testShowFailsIfCollectionDoesNotExist()
@@ -402,7 +408,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/collections/unknown');
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testEditRendersCorrectly()
@@ -418,8 +424,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'collections/edit.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'collections/edit.phtml');
     }
 
     public function testEditRedirectsIfNotConnected()
@@ -436,7 +442,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $from_encoded = urlencode($from);
-        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
     public function testEditFailsIfCollectionDoesNotExist()
@@ -447,7 +453,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('collections'),
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testEditFailsIfCollectionIsNotOwnedByCurrentUser()
@@ -464,7 +470,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testEditFailsIfCollectionIsNotOfCorrectType()
@@ -480,7 +486,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testUpdateUpdatesCollectionAndRedirects()
@@ -509,7 +515,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 302, $from);
+        $this->assertResponseCode($response, 302, $from);
         $collection = models\Collection::take();
         $this->assertSame($new_name, $collection->name);
         $this->assertSame($new_description, $collection->description);
@@ -571,7 +577,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $from_encoded = urlencode($from);
-        $this->assertResponse($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
         $collection = models\Collection::take();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
@@ -599,7 +605,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $collection = models\Collection::take();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
@@ -627,7 +634,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'The name must be less than 100 characters');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The name must be less than 100 characters');
         $collection = models\Collection::take();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
@@ -655,7 +663,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'The name is required');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The name is required');
         $collection = models\Collection::take();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
@@ -687,7 +696,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 400, 'One of the associated topic doesn’t exist.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'One of the associated topic doesn’t exist.');
         $collection = models\Collection::find($collection_id);
         $topic_ids = array_column($collection->topics(), 'id');
         $this->assertSame([$old_topic_id], $topic_ids);
@@ -706,7 +716,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('collections'),
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testUpdateFailsIfCollectionIsNotOwnedByCurrentUser()
@@ -732,7 +742,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $collection = models\Collection::take();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
@@ -760,7 +770,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $collection = models\Collection::take();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
@@ -779,7 +789,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponse($response, 302, '/collections');
+        $this->assertResponseCode($response, 302, '/collections');
         $this->assertFalse(models\Collection::exists($collection_id));
     }
 
@@ -796,7 +806,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponse($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}%2Fedit");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}%2Fedit");
         $this->assertTrue(models\Collection::exists($collection_id));
     }
 
@@ -813,7 +823,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertTrue(models\Collection::exists($collection_id));
     }
 
@@ -831,7 +841,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertTrue(models\Collection::exists($collection_id));
     }
 
@@ -848,7 +858,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $this->assertTrue(models\Collection::exists($collection_id));
     }
 
@@ -865,7 +875,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponse($response, 302, "/collections/{$collection_id}/edit");
+        $this->assertResponseCode($response, 302, "/collections/{$collection_id}/edit");
         $this->assertTrue(models\Collection::exists($collection_id));
         $this->assertFlash('error', 'A security verification failed.');
     }

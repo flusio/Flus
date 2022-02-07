@@ -4,9 +4,9 @@ namespace flusio;
 
 class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
@@ -89,7 +89,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $application = new Application();
         $response = $application->run($request);
 
-        $this->assertResponse($response, 302, '/my/account/validation');
+        $this->assertResponseCode($response, 302, '/my/account/validation');
     }
 
     public function testRunRedirectsIfUserSubscriptionIsOverdue()
@@ -106,7 +106,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
 
-        $this->assertResponse($response, 302, '/my/account');
+        $this->assertResponseCode($response, 302, '/my/account');
     }
 
     public function testRunLogoutAndRedirectsIfConnectedWithSupportUser()
@@ -119,7 +119,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $application = new Application();
         $response = $application->run($request);
 
-        $this->assertResponse($response, 302, '/login');
+        $this->assertResponseCode($response, 302, '/login');
         $current_user = auth\CurrentUser::get();
         $this->assertNull($current_user);
     }

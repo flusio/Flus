@@ -12,8 +12,8 @@ class AssetsTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('get', '/src/assets/javascripts/application.js');
 
-        $this->assertResponse($response, 200);
-        $this->assertHeaders($response, [
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
             'Content-Type' => 'text/javascript',
         ]);
     }
@@ -22,13 +22,15 @@ class AssetsTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('get', '/src/assets/dont_exist.js');
 
-        $this->assertResponse($response, 404, 'This file doesn’t exist.');
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseEquals($response, 'This file doesn’t exist.');
     }
 
     public function testShowReturns404IfFileCannotBeAccessed()
     {
         $response = $this->appRun('get', '/src/assets/../Application.php');
 
-        $this->assertResponse($response, 404, 'You’ll not get this file!');
+        $this->assertResponseCode($response, 404);
+        $this->assertResponseEquals($response, 'You’ll not get this file!');
     }
 }

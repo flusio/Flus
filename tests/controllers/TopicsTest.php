@@ -7,9 +7,9 @@ use flusio\models;
 class TopicsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
@@ -41,7 +41,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $topic_label);
         $this->assertResponseContains($response, $collection_name);
-        $this->assertPointer($response, 'topics/show.phtml');
+        $this->assertResponsePointer($response, 'topics/show.phtml');
     }
 
     public function testShowDoesNotListCollectionsIfEmpty()

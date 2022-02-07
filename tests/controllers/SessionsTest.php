@@ -7,21 +7,22 @@ use flusio\models;
 
 class SessionsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \tests\FlashAsserts;
-    use \Minz\Tests\FactoriesHelper;
-    use \Minz\Tests\TimeHelper;
     use \tests\InitializerHelper;
+    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
 
     public function testNewRendersCorrectly()
     {
         $response = $this->appRun('get', '/login');
 
-        $this->assertResponse($response, 200, 'Login');
-        $this->assertPointer($response, 'sessions/new.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Login');
+        $this->assertResponsePointer($response, 'sessions/new.phtml');
     }
 
     public function testNewRedirectsToHomeIfConnected()
@@ -30,7 +31,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/login');
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
     }
 
     public function testNewRedirectsToRedirectToIfConnectedAndParamIsPassed()
@@ -41,7 +42,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'redirect_to' => '/about',
         ]);
 
-        $this->assertResponse($response, 302, '/about');
+        $this->assertResponseCode($response, 302, '/about');
     }
 
     public function testNewShowsDemoCredentialsIfDemo()
@@ -51,7 +52,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', '/login');
 
         \Minz\Configuration::$application['demo'] = false;
-        $this->assertResponse($response, 200, 'demo@flus.io');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'demo@flus.io');
     }
 
     public function testCreateLogsTheUserInAndRedirectToHome()
@@ -72,7 +74,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $user = auth\CurrentUser::get();
         $this->assertSame($user_id, $user->id);
     }
@@ -149,7 +151,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame($number_tokens, models\Session::count());
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
     }
 
     public function testCreateRedirectsToRedirectTo()
@@ -168,7 +170,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'redirect_to' => '/about',
         ]);
 
-        $this->assertResponse($response, 302, '/about');
+        $this->assertResponseCode($response, 302, '/about');
     }
 
     public function testCreateIsCaseInsensitive()
@@ -189,7 +191,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $user = auth\CurrentUser::get();
         $this->assertSame($user_id, $user->id);
     }
@@ -210,7 +212,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Session::count());
     }
 
@@ -229,7 +232,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 400, 'We can’t find any account with this email address');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'We can’t find any account with this email address');
         $this->assertSame(0, models\Session::count());
     }
 
@@ -248,7 +252,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        $this->assertResponse($response, 400, 'What are you trying to do? You can’t login to the support account.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'What are you trying to do? You can’t login to the support account.');
         $this->assertSame(0, models\Session::count());
     }
 
@@ -267,7 +272,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => 'not the password',
         ]);
 
-        $this->assertResponse($response, 400, 'The password is incorrect');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The password is incorrect');
         $this->assertSame(0, models\Session::count());
     }
 
@@ -281,7 +287,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(0, models\Session::count());
         $this->assertNull(auth\CurrentUser::get());
     }
@@ -309,7 +315,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'csrf' => \Minz\CSRF::generate(),
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
@@ -320,7 +326,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFlash('error', 'A security verification failed.');
         $this->assertSame(1, models\Session::count());
     }
@@ -334,7 +340,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'fr_FR',
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame('fr_FR', $_SESSION['locale']);
     }
 
@@ -346,7 +352,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'redirect_to' => '/registration',
         ]);
 
-        $this->assertResponse($response, 302, '/registration');
+        $this->assertResponseCode($response, 302, '/registration');
     }
 
     public function testChangeLocaleWithWrongCsrfDoesntSetsSessionLocale()
@@ -356,7 +362,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'fr_FR',
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertArrayNotHasKey('locale', $_SESSION);
     }
 
@@ -367,7 +373,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'locale' => 'zu',
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertArrayNotHasKey('locale', $_SESSION);
     }
 }

@@ -5,6 +5,7 @@ namespace flusio\cli;
 class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\InitializerHelper;
+    use \Minz\Tests\ResponseAsserts;
 
     public function testRunDoesntFail()
     {
@@ -13,6 +14,6 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $application = new Application();
         $response = $application->run($request);
 
-        $this->assertSame(200, $response->code());
+        $this->assertResponseCode($response, 200);
     }
 }

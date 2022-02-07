@@ -7,9 +7,9 @@ use flusio\models;
 class OpmlTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
+    use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \tests\InitializerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\FilesHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -20,8 +20,9 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/opml');
 
-        $this->assertResponse($response, 200, 'Importation from an OPML file');
-        $this->assertPointer($response, 'importations/opml/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Importation from an OPML file');
+        $this->assertResponsePointer($response, 'importations/opml/show.phtml');
     }
 
     public function testShowRendersIfImportationIsOngoing()
@@ -35,7 +36,8 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/opml');
 
-        $this->assertResponse($response, 200, 'We’re importing your data');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'We’re importing your data');
     }
 
     public function testShowRendersIfImportationIsFinished()
@@ -49,7 +51,8 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/opml');
 
-        $this->assertResponse($response, 200, 'We’ve imported your data from your <abbr>OPML</abbr> file.');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'We’ve imported your data from your <abbr>OPML</abbr> file.');
     }
 
     public function testShowRendersIfImportationIsInError()
@@ -65,14 +68,15 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('get', '/opml');
 
-        $this->assertResponse($response, 200, $error);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $error);
     }
 
     public function testShowRedirectsToLoginIfNotConnected()
     {
         $response = $this->appRun('get', '/opml');
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fopml');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fopml');
     }
 
     public function testImportRegistersAnOpmlImportatorJobAndRedirects()
@@ -148,7 +152,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 302, '/login?redirect_to=%2Fopml');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fopml');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -176,7 +180,8 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, 'You already have an ongoing OPML importation');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'You already have an ongoing OPML importation');
         $this->assertSame(1, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -203,7 +208,8 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, 'A security verification failed');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -229,7 +235,8 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, 'The file is required');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The file is required');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -256,7 +263,8 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, 'This file is too large');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'This file is too large');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -283,7 +291,8 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, "This file cannot be uploaded (error {$error}).");
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, "This file cannot be uploaded (error {$error}).");
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
@@ -308,7 +317,8 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
-        $this->assertResponse($response, 400, 'This file cannot be uploaded (error -1).');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'This file cannot be uploaded (error -1).');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, $job_dao->count());
     }
