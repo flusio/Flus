@@ -65,11 +65,7 @@
                     </span>
                 <?php endif; ?>
 
-                <?php if ($beta_enabled): ?>
-                    <?= _f('created by <a href="%s">you</a>', url('profile', ['id' => $current_user->id])) ?>
-                <?php else: ?>
-                    <?= _f('created by you') ?>
-                <?php endif; ?>
+                <?= _f('created by <a href="%s">you</a>', url('profile', ['id' => $current_user->id])) ?>
             </p>
         </div>
 

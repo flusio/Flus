@@ -86,7 +86,9 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $collection_url = \Minz\Url::for('collection', ['id' => $collection_id]);
         $collection_anchor = "<a class=\"anchor--hidden\" href=\"{$collection_url}\">{$collection_name}</a>";
-        $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong> by {$username}");
+        $profile_url = \Minz\Url::for('profile', ['id' => $other_user_id]);
+        $profile_anchor = "<a class=\"anchor--hidden\" href=\"{$profile_url}\">{$username}</a>";
+        $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong> by {$profile_anchor}");
     }
 
     public function testIndexRendersTipsIfNoNewsFlash()

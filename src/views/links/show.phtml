@@ -55,23 +55,15 @@
             <article class="message" id="message-<?= $message->id ?>">
                 <header class="message__header header">
                     <div class="header__container header__container--centered">
-                        <?php if ($beta_enabled): ?>
-                            <a tabindex="-1" href="<?= url('profile', ['id' => $user->id]) ?>">
-                                <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
-                            </a>
-
-                            <div class="message__author">
-                                <a class="anchor--hidden" href="<?= url('profile', ['id' => $user->id]) ?>">
-                                    <?= protect($user->username) ?>
-                                </a>
-                            </div>
-                        <?php else: ?>
+                        <a tabindex="-1" href="<?= url('profile', ['id' => $user->id]) ?>">
                             <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+                        </a>
 
-                            <div class="message__author">
+                        <div class="message__author">
+                            <a class="anchor--hidden" href="<?= url('profile', ['id' => $user->id]) ?>">
                                 <?= protect($user->username) ?>
-                            </div>
-                        <?php endif; ?>
+                            </a>
+                        </div>
 
                         <div class="header__separator"></div>
 
