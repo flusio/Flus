@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="canonical" href="<?= $canonical ?>">
 
-        <?php if ($feed): ?>
-            <link rel="alternate" type="application/atom+xml" title="<?= protect($feed['title']) ?>" href="<?= $feed['url'] ?>" />
-        <?php endif; ?>
+        <?php foreach ($alternates as $alternate): ?>
+            <link rel="alternate" type="<?= $alternate['type'] ?>" title="<?= protect($alternate['title']) ?>" href="<?= $alternate['url'] ?>" />
+        <?php endforeach; ?>
 
         <meta name="application-name" content="<?= $brand ?>">
         <meta name="theme-color" content="#00d0ad">

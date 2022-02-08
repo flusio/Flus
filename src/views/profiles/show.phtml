@@ -13,9 +13,17 @@
         'title' => $user->username,
         'canonical' => url_full('profile', ['id' => $user->id]),
         'current_page' => $is_current_user_profile ? 'profile' : '',
-        'feed' => [
-            'url' => url_full('profile feed', ['id' => $user->id]),
-            'title' => _f('Syndication feed of %s', $user->username),
+        'alternates' => [
+            [
+                'type' => 'application/atom+xml',
+                'url' => url_full('profile feed', ['id' => $user->id]),
+                'title' => _f('Syndication feed of %s', $user->username),
+            ],
+            [
+                'type' => 'text/x-opml',
+                'url' => url_full('profile opml', ['id' => $user->id]),
+                'title' => _f('Collections OPML of %s', $user->username),
+            ],
         ],
         'open_graph' => $open_graph,
     ]);

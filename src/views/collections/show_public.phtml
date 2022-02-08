@@ -10,6 +10,7 @@
         ];
 
         $feed = [
+            'type' => 'application/atom+xml',
             'url' => $collection->feed_url,
             'title' => _f('Syndication feed of %s', $collection->name),
         ];
@@ -22,6 +23,7 @@
         ];
 
         $feed = [
+            'type' => 'application/atom+xml',
             'url' => url_full('collection feed', ['id' => $collection->id]),
             'title' => _f('Syndication feed of %s', $collection->name),
         ];
@@ -50,7 +52,7 @@
         'title' => $collection->name,
         'canonical' => url_full('collection', $current_url_params),
         'current_tab' => $current_tab,
-        'feed' => $feed,
+        'alternates' => [$feed],
         'open_graph' => $open_graph,
     ]);
 ?>

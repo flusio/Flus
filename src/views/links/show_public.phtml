@@ -13,9 +13,12 @@
     $this->layout('base.phtml', [
         'title' => $link->title,
         'canonical' => url_full('link', ['id' => $link->id]),
-        'feed' => [
-            'url' => url_full('link feed', ['id' => $link->id]),
-            'title' => _f('Syndication feed of comments on %s', $link->title),
+        'alternates' => [
+            [
+                'type' => 'application/atom+xml',
+                'url' => url_full('link feed', ['id' => $link->id]),
+                'title' => _f('Syndication feed of comments on %s', $link->title),
+            ],
         ],
         'open_graph' => $open_graph,
     ]);
