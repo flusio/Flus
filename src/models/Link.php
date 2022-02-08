@@ -90,6 +90,16 @@ class Link extends \Minz\Model
             'type' => 'string',
         ],
 
+        'via_news_type' => [
+            'type' => 'string',
+            'computed' => true,
+        ],
+
+        'via_news_collection_id' => [
+            'type' => 'string',
+            'computed' => true,
+        ],
+
         'published_at' => [
             'type' => 'datetime',
             'computed' => true,

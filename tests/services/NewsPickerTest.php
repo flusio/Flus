@@ -47,7 +47,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('bookmarks', $db_links[0]['via_type']);
+        $this->assertSame('bookmarks', $db_links[0]['via_news_type']);
     }
 
     public function testPickSelectsFromFollowed()
@@ -82,8 +82,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('followed', $db_links[0]['via_type']);
-        $this->assertSame($collection_id, $db_links[0]['via_collection_id']);
+        $this->assertSame('followed', $db_links[0]['via_news_type']);
+        $this->assertSame($collection_id, $db_links[0]['via_news_collection_id']);
     }
 
     public function testPickRespectsMinDuration()
@@ -192,8 +192,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('followed', $db_links[0]['via_type']);
-        $this->assertSame($collection_id, $db_links[0]['via_collection_id']);
+        $this->assertSame('followed', $db_links[0]['via_news_type']);
+        $this->assertSame($collection_id, $db_links[0]['via_news_collection_id']);
     }
 
     public function testPickDoesNotSelectFromBookmarksIfNotSelected()

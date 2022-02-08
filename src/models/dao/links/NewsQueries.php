@@ -37,7 +37,7 @@ trait NewsQueries
         }
 
         $sql = <<<SQL
-            SELECT l.*, lc.created_at AS published_at, 'bookmarks' AS via_type
+            SELECT l.*, lc.created_at AS published_at, 'bookmarks' AS via_news_type
             FROM links l, collections c, links_to_collections lc
 
             WHERE lc.link_id = l.id
@@ -110,7 +110,7 @@ trait NewsQueries
                 AND lc_exclude.collection_id = c_exclude.id
             )
 
-            SELECT l.*, lc.created_at AS published_at, 'followed' AS via_type, c.id AS via_collection_id
+            SELECT l.*, lc.created_at AS published_at, 'followed' AS via_news_type, c.id AS via_news_collection_id
             FROM links l, collections c, links_to_collections lc, followed_collections fc
 
             WHERE fc.user_id = :user_id

@@ -261,6 +261,57 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_news);
     }
 
+    public function testCreateMemorizesViaIfAleardySet()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $url = $this->fake('url');
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $duration = $this->fake('numberBetween', 0, 9);
+        $via_link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'is_hidden' => 0,
+            'url' => $url,
+        ]);
+        $via_collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $via_link_id,
+            'collection_id' => $via_collection_id,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'reading_time' => $duration,
+            'url' => $url,
+            'via_type' => 'followed',
+            'via_link_id' => $via_link_id,
+            'via_collection_id' => $via_collection_id,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
+        ]);
+
+        $response = $this->appRun('post', '/news', [
+            'csrf' => $user->csrf,
+            'type' => 'short',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $link = models\Link::find($link_id);
+        $this->assertSame('followed', $link->via_type);
+        $this->assertSame($via_link_id, $link->via_link_id);
+        $this->assertSame($via_collection_id, $link->via_collection_id);
+        $link_to_news = models\LinkToCollection::findBy([
+            'link_id' => $link_id,
+            'collection_id' => $news->id,
+        ]);
+        $this->assertNotNull($link_to_news);
+    }
+
     public function testCreateDoesNotDuplicatesLink()
     {
         $user = $this->login();
