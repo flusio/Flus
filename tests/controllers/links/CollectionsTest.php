@@ -116,7 +116,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'What do you think?');
     }
 
-    public function testIndexCopiesNotOwnedAndAccessibleLinks()
+    public function testIndexDoesNotCopyNotOwnedAndAccessibleLinks()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
@@ -148,7 +148,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $url,
         ]);
-        $this->assertNotNull($new_link);
+        $this->assertNull($new_link);
     }
 
     public function testIndexRedirectsIfNotConnected()

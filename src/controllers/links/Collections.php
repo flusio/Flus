@@ -38,16 +38,14 @@ class Collections
         }
 
         $link = models\Link::find($link_id);
-        if (
-            !auth\LinksAccess::canUpdate($user, $link) &&
-            auth\LinksAccess::canView($user, $link)
-        ) {
-            $link = $user->obtainLink($link);
-            if (!$link->created_at) {
-                $link->save();
-            }
-        } elseif (!auth\LinksAccess::canUpdate($user, $link)) {
+        if (!auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
+        }
+
+        if (auth\LinksAccess::canUpdate($user, $link)) {
+            $collection_ids = array_column($link->collections(), 'id');
+        } else {
+            $collection_ids = [];
         }
 
         if ($mode === 'news') {
@@ -56,7 +54,7 @@ class Collections
 
             return Response::ok('links/collections/index_news.phtml', [
                 'link' => $link,
-                'collection_ids' => array_column($link->collections(), 'id'),
+                'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'comment' => '',
                 'from' => $from,
@@ -69,7 +67,7 @@ class Collections
 
             return Response::ok('links/collections/index_adding.phtml', [
                 'link' => $link,
-                'collection_ids' => array_column($link->collections(), 'id'),
+                'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'from' => $from,
             ]);
@@ -81,7 +79,7 @@ class Collections
 
             return Response::ok('links/collections/index.phtml', [
                 'link' => $link,
-                'collection_ids' => array_column($link->collections(), 'id'),
+                'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'from' => $from,
             ]);
@@ -124,15 +122,7 @@ class Collections
         }
 
         $link = models\Link::find($link_id);
-        if (
-            !auth\LinksAccess::canUpdate($user, $link) &&
-            auth\LinksAccess::canView($user, $link)
-        ) {
-            $link = $user->obtainLink($link);
-            if (!$link->created_at) {
-                $link->save();
-            }
-        } elseif (!auth\LinksAccess::canUpdate($user, $link)) {
+        if (!auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -144,6 +134,11 @@ class Collections
         if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
+        }
+
+        if (!auth\LinksAccess::canUpdate($user, $link)) {
+            $link = $user->obtainLink($link);
+            $link->save();
         }
 
         models\LinkToCollection::setCollections($link->id, $new_collection_ids);
