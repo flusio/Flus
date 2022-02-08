@@ -37,6 +37,7 @@ class Application
         \Minz\Url::setRouter($router);
 
         \Minz\Output\View::$extensions_to_content_types['.atom.xml.php'] = 'application/atom+xml';
+        \Minz\Output\View::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
         \Minz\Output\View::$extensions_to_content_types['.turbo_stream.phtml'] = 'text/vnd.turbo-stream.html';
     }
 
