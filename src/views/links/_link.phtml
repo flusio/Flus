@@ -62,7 +62,7 @@
             <p class="card__text news__via">
                 <?php if ($link->via_type === 'bookmarks'): ?>
                     <?= _f('via your <strong><a class="anchor--hidden" href="%s">bookmarks</a></strong>', url('bookmarks')) ?>
-                <?php elseif ($link->via_type === 'followed' && $via_collection): ?>
+                <?php elseif ($via_collection): ?>
                     <?php if ($via_collection->type === 'collection'): ?>
                         <?php $owner = $via_collection->owner(); ?>
                         <?= _f(
@@ -78,12 +78,6 @@
                             url('collection', ['id' => $via_collection->id]),
                             protect($via_collection->name())
                         ) ?>
-                    <?php endif; ?>
-                <?php elseif ($link->via_type === 'followed'): ?>
-                    <?php if ($beta_enabled): ?>
-                        <?= _('via a <strong>followed feed</strong> (deleted)') ?>
-                    <?php else: ?>
-                        <?= _('via a <strong>followed collection</strong> (deleted)') ?>
                     <?php endif; ?>
                 <?php endif; ?>
             </p>

@@ -82,8 +82,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('followed', $db_links[0]['via_news_type']);
-        $this->assertSame($collection_id, $db_links[0]['via_news_collection_id']);
+        $this->assertSame('collection', $db_links[0]['via_news_type']);
+        $this->assertSame($collection_id, $db_links[0]['via_news_resource_id']);
     }
 
     public function testPickRespectsMinDuration()
@@ -192,8 +192,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('followed', $db_links[0]['via_news_type']);
-        $this->assertSame($collection_id, $db_links[0]['via_news_collection_id']);
+        $this->assertSame('collection', $db_links[0]['via_news_type']);
+        $this->assertSame($collection_id, $db_links[0]['via_news_resource_id']);
     }
 
     public function testPickDoesNotSelectFromBookmarksIfNotSelected()

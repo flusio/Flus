@@ -111,8 +111,7 @@ class News
             // bookmarks then)
             if (!$link->via_type) {
                 $link->via_type = $news_link->via_news_type;
-                $link->via_link_id = $news_link->id;
-                $link->via_collection_id = $news_link->via_news_collection_id;
+                $link->via_resource_id = $news_link->via_news_resource_id;
             }
 
             $link->save();

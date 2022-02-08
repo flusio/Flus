@@ -73,8 +73,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $news = $user->news();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
-            'via_type' => 'followed',
-            'via_collection_id' => $collection_id,
+            'via_type' => 'collection',
+            'via_resource_id' => $collection_id,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
@@ -172,7 +172,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/news');
         $link = models\Link::find($link_id);
         $this->assertSame('bookmarks', $link->via_type);
-        $this->assertSame($link->id, $link->via_link_id);
+        $this->assertNull($link->via_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $news->id,
@@ -204,7 +204,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/news');
         $link = models\Link::find($link_id);
         $this->assertSame('bookmarks', $link->via_type);
-        $this->assertSame($link->id, $link->via_link_id);
+        $this->assertNull($link->via_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $news->id,
@@ -251,9 +251,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
         ]);
         $this->assertNotNull($news_link);
-        $this->assertSame('followed', $news_link->via_type);
-        $this->assertSame($collection_id, $news_link->via_collection_id);
-        $this->assertSame($link_id, $news_link->via_link_id);
+        $this->assertSame('collection', $news_link->via_type);
+        $this->assertSame($collection_id, $news_link->via_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $news_link->id,
             'collection_id' => $news->id,
@@ -286,9 +285,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'reading_time' => $duration,
             'url' => $url,
-            'via_type' => 'followed',
-            'via_link_id' => $via_link_id,
-            'via_collection_id' => $via_collection_id,
+            'via_type' => 'collection',
+            'via_resource_id' => $via_collection_id,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
@@ -302,9 +300,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/news');
         $link = models\Link::find($link_id);
-        $this->assertSame('followed', $link->via_type);
-        $this->assertSame($via_link_id, $link->via_link_id);
-        $this->assertSame($via_collection_id, $link->via_collection_id);
+        $this->assertSame('collection', $link->via_type);
+        $this->assertSame($via_collection_id, $link->via_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $news->id,
@@ -398,7 +395,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
         $link = models\Link::find($link_id);
         $this->assertSame('', $link->via_type);
-        $this->assertNull($link->via_link_id);
+        $this->assertNull($link->via_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $news->id,
@@ -431,7 +428,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'A security verification failed');
         $link = models\Link::find($link_id);
         $this->assertSame('', $link->via_type);
-        $this->assertNull($link->via_link_id);
+        $this->assertNull($link->via_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link_id,
             'collection_id' => $news->id,

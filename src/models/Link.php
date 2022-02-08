@@ -82,11 +82,7 @@ class Link extends \Minz\Model
             'type' => 'string',
         ],
 
-        'via_collection_id' => [
-            'type' => 'string',
-        ],
-
-        'via_link_id' => [
+        'via_resource_id' => [
             'type' => 'string',
         ],
 
@@ -95,7 +91,7 @@ class Link extends \Minz\Model
             'computed' => true,
         ],
 
-        'via_news_collection_id' => [
+        'via_news_resource_id' => [
             'type' => 'string',
             'computed' => true,
         ],
@@ -201,10 +197,14 @@ class Link extends \Minz\Model
      */
     public function viaCollection()
     {
-        if (!$this->via_collection_id) {
+        if (
+            $this->via_type !== 'collection' ||
+            !$this->via_resource_id
+        ) {
             return null;
         }
-        return Collection::find($this->via_collection_id);
+
+        return Collection::find($this->via_resource_id);
     }
 
     /**
