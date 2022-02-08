@@ -136,8 +136,6 @@ class Router
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');
         $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
-        $router->addRoute('get', '/links/:id/obtain', 'links/Obtentions#new', 'obtaining link');
-        $router->addRoute('post', '/links/:id/obtain', 'links/Obtentions#create', 'obtain link');
         $router->addRoute('post', '/links/:id/read', 'links/Read#create', 'mark link as read');
         $router->addRoute('post', '/links/:id/read/later', 'links/Read#later', 'read link later');
         $router->addRoute('post', '/links/:id/read/never', 'links/Read#never', 'mark link to never read');

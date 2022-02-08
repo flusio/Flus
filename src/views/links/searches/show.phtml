@@ -1,4 +1,10 @@
 <?php
+    if ($default_link) {
+        $from = url('show search link', ['url' => $default_link->url]);
+    } else {
+        $from = url('show search link');
+    }
+
     $this->layout('base.phtml', [
         'title' => _('New'),
         'canonical' => url_full('show search link'),
@@ -108,7 +114,7 @@
                         <button
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
-                            data-modal-opener-href-value="<?= url('link collections', ['id' => $existing_link->id, 'from' => url('show search link', ['url' => $existing_link->url])]) ?>"
+                            data-modal-opener-href-value="<?= url('link collections', ['id' => $existing_link->id, 'mode' => 'normal', 'from' => $from]) ?>"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                         >
@@ -158,7 +164,7 @@
                         <button
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
-                            data-modal-opener-href-value="<?= url('obtaining link', ['id' => $default_link->id, 'from' => url('show search link', ['url' => $default_link->url])]) ?>"
+                            data-modal-opener-href-value="<?= url('link collections', ['id' => $default_link->id, 'mode' => 'adding', 'from' => $from]) ?>"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                         >
@@ -195,7 +201,7 @@
                         <?php if ($current_user->isFollowing($feed->id)): ?>
                             <form method="post" action="<?= url('unfollow collection', ['id' => $feed->id]) ?>">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                                <input type="hidden" name="from" value="<?= url('show search link', ['url' => $default_link->url]) ?>" />
+                                <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>
                                     <?php if ($beta_enabled): ?>
                                         <?= icon('feed-stop') ?>
@@ -208,7 +214,7 @@
                         <?php else: ?>
                             <form method="post" action="<?= url('follow collection', ['id' => $feed->id]) ?>">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                                <input type="hidden" name="from" value="<?= url('show search link', ['url' => $default_link->url]) ?>" />
+                                <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>
                                     <?php if ($beta_enabled): ?>
                                         <?= icon('feed') ?>
