@@ -163,6 +163,7 @@
             <?= $this->include('links/_link.phtml', [
                 'link' => $link,
                 'from' => url('collection', $current_url_params),
+                'display_via' => $link->via_type !== 'bookmarks',
                 'display_comments' => true,
                 'display_hidden' => $collection->is_public && $link->is_hidden,
                 'display_edit' => true,

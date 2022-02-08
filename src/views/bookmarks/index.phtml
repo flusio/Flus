@@ -36,6 +36,7 @@
             <?= $this->include('links/_link.phtml', [
                 'link' => $link,
                 'from' => url('bookmarks'),
+                'display_via' => $link->via_type !== 'bookmarks',
                 'display_comments' => true,
                 'display_edit' => true,
                 'display_mark_as_read' => true,
