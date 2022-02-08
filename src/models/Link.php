@@ -208,6 +208,21 @@ class Link extends \Minz\Model
     }
 
     /**
+     * @return \flusio\models\User|null
+     */
+    public function viaUser()
+    {
+        if (
+            $this->via_type !== 'user' ||
+            !$this->via_resource_id
+        ) {
+            return null;
+        }
+
+        return User::find($this->via_resource_id);
+    }
+
+    /**
      * Return the list of feeds URLs if any
      *
      * @return string[]

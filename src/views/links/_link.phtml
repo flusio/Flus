@@ -5,10 +5,14 @@
     $display_mark_as_read = $display_mark_as_read ?? false;
     $display_mark_as_unread = $display_mark_as_unread ?? false;
     $display_via = $display_via ?? false;
+    if ($display_via && !$link->via_type) {
+        $display_via = false;
+    }
     $collections_mode = $collections_mode ?? '';
     $secondary_menu_mode = $secondary_menu_mode ?? 'default';
 
     $via_collection = $display_via ? $link->viaCollection() : null;
+    $via_user = $display_via ? $link->viaUser() : null;
 ?>
 
 <div class="card">
@@ -79,6 +83,12 @@
                             protect($via_collection->name())
                         ) ?>
                     <?php endif; ?>
+                <?php elseif ($via_user): ?>
+                    <?= _f(
+                        'via <strong><a class="anchor--hidden" href="%s">%s</a></strong>',
+                        url('profile', ['id' => $via_user->id]),
+                        protect($via_user->username)
+                    ) ?>
                 <?php endif; ?>
             </p>
         <?php endif; ?>
