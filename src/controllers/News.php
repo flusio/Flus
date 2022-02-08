@@ -106,10 +106,14 @@ class News
             $news_link = new models\Link($db_link);
             $link = $user->obtainLink($news_link);
 
-            // Let's update the "via" info which will be used on the news page
-            $link->via_type = $news_link->via_type;
-            $link->via_link_id = $news_link->id;
-            $link->via_collection_id = $news_link->via_collection_id;
+            // If the link has already a via info, we want to keep it (it might
+            // have been get via a followed collection, and put in the
+            // bookmarks then)
+            if (!$link->via_type) {
+                $link->via_type = $news_link->via_news_type;
+                $link->via_resource_id = $news_link->via_news_resource_id;
+            }
+
             $link->save();
 
             // And don't forget to add the link to the news collection!

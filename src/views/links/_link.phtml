@@ -5,10 +5,14 @@
     $display_mark_as_read = $display_mark_as_read ?? false;
     $display_mark_as_unread = $display_mark_as_unread ?? false;
     $display_via = $display_via ?? false;
+    if ($display_via && !$link->via_type) {
+        $display_via = false;
+    }
     $collections_mode = $collections_mode ?? '';
     $secondary_menu_mode = $secondary_menu_mode ?? 'default';
 
     $via_collection = $display_via ? $link->viaCollection() : null;
+    $via_user = $display_via ? $link->viaUser() : null;
 ?>
 
 <div class="card">
@@ -62,7 +66,7 @@
             <p class="card__text news__via">
                 <?php if ($link->via_type === 'bookmarks'): ?>
                     <?= _f('via your <strong><a class="anchor--hidden" href="%s">bookmarks</a></strong>', url('bookmarks')) ?>
-                <?php elseif ($link->via_type === 'followed' && $via_collection): ?>
+                <?php elseif ($via_collection): ?>
                     <?php if ($via_collection->type === 'collection'): ?>
                         <?php $owner = $via_collection->owner(); ?>
                         <?= _f(
@@ -79,12 +83,12 @@
                             protect($via_collection->name())
                         ) ?>
                     <?php endif; ?>
-                <?php elseif ($link->via_type === 'followed'): ?>
-                    <?php if ($beta_enabled): ?>
-                        <?= _('via a <strong>followed feed</strong> (deleted)') ?>
-                    <?php else: ?>
-                        <?= _('via a <strong>followed collection</strong> (deleted)') ?>
-                    <?php endif; ?>
+                <?php elseif ($via_user): ?>
+                    <?= _f(
+                        'via <strong><a class="anchor--hidden" href="%s">%s</a></strong>',
+                        url('profile', ['id' => $via_user->id]),
+                        protect($via_user->username)
+                    ) ?>
                 <?php endif; ?>
             </p>
         <?php endif; ?>

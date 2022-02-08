@@ -387,14 +387,15 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'link_id' => $link_id,
             'collection_id' => $other_collection_id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $other_collection_id]);
 
         $response = $this->appRun('post', "/links/{$link_id}/collections", [
             'csrf' => $user->csrf,
-            'from' => \Minz\Url::for('bookmarks'),
+            'from' => $from,
             'collection_ids' => [$owned_collection_id],
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, $from);
         // The initial link didn't change of collections
         $link_to_other_collection = models\LinkToCollection::findBy([
             'link_id' => $link_id,
@@ -412,6 +413,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
+        $this->assertSame('collection', $new_link->via_type);
+        $this->assertSame($other_collection_id, $new_link->via_resource_id);
         $new_link_to_other_collection = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $other_collection_id,
@@ -545,5 +548,62 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/bookmarks');
         $this->assertFlash('error', 'A security verification failed.');
         $this->assertSame(0, models\LinkToCollection::count());
+    }
+
+    public function testExtractViaFromPathWithExistingCollection()
+    {
+        $controller = new Collections();
+        $collection_id = $this->create('collection');
+        $path = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        list($via_type, $via_resource_id) = $controller->extractViaFromPath($path);
+
+        $this->assertSame('collection', $via_type);
+        $this->assertSame($collection_id, $via_resource_id);
+    }
+
+    public function testExtractViaFromPathWithExistingUser()
+    {
+        $controller = new Collections();
+        $user_id = $this->create('user');
+        $path = \Minz\Url::for('profile', ['id' => $user_id]);
+
+        list($via_type, $via_resource_id) = $controller->extractViaFromPath($path);
+
+        $this->assertSame('user', $via_type);
+        $this->assertSame($user_id, $via_resource_id);
+    }
+
+    public function testExtractViaFromPathWithNonExistingCollection()
+    {
+        $controller = new Collections();
+        $path = \Minz\Url::for('collection', ['id' => '12345']);
+
+        list($via_type, $via_resource_id) = $controller->extractViaFromPath($path);
+
+        $this->assertSame('', $via_type);
+        $this->assertNull($via_resource_id);
+    }
+
+    public function testExtractViaFromPathWithNonExistingUser()
+    {
+        $controller = new Collections();
+        $path = \Minz\Url::for('profile', ['id' => '12345']);
+
+        list($via_type, $via_resource_id) = $controller->extractViaFromPath($path);
+
+        $this->assertSame('', $via_type);
+        $this->assertNull($via_resource_id);
+    }
+
+    public function testExtractViaFromPathWithUnsupportedPath()
+    {
+        $controller = new Collections();
+        $path = \Minz\Url::for('bookmarks');
+
+        list($via_type, $via_resource_id) = $controller->extractViaFromPath($path);
+
+        $this->assertSame('', $via_type);
+        $this->assertNull($via_resource_id);
     }
 }
