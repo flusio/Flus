@@ -7,7 +7,7 @@ CREATE TABLE jobs (
     frequency TEXT NOT NULL DEFAULT '',
     queue TEXT NOT NULL DEFAULT 'default',
     locked_at TIMESTAMPTZ,
-    number_attempts INTEGER NOT NULL DEFAULT 0,
+    number_attempts BIGINT NOT NULL DEFAULT 0,
     last_error TEXT,
     failed_at TIMESTAMPTZ
 );
@@ -88,7 +88,7 @@ CREATE TABLE exportations (
 );
 
 CREATE TABLE fetch_logs (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     url TEXT NOT NULL,
     host TEXT NOT NULL,
@@ -163,7 +163,7 @@ CREATE INDEX idx_links_fetched_at ON links(fetched_at) WHERE fetched_at IS NULL;
 CREATE INDEX idx_links_fetched_code ON links(fetched_code) WHERE fetched_code < 200 OR fetched_code >= 300;
 
 CREATE TABLE links_to_collections (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     link_id TEXT REFERENCES links ON DELETE CASCADE ON UPDATE CASCADE,
     collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
@@ -173,7 +173,7 @@ CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, co
 CREATE INDEX idx_links_to_collections_collection_id ON links_to_collections(collection_id);
 
 CREATE TABLE followed_collections (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     time_filter TEXT NOT NULL DEFAULT 'normal',
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
