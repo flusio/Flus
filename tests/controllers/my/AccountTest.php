@@ -35,11 +35,15 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectly()
     {
-        $this->login();
+        $username = $this->fake('username');
+        $this->login([
+            'username' => $username,
+        ]);
 
         $response = $this->appRun('get', '/my/account');
 
         $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $username);
         $this->assertResponsePointer($response, 'my/account/show.phtml');
     }
 

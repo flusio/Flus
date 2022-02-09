@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-02-08 17:44+0100\n"
-"PO-Revision-Date: 2022-02-08 17:44+0100\n"
+"POT-Creation-Date: 2022-02-09 09:03+0100\n"
+"PO-Revision-Date: 2022-02-09 09:04+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -39,7 +39,7 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:25
-#: views/my/account/deletion.phtml:50 views/my/security/show_confirmed.phtml:79
+#: views/my/account/deletion.phtml:56 views/my/security/show_confirmed.phtml:79
 #: views/my/security/show_to_confirm.phtml:50 views/passwords/edit.phtml:53
 #: views/registrations/new.phtml:107 views/sessions/new.phtml:79
 msgid "Show"
@@ -1537,7 +1537,12 @@ msgstr ""
 msgid "Account deletion"
 msgstr "Suppression du compte"
 
-#: views/my/account/deletion.phtml:14
+#: views/my/account/deletion.phtml:15
+#, php-format
+msgid "You’re connected as %s."
+msgstr "Vous êtes connecté‧e en tant que %s."
+
+#: views/my/account/deletion.phtml:19
 msgid ""
 "You’re about to delete your account and your data will be lost. This can’t "
 "be canceled!"
@@ -1545,11 +1550,11 @@ msgstr ""
 "Vous êtes sur le point de supprimer votre compte : vos données seront alors "
 "perdues. Cette action ne peut pas être annulée !"
 
-#: views/my/account/deletion.phtml:28
+#: views/my/account/deletion.phtml:34
 msgid "Your password"
 msgstr "Votre mot de passe"
 
-#: views/my/account/deletion.phtml:47 views/my/security/show_confirmed.phtml:76
+#: views/my/account/deletion.phtml:53 views/my/security/show_confirmed.phtml:76
 #: views/my/security/show_to_confirm.phtml:47 views/passwords/edit.phtml:50
 #: views/registrations/new.phtml:104 views/sessions/new.phtml:76
 msgid ""
@@ -1558,13 +1563,13 @@ msgstr ""
 "Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
 "mot de passe visuellement."
 
-#: views/my/account/deletion.phtml:62
+#: views/my/account/deletion.phtml:68
 msgid "You must type your password so we can confirm your identity."
 msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/my/account/deletion.phtml:68
+#: views/my/account/deletion.phtml:74
 msgid "Delete your account"
 msgstr "Supprimer votre compte"
 

@@ -10,9 +10,15 @@
         <h1><?= _('Account deletion') ?></h1>
     </div>
 
-    <p class="section__intro">
-        <?= _('You’re about to delete your account and your data will be lost. This can’t be canceled!') ?>
-    </p>
+    <div class="section__intro">
+        <p>
+            <strong><?= _f('You’re connected as %s.', protect($current_user->username)) ?></strong>
+        </p>
+
+        <p>
+            <?= _('You’re about to delete your account and your data will be lost. This can’t be canceled!') ?>
+        </p>
+    </div>
 
     <form method="post" action="<?= url('delete account') ?>">
         <?php if ($error): ?>
