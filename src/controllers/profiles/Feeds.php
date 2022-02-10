@@ -59,8 +59,6 @@ class Feeds
     {
         $user_id = $request->param('id');
         $url = \Minz\Url::for('profile feed', ['id' => $user_id]);
-        $response = new Response(301);
-        $response->setHeader('Location', $url);
-        return $response;
+        return Response::movedPermanently($url);
     }
 }

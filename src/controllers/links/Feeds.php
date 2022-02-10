@@ -55,8 +55,6 @@ class Feeds
     {
         $link_id = $request->param('id');
         $url = \Minz\Url::for('link feed', ['id' => $link_id]);
-        $response = new Response(301);
-        $response->setHeader('Location', $url);
-        return $response;
+        return Response::movedPermanently($url);
     }
 }

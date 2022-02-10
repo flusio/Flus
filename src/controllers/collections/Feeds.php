@@ -64,8 +64,6 @@ class Feeds
     {
         $collection_id = $request->param('id');
         $url = \Minz\Url::for('collection feed', ['id' => $collection_id]);
-        $response = new Response(301);
-        $response->setHeader('Location', $url);
-        return $response;
+        return Response::movedPermanently($url);
     }
 }
