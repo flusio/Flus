@@ -1,5 +1,35 @@
 # Changelog of flusio
 
+## 2022-02-10 - v0.43
+
+### News
+
+- Enable public profiles for all users
+- Allow to get profile collections as OPML file
+
+### Improvements
+
+- Display via info in more contexts
+- Allow to edit a link from profile
+- Display user identity on account deletion
+- Add a `https://` placeholder to "url" inputs
+- Add style to the Atom feeds
+- Examine responses with no content type
+
+### Bug fixes
+
+- Redirect to /links after collection deletion
+- Don't copy link on links/Collections#index
+- Redirect feed of feeds to original feed
+
+### Misc
+
+- Display jobs names and durations
+- Alter some columns to use `BIGINT` type
+- Upgrade Parcel to v2.3.0
+- Ignore `src/views` in lint-fix
+- Use the new subscriptions sync API
+
 ## 2022-01-28 - v0.42
 
 ### News
