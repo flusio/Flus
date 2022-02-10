@@ -98,6 +98,8 @@ class JobsWorker
         $job_class = $handler['job_class'];
         $job_args = $handler['job_args'];
 
+        $time_start = microtime(true);
+
         try {
             $job = new $job_class();
             $job->perform(...$job_args);
@@ -107,12 +109,21 @@ class JobsWorker
             } else {
                 $job_dao->delete($db_job['id']);
             }
+            $error = false;
         } catch (\Exception $exception) {
             $job_dao->fail($db_job['id'], (string)$exception);
-            return Response::text(500, "job#{$db_job['id']}: failed");
+            $error = true;
         }
 
-        return Response::text(200, "job#{$db_job['id']}: done");
+        $time_end = microtime(true);
+        $time = number_format($time_end - $time_start, 3);
+        $job_name = utils\Belt::stripsStart($job_class, 'flusio\\jobs\\');
+
+        if ($error) {
+            return Response::text(500, "job#{$db_job['id']} ({$job_name}): failed (in {$time} seconds)");
+        } else {
+            return Response::text(200, "job#{$db_job['id']} ({$job_name}): done (in {$time} seconds)");
+        }
     }
 
     /**

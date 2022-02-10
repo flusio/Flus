@@ -150,7 +150,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/jobs/run');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "job#{$job_id}: done");
+        $this->assertResponseContains($response, "job#{$job_id} (Mailer): done");
         $this->assertEmailsCount(1);
         $this->assertSame(0, $job_dao->count());
     }
@@ -193,7 +193,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "job#{$job_id_2}: done");
+        $this->assertResponseContains($response, "job#{$job_id_2} (Mailer): done");
         $this->assertSame(1, $job_dao->count());
         $this->assertTrue($job_dao->exists($job_id_1));
     }
@@ -224,7 +224,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "job#{$job_id}: done");
+        $this->assertResponseContains($response, "job#{$job_id} (Mailer): done");
         $this->assertSame(0, $job_dao->count());
     }
 
@@ -322,7 +322,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/jobs/run');
 
         $this->assertResponseCode($response, 500);
-        $this->assertResponseEquals($response, "job#{$job_id}: failed");
+        $this->assertResponseContains($response, "job#{$job_id} (tests\\jobs\\MyFailingJob): failed");
         $this->assertSame(1, $job_dao->count());
         $db_job = $job_dao->find($job_id);
         $expected_perform_at = \Minz\Time::fromNow(5 + pow($number_attempts + 1, 4), 'seconds');
@@ -358,7 +358,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/jobs/run');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "job#{$job_id}: done");
+        $this->assertResponseContains($response, "job#{$job_id} (Mailer): done");
         $this->assertSame(1, $job_dao->count());
         $db_job = $job_dao->find($job_id);
         $perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
@@ -388,7 +388,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/jobs/run');
 
         $this->assertResponseCode($response, 500);
-        $this->assertResponseEquals($response, "job#{$job_id}: failed");
+        $this->assertResponseContains($response, "job#{$job_id} (tests\\jobs\\MyFailingJob): failed");
         $this->assertSame(1, $job_dao->count());
         $db_job = $job_dao->find($job_id);
         $perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
@@ -423,7 +423,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/jobs/run');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "job#{$job_id}: done");
+        $this->assertResponseContains($response, "job#{$job_id} (Mailer): done");
         $this->assertSame(1, $job_dao->count());
         $db_job = $job_dao->find($job_id);
         $perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
@@ -459,7 +459,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/jobs/run');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "job#{$job_id}: done");
+        $this->assertResponseContains($response, "job#{$job_id} (Mailer): done");
         $this->assertSame(1, $job_dao->count());
         $db_job = $job_dao->find($job_id);
         $perform_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $db_job['perform_at']);
@@ -494,7 +494,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('cli', '/jobs/run');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "job#{$job_id}: done");
+        $this->assertResponseContains($response, "job#{$job_id} (Mailer): done");
         $this->assertSame(1, $job_dao->count());
         $db_job = $job_dao->find($job_id);
         $this->assertNull($db_job['failed_at']);
@@ -527,7 +527,7 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "job#{$job_id}: done");
+        $this->assertResponseContains($response, "job#{$job_id} (Mailer): done");
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
