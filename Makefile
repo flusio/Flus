@@ -81,7 +81,7 @@ lint: ## Run the linters on the PHP and JS files
 
 .PHONY: lint-fix
 lint-fix: ## Fix the errors detected by the linters
-	$(PHP) ./vendor/bin/phpcbf --extensions=php --standard=PSR12 ./src ./tests ./lib/SpiderBits
+	$(PHP) ./vendor/bin/phpcbf --extensions=php --ignore=./src/views/ --standard=PSR12 ./src ./tests ./lib/SpiderBits
 	$(NPM) run lint-js-fix
 	$(NPM) run lint-css-fix
 
