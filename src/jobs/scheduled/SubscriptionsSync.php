@@ -59,16 +59,36 @@ class SubscriptionsSync extends jobs\Job
             }
         }
 
-        // Then, synchronize expiration date for users having account expiring
-        // in 2 weeks or less.
-        $before_this_date = \Minz\Time::fromNow(2, 'weeks');
-        $users = models\User::daoToList('listBySubscriptionExpiredAtBefore', $before_this_date);
-        foreach ($users as $user) {
-            $expired_at = $subscriptions_service->expiredAt($user->subscription_account_id);
-            if ($expired_at && $user->subscription_expired_at->getTimestamp() !== $expired_at->getTimestamp()) {
+        // Then, synchronize expiration dates.
+        $users = models\User::listAll();
+        $account_ids_to_users = array_column($users, null, 'subscription_account_id');
+        $account_ids = array_keys($account_ids_to_users);
+
+        $result = $subscriptions_service->sync($account_ids);
+        if ($result === null) {
+            return;
+        }
+
+        foreach ($result as $account_id => $expired_at) {
+            if (!isset($account_ids_to_users[$account_id])) {
+                \Minz\Log::error("Subscription account {$account_id} does not exist.");
+                continue;
+            }
+
+            $user = $account_ids_to_users[$account_id];
+            if ($user->subscription_expired_at != $expired_at) {
                 $user->subscription_expired_at = $expired_at;
                 $user->save();
             }
+        }
+
+        // Finally, reset the account ids if they were not included in the
+        // response. A new account id will be fetched next time.
+        $unknown_account_ids = array_diff($account_ids, array_keys($result));
+        foreach ($unknown_account_ids as $account_id) {
+            $user = $account_ids_to_users[$account_id];
+            $user->subscription_account_id = null;
+            $user->save();
         }
     }
 }

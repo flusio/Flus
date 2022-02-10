@@ -135,4 +135,52 @@ class Subscriptions
             return null;
         }
     }
+
+    /**
+     * Get the expired_at value for the given accounts.
+     *
+     * @param string[] $account_ids
+     *
+     * @return \DateTime[]|null
+     */
+    public function sync($account_ids)
+    {
+        try {
+            $response = $this->http->post($this->host . '/api/accounts/sync', [
+                'account_ids' => $account_ids,
+            ], [
+                'auth_basic' => $this->private_key . ':',
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            \Minz\Log::error("Error while syncing subscriptions: {$e->getMessage()}");
+            return null;
+        }
+
+        if (!$response->success) {
+            \Minz\Log::error("Error while syncing subscriptions: code {$response->status}");
+            return null;
+        }
+
+        $data = json_decode($response->data, true);
+        if (!is_array($data)) {
+            \Minz\Log::error("Error while syncing subscriptions: can’t decode data");
+            return null;
+        }
+
+        $result = [];
+        foreach ($data as $account_id => $expired_at) {
+            $expired_at = date_create_from_format(
+                \Minz\Model::DATETIME_FORMAT,
+                $expired_at
+            );
+
+            if (!$expired_at) {
+                \Minz\Log::error("Error while syncing subscriptions: can’t parse expiration date of {$account_id}");
+                continue;
+            }
+
+            $result[$account_id] = $expired_at;
+        }
+        return $result;
+    }
 }

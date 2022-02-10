@@ -42,19 +42,33 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('+4 hours', $subscriptions_sync_job->frequency);
     }
 
-    public function testSyncUpdatesExpiredAtOfOverdueUsers()
+    public function testInstall()
+    {
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+        $job_dao = new models\dao\Job();
+
+        $this->assertSame(0, $job_dao->count());
+
+        SubscriptionsSync::install();
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertSame(1, $job_dao->count());
+    }
+
+    public function testSyncUpdatesExpiredAt()
     {
         $subscriptions_sync_job = new SubscriptionsSync();
         $account_id = $this->fake('uuid');
-        $old_expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
+        $old_expired_at = $this->fake('dateTime');
         $new_expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/account/expired-at?account_id={$account_id}";
+        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json
 
             {
-                "expired_at": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+                "{$account_id}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
             }
             TEXT
         );
@@ -69,34 +83,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($new_expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncUpdatesExpiredAtOfNearlyOverdueUsers()
-    {
-        $subscriptions_sync_job = new SubscriptionsSync();
-        $account_id = $this->fake('uuid');
-        $old_expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 10), 'days');
-        $new_expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/account/expired-at?account_id={$account_id}";
-        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
-            HTTP/2 200
-            Content-type: application/json
-
-            {
-                "expired_at": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
-            }
-            TEXT
-        );
-        $user_id = $this->create('user', [
-            'subscription_account_id' => $account_id,
-            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
-        ]);
-
-        $subscriptions_sync_job->perform();
-
-        $user = models\User::find($user_id);
-        $this->assertEquals($new_expired_at, $user->subscription_expired_at);
-    }
-
-    public function testSyncUpdatesAccountIdIfMissing()
+    public function testSyncGetsAccountIdIfMissing()
     {
         $subscriptions_sync_job = new SubscriptionsSync();
         $email = $this->fake('email');
@@ -126,66 +113,168 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncIgnoresUsersWithFarExpiredAt()
+    public function testSyncHandlesIfAccountIdFailsBeingGet()
     {
         $subscriptions_sync_job = new SubscriptionsSync();
-        $app_conf = \Minz\Configuration::$application;
-        $subscriptions_service = new services\Subscriptions(
-            $app_conf['subscriptions_host'],
-            $app_conf['subscriptions_private_key']
+        $email = $this->fake('email');
+        $expired_at = $this->fake('dateTime');
+        $subscription_api_url = "https://next.flus.io/api/account?email={$email}";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 400
+            Content-type: application/json
+
+            {"error": "can’t get an id"}
+            TEXT
         );
-        $account = $subscriptions_service->account($this->fake('email'));
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 15, 42), 'days');
         $user_id = $this->create('user', [
-            'subscription_account_id' => $account['id'],
+            'email' => $email,
+            'subscription_account_id' => null,
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
         $subscriptions_sync_job->perform();
 
         $user = models\User::find($user_id);
-        $this->assertSame(
-            $expired_at->getTimestamp(),
-            $user->subscription_expired_at->getTimestamp()
-        );
+        $this->assertNull($user->subscription_account_id);
+        $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncFailsWithInvalidAccountId()
+    public function testSyncResetsUnknownAccountIds()
     {
         $subscriptions_sync_job = new SubscriptionsSync();
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
+        $expired_at = $this->fake('dateTime');
         $user_id = $this->create('user', [
             'subscription_account_id' => 'not-an-id',
             'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
+        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {}
+            TEXT
+        );
 
         $subscriptions_sync_job->perform();
 
         $user = models\User::find($user_id);
-        $this->assertSame(
-            $expired_at->getTimestamp(),
-            $user->subscription_expired_at->getTimestamp()
-        );
+        $this->assertNull($user->subscription_account_id);
+        $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncFailsIfSubscriptionsAreDisabled()
+    public function testSyncIgnoresInvalidExpiredAt()
     {
         $subscriptions_sync_job = new SubscriptionsSync();
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
+        $account_id = $this->fake('uuid');
+        $old_expired_at = $this->fake('dateTime');
+        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "{$account_id}": "not a datetime"
+            }
+            TEXT
+        );
         $user_id = $this->create('user', [
-            // We don't make additional call for a failing test, but this id
-            // should theorically be created on the subscriptions host first.
-            'subscription_account_id' => 'some real id',
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_account_id' => $account_id,
+            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
         $subscriptions_sync_job->perform();
 
         $user = models\User::find($user_id);
-        $this->assertSame(
-            $expired_at->getTimestamp(),
-            $user->subscription_expired_at->getTimestamp()
+        $this->assertEquals($old_expired_at, $user->subscription_expired_at);
+    }
+
+    public function testSyncIgnoresUnexpectedAccountIds()
+    {
+        $subscriptions_sync_job = new SubscriptionsSync();
+        $account_id_1 = $this->fake('uuid');
+        // this account id is unknown to our system but returned by the API, it
+        // should just be ignored.
+        $account_id_2 = $this->fake('uuid');
+        $old_expired_at = $this->fake('dateTime');
+        $new_expired_at = $this->fake('dateTime');
+        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "{$account_id_1}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}",
+                "{$account_id_2}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+            }
+            TEXT
         );
+        $user_id = $this->create('user', [
+            'subscription_account_id' => $account_id_1,
+            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $subscriptions_sync_job->perform();
+
+        $user = models\User::find($user_id);
+        $this->assertEquals($new_expired_at, $user->subscription_expired_at);
+    }
+
+    public function testSyncDoesNothingIfHttpIsInError()
+    {
+        $subscriptions_sync_job = new SubscriptionsSync();
+        $account_id = $this->fake('uuid');
+        $old_expired_at = $this->fake('dateTime');
+        $new_expired_at = $this->fake('dateTime');
+        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 500
+            Content-type: application/json
+
+            {
+                "{$account_id}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+            }
+            TEXT
+        );
+        $user_id = $this->create('user', [
+            'subscription_account_id' => $account_id,
+            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $subscriptions_sync_job->perform();
+
+        $user = models\User::find($user_id);
+        $this->assertEquals($old_expired_at, $user->subscription_expired_at);
+    }
+
+    public function testSyncDoesNothingIfSubscriptionsAreDisabled()
+    {
+        $subscriptions_sync_job = new SubscriptionsSync();
+        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        $subscriptions_sync_job = new SubscriptionsSync();
+        $account_id = $this->fake('uuid');
+        $old_expired_at = $this->fake('dateTime');
+        $new_expired_at = $this->fake('dateTime');
+        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "{$account_id}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+            }
+            TEXT
+        );
+        $user_id = $this->create('user', [
+            'subscription_account_id' => $account_id,
+            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $subscriptions_sync_job->perform();
+
+        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+
+        $user = models\User::find($user_id);
+        $this->assertEquals($old_expired_at, $user->subscription_expired_at);
     }
 }
