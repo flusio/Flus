@@ -20,6 +20,8 @@ class Feeds
      *
      * @response 404
      *     if the collection doesn’t exist or is inaccessible
+     * @response 301 :feed_url
+     *     if the collection is a feed
      * @response 200
      */
     public function show($request)
@@ -30,6 +32,10 @@ class Feeds
 
         if (!auth\CollectionsAccess::canView($user, $collection)) {
             return Response::notFound('not_found.phtml');
+        }
+
+        if ($collection->type === 'feed') {
+            return Response::movedPermanently($collection->feed_url);
         }
 
         $locale = $collection->owner()->locale;

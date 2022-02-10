@@ -59,6 +59,20 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_title);
     }
 
+    public function testShowRedirectsToOriginIfCollectionIsFeed()
+    {
+        $feed_url = $this->fake('url');
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'is_public' => 1,
+            'feed_url' => $feed_url,
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/feed.atom.xml");
+
+        $this->assertResponseCode($response, 301, $feed_url);
+    }
+
     public function testShowFailsIfCollectionIsInaccessible()
     {
         $link_title = $this->fake('words', 3, true);
