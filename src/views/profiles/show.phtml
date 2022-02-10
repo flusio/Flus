@@ -69,6 +69,7 @@
                     'link' => $link,
                     'from' => url('profile', ['id' => $user->id]),
                     'display_comments' => true,
+                    'display_edit' => $is_current_user_profile,
                     'display_mark_as_read' => $current_user && !$link->is_read,
                     'collections_mode' => $is_current_user_profile ? 'managing' : 'adding',
                 ]) ?>
