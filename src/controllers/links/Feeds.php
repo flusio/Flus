@@ -35,11 +35,13 @@ class Feeds
         $locale = $link->owner()->locale;
         utils\Locale::setCurrentLocale($locale);
 
-        return Response::ok('links/feeds/show.atom.xml.php', [
+        $response = Response::ok('links/feeds/show.atom.xml.php', [
             'link' => $link,
             'messages' => $link->messages(),
             'user_agent' => \Minz\Configuration::$application['user_agent'],
         ]);
+        $response->setHeader('X-Content-Type-Options', 'nosniff');
+        return $response;
     }
 
     /**

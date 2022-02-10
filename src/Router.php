@@ -162,6 +162,8 @@ class Router
         $router->addRoute('get', '/feeds/new', 'Feeds#new', 'new feed');
         $router->addRoute('post', '/feeds/new', 'Feeds#create', 'create feed');
 
+        $router->addRoute('get', '/feeds.xsl', 'Feeds#xsl', 'feeds xsl');
+
         // Discovery
         $router->addRoute('get', '/discovery', 'Discovery#show', 'discovery');
 

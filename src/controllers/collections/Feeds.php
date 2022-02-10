@@ -43,12 +43,14 @@ class Feeds
             'limit' => 30,
         ]);
 
-        return Response::ok('collections/feeds/show.atom.xml.php', [
+        $response = Response::ok('collections/feeds/show.atom.xml.php', [
             'collection' => $collection,
             'topics' => $topics,
             'links' => $links,
             'user_agent' => \Minz\Configuration::$application['user_agent'],
         ]);
+        $response->setHeader('X-Content-Type-Options', 'nosniff');
+        return $response;
     }
 
     /**

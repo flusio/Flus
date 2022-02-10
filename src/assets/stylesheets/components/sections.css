@@ -70,6 +70,12 @@
     border-radius: var(--border-radius);
 }
 
+.section__title h1 .icon {
+    margin-right: 1rem;
+
+    vertical-align: middle;
+}
+
 .section__intro {
     max-width: 50ch;
     margin: var(--space-large) auto;

@@ -32,7 +32,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $link_title);
         $this->assertResponsePointer($response, 'collections/feeds/show.atom.xml.php');
         $this->assertResponseHeaders($response, [
-            'Content-Type' => 'application/atom+xml',
+            'Content-Type' => 'application/xml',
+            'X-Content-Type-Options' => 'nosniff',
         ]);
     }
 

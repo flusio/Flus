@@ -39,11 +39,13 @@ class Feeds
             'limit' => 30,
         ]);
 
-        return Response::ok('profiles/feeds/show.atom.xml.php', [
+        $response = Response::ok('profiles/feeds/show.atom.xml.php', [
             'user' => $user,
             'links' => $links,
             'user_agent' => \Minz\Configuration::$application['user_agent'],
         ]);
+        $response->setHeader('X-Content-Type-Options', 'nosniff');
+        return $response;
     }
 
     /**

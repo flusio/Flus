@@ -1,0 +1,15 @@
+.feed h2 {
+    margin-top: var(--space-larger);
+    margin-bottom: var(--space-larger);
+
+    font-family: var(--font-family-title);
+    text-align: center;
+}
+
+.feed__entry + .feed__entry {
+    margin-top: var(--space-large);
+}
+
+.feed__entry h3 {
+    margin-bottom: var(--space-small);
+}

@@ -166,4 +166,14 @@ class Feeds
 
         return Response::redirect('collection', ['id' => $feed->id]);
     }
+
+    /**
+     * Return a XSL file to style the feeds.
+     *
+     * @response 200
+     */
+    public function xsl($request)
+    {
+        return Response::ok('feeds/feeds.xsl.php');
+    }
 }

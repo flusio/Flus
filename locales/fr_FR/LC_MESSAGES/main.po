@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-02-10 10:54+0100\n"
-"PO-Revision-Date: 2022-02-10 10:54+0100\n"
+"POT-Creation-Date: 2022-02-10 15:06+0100\n"
+"PO-Revision-Date: 2022-02-10 15:07+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -489,22 +489,51 @@ msgid "For your entertainment, a choupisson : 🦔"
 msgstr "Pour vous divertir, un choupisson : 🦔"
 
 #: views/collections/feeds/show.atom.xml.php:39
-#: views/profiles/feeds/show.atom.xml.php:32
+#: views/profiles/feeds/show.atom.xml.php:33
 #, php-format
 msgid "“%s”"
 msgstr "« %s »"
 
 #: views/collections/feeds/show.atom.xml.php:40
-#: views/profiles/feeds/show.atom.xml.php:33
+#: views/profiles/feeds/show.atom.xml.php:34
 #, php-format
 msgid "Read this on <a href=\"%s\">%s</a>."
 msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
 
 #: views/collections/feeds/show.atom.xml.php:41
-#: views/profiles/feeds/show.atom.xml.php:34
+#: views/profiles/feeds/show.atom.xml.php:35
 #, php-format
 msgid "My comments on <a href=\"%s\">%s</a>."
 msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
+
+#: views/feeds/feeds.xsl.php:6 views/feeds/feeds.xsl.php:20
+msgid "(feed)"
+msgstr "(flux)"
+
+#: views/feeds/feeds.xsl.php:25
+msgid ""
+"<strong>This is an Atom feed.</strong> You can follow its publications by "
+"adding its <abbr>URL</abbr> to your feed aggregator."
+msgstr ""
+"<strong>Ceci est un flux Atom.</strong> Vous pouvez suivre ses publications "
+"en ajoutant son <abbr>URL</abbr> à votre agrégateur de flux."
+
+#: views/feeds/feeds.xsl.php:33
+#, php-format
+msgid "Follow on %s"
+msgstr "Suivre sur %s"
+
+#: views/feeds/feeds.xsl.php:39
+msgid "Feed overview"
+msgstr "Aperçu du flux"
+
+#: views/feeds/feeds.xsl.php:48
+msgid "Published on:"
+msgstr "Publié le :"
+
+#: views/feeds/feeds.xsl.php:54
+msgid "Read on the website"
+msgstr "Lire sur le site"
 
 #: views/links/exportation.atom.xml.php:26
 #: views/links/feeds/show.atom.xml.php:24
