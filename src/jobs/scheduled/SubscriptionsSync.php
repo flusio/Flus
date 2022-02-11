@@ -84,11 +84,11 @@ class SubscriptionsSync extends jobs\Job
 
         // Finally, reset the account ids if they were not included in the
         // response. A new account id will be fetched next time.
-        $unknown_account_ids = array_diff($account_ids, array_keys($result));
-        foreach ($unknown_account_ids as $account_id) {
-            $user = $account_ids_to_users[$account_id];
-            $user->subscription_account_id = null;
-            $user->save();
-        }
+        // $unknown_account_ids = array_diff($account_ids, array_keys($result));
+        // foreach ($unknown_account_ids as $account_id) {
+        //     $user = $account_ids_to_users[$account_id];
+        //     $user->subscription_account_id = null;
+        //     $user->save();
+        // }
     }
 }

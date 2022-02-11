@@ -147,7 +147,7 @@ class Subscriptions
     {
         try {
             $response = $this->http->post($this->host . '/api/accounts/sync', [
-                'account_ids' => $account_ids,
+                'account_ids' => json_encode($account_ids),
             ], [
                 'auth_basic' => $this->private_key . ':',
             ]);
