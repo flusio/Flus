@@ -33,7 +33,7 @@ class DebugTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Content-type: text/plain');
+        $this->assertResponseContainsIgnoringCase($response, 'Content-type: text/plain');
         $this->assertResponseContains($response, 'Hello World!');
     }
 }
