@@ -106,7 +106,7 @@ class Subscriptions
      *
      * @param string $account_id
      *
-     * @return string|null
+     * @return \DateTime|null
      */
     public function expiredAt($account_id)
     {
