@@ -60,7 +60,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 
-$app_path = realpath(__DIR__ . '/..');
+$app_path = realpath(__DIR__ . '/../..');
 
 include $app_path . '/autoload.php';
 \Minz\Configuration::load('test', $app_path);

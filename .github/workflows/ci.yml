@@ -87,7 +87,7 @@ jobs:
           run: make lint
 
         - name: Run mock_server (background)
-          run: php -t ${{ github.workspace }} -S 127.0.0.1:8001 ${{ github.workspace }}/tests/mock_server.php &
+          run: php -t ${{ github.workspace }} -S 127.0.0.1:8001 ${{ github.workspace }}/tests/mock_server/index.php &
 
         - name: Run the test suite
           run: make test

@@ -1,25 +1,39 @@
 version: '3'
 
 services:
+    nginx:
+        image: nginx:alpine
+        restart: unless-stopped
+        ports:
+            - "8000:80"
+        volumes:
+            - ..:/var/www/html:z
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf:z
+        networks:
+            default:
+                aliases:
+                    - mock-server
+
     php:
         image: flusio_php:dev
         build:
             context: .
             dockerfile: Dockerfile.php
         restart: unless-stopped
-        command: php -t ./public/ -S 0.0.0.0:8000 ./public/index.php
         ports:
-            - "8000:8000"
+            - "9000:9000"
         volumes:
             - ..:/var/www/html:z
             - composer:/tmp
         environment:
             - SEED
-            - MOCK_HOST=http://mock_server:8001
+            - MOCK_HOST=http://mock-server
         user: $USER
-        links:
+        depends_on:
+            - nginx
             - database
-            - mock_server
+        networks:
+            - default
 
     job_worker:
         image: flusio_php:dev
@@ -32,21 +46,10 @@ services:
             - ..:/var/www/html:z
             - composer:/tmp
         user: $USER
-        links:
+        depends_on:
             - database
-
-    mock_server:
-        image: flusio_php:dev
-        build:
-            context: .
-            dockerfile: Dockerfile.php
-        restart: unless-stopped
-        command: php -t . -S 0.0.0.0:8001 ./tests/mock_server.php
-        ports:
-            - "8001:8001"
-        volumes:
-            - ..:/var/www/html:z
-        user: $USER
+        networks:
+            - default
 
     database:
         image: postgres:12-alpine
@@ -56,6 +59,8 @@ services:
             POSTGRES_PASSWORD: postgres
         ports:
             - "5432:5432"
+        networks:
+            - default
 
     bundler:
         image: flusio_node:dev
@@ -71,3 +76,6 @@ services:
 
 volumes:
     composer: {}
+
+networks:
+    default:

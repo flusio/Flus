@@ -22,7 +22,7 @@ class DebugTest extends \PHPUnit\Framework\TestCase
         $url = $this->fake('url');
         $this->mockHttpWithResponse($url, <<<TEXT
             HTTP/2 200
-            Content-type: text/plain
+            Content-Type: text/plain
 
             Hello World!
             TEXT
@@ -33,7 +33,7 @@ class DebugTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Content-type: text/plain');
         $this->assertResponseContains($response, 'Hello World!');
+        $this->assertResponseContainsIgnoringCase($response, 'Content-Type: text/plain');
     }
 }

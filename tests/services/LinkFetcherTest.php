@@ -158,7 +158,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/';
         // I wanted to test with no Content-type at all, but the mock_server
-        // (via the PHP built-in server) returns a content-type by default.
+        // (via the Nginx server) returns a content-type by default.
         $this->mockHttpWithResponse($url, <<<TEXT
             HTTP/2 200
             server: nginx
