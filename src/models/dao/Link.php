@@ -180,6 +180,7 @@ class Link extends \Minz\DatabaseModel
         $order_by_clause = 'ORDER BY l.created_at DESC, l.id';
         if (in_array('published_at', $selected_computed_props)) {
             $published_at_clause = ', l.created_at AS published_at';
+            $order_by_clause = 'ORDER BY published_at DESC, l.id';
         }
 
         $number_comments_clause = '';
@@ -218,33 +219,10 @@ class Link extends \Minz\DatabaseModel
             $parameters[':context_user_id'] = $options['context_user_id'];
         }
 
-        $select_clause = 'l.*';
         $visibility_clause = '';
         $join_clause = '';
-        $subquery_order_by_clause = '';
+        $group_by_clause = '';
         if (!$options['unshared']) {
-            // If unshared links are excluded, links could appear several times
-            // in the result (once per attachment to a collection). We want to
-            // avoid that with a DISTINCT ON clause.
-            // Unfortunately, this clause *requires* that ORDER BY leftmost
-            // expression must be the id column. So we use a subquery to order
-            // by id and published_at (desc), then the main query is ordered
-            // back to published_at (desc) and id. The subquery is generated
-            // below.
-            // A side effect of this subquery is that we can't use l.* anymore.
-            // Indeed, l.id (from the main request) may refer to two ids (the
-            // one from the distinct clause, and the one from l.*). To avoid
-            // that, we need to build the select list manually.
-            $columns = array_map(function ($property) {
-                if ($property === 'id') {
-                    return 'DISTINCT ON (l.id) l.id';
-                } else {
-                    return "l.{$property}";
-                }
-            }, $this->properties);
-            $select_clause = implode(', ', $columns);
-            $subquery_order_by_clause = 'ORDER BY l.id, lc.created_at DESC';
-
             $visibility_clause = 'AND l.is_hidden = false';
             $join_clause = <<<SQL
                 INNER JOIN links_to_collections lc
@@ -256,8 +234,8 @@ class Link extends \Minz\DatabaseModel
             SQL;
 
             if (in_array('published_at', $selected_computed_props)) {
-                $published_at_clause = ', lc.created_at AS published_at';
-                $order_by_clause = 'ORDER BY l.published_at DESC, l.id';
+                $published_at_clause = ', MAX(lc.created_at) AS published_at';
+                $group_by_clause = 'GROUP BY l.id';
             }
         }
 
@@ -268,8 +246,10 @@ class Link extends \Minz\DatabaseModel
         }
 
         $sql = <<<SQL
+            {$read_links_clause}
+
             SELECT
-                {$select_clause}
+                l.*
                 {$published_at_clause}
                 {$number_comments_clause}
                 {$is_read_clause}
@@ -281,24 +261,7 @@ class Link extends \Minz\DatabaseModel
 
             {$visibility_clause}
 
-            {$subquery_order_by_clause}
-        SQL;
-
-        if (!$options['unshared']) {
-            // As stated above, we need a subquery to distinct links and to
-            // order links correctly. Isn't it nice? (nope)
-            $sql = <<<SQL
-                SELECT * FROM (
-                    {$sql}
-                ) l
-            SQL;
-        }
-
-        $sql = <<<SQL
-            {$read_links_clause}
-
-            {$sql}
-
+            {$group_by_clause}
             {$order_by_clause}
             OFFSET :offset
             {$limit_clause}
