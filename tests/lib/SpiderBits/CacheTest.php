@@ -101,6 +101,46 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($text);
     }
 
+    public function testRemove()
+    {
+        $cache = new Cache(self::$cache_path);
+        $cache->save('foo', 'bar');
+
+        $this->assertTrue(file_exists(self::$cache_path . '/foo'));
+
+        $result = $cache->remove('foo');
+
+        $this->assertTrue($result);
+        $this->assertFalse(file_exists(self::$cache_path . '/foo'));
+    }
+
+    public function testRemoveReturnsTrueIfFileDoesNotExist()
+    {
+        $cache = new Cache(self::$cache_path);
+
+        $this->assertFalse(file_exists(self::$cache_path . '/foo'));
+
+        $result = $cache->remove('foo');
+
+        $this->assertTrue($result);
+        $this->assertFalse(file_exists(self::$cache_path . '/foo'));
+    }
+
+    public function testRemoveReturnsFalseIfFileCannotBeRemoved()
+    {
+        $cache = new Cache(self::$cache_path);
+        $cache->save('foo', 'bar');
+        chmod(self::$cache_path, 0500);
+
+        $this->assertTrue(file_exists(self::$cache_path . '/foo'));
+
+        $result = $cache->remove('foo');
+
+        chmod(self::$cache_path, 0755);
+        $this->assertFalse($result);
+        $this->assertTrue(file_exists(self::$cache_path . '/foo'));
+    }
+
     public function testHash()
     {
         $string = 'Hello World!';

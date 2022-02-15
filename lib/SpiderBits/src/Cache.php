@@ -79,6 +79,23 @@ class Cache
     }
 
     /**
+     * Clear the cache of the given key.
+     *
+     * @param string $key
+     *
+     * @return boolean Return true on success or false on failure
+     */
+    public function remove($key)
+    {
+        $filepath = $this->path . '/' . $key;
+        if (file_exists($filepath)) {
+            return @unlink($filepath);
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Returns a hash of the given string.
      *
      * @param string $string

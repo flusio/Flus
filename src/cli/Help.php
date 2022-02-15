@@ -24,9 +24,6 @@ class Help
         $usage .= "\n";
         $usage .= "  database status          Return the status of the DB connection\n";
         $usage .= "\n";
-        $usage .= "  debug url                Show the HTTP response returned by an URL\n";
-        $usage .= "      --url=TEXT           where TEXT is an external URL\n";
-        $usage .= "\n";
         $usage .= "  features                 List the available features types\n";
         $usage .= "  features flags           List the enabled feature flags\n";
         $usage .= "  features enable          Enable a feature flag for a user\n";
@@ -78,6 +75,11 @@ class Help
         $usage .= "      --id=ID              where ID is the id of the topic to delete\n";
         $usage .= "      [--label=TEXT]       where TEXT is a {$topic_label_max_size}-chars max string\n";
         $usage .= "      [--image_url=URL]    where URL is an optional illustration image\n";
+        $usage .= "\n";
+        $usage .= "  urls show                Show the HTTP response returned by an URL\n";
+        $usage .= "      --url=TEXT           where TEXT is an external URL\n";
+        $usage .= "  urls uncache             Clear the cache of the given URL\n";
+        $usage .= "      --url=TEXT           where TEXT is an external URL\n";
         $usage .= "\n";
         $usage .= "  users                    List all the users\n";
         $usage .= "  users create             Create a user\n";

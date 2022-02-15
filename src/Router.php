@@ -187,8 +187,6 @@ class Router
         $router->addRoute('cli', '/', 'Help#show');
         $router->addRoute('cli', '/help', 'Help#show');
 
-        $router->addRoute('cli', '/debug/url', 'Debug#url');
-
         $router->addRoute('cli', '/system', 'System#show');
         $router->addRoute('cli', '/system/secret', 'System#secret');
         $router->addRoute('cli', '/system/setup', 'System#setup');
@@ -198,6 +196,9 @@ class Router
         $router->addRoute('cli', '/migrations/create', 'Migrations#create');
         $router->addRoute('cli', '/migrations/apply', 'Migrations#apply');
         $router->addRoute('cli', '/migrations/rollback', 'Migrations#rollback');
+
+        $router->addRoute('cli', '/urls/show', 'Urls#show');
+        $router->addRoute('cli', '/urls/uncache', 'Urls#uncache');
 
         $router->addRoute('cli', '/users', 'Users#index');
         $router->addRoute('cli', '/users/create', 'Users#create');
