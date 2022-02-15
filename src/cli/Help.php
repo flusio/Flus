@@ -55,12 +55,6 @@ class Help
         $usage .= "  migrations rollback      Reverse the last migration\n";
         $usage .= "      [--steps=NUMBER]     where NUMBER is the number of rollbacks to apply (default is 1)\n";
         $usage .= "\n";
-
-        if (\Minz\Configuration::$application['subscriptions_enabled']) {
-            $usage .= "  subscriptions            List all the subscriptions accounts ids\n";
-            $usage .= "\n";
-        }
-
         $usage .= "  system                   Show information about the system\n";
         $usage .= "  system secret            Generate a secure key to be used as APP_SECRET_KEY\n";
         $usage .= "  system setup             Initialize or update the system\n";

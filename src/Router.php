@@ -224,10 +224,6 @@ class Router
         $router->addRoute('cli', '/jobs/unlock', 'JobsWorker#unlock');
         $router->addRoute('cli', '/jobs/watch', 'JobsWorker#watch');
 
-        if (\Minz\Configuration::$application['subscriptions_enabled']) {
-            $router->addRoute('cli', '/subscriptions', 'Subscriptions#index');
-        }
-
         return $router;
     }
 }
