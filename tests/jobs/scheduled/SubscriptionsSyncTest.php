@@ -139,30 +139,6 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
-    // public function testSyncResetsUnknownAccountIds()
-    // {
-    //     $subscriptions_sync_job = new SubscriptionsSync();
-    //     $expired_at = $this->fake('dateTime');
-    //     $user_id = $this->create('user', [
-    //         'subscription_account_id' => 'not-an-id',
-    //         'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-    //     ]);
-    //     $subscription_api_url = "https://next.flus.io/api/accounts/sync";
-    //     $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
-    //         HTTP/2 200
-    //         Content-type: application/json
-
-    //         {}
-    //         TEXT
-    //     );
-
-    //     $subscriptions_sync_job->perform();
-
-    //     $user = models\User::find($user_id);
-    //     $this->assertNull($user->subscription_account_id);
-    //     $this->assertEquals($expired_at, $user->subscription_expired_at);
-    // }
-
     public function testSyncIgnoresInvalidExpiredAt()
     {
         $subscriptions_sync_job = new SubscriptionsSync();
