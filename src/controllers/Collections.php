@@ -401,11 +401,6 @@ class Collections
 
         models\Collection::delete($collection->id);
 
-        $beta_enabled = models\FeatureFlag::isEnabled('beta', $user->id);
-        if ($beta_enabled) {
-            return Response::redirect('links');
-        } else {
-            return Response::redirect('collections');
-        }
+        return Response::redirect('links');
     }
 }

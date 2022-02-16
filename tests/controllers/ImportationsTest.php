@@ -19,6 +19,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $importation_id = $this->create('importation', [
             'user_id' => $user->id,
+            'type' => 'pocket',
         ]);
 
         $response = $this->appRun('post', "/importations/{$importation_id}/delete", [
@@ -26,7 +27,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
             'from' => \Minz\Url::for('pocket'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/collections');
+        $this->assertResponseCode($response, 302, '/links');
         $this->assertFalse(models\Importation::exists($importation_id));
     }
 

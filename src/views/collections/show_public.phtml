@@ -29,11 +29,7 @@
         ];
     }
 
-    if ($beta_enabled) {
-        $current_tab = 'feeds';
-    } else {
-        $current_tab = 'collections';
-    }
+    $current_tab = 'feeds';
 
     if ($collection->image_filename) {
         $open_graph['image'] = url_media_full('covers', $collection->image_filename);
@@ -86,9 +82,7 @@
         <?php if ($collection->type === 'feed'): ?>
             <div class="collection__details">
                 <p class="collection__feed">
-                    <?php if (!$beta_enabled): ?>
-                        <?= icon('feed') ?>
-                    <?php endif; ?>
+                    <?= icon('feed') ?>
                     <?php if ($collection->feed_site_url): ?>
                         <?= _f('Feed from <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', protect($collection->feed_site_url), protect($collection->feedWebsite())) ?>
                     <?php else: ?>
@@ -174,11 +168,7 @@
                                 <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
 
                                 <button class="popup__item popup__item--button">
-                                    <?php if ($beta_enabled): ?>
-                                        <?= icon('feed-stop') ?>
-                                    <?php else: ?>
-                                        <?= icon('eye-hide') ?>
-                                    <?php endif; ?>
+                                    <?= icon('feed-stop') ?>
                                     <?= _('Unfollow') ?>
                                 </button>
                             </form>
@@ -189,11 +179,7 @@
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                         <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
                         <button class="button--small">
-                            <?php if ($beta_enabled): ?>
-                                <?= icon('feed') ?>
-                            <?php else: ?>
-                                <?= icon('eye') ?>
-                            <?php endif; ?>
+                            <?= icon('feed') ?>
                             <?= _('Follow') ?>
                         </button>
                     </form>
@@ -207,11 +193,7 @@
                     aria-haspopup="dialog"
                     aria-controls="modal"
                 >
-                    <?php if ($beta_enabled): ?>
-                        <?= icon('feed') ?>
-                    <?php else: ?>
-                        <?= icon('eye') ?>
-                    <?php endif; ?>
+                    <?= icon('feed') ?>
                     <?= _('Follow') ?>
                 </button>
             <?php endif; ?>

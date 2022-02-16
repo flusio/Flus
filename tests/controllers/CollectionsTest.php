@@ -789,7 +789,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => "/collections/{$collection_id}/edit",
         ]);
 
-        $this->assertResponseCode($response, 302, '/collections');
+        $this->assertResponseCode($response, 302, '/links');
         $this->assertFalse(models\Collection::exists($collection_id));
     }
 

@@ -21,7 +21,7 @@
     $this->layout('base.phtml', [
         'title' => $topic->label,
         'canonical' => url_full('topic', $current_url_params),
-        'current_tab' => $beta_enabled ? 'feeds' : 'collections',
+        'current_tab' => 'feeds',
         'open_graph' => $open_graph,
     ]);
 ?>

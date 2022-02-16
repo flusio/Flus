@@ -2,9 +2,8 @@
     $this->layout('base.phtml', [
         'title' => _('Bookmarks'),
         'canonical' => url_full('bookmarks'),
-        'current_tab' => $beta_enabled ? 'links' : 'bookmarks',
+        'current_tab' => 'links',
         'current_page' => 'bookmarks',
-        'enable_back' => $beta_enabled,
     ]);
 ?>
 

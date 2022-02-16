@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Discover collections'),
         'canonical' => url_full('discovery'),
-        'current_tab' => $beta_enabled ? 'feeds' : 'collections',
+        'current_tab' => 'feeds',
         'open_graph' => [
             'title' => _('Discover collections'),
             'description' => _f('Discover the public collections on %s.', $brand),

@@ -10,7 +10,7 @@
     $this->layout('base.phtml', [
         'title' => $collection->name(),
         'canonical' => url_full('read list', $current_url_params),
-        'current_tab' => $beta_enabled ? 'links' : 'collections',
+        'current_tab' => 'links',
         'current_page' => 'collections',
     ]);
 ?>

@@ -203,11 +203,7 @@
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>
-                                    <?php if ($beta_enabled): ?>
-                                        <?= icon('feed-stop') ?>
-                                    <?php else: ?>
-                                        <?= icon('eye-hide') ?>
-                                    <?php endif; ?>
+                                    <?= icon('feed-stop') ?>
                                     <?= _('Unfollow') ?>
                                 </button>
                             </form>
@@ -216,11 +212,7 @@
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>
-                                    <?php if ($beta_enabled): ?>
-                                        <?= icon('feed') ?>
-                                    <?php else: ?>
-                                        <?= icon('eye') ?>
-                                    <?php endif; ?>
+                                    <?= icon('feed') ?>
                                     <?= _('Follow') ?>
                                 </button>
                             </form>

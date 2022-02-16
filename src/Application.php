@@ -98,7 +98,7 @@ class Application
 
             $beta_enabled = models\FeatureFlag::isEnabled('beta', $current_user->id);
 
-            if ($beta_enabled && $current_user->autoload_modal === 'showcase navigation') {
+            if ($current_user->autoload_modal === 'showcase navigation') {
                 $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'navigation']);
                 $current_user->autoload_modal = '';
                 $current_user->save();

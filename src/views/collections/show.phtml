@@ -1,5 +1,4 @@
 <?php
-    $current_tab = 'collections';
     if ($collection->type === 'feed') {
         $feed = [
             'type' => 'application/atom+xml',
@@ -7,9 +6,7 @@
             'title' => _f('Syndication feed of %s', $collection->name),
         ];
 
-        if ($beta_enabled) {
-            $current_tab = 'feeds';
-        }
+        $current_tab = 'feeds';
     } else {
         $feed = [
             'type' => 'application/atom+xml',
@@ -17,9 +14,7 @@
             'title' => _f('Syndication feed of %s', $collection->name),
         ];
 
-        if ($beta_enabled) {
-            $current_tab = 'links';
-        }
+        $current_tab = 'links';
     }
 
     if ($pagination->isCurrentFirstPage()) {
