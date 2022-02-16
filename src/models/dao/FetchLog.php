@@ -103,6 +103,28 @@ class FetchLog extends \Minz\DatabaseModel
     }
 
     /**
+     * Return an estimated number of logs.
+     *
+     * This method have better performance than basic count but is less
+     * precise.
+     *
+     * @see https://wiki.postgresql.org/wiki/Count_estimate
+     *
+     * @return integer
+     */
+    public function countEstimated()
+    {
+        $sql = <<<SQL
+            SELECT reltuples AS count
+            FROM pg_class
+            WHERE relname = '{$this->table_name}';
+        SQL;
+
+        $statement = $this->query($sql);
+        return intval($statement->fetchColumn());
+    }
+
+    /**
      * Delete logs older than the given date
      *
      * @param \DateTime $date

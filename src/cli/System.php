@@ -37,7 +37,7 @@ class System
         $count_users_week = models\User::daoCall('countSince', \Minz\Time::ago(1, 'week'));
         $count_users_month = models\User::daoCall('countSince', \Minz\Time::ago(1, 'month'));
 
-        $count_links = models\Link::count();
+        $count_links = models\Link::daoCall('countEstimated');
         $count_links_to_fetch = models\Link::daoCall('countToFetch');
 
         $count_collections = models\Collection::daoCall('countCollections');
@@ -46,7 +46,7 @@ class System
         $count_feeds = models\Collection::daoCall('countFeeds');
         $count_feeds_by_hours = models\Collection::daoCall('countFeedsByHours');
 
-        $count_requests = models\FetchLog::count();
+        $count_requests = models\FetchLog::daoCall('countEstimated');
         $count_requests_feeds = models\FetchLog::daoCall('countByType', 'feed');
         $count_requests_links = models\FetchLog::daoCall('countByType', 'link');
         $count_requests_images = models\FetchLog::daoCall('countByType', 'image');
