@@ -1,6 +1,6 @@
 <?php
     $this->layout('onboarding.phtml', [
-        'title' => _('A closer look at the links'),
+        'title' => _('Store your links'),
         'canonical' => url_full('onboarding', ['step' => 3]),
         'current_step' => 3,
     ]);
@@ -8,67 +8,20 @@
 
 <div class="section section--small section--longbottom">
     <div class="section__title">
-        <h1><?= _('A closer look at the links') ?></h1>
+        <h1><?= _('Store your links') ?></h1>
     </div>
 
-    <p class="paragraph--featured">
-        <?= _('Links are central. They create bridges with the rest of the Internet.') ?>
+    <p class="section__intro">
+        <?= icon('link') ?>
+        <?= _('<strong>My links</strong> regroup your links organized in collections.') ?>
     </p>
-
-    <ul class="list--spaced">
-        <li class="list__item">
-            <?= _('Put them in collections or bookmarks to find them later;') ?>
-        </li>
-
-        <li class="list__item">
-            <?= _('comment them and share your thoughts with the rest of the community;') ?>
-        </li>
-
-        <li class="list__item">
-            <?= _('discover new links based on what the other users shared.') ?>
-        </li>
-    </ul>
-
-    <img
-        class="illustration illustration--centered"
-        alt=""
-        src="<?= url_static('illustrations/share_link.svg') ?>"
-        height="250"
-    />
 
     <p class="paragraph--centered">
-        <?= _('Note: when you’re being asked for an address, you’re supposed to copy-paste the content of the <abbr>URL</abbr> bar at the top of your browser.') ?>
+        <?= _('By default, you start with 4 collections: <strong>“Bookmarks”, “Links read”, “My favorites” and “My shares”.</strong> Obviously, you can create as many collections as you want!') ?>
     </p>
 
-    <figure class="figure--centered">
-        <img
-            alt="<?= _('A screenshot of the browser URL bar in Firefox, it contains “https://contributopia.org/fr/”') ?>"
-            class="illustration illustration--figure"
-            src="<?= url_static('onboarding/url-bar.png') ?>"
-         />
-
-         <figcaption>
-             <?= _('It should look like this in Firefox. In this example, the address is <code>https://contributopia.org/fr/</code>') ?>
-         </figcaption>
-    </figure>
-
-    <p class="paragraph--contrasted paragraph--centered no-extension no-mobile">
-        <strong>
-            <?= _('Make your life easier by using the Web extension on') ?>
-            <a
-                class="anchor--inverted"
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://addons.mozilla.org/fr/firefox/addon/flus/"
-            >Firefox</a>
-            <?= _('or') ?>
-            <a
-                class="anchor--inverted"
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://chrome.google.com/webstore/detail/flus/gikjpohbbimicecbndkefebbpjobokjd?hl=fr"
-            >Chrome</a>
-        </strong>
+    <p class="paragraph--centered">
+        <?= _('All the links you want to find later have their place in the collections.') ?>
     </p>
 
     <p class="paragraph--centered">

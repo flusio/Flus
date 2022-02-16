@@ -1,39 +1,27 @@
 <?php
     $this->layout('onboarding.phtml', [
-        'title' => _('The big picture'),
+        'title' => _('Stay informed with the news'),
         'canonical' => url_full('onboarding', ['step' => 2]),
         'current_step' => 2,
     ]);
 ?>
 
-<div class="section section--small section--longbottom">
+<div class="section section--longbottom">
     <div class="section__title">
-        <h1><?= _('The big picture') ?></h1>
+        <h1><?= _('Stay informed with the news') ?></h1>
     </div>
 
-    <p class="paragraph--featured">
-        <?= _('First, you must know about the 3 main features: <em>news</em>, <em>bookmarks</em> and <em>collections</em>.') ?>
+    <p class="section__intro">
+        <?= icon('news') ?>
+        <?= _('The <strong>News</strong> is where you get suggestions of what to read.') ?>
     </p>
 
-    <ul class="list--no-style list--spaced">
-        <li class="list__item">
-            <?= icon('news') ?>
-            <?= _('<strong>News</strong> selects <em>suggestions of what to read</em> from your bookmarks and followed collections;') ?>
-        </li>
-
-        <li class="list__item">
-            <?= icon('bookmark') ?>
-            <?= _('<strong>Bookmarks</strong> is where you save what you want to <em>read later</em>;') ?>
-        </li>
-
-        <li class="list__item">
-            <?= icon('collection') ?>
-            <?= _('<strong>Collections</strong> is where you <em>organize your links</em> and can be followed by the community.') ?>
-        </li>
-    </ul>
+    <p class="paragraph--centered">
+        <?= _('It suggests you things to read from your bookmarks or from the feeds that you follow. It is volontarily limited in time and size <strong>to keep information overload away from you.</strong>') ?>
+    </p>
 
     <p class="paragraph--centered">
-        <?= _('Pretty simple, isn’t it?') ?>
+        <?= _('The news is the equivalent of a newsfeed on other social networks, except that it’s not infinite.') ?>
     </p>
 
     <p class="paragraph--centered">

@@ -1,6 +1,6 @@
 <?php
     $this->layout('onboarding.phtml', [
-        'title' => _('Understanding the news'),
+        'title' => _('Share with the rest of Internet'),
         'canonical' => url_full('onboarding', ['step' => 5]),
         'current_step' => 5,
     ]);
@@ -8,57 +8,20 @@
 
 <div class="section section--longbottom">
     <div class="section__title">
-        <h1><?= _('Understanding the news') ?></h1>
+        <h1><?= _('Share with the rest of Internet') ?></h1>
     </div>
 
-    <p class="paragraph--featured">
-        <?= _('You might have a lot to read everyday.') ?>
+    <p class="section__intro">
+        <?= icon('avatar') ?>
+        <?= _('The <strong>Profile</strong> is your public page listing all what you share.') ?>
     </p>
 
     <p class="paragraph--centered">
-        <?= _f('The news offers you 3 ways to select links to read:', $brand) ?>
+    <?= _('Every time you share a link in a public collection, it gets added to your profile. <strong>Comment on your reading to add a personal touch.</strong>') ?>
     </p>
 
-    <div class="cards cards--centered">
-        <div class="card card--showcase">
-            <img
-                class="card__image"
-                alt=""
-                src="<?= url_static('illustrations/newspaper.svg') ?>"
-                height="200"
-            />
-
-            <span class="news-selection__title"><?= _('the latest publications') ?></span>
-            <small class="text--secondary"><?= _('from your followed collections') ?></small>
-        </div>
-
-        <div class="card card--showcase">
-            <img
-                class="card__image"
-                alt=""
-                src="<?= url_static('illustrations/reading.svg') ?>"
-                height="200"
-            />
-
-            <span class="news-selection__title"><?= _('3 links of -10 minutes') ?></span>
-            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
-        </div>
-
-        <div class="card card--showcase">
-            <img
-                class="card__image"
-                alt=""
-                src="<?= url_static('illustrations/cup-of-tea.svg') ?>"
-                height="200"
-            />
-
-            <span class="news-selection__title"><?= _('1 link of +10 minutes') ?></span>
-            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
-        </div>
-    </div>
-
     <p class="paragraph--centered">
-        <?= _f('<strong>These pre-selections keep your reading space pleasant in daily use.</strong> In %s, there is no endless scroll: your <em>peace of mind</em> is what matters most.', $brand) ?>
+        <?= _('Nothing like spreading the address to your Flus profile around!') ?>
     </p>
 
     <p class="paragraph--centered">

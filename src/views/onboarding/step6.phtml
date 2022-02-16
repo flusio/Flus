@@ -11,8 +11,18 @@
         <h1><?= _('Start exploring') ?></h1>
     </div>
 
-    <p class="paragraph--featured">
+    <p class="paragraph--centered">
         <?= _f('This is the end of the onboarding. You should now have the keys to use %s in an efficient way.', $brand) ?>
+    </p>
+
+    <p class="paragraph--centered">
+        <?= _('You still have things to discover, stay curious!') ?>
+    </p>
+
+    <p class="paragraph--featured">
+        <a class="anchor--action" href="<?= url('news') ?>">
+            <?= _f('Start using %s', $brand) ?>
+        </a>
     </p>
 
     <img
@@ -22,32 +32,27 @@
         height="250"
     />
 
-    <p class="paragraph--centered">
-        <?= _('All the features weren’t explained and new ones are coming regularly. If you’re lost, stay curious and you should find your way.') ?>
+    <p class="paragraph--contrasted paragraph--centered no-extension no-mobile">
+        <strong>
+            <?= _('Make your life easier by using the Web extension on') ?>
+            <a
+                class="anchor--inverted"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://addons.mozilla.org/fr/firefox/addon/flus/"
+            >Firefox</a>
+            <?= _('or') ?>
+            <a
+                class="anchor--inverted"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://chrome.google.com/webstore/detail/flus/gikjpohbbimicecbndkefebbpjobokjd?hl=fr"
+            >Chrome</a>.
+        </strong>
     </p>
 
     <p class="paragraph--centered">
-        <?= _('You can choose <em>your next destination</em>:') ?>
-    </p>
-
-    <div class="cards cards--centered">
-        <div class="card card--showcase">
-            <a class="anchor--action" href="<?= url('discovery') ?>">
-                <?= _('Explore the collections') ?>
-            </a>
-        </div>
-
-        <div class="card card--showcase">
-            <a class="anchor--action news-selection__title" href="<?= url('show search link') ?>">
-                <?= _('Add new links') ?>
-            </a>
-        </div>
-    </div>
-
-    <hr />
-
-    <p class="paragraph--centered">
-        <?= _('Tip: if you use Pocket, you can also import your links:') ?>
+        <?= _('Tip: if you use Pocket, you can import your links:') ?>
     </p>
 
     <p class="paragraph--centered">
