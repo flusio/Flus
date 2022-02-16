@@ -2,6 +2,7 @@
 <html lang="<?= locale_to_bcp_47($current_locale) ?>">
     <head>
         <meta charset="UTF-8" />
+        <title><?= $environment === 'development' ? '[dev] ' : '' ?><?= $title ?> · <?= $brand ?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="canonical" href="<?= $canonical ?>">
 
@@ -44,8 +45,6 @@
 
         <meta name="csrf-param" content="csrf" />
         <meta name="csrf-token" content="<?= $csrf_token ?>" />
-
-        <title><?php if ($environment === 'development'): ?>[devmode] <?php endif; ?><?= $title ?> · <?= $brand ?></title>
     </head>
 
     <body>
