@@ -18,35 +18,15 @@ class Collections
     /**
      * Show the page listing all the collections of the current user
      *
-     * @response 302 /login?redirect_to=/collections if not connected
-     * @response 200
+     * This page is deprecated an no longer used. It has been replaced by the
+     * "My links" and "Feeds" pages.
+     *
+     * @response 301 /links
      */
     public function index()
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('collections'),
-            ]);
-        }
-
-        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
-        utils\Sorter::localeSort($groups, 'name');
-
-        $collections = $user->collections(['number_links']);
-        $followed_collections = $user->followedCollections(['number_links']);
-        utils\Sorter::localeSort($collections, 'name');
-        utils\Sorter::localeSort($followed_collections, 'name');
-
-        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
-        $groups_to_followed_collections = utils\Grouper::groupBy($followed_collections, 'group_id');
-
-        return Response::ok('collections/index.phtml', [
-            'read_list' => $user->readList(),
-            'groups' => $groups,
-            'groups_to_collections' => $groups_to_collections,
-            'groups_to_followed_collections' => $groups_to_followed_collections,
-        ]);
+        $url = \Minz\Url::for('links');
+        return Response::movedPermanently($url);
     }
 
     /**

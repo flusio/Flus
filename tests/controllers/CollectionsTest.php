@@ -14,79 +14,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRendersCorrectly()
-    {
-        $user = $this->login();
-        $collection_name_1 = $this->fake('words', 3, true);
-        $collection_name_2 = $this->fake('words', 3, true);
-        $this->create('collection', [
-            'user_id' => $user->id,
-            'name' => $collection_name_1,
-            'type' => 'collection',
-        ]);
-        $this->create('collection', [
-            'user_id' => $user->id,
-            'name' => $collection_name_2,
-            'type' => 'collection',
-        ]);
-
-        $response = $this->appRun('get', '/collections');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, $collection_name_1);
-        $this->assertResponseContains($response, $collection_name_2);
-        $this->assertResponsePointer($response, 'collections/index.phtml');
-    }
-
-    public function testIndexRendersFollowedCollections()
-    {
-        $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'name' => $collection_name,
-            'type' => 'collection',
-            'is_public' => 1,
-        ]);
-        $this->create('followed_collection', [
-            'user_id' => $user->id,
-            'collection_id' => $collection_id,
-        ]);
-
-        $response = $this->appRun('get', '/collections');
-
-        $this->assertResponseContains($response, $collection_name);
-    }
-
-    public function testIndexDoesNotRenderFollowedCollectionsIfNotPublic()
-    {
-        // This can happen if a user switch the visibility of its collection
-        // back to "private"
-        $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'name' => $collection_name,
-            'type' => 'collection',
-            'is_public' => 0,
-        ]);
-        $this->create('followed_collection', [
-            'user_id' => $user->id,
-            'collection_id' => $collection_id,
-        ]);
-
-        $response = $this->appRun('get', '/collections');
-
-        $this->assertResponseNotContains($response, $collection_name);
-    }
-
-    public function testIndexRedirectsIfNotConnected()
+    public function testIndexRedirectsToLinks()
     {
         $response = $this->appRun('get', '/collections');
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fcollections');
+        $this->assertResponseCode($response, 301, '/links');
     }
 
     public function testNewRendersCorrectly()
