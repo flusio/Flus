@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-02-16 15:39+0100\n"
-"PO-Revision-Date: 2022-02-16 15:39+0100\n"
+"POT-Creation-Date: 2022-02-17 11:52+0100\n"
+"PO-Revision-Date: 2022-02-17 11:53+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,10 +15,10 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: assets/javascripts/controllers/back_button_controller.js:30
-#: views/_layouts/connected.phtml:202
-#: views/_layouts/connected_blocked.phtml:161
-#: views/_layouts/not_connected.phtml:148
+#: assets/javascripts/controllers/back_button_controller.js:39
+#: views/_layouts/connected.phtml:203
+#: views/_layouts/connected_blocked.phtml:162
+#: views/_layouts/not_connected.phtml:149
 msgid "Back"
 msgstr "Retour"
 
@@ -39,13 +39,13 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:25
-#: views/my/account/deletion.phtml:56 views/my/security/show_confirmed.phtml:79
+#: views/my/account/deletion.phtml:59 views/my/security/show_confirmed.phtml:79
 #: views/my/security/show_to_confirm.phtml:50 views/passwords/edit.phtml:53
-#: views/registrations/new.phtml:107 views/sessions/new.phtml:79
+#: views/registrations/new.phtml:110 views/sessions/new.phtml:82
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:119 controllers/Collections.php:323
+#: controllers/Collections.php:99 controllers/Collections.php:303
 #: controllers/Feeds.php:108 controllers/Groups.php:90
 #: controllers/Links.php:179 controllers/News.php:77
 #: controllers/Passwords.php:80 controllers/Passwords.php:183
@@ -64,11 +64,11 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:132 controllers/Collections.php:338
+#: controllers/Collections.php:112 controllers/Collections.php:318
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:398 controllers/Exportations.php:74
+#: controllers/Collections.php:378 controllers/Exportations.php:74
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:311 controllers/Links.php:358
 #: controllers/Messages.php:47 controllers/Sessions.php:200
@@ -278,7 +278,7 @@ msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:193 models/Collection.php:231
 #: views/_layouts/connected.phtml:84 views/news/index.phtml:3
-#: views/news/index.phtml:13
+#: views/news/index.phtml:15
 msgid "News"
 msgstr "Journal"
 
@@ -570,17 +570,17 @@ msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
 #: views/_layouts/connected.phtml:95 views/links/index.phtml:3
-#: views/links/index.phtml:13
+#: views/links/index.phtml:15
 msgid "My links"
 msgstr "Mes liens"
 
 #: views/_layouts/connected.phtml:106 views/feeds/index.phtml:3
-#: views/feeds/index.phtml:13
+#: views/feeds/index.phtml:15
 msgid "Feeds"
 msgstr "Flux"
 
 #: views/_layouts/connected.phtml:119 views/collections/groups/edit.phtml:84
-#: views/links/searches/show.phtml:9 views/links/searches/show.phtml:18
+#: views/links/searches/show.phtml:9 views/links/searches/show.phtml:20
 msgid "New"
 msgstr "Nouveau"
 
@@ -625,11 +625,11 @@ msgstr "Support"
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:236 views/_layouts/not_connected.phtml:187
+#: views/_layouts/connected.phtml:237 views/_layouts/not_connected.phtml:188
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:237 views/_layouts/not_connected.phtml:188
+#: views/_layouts/connected.phtml:238 views/_layouts/not_connected.phtml:189
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -637,11 +637,11 @@ msgstr "Fermer cette fenêtre"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:94 views/registrations/new.phtml:148
+#: views/_layouts/not_connected.phtml:94 views/registrations/new.phtml:151
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:98 views/sessions/new.phtml:93
+#: views/_layouts/not_connected.phtml:98 views/sessions/new.phtml:96
 msgid "Login"
 msgstr "Se connecter"
 
@@ -649,7 +649,7 @@ msgstr "Se connecter"
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:160
+#: views/_layouts/not_connected.phtml:161
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
@@ -693,21 +693,21 @@ msgstr "Retour à la page précédente"
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
-#: views/bookmarks/index.phtml:17
+#: views/bookmarks/index.phtml:16
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.phtml:31 views/collections/show.phtml:155
+#: views/bookmarks/index.phtml:30 views/collections/show.phtml:155
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
 #: views/collections/_collection.phtml:10
-#: views/collections/_collection.phtml:31 views/links/searches/show.phtml:190
+#: views/collections/_collection.phtml:31 views/links/searches/show.phtml:192
 msgid "no links"
 msgstr "aucun lien"
 
 #: views/collections/_collection.phtml:12
-#: views/collections/_collection.phtml:33 views/links/searches/show.phtml:192
+#: views/collections/_collection.phtml:33 views/links/searches/show.phtml:194
 #, php-format
 msgid "%d link"
 msgid_plural "%d links"
@@ -718,7 +718,7 @@ msgstr[1] "%d liens"
 msgid "public"
 msgstr "public"
 
-#: views/collections/_collection.phtml:25 views/links/searches/show.phtml:187
+#: views/collections/_collection.phtml:25 views/links/searches/show.phtml:189
 #, php-format
 msgid "Feed %s"
 msgstr "Flux %s"
@@ -869,36 +869,6 @@ msgstr "Formats <abbr>PNG</abbr> ou <abbr>JPG</abbr> seulement."
 msgid "The minimum recommended dimensions are 1100x400px."
 msgstr "Les dimensions minimales recommandées sont de 1100x400px."
 
-#: views/collections/index.phtml:3 views/collections/index.phtml:13
-#: views/links/collections/index.phtml:22
-#: views/links/collections/index_adding.phtml:23
-#: views/links/collections/index_news.phtml:30 views/links/new.phtml:54
-msgid "Collections"
-msgstr "Collections"
-
-#: views/collections/index.phtml:18
-msgid "Collections allow to group links by topics and to find them easily."
-msgstr ""
-"Les collections permettent de grouper les liens par thématiques et de les "
-"retrouver facilement."
-
-#: views/collections/index.phtml:22
-#, php-format
-msgid "<a href=\"%s\">Discover more collections</a>"
-msgstr "<a href=\"%s\">Découvrez plus de collections</a>"
-
-#: views/collections/index.phtml:38 views/links/index.phtml:32
-msgid "Create a collection"
-msgstr "Créer une collection"
-
-#: views/collections/index.phtml:58 views/links/index.phtml:55
-msgid "All your links marked as read"
-msgstr "Tous vos liens marqués comme lu"
-
-#: views/collections/index.phtml:72 views/groups/_group_deprecated.phtml:59
-msgid "Followed collections"
-msgstr "Collections suivies"
-
 #: views/collections/new.phtml:3 views/collections/new.phtml:11
 msgid "New collection"
 msgstr "Nouvelle collection"
@@ -936,9 +906,8 @@ msgid "Actions"
 msgstr "Actions"
 
 #: views/collections/show.phtml:92 views/groups/_group.phtml:23
-#: views/groups/_group.phtml:37 views/groups/_group_deprecated.phtml:23
-#: views/groups/_group_deprecated.phtml:37 views/links/_link.phtml:140
-#: views/links/searches/show.phtml:122 views/profiles/show.phtml:55
+#: views/groups/_group.phtml:37 views/links/_link.phtml:140
+#: views/links/searches/show.phtml:124 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
@@ -982,16 +951,16 @@ msgstr "Créée par <a href=\"%s\">%s</a>"
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show_public.phtml:162 views/news/index.phtml:48
+#: views/collections/show_public.phtml:162 views/news/index.phtml:50
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/collections/show_public.phtml:172 views/links/searches/show.phtml:207
+#: views/collections/show_public.phtml:172 views/links/searches/show.phtml:209
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
 #: views/collections/show_public.phtml:183
-#: views/collections/show_public.phtml:197 views/links/searches/show.phtml:216
+#: views/collections/show_public.phtml:197 views/links/searches/show.phtml:218
 msgid "Follow"
 msgstr "Suivre"
 
@@ -1000,7 +969,7 @@ msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
 #: views/discovery/show.phtml:3 views/discovery/show.phtml:7
-#: views/discovery/show.phtml:18
+#: views/discovery/show.phtml:20
 msgid "Discover collections"
 msgstr "Découvrir des collections"
 
@@ -1009,61 +978,61 @@ msgstr "Découvrir des collections"
 msgid "Discover the public collections on %s."
 msgstr "Découvrir les collections publiques sur %s."
 
-#: views/discovery/show.phtml:22
+#: views/discovery/show.phtml:24
 msgid "Choose a topic…"
 msgstr "Choisissez une thématique…"
 
-#: views/discovery/show.phtml:35
+#: views/discovery/show.phtml:37
 #, php-format
 msgid "%d collection"
 msgid_plural "%d collections"
 msgstr[0] "%d collection"
 msgstr[1] "%d collections"
 
-#: views/discovery/show.phtml:37
+#: views/discovery/show.phtml:39
 msgid "No collections"
 msgstr "Aucune collection"
 
-#: views/discovery/show.phtml:46
+#: views/discovery/show.phtml:48
 msgid "There’s no topics to show."
 msgstr "Il n’y a aucune thématique à afficher."
 
-#: views/exportations/show.phtml:3 views/exportations/show.phtml:10
+#: views/exportations/show.phtml:3 views/exportations/show.phtml:13
 msgid "Downloading your data"
 msgstr "Téléchargement de vos données"
 
-#: views/exportations/show.phtml:14
+#: views/exportations/show.phtml:17
 msgid "You can download your data in order to migrate to a different tool."
 msgstr ""
 "Vous pouvez télécharger vos données afin de migrer vers un autre outil."
 
-#: views/exportations/show.phtml:25
+#: views/exportations/show.phtml:28
 msgid "We’re creating your archive…"
 msgstr "Nous créons votre archive…"
 
-#: views/exportations/show.phtml:31 views/importations/opml/show.phtml:31
-#: views/importations/pocket/show.phtml:31
+#: views/exportations/show.phtml:34 views/importations/opml/show.phtml:34
+#: views/importations/pocket/show.phtml:34
 msgid "This might take several minutes, please wait."
 msgstr "Cela pourrait prendre plusieurs minutes, merci d’attendre."
 
-#: views/exportations/show.phtml:45
+#: views/exportations/show.phtml:48
 msgid "Download your archive"
 msgstr "Télécharger votre archive"
 
-#: views/exportations/show.phtml:51
+#: views/exportations/show.phtml:54
 #, php-format
 msgid "generated on %s"
 msgstr "générée le %s"
 
-#: views/exportations/show.phtml:60 views/exportations/show.phtml:78
+#: views/exportations/show.phtml:63 views/exportations/show.phtml:81
 msgid "Generate a new data archive"
 msgstr "Générer une nouvelle archive de données"
 
-#: views/exportations/show.phtml:66
+#: views/exportations/show.phtml:69
 msgid "Oops, a problem occured during the exportation."
 msgstr "Oups, un problème est survenu durant l’exportation."
 
-#: views/exportations/show.phtml:88
+#: views/exportations/show.phtml:91
 msgid "Generate a data archive"
 msgstr "Générer une archive de données"
 
@@ -1087,16 +1056,16 @@ msgstr ""
 msgid "Add the feed"
 msgstr "Ajouter le flux"
 
-#: views/feeds/index.phtml:18
+#: views/feeds/index.phtml:20
 msgid "All the feeds that you follow are listed here."
 msgstr "Tous les flux que vous suivez sont listés ici."
 
-#: views/feeds/index.phtml:22
+#: views/feeds/index.phtml:24
 #, php-format
 msgid "<a href=\"%s\">Discover collections feeds</a>"
 msgstr "<a href=\"%s\">Découvrez des flux de collections</a>"
 
-#: views/feeds/index.phtml:38
+#: views/feeds/index.phtml:40
 msgid "Add a feed"
 msgstr "Ajouter un flux"
 
@@ -1124,41 +1093,41 @@ msgstr "Supprimer le groupe"
 msgid "Importation from an OPML file"
 msgstr "Importation depuis un fichier OPML"
 
-#: views/importations/opml/show.phtml:10
+#: views/importations/opml/show.phtml:13
 msgid "Importation from an <abbr>OPML</abbr> file"
 msgstr "Importation depuis un fichier <abbr>OPML</abbr>"
 
-#: views/importations/opml/show.phtml:14
+#: views/importations/opml/show.phtml:17
 msgid ""
 "<abbr>OPML</abbr> enables you to import your feeds from another software."
 msgstr ""
 "<abbr>OPML</abbr> vous permet d’importer vos flux depuis un autre logiciel."
 
-#: views/importations/opml/show.phtml:25
+#: views/importations/opml/show.phtml:28
 msgid "We’re importing your data…"
 msgstr "Nous importons vos données…"
 
-#: views/importations/opml/show.phtml:44
+#: views/importations/opml/show.phtml:47
 msgid "We’ve imported your data from your <abbr>OPML</abbr> file."
 msgstr ""
 "Nous venons d’importer vos données depuis votre fichier <abbr>OPML</abbr>."
 
-#: views/importations/opml/show.phtml:48
+#: views/importations/opml/show.phtml:51
 msgid "We’re now going to fetch their links in background."
 msgstr "Nous allons désormais télécharger leurs liens en tâche de fond."
 
-#: views/importations/opml/show.phtml:57 views/importations/opml/show.phtml:76
-#: views/importations/pocket/show.phtml:57
-#: views/importations/pocket/show.phtml:76
+#: views/importations/opml/show.phtml:60 views/importations/opml/show.phtml:79
+#: views/importations/pocket/show.phtml:60
+#: views/importations/pocket/show.phtml:79
 msgid "Ok!"
 msgstr "Ok !"
 
-#: views/importations/opml/show.phtml:63
-#: views/importations/pocket/show.phtml:63
+#: views/importations/opml/show.phtml:66
+#: views/importations/pocket/show.phtml:66
 msgid "Oops, a problem occured during your importation."
 msgstr "Oups, un problème est survenu durant l’importation."
 
-#: views/importations/opml/show.phtml:108
+#: views/importations/opml/show.phtml:111
 msgid "Import a file"
 msgstr "Importer un fichier"
 
@@ -1176,24 +1145,24 @@ msgid "Please wait while we’re verifying access to Pocket…"
 msgstr "Merci de patienter pendant que nous vérifions l’accès à Pocket…"
 
 #: views/importations/pocket/show.phtml:3
-#: views/importations/pocket/show.phtml:10
+#: views/importations/pocket/show.phtml:13
 msgid "Importation from Pocket"
 msgstr "Importation depuis Pocket"
 
-#: views/importations/pocket/show.phtml:14
+#: views/importations/pocket/show.phtml:17
 #, php-format
 msgid "%s enables you to import your links saved in Pocket."
 msgstr "%s vous permet d’importer vos liens sauvegardés dans Pocket."
 
-#: views/importations/pocket/show.phtml:25
+#: views/importations/pocket/show.phtml:28
 msgid "We’re importing your data from Pocket…"
 msgstr "Nous importons vos données depuis Pocket…"
 
-#: views/importations/pocket/show.phtml:44
+#: views/importations/pocket/show.phtml:47
 msgid "We’ve imported your data from Pocket."
 msgstr "Nous venons d’importer vos données depuis Pocket."
 
-#: views/importations/pocket/show.phtml:48
+#: views/importations/pocket/show.phtml:51
 msgid ""
 "You should see new links in your collections and/or bookmarks. We’ll fetch "
 "their illustrations in background."
@@ -1201,11 +1170,11 @@ msgstr ""
 "Vous devriez voir de nouveaux liens dans vos collections et/ou signets. Nous "
 "allons télécharger leurs illustrations en tâche de fond."
 
-#: views/importations/pocket/show.phtml:96
+#: views/importations/pocket/show.phtml:99
 msgid "Import your links by ignoring the tags"
 msgstr "Importer vos liens en ignorant les tags"
 
-#: views/importations/pocket/show.phtml:101
+#: views/importations/pocket/show.phtml:104
 #, php-format
 msgid ""
 "%s will import your links in a collection named “Pocket links”, your tags "
@@ -1214,7 +1183,7 @@ msgstr ""
 "%s importera vos liens dans une collection nommée « Liens Pocket », vos tags "
 "seront ignorés."
 
-#: views/importations/pocket/show.phtml:105
+#: views/importations/pocket/show.phtml:108
 #, php-format
 msgid ""
 "%s will import your links in a collection named “Pocket links” and in "
@@ -1225,25 +1194,25 @@ msgstr ""
 "des collections nommées d’après vos tags (déconseillé si vous avez de "
 "nombreux tags)."
 
-#: views/importations/pocket/show.phtml:122
+#: views/importations/pocket/show.phtml:125
 msgid "Import non-archived links in your bookmarks"
 msgstr "Importer vos liens non-archivés dans vos signets"
 
-#: views/importations/pocket/show.phtml:127
+#: views/importations/pocket/show.phtml:130
 #, php-format
 msgid "%s will import your non-archived Pocket links in your bookmarks."
 msgstr "%s importera vos liens Pocket non-archivés dans vos signets."
 
-#: views/importations/pocket/show.phtml:131
+#: views/importations/pocket/show.phtml:134
 #, php-format
 msgid "%s will leave your bookmarks unchanged."
 msgstr "%s ne modifiera pas vos signets."
 
-#: views/importations/pocket/show.phtml:148
+#: views/importations/pocket/show.phtml:151
 msgid "Import your Pocket favorites in a dedicated collection"
 msgstr "Importer vos favoris Pocket dans une collection dédiée"
 
-#: views/importations/pocket/show.phtml:153
+#: views/importations/pocket/show.phtml:156
 #, php-format
 msgid ""
 "%s doesn’t provide favorites, but it’ll import them in a collection named "
@@ -1252,21 +1221,21 @@ msgstr ""
 "%s ne propose pas de système de favoris, mais il les importera dans une "
 "collection appelée « Favoris Pocket »."
 
-#: views/importations/pocket/show.phtml:157
+#: views/importations/pocket/show.phtml:160
 #, php-format
 msgid "%s doesn’t provide favorites, so they’ll be ignored."
 msgstr "%s ne propose pas de système de favoris, ils seront donc ignorés."
 
-#: views/importations/pocket/show.phtml:164
+#: views/importations/pocket/show.phtml:167
 msgid "Start the import"
 msgstr "Démarrer l’importation"
 
-#: views/importations/pocket/show.phtml:171
+#: views/importations/pocket/show.phtml:174
 #, php-format
 msgid "connected with account <em>%s</em>"
 msgstr "connecté‧e avec le compte <em>%s</em>"
 
-#: views/importations/pocket/show.phtml:180
+#: views/importations/pocket/show.phtml:183
 msgid "Connect to Pocket"
 msgstr "Se connecter à Pocket"
 
@@ -1278,8 +1247,8 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/links/_link.phtml:54 views/links/searches/show.phtml:98
-#: views/links/searches/show.phtml:155 views/links/show.phtml:33
+#: views/links/_link.phtml:54 views/links/searches/show.phtml:100
+#: views/links/searches/show.phtml:157 views/links/show.phtml:33
 #: views/links/show_public.phtml:45
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
@@ -1310,7 +1279,7 @@ msgstr ""
 msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
-#: views/links/_link.phtml:100 views/links/searches/show.phtml:108
+#: views/links/_link.phtml:100 views/links/searches/show.phtml:110
 #, php-format
 msgid "%d comment"
 msgid_plural "%d comments"
@@ -1370,6 +1339,12 @@ msgstr "lire"
 msgid "Link collections"
 msgstr "Collections du lien"
 
+#: views/links/collections/index.phtml:22
+#: views/links/collections/index_adding.phtml:23
+#: views/links/collections/index_news.phtml:30 views/links/new.phtml:54
+msgid "Collections"
+msgstr "Collections"
+
 #: views/links/collections/index.phtml:53
 #: views/links/collections/index.phtml:56
 #: views/links/collections/index_adding.phtml:54
@@ -1421,13 +1396,21 @@ msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
 msgid "Delete the link"
 msgstr "Supprimer le lien"
 
-#: views/links/index.phtml:17
+#: views/links/index.phtml:19
 msgid "Organize your links in your bookmarks and your collections."
 msgstr "Organisez vos liens dans vos signets et vos collections."
 
-#: views/links/index.phtml:43
+#: views/links/index.phtml:34
+msgid "Create a collection"
+msgstr "Créer une collection"
+
+#: views/links/index.phtml:45
 msgid "Your links to read later"
 msgstr "Vos liens à lire plus tard"
+
+#: views/links/index.phtml:57
+msgid "All your links marked as read"
+msgstr "Tous vos liens marqués comme lu"
 
 #: views/links/new.phtml:3 views/links/new.phtml:11
 msgid "New link"
@@ -1437,23 +1420,23 @@ msgstr "Nouveau lien"
 msgid "What’s the address of the link?"
 msgstr "Quelle est l’adresse du lien ?"
 
-#: views/links/new.phtml:116 views/onboarding/step3.phtml:57
+#: views/links/new.phtml:116 views/onboarding/step6.phtml:37
 msgid "Make your life easier by using the Web extension on"
 msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
 
-#: views/links/new.phtml:122 views/onboarding/step3.phtml:64
+#: views/links/new.phtml:122 views/onboarding/step6.phtml:44
 msgid "or"
 msgstr "ou"
 
-#: views/links/searches/show.phtml:32
+#: views/links/searches/show.phtml:34
 msgid "What’s the address of the link or feed?"
 msgstr "Quelle est l’adresse du lien ou du flux ?"
 
-#: views/links/searches/show.phtml:48 views/links/searches/show.phtml:62
+#: views/links/searches/show.phtml:50 views/links/searches/show.phtml:64
 msgid "Search"
 msgstr "Rechercher"
 
-#: views/links/searches/show.phtml:172
+#: views/links/searches/show.phtml:174
 msgid "Add"
 msgstr "Ajouter"
 
@@ -1562,16 +1545,16 @@ msgstr ""
 "P.S. – Si vous n’avez pas demandé à réinitialiser votre mot de passe, vous "
 "pouvez ignorer ce courriel."
 
-#: views/my/account/deletion.phtml:3 views/my/account/deletion.phtml:10
+#: views/my/account/deletion.phtml:3 views/my/account/deletion.phtml:13
 msgid "Account deletion"
 msgstr "Suppression du compte"
 
-#: views/my/account/deletion.phtml:15
+#: views/my/account/deletion.phtml:18
 #, php-format
 msgid "You’re connected as %s."
 msgstr "Vous êtes connecté‧e en tant que %s."
 
-#: views/my/account/deletion.phtml:19
+#: views/my/account/deletion.phtml:22
 msgid ""
 "You’re about to delete your account and your data will be lost. This can’t "
 "be canceled!"
@@ -1579,26 +1562,26 @@ msgstr ""
 "Vous êtes sur le point de supprimer votre compte : vos données seront alors "
 "perdues. Cette action ne peut pas être annulée !"
 
-#: views/my/account/deletion.phtml:34
+#: views/my/account/deletion.phtml:37
 msgid "Your password"
 msgstr "Votre mot de passe"
 
-#: views/my/account/deletion.phtml:53 views/my/security/show_confirmed.phtml:76
+#: views/my/account/deletion.phtml:56 views/my/security/show_confirmed.phtml:76
 #: views/my/security/show_to_confirm.phtml:47 views/passwords/edit.phtml:50
-#: views/registrations/new.phtml:104 views/sessions/new.phtml:76
+#: views/registrations/new.phtml:107 views/sessions/new.phtml:79
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
 "Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
 "mot de passe visuellement."
 
-#: views/my/account/deletion.phtml:68
+#: views/my/account/deletion.phtml:71
 msgid "You must type your password so we can confirm your identity."
 msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/my/account/deletion.phtml:74
+#: views/my/account/deletion.phtml:77
 msgid "Delete your account"
 msgstr "Supprimer votre compte"
 
@@ -1665,7 +1648,7 @@ msgstr ""
 msgid "Your name"
 msgstr "Votre nom"
 
-#: views/my/profile/edit.phtml:75 views/registrations/new.phtml:32
+#: views/my/profile/edit.phtml:75 views/registrations/new.phtml:35
 #, php-format
 msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
@@ -1678,11 +1661,11 @@ msgstr "Votre langue"
 msgid "You can change your login details here."
 msgstr "Vous pouvez changer vos identifiants de connexion ici."
 
-#: views/my/security/show_confirmed.phtml:29 views/registrations/new.phtml:56
+#: views/my/security/show_confirmed.phtml:29 views/registrations/new.phtml:59
 msgid "Your email address"
 msgstr "Votre adresse courriel"
 
-#: views/my/security/show_confirmed.phtml:49 views/registrations/new.phtml:76
+#: views/my/security/show_confirmed.phtml:49 views/registrations/new.phtml:79
 msgid ""
 "We only send emails necessary for the operation of the service, or in the "
 "event of a problem with your account."
@@ -1715,19 +1698,19 @@ msgstr "Votre mot de passe actuel"
 msgid "Confirm your password"
 msgstr "Confirmer votre mot de passe"
 
-#: views/my/validation/show.phtml:3 views/my/validation/show.phtml:11
+#: views/my/validation/show.phtml:3 views/my/validation/show.phtml:14
 msgid "Account validation"
 msgstr "Validation du compte"
 
-#: views/my/validation/show.phtml:16
+#: views/my/validation/show.phtml:19
 msgid "Your account is now validated."
 msgstr "Votre compte est maintenant validé."
 
-#: views/my/validation/show.phtml:21
+#: views/my/validation/show.phtml:24
 msgid "Nice! Go to the home page"
 msgstr "Chouette ! Retourner à la page d’accueil"
 
-#: views/my/validation/show.phtml:26
+#: views/my/validation/show.phtml:29
 msgid ""
 "You must validate your account so we can contact you in case of a change in "
 "our end-user license agreement or a problem concerning your account. "
@@ -1739,28 +1722,28 @@ msgstr ""
 "votre compte. <strong>Vous devriez avoir reçu un courriel contenant un lien "
 "permettant cela.</strong>"
 
-#: views/my/validation/show.phtml:31
+#: views/my/validation/show.phtml:34
 #, php-format
 msgid "We’ve just sent you an email at %s"
 msgstr "Nous vous avons envoyé un courriel à %s"
 
-#: views/my/validation/show.phtml:35
+#: views/my/validation/show.phtml:38
 msgid "Still nothing? Did you check your spam?"
 msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
 
-#: views/my/validation/show.phtml:48
+#: views/my/validation/show.phtml:51
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
-#: views/news/index.phtml:38
+#: views/news/index.phtml:40
 msgid "Empty the news"
 msgstr "Vider le journal"
 
-#: views/news/index.phtml:57
+#: views/news/index.phtml:59
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/index.phtml:68
+#: views/news/index.phtml:70
 msgid ""
 "You’ll remove all the news links, this action cannot be canceled. Are you "
 "sure?"
@@ -1768,36 +1751,35 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.phtml:74
+#: views/news/index.phtml:76
 msgid "Never see the links again"
 msgstr "Ne plus revoir les liens"
 
-#: views/news/index.phtml:83
+#: views/news/index.phtml:85
 msgid "We haven’t found any relevant links for the moment."
 msgstr "Nous n’avons trouvé aucun lien pertinent pour le moment."
 
-#: views/news/index.phtml:88
+#: views/news/index.phtml:90
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/index.phtml:112 views/onboarding/step5.phtml:31
+#: views/news/index.phtml:114
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/index.phtml:113
+#: views/news/index.phtml:115
 msgid "from your followed feeds"
 msgstr "depuis vos flux suivis"
 
-#: views/news/index.phtml:128 views/onboarding/step5.phtml:43
+#: views/news/index.phtml:130
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
-#: views/news/index.phtml:129 views/news/index.phtml:145
-#: views/onboarding/step5.phtml:44 views/onboarding/step5.phtml:56
+#: views/news/index.phtml:131 views/news/index.phtml:147
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/index.phtml:144 views/onboarding/step5.phtml:55
+#: views/news/index.phtml:146
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 
@@ -1820,21 +1802,23 @@ msgstr "Bienvenue %s !"
 
 #: views/onboarding/step1.phtml:49
 #, php-format
-msgid "The few next screens will explain you the main principles of %s."
-msgstr "Les écrans qui suivent vous expliqueront les principes généraux de %s."
+msgid "The few next screens will explain you the 4 main features of %s."
+msgstr ""
+"Les écrans qui suivent vous expliqueront les 4 principales fonctionnalités "
+"de %s."
 
 #: views/onboarding/step1.phtml:53
 #, php-format
 msgid ""
 "There’s not much to know before getting started with %s. This onboarding "
-"should take less than 5 minutes of your time."
+"should take less than 3 minutes of your time."
 msgstr ""
 "Il n’y a pas grand-chose à savoir avant de pouvoir utiliser %s. Cette "
-"introduction devrait vous prendre moins de 5 minutes."
+"introduction devrait vous prendre moins de 3 minutes à parcourir."
 
-#: views/onboarding/step1.phtml:58 views/onboarding/step2.phtml:41
-#: views/onboarding/step3.phtml:76 views/onboarding/step4.phtml:61
-#: views/onboarding/step5.phtml:66
+#: views/onboarding/step1.phtml:58 views/onboarding/step2.phtml:29
+#: views/onboarding/step3.phtml:29 views/onboarding/step4.phtml:29
+#: views/onboarding/step5.phtml:29
 msgid "Continue"
 msgstr "Continuer"
 
@@ -1843,183 +1827,111 @@ msgid "or skip the onboarding"
 msgstr "ou passer l’introduction"
 
 #: views/onboarding/step2.phtml:3 views/onboarding/step2.phtml:11
-msgid "The big picture"
-msgstr "Vue d’ensemble"
+msgid "Stay informed with the news"
+msgstr "Restez informé‧e avec le journal"
 
-#: views/onboarding/step2.phtml:15
-msgid ""
-"First, you must know about the 3 main features: <em>news</em>, "
-"<em>bookmarks</em> and <em>collections</em>."
+#: views/onboarding/step2.phtml:16
+msgid "The <strong>News</strong> is where you get suggestions of what to read."
 msgstr ""
-"Premièrement, vous devez connaître les 3 fonctionnalités principales : le "
-"<em>journal</em>, les <em>signets</em> et les <em>collections</em>."
+"Le <strong>Journal</strong> est l’endroit où vous obtenez des suggestions de "
+"lecture."
 
-#: views/onboarding/step2.phtml:21
+#: views/onboarding/step2.phtml:20
 msgid ""
-"<strong>News</strong> selects <em>suggestions of what to read</em> from your "
-"bookmarks and followed collections;"
+"It suggests you things to read from your bookmarks or from the feeds that "
+"you follow. It is volontarily limited in time and size <strong>to keep "
+"information overload away from you.</strong>"
 msgstr ""
-"Le <strong>Journal</strong> vous sélectionne des <em>suggestions de liens à "
-"lire</em> depuis vos signets et vos collections suivies ;"
+"Il vous suggère des choses à lire depuis vos signets et les flux que vous "
+"suivez. Il est volontairement limité en temps et en taille <strong>pour vous "
+"tenir éloigné‧e de la surcharge d’informations.</strong>"
 
-#: views/onboarding/step2.phtml:26
+#: views/onboarding/step2.phtml:24
 msgid ""
-"<strong>Bookmarks</strong> is where you save what you want to <em>read "
-"later</em>;"
+"The news is the equivalent of a newsfeed on other social networks, except "
+"that it’s not infinite."
 msgstr ""
-"Les <strong>Signets</strong> vous permettent d’y placer les liens à <em>lire "
-"plus tard</em> ;"
-
-#: views/onboarding/step2.phtml:31
-msgid ""
-"<strong>Collections</strong> is where you <em>organize your links</em> and "
-"can be followed by the community."
-msgstr ""
-"Les <strong>Collections</strong> permettent <em>d’organiser vos liens</em> "
-"et peuvent être suivies par la communauté."
-
-#: views/onboarding/step2.phtml:36
-msgid "Pretty simple, isn’t it?"
-msgstr "Plutôt simple, n’est-ce pas ?"
+"Le journal est l’équivalent des fils d’actualités sur les autres réseaux "
+"sociaux, à la différence qu’il n’est pas infini."
 
 #: views/onboarding/step3.phtml:3 views/onboarding/step3.phtml:11
-msgid "A closer look at the links"
-msgstr "Les liens dans le détail"
+msgid "Store your links"
+msgstr "Stockez vos liens"
 
-#: views/onboarding/step3.phtml:15
-msgid "Links are central. They create bridges with the rest of the Internet."
+#: views/onboarding/step3.phtml:16
+msgid "<strong>My links</strong> regroup your links organized in collections."
 msgstr ""
-"Les liens sont centraux. Ils forment des ponts avec le reste d’Internet."
+"<strong>Mes liens</strong> regroupent vos liens organisés en collections."
 
 #: views/onboarding/step3.phtml:20
-msgid "Put them in collections or bookmarks to find them later;"
+msgid ""
+"By default, you start with 4 collections: <strong>“Bookmarks”, “Links read”, "
+"“My favorites” and “My shares”.</strong> Obviously, you can create as many "
+"collections as you want!"
 msgstr ""
-"Placez-les dans des collections ou vos signets pour les retrouver plus tard ;"
+"Par défaut, vous démarrez avec 4 collections : <strong>« Signets », « Liens "
+"lus », « Mes favoris » et « Mes partages ».</strong> Vous pouvez évidemment "
+"créer autant de collections que vous voulez !"
 
 #: views/onboarding/step3.phtml:24
-msgid "comment them and share your thoughts with the rest of the community;"
-msgstr "commentez-les et partagez vos pensées avec le reste de la communauté ;"
-
-#: views/onboarding/step3.phtml:28
-msgid "discover new links based on what the other users shared."
-msgstr ""
-"découvrez de nouveaux liens à partir de ce que les autres utilisateurs et "
-"utilisatrices ont partagé."
-
-#: views/onboarding/step3.phtml:40
 msgid ""
-"Note: when you’re being asked for an address, you’re supposed to copy-paste "
-"the content of the <abbr>URL</abbr> bar at the top of your browser."
+"All the links you want to find later have their place in the collections."
 msgstr ""
-"Note : lorsque l’on vous demande une adresse, vous devez copier-coller le "
-"contenu de la barre <abbr>URL</abbr> en haut de votre navigateur Internet."
-
-#: views/onboarding/step3.phtml:45
-msgid ""
-"A screenshot of the browser URL bar in Firefox, it contains “https://"
-"contributopia.org/fr/”"
-msgstr ""
-"Une capture d’écran de la barre URL de Firefox, elle contient « https://"
-"contributopia.org/fr/ »"
-
-#: views/onboarding/step3.phtml:51
-msgid ""
-"It should look like this in Firefox. In this example, the address is "
-"<code>https://contributopia.org/fr/</code>"
-msgstr ""
-"Cela devrait ressembler à ça dans Firefox. Dans cet exemple, l’adresse est "
-"<code>https://contributopia.org/fr/</code>"
+"Tous les liens que vous souhaitez retrouver plus tard ont leur place dans "
+"les collections."
 
 #: views/onboarding/step4.phtml:3 views/onboarding/step4.phtml:11
-msgid "Collections and feeds"
-msgstr "Collections et flux"
+msgid "Follow content from Internet"
+msgstr "Suivez le contenu d’Internet"
 
-#: views/onboarding/step4.phtml:15
-msgid "Create collections and share your passions with the rest of the world."
-msgstr "Créez des collections et partagez vos passions avec le reste du monde."
+#: views/onboarding/step4.phtml:16
+msgid ""
+"The <strong>Feeds</strong> list the websites and collections that you follow."
+msgstr ""
+"Les <strong>Flux</strong> listent les sites et les collections que vous "
+"suivez."
 
 #: views/onboarding/step4.phtml:20
-msgid "Collections are a convenient way to organize your links;"
-msgstr "Les collections sont une manière pratique d’organiser vos liens ;"
+#, php-format
+msgid ""
+"A lot of sites can be followed in %s <strong>as long as they offer a "
+"<abbr>RSS</abbr> feed</strong>: most news sites, blogs, podcasts… Even "
+"YouTube channels!"
+msgstr ""
+"Beaucoup de sites peuvent être suivis dans %s <strong>tant qu’ils proposent "
+"un flux <abbr>RSS</abbr></strong> : la plupart des sites d’actualités, les "
+"blogs, les podcasts… Même les chaînes YouTube !"
 
 #: views/onboarding/step4.phtml:24
 msgid ""
-"they can be about anything: culture, education, cooking recipes, local "
-"politics and so on;"
+"What if you could follow everything happening on Internet from one place?"
 msgstr ""
-"elles peuvent traiter de tout : culture, éducation, recettes de cuisine, "
-"politique locale, etc. ;"
-
-#: views/onboarding/step4.phtml:28
-#, php-format
-msgid ""
-"once published, anyone can follow your collection: directly in %s or via a "
-"feed aggregator for external people."
-msgstr ""
-"une fois publiée, n’importe qui peut suivre votre collection : directement "
-"dans %s ou via un agrégateur de flux pour les personnes externes."
-
-#: views/onboarding/step4.phtml:35
-msgid "Speaking of which…"
-msgstr "En parlant de ça…"
-
-#: views/onboarding/step4.phtml:36
-msgid "You may have come across <abbr>RSS</abbr> feeds by the past?"
-msgstr ""
-"Vous êtes peut-être déjà tombé‧e sur des flux <abbr>RSS</abbr> par le passé ?"
-
-#: views/onboarding/step4.phtml:41
-#, php-format
-msgid ""
-"Podcasts, news sites, Youtube channels, blogs: all these can be followed in "
-"%s as well! Feeds are simply external collections."
-msgstr ""
-"Podcasts, sites d’actualité, chaînes Youtube, blogs : tout cela peut "
-"également être suivi dans %s ! Les flux sont simplement des collections "
-"externes."
-
-#: views/onboarding/step4.phtml:48
-msgid ""
-"A screenshot showing the result when searching for the “https://flus.fr” "
-"address: a link and a feed to follow"
-msgstr ""
-"Une capture d’écran montrant le résultat quand on cherche l’adresse "
-"« https://flus.fr » : un lien et un flux à suivre"
-
-#: views/onboarding/step4.phtml:55
-msgid ""
-"For instance, when you’re searching for “https://flus.fr”, you can add the "
-"link to your collections and follow the feed that has been auto-detected."
-msgstr ""
-"Par exemple, lorsque vous cherchez « https://flus.fr », vous pouvez ajouter "
-"le lien à vos collections et suivre le flux qui a été auto-découvert."
+"Et si vous pouviez suivre tout ce qu’il se passe sur Internet depuis un seul "
+"endroit ?"
 
 #: views/onboarding/step5.phtml:3 views/onboarding/step5.phtml:11
-msgid "Understanding the news"
-msgstr "Comprendre le journal"
+msgid "Share with the rest of Internet"
+msgstr "Partagez avec le reste d’Internet"
 
-#: views/onboarding/step5.phtml:15
-msgid "You might have a lot to read everyday."
-msgstr "Il se peut que vous ayez beaucoup de choses à lire chaque jour."
-
-#: views/onboarding/step5.phtml:19
-msgid "The news offers you 3 ways to select links to read:"
-msgstr "Le journal vous propose 3 façons de sélectionner des liens à lire :"
-
-#: views/onboarding/step5.phtml:32
-msgid "from your followed collections"
-msgstr "depuis vos collections suivies"
-
-#: views/onboarding/step5.phtml:61
-#, php-format
+#: views/onboarding/step5.phtml:16
 msgid ""
-"<strong>These pre-selections keep your reading space pleasant in daily use.</"
-"strong> In %s, there is no endless scroll: your <em>peace of mind</em> is "
-"what matters most."
+"The <strong>Profile</strong> is your public page listing all what you share."
 msgstr ""
-"<strong>Ces pré-sélections gardent votre espace de lecture agréable au "
-"quotidien.</strong> Dans %s, il n’y a pas de défilement infini : votre "
-"<em>sérénité</em> est ce qui compte le plus."
+"Le <strong>Profil</strong> est la page publique qui répertorie tout ce que "
+"vous partagez."
+
+#: views/onboarding/step5.phtml:20
+msgid ""
+"Every time you share a link in a public collection, it gets added to your "
+"profile. <strong>Comment on your reading to add a personal touch.</strong>"
+msgstr ""
+"Chaque fois que vous partagez un lien dans une collection publique, il "
+"apparaîtra dans votre profil. <strong>Commentez vos lectures pour y ajouter "
+"une touche personnelle.</strong>"
+
+#: views/onboarding/step5.phtml:24
+msgid "Nothing like spreading the address to your Flus profile around!"
+msgstr "Rien de tel que de diffuser l’adresse de votre profil autour de vous !"
 
 #: views/onboarding/step6.phtml:3 views/onboarding/step6.phtml:11
 msgid "Start exploring"
@@ -2034,41 +1946,28 @@ msgstr ""
 "C’est la fin de cette introduction. Vous devriez maintenant avoir tous les "
 "éléments en main pour utiliser %s de manière efficace."
 
-#: views/onboarding/step6.phtml:26
-msgid ""
-"All the features weren’t explained and new ones are coming regularly. If "
-"you’re lost, stay curious and you should find your way."
-msgstr ""
-"Toutes les fonctionnalités n’ont pas été présentées et de nouvelles arrivent "
-"régulièrement. Si vous vous sentez perdu‧e, soyez curieux ou curieuse et "
-"vous devriez vous en sortir."
+#: views/onboarding/step6.phtml:19
+msgid "You still have things to discover, stay curious!"
+msgstr "Vous avez encore des choses à découvrir, restez curieux ou curieuse !"
 
-#: views/onboarding/step6.phtml:30
-msgid "You can choose <em>your next destination</em>:"
-msgstr "Vous pouvez choisir votre <em>prochaine destination</em> :"
-
-#: views/onboarding/step6.phtml:36
-msgid "Explore the collections"
-msgstr "Explorer les collections"
-
-#: views/onboarding/step6.phtml:42
-msgid "Add new links"
-msgstr "Ajouter des liens"
-
-#: views/onboarding/step6.phtml:50
-msgid "Tip: if you use Pocket, you can also import your links:"
-msgstr ""
-"Astuce : si vous utilisez Pocket, vous pouvez aussi importer vos liens :"
+#: views/onboarding/step6.phtml:24
+#, php-format
+msgid "Start using %s"
+msgstr "Commencer à utiliser %s"
 
 #: views/onboarding/step6.phtml:55
+msgid "Tip: if you use Pocket, you can import your links:"
+msgstr "Astuce : si vous utilisez Pocket, vous pouvez importer vos liens :"
+
+#: views/onboarding/step6.phtml:60
 msgid "Import from Pocket"
 msgstr "Importer depuis Pocket"
 
-#: views/onboarding/step6.phtml:60
+#: views/onboarding/step6.phtml:65
 msgid "More of a user of <abbr>RSS</abbr>?"
 msgstr "Plutôt un ou une utilisatrice de <abbr>RSS</abbr> ?"
 
-#: views/onboarding/step6.phtml:65
+#: views/onboarding/step6.phtml:70
 msgid "Import an <abbr>OPML</abbr> file"
 msgstr "Importer un fichier <abbr>OPML</abbr>"
 
@@ -2093,7 +1992,7 @@ msgstr "Vous êtes en train de modifier le mot de passe de %s."
 msgid "Your new password"
 msgstr "Votre nouveau mot de passe"
 
-#: views/passwords/edit.phtml:31 views/registrations/new.phtml:84
+#: views/passwords/edit.phtml:31 views/registrations/new.phtml:87
 msgid "(recommended at least 8 characters)"
 msgstr "(recommandé au moins 8 caractères)"
 
@@ -2101,29 +2000,29 @@ msgstr "(recommandé au moins 8 caractères)"
 msgid "Change your password"
 msgstr "Modifier votre mot de passe"
 
-#: views/passwords/forgot.phtml:3 views/passwords/forgot.phtml:11
+#: views/passwords/forgot.phtml:3 views/passwords/forgot.phtml:14
 msgid "Reset your password"
 msgstr "Réinitialiser votre mot de passe"
 
-#: views/passwords/forgot.phtml:15
+#: views/passwords/forgot.phtml:18
 msgid "We’ll send you an email with a link to reset your password."
 msgstr ""
 "Nous allons vous envoyer un courriel pour réinitialiser votre mot de passe."
 
-#: views/passwords/forgot.phtml:28
+#: views/passwords/forgot.phtml:31
 msgid "We’ve sent you an email to reset your password."
 msgstr ""
 "Nous vous avons envoyé un courriel pour réinitialiser votre mot de passe."
 
-#: views/passwords/forgot.phtml:34 views/sessions/new.phtml:34
+#: views/passwords/forgot.phtml:37 views/sessions/new.phtml:37
 msgid "Email address"
 msgstr "Adresse courriel"
 
-#: views/passwords/forgot.phtml:57
+#: views/passwords/forgot.phtml:60
 msgid "Send the reset email"
 msgstr "Envoyer le courriel de réinitialisation"
 
-#: views/passwords/forgot.phtml:64
+#: views/passwords/forgot.phtml:67
 msgid "Remember password?"
 msgstr "Mot de passe retrouvé ?"
 
@@ -2166,26 +2065,26 @@ msgstr "Collections publiées"
 msgid "Find here all the links you’ve marked as read."
 msgstr "Retrouvez ici tous les liens que vous avez marqués comme lu."
 
-#: views/registrations/new.phtml:3 views/registrations/new.phtml:12
+#: views/registrations/new.phtml:3 views/registrations/new.phtml:15
 msgid "Registration"
 msgstr "Inscription"
 
-#: views/registrations/new.phtml:17
+#: views/registrations/new.phtml:20
 #, php-format
 msgid "First month is free. <a href=\"%s\">Learn more about pricing.</a>"
 msgstr ""
 "Le premier mois est gratuit. <a href=\"%s\">En savoir plus sur les tarifs.</"
 "a>"
 
-#: views/registrations/new.phtml:30
+#: views/registrations/new.phtml:33
 msgid "How should we name you?"
 msgstr "Comment devons-nous vous appeler ?"
 
-#: views/registrations/new.phtml:82
+#: views/registrations/new.phtml:85
 msgid "And a password"
 msgstr "Et un mot de passe"
 
-#: views/registrations/new.phtml:122
+#: views/registrations/new.phtml:125
 #, php-format
 msgid ""
 "Before going any further, please read <a href=\"%s\" target=\"_blank\">the "
@@ -2195,31 +2094,31 @@ msgstr ""
 "\"_blank\">les conditions générales d’utilisation</a> pour vous assurer que "
 "celles-ci vous conviennent."
 
-#: views/registrations/new.phtml:134
+#: views/registrations/new.phtml:137
 msgid "Accept the terms of service"
 msgstr "Accepter les conditions générales d’utilisation"
 
-#: views/registrations/new.phtml:155
+#: views/registrations/new.phtml:158
 msgid "Already an account?"
 msgstr "Déjà un compte ?"
 
-#: views/sessions/new.phtml:3 views/sessions/new.phtml:12
+#: views/sessions/new.phtml:3 views/sessions/new.phtml:15
 msgid "Log in"
 msgstr "Connexion"
 
-#: views/sessions/new.phtml:18
+#: views/sessions/new.phtml:21
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
 
-#: views/sessions/new.phtml:57
+#: views/sessions/new.phtml:60
 msgid "Password"
 msgstr "Mot de passe"
 
-#: views/sessions/new.phtml:100
+#: views/sessions/new.phtml:103
 msgid "Forgot password?"
 msgstr "Mot de passe oublié ?"
 
-#: views/sessions/new.phtml:107
+#: views/sessions/new.phtml:110
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
