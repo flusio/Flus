@@ -1,14 +1,22 @@
-# This file lists the personal data gathered by flusio and explains the reasons
-# of the collect. It is intended to administrators who want to provide a service
-# based on flusio, to help them to comply to GDPR requirements. Note that the
-# services powered by flusio may collect more data, HTTP logs in particular.
-# As an administrator, you are strongly encouraged to inform your users of
-# their rights and how their data are used and protected.
+# This file lists processing purposes and the personal data gathered by flusio.
+# It is intended to administrators who want to provide a service based on
+# flusio, to help them to comply to GDPR requirements. Note that the services
+# powered by flusio may collect more data, HTTP logs in particular.
+# As an administrator, you are must inform your users of their rights and how
+# their data are used and protected.
+
+purpose: Connect users to their accounts
+lawfulness: legitimate interest
+
+purpose: Adapt the interface for the users
+lawfulness: legitimate interest
+
+purpose: Personalize the users' profiles
+lawfulness: consent
 
 data: email
 required: true
 visibility: private
-lawfulness: legitimate interest
 description: The email address is used to connect users to the service. It is
 required and must be verified to allow the administrator to communicate with
 its users in case of compromise of personal data. It also can be used to notice
@@ -21,7 +29,6 @@ database 6 months after their inscription.
 data: password
 required: true
 visibility: private
-lawfulness: legitimate interest
 description: The password is used to connect users to the service.
 mitigation: Only hashes of the passwords are stored in database. It uses bcrypt
 with default options to create the hashes (see PHP password_hash function).
@@ -29,14 +36,12 @@ with default options to create the hashes (see PHP password_hash function).
 data: username
 required: true
 visibility: public
-lawfulness: legitimate interest
 description: The username is used to identify users publicly over the service.
 mitigation: Users can use a pseudonyme if they don’t want to use their real name.
 
 data: locale
 required: true
 visibility: semi-public
-lawfulness: legitimate interest
 description: The locale is used to translate the interface to the user's language.
 It is not directly revealed publicly, but it can be guessed by other users via
 the Atom feeds (automatically set to their owners' language).
@@ -44,6 +49,5 @@ the Atom feeds (automatically set to their owners' language).
 data: avatar
 required: false
 visibility: public
-legal: consent
 description: Avatars are images used to distinguish users visually and express
 their identity.
