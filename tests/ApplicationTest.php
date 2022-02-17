@@ -77,6 +77,37 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user_id, $user->id);
     }
 
+    public function testRunSetsAutoloadModal()
+    {
+        $user = $this->login([
+            'autoload_modal' => 'showcase navigation',
+        ]);
+        $request = new \Minz\Request('GET', '/news');
+
+        $application = new Application();
+        $response = $application->run($request);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, \Minz\Url::for('showcase', ['id' => 'navigation']));
+        $user = models\User::find($user->id);
+        $this->assertEmpty($user->autoload_modal);
+    }
+
+    public function testRunDoesNotResetAutoloadModalOnRedirections()
+    {
+        $user = $this->login([
+            'autoload_modal' => 'showcase navigation',
+        ]);
+        $request = new \Minz\Request('GET', '/collections');
+
+        $application = new Application();
+        $response = $application->run($request);
+
+        $this->assertResponseCode($response, 301);
+        $user = models\User::find($user->id);
+        $this->assertSame('showcase navigation', $user->autoload_modal);
+    }
+
     public function testRunRedirectsIfUserOlderThan1DaysNotValidated()
     {
         $created_at = \Minz\Time::ago($this->fake('numberBetween', 2, 42), 'days');

@@ -100,8 +100,6 @@ class Application
 
             if ($current_user->autoload_modal === 'showcase navigation') {
                 $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'navigation']);
-                $current_user->autoload_modal = '';
-                $current_user->save();
             }
 
             // Force CSRF token to avoid weird issues when user did nothing for a while
@@ -141,6 +139,15 @@ class Application
         $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
         $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
         $response->setHeader('X-Frame-Options', 'deny');
+
+        if (
+            $current_user &&
+            $current_user->autoload_modal === 'showcase navigation' &&
+            $response->code() === 200
+        ) {
+            $current_user->autoload_modal = '';
+            $current_user->save();
+        }
 
         return $response;
     }
