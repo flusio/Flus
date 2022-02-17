@@ -190,8 +190,9 @@
                     class="layout__back"
                     data-controller="back-button"
                     data-action="popstate@window->back-button#handlePopstate"
-                    data-back-button-page-title-value="<?= $title ?>"
-                    data-back-button-clear-history-value="<?= $enable_back ? 'false' : 'true' ?>"
+                    data-back-button-title-value="<?= $back_options['title'] ?>"
+                    data-back-button-reset-value="<?= $back_options['reset'] ? 'true' : 'false' ?>"
+                    data-back-button-track-value="<?= $back_options['track'] ? 'true' : 'false' ?>"
                 >
                     <a
                         href="#"

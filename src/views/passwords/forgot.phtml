@@ -2,7 +2,10 @@
     $this->layout('base.phtml', [
         'title' => _('Reset your password'),
         'canonical' => url_full('forgot password'),
-        'enable_back' => false,
+        'back_options' => [
+            'reset' => true,
+            'track' => false,
+        ],
     ]);
 ?>
 

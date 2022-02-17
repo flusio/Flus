@@ -9,6 +9,14 @@
         $layout_name = 'not_connected.phtml';
     }
 
+    $default_back_options = [
+        'title' => $title,
+        'reset' => false,
+        'track' => true,
+    ];
+    $back_options = $back_options ?? [];
+    $back_options = array_merge($default_back_options, $back_options);
+
     $this->layout($layout_name, [
         // The title can be considered as safe since it's already sanitized in
         // the calling view.
@@ -19,7 +27,7 @@
         'canonical' => $canonical,
         'alternates' => $alternates ?? [],
         'open_graph' => $open_graph ?? [],
-        'enable_back' => $enable_back ?? true,
+        'back_options' => $back_options,
     ]);
 
     echo $this->safe('content');

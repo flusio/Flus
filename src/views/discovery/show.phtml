@@ -9,7 +9,9 @@
             'locale' => $current_locale,
             'url' => url_full('discovery'),
         ],
-        'enable_back' => $current_user ? true : false,
+        'back_options' => [
+            'reset' => true,
+        ],
     ]);
 ?>
 

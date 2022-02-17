@@ -3,7 +3,10 @@
         'title' => _('Registration'),
         'canonical' => url_full('registration'),
         'current_page' => 'registration',
-        'enable_back' => false,
+        'back_options' => [
+            'reset' => true,
+            'track' => false,
+        ],
     ]);
 ?>
 

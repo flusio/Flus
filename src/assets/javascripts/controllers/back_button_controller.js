@@ -5,25 +5,34 @@ import icon from 'js/icon.js';
 
 export default class extends Controller {
     static values = {
-        pageTitle: String,
-        clearHistory: Boolean,
+        title: String,
+        reset: Boolean,
+        track: Boolean,
     }
 
     static targets = ['button']
 
     initialize () {
-        // Stack the current path at the top of the history
-        const currentPath = window.location.pathname + window.location.search;
         let backHistory = this.getBackHistory();
-        if (this.clearHistoryValue) {
+
+        if (this.resetValue) {
             backHistory = [];
         }
-        this.pushPathToHistory(backHistory, currentPath);
+
+        if (this.trackValue) {
+            // Stack the current path at the top of the history only if we’re
+            // asked to track the current page
+            const currentPath = window.location.pathname + window.location.search;
+            this.pushPathToHistory(backHistory, currentPath);
+        }
+
         window.localStorage.setItem('back-history', JSON.stringify(backHistory));
 
         // We look for the path preceding the current path. It must be the
-        // second last item of the history (since current path is always last)
-        const backItem = backHistory[backHistory.length - 2];
+        // second last item of the history (if current path is tracked), or the
+        // last item (if current path is not tracked).
+        const previousItemIndex = backHistory.length - (this.trackValue ? 2 : 1);
+        const backItem = backHistory[previousItemIndex];
         if (backItem) {
             // If the item exists, we update the back button
             this.buttonTarget.href = backItem.path;
@@ -78,7 +87,7 @@ export default class extends Controller {
             backHistory[backHistory.length - 1].path !== path
         ) {
             backHistory.push({
-                title: this.pageTitleValue,
+                title: this.titleValue,
                 path: path,
             });
         }
