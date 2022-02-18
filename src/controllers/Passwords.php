@@ -17,13 +17,14 @@ class Passwords
     /**
      * Show the form to send email to reset the password.
      *
-     * @response 302 / If connected
+     * @response 302 /
+     *     If the user is connected or if the demo is enabled
      * @response 200
      */
     public function forgot($request)
     {
         $user = auth\CurrentUser::get();
-        if ($user) {
+        if ($user || \Minz\Configuration::$application['demo']) {
             return Response::redirect('home');
         }
 
@@ -39,6 +40,8 @@ class Passwords
      * @request_param string csrf
      * @request_param string email
      *
+     * @response 302 /
+     *     If the user is connected or if the demo is enabled
      * @response 400
      *     If the csrf token or email is invalid
      * @response 302 /password/forgot
@@ -46,6 +49,11 @@ class Passwords
      */
     public function reset($request)
     {
+        $user = auth\CurrentUser::get();
+        if ($user || \Minz\Configuration::$application['demo']) {
+            return Response::redirect('home');
+        }
+
         $email = $request->param('email', '');
         $csrf = $request->param('csrf');
 

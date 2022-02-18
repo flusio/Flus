@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-02-17 11:52+0100\n"
-"PO-Revision-Date: 2022-02-17 11:53+0100\n"
+"POT-Creation-Date: 2022-02-18 09:50+0100\n"
+"PO-Revision-Date: 2022-02-18 09:50+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -48,7 +48,7 @@ msgstr "Afficher"
 #: controllers/Collections.php:99 controllers/Collections.php:303
 #: controllers/Feeds.php:108 controllers/Groups.php:90
 #: controllers/Links.php:179 controllers/News.php:77
-#: controllers/Passwords.php:80 controllers/Passwords.php:183
+#: controllers/Passwords.php:88 controllers/Passwords.php:191
 #: controllers/Registrations.php:104 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Filters.php:104
 #: controllers/collections/Followers.php:48
@@ -103,21 +103,21 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:58 models/User.php:572
+#: controllers/Passwords.php:66 models/User.php:572
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: controllers/Passwords.php:71 controllers/Sessions.php:98
+#: controllers/Passwords.php:79 controllers/Sessions.php:98
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: controllers/Passwords.php:115 controllers/Passwords.php:122
-#: controllers/Passwords.php:162 controllers/Passwords.php:169
+#: controllers/Passwords.php:123 controllers/Passwords.php:130
+#: controllers/Passwords.php:170 controllers/Passwords.php:177
 #: controllers/my/Validation.php:58 controllers/my/Validation.php:71
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: controllers/Passwords.php:128 controllers/Passwords.php:175
+#: controllers/Passwords.php:136 controllers/Passwords.php:183
 msgid "The token has expired, you should reset your password again."
 msgstr ""
 "Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
@@ -2114,11 +2114,11 @@ msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
 msgid "Password"
 msgstr "Mot de passe"
 
-#: views/sessions/new.phtml:103
+#: views/sessions/new.phtml:104
 msgid "Forgot password?"
 msgstr "Mot de passe oublié ?"
 
-#: views/sessions/new.phtml:110
+#: views/sessions/new.phtml:112
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 

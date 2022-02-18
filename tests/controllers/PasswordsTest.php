@@ -45,6 +45,16 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
+    public function testForgotRedirectsIfDemoIsEnabled()
+    {
+        \Minz\Configuration::$application['demo'] = true;
+
+        $response = $this->appRun('get', '/password/forgot');
+
+        \Minz\Configuration::$application['demo'] = false;
+        $this->assertResponseCode($response, 302, '/');
+    }
+
     public function testResetRedirectsCorrectly()
     {
         $this->freeze($this->fake('dateTime'));
@@ -123,6 +133,48 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFlash('email_sent', true);
+    }
+
+    public function testResetRedirectsIfConnected()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $csrf = \Minz\CSRF::generate();
+        $email = $this->fake('email');
+        $user = $this->login([
+            'email' => $email,
+            'reset_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/password/forgot', [
+            'csrf' => $csrf,
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $user = models\User::find($user->id);
+        $this->assertNull($user->reset_token);
+    }
+
+    public function testResetRedirectsIfDemoIsEnabled()
+    {
+        \Minz\Configuration::$application['demo'] = true;
+        $this->freeze($this->fake('dateTime'));
+        $csrf = \Minz\CSRF::generate();
+        $email = $this->fake('email');
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'reset_token' => null,
+        ]);
+
+        $response = $this->appRun('post', '/password/forgot', [
+            'csrf' => $csrf,
+            'email' => $email,
+        ]);
+
+        \Minz\Configuration::$application['demo'] = false;
+        $this->assertResponseCode($response, 302, '/');
+        $user = models\User::find($user_id);
+        $this->assertNull($user->reset_token);
     }
 
     public function testResetFailsIfEmailIsEmpty()

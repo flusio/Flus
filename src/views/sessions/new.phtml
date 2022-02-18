@@ -98,11 +98,13 @@
         </div>
     </form>
 
-    <p class="paragraph--centered">
-        <a href="<?= url('forgot password') ?>">
-            <?= _('Forgot password?') ?>
-        </a>
-    </p>
+    <?php if (!$demo): ?>
+        <p class="paragraph--centered">
+            <a href="<?= url('forgot password') ?>">
+                <?= _('Forgot password?') ?>
+            </a>
+        </p>
+    <?php endif; ?>
 
     <?php if ($registrations_opened): ?>
         <p class="paragraph--centered">
