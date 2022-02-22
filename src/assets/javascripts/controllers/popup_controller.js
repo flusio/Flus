@@ -5,13 +5,20 @@ export default class extends Controller {
         this.element.open = true;
     }
 
-    close (e) {
-        if (!this.element.contains(e.target)) {
-            this.element.open = false;
-        }
-    }
-
     toggle (e) {
         this.element.open = !this.element.open;
+    }
+
+    closeOnClickOutside (e) {
+        if (this.element.contains(e.target)) {
+            // the user clicked on an element inside the popup menu
+            return;
+        }
+
+        if (!this.element.open) {
+            return;
+        }
+
+        this.element.open = false;
     }
 };
