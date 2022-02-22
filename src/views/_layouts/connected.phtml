@@ -123,7 +123,7 @@
                     <details
                         class="header__avatar-container header__secondary popup"
                         data-controller="popup"
-                        data-action="click@window->popup#closeOnClickOutside"
+                        data-action="click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
                     >
                         <summary class="popup__opener" title="<?= _('Open the menu') ?>">
                             <img class="header__avatar" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />

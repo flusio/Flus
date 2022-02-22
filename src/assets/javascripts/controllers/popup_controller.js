@@ -21,4 +21,21 @@ export default class extends Controller {
 
         this.element.open = false;
     }
+
+    closeOnEscape (e) {
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        if (!this.element.open) {
+            return;
+        }
+
+        this.element.open = false;
+
+        const summaryElement = this.element.querySelector('summary');
+        if (summaryElement) {
+            summaryElement.focus();
+        }
+    }
 };

@@ -70,7 +70,7 @@
             <details
                 class="popup"
                 data-controller="popup"
-                data-action="click@window->popup#closeOnClickOutside"
+                data-action="click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
             >
                 <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
                     <button class="button--small" type="button" data-action="popup#toggle">
