@@ -1,17 +1,48 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    open (e) {
-        this.element.open = true;
-    }
-
-    close (e) {
-        if (!this.element.contains(e.target)) {
-            this.element.open = false;
+    connect () {
+        const summaryElement = this.element.querySelector('summary');
+        if (summaryElement) {
+            summaryElement.setAttribute('aria-haspopup', 'menu');
+            summaryElement.setAttribute('aria-expanded', this.element.open);
         }
     }
 
-    toggle (e) {
-        this.element.open = !this.element.open;
+    update (e) {
+        const summaryElement = this.element.querySelector('summary');
+        if (summaryElement) {
+            summaryElement.setAttribute('aria-expanded', this.element.open);
+        }
+    }
+
+    closeOnClickOutside (e) {
+        if (this.element.contains(e.target)) {
+            // the user clicked on an element inside the popup menu
+            return;
+        }
+
+        if (!this.element.open) {
+            return;
+        }
+
+        this.element.open = false;
+    }
+
+    closeOnEscape (e) {
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        if (!this.element.open) {
+            return;
+        }
+
+        this.element.open = false;
+
+        const summaryElement = this.element.querySelector('summary');
+        if (summaryElement) {
+            summaryElement.focus();
+        }
     }
 };

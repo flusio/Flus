@@ -1,4 +1,6 @@
-button {
+button,
+.button {
+    display: inline-block;
     padding: var(--space-small) var(--space-medium);
 
     color: var(--color-text);
@@ -18,12 +20,16 @@ button {
 }
 
 button:hover,
-button:focus {
+button:focus,
+.button:hover,
+.button:focus {
     background-color: var(--color-white);
 }
 
 button:focus,
-button:active {
+button:active,
+.button:focus,
+.button:active {
     border-color: var(--border-active-color);
 }
 

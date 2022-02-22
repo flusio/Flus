@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-02-18 09:50+0100\n"
-"PO-Revision-Date: 2022-02-18 09:50+0100\n"
+"POT-Creation-Date: 2022-02-22 17:20+0100\n"
+"PO-Revision-Date: 2022-02-22 17:20+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:39
-#: views/_layouts/connected.phtml:203
-#: views/_layouts/connected_blocked.phtml:162
+#: views/_layouts/connected.phtml:207
+#: views/_layouts/connected_blocked.phtml:166
 #: views/_layouts/not_connected.phtml:149
 msgid "Back"
 msgstr "Retour"
@@ -586,27 +586,25 @@ msgstr "Nouveau"
 
 #: views/_layouts/connected.phtml:128 views/_layouts/connected.phtml:131
 #: views/_layouts/connected_blocked.phtml:87
-#: views/_layouts/connected_blocked.phtml:90 views/collections/show.phtml:75
-#: views/collections/show_public.phtml:109 views/links/_link.phtml:120
-#: views/links/_link.phtml:124 views/links/show.phtml:82
-#: views/links/show.phtml:86
-msgid "Open the menu"
-msgstr "Ouvrir le menu"
+#: views/_layouts/connected_blocked.phtml:90
+#, php-format
+msgid "Menu of %s"
+msgstr "Menu de %s"
 
-#: views/_layouts/connected.phtml:144
-#: views/_layouts/connected_blocked.phtml:103 views/my/profile/edit.phtml:3
+#: views/_layouts/connected.phtml:145
+#: views/_layouts/connected_blocked.phtml:104 views/my/profile/edit.phtml:3
 #: views/my/profile/edit.phtml:12
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:153
-#: views/_layouts/connected_blocked.phtml:112 views/my/account/show.phtml:3
+#: views/_layouts/connected.phtml:155
+#: views/_layouts/connected_blocked.phtml:114 views/my/account/show.phtml:3
 #: views/my/account/show.phtml:11
 msgid "Account & data"
 msgstr "Compte & données"
 
-#: views/_layouts/connected.phtml:162
-#: views/_layouts/connected_blocked.phtml:121
+#: views/_layouts/connected.phtml:165
+#: views/_layouts/connected_blocked.phtml:124
 #: views/my/security/show_confirmed.phtml:3
 #: views/my/security/show_confirmed.phtml:11
 #: views/my/security/show_to_confirm.phtml:3
@@ -614,22 +612,22 @@ msgstr "Compte & données"
 msgid "Login & security"
 msgstr "Identifiants & sécurité"
 
-#: views/_layouts/connected.phtml:173
-#: views/_layouts/connected_blocked.phtml:132 views/support/show.phtml:3
+#: views/_layouts/connected.phtml:177
+#: views/_layouts/connected_blocked.phtml:136 views/support/show.phtml:3
 #: views/support/show.phtml:11
 msgid "Support"
 msgstr "Support"
 
-#: views/_layouts/connected.phtml:180
-#: views/_layouts/connected_blocked.phtml:139
+#: views/_layouts/connected.phtml:184
+#: views/_layouts/connected_blocked.phtml:143
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:237 views/_layouts/not_connected.phtml:188
+#: views/_layouts/connected.phtml:241 views/_layouts/not_connected.phtml:188
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:238 views/_layouts/not_connected.phtml:189
+#: views/_layouts/connected.phtml:242 views/_layouts/not_connected.phtml:189
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -697,7 +695,7 @@ msgstr "Retour à la page d’accueil"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.phtml:30 views/collections/show.phtml:155
+#: views/bookmarks/index.phtml:30 views/collections/show.phtml:159
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -902,24 +900,26 @@ msgid "created by <a href=\"%s\">you</a>"
 msgstr "créée par <a href=\"%s\">vous</a>"
 
 #: views/collections/show.phtml:78 views/collections/show_public.phtml:112
+#: views/links/_link.phtml:120 views/links/_link.phtml:124
+#: views/links/show.phtml:82 views/links/show.phtml:86
 msgid "Actions"
 msgstr "Actions"
 
-#: views/collections/show.phtml:92 views/groups/_group.phtml:23
-#: views/groups/_group.phtml:37 views/links/_link.phtml:140
+#: views/collections/show.phtml:93 views/groups/_group.phtml:23
+#: views/groups/_group.phtml:37 views/links/_link.phtml:141
 #: views/links/searches/show.phtml:124 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/collections/show.phtml:104 views/collections/show_public.phtml:138
+#: views/collections/show.phtml:106 views/collections/show_public.phtml:140
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
-#: views/collections/show.phtml:116
+#: views/collections/show.phtml:119
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
-#: views/collections/show.phtml:129 views/collections/show_public.phtml:150
+#: views/collections/show.phtml:133 views/collections/show_public.phtml:153
 msgid "Copy the link"
 msgstr "Copier le lien"
 
@@ -947,24 +947,24 @@ msgstr ""
 msgid "Created by <a href=\"%s\">%s</a>"
 msgstr "Créée par <a href=\"%s\">%s</a>"
 
-#: views/collections/show_public.phtml:126
+#: views/collections/show_public.phtml:127
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show_public.phtml:162 views/news/index.phtml:50
+#: views/collections/show_public.phtml:165 views/news/index.phtml:50
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/collections/show_public.phtml:172 views/links/searches/show.phtml:209
+#: views/collections/show_public.phtml:175 views/links/searches/show.phtml:209
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:183
-#: views/collections/show_public.phtml:197 views/links/searches/show.phtml:218
+#: views/collections/show_public.phtml:186
+#: views/collections/show_public.phtml:200 views/links/searches/show.phtml:218
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:225
+#: views/collections/show_public.phtml:228
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -1290,47 +1290,47 @@ msgstr[1] "%d commentaires"
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.phtml:153
+#: views/links/_link.phtml:155
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:163
+#: views/links/_link.phtml:165
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:176
+#: views/links/_link.phtml:178
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.phtml:188 views/links/_link.phtml:192
+#: views/links/_link.phtml:190 views/links/_link.phtml:194
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/links/_link.phtml:199
+#: views/links/_link.phtml:201
 msgid "Remove from the news…"
 msgstr "Retirer du journal…"
 
-#: views/links/_link.phtml:207
+#: views/links/_link.phtml:209
 msgid "and mark as read"
 msgstr "et marquer comme lu"
 
-#: views/links/_link.phtml:216
+#: views/links/_link.phtml:218
 msgid "and read later"
 msgstr "et lire plus tard"
 
-#: views/links/_link.phtml:227
+#: views/links/_link.phtml:229
 msgid "and never see again"
 msgstr "et ne plus revoir"
 
-#: views/links/_link.phtml:242 views/links/_link.phtml:247
+#: views/links/_link.phtml:244 views/links/_link.phtml:249
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/links/_link.phtml:242 views/links/_link.phtml:252
+#: views/links/_link.phtml:244 views/links/_link.phtml:254
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/links/_link.phtml:266 views/links/show.phtml:49
+#: views/links/_link.phtml:268 views/links/show.phtml:49
 #: views/links/show_public.phtml:61
 msgid "read"
 msgstr "lire"
@@ -1372,7 +1372,7 @@ msgstr "Masquer ce lien dans les collections publiques"
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
-#: views/links/collections/index_news.phtml:72 views/links/show.phtml:130
+#: views/links/collections/index_news.phtml:72 views/links/show.phtml:131
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -1449,19 +1449,19 @@ msgstr "Flux de syndication de commentaires sur %s"
 msgid "Are you sure that you want to delete this message?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
 
-#: views/links/show.phtml:104
+#: views/links/show.phtml:105
 msgid "Delete"
 msgstr "Supprimer"
 
-#: views/links/show.phtml:132
+#: views/links/show.phtml:133
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:154
+#: views/links/show.phtml:155
 msgid "Comment"
 msgstr "Commenter"
 
-#: views/links/show.phtml:161
+#: views/links/show.phtml:162
 msgid "This link being hidden, the comments are private."
 msgstr "Ce lien étant masqué, les commentaires sont privés."
 
@@ -1751,35 +1751,35 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.phtml:76
+#: views/news/index.phtml:77
 msgid "Never see the links again"
 msgstr "Ne plus revoir les liens"
 
-#: views/news/index.phtml:85
+#: views/news/index.phtml:86
 msgid "We haven’t found any relevant links for the moment."
 msgstr "Nous n’avons trouvé aucun lien pertinent pour le moment."
 
-#: views/news/index.phtml:90
+#: views/news/index.phtml:91
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/index.phtml:114
+#: views/news/index.phtml:115
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/index.phtml:115
+#: views/news/index.phtml:116
 msgid "from your followed feeds"
 msgstr "depuis vos flux suivis"
 
-#: views/news/index.phtml:130
+#: views/news/index.phtml:131
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
-#: views/news/index.phtml:131 views/news/index.phtml:147
+#: views/news/index.phtml:132 views/news/index.phtml:148
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/index.phtml:146
+#: views/news/index.phtml:147
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 

@@ -123,22 +123,23 @@
                     <details
                         class="header__avatar-container header__secondary popup"
                         data-controller="popup"
-                        data-action="click@window->popup#close"
+                        data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
                     >
-                        <summary class="popup__opener" title="<?= _('Open the menu') ?>">
+                        <summary class="popup__opener" title="<?= _f('Menu of %s', protect($current_user->username)) ?>">
                             <img class="header__avatar" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
                             <span class="sr-only">
-                                <?= _('Open the menu') ?>
+                                <?= _f('Menu of %s', protect($current_user->username)) ?>
                             </span>
                         </summary>
 
-                        <nav class="popup__container popup__container--left">
+                        <nav class="popup__container popup__container--left" role="menu">
                             <div class="popup__title"><?= protect($current_user->username) ?></div>
 
                             <a
                                 class="popup__item popup__item--link"
                                 <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('profile', ['id' => $current_user->id]) ?>"
+                                role="menuitem"
                             >
                                 <?= icon('avatar') ?>
                                 <?= _('Profile') ?>
@@ -148,6 +149,7 @@
                                 class="popup__item popup__item--link"
                                 <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('account') ?>"
+                                role="menuitem"
                             >
                                 <?= icon('cog') ?>
                                 <?= _('Account & data') ?>
@@ -157,6 +159,7 @@
                                 class="popup__item popup__item--link"
                                 <?= $current_page === 'security' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('security') ?>"
+                                role="menuitem"
                             >
                                 <?= icon('key') ?>
                                 <?= _('Login & security') ?>
@@ -168,12 +171,13 @@
                                 class="popup__item popup__item--link"
                                 <?= $current_page === 'support' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('support') ?>"
+                                role="menuitem"
                             >
                                 <?= icon('help') ?>
                                 <?= _('Support') ?>
                             </a>
 
-                            <form method="post" action="<?= url('logout') ?>">
+                            <form method="post" action="<?= url('logout') ?>" role="menuitem">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <button type="submit" class="popup__item popup__item--button">
                                     <?= icon('logout') ?>
