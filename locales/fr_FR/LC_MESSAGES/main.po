@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
 "POT-Creation-Date: 2022-02-22 17:43+0100\n"
-"PO-Revision-Date: 2022-02-22 17:43+0100\n"
+"PO-Revision-Date: 2022-02-22 17:47+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -549,7 +549,7 @@ msgstr "Commentaires sur %s"
 #: views/_layouts/connected.phtml:45 views/_layouts/connected_blocked.phtml:41
 #: views/_layouts/not_connected.phtml:59 views/_layouts/onboarding.phtml:41
 msgid "Skip to main content"
-msgstr "Sauter au contenu"
+msgstr "Accéder au contenu principal"
 
 #: views/_layouts/connected.phtml:52 views/_layouts/connected_blocked.phtml:48
 #: views/_layouts/not_connected.phtml:66 views/_layouts/onboarding.phtml:48
