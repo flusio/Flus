@@ -1,12 +1,19 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    open (e) {
-        this.element.open = true;
+    connect () {
+        const summaryElement = this.element.querySelector('summary');
+        if (summaryElement) {
+            summaryElement.setAttribute('aria-haspopup', 'menu');
+            summaryElement.setAttribute('aria-expanded', this.element.open);
+        }
     }
 
-    toggle (e) {
-        this.element.open = !this.element.open;
+    update (e) {
+        const summaryElement = this.element.querySelector('summary');
+        if (summaryElement) {
+            summaryElement.setAttribute('aria-expanded', this.element.open);
+        }
     }
 
     closeOnClickOutside (e) {

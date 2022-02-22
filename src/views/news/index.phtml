@@ -32,17 +32,17 @@
             <details
                 class="popup news__postpone-popup"
                 data-controller="popup"
-                data-action="click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
             >
-                <summary class="popup__opener" tabindex="-1">
-                    <button class="news__postpone-button" type="button" data-action="popup#toggle">
+                <summary class="popup__opener">
+                    <span class="button news__postpone-button">
                         <?= icon('recycle') ?>
                         <?= _('Empty the news') ?>
-                    </button>
+                    </span>
                 </summary>
 
-                <nav class="popup__container popup__container--bottom">
-                    <form method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>">
+                <nav class="popup__container popup__container--bottom" role="menu">
+                    <form method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                         <button class="popup__item popup__item--button">
@@ -51,7 +51,7 @@
                         </button>
                     </form>
 
-                    <form method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>">
+                    <form method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>" role="menuitem">
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                         <button class="popup__item popup__item--button">
@@ -68,6 +68,7 @@
                         data-controller="confirmation"
                         data-action="confirmation#confirm"
                         data-confirmation-message-value="<?= _('You’ll remove all the news links, this action cannot be canceled. Are you sure?') ?>"
+                        role="menuitem"
                     >
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 

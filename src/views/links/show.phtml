@@ -77,24 +77,25 @@
                         <details
                             class="popup"
                             data-controller="popup"
-                            data-action="click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
                         >
-                            <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
-                                <button class="button--ghost button--smaller" type="button" data-action="popup#toggle">
+                            <summary class="popup__opener" title="<?= _('Open the menu') ?>">
+                                <span class="button button--ghost button--smaller">
                                     <?= icon('menu') ?>
                                     <span class="sr-only">
                                         <?= _('Open the menu') ?>
                                     </span>
-                                </button>
+                                </span>
                             </summary>
 
-                            <nav class="popup__container popup__container--left">
+                            <nav class="popup__container popup__container--left" role="menu">
                                 <form
                                     method="post"
                                     action="<?= url('delete message', ['id' => $message->id]) ?>"
                                     data-controller="confirmation"
                                     data-action="confirmation#confirm"
                                     data-confirmation-message-value="<?= _('Are you sure that you want to delete this message?') ?>"
+                                    role="menuitem"
                                 >
                                     <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                     <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />

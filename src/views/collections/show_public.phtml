@@ -104,16 +104,16 @@
                     <details
                         class="popup"
                         data-controller="popup"
-                        data-action="click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                        data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
                     >
-                        <summary class="popup__opener" title="<?= _('Open the menu') ?>" tabindex="-1">
-                            <button class="button--small" type="button" data-action="popup#toggle">
+                        <summary class="popup__opener" title="<?= _('Open the menu') ?>">
+                            <span class="button button--small">
                                 <?= icon('menu') ?>
                                 <?= _('Actions') ?>
-                            </button>
+                            </span>
                         </summary>
 
-                        <nav class="popup__container popup__container--left">
+                        <nav class="popup__container popup__container--left" role="menu">
                             <button
                                 class="popup__item popup__item--button"
                                 data-controller="modal-opener"
@@ -121,6 +121,7 @@
                                 data-modal-opener-href-value="<?= url('edit collection filter', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
                                 aria-haspopup="dialog"
                                 aria-controls="modal"
+                                role="menuitem"
                             >
                                 <?= icon('slider') ?>
                                 <?= _('Adjust for the news') ?>
@@ -133,6 +134,7 @@
                                 data-modal-opener-href-value="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
                                 aria-haspopup="dialog"
                                 aria-controls="modal"
+                                role="menuitem"
                             >
                                 <?= icon('directory') ?>
                                 <?= _('Put in a group') ?>
@@ -145,6 +147,7 @@
                                     class="popup__item popup__item--button share__button"
                                     data-action="copy-to-clipboard#copy"
                                     data-copy-to-clipboard-target="feedback"
+                                    role="menuitem"
                                 >
                                     <?= icon('copy-to-clipboard') ?>
                                     <?= _('Copy the link') ?>
@@ -153,7 +156,7 @@
 
                             <div class="popup__separator"></div>
 
-                            <form method="post" action="<?= url('mark collection as read', ['id' => $collection->id]) ?>">
+                            <form method="post" action="<?= url('mark collection as read', ['id' => $collection->id]) ?>" role="menuitem">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
 
@@ -163,7 +166,7 @@
                                 </button>
                             </form>
 
-                            <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>">
+                            <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>" role="menuitem">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
 
