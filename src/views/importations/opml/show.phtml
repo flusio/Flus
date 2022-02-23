@@ -2,6 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Importation from an OPML file'),
         'canonical' => url_full('opml'),
+        'has_errors' => $error || $errors,
         'back_options' => [
             'track' => false,
         ],
@@ -17,11 +18,7 @@
         <?= _('<abbr>OPML</abbr> enables you to import your feeds from another software.') ?>
     </p>
 
-    <?php if ($error): ?>
-        <p class="form__error">
-            <?= $error ?>
-        </p>
-    <?php endif; ?>
+    <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
     <?php if ($importation && $importation->status === 'ongoing'): ?>
         <p class="paragraph--featured">
@@ -99,17 +96,24 @@
                 hidden
             />
 
-            <?php if (isset($errors['opml'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['opml'] ?>
-                </p>
-            <?php endif; ?>
-
             <div class="form__actions">
-                <button type="button" class="button--primary" data-action="form-file#openFile">
+                <button
+                    type="button"
+                    class="button--primary"
+                    data-action="form-file#openFile"
+                    aria-describedby="opml-desc"
+                >
                     <?= _('Import a file') ?>
                 </button>
+            </div>
+
+            <div id="opml-desc">
+                <?php if (isset($errors['opml'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['opml'] ?>
+                    </p>
+                <?php endif; ?>
             </div>
         </form>
     <?php endif; ?>

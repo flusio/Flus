@@ -12,6 +12,7 @@
         'back_options' => [
             'reset' => true,
         ],
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -21,11 +22,7 @@
     </div>
 
     <form method="post" action="<?= url('search link') ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
@@ -44,6 +41,7 @@
                     value="<?= $url ?>"
                     autocomplete="off"
                     autofocus
+                    aria-describedby="url-desc"
                 />
 
                 <button type="submit" class="button--primary no-mobile">
@@ -51,12 +49,14 @@
                 </button>
             </div>
 
-            <?php if (isset($errors['url'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['url'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="url-desc">
+                <?php if (isset($errors['url'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['url'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form__actions only-mobile">

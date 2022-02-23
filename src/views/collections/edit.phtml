@@ -3,6 +3,7 @@
         'title' => _('Collection edition'),
         'current_tab' => 'collections',
         'canonical' => url('edit collection', ['id' => $collection->id]),
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -12,11 +13,7 @@
     </div>
 
     <form method="post" action="<?= url('update collection', ['id' => $collection->id]) ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
@@ -37,14 +34,17 @@
                 value="<?= $name ?>"
                 autofocus
                 maxlength="<?= $name_max_length ?>"
+                aria-describedby="name-desc"
             />
 
-            <?php if (isset($errors['name'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['name'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="name-desc">
+                <?php if (isset($errors['name'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['name'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form-group <?= isset($errors['description']) ? 'form-group--invalid' : '' ?>">
@@ -60,26 +60,31 @@
                 name="description"
                 data-controller="text-editor"
                 data-action="text-editor#refresh"
+                aria-describedby="description-desc"
             ><?= $description ?></textarea>
 
-            <?php if (isset($errors['description'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['description'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="description-desc">
+                <?php if (isset($errors['description'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['description'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <?php if ($topics): ?>
-            <fieldset>
+            <fieldset aria-describedby="topics-desc">
                 <legend><?= _('Its topics') ?></legend>
 
-                <?php if (isset($errors['topic_ids'])): ?>
-                    <p class="form-group__error">
-                        <?= icon('error') ?>
-                        <?= $errors['topic_ids'] ?>
-                    </p>
-                <?php endif; ?>
+                <div id="topics-desc">
+                    <?php if (isset($errors['topic_ids'])): ?>
+                        <p class="form-group__error">
+                            <span class="sr-only"><?= _('Error') ?></span>
+                            <?= $errors['topic_ids'] ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
 
                 <div class="topics-selector">
                     <?php foreach ($topics as $topic): ?>

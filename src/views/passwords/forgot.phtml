@@ -6,6 +6,7 @@
             'reset' => true,
             'track' => false,
         ],
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -19,17 +20,10 @@
     </p>
 
     <form method="post" action="<?= url('reset password') ?>" data-controller="csrf-loader">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <?php if ($email_sent): ?>
-            <p class="paragraph--success">
-                <?= icon('success') ?>
-                <?= _('We’ve sent you an email to reset your password.') ?>
-            </p>
+            <?= $this->include('alerts/_success.phtml', ['message' => _('We’ve sent you an email to reset your password.')]) ?>
         <?php endif; ?>
 
         <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
@@ -45,14 +39,17 @@
                 required
                 autofocus
                 autocomplete="username"
+                aria-describedby="email-desc"
             />
 
-            <?php if (isset($errors['email'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['email'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="email-desc">
+                <?php if (isset($errors['email'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['email'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form__actions">

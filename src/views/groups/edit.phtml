@@ -2,6 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Group edition'),
         'canonical' => url_full('edit group', ['id' => $group->id]),
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -11,11 +12,7 @@
     </div>
 
     <form method="post" action="<?= url('update group', ['id' => $group->id]) ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
@@ -37,14 +34,17 @@
                 autocomplete="off"
                 autofocus
                 maxlength="<?= $name_max_length ?>"
+                aria-describedby="name-desc"
             />
 
-            <?php if (isset($errors['name'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['name'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="name-desc">
+                <?php if (isset($errors['name'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['name'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form__actions">

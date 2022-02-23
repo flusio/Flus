@@ -5,6 +5,7 @@
         'back_options' => [
             'track' => false,
         ],
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -24,11 +25,7 @@
     </div>
 
     <form method="post" action="<?= url('delete account') ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
@@ -45,7 +42,7 @@
                     autofocus
                     required
                     data-input-password-target="input"
-                    aria-describedby="password-caption"
+                    aria-describedby="password-desc"
                 />
 
                 <button
@@ -60,16 +57,18 @@
                 </button>
             </div>
 
-            <?php if (isset($errors['password_hash'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['password_hash'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="password-desc">
+                <?php if (isset($errors['password_hash'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['password_hash'] ?>
+                    </p>
+                <?php endif; ?>
 
-            <p class="form-group__caption" id="password-caption">
-                <?= _('You must type your password so we can confirm your identity.') ?>
-            </p>
+                <p class="form-group__caption">
+                    <?= _('You must type your password so we can confirm your identity.') ?>
+                </p>
+            </div>
         </div>
 
         <div class="form__actions">

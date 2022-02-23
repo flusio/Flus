@@ -9,6 +9,7 @@
                 'title' => _f('Syndication feed of comments on %s', $link->title),
             ],
         ],
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -120,11 +121,7 @@
         <?php endforeach; ?>
 
         <form method="post" action="<?= url('links/create message', ['link_id' => $link->id]) ?>">
-            <?php if ($error): ?>
-                <p class="form__error">
-                    <?= $error ?>
-                </p>
-            <?php endif; ?>
+            <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
@@ -143,14 +140,17 @@
                     required
                     data-controller="text-editor"
                     data-action="text-editor#refresh"
+                    aria-describedby="content-desc"
                 ><?= $comment ?></textarea>
 
-                <?php if (isset($errors['content'])): ?>
-                    <p class="form-group__error">
-                        <?= icon('error') ?>
-                        <?= $errors['content'] ?>
-                    </p>
-                <?php endif; ?>
+                <div id="content-desc">
+                    <?php if (isset($errors['content'])): ?>
+                        <p class="form-group__error">
+                            <span class="sr-only"><?= _('Error') ?></span>
+                            <?= $errors['content'] ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <div class="form__actions">

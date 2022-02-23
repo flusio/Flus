@@ -2,6 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Collection group'),
         'canonical' => url_full('edit group collection', ['id' => $collection->id]),
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -21,11 +22,7 @@
     </div>
 
     <form method="post" action="<?= url('update group collection', ['id' => $collection->id]) ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
@@ -52,6 +49,7 @@
                     autofocus
                     maxlength="<?= $name_max_length ?>"
                     data-group-selector-target="input"
+                    aria-describedby="name-desc"
                 />
 
                 <datalist id="group-names">
@@ -67,7 +65,12 @@
                 </label>
 
                 <div class="form-group__stack">
-                    <select id="name" name="name" data-group-selector-target="select">
+                    <select
+                        id="name"
+                        name="name"
+                        data-group-selector-target="select"
+                        aria-describedby="name-desc"
+                     >
                         <option <?= $name === '' ? 'selected' : '' ?> value="">
                             <?= _('No groups') ?>
                         </option>
@@ -86,12 +89,14 @@
                 </div>
             </div>
 
-            <?php if (isset($errors['name'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['name'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="name-desc">
+                <?php if (isset($errors['name'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['name'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form__actions">

@@ -2,7 +2,7 @@
 <html lang="<?= locale_to_bcp_47($current_locale) ?>">
     <head>
         <meta charset="UTF-8" />
-        <title><?= $environment === 'development' ? '[dev] ' : '' ?><?= $title ?> · <?= $brand ?></title>
+        <title><?= $environment === 'development' ? '[dev] ' : '' ?><?= $has_errors ? _('Error: ') : '' ?><?= $title ?> · <?= $brand ?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="canonical" href="<?= $canonical ?>">
 

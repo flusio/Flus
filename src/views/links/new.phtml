@@ -3,6 +3,7 @@
         'title' => _('New link'),
         'canonical' => url_full('new link'),
         'current_page' => 'new link',
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -12,11 +13,7 @@
     </div>
 
     <form method="post" action="<?= url('create link') ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
@@ -35,30 +32,34 @@
                 value="<?= $url ?>"
                 autocomplete="off"
                 autofocus
-                aria-describedby="url-caption"
+                aria-describedby="url-desc"
             />
 
-            <?php if (isset($errors['url'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['url'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="url-desc">
+                <?php if (isset($errors['url'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['url'] ?>
+                    </p>
+                <?php endif; ?>
 
-            <p class="form-group__caption" id="url-caption">
-                <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
-            </p>
+                <p class="form-group__caption">
+                    <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
+                </p>
+            </div>
         </div>
 
-        <fieldset class="no-modal">
+        <fieldset class="no-modal" aria-describedby="collections-desc">
             <legend><?= _('Collections') ?></legend>
 
-            <?php if (isset($errors['collection_ids'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['collection_ids'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="collections-desc">
+                <?php if (isset($errors['collection_ids'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['collection_ids'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
 
             <div class="collections-selector" data-controller="collections-selector">
                 <select

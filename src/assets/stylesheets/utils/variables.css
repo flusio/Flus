@@ -43,9 +43,10 @@
 
     --color-text: var(--color-purple-9);
     --color-text-secondary: var(--color-grey-7);
-    --color-text-success: var(--color-turquoise-8);
-    --color-back-success: var(--color-turquoise-5);
+    --color-text-success: var(--color-turquoise-7);
+    --color-back-success: var(--color-turquoise-1);
     --color-text-error: var(--color-red-6);
+    --color-back-error: var(--color-red-1);
     --color-link: var(--color-purple-6);
     --color-body: var(--color-turquoise-1);
 
@@ -62,8 +63,10 @@
     --space-larger: calc(var(--space-base) * 4);
 
     --border-width: 0.2rem;
+    --border-width-bold: 0.3rem;
     --border-color: var(--color-grey-6);
     --border-active-color: var(--color-turquoise-5);
+    --border-success-color: var(--color-turquoise-6);
     --border-error-color: var(--color-red-5);
     --border-radius: 0.75rem;
     --border-button-radius: 3rem;

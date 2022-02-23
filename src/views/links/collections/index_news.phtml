@@ -3,6 +3,7 @@
         'title' => _('Add to your collections'),
         'current_tab' => 'news',
         'canonical' => url_full('link collections', ['id' => $link->id, 'mode' => 'news']),
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -16,25 +17,23 @@
     </p>
 
     <form method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
         <input type="hidden" name="mode" value="news" />
 
-        <fieldset>
+        <fieldset aria-describedby="collections-desc">
             <legend><?= _('Collections') ?></legend>
 
-            <?php if (isset($errors['collection_ids'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['collection_ids'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="collections-desc">
+                <?php if (isset($errors['collection_ids'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['collection_ids'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
 
             <div class="collections-selector" data-controller="collections-selector">
                 <select

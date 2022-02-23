@@ -2,6 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Link edition'),
         'canonical' => url_full('edit link', ['id' => $link->id]),
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -15,11 +16,7 @@
     </p>
 
     <form method="post" action="<?= url('update link', ['id' => $link->id]) ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
@@ -37,14 +34,17 @@
                 required
                 autocomplete="off"
                 autofocus
+                aria-describedby="title-desc"
             />
 
-            <?php if (isset($errors['title'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['title'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="title-desc">
+                <?php if (isset($errors['title'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['title'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form-group">

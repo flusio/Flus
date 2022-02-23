@@ -6,6 +6,7 @@
         'back_options' => [
             'track' => false,
         ],
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -38,11 +39,7 @@
                 <?= _('Still nothing? Did you check your spam?') ?>
             </p>
         <?php else: ?>
-            <?php if ($error): ?>
-                <p class="paragraph--centered form__error">
-                    <?= $error ?>
-                </p>
-            <?php endif; ?>
+            <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
             <form class="form--centered" method="post" action="<?= url('resend validation email') ?>">
                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />

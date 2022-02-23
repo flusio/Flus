@@ -3,6 +3,7 @@
         'title' => _('Support'),
         'canonical' => url_full('support'),
         'current_page' => 'support',
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
@@ -16,17 +17,10 @@
     </p>
 
     <form method="post" action="<?= url('call support') ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <?php if ($message_sent): ?>
-            <p class="paragraph--success">
-                <?= icon('success') ?>
-                <?= _('Your message has been sent.') ?>
-            </p>
+            <?= $this->include('alerts/_success.phtml', ['message' => _('Your message has been sent.')]) ?>
         <?php endif; ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
@@ -42,19 +36,17 @@
                 type="text"
                 value="<?= $subject ?>"
                 required
-                aria-describedby="subject-caption"
+                aria-describedby="subject-desc"
             />
 
-            <?php if (isset($errors['subject'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['subject'] ?>
-                </p>
-            <?php endif; ?>
-
-            <p class="form-group__caption" id="subject-caption">
-                <?= _('Concise and precise, this will allow me to understand quickly what you want to talk about.') ?>
-            </p>
+            <div id="subject-desc">
+                <?php if (isset($errors['subject'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['subject'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form-group <?= isset($errors['message']) ? 'form-group--invalid' : '' ?>">
@@ -68,14 +60,17 @@
                 required
                 data-controller="text-editor"
                 data-action="text-editor#refresh"
+                aria-describedby="message-desc"
             ><?= $message ?></textarea>
 
-            <?php if (isset($errors['message'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['message'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="message-desc">
+                <?php if (isset($errors['message'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['message'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <p class="paragraph--placeholder">

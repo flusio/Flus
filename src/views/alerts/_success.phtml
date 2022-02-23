@@ -1,0 +1,9 @@
+<?php if ($message): ?>
+    <div class="alert alert--success" role="alert">
+        <div class="alert__title"><?= _('Success') ?></div>
+
+        <p class="alert__message">
+            <?= $this->safe('message') ?>
+        </p>
+    </div>
+<?php endif; ?>
