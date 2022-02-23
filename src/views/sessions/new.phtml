@@ -16,10 +16,7 @@
     </div>
 
     <?php if ($status === 'user_deleted'): ?>
-        <p class="paragraph--success">
-            <?= icon('success') ?>
-            <?= _('Your account and your data are now deleted.') ?>
-        </p>
+        <?= $this->include('alerts/_success.phtml', ['message' => _('Your account and your data are now deleted.')]) ?>
     <?php endif; ?>
 
     <form method="post" action="<?= url('create session') ?>">

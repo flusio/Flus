@@ -19,10 +19,7 @@
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <?php if ($message_sent): ?>
-            <p class="paragraph--success">
-                <?= icon('success') ?>
-                <?= _('Your message has been sent.') ?>
-            </p>
+            <?= $this->include('alerts/_success.phtml', ['message' => _('Your message has been sent.')]) ?>
         <?php endif; ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />

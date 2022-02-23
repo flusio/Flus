@@ -22,10 +22,7 @@
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <?php if ($email_sent): ?>
-            <p class="paragraph--success">
-                <?= icon('success') ?>
-                <?= _('We’ve sent you an email to reset your password.') ?>
-            </p>
+            <?= $this->include('alerts/_success.phtml', ['message' => _('We’ve sent you an email to reset your password.')]) ?>
         <?php endif; ?>
 
         <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">

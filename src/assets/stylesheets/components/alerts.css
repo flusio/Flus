@@ -12,6 +12,13 @@
     border-radius: var(--border-radius);
 }
 
+.alert--success {
+    background-color: var(--color-back-success);
+    background-image: url("../../icons/success-green.svg");
+
+    border-color: var(--border-success-color);
+}
+
 .alert--error {
     background-color: var(--color-back-error);
     background-image: url("../../icons/error-red.svg");
@@ -21,6 +28,10 @@
 
 .alert__title {
     font-weight: bold;
+}
+
+.alert--success .alert__title {
+    color: var(--color-text-success);
 }
 
 .alert--error .alert__title {
