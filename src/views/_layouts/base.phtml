@@ -28,6 +28,7 @@
         'alternates' => $alternates ?? [],
         'open_graph' => $open_graph ?? [],
         'back_options' => $back_options,
+        'has_errors' => $has_errors ?? false,
     ]);
 
     echo $this->safe('content');

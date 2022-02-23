@@ -2,6 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Link collections'),
         'canonical' => url_full('link collections', ['id' => $link->id]),
+        'has_errors' => $error || $errors,
     ]);
 ?>
 

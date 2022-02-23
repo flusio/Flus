@@ -3,6 +3,7 @@
         'title' => _('Add to your collections'),
         'current_tab' => 'news',
         'canonical' => url_full('link collections', ['id' => $link->id, 'mode' => 'news']),
+        'has_errors' => $error || $errors,
     ]);
 ?>
 
