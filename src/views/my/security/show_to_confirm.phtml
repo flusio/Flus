@@ -33,6 +33,7 @@
                     required
                     data-input-password-target="input"
                     autocomplete="current-password"
+                    aria-describedby="password-desc"
                 />
 
                 <button
@@ -47,12 +48,14 @@
                 </button>
             </div>
 
-            <?php if (isset($errors['password_hash'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['password_hash'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="password-desc">
+                <?php if (isset($errors['password_hash'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['password_hash'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form__actions">

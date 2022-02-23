@@ -48,6 +48,7 @@
                     autofocus
                     maxlength="<?= $name_max_length ?>"
                     data-group-selector-target="input"
+                    aria-describedby="name-desc"
                 />
 
                 <datalist id="group-names">
@@ -63,7 +64,12 @@
                 </label>
 
                 <div class="form-group__stack">
-                    <select id="name" name="name" data-group-selector-target="select">
+                    <select
+                        id="name"
+                        name="name"
+                        data-group-selector-target="select"
+                        aria-describedby="name-desc"
+                     >
                         <option <?= $name === '' ? 'selected' : '' ?> value="">
                             <?= _('No groups') ?>
                         </option>
@@ -82,12 +88,14 @@
                 </div>
             </div>
 
-            <?php if (isset($errors['name'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['name'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="name-desc">
+                <?php if (isset($errors['name'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['name'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form__actions">

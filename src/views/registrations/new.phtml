@@ -40,14 +40,17 @@
                 required
                 maxlength="50"
                 autofocus
+                aria-describedby="username-desc"
             />
 
-            <?php if (isset($errors['username'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['username'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="username-desc">
+                <?php if (isset($errors['username'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['username'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
@@ -61,19 +64,21 @@
                 type="email"
                 value="<?= $email ?>"
                 required
-                aria-describedby="email-caption"
+                aria-describedby="email-desc"
             />
 
-            <?php if (isset($errors['email'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['email'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="email-desc">
+                <?php if (isset($errors['email'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['email'] ?>
+                    </p>
+                <?php endif; ?>
 
-            <p class="form-group__caption" id="email-caption">
-                <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
-            </p>
+                <p class="form-group__caption">
+                    <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
+                </p>
+            </div>
         </div>
 
         <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
@@ -93,6 +98,7 @@
                     required
                     data-input-password-target="input"
                     autocomplete="new-password"
+                    aria-describedby="password-desc"
                 />
 
                 <button
@@ -107,38 +113,42 @@
                 </button>
             </div>
 
-            <?php if (isset($errors['password_hash'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['password_hash'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="password-desc">
+                <?php if (isset($errors['password_hash'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['password_hash'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <?php if ($has_terms): ?>
             <div class="form-group form-group--terms <?= isset($errors['accept_terms']) ? 'form-group--invalid' : '' ?>">
-                <p class="form-group__caption" id="accept-terms-caption">
-                    <?= _f('Before going any further, please read <a href="%s" target="_blank">the terms of service</a> to make sure they are suitable for you.', url('terms')) ?>
-                </p>
+                <div id="accept-terms-desc">
+                    <?php if (isset($errors['accept_terms'])): ?>
+                        <p class="form-group__error">
+                            <span class="sr-only"><?= _('Error') ?></span>
+                            <?= $errors['accept_terms'] ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <p class="form-group__caption">
+                        <?= _f('Before going any further, please read <a href="%s" target="_blank">the terms of service</a> to make sure they are suitable for you.', url('terms')) ?>
+                    </p>
+                </div>
 
                 <input
                     type="checkbox"
                     id="accept-terms"
                     name="accept_terms"
                     required
-                    aria-describedby="accept-terms-caption"
+                    aria-describedby="accept-terms-desc"
                 />
 
                 <label class="label--checkbox" for="accept-terms">
                     <?= _('Accept the terms of service') ?>
                 </label>
-
-                <?php if (isset($errors['accept_terms'])): ?>
-                    <p class="form-group__error">
-                        <?= icon('error') ?>
-                        <?= $errors['accept_terms'] ?>
-                    </p>
-                <?php endif; ?>
             </div>
         <?php endif; ?>
 

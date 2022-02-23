@@ -38,14 +38,17 @@
                 required
                 autofocus
                 autocomplete="username"
+                aria-describedby="email-desc"
             />
 
-            <?php if (isset($errors['email'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['email'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="email-desc">
+                <?php if (isset($errors['email'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['email'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form__actions">

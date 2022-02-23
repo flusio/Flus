@@ -19,15 +19,17 @@
         <input type="hidden" name="from" value="<?= $from ?>" />
         <input type="hidden" name="mode" value="adding" />
 
-        <fieldset>
+        <fieldset aria-describedby="collections-desc">
             <legend><?= _('Collections') ?></legend>
 
-            <?php if (isset($errors['collection_ids'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['collection_ids'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="collections-desc">
+                <?php if (isset($errors['collection_ids'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['collection_ids'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
 
             <div class="collections-selector" data-controller="collections-selector">
                 <select

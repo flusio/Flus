@@ -139,14 +139,17 @@
                     required
                     data-controller="text-editor"
                     data-action="text-editor#refresh"
+                    aria-describedby="content-desc"
                 ><?= $comment ?></textarea>
 
-                <?php if (isset($errors['content'])): ?>
-                    <p class="form-group__error">
-                        <?= icon('error') ?>
-                        <?= $errors['content'] ?>
-                    </p>
-                <?php endif; ?>
+                <div id="content-desc">
+                    <?php if (isset($errors['content'])): ?>
+                        <p class="form-group__error">
+                            <span class="sr-only"><?= _('Error') ?></span>
+                            <?= $errors['content'] ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <div class="form__actions">

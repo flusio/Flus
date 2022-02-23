@@ -37,27 +37,29 @@
             hidden
         />
 
-        <?php if (isset($errors['avatar'])): ?>
-            <p class="form-group__error">
-                <?= icon('error') ?>
-                <?= $errors['avatar'] ?>
-            </p>
-        <?php endif; ?>
-
         <div class="form__actions">
             <button
                 type="button"
                 class="button--small"
                 data-action="form-file#openFile"
-                aria-describedby="avatar-caption"
+                aria-describedby="avatar-desc"
             >
                 <?= _('Upload a photo') ?>
             </button>
         </div>
 
-        <p class="form-group__caption text--centered" id="avatar-caption">
-            <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only, a 150x150 image is recommended.') ?>
-        </p>
+        <div id="avatar-desc">
+            <?php if (isset($errors['avatar'])): ?>
+                <p class="form-group__error">
+                    <span class="sr-only"><?= _('Error') ?></span>
+                    <?= $errors['avatar'] ?>
+                </p>
+            <?php endif; ?>
+
+            <p class="form-group__caption text--centered">
+                <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only, a 150x150 image is recommended.') ?>
+            </p>
+        </div>
     </form>
 
     <form method="post" action="<?= url('update profile') ?>">
@@ -79,14 +81,17 @@
                 value="<?= $username ?>"
                 maxlength="50"
                 required
+                aria-describedby="username-desc"
             />
 
-            <?php if (isset($errors['username'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['username'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="username-desc">
+                <?php if (isset($errors['username'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['username'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form-group <?= isset($errors['locale']) ? 'form-group--invalid' : '' ?>">
@@ -95,7 +100,7 @@
                 <?= _('Your language') ?>
             </label>
 
-            <select id="locale" name="locale">
+            <select id="locale" name="locale" aria-describedby="locale-desc">
                 <?php foreach ($available_locales as $locale_value => $locale_name): ?>
                     <option
                         value="<?= $locale_value ?>"
@@ -106,12 +111,14 @@
                 <?php endforeach; ?>
             </select>
 
-            <?php if (isset($errors['locale'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['locale'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="locale-desc">
+                <?php if (isset($errors['locale'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['locale'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form__actions">

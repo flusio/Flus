@@ -40,6 +40,7 @@
                     value="<?= $url ?>"
                     autocomplete="off"
                     autofocus
+                    aria-describedby="url-desc"
                 />
 
                 <button type="submit" class="button--primary no-mobile">
@@ -47,12 +48,14 @@
                 </button>
             </div>
 
-            <?php if (isset($errors['url'])): ?>
-                <p class="form-group__error">
-                    <?= icon('error') ?>
-                    <?= $errors['url'] ?>
-                </p>
-            <?php endif; ?>
+            <div id="url-desc">
+                <?php if (isset($errors['url'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['url'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="form__actions only-mobile">

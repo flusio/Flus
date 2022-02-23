@@ -24,19 +24,21 @@
                     value="<?= $url ?>"
                     autocomplete="off"
                     autofocus
-                    aria-describedby="url-caption"
+                    aria-describedby="url-desc"
                 />
 
-                <?php if (isset($errors['url'])): ?>
-                    <p class="form-group__error">
-                        <?= icon('error') ?>
-                        <?= $errors['url'] ?>
-                    </p>
-                <?php endif; ?>
+                <div id="url-desc">
+                    <?php if (isset($errors['url'])): ?>
+                        <p class="form-group__error">
+                            <span class="sr-only"><?= _('Error') ?></span>
+                            <?= $errors['url'] ?>
+                        </p>
+                    <?php endif; ?>
 
-                <p class="form-group__caption" id="url-caption">
-                    <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
-                </p>
+                    <p class="form-group__caption">
+                        <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
+                    </p>
+                </div>
             </div>
 
             <div class="form__actions">

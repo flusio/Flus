@@ -41,27 +41,29 @@
             hidden
         />
 
-        <?php if (isset($errors['image_filename'])): ?>
-            <p class="form-group__error">
-                <?= icon('error') ?>
-                <?= $errors['image_filename'] ?>
-            </p>
-        <?php endif; ?>
-
         <div class="form__actions">
             <button
                 type="button"
                 class="button--primary"
                 data-action="form-file#openFile"
-                aria-describedby="file-caption"
+                aria-describedby="file-desc"
             >
                 <?= _('Upload an image') ?>
             </button>
         </div>
 
-        <p class="form-group__caption text--centered" id="file-caption">
-            <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only.') ?><br />
-            <?= _('The minimum recommended dimensions are 1100x400px.') ?>
-        </p>
+        <div id="file-desc">
+            <?php if (isset($errors['image_filename'])): ?>
+                <p class="form-group__error">
+                    <span class="sr-only"><?= _('Error') ?></span>
+                    <?= $errors['image_filename'] ?>
+                </p>
+            <?php endif; ?>
+
+            <p class="form-group__caption text--centered">
+                <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only.') ?><br />
+                <?= _('The minimum recommended dimensions are 1100x400px.') ?>
+            </p>
+        </div>
     </form>
 </div>
