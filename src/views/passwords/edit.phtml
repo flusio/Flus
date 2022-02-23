@@ -16,11 +16,7 @@
         </p>
 
         <form method="post" action="<?= url('update password', ['t' => $token]) ?>">
-            <?php if ($error): ?>
-                <p class="form__error">
-                    <?= $error ?>
-                </p>
-            <?php endif; ?>
+            <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
@@ -69,8 +65,6 @@
             </div>
         </form>
     <?php else: ?>
-        <p class="paragraph--centered form__error">
-            <?= $error ?>
-        </p>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
     <?php endif; ?>
 </div>

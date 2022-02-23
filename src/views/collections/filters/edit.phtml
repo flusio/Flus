@@ -15,11 +15,7 @@
     </p>
 
     <form method="post" action="<?= url('update collection filter', ['id' => $collection->id]) ?>">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
@@ -27,11 +23,7 @@
         <fieldset>
             <legend><?= _('How to filter the links from this feed in the news?') ?></legend>
 
-            <?php if (isset($errors['time_filter'])): ?>
-                <p class="form__error">
-                    <?= $errors['time_filter'] ?>
-                </p>
-            <?php endif; ?>
+            <?= $this->include('alerts/_error.phtml', ['message' => $errors['time_filter'] ?? null]) ?>
 
             <div class="form-group">
                 <input

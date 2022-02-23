@@ -19,11 +19,7 @@
     </p>
 
     <form method="post" action="<?= url('reset password') ?>" data-controller="csrf-loader">
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <?php if ($email_sent): ?>
             <p class="paragraph--success">

@@ -66,11 +66,7 @@
         <h1><?= protect($collection->name) ?></h1>
     </div>
 
-    <?php if ($error): ?>
-        <p class="form__error">
-            <?= $error ?>
-        </p>
-    <?php endif; ?>
+    <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
     <?php if ($topics): ?>
         <p class="collection__topics">

@@ -310,18 +310,6 @@ legend {
     }
 }
 
-.form__error {
-    margin-top: var(--space-small);
-    margin-bottom: var(--space-large);
-    padding: var(--space-medium);
-
-    color: var(--color-text-error);
-    font-weight: bold;
-
-    border: var(--border-width) solid var(--border-error-color);
-    border-radius: var(--border-radius);
-}
-
 .form-group--terms {
     padding: var(--space-medium);
 

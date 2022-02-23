@@ -17,11 +17,7 @@
         <?= _('<abbr>OPML</abbr> enables you to import your feeds from another software.') ?>
     </p>
 
-    <?php if ($error): ?>
-        <p class="form__error">
-            <?= $error ?>
-        </p>
-    <?php endif; ?>
+    <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
     <?php if ($importation && $importation->status === 'ongoing'): ?>
         <p class="paragraph--featured">
