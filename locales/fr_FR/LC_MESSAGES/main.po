@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-02-24 11:29+0100\n"
-"PO-Revision-Date: 2022-02-24 11:29+0100\n"
+"POT-Creation-Date: 2022-02-24 13:14+0100\n"
+"PO-Revision-Date: 2022-02-24 13:14+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1425,17 +1425,17 @@ msgstr "Supprimer le lien"
 msgid "Organize your links in your bookmarks and your collections."
 msgstr "Organisez vos liens dans vos signets et vos collections."
 
-#: views/links/index.phtml:34
-msgid "Create a collection"
-msgstr "Créer une collection"
-
-#: views/links/index.phtml:45
+#: views/links/index.phtml:31
 msgid "Your links to read later"
 msgstr "Vos liens à lire plus tard"
 
-#: views/links/index.phtml:57
+#: views/links/index.phtml:43
 msgid "All your links marked as read"
 msgstr "Tous vos liens marqués comme lu"
+
+#: views/links/index.phtml:62
+msgid "Create a collection"
+msgstr "Créer une collection"
 
 #: views/links/new.phtml:3 views/links/new.phtml:12
 msgid "New link"
