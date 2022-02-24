@@ -47,7 +47,7 @@ a:focus {
     text-decoration: none;
 
     border: 0.1em solid currentColor;
-    border-radius: var(--border-button-radius);
+    border-radius: var(--radius-button);
 }
 
 .anchor--action.icon {

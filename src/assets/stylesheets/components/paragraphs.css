@@ -14,7 +14,7 @@
     color: var(--color-white);
 
     background-image: radial-gradient(circle at top, var(--color-purple-6) 80%, var(--color-purple-7));
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 }
 
 .paragraph--centered {

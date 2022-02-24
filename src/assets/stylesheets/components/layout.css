@@ -57,7 +57,7 @@
 }
 
 .layout__main {
-    max-width: var(--content-width);
+    max-width: var(--width-content);
     min-height: 60vh;
     margin-right: auto;
     margin-left: auto;
@@ -137,7 +137,7 @@
     text-align: center;
 
     background-color: var(--color-purple-1);
-    border-bottom: var(--border-width) solid var(--color-purple-2);
+    border-bottom: var(--width-border) solid var(--color-purple-2);
 }
 
 .layout__banner--alert .banner__container {

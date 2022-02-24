@@ -18,8 +18,8 @@
     padding: var(--space-small) var(--space-medium);
 
     background-color: var(--color-white);
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-button-radius);
+    border: var(--width-border) solid var(--color-border);
+    border-radius: var(--radius-button);
 
     transition:
         background-color 0.2s ease-in-out,

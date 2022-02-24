@@ -5,7 +5,7 @@
     justify-content: center;
 
     background-color: var(--color-purple-1);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 
     list-style: none;
 }
@@ -32,7 +32,7 @@
 
     text-decoration: none;
 
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 }
 
 .pagination__item--current .pagination__link {
@@ -41,7 +41,7 @@
 
 @media (min-width: 800px) {
     .pagination__item--current .pagination__link {
-        border: var(--border-width) solid currentColor;
+        border: var(--width-border) solid currentColor;
     }
 }
 

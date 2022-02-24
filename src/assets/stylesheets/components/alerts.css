@@ -7,23 +7,23 @@
     background-repeat: no-repeat;
     background-position: left var(--space-small) top var(--space-small);
     background-size: 5rem;
-    border-width: var(--border-width-bold);
+    border-width: var(--width-border-bold);
     border-style: solid;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 }
 
 .alert--success {
     background-color: var(--color-back-success);
     background-image: url("../../icons/success-green.svg");
 
-    border-color: var(--border-success-color);
+    border-color: var(--color-border-success);
 }
 
 .alert--error {
     background-color: var(--color-back-error);
     background-image: url("../../icons/error-red.svg");
 
-    border-color: var(--border-error-color);
+    border-color: var(--color-border-error);
 }
 
 .alert__title {

@@ -18,8 +18,8 @@
     align-items: center;
 
     background: linear-gradient(to right, var(--color-purple-2) 50%, var(--color-purple-1) 90%);
-    border: var(--border-width) solid var(--color-purple-2);
-    border-radius: var(--border-radius);
+    border: var(--width-border) solid var(--color-purple-2);
+    border-radius: var(--radius);
 }
 
 .collections-selector__item-label {

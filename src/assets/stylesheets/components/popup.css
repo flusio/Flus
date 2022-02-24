@@ -34,7 +34,7 @@
         font-size: var(--size-small);
 
         box-shadow: 0 0 2px 0 var(--color-turquoise-6);
-        border-radius: var(--border-radius);
+        border-radius: var(--radius);
     }
 
     .popup__container--bottom {
@@ -70,12 +70,12 @@
 }
 
 .popup__separator {
-    height: var(--border-width);
+    height: var(--height-separator);
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 
     background-color: var(--color-turquoise-4);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 }
 
 .popup__item--link {
@@ -108,8 +108,8 @@
     display: block;
     padding: var(--space-small);
 
-    border: var(--border-width) solid transparent;
-    border-radius: var(--border-radius);
+    border: var(--width-border) solid transparent;
+    border-radius: var(--radius);
 
     transition:
         background-color 0.1s ease-in-out,

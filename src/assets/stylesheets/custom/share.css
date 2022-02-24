@@ -6,7 +6,7 @@
     align-items: center;
 
     background-color: var(--color-purple-1);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 }
 
 @media (min-width: 800px) {

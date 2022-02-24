@@ -27,7 +27,7 @@
 }
 
 .modal__box {
-    max-width: var(--content-width);
+    max-width: var(--width-content);
     margin: var(--space-medium) auto var(--space-larger);
 
     background-color: var(--color-white);
@@ -44,7 +44,7 @@
 
 @media (min-width: 1000px) {
     .modal__box {
-        border-radius: var(--border-radius);
+        border-radius: var(--radius);
     }
 }
 

@@ -67,7 +67,7 @@
     margin-left: auto;
 
     background: linear-gradient(to right, var(--color-turquoise-4), var(--color-turquoise-6), var(--color-turquoise-4));
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 }
 
 .section__title h1 .icon {

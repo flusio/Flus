@@ -40,8 +40,8 @@ textarea {
 
     background-color: var(--color-white);
     box-shadow: 2px 2px 4px var(--color-grey-2) inset;
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius);
+    border: var(--width-border) solid var(--color-border);
+    border-radius: var(--radius);
 
     transition: border-color 0.2s ease-in-out;
 }
@@ -93,7 +93,7 @@ input[type="radio"] + label::before {
     flex-shrink: 0;
 
     background-color: var(--color-white);
-    border: var(--border-width) solid var(--border-color);
+    border: var(--width-border) solid var(--color-border);
     border-radius: 0.5rem;
 
     transition:
@@ -134,8 +134,8 @@ input[type="radio"]:checked + label::after {
     height: 0.75rem;
     margin-top: -0.3rem;
 
-    border-bottom: var(--border-width) solid var(--color-text);
-    border-left: var(--border-width) solid var(--color-text);
+    border-bottom: var(--width-border) solid var(--color-text);
+    border-left: var(--width-border) solid var(--color-text);
 
     transform: rotate(-45deg);
 }
@@ -145,19 +145,19 @@ input[type="radio"]:checked + label::after {
     margin-top: 0;
 
     background-color: var(--color-text);
-    border-top: var(--border-width) solid var(--color-text);
-    border-right: var(--border-width) solid var(--color-text);
+    border-top: var(--width-border) solid var(--color-text);
+    border-right: var(--width-border) solid var(--color-text);
     border-radius: 50%;
 }
 
 .form-group--invalid input,
 .form-group--invalid textarea {
-    border-color: var(--border-error-color);
+    border-color: var(--color-border-error);
 }
 
 input:focus,
 textarea:focus {
-    border-color: var(--border-active-color);
+    border-color: var(--color-border-active);
 }
 
 select {
@@ -170,8 +170,8 @@ select {
     text-overflow: ellipsis;
 
     background-color: var(--color-grey-1);
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius);
+    border: var(--width-border) solid var(--color-border);
+    border-radius: var(--radius);
 
     transition:
         background-color 0.2s ease-in-out,
@@ -204,7 +204,7 @@ select:focus {
 }
 
 select:focus {
-    border-color: var(--border-active-color);
+    border-color: var(--color-border-active);
 }
 
 fieldset {
@@ -215,7 +215,7 @@ fieldset {
     background-image: linear-gradient(to bottom, var(--color-grey-1), var(--color-purple-1));
     box-shadow: 1px 1px 1px var(--color-purple-2);
     border: none;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 }
 
 @media (min-width: 1100px) {
@@ -228,7 +228,7 @@ legend {
     padding: var(--space-smaller) var(--space-small);
 
     background-color: var(--color-grey-1);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 }
 
 .fieldset__caption {
@@ -319,7 +319,7 @@ legend {
     padding: var(--space-medium);
 
     background-color: var(--color-purple-1);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
 }
 
 .form-group--terms .form-group__caption {
