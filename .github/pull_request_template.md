@@ -8,4 +8,4 @@ Pull request checklist:
 - [ ] documentation is updated (including comments, commit messages, migration notes, …)
 
 _If you think one of the item isn’t applicable to the PR, please check it
-anyway and precise `(N/A)` next to it._
+anyway and precise `N/A` next to it._
