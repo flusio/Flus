@@ -1,7 +1,7 @@
 <h1 align="center">flusio</h1>
 
 <p align="center">
-    <strong>Aggregate, save and share news links from all over the Web.</strong>
+    <strong>Aggregate, save and share links from all over the Web.</strong>
 </p>
 
 ---
@@ -12,9 +12,10 @@ gather around the Web. It comes with four main features:
 
 - the **feeds aggregation** (<abbr>RSS</abbr> and Atom) to follow any website,
   podcast or video channel in one place;
-- the **bookmarks** to save the articles to read later;
-- the **news** to keep control over your feed;
-- the **collections** to organise and share links with others.
+- the **bookmarks and collections** to save your favourites articles for later
+  and to organise them;
+- the **news** to keep control over your newsfeed;
+- the **profile** to share links with others.
 
 You can try flusio for free at [demo.flus.fr](https://demo.flus.fr/).
 
