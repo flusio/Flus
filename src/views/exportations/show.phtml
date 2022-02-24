@@ -21,7 +21,7 @@
     <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
     <?php if ($exportation && $exportation->status === 'ongoing'): ?>
-        <p class="paragraph--featured">
+        <p class="paragraph--featured" role="alert">
             <?= _('We’re creating your archive…') ?>
         </p>
 
@@ -62,13 +62,7 @@
             </div>
         </form>
     <?php elseif ($exportation && $exportation->status === 'error'): ?>
-        <p class="paragraph--featured">
-            <?= _('Oops, a problem occured during the exportation.') ?>
-        </p>
-
-        <p class="paragraph--centered">
-            <?= protect($exportation->error) ?>
-        </p>
+        <?= $this->include('alerts/_error.phtml', ['message' => protect($exportation->error)]) ?>
 
         <form method="post" action="<?= url('create exportation') ?>">
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />

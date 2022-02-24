@@ -21,7 +21,7 @@
     <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
     <?php if ($importation && $importation->status === 'ongoing'): ?>
-        <p class="paragraph--featured">
+        <p class="paragraph--featured" role="alert">
             <?= _('We’re importing your data…') ?>
         </p>
 
@@ -40,13 +40,9 @@
         >
         </form>
     <?php elseif ($importation && $importation->status === 'finished'): ?>
-        <p class="paragraph--featured">
-            <?= _('We’ve imported your data from your <abbr>OPML</abbr> file.') ?>
-        </p>
-
-        <p class="paragraph--centered">
-            <?= _('We’re now going to fetch their links in background.') ?>
-        </p>
+        <?= $this->include('alerts/_success.phtml', [
+            'message' => _('We’ve imported your data from your <abbr>OPML</abbr> file. We’re now going to fetch their links in background.')
+        ]) ?>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
@@ -59,13 +55,7 @@
             </div>
         </form>
     <?php elseif ($importation && $importation->status === 'error'): ?>
-        <p class="paragraph--featured">
-            <?= _('Oops, a problem occured during your importation.') ?>
-        </p>
-
-        <p class="paragraph--centered">
-            <?= protect($importation->error) ?>
-        </p>
+        <?= $this->include('alerts/_error.phtml', ['message' => protect($importation->error)]) ?>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
