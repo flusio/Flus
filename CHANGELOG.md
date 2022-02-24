@@ -1,5 +1,39 @@
 # Changelog of flusio
 
+## 2022-02-24 - v0.44
+
+### News
+
+- Enable the new navigation for all users
+
+### Improvements
+
+- Improve the accessibility of popup menus
+- Improve the accessibility of forms
+- Announce to screen readers that links are opened in a new window
+- Improve the accessibility of the "skip to main content" button
+- Improve the alerts on importations/exportations
+- Rework the onboarding
+- Improve Atom feeds content
+- Move the "Create collection" button on next row
+- Append the brand to title for connected users as well
+- Stop tracking all pages in the "back" history
+- Disable the "forgot password" feature if demo is enabled
+
+### Bug fixes
+
+- Check CSRF first in Exportations#create
+- Do not reset autoload\_modal on redirections
+
+### Misc
+
+- Reset users autoload\_modal for recent users
+- Improve performance of the `system` command
+- Provide a command to remove cache of an URL
+- Remove the command to list subscriptions
+- Provide a file GDPR.txt
+- Update README.md
+
 ## 2022-02-10 - v0.43
 
 ### News
