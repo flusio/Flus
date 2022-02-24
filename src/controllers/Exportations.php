@@ -55,6 +55,13 @@ class Exportations
             return Response::redirect('login', ['redirect_to' => $redirect_to]);
         }
 
+        if (!\Minz\CSRF::validate($csrf)) {
+            return Response::badRequest('exportations/show.phtml', [
+                'exportation' => null,
+                'error' => _('A security verification failed.'),
+            ]);
+        }
+
         $exportation = models\Exportation::findBy([
             'user_id' => $user->id,
         ]);
@@ -65,13 +72,6 @@ class Exportations
             return Response::badRequest('exportations/show.phtml', [
                 'exportation' => $exportation,
                 'error' => _('You already have an ongoing exportation.'),
-            ]);
-        }
-
-        if (!\Minz\CSRF::validate($csrf)) {
-            return Response::badRequest('exportations/show.phtml', [
-                'exportation' => null,
-                'error' => _('A security verification failed.'),
             ]);
         }
 
