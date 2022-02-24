@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-02-24 13:14+0100\n"
-"PO-Revision-Date: 2022-02-24 13:14+0100\n"
+"POT-Creation-Date: 2022-02-24 14:14+0100\n"
+"PO-Revision-Date: 2022-02-24 14:14+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -488,23 +488,11 @@ msgstr "Petit conseil : il est peut-être l’heure de prendre une pause ?"
 msgid "For your entertainment, a choupisson : 🦔"
 msgstr "Pour vous divertir, un choupisson : 🦔"
 
-#: views/collections/feeds/show.atom.xml.php:40
-#: views/profiles/feeds/show.atom.xml.php:33
+#: views/collections/feeds/show.atom.xml.php:54
+#: views/profiles/feeds/show.atom.xml.php:47
 #, php-format
-msgid "“%s”"
-msgstr "« %s »"
-
-#: views/collections/feeds/show.atom.xml.php:41
-#: views/profiles/feeds/show.atom.xml.php:34
-#, php-format
-msgid "Read this on <a href=\"%s\">%s</a>."
-msgstr "Lisez cela sur <a href=\"%s\">%s</a>."
-
-#: views/collections/feeds/show.atom.xml.php:42
-#: views/profiles/feeds/show.atom.xml.php:35
-#, php-format
-msgid "My comments on <a href=\"%s\">%s</a>."
-msgstr "Mes commentaires sur <a href=\"%s\">%s</a>."
+msgid "— “<a href=\"%s\">%s</a>” was published on %s"
+msgstr "— « <a href=\"%s\">%s</a> » a été publié sur %s"
 
 #: views/feeds/feeds.xsl.php:6 views/feeds/feeds.xsl.php:20
 msgid "(feed)"

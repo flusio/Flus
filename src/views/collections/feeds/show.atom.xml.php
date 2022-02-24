@@ -30,16 +30,29 @@
             <title><?= protect($link->title) ?></title>
             <id><?= $link->tagUri() ?></id>
 
-            <link href="<?= protect($link->url) ?>" rel="alternate" type="text/html" />
-            <link href="<?= url_full('link', ['id' => $link->id]) ?>" rel="replies" type="text/html" />
+            <link href="<?= url_full('link', ['id' => $link->id]) ?>" rel="alternate" type="text/html" />
+            <link href="<?= protect($link->url) ?>" rel="via" type="text/html" />
+
+            <?php
+                $messages = $link->messages();
+                if ($messages) {
+                    $updated = $messages[count($messages) - 1]->created_at;
+                } else {
+                    $updated = $link->published_at;
+                }
+            ?>
 
             <published><?= $link->published_at->format(\DateTimeInterface::ATOM) ?></published>
-            <updated><?= $link->published_at->format(\DateTimeInterface::ATOM) ?></updated>
+            <updated><?= $updated->format(\DateTimeInterface::ATOM) ?></updated>
 
             <content type="html"><![CDATA[
-                <p><?= _f('“%s”', protect($link->title)) ?></p>
-                <p><?= _f('Read this on <a href="%s">%s</a>.', protect($link->url), protect($link->host())) ?></p>
-                <p><?= _f('My comments on <a href="%s">%s</a>.', url_full('link', ['id' => $link->id]), $brand) ?></p>
+                <?php foreach ($messages as $message): ?>
+                    <p><?= nl2br(protect($message->content)) ?></p>
+                <?php endforeach; ?>
+
+                <p>
+                    <?= _f('— “<a href="%s">%s</a>” was published on %s', protect($link->url), protect($link->title), protect($link->host())) ?>
+                </p>
             ]]></content>
         </entry>
     <?php endforeach; ?>
