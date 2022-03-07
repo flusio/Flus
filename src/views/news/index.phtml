@@ -45,6 +45,7 @@
                 <nav class="popup__container popup__container--bottom" role="menu">
                     <form method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        <input type="hidden" name="from" value="<?= url('news') ?>" />
 
                         <button class="popup__item popup__item--button">
                             <?= icon('check') ?>
@@ -54,6 +55,7 @@
 
                     <form method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>" role="menuitem">
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        <input type="hidden" name="from" value="<?= url('news') ?>" />
 
                         <button class="popup__item popup__item--button">
                             <?= icon('bookmark') ?>
@@ -72,6 +74,7 @@
                         role="menuitem"
                     >
                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        <input type="hidden" name="from" value="<?= url('news') ?>" />
 
                         <button class="popup__item popup__item--button">
                             <?= icon('times') ?>
