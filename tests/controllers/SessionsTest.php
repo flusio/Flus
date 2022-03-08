@@ -128,8 +128,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $session = models\Session::take();
         $token = models\Token::find($session->token);
         $this->assertSame($user_id, $session->user_id);
-        $this->assertSame('Firefox on Linux', $session->name);
-        $this->assertSame($ip, $session->ip);
+        $this->assertSame('', $session->name);
+        $this->assertSame('unknown', $session->ip);
         $this->assertEquals(\Minz\Time::fromNow(1, 'month'), $token->expired_at);
     }
 

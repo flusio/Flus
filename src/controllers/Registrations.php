@@ -144,8 +144,10 @@ class Registrations
         $session_token = models\Token::init(1, 'month');
         $session_token->save();
 
-        $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
-        $ip = $request->header('REMOTE_ADDR', 'unknown');
+        // $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
+        $session_name = '';
+        // $ip = $request->header('REMOTE_ADDR', 'unknown');
+        $ip = 'unknown';
         $session = models\Session::init($session_name, $ip);
         $session->user_id = $user->id;
         $session->token = $session_token->token;
