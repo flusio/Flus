@@ -47,10 +47,13 @@ class SubscriptionsSync extends jobs\Job
         );
 
         // First, make sure all users have a subscription account. It might
-        // happen for users who didn't validate their account yet, or if a
-        // previous request failed.
+        // happen if a previous request failed.
         $users = models\User::listBy(['subscription_account_id' => null]);
         foreach ($users as $user) {
+            if (!$user->validated_at) {
+                continue;
+            }
+
             $account = $subscriptions_service->account($user->email);
             if ($account) {
                 $user->subscription_account_id = $account['id'];

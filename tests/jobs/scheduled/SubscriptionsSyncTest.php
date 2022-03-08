@@ -104,6 +104,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
             'subscription_account_id' => null,
             'subscription_expired_at' => $this->fake('iso8601'),
+            'validated_at' => $this->fake('iso8601'),
         ]);
 
         $subscriptions_sync_job->perform();
@@ -194,6 +195,37 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
         $user = models\User::find($user_id);
         $this->assertEquals($new_expired_at, $user->subscription_expired_at);
+    }
+
+    public function testSyncDoesNotGetAccountIdIfNotValidated()
+    {
+        $subscriptions_sync_job = new SubscriptionsSync();
+        $email = $this->fake('email');
+        $account_id = $this->fake('uuid');
+        $expired_at = $this->fake('dateTime');
+        $subscription_api_url = "https://next.flus.io/api/account?email={$email}";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "id": "{$account_id}",
+                "expired_at": "{$expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+            }
+            TEXT
+        );
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'subscription_account_id' => null,
+            'subscription_expired_at' => $this->fake('iso8601'),
+            'validated_at' => null,
+        ]);
+
+        $subscriptions_sync_job->perform();
+
+        $user = models\User::find($user_id);
+        $this->assertNull($user->subscription_account_id);
+        $this->assertNotEquals($expired_at, $user->subscription_expired_at);
     }
 
     public function testSyncDoesNothingIfHttpIsInError()
