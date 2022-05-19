@@ -115,6 +115,11 @@ class Link extends \Minz\Model
             'type' => 'string',
             'computed' => true,
         ],
+
+        'search_rank' => [
+            'type' => 'integer',
+            'computed' => true,
+        ],
     ];
 
     /**
