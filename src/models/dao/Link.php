@@ -17,6 +17,7 @@ class Link extends \Minz\DatabaseModel
     use links\FetcherQueries;
     use links\NewsQueries;
     use links\PocketQueries;
+    use links\SearchQueries;
 
     /**
      * @throws \Minz\Errors\DatabaseError

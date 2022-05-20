@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-02-24 14:14+0100\n"
-"PO-Revision-Date: 2022-02-24 14:14+0100\n"
+"POT-Creation-Date: 2022-05-20 17:25+0200\n"
+"PO-Revision-Date: 2022-05-20 17:32+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -47,7 +47,7 @@ msgstr "Afficher"
 
 #: controllers/Collections.php:99 controllers/Collections.php:303
 #: controllers/Feeds.php:108 controllers/Groups.php:90
-#: controllers/Links.php:179 controllers/News.php:77
+#: controllers/Links.php:216 controllers/News.php:77
 #: controllers/Passwords.php:88 controllers/Passwords.php:191
 #: controllers/Registrations.php:104 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Filters.php:104
@@ -70,8 +70,8 @@ msgstr "L’une des thématiques associées n’existe pas."
 
 #: controllers/Collections.php:378 controllers/Exportations.php:61
 #: controllers/Groups.php:161 controllers/Importations.php:48
-#: controllers/Links.php:311 controllers/Links.php:358
-#: controllers/Messages.php:47 controllers/Sessions.php:200
+#: controllers/Links.php:348 controllers/Links.php:395
+#: controllers/Messages.php:47 controllers/Sessions.php:202
 #: controllers/collections/Read.php:65 controllers/collections/Read.php:124
 #: controllers/collections/Read.php:183 controllers/importations/Opml.php:78
 #: controllers/importations/Pocket.php:102
@@ -95,11 +95,11 @@ msgstr "Aucun flux valide n’a été détecté à cette adresse."
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
-#: controllers/Links.php:204
+#: controllers/Links.php:241
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:217 controllers/links/Collections.php:130
+#: controllers/Links.php:254 controllers/links/Collections.php:130
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
@@ -303,23 +303,23 @@ msgstr "Le filtre est invalide."
 msgid "The name must be less than %d characters."
 msgstr "Le nom ne doit pas faire plus de %d caractères."
 
-#: models/Link.php:282
+#: models/Link.php:292
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:284
+#: models/Link.php:294
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:303
+#: models/Link.php:313
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:308
+#: models/Link.php:318
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:312
+#: models/Link.php:322
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -563,7 +563,7 @@ msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
 #: views/_layouts/connected.phtml:93 views/links/index.phtml:3
-#: views/links/index.phtml:15
+#: views/links/index.phtml:19
 msgid "My links"
 msgstr "Mes liens"
 
@@ -616,11 +616,20 @@ msgstr "Support"
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:239 views/_layouts/not_connected.phtml:186
+#: views/_layouts/connected.phtml:216 views/_layouts/connected.phtml:217
+msgid "Search links by words or URL"
+msgstr "Rechercher des liens par mots ou URL"
+
+#: views/_layouts/connected.phtml:225 views/links/searches/show.phtml:48
+#: views/links/searches/show.phtml:64
+msgid "Search"
+msgstr "Rechercher"
+
+#: views/_layouts/connected.phtml:262 views/_layouts/not_connected.phtml:186
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:240 views/_layouts/not_connected.phtml:187
+#: views/_layouts/connected.phtml:263 views/_layouts/not_connected.phtml:187
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -961,8 +970,8 @@ msgstr "Une collection créée par %s sur %s."
 msgid ""
 "Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
 msgstr ""
-"Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
-"%s</a>"
+"Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" "
+"href=\"%s\">%s</a>"
 
 #: views/collections/show_public.phtml:92
 #, php-format
@@ -973,7 +982,7 @@ msgstr "Créée par <a href=\"%s\">%s</a>"
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show_public.phtml:161 views/news/index.phtml:51
+#: views/collections/show_public.phtml:161 views/news/index.phtml:52
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
@@ -1409,19 +1418,19 @@ msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
 msgid "Delete the link"
 msgstr "Supprimer le lien"
 
-#: views/links/index.phtml:19
+#: views/links/index.phtml:23
 msgid "Organize your links in your bookmarks and your collections."
 msgstr "Organisez vos liens dans vos signets et vos collections."
 
-#: views/links/index.phtml:31
+#: views/links/index.phtml:35
 msgid "Your links to read later"
 msgstr "Vos liens à lire plus tard"
 
-#: views/links/index.phtml:43
+#: views/links/index.phtml:47
 msgid "All your links marked as read"
 msgstr "Tous vos liens marqués comme lu"
 
-#: views/links/index.phtml:62
+#: views/links/index.phtml:66
 msgid "Create a collection"
 msgstr "Créer une collection"
 
@@ -1441,13 +1450,20 @@ msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
 msgid "or"
 msgstr "ou"
 
+#: views/links/search.phtml:8 views/links/search.phtml:20
+msgid "Results of the search"
+msgstr "Résultats de la recherche"
+
+#: views/links/search.phtml:24
+#, php-format
+msgid "%d result (“%s”)"
+msgid_plural "%d results (“%s”)"
+msgstr[0] "%d résultat (« %s »)"
+msgstr[1] "%d résultats (« %s »)"
+
 #: views/links/searches/show.phtml:31
 msgid "What’s the address of the link or feed?"
 msgstr "Quelle est l’adresse du lien ou du flux ?"
-
-#: views/links/searches/show.phtml:48 views/links/searches/show.phtml:64
-msgid "Search"
-msgstr "Rechercher"
 
 #: views/links/searches/show.phtml:174
 msgid "Add"
@@ -1605,7 +1621,8 @@ msgstr "Vous êtes inscrit‧e depuis le %s."
 
 #: views/my/account/show.phtml:20
 msgid "You have a <strong>free subscription</strong>!&nbsp;😊"
-msgstr "Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
+msgstr ""
+"Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
 
 #: views/my/account/show.phtml:22
 #, php-format
@@ -1744,11 +1761,11 @@ msgstr "Courriel non reçu ? Renvoyer"
 msgid "Empty the news"
 msgstr "Vider le journal"
 
-#: views/news/index.phtml:60
+#: views/news/index.phtml:62
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/index.phtml:71
+#: views/news/index.phtml:73
 msgid ""
 "You’ll remove all the news links, this action cannot be canceled. Are you "
 "sure?"
@@ -1756,35 +1773,35 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.phtml:78
+#: views/news/index.phtml:81
 msgid "Never see the links again"
 msgstr "Ne plus revoir les liens"
 
-#: views/news/index.phtml:87
+#: views/news/index.phtml:90
 msgid "We haven’t found any relevant links for the moment."
 msgstr "Nous n’avons trouvé aucun lien pertinent pour le moment."
 
-#: views/news/index.phtml:92
+#: views/news/index.phtml:95
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/index.phtml:112
+#: views/news/index.phtml:115
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/index.phtml:113
+#: views/news/index.phtml:116
 msgid "from your followed feeds"
 msgstr "depuis vos flux suivis"
 
-#: views/news/index.phtml:128
+#: views/news/index.phtml:131
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
-#: views/news/index.phtml:129 views/news/index.phtml:145
+#: views/news/index.phtml:132 views/news/index.phtml:148
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/index.phtml:144
+#: views/news/index.phtml:147
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 
@@ -2103,9 +2120,9 @@ msgid ""
 "Before going any further, please read <a href=\"%s\" target=\"_blank\">the "
 "terms of service</a> to make sure they are suitable for you."
 msgstr ""
-"Avant d’aller plus loin, prenez le temps de lire <a href=\"%s\" target="
-"\"_blank\">les conditions générales d’utilisation</a> pour vous assurer que "
-"celles-ci vous conviennent."
+"Avant d’aller plus loin, prenez le temps de lire <a href=\"%s\" "
+"target=\"_blank\">les conditions générales d’utilisation</a> pour vous "
+"assurer que celles-ci vous conviennent."
 
 #: views/registrations/new.phtml:151
 msgid "Accept the terms of service"

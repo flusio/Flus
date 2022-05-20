@@ -110,6 +110,16 @@ class Link extends \Minz\Model
             'type' => 'boolean',
             'computed' => true,
         ],
+
+        'search_index' => [
+            'type' => 'string',
+            'computed' => true,
+        ],
+
+        'search_rank' => [
+            'type' => 'integer',
+            'computed' => true,
+        ],
     ];
 
     /**

@@ -17,6 +17,13 @@
     $back_options = $back_options ?? [];
     $back_options = array_merge($default_back_options, $back_options);
 
+    $default_search_options = [
+        'enabled' => false,
+        'query' => '',
+    ];
+    $search_options = $search_options ?? [];
+    $search_options = array_merge($default_search_options, $search_options);
+
     $this->layout($layout_name, [
         // The title can be considered as safe since it's already sanitized in
         // the calling view.
@@ -28,6 +35,7 @@
         'alternates' => $alternates ?? [],
         'open_graph' => $open_graph ?? [],
         'back_options' => $back_options,
+        'search_options' => $search_options,
         'has_errors' => $has_errors ?? false,
     ]);
 

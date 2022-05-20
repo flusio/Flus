@@ -1,0 +1,43 @@
+<?php
+    $current_url_params = ['q' => $query];
+    if (!$pagination->isCurrentFirstPage()) {
+        $current_url_params['page'] = $pagination->currentPage();
+    }
+
+    $this->layout('base.phtml', [
+        'title' => _('Results of the search'),
+        'canonical' => url_full('links', $current_url_params),
+        'current_tab' => 'links',
+        'search_options' => [
+            'enabled' => true,
+            'query' => $this->safe('query'),
+        ],
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1><?= _('Results of the search') ?></h1>
+    </div>
+
+    <p class="section__intro">
+    <?= _nf('%d result (“%s”)', '%d results (“%s”)', $pagination->numberElements(), $pagination->numberElements(), $query) ?>
+    </p>
+
+    <div class="cards cards--centered">
+        <?php foreach ($links as $link): ?>
+            <?= $this->include('links/_link.phtml', [
+                'link' => $link,
+                'from' => \Minz\Url::for('links', $current_url_params),
+                'display_via' => true,
+                'display_comments' => true,
+                'display_hidden' => $link->is_hidden,
+                'display_edit' => true,
+                'display_mark_as_read' => !$link->is_read,
+                'collections_mode' => 'managing',
+            ]); ?>
+        <?php endforeach; ?>
+    </div>
+
+    <?= $this->include('_pagination.phtml', ['pagination' => $pagination, 'url' => url('links', ['q' => $query])]) ?>
+</div>

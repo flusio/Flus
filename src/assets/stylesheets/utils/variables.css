@@ -65,6 +65,7 @@
     --color-border-active: var(--color-turquoise-5);
     --color-border-error: var(--color-red-5);
     --color-border-success: var(--color-turquoise-6);
+    --color-border-search: var(--color-grey-3);
 
     --color-text: var(--color-purple-9);
     --color-text-error: var(--color-red-6);
