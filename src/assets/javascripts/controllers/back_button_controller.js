@@ -38,8 +38,8 @@ export default class extends Controller {
             this.buttonTarget.href = backItem.path;
             this.buttonTarget.innerHTML = `${icon('back')} ${_('Back')} (${backItem.title})`;
         } else {
-            // Else, there's nowhere to go so we hide the navigation
-            this.element.style.display = 'none';
+            // Else, there's nowhere to go so we remove the navigation
+            this.element.remove();
         }
     }
 
