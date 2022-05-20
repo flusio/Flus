@@ -206,6 +206,29 @@
                     </a>
                 </nav>
 
+                <?php if ($search_options['enabled']): ?>
+                    <form class="layout__search" method="get" action="">
+                        <div class="form-group">
+                            <input
+                                id="query"
+                                name="q"
+                                type="text"
+                                aria-label="<?= _('Search links by words or URL') ?>"
+                                placeholder="<?= _('Search links by words or URL') ?>"
+                                required
+                                value="<?= $search_options['query'] ?>"
+                            />
+
+                            <button type="submit" class="button--ghost">
+                                <?= icon('search') ?>
+                                <span class="sr-only">
+                                    <?= _('Search') ?>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                <?php endif; ?>
+
                 <section class="layout__content">
                     <?= $this->safe('content') ?>
                 </section>

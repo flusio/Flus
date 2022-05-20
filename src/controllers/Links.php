@@ -20,6 +20,9 @@ class Links
      * Display the links page of the current user (it shows the owned
      * collections in fact).
      *
+     * @request_param string q
+     * @request_param integer page
+     *
      * @response 302 /login?redirect_to=/links
      *     if the user is not connected
      * @response 200
@@ -32,22 +35,56 @@ class Links
             return Response::redirect('login', ['redirect_to' => \Minz\Url::for('links')]);
         }
 
-        $bookmarks = $user->bookmarks();
-        $read_list = $user->readList();
+        $query = $request->param('q');
+        $pagination_page = $request->paramInteger('page', 1);
 
-        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
-        utils\Sorter::localeSort($groups, 'name');
+        if ($query) {
+            $number_links = models\Link::daoCall('countByQueryAndUserId', $query, $user->id);
+            $number_per_page = 30;
+            $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
+            if ($pagination_page !== $pagination->currentPage()) {
+                return Response::redirect('links', [
+                    'q' => $query,
+                    'page' => $pagination->currentPage(),
+                ]);
+            }
 
-        $collections = $user->collections(['number_links']);
-        utils\Sorter::localeSort($collections, 'name');
-        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
+            $links = models\Link::daoToList(
+                'listComputedByQueryAndUserId',
+                $query,
+                $user->id,
+                ['published_at', 'number_comments', 'is_read'],
+                [
+                    'offset' => $pagination->currentOffset(),
+                    'limit' => $pagination->numberPerPage(),
+                    'context_user_id' => $user->id,
+                ]
+            );
 
-        return Response::ok('links/index.phtml', [
-            'bookmarks' => $bookmarks,
-            'read_list' => $read_list,
-            'groups' => $groups,
-            'groups_to_collections' => $groups_to_collections,
-        ]);
+            return Response::ok('links/search.phtml', [
+                'links' => $links,
+                'query' => $query,
+                'pagination' => $pagination,
+            ]);
+        } else {
+            $bookmarks = $user->bookmarks();
+            $read_list = $user->readList();
+
+            $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+            utils\Sorter::localeSort($groups, 'name');
+
+            $collections = $user->collections(['number_links']);
+            utils\Sorter::localeSort($collections, 'name');
+            $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
+
+            return Response::ok('links/index.phtml', [
+                'bookmarks' => $bookmarks,
+                'read_list' => $read_list,
+                'groups' => $groups,
+                'groups_to_collections' => $groups_to_collections,
+                'query' => $query,
+            ]);
+        }
     }
 
     /**

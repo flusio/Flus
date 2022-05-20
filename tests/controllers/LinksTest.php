@@ -59,11 +59,53 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'All your links marked as read');
     }
 
+    public function testIndexRendersResultsWhenQuery()
+    {
+        $user = $this->login();
+        $title_1 = $this->fakeUnique('words', 3, true);
+        $title_2 = $this->fakeUnique('words', 3, true);
+        $query = $title_1;
+        $this->create('link', [
+            'title' => $title_1,
+        ]);
+        $this->create('link', [
+            'title' => $title_2,
+        ]);
+
+        $response = $this->appRun('get', '/links', [
+            'q' => $query,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'links/search.phtml');
+        $this->assertResponseContains($response, $title_1);
+        $this->assertResponseNotContains($response, $title_2);
+    }
+
     public function testIndexRedirectsToLoginIfNotConnected()
     {
         $response = $this->appRun('get', '/links');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks');
+    }
+
+    public function testIndexRedirectsIfPageIsOutOfBound()
+    {
+        $user = $this->login();
+        $title_1 = $this->fakeUnique('words', 3, true);
+        $title_2 = $this->fakeUnique('words', 3, true);
+        $query = $title_1;
+        $this->create('link', [
+            'title' => $title_1,
+        ]);
+
+        $response = $this->appRun('get', '/links', [
+            'q' => $query,
+            'page' => 2,
+        ]);
+
+        $query_encoded = urlencode($query);
+        $this->assertResponseCode($response, 302, "/links?q={$query_encoded}&page=1");
     }
 
     public function testShowRendersCorrectly()
