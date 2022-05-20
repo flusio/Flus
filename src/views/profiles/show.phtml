@@ -67,7 +67,7 @@
             <?php foreach ($links as $link): ?>
                 <?= $this->include('links/_link.phtml', [
                     'link' => $link,
-                    'from' => url('profile', ['id' => $user->id]),
+                    'from' => \Minz\Url::for('profile', ['id' => $user->id]),
                     'display_comments' => true,
                     'display_edit' => $is_current_user_profile,
                     'display_mark_as_read' => $current_user && !$link->is_read,

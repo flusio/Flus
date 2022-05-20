@@ -21,7 +21,7 @@
             <?php foreach ($links as $link): ?>
                 <?= $this->include('links/_link.phtml', [
                     'link' => $link,
-                    'from' => url_full('news'),
+                    'from' => \Minz\Url::for('news'),
                     'display_via' => true,
                     'collections_mode' => $has_collections ? 'news' : '',
                     'secondary_menu_mode' => 'news',

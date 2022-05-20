@@ -28,7 +28,7 @@
         <?php foreach ($links as $link): ?>
             <?= $this->include('links/_link.phtml', [
                 'link' => $link,
-                'from' => url_full('read list', $current_url_params),
+                'from' => \Minz\Url::for('read list', $current_url_params),
                 'display_via' => $link->via_type !== 'bookmarks',
                 'display_comments' => true,
                 'display_edit' => true,

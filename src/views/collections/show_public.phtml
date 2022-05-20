@@ -210,7 +210,7 @@
             <?php foreach ($links as $link): ?>
                 <?= $this->include('links/_link.phtml', [
                     'link' => $link,
-                    'from' => url('collection', $current_url_params),
+                    'from' => \Minz\Url::for('collection', $current_url_params),
                     'display_comments' => $collection->type !== 'feed',
                     'display_mark_as_read' => $current_user && !$link->is_read,
                     'collections_mode' => 'adding',

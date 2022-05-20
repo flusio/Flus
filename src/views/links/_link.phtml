@@ -132,7 +132,7 @@
                                 class="popup__item popup__item--button"
                                 data-controller="modal-opener"
                                 data-action="modal-opener#fetch"
-                                data-modal-opener-href-value="<?= url('edit link', ['id' => $link->id, 'from' => $from]) ?>"
+                                data-modal-opener-href-value="<?= url('edit link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
                                 aria-haspopup="dialog"
                                 aria-controls="modal"
                                 role="menuitem"
@@ -157,7 +157,7 @@
                         </div>
 
                         <?php if ($display_mark_as_read): ?>
-                            <form method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $from]) ?>" role="menuitem">
+                            <form method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $this->safe('from')]) ?>" role="menuitem">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                                 <button class="popup__item popup__item--button">
@@ -170,7 +170,7 @@
                         <?php if ($display_mark_as_unread): ?>
                             <div class="popup__separator"></div>
 
-                            <form method="post" action="<?= url('mark link as unread', ['id' => $link->id, 'from' => $from]) ?>" role="menuitem">
+                            <form method="post" action="<?= url('mark link as unread', ['id' => $link->id, 'from' => $this->safe('from')]) ?>" role="menuitem">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                                 <button class="popup__item popup__item--button">
@@ -238,7 +238,7 @@
                     class="button--ghost button--smaller"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
-                    data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mode' => $collections_mode, 'from' => $from]) ?>"
+                    data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mode' => $collections_mode, 'from' => $this->safe('from')]) ?>"
                     aria-haspopup="dialog"
                     aria-controls="modal"
                     title="<?= $collections_mode === 'managing' ? _('Manage collections'): _('Add to collections') ?>"
