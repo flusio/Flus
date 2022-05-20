@@ -56,6 +56,14 @@ class Pagination
     /**
      * @return integer
      */
+    public function numberElements()
+    {
+        return $this->number_elements;
+    }
+
+    /**
+     * @return integer
+     */
     public function totalPages()
     {
         return $this->total_pages;

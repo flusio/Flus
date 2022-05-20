@@ -4,6 +4,18 @@ namespace flusio\utils;
 
 class PaginationTest extends \PHPUnit\Framework\TestCase
 {
+    public function testNumberElements()
+    {
+        $number_elements = 300;
+        $number_per_page = 30;
+        $initial_current_page = 3;
+        $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
+
+        $number_elements = $pagination->numberElements();
+
+        $this->assertSame(300, $number_elements);
+    }
+
     public function testTotalPage()
     {
         $number_elements = 300;
