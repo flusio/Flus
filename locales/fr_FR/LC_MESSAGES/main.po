@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-05-20 17:25+0200\n"
-"PO-Revision-Date: 2022-05-20 17:32+0200\n"
+"POT-Creation-Date: 2022-05-23 13:40+0200\n"
+"PO-Revision-Date: 2022-05-23 13:40+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:39
-#: views/_layouts/connected.phtml:205
-#: views/_layouts/connected_blocked.phtml:164
+#: views/_layouts/connected.phtml:215
+#: views/_layouts/connected_blocked.phtml:174
 #: views/_layouts/not_connected.phtml:147
 msgid "Back"
 msgstr "Retour"
@@ -611,25 +611,30 @@ msgstr "Identifiants & sécurité"
 msgid "Support"
 msgstr "Support"
 
-#: views/_layouts/connected.phtml:182
-#: views/_layouts/connected_blocked.phtml:141
+#: views/_layouts/connected.phtml:185
+#: views/_layouts/connected_blocked.phtml:144
+msgid "About"
+msgstr "À propos"
+
+#: views/_layouts/connected.phtml:192
+#: views/_layouts/connected_blocked.phtml:151
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:216 views/_layouts/connected.phtml:217
+#: views/_layouts/connected.phtml:226 views/_layouts/connected.phtml:227
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:225 views/links/searches/show.phtml:48
+#: views/_layouts/connected.phtml:235 views/links/searches/show.phtml:48
 #: views/links/searches/show.phtml:64
 msgid "Search"
 msgstr "Rechercher"
 
-#: views/_layouts/connected.phtml:262 views/_layouts/not_connected.phtml:186
+#: views/_layouts/connected.phtml:272 views/_layouts/not_connected.phtml:188
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:263 views/_layouts/not_connected.phtml:187
+#: views/_layouts/connected.phtml:273 views/_layouts/not_connected.phtml:189
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -649,7 +654,8 @@ msgstr "Se connecter"
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:159
+#: views/_layouts/not_connected.phtml:160 views/pages/about.phtml:3
+#: views/pages/about.phtml:11
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
@@ -1992,6 +1998,117 @@ msgstr "Plutôt un ou une utilisatrice de <abbr>RSS</abbr> ?"
 #: views/onboarding/step6.phtml:70
 msgid "Import an <abbr>OPML</abbr> file"
 msgstr "Importer un fichier <abbr>OPML</abbr>"
+
+#: views/pages/about.phtml:15
+msgid "Aggregate, save and share links from all over the Web."
+msgstr "Agrégez, stockez et partagez vos liens vers le Web."
+
+#: views/pages/about.phtml:20
+#, php-format
+msgid "The logo of %s"
+msgstr "Le logo de %s"
+
+#: views/pages/about.phtml:27
+#, php-format
+msgid "%s is an instance of flusio."
+msgstr "%s est une instance de flusio."
+
+#: views/pages/about.phtml:31
+msgid "Website (in French)"
+msgstr "Site Web"
+
+#: views/pages/about.phtml:32
+msgid "Source code"
+msgstr "Code source"
+
+#: views/pages/about.phtml:33
+msgid "Firefox extension"
+msgstr "Extension Firefox"
+
+#: views/pages/about.phtml:34
+msgid "Chrome extension"
+msgstr "Extension Chrome"
+
+#: views/pages/about.phtml:37
+msgid "Version"
+msgstr "Version"
+
+#: views/pages/about.phtml:43
+msgid "License"
+msgstr "Licence"
+
+#: views/pages/about.phtml:49
+msgid "Author"
+msgstr "Auteur"
+
+#: views/pages/about.phtml:55
+msgid "Credits"
+msgstr "Crédits"
+
+#: views/pages/about.phtml:58
+msgid ""
+"the user experience and interface have been designed with the help of <a "
+"href=\"https://www.maiwann.net/\">Maiwann</a>;"
+msgstr ""
+"l’expérience utilisateur et l’interface ont été conçues avec l’aide de <a "
+"href=\"https://www.maiwann.net/\">Maiwann</a> ;"
+
+#: views/pages/about.phtml:59
+msgid ""
+"the logo has been made by <a href=\"https://www.clara-chambon.fr/\">Clara "
+"Chambon</a>;"
+msgstr ""
+"le logo a été réalisé par <a href=\"https://www.clara-chambon.fr/\">Clara "
+"Chambon</a> ;"
+
+#: views/pages/about.phtml:60
+msgid ""
+"the font <a href=\"https://fonts.google.com/specimen/Comfortaa\">Comfortaa</"
+"a>, by Johan Aakerlund;"
+msgstr ""
+"la police <a href=\"https://fonts.google.com/specimen/Comfortaa\">Comfortaa</"
+"a>, par Johan Aakerlund ;"
+
+#: views/pages/about.phtml:61
+msgid ""
+"the font <a href=\"https://fonts.google.com/specimen/Open+Sans\">Open Sans</"
+"a>, by Steve Matteson;"
+msgstr ""
+"la police <a href=\"https://fonts.google.com/specimen/Open+Sans\">Open Sans</"
+"a>, par Steve Matteson ;"
+
+#: views/pages/about.phtml:62
+msgid ""
+"the icons are from <a href=\"https://clarity.design/\">the Clarity project</"
+"a>;"
+msgstr ""
+"les icônes viennent du <a href=\"https://clarity.design/\">projet Clarity</"
+"a> ;"
+
+#: views/pages/about.phtml:63
+msgid ""
+"the illustrations are from <a href=\"https://undraw.co\">the unDraw project</"
+"a>, by <a href=\"https://twitter.com/ninaLimpi\">Katerina Limpitsouni</a>;"
+msgstr ""
+"les illustrations viennent du <a href=\"https://undraw.co\">projet unDraw</"
+"a>, par <a href=\"https://twitter.com/ninaLimpi\">Katerina Limpitsouni</a> ;"
+
+#: views/pages/about.phtml:64
+msgid ""
+"default cards illustrations are from <a href=\"https://www.svgbackgrounds."
+"com/\">SVGBackgrounds</a>."
+msgstr ""
+"les illustrations par défaut des cartes viennent de <a href=\"https://www."
+"svgbackgrounds.com/\">SVGBackgrounds</a>."
+
+#: views/pages/about.phtml:69
+msgid ""
+"And a huge thanks to the people who subscribe to the official service, talk "
+"about flusio around them, share their opinion and ideas, or report bugs!"
+msgstr ""
+"Et un énorme merci aux personnes qui s’abonnent au service officiel, parlent "
+"de flusio autour d’elleux, partagent leur opinion et leurs idées, ou "
+"remontent des bugs !"
 
 #: views/pages/terms.phtml:3 views/pages/terms.phtml:10
 msgid "Terms of service"

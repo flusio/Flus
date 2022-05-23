@@ -1,0 +1,72 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _f('About %s', $brand),
+        'canonical' => url_full('about'),
+        'current_page' => 'about',
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _f('About %s', $brand) ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('Aggregate, save and share links from all over the Web.') ?>
+    </p>
+
+    <img
+        class="illustration illustration--centered"
+        alt="<?= _f('The logo of %s', $brand) ?>"
+        src="<?= url_static('icons/icon.svg') ?>"
+        width="125"
+        height="125"
+    />
+
+    <p>
+        <strong><?= _f('%s is an instance of flusio.', $brand) ?></strong>
+    </p>
+
+    <ul>
+        <li><a href="https://flus.fr"><?= _('Website (in French)') ?></a></li>
+        <li><a href="https://github.com/flusio/flusio"><?= _('Source code') ?></a></li>
+        <li><a href="https://addons.mozilla.org/en-US/firefox/addon/flus/"><?= _('Firefox extension') ?></a></li>
+        <li><a href="https://chrome.google.com/webstore/detail/flus/gikjpohbbimicecbndkefebbpjobokjd"><?= _('Chrome extension') ?></a></li>
+    </ul>
+
+    <h2><?= _('Version') ?></h2>
+
+    <p>
+        <?= $version ?>
+    </p>
+
+    <h2><?= _('License') ?></h2>
+
+    <p>
+        <a href="https://github.com/flusio/flusio/blob/main/LICENSE.txt"><abbr>AGPL</abbr> 3</a>
+    </p>
+
+    <h2><?= _('Author') ?></h2>
+
+    <p>
+        <a href="https://marienfressinaud.fr">Marien Fressinaud</a>
+    </p>
+
+    <h2><?= _('Credits') ?></h2>
+
+    <ul>
+        <li><?= _('the user experience and interface have been designed with the help of <a href="https://www.maiwann.net/">Maiwann</a>;') ?></li>
+        <li><?= _('the logo has been made by <a href="https://www.clara-chambon.fr/">Clara Chambon</a>;') ?></li>
+        <li><?= _('the font <a href="https://fonts.google.com/specimen/Comfortaa">Comfortaa</a>, by Johan Aakerlund;') ?></li>
+        <li><?= _('the font <a href="https://fonts.google.com/specimen/Open+Sans">Open Sans</a>, by Steve Matteson;') ?></li>
+        <li><?= _('the icons are from <a href="https://clarity.design/">the Clarity project</a>;') ?></li>
+        <li><?= _('the illustrations are from <a href="https://undraw.co">the unDraw project</a>, by <a href="https://twitter.com/ninaLimpi">Katerina Limpitsouni</a>;') ?></li>
+        <li><?= _('default cards illustrations are from <a href="https://www.svgbackgrounds.com/">SVGBackgrounds</a>.') ?></li>
+    </ul>
+
+    <p>
+        <strong>
+            <?= _('And a huge thanks to the people who subscribe to the official service, talk about flusio around them, share their opinion and ideas, or report bugs!') ?>
+        </strong>
+    </p>
+</div>

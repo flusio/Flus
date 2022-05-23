@@ -55,6 +55,18 @@ class Pages
     }
 
     /**
+     * Show the about page.
+     *
+     * @response 200
+     */
+    public function about()
+    {
+        return Response::ok('pages/about.phtml', [
+            'version' => \Minz\Configuration::$application['version'],
+        ]);
+    }
+
+    /**
      * Show the webmanifest page.
      *
      * @response 200

@@ -153,13 +153,15 @@
                 </section>
             </main>
 
-            <footer class="layout__footer">
-                <p>
-                    <a href="https://flus.fr">
-                        <?= _f('About %s', $brand) ?>
-                    </a>
-                </p>
-            </footer>
+            <?php if ($current_page !== 'about'): ?>
+                <footer class="layout__footer">
+                    <p>
+                        <a href="<?= url('about') ?>">
+                            <?= _f('About %s', $brand) ?>
+                        </a>
+                    </p>
+                </footer>
+            <?php endif; ?>
         </div>
 
         <div

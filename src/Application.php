@@ -173,6 +173,7 @@ class Application
             utils\Belt::startsWith($path, '/exportation') ||
             utils\Belt::startsWith($path, '/logout') ||
             utils\Belt::startsWith($path, '/terms') ||
+            utils\Belt::startsWith($path, '/about') ||
             utils\Belt::startsWith($path, '/onboarding') ||
             utils\Belt::startsWith($path, '/support') ||
             utils\Belt::startsWith($path, '/src/assets')
@@ -205,6 +206,7 @@ class Application
             utils\Belt::startsWith($path, '/exportation') ||
             utils\Belt::startsWith($path, '/logout') ||
             utils\Belt::startsWith($path, '/terms') ||
+            utils\Belt::startsWith($path, '/about') ||
             utils\Belt::startsWith($path, '/onboarding') ||
             utils\Belt::startsWith($path, '/support') ||
             utils\Belt::startsWith($path, '/src/assets')

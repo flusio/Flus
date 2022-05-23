@@ -49,4 +49,13 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 404);
     }
+
+    public function testTermsRendersCorrectly()
+    {
+        $response = $this->appRun('GET', '/about');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'pages/about.phtml');
+        $this->assertResponseContains($response, 'About flusio');
+    }
 }
