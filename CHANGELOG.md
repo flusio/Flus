@@ -1,5 +1,24 @@
 # Changelog of flusio
 
+## 2022-05-23 - v0.45
+
+### News
+
+- Provide a form to search in "My links" (beta)
+- Create an about page
+
+### Security
+
+- Upgrade minimist dependency
+
+### Bug fixes
+
+- Fix "from" URLs containing "&" characters in `links/_link.phtml` view partial
+
+### Misc
+
+- Remove back element from DOM instead of hidding
+
 ## 2022-02-24 - v0.44
 
 ### News
