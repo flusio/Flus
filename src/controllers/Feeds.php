@@ -32,7 +32,15 @@ class Feeds
         $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
         utils\Sorter::localeSort($groups, 'name');
 
-        $collections = $user->followedCollections(['number_links']);
+        // Counting links is optimized for feeds, so we list the collections in
+        // two steps.
+        $feeds = $user->followedCollections(['number_links'], [
+            'type' => 'feed',
+        ]);
+        $collections = $user->followedCollections(['number_links'], [
+            'type' => 'collection',
+        ]);
+        $collections = array_merge($collections, $feeds);
         utils\Sorter::localeSort($collections, 'name');
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
