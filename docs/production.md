@@ -4,7 +4,7 @@ Installing flusio on your own server is quite simple but still requires basic
 notions in sysadmin. First, make sure you match with the following
 requirements:
 
-- git, Nginx, PHP 7.3+ and PostgreSQL are installed on your server;
+- git, Nginx, PHP 7.4+ and PostgreSQL 13+ are installed on your server;
 - PHP requires `intl`, `gettext`, `pcntl`, `gd`, `pdo` and `pdo_pgsql` extensions;
 - your PostgreSQL user must have the permission to create a database;
 - flusio must be served over <abbr>HTTPS</abbr>.

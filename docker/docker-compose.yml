@@ -49,7 +49,7 @@ services:
         user: $USER
 
     database:
-        image: postgres:12-alpine
+        image: postgres:13-alpine
         restart: unless-stopped
         environment:
             POSTGRES_USER: postgres

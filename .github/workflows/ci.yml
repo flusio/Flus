@@ -25,11 +25,11 @@ jobs:
         strategy:
             matrix:
                 operating-system: [ubuntu-18.04]
-                php-versions: ['7.3', '7.4', '8.0']
+                php-versions: ['7.4', '8.0']
 
         services:
             postgres:
-                image: postgres:12-alpine
+                image: postgres:13-alpine
                 env:
                     POSTGRES_USER: postgres
                     POSTGRES_PASSWORD: postgres

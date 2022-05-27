@@ -1,19 +1,18 @@
 # Technical stack overview
 
-flusio is using [PHP](https://www.php.net/) 7.3+. The version isn’t strongly
+flusio is using [PHP](https://www.php.net/) 7.4+. The version isn’t strongly
 fixed and can change. While I’ll do my best to keep things simple, remember
-that easy installation is not my main priority. If I absolutely need a specific
-feature from PHP 7.4 for instance, I’ll not hesitate. Some PHP dependencies in
-development are managed with [Composer](https://getcomposer.org/).
+that easy installation is not my main priority. The minimal PHP version is
+usually following the version of the production server which run on Debian.
+Some PHP dependencies in development are managed with [Composer](https://getcomposer.org/).
 
 It’s using a personal PHP framework: [Minz](https://github.com/flusio/Minz).
 The framework is directly integrated in the source code (as a submodule) since
 it’s intended to evolve with the application.
 
-The only supported database is [PostgreSQL](https://www.postgresql.org/)
-because I plan to use specific features from it. Please do not ask support for
-other kind of databases: even if it might work, this would add complexity to
-maintain the whole software.
+The only supported database is [PostgreSQL](https://www.postgresql.org/) 13+
+because I use specific features from it. I will not add support for other
+databases.
 
 The asynchronous jobs, such as emails sending, are handled by a PHP script. The
 worker should be configured as a OS service (e.g. systemd service), or can be
