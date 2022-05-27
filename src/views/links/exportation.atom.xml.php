@@ -31,7 +31,7 @@
             </author>
             <published><?= $message->created_at->format(\DateTimeInterface::ATOM) ?></published>
             <updated><?= $message->created_at->format(\DateTimeInterface::ATOM) ?></updated>
-            <content type="html"><![CDATA[<?= nl2br(protect($message->content)) ?>]]></content>
+            <content type="text"><![CDATA[<?= $message->content ?>]]></content>
         </entry>
     <?php endforeach; ?>
 </feed>

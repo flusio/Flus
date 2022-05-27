@@ -3,7 +3,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title><?= protect($collection->name) ?></title>
     <?php if ($collection->description): ?>
-        <subtitle type="html"><![CDATA[<?= nl2br(protect($collection->description)) ?>]]></subtitle>
+        <subtitle type="html"><![CDATA[<?= $collection->descriptionAsHtml() ?>]]></subtitle>
     <?php endif; ?>
 
     <link href="<?= url_full('collection', ['id' => $collection->id]) ?>" rel="alternate" type="text/html" />
@@ -47,7 +47,7 @@
 
             <content type="html"><![CDATA[
                 <?php foreach ($messages as $message): ?>
-                    <p><?= nl2br(protect($message->content)) ?></p>
+                    <div><?= $message->contentAsHtml() ?></div>
                 <?php endforeach; ?>
 
                 <p>

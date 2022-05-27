@@ -331,6 +331,17 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return the description as HTML (from Markdown).
+     *
+     * @return string
+     */
+    public function descriptionAsHtml()
+    {
+        $markdown = new utils\MiniMarkdown();
+        return $markdown->text($this->description);
+    }
+
+    /**
      * @param string $type
      * @return boolean
      */

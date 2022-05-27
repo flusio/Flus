@@ -40,7 +40,7 @@
 
             <content type="html"><![CDATA[
                 <?php foreach ($messages as $message): ?>
-                    <p><?= nl2br(protect($message->content)) ?></p>
+                    <div><?= $message->contentAsHtml() ?></div>
                 <?php endforeach; ?>
 
                 <p>

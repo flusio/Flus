@@ -200,6 +200,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'collection',
+            'description' => '**foo bar**',
             'is_public' => 0,
         ]);
         $link_id = $this->create('link', [
@@ -215,6 +216,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
+        $this->assertResponseContains($response, '<strong>foo bar</strong>');
         $this->assertResponsePointer($response, 'collections/show.phtml');
     }
 

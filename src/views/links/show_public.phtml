@@ -93,7 +93,7 @@
                     </header>
 
                     <div class="message__content">
-                        <?= nl2br(protect($message->content)) ?>
+                        <?= $message->contentAsHtml() ?>
                     </div>
                 </article>
             <?php endforeach; ?>

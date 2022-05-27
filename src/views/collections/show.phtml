@@ -140,9 +140,9 @@
     </div>
 
     <?php if ($collection->description): ?>
-        <p class="collection__description">
-            <?= nl2br(protect($collection->description)) ?>
-        </p>
+        <div class="collection__description">
+            <?= $collection->descriptionAsHtml() ?>
+        </div>
     <?php endif; ?>
 
     <div class="cards">

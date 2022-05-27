@@ -127,7 +127,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowDisplaysMessages()
     {
-        $content = $this->fake('paragraphs', 3, true);
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
@@ -135,13 +134,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->create('message', [
             'link_id' => $link_id,
-            'content' => $content,
+            'content' => '**foo bar**',
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, nl2br($content));
+        $this->assertResponseContains($response, '<strong>foo bar</strong>');
     }
 
     public function testShowRendersCorrectlyIfNotHiddenAndNotConnected()

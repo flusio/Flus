@@ -35,7 +35,7 @@
             <updated><?= $message->created_at->format(\DateTimeInterface::ATOM) ?></updated>
 
             <content type="html"><![CDATA[
-                <p><?= nl2br(protect($message->content)) ?></p>
+                <?= $message->contentAsHtml() ?>
             ]]></content>
         </entry>
     <?php endforeach; ?>

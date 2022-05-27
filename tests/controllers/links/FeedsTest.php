@@ -17,17 +17,16 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => $title,
             'is_hidden' => 0,
         ]);
-        $content = $this->fake('paragraphs', 3, true);
         $this->create('message', [
             'link_id' => $link_id,
-            'content' => $content,
+            'content' => '**foo bar**',
         ]);
 
         $response = $this->appRun('get', "/links/{$link_id}/feed.atom.xml");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'links/feeds/show.atom.xml.php');
-        $this->assertResponseContains($response, nl2br($content));
+        $this->assertResponseContains($response, '<strong>foo bar</strong>');
         $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/xml',
             'X-Content-Type-Options' => 'nosniff',

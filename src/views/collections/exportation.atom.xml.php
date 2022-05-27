@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title><?= protect($collection->name) ?></title>
     <?php if ($collection->description): ?>
-        <subtitle type="html"><![CDATA[<?= nl2br(protect($collection->description)) ?>]]></subtitle>
+        <subtitle type="text"><![CDATA[<?= $collection->description ?>]]></subtitle>
     <?php endif; ?>
 
     <link href="<?= url_full('collection', ['id' => $collection->id]) ?>" rel="alternate" type="text/html" />

@@ -78,6 +78,17 @@ class Message extends \Minz\Model
     }
 
     /**
+     * Return the content as HTML (from Markdown).
+     *
+     * @return string
+     */
+    public function contentAsHtml()
+    {
+        $markdown = new utils\MiniMarkdown();
+        return $markdown->text($this->content);
+    }
+
+    /**
      * Return a list of errors (if any). The array keys indicated the concerned
      * property.
      *
