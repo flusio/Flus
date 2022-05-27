@@ -15,8 +15,8 @@ trait SearchQueries
      *
      * This method uses PGSQL full text search feature.
      *
-     * Links are sorted by relevancy against the search query. Note that the
-     * computed property `search_rank` is always returned.
+     * Links are sorted by published_at if the property is included, or by
+     * created_at otherwise.
      *
      * @see https://www.postgresql.org/docs/current/textsearch.html
      *
@@ -52,10 +52,10 @@ trait SearchQueries
         ];
 
         $published_at_clause = '';
-        $order_by_clause = 'ORDER BY search_rank DESC, l.created_at DESC, l.id';
+        $order_by_clause = 'ORDER BY l.created_at DESC, l.id';
         if (in_array('published_at', $selected_computed_props)) {
             $published_at_clause = ', l.created_at AS published_at';
-            $order_by_clause = 'ORDER BY search_rank DESC, published_at DESC, l.id';
+            $order_by_clause = 'ORDER BY published_at DESC, l.id';
         }
 
         $number_comments_clause = '';
@@ -104,8 +104,7 @@ trait SearchQueries
             {$read_links_clause}
 
             SELECT
-                l.*,
-                ts_rank(search_index, query, 2) AS search_rank
+                l.*
                 {$published_at_clause}
                 {$number_comments_clause}
                 {$is_read_clause}

@@ -26,7 +26,6 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertGreaterThan(0, $db_links[0]['search_rank']);
     }
 
     public function testSearchComputedByUserIdSearchesByUrl()
@@ -44,25 +43,25 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($db_links));
         $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertGreaterThan(0, $db_links[0]['search_rank']);
     }
 
-    public function testSearchComputedByUserIdSortsBySearchRank()
+    public function testSearchComputedByUserIdSortsByCreatedAt()
     {
         $dao = new dao\Link();
-        $title_1 = 'foo';
-        $title_2 = 'foo bar';
-        $query = 'foo';
+        $title = $this->fake('words', 3, true);
+        $query = $title;
         $user_id = $this->create('user');
+        $created_at_1 = \Minz\Time::ago(1, 'day');
+        $created_at_2 = \Minz\Time::ago(2, 'day');
         $link_id_1 = $this->create('link', [
             'user_id' => $user_id,
-            'title' => $title_1,
-            'url' => 'https://example.com/foo1', // urls must be of the same lenght
+            'title' => $title,
+            'created_at' => $created_at_1->format(\Minz\Model::DATETIME_FORMAT),
         ]);
         $link_id_2 = $this->create('link', [
             'user_id' => $user_id,
-            'title' => $title_2,
-            'url' => 'https://example.com/foo2', // urls must be of the same lenght
+            'title' => $title,
+            'created_at' => $created_at_2->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
         $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, []);
@@ -70,7 +69,6 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, count($db_links));
         $this->assertSame($link_id_1, $db_links[0]['id']);
         $this->assertSame($link_id_2, $db_links[1]['id']);
-        $this->assertGreaterThan($db_links[1]['search_rank'], $db_links[0]['search_rank']);
     }
 
     public function testSearchComputedByUserIdCanReturnPublishedAt()
