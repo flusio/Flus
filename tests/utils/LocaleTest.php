@@ -28,6 +28,7 @@ class LocaleTest extends \PHPUnit\Framework\TestCase
     {
         return [
             [''],
+            ['àà'],
             ['en'],
             ['en-US'],
             ['en, fr-FR;q=0.8'],

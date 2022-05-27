@@ -67,7 +67,7 @@ class Groups
     {
         $user = auth\CurrentUser::get();
         $group_id = $request->param('id');
-        $name = $request->param('name');
+        $name = $request->param('name', '');
         $from = $request->param('from');
         $csrf = $request->param('csrf');
 

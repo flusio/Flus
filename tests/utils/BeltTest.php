@@ -283,6 +283,15 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('détour.studio', $host);
     }
 
+    public function testHostReturnsEmptyStringIfEmpty()
+    {
+        $url = '';
+
+        $host = Belt::host($url);
+
+        $this->assertSame('', $host);
+    }
+
     public function testHostReturnsEmptyStringIfInvalid()
     {
         $url = 'https:///';

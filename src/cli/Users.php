@@ -60,9 +60,9 @@ class Users
      */
     public function create($request)
     {
-        $username = $request->param('username');
-        $email = $request->param('email');
-        $password = $request->param('password');
+        $username = $request->param('username', '');
+        $email = $request->param('email', '');
+        $password = $request->param('password', '');
 
         try {
             $user = services\UserCreator::create($username, $email, $password);

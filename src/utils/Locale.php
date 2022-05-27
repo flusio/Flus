@@ -99,6 +99,10 @@ class Locale
      */
     public static function best($http_accept_language)
     {
+        if (!$http_accept_language) {
+            return self::DEFAULT_LOCALE;
+        }
+
         // We start by parsing the HTTP Accept-Language header
         $result = preg_match_all(
             '/(?P<language>[\w-]+)(\s*;\s*[qQ]\s*=\s*(?P<weight>[01](\.\d{1,3})?))?/',

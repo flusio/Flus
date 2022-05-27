@@ -87,9 +87,9 @@ class Registrations
         $terms_path = $app_path . '/policies/terms.html';
         $has_terms = file_exists($terms_path);
 
-        $username = $request->param('username');
-        $email = $request->param('email');
-        $password = $request->param('password');
+        $username = $request->param('username', '');
+        $email = $request->param('email', '');
+        $password = $request->param('password', '');
         $accept_terms = $request->param('accept_terms', false);
         $csrf = $request->param('csrf');
 

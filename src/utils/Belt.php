@@ -120,6 +120,10 @@ class Belt
      */
     public static function host($url)
     {
+        if (!$url) {
+            return '';
+        }
+
         $parsed_url = parse_url($url);
         if (!isset($parsed_url['host'])) {
             return '';

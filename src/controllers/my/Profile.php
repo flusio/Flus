@@ -58,8 +58,8 @@ class Profile
      */
     public function update($request)
     {
-        $username = $request->param('username');
-        $locale = $request->param('locale');
+        $username = $request->param('username', '');
+        $locale = $request->param('locale', '');
         $csrf = $request->param('csrf');
         $from = $request->param('from');
 

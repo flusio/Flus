@@ -74,8 +74,8 @@ class Topics
     public function update($request)
     {
         $id = $request->param('id');
-        $label = trim($request->param('label'));
-        $image_url = trim($request->param('image_url'));
+        $label = trim($request->param('label', ''));
+        $image_url = trim($request->param('image_url', ''));
 
         $topic = models\Topic::find($id);
         if (!$topic) {

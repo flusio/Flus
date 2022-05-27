@@ -194,10 +194,10 @@ class Image
         }
 
         return [
-            'x' => $src_x,
-            'y' => $src_y,
-            'width' => $src_width,
-            'height' => $src_height,
+            'x' => (int)$src_x,
+            'y' => (int)$src_y,
+            'width' => (int)$src_width,
+            'height' => (int)$src_height,
         ];
     }
 }
