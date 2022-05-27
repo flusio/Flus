@@ -59,16 +59,19 @@
 
     /** Semantic variables **/
     --color-back-error: var(--color-red-1);
+    --color-back-info: var(--color-purple-1);
     --color-back-success: var(--color-turquoise-1);
 
     --color-border: var(--color-grey-6);
     --color-border-active: var(--color-turquoise-5);
     --color-border-error: var(--color-red-5);
+    --color-border-info: var(--color-purple-5);
     --color-border-success: var(--color-turquoise-6);
     --color-border-search: var(--color-grey-3);
 
     --color-text: var(--color-purple-9);
     --color-text-error: var(--color-red-6);
+    --color-text-info: var(--color-purple-6);
     --color-text-secondary: var(--color-grey-7);
     --color-text-success: var(--color-turquoise-7);
 
