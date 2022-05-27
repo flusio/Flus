@@ -86,10 +86,7 @@
         </div>
     <?php else: ?>
         <?php if ($no_news): ?>
-            <div class="section__intro">
-                <p><?= _('We haven’t found any relevant links for the moment.') ?></p>
-                <p class="text--secondary"><small><?= random_no_news_sentence() ?></small></p>
-            </div>
+            <?= $this->include('alerts/_info.phtml', ['message' => no_news_sentence()]) ?>
         <?php else: ?>
             <p class="section__intro">
                 <?= _('Fill the news with…') ?>

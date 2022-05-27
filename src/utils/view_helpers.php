@@ -220,20 +220,19 @@ function human_implode($array, $separator, $last_separator)
  *
  * @return string
  */
-function random_no_news_sentence()
+function no_news_sentence()
 {
-    $discovery_url = url('discovery');
     $bookmarks_url = url('bookmarks');
-    $sentences = [
-        _f('Gently advice: add links to <a href="%s">your bookmarks</a> to read them later.', $bookmarks_url),
-        _f('Gently advice: explore <a href="%s">public collections</a> to discover new content.', $discovery_url),
-        _('Gently advice: be curious!'),
-        _('Gently advice: ad blockers protect your privacy on Internet.'),
-        _('Gently advice: remember to drink water regularly.'),
-        _('Gently advice: it might be time for a break?'),
-        _('For your entertainment, a choupisson : 🦔'),
-    ];
+    $sentence = _('There are no relevant links at this time.') . '<br />';
+    $sentence .= _f('You can add links to <a href="%s">your bookmarks</a> to read them later.', $bookmarks_url);
 
-    $key = array_rand($sentences);
-    return $sentences[$key];
+    if (rand(0, 100) === 0) {
+        if (rand(0, 10) === 0) {
+            $sentence .= '<span class="easter-egg">🦔</span>';
+        } else {
+            $sentence .= '<span class="easter-egg">🐾</span>';
+        }
+    }
+
+    return $sentence;
 }

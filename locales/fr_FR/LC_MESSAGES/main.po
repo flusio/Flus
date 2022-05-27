@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-05-23 13:40+0200\n"
-"PO-Revision-Date: 2022-05-23 13:40+0200\n"
+"POT-Creation-Date: 2022-05-27 15:57+0200\n"
+"PO-Revision-Date: 2022-05-27 15:57+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -46,7 +46,7 @@ msgid "Show"
 msgstr "Afficher"
 
 #: controllers/Collections.php:99 controllers/Collections.php:303
-#: controllers/Feeds.php:108 controllers/Groups.php:90
+#: controllers/Feeds.php:116 controllers/Groups.php:90
 #: controllers/Links.php:216 controllers/News.php:77
 #: controllers/Passwords.php:88 controllers/Passwords.php:191
 #: controllers/Registrations.php:104 controllers/Sessions.php:85
@@ -87,7 +87,7 @@ msgstr "Une vérification de sécurité a échoué."
 msgid "You already have an ongoing exportation."
 msgstr "Vous avez déjà une exportation en cours."
 
-#: controllers/Feeds.php:141
+#: controllers/Feeds.php:149
 msgid "There is no valid feeds at this address."
 msgstr "Aucun flux valide n’a été détecté à cette adresse."
 
@@ -303,23 +303,23 @@ msgstr "Le filtre est invalide."
 msgid "The name must be less than %d characters."
 msgstr "Le nom ne doit pas faire plus de %d caractères."
 
-#: models/Link.php:292
+#: models/Link.php:287
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:294
+#: models/Link.php:289
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:313
+#: models/Link.php:308
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:318
+#: models/Link.php:313
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:322
+#: models/Link.php:317
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -449,44 +449,17 @@ msgstr "< 1 min"
 msgid "%d&nbsp;min"
 msgstr "%d&nbsp;min"
 
-#: utils/view_helpers.php:228
+#: utils/view_helpers.php:226
+msgid "There are no relevant links at this time."
+msgstr "Il n'y a aucun lien pertinent pour le moment."
+
+#: utils/view_helpers.php:227
 #, php-format
 msgid ""
-"Gently advice: add links to <a href=\"%s\">your bookmarks</a> to read them "
-"later."
+"You can add links to <a href=\"%s\">your bookmarks</a> to read them later."
 msgstr ""
-"Petit conseil : placez des liens dans <a href=\"%s\">vos signets</a> pour "
-"les lire plus tard."
-
-#: utils/view_helpers.php:229
-#, php-format
-msgid ""
-"Gently advice: explore <a href=\"%s\">public collections</a> to discover new "
-"content."
-msgstr ""
-"Petit conseil : explorez <a href=\"%s\">les collections publiques</a> pour "
-"découvrir du nouveau contenu."
-
-#: utils/view_helpers.php:230
-msgid "Gently advice: be curious!"
-msgstr "Petit conseil : soyez curieuses et curieux !"
-
-#: utils/view_helpers.php:231
-msgid "Gently advice: ad blockers protect your privacy on Internet."
-msgstr ""
-"Petit conseil : les bloqueurs de pub protègent votre vie privée sur Internet."
-
-#: utils/view_helpers.php:232
-msgid "Gently advice: remember to drink water regularly."
-msgstr "Petit conseil : pensez à boire de l’eau régulièrement."
-
-#: utils/view_helpers.php:233
-msgid "Gently advice: it might be time for a break?"
-msgstr "Petit conseil : il est peut-être l’heure de prendre une pause ?"
-
-#: utils/view_helpers.php:234
-msgid "For your entertainment, a choupisson : 🦔"
-msgstr "Pour vous divertir, un choupisson : 🦔"
+"Vous pouvez placer des liens dans <a href=\"%s\">vos signets</a> pour les "
+"lire plus tard."
 
 #: views/collections/feeds/show.atom.xml.php:54
 #: views/profiles/feeds/show.atom.xml.php:47
@@ -705,6 +678,10 @@ msgstr "Suivant"
 #: views/support/show.phtml:69
 msgid "Error"
 msgstr "Erreur"
+
+#: views/alerts/_info.phtml:3
+msgid "Info"
+msgstr "Info"
 
 #: views/alerts/_success.phtml:3
 msgid "Success"
@@ -1783,31 +1760,27 @@ msgstr ""
 msgid "Never see the links again"
 msgstr "Ne plus revoir les liens"
 
-#: views/news/index.phtml:90
-msgid "We haven’t found any relevant links for the moment."
-msgstr "Nous n’avons trouvé aucun lien pertinent pour le moment."
-
-#: views/news/index.phtml:95
+#: views/news/index.phtml:92
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/index.phtml:115
+#: views/news/index.phtml:112
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/index.phtml:116
+#: views/news/index.phtml:113
 msgid "from your followed feeds"
 msgstr "depuis vos flux suivis"
 
-#: views/news/index.phtml:131
+#: views/news/index.phtml:128
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
-#: views/news/index.phtml:132 views/news/index.phtml:148
+#: views/news/index.phtml:129 views/news/index.phtml:145
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/index.phtml:147
+#: views/news/index.phtml:144
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 

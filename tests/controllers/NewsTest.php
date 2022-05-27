@@ -105,7 +105,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('get', '/news');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'We haven’t found any relevant links for the moment.');
+        $this->assertResponseContains($response, 'There are no relevant links at this time.');
     }
 
     public function testIndexHidesAddToCollectionsIfUserHasNoCollections()
