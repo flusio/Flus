@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-05-27 15:57+0200\n"
-"PO-Revision-Date: 2022-05-27 15:57+0200\n"
+"POT-Creation-Date: 2022-05-31 12:36+0200\n"
+"PO-Revision-Date: 2022-05-31 13:08+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -141,7 +141,7 @@ msgstr "Le mot de passe est incorrect."
 msgid "The subject is required."
 msgstr "Le sujet est obligatoire."
 
-#: controllers/Support.php:79 models/Message.php:94
+#: controllers/Support.php:79 models/Message.php:105
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
@@ -282,11 +282,11 @@ msgstr "Liens à ne jamais lire"
 msgid "News"
 msgstr "Journal"
 
-#: models/Collection.php:365 models/Group.php:87
+#: models/Collection.php:376 models/Group.php:87
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:367
+#: models/Collection.php:378
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
 
@@ -450,8 +450,8 @@ msgid "%d&nbsp;min"
 msgstr "%d&nbsp;min"
 
 #: utils/view_helpers.php:226
-msgid "There are no relevant links at this time."
-msgstr "Il n'y a aucun lien pertinent pour le moment."
+msgid "There are no relevant links to suggest at this time."
+msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
 #: utils/view_helpers.php:227
 #, php-format

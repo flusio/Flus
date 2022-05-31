@@ -223,7 +223,7 @@ function human_implode($array, $separator, $last_separator)
 function no_news_sentence()
 {
     $bookmarks_url = url('bookmarks');
-    $sentence = _('There are no relevant links at this time.') . '<br />';
+    $sentence = _('There are no relevant links to suggest at this time.') . '<br />';
     $sentence .= _f('You can add links to <a href="%s">your bookmarks</a> to read them later.', $bookmarks_url);
 
     if (rand(0, 100) === 0) {
