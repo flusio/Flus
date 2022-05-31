@@ -1,5 +1,31 @@
 # Changelog of flusio
 
+## 2022-05-31 - v0.46
+
+### Breaking changes
+
+The minimal versions for PHP and PostgreSQL have changed: PHP 7.4 and
+PostgreSQL 13. Please check the versions before updating flusio!
+
+### News
+
+- Enable search feature for all
+- Allow Markdown in descriptions and messages
+
+### Improvements
+
+- Redesign the "no news" paragraph
+- Improve performance of the Feeds page
+- Sort searched links by created\_at
+
+### Misc
+
+- Change the minimal versions for PHP and PostgreSQL
+- Add support for PHP 8.1
+- Add Parsedown library to parse Markdown
+- Update parcel to 2.6.0
+- Upgrade eslint plugins
+
 ## 2022-05-23 - v0.45
 
 ### News
