@@ -1,3 +1,10 @@
+CREATE FUNCTION simplify_url(url TEXT)
+RETURNS TEXT
+IMMUTABLE
+RETURNS NULL ON NULL INPUT
+AS $$ SELECT substring(url from 'https?://(.+)') $$
+LANGUAGE SQL;
+
 CREATE TABLE jobs (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL DEFAULT '',
@@ -156,11 +163,12 @@ CREATE TABLE links (
     via_resource_id TEXT,
 
     search_index TSVECTOR GENERATED ALWAYS AS (to_tsvector('french', title || ' ' || url)) STORED,
+    url_lookup TEXT GENERATED ALWAYS AS (simplify_url(url)) STORED,
 
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE INDEX idx_links_user_id_url ON links(user_id, url);
+CREATE INDEX idx_links_user_id_url ON links(user_id, url_lookup);
 CREATE INDEX idx_links_fetched_at ON links(fetched_at) WHERE fetched_at IS NULL;
 CREATE INDEX idx_links_fetched_code ON links(fetched_code) WHERE fetched_code < 200 OR fetched_code >= 300;
 CREATE INDEX idx_links_search ON links USING GIN (search_index);

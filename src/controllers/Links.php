@@ -257,8 +257,8 @@ class Links
         }
 
         $existing_link = models\Link::findBy([
-            'url' => $link->url,
             'user_id' => $user->id,
+            'url_lookup' => utils\Belt::removeScheme($link->url),
         ]);
         if ($existing_link) {
             $link = $existing_link;

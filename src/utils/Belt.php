@@ -138,6 +138,22 @@ class Belt
     }
 
     /**
+     * Remove the scheme (http:// or https://) from a URL.
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    public static function removeScheme($url)
+    {
+        if (!$url) {
+            return '';
+        }
+
+        return preg_replace('#^https?://(.*)#', '\1', $url);
+    }
+
+    /**
      * Return a subpath from a file name (used for media files).
      *
      * The name must contain at least 9 characters, excluding the dots. The

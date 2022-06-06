@@ -6,6 +6,7 @@ use Minz\Response;
 use flusio\auth;
 use flusio\models;
 use flusio\services;
+use flusio\utils;
 
 /**
  * Handle requests to search a link.
@@ -38,12 +39,12 @@ class Searches
         $url = \SpiderBits\Url::sanitize($url);
 
         $existing_link = models\Link::daoToModel('findComputedBy', [
-            'url' => $url,
             'user_id' => $user->id,
+            'url_lookup' => utils\Belt::removeScheme($url),
         ], ['number_comments']);
         $default_link = models\Link::findBy([
-            'url' => $url,
             'user_id' => $support_user->id,
+            'url_lookup' => utils\Belt::removeScheme($url),
             'is_hidden' => 0,
         ]);
 
@@ -108,7 +109,7 @@ class Searches
 
         $default_link = models\Link::findBy([
             'user_id' => $support_user->id,
-            'url' => $url,
+            'url_lookup' => utils\Belt::removeScheme($url),
         ]);
         if (!$default_link) {
             $default_link = models\Link::init($url, $support_user->id, false);

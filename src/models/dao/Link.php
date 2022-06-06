@@ -77,7 +77,7 @@ class Link extends \Minz\DatabaseModel
         if (in_array('is_read', $selected_computed_props)) {
             $read_links_clause = <<<'SQL'
                 WITH read_links AS (
-                    SELECT DISTINCT l_read.url
+                    SELECT DISTINCT l_read.url_lookup
                     FROM links l_read, collections c_read, links_to_collections lc_read
 
                     WHERE c_read.user_id = ?
@@ -91,7 +91,7 @@ class Link extends \Minz\DatabaseModel
             $is_read_clause = <<<'SQL'
                 , (
                     SELECT 1 FROM read_links
-                    WHERE read_links.url = l.url
+                    WHERE read_links.url_lookup = l.url_lookup
                 ) AS is_read
             SQL;
 
@@ -199,7 +199,7 @@ class Link extends \Minz\DatabaseModel
         if (in_array('is_read', $selected_computed_props)) {
             $read_links_clause = <<<'SQL'
                 WITH read_links AS (
-                    SELECT DISTINCT l_read.url
+                    SELECT DISTINCT l_read.url_lookup
                     FROM links l_read, collections c_read, links_to_collections lc_read
 
                     WHERE c_read.user_id = :context_user_id
@@ -213,7 +213,7 @@ class Link extends \Minz\DatabaseModel
             $is_read_clause = <<<'SQL'
                 , (
                     SELECT true FROM read_links
-                    WHERE read_links.url = l.url
+                    WHERE read_links.url_lookup = l.url_lookup
                 ) AS is_read
             SQL;
 
@@ -331,7 +331,7 @@ class Link extends \Minz\DatabaseModel
         if (in_array('is_read', $selected_computed_props)) {
             $read_links_clause = <<<'SQL'
                 WITH read_links AS (
-                    SELECT DISTINCT l_read.url
+                    SELECT DISTINCT l_read.url_lookup
                     FROM links l_read, collections c_read, links_to_collections lc_read
 
                     WHERE c_read.user_id = :user_id
@@ -345,7 +345,7 @@ class Link extends \Minz\DatabaseModel
             $is_read_clause = <<<'SQL'
                 , (
                     SELECT 1 FROM read_links
-                    WHERE read_links.url = l.url
+                    WHERE read_links.url_lookup = l.url_lookup
                 ) AS is_read
             SQL;
 
