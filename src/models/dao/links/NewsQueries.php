@@ -100,7 +100,7 @@ trait NewsQueries
 
         $sql = <<<SQL
             WITH excluded_links AS (
-                SELECT l_exclude.url
+                SELECT l_exclude.url_lookup
                 FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
 
                 WHERE c_exclude.user_id = :user_id
@@ -122,7 +122,10 @@ trait NewsQueries
             AND l.is_hidden = false
             AND c.is_public = true
 
-            AND NOT EXISTS (SELECT 1 FROM excluded_links WHERE l.url = excluded_links.url)
+            AND NOT EXISTS (
+                SELECT 1 FROM excluded_links
+                WHERE l.url_lookup = excluded_links.url_lookup
+            )
 
             {$where_placeholder}
 

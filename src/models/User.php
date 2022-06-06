@@ -373,9 +373,11 @@ class User extends \Minz\Model
 
         // Complete the owned_links list with links owned by the user, from the
         // database.
+        $urls = array_column($not_owned_links, 'url');
+        $urls_lookup = array_map(['\flusio\utils\Belt', 'removeScheme'], $urls);
         $related_links = Link::listBy([
             'user_id' => $this->id,
-            'url' => array_column($not_owned_links, 'url'),
+            'url_lookup' => $urls_lookup,
         ]);
         $owned_links = array_merge($owned_links, $related_links);
 

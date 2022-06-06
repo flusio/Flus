@@ -32,7 +32,6 @@ trait SearchQueries
      *     Custom options to filter links. Possible options are:
      *     - offset (integer, default to 0), the offset for pagination
      *     - limit (integer|string, default to 'ALL') the limit for pagination
-     *     - context_user_id (string, default to ''), is_read refers to this user id
      *
      * @return array
      */
@@ -41,7 +40,6 @@ trait SearchQueries
         $default_options = [
             'offset' => 0,
             'limit' => 'ALL',
-            'context_user_id' => '',
         ];
         $options = array_merge($default_options, $options);
 
@@ -68,32 +66,6 @@ trait SearchQueries
             SQL;
         }
 
-        $read_links_clause = '';
-        $is_read_clause = '';
-        if (in_array('is_read', $selected_computed_props)) {
-            $read_links_clause = <<<'SQL'
-                WITH read_links AS (
-                    SELECT DISTINCT l_read.url
-                    FROM links l_read, collections c_read, links_to_collections lc_read
-
-                    WHERE c_read.user_id = :context_user_id
-                    AND c_read.type = 'read'
-
-                    AND lc_read.link_id = l_read.id
-                    AND lc_read.collection_id = c_read.id
-                )
-            SQL;
-
-            $is_read_clause = <<<'SQL'
-                , (
-                    SELECT true FROM read_links
-                    WHERE read_links.url = l.url
-                ) AS is_read
-            SQL;
-
-            $parameters[':context_user_id'] = $options['context_user_id'];
-        }
-
         $limit_clause = '';
         if ($options['limit'] !== 'ALL') {
             $limit_clause = 'LIMIT :limit';
@@ -101,13 +73,10 @@ trait SearchQueries
         }
 
         $sql = <<<SQL
-            {$read_links_clause}
-
             SELECT
                 l.*
                 {$published_at_clause}
                 {$number_comments_clause}
-                {$is_read_clause}
             FROM links l, plainto_tsquery('french', :query) AS query
 
             WHERE l.user_id = :user_id

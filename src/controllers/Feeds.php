@@ -119,7 +119,7 @@ class Feeds
 
         $default_link = models\Link::findBy([
             'user_id' => $support_user->id,
-            'url' => $url,
+            'url_lookup' => utils\Belt::removeScheme($url),
         ]);
         if (!$default_link) {
             $default_link = models\Link::init($url, $support_user->id, false);

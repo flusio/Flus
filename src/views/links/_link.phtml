@@ -57,7 +57,7 @@
                 <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
             <?php endif; ?>
 
-            <?php if ($link->is_read): ?>
+            <?php if ($link->isReadBy($current_user)): ?>
                 &nbsp;<span title="<?= _('You read this link.') ?>"><?= icon('check') ?><span class="sr-only"><?= _('You read this link.') ?></span></span>
             <?php endif; ?>
         </p>

@@ -114,38 +114,6 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $db_links[0]['number_comments']);
     }
 
-    public function testSearchComputedByUserIdCanReturnIsRead()
-    {
-        $dao = new dao\Link();
-        $title = $this->fake('words', 3, true);
-        $url = $this->fake('url');
-        $query = $title;
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $other_user = models\User::find($other_user_id);
-        $read_list = $other_user->readList();
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'title' => $title,
-            'url' => $url,
-        ]);
-        $read_link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'url' => $url,
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $read_link_id,
-            'collection_id' => $read_list->id,
-        ]);
-
-        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, ['is_read'], [
-            'context_user_id' => $other_user_id,
-        ]);
-
-        $this->assertSame(1, count($db_links));
-        $this->assertTrue($db_links[0]['is_read']);
-    }
-
     public function testSearchComputedByUserIdCanLimitResults()
     {
         $dao = new dao\Link();

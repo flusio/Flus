@@ -125,34 +125,6 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $db_links[0]['number_comments']);
     }
 
-    public function testListComputedByUserIdCanReturnIsRead()
-    {
-        $dao = new Link();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $other_user = models\User::find($other_user_id);
-        $read_list = $other_user->readList();
-        $url = $this->fake('url');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'url' => $url,
-        ]);
-        $read_link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'url' => $url,
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $read_link_id,
-            'collection_id' => $read_list->id,
-        ]);
-
-        $db_links = $dao->listComputedByUserId($user_id, ['is_read'], [
-            'context_user_id' => $other_user_id,
-        ]);
-
-        $this->assertTrue($db_links[0]['is_read']);
-    }
-
     public function testListComputedByUserIdCanListSharedOnly()
     {
         $dao = new Link();

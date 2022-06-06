@@ -183,7 +183,7 @@ class Collections
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->links(
-                    ['published_at', 'number_comments', 'is_read'],
+                    ['published_at', 'number_comments'],
                     [
                         'offset' => $pagination->currentOffset(),
                         'limit' => $pagination->numberPerPage(),
@@ -197,7 +197,7 @@ class Collections
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->links(
-                    ['published_at', 'number_comments', 'is_read'],
+                    ['published_at', 'number_comments'],
                     [
                         'hidden' => false,
                         'offset' => $pagination->currentOffset(),
