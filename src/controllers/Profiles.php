@@ -35,7 +35,7 @@ class Profiles
         $current_user = auth\CurrentUser::get();
         $is_current_user_profile = $current_user && $current_user->id === $user->id;
 
-        $links = $user->links(['published_at', 'number_comments', 'is_read'], [
+        $links = $user->links(['published_at', 'number_comments'], [
             'unshared' => false,
             'limit' => 6,
             'context_user_id' => $current_user ? $current_user->id : null,

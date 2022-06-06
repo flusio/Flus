@@ -70,7 +70,7 @@
                     'from' => \Minz\Url::for('profile', ['id' => $user->id]),
                     'display_comments' => true,
                     'display_edit' => $is_current_user_profile,
-                    'display_mark_as_read' => $current_user && !$link->is_read,
+                    'display_mark_as_read' => $current_user && !$link->isReadBy($current_user),
                     'collections_mode' => $is_current_user_profile ? 'managing' : 'adding',
                 ]) ?>
             <?php endforeach; ?>

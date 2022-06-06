@@ -106,11 +106,6 @@ class Link extends \Minz\Model
             'computed' => true,
         ],
 
-        'is_read' => [
-            'type' => 'boolean',
-            'computed' => true,
-        ],
-
         'search_index' => [
             'type' => 'string',
         ],
@@ -119,6 +114,9 @@ class Link extends \Minz\Model
             'type' => 'string',
         ],
     ];
+
+    /** @var array */
+    private $cache_is_read = [];
 
     /**
      * @param string $url
@@ -228,6 +226,28 @@ class Link extends \Minz\Model
         }
 
         return User::find($this->via_resource_id);
+    }
+
+    /**
+     * Return whether or not the given user read the link URL.
+     *
+     * @param \flusio\models\User $user
+     *
+     * @return boolean
+     */
+    public function isReadBy($user)
+    {
+        if (!$user) {
+            return false;
+        }
+
+        $user_id = $user->id;
+        if (!isset($this->cache_is_read[$user_id])) {
+            $is_read = Link::daoCall('isUrlReadByUserId', $user_id, $this->url);
+            $this->cache_is_read[$user_id] = $is_read;
+        }
+
+        return $this->cache_is_read[$user_id];
     }
 
     /**

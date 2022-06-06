@@ -53,7 +53,7 @@ class Links
                 'listComputedByQueryAndUserId',
                 $query,
                 $user->id,
-                ['published_at', 'number_comments', 'is_read'],
+                ['published_at', 'number_comments'],
                 [
                     'offset' => $pagination->currentOffset(),
                     'limit' => $pagination->numberPerPage(),

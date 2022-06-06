@@ -31,7 +31,7 @@ class Bookmarks
         return Response::ok('bookmarks/index.phtml', [
             'collection' => $bookmarks,
             'links' => $bookmarks->links(
-                ['published_at', 'number_comments', 'is_read'],
+                ['published_at', 'number_comments'],
                 [
                     'context_user_id' => $user->id,
                 ]
