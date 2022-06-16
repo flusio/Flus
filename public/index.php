@@ -39,8 +39,15 @@ if (\Minz\Configuration::$environment === 'development' && $current_filepath !==
 }
 
 // Initialize the Application and execute the request to get a Response
-$application = new \flusio\Application();
-$response = $application->run($request);
+try {
+    $application = new \flusio\Application();
+    $response = $application->run($request);
+} catch (\Exception $e) {
+    $response = \Minz\Response::internalServerError('internal_server_error.phtml', [
+        'environment' => \Minz\Configuration::$environment,
+        'error' => $e,
+    ]);
+}
 
 // Generate the HTTP headers, cookies and output
 http_response_code($response->code());
