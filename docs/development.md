@@ -17,8 +17,8 @@ $ cd flusio
 
 ## With Docker
 
-First, make sure to [install Docker](https://docs.docker.com/get-docker/) and
-[Docker Compose](https://docs.docker.com/compose/install/).
+First, make sure to [install Docker Engine](https://docs.docker.com/engine/install/)
+and [Docker Compose](https://docs.docker.com/compose/install/).
 
 Then, install the dependencies with:
 
