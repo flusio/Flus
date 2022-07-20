@@ -193,6 +193,8 @@ class Router
         $router->addRoute('cli', '/system/setup', 'System#setup');
         $router->addRoute('cli', '/database/status', 'Database#status');
 
+        $router->addRoute('cli', '/media/clean', 'Media#clean');
+
         $router->addRoute('cli', '/migrations', 'Migrations#index');
         $router->addRoute('cli', '/migrations/create', 'Migrations#create');
         $router->addRoute('cli', '/migrations/apply', 'Migrations#apply');

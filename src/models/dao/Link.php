@@ -12,6 +12,7 @@ class Link extends \Minz\DatabaseModel
 {
     use BulkQueries;
     use LockQueries;
+    use MediaQueries;
     use links\CleanerQueries;
     use links\DataExporterQueries;
     use links\FetcherQueries;

@@ -12,6 +12,7 @@ class Collection extends \Minz\DatabaseModel
 {
     use BulkQueries;
     use LockQueries;
+    use MediaQueries;
     use collections\CleanerQueries;
     use collections\DiscoveryQueries;
     use collections\FetcherQueries;

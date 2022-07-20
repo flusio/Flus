@@ -48,6 +48,8 @@ class Help
         $usage .= "  jobs watch               Wait and execute jobs\n";
         $usage .= "      [--queue=TEXT]       where TEXT is one of default, mailers, importators, fetchers or all\n";
         $usage .= "\n";
+        $usage .= "  media clean              Clean the unused media (it may take a VERY long time to finish)\n";
+        $usage .= "\n";
         $usage .= "  migrations               List the migrations\n";
         $usage .= "  migrations apply         Apply the migrations\n";
         $usage .= "  migrations create        Create a migration\n";
