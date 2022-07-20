@@ -20,7 +20,7 @@ class LinksSync extends jobs\Job
      */
     public static function install()
     {
-        $number_jobs_to_install = \Minz\Configuration::$application['links_sync_count'];
+        $number_jobs_to_install = \Minz\Configuration::$application['job_links_sync_count'];
         $job_dao = new models\dao\Job();
         $links_sync_job = new LinksSync();
 

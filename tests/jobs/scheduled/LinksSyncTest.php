@@ -46,7 +46,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testInstallWithJobsToCreate()
     {
-        \Minz\Configuration::$application['links_sync_count'] = 2;
+        \Minz\Configuration::$application['job_links_sync_count'] = 2;
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $links_fetcher_job = new LinksSync();
         $job_dao = new models\dao\Job();
@@ -55,7 +55,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->install();
 
-        \Minz\Configuration::$application['links_sync_count'] = 1;
+        \Minz\Configuration::$application['job_links_sync_count'] = 1;
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
         $this->assertSame(2, $job_dao->count());

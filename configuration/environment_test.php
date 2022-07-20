@@ -18,8 +18,8 @@ $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-test';
 $user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio)";
 
-$feeds_sync_count = max(1, intval($dotenv->pop('JOB_FEEDS_SYNC_COUNT', '1')));
-$links_sync_count = max(1, intval($dotenv->pop('JOB_LINKS_SYNC_COUNT', '1')));
+$job_feeds_sync_count = max(1, intval($dotenv->pop('JOB_FEEDS_SYNC_COUNT', '1')));
+$job_links_sync_count = max(1, intval($dotenv->pop('JOB_LINKS_SYNC_COUNT', '1')));
 
 $server_ips = array_map('trim', explode(',', $dotenv->pop('APP_SERVER_IPS', '')));
 
@@ -48,8 +48,8 @@ return [
         'subscriptions_host' => $subscriptions_host,
         'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
         'job_adapter' => 'test',
-        'feeds_sync_count' => $feeds_sync_count,
-        'links_sync_count' => $links_sync_count,
+        'job_feeds_sync_count' => $job_feeds_sync_count,
+        'job_links_sync_count' => $job_links_sync_count,
         'server_ips' => $server_ips,
         'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY'),
         'cli_locale' => 'en_GB',

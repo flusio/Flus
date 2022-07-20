@@ -46,7 +46,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testInstallWithJobsToCreate()
     {
-        \Minz\Configuration::$application['feeds_sync_count'] = 2;
+        \Minz\Configuration::$application['job_feeds_sync_count'] = 2;
         \Minz\Configuration::$application['job_adapter'] = 'database';
         $feeds_sync_job = new FeedsSync();
         $job_dao = new models\dao\Job();
@@ -55,7 +55,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->install();
 
-        \Minz\Configuration::$application['feeds_sync_count'] = 1;
+        \Minz\Configuration::$application['job_feeds_sync_count'] = 1;
         \Minz\Configuration::$application['job_adapter'] = 'test';
 
         $this->assertSame(2, $job_dao->count());

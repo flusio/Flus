@@ -27,8 +27,8 @@ class System
         $registrations_enabled = \Minz\Configuration::$application['registrations_opened'];
         $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
         $pocket_enabled = \Minz\Configuration::$application['pocket_consumer_key'] !== null;
-        $feeds_sync_count = \Minz\Configuration::$application['feeds_sync_count'];
-        $links_sync_count = \Minz\Configuration::$application['links_sync_count'];
+        $job_feeds_sync_count = \Minz\Configuration::$application['job_feeds_sync_count'];
+        $job_links_sync_count = \Minz\Configuration::$application['job_links_sync_count'];
         $server_ips = implode(', ', \Minz\Configuration::$application['server_ips']);
 
         $count_users = models\User::count();
@@ -59,8 +59,8 @@ class System
         $info .= "Subscriptions " . ($subscriptions_enabled ? 'enabled' : 'disabled') . "\n";
         $info .= "Pocket " . ($pocket_enabled ? 'enabled' : 'disabled') . "\n";
         $info .= "\n";
-        $info .= "{$feeds_sync_count} job(s) to synchronize feeds\n";
-        $info .= "{$links_sync_count} job(s) to synchronize links\n";
+        $info .= "{$job_feeds_sync_count} job(s) to synchronize feeds\n";
+        $info .= "{$job_links_sync_count} job(s) to synchronize links\n";
         if ($server_ips) {
             $info .= "Server IPs: {$server_ips}\n";
         }

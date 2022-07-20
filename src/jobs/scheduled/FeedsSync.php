@@ -19,7 +19,7 @@ class FeedsSync extends jobs\Job
      */
     public static function install()
     {
-        $number_jobs_to_install = \Minz\Configuration::$application['feeds_sync_count'];
+        $number_jobs_to_install = \Minz\Configuration::$application['job_feeds_sync_count'];
         $job_dao = new models\dao\Job();
         $feeds_sync_job = new FeedsSync();
 
