@@ -21,7 +21,7 @@
     </div>
 
     <p class="section__intro">
-    <?= _nf('%d result (“%s”)', '%d results (“%s”)', $pagination->numberElements(), $pagination->numberElements(), $query) ?>
+    <?= _nf('%s result (“%s”)', '%s results (“%s”)', $pagination->numberElements(), format_number($pagination->numberElements()), $query) ?>
     </p>
 
     <div class="cards cards--centered">

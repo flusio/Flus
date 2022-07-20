@@ -9,7 +9,7 @@
                 <?php if ($collection->number_links === 0): ?>
                     <?= _('no links') ?>
                 <?php else: ?>
-                    <?= _nf('%d link', '%d links', $collection->number_links, $collection->number_links) ?>
+                    <?= _nf('%s link', '%s links', $collection->number_links, format_number($collection->number_links)) ?>
                 <?php endif; ?>
 
                 <?php if ($collection->is_public): ?>
@@ -30,7 +30,7 @@
                     if ($collection->number_links === 0):
                         $number_links = _('no links');
                     else:
-                        $number_links = _nf('%d link', '%d links', $collection->number_links, $collection->number_links);
+                        $number_links = _nf('%s link', '%s links', $collection->number_links, format_number($collection->number_links));
                     endif;
                 ?>
 

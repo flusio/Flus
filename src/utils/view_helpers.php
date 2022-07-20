@@ -55,6 +55,20 @@ function format_message_date($date)
 }
 
 /**
+ * Format a number accordingly to the current locale
+ *
+ * @param integer|float $number
+ *
+ * @return string
+ */
+function format_number($number)
+{
+    $locale = \flusio\utils\Locale::currentLocale();
+    $number_formatter = new \NumberFormatter($locale, \NumberFormatter::DEFAULT_STYLE);
+    return $number_formatter->format($number);
+}
+
+/**
  * Transform a locale to BCP47 format
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang
@@ -91,7 +105,7 @@ function format_reading_time($reading_time)
     if ($reading_time < 1) {
         return _('< 1 min');
     } else {
-        return _f('%d&nbsp;min', $reading_time);
+        return _f('%s&nbsp;min', format_number($reading_time));
     }
 }
 

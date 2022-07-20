@@ -34,7 +34,7 @@
                         <p class="card__text card__text--small-margin">
                             <?php $number_collections = $topic->countPublicCollections(); ?>
                             <?php if ($number_collections > 0): ?>
-                                <?= _nf('%d collection', '%d collections', $number_collections, $number_collections) ?>
+                                <?= _nf('%s collection', '%s collections', $number_collections, format_number($number_collections)) ?>
                             <?php else: ?>
                                 <?= _('No collections') ?>
                             <?php endif; ?>

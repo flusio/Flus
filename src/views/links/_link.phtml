@@ -97,7 +97,7 @@
             <p class="card__text">
                 <a href="<?= url('link', ['id' => $link->id]) ?>">
                     <?= icon('comment') ?>
-                    <?= _nf('%d comment', '%d comments', $link->number_comments, $link->number_comments) ?>
+                    <?= _nf('%s comment', '%s comments', $link->number_comments, format_number($link->number_comments)) ?>
                 </a>
 
                 <?php if ($display_hidden): ?>

@@ -107,7 +107,7 @@
                         <p class="card__text">
                             <a href="<?= url('link', ['id' => $existing_link->id]) ?>">
                                 <?= icon('comment') ?>
-                                <?= _nf('%d comment', '%d comments', $existing_link->number_comments, $existing_link->number_comments) ?>
+                                <?= _nf('%s comment', '%s comments', $existing_link->number_comments, format_number($existing_link->number_comments)) ?>
                             </a>
                         </p>
                     </div>
@@ -191,7 +191,7 @@
                                 if ($feed->number_links === 0):
                                     $number_links = _('no links');
                                 else:
-                                    $number_links = _nf('%d link', '%d links', $feed->number_links, $feed->number_links);
+                                    $number_links = _nf('%s link', '%s links', $feed->number_links, format_number($feed->number_links));
                                 endif;
                             ?>
 

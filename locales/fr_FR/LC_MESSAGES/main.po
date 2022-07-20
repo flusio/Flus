@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-05-31 12:36+0200\n"
-"PO-Revision-Date: 2022-05-31 13:08+0200\n"
+"POT-Creation-Date: 2022-07-20 19:34+0200\n"
+"PO-Revision-Date: 2022-07-20 19:35+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Poedit-Basepath: ../../../src\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -55,7 +55,7 @@ msgstr "Afficher"
 #: controllers/collections/Followers.php:92
 #: controllers/collections/Groups.php:122
 #: controllers/collections/Images.php:113 controllers/links/Messages.php:69
-#: controllers/links/Searches.php:105 controllers/my/Account.php:103
+#: controllers/links/Searches.php:106 controllers/my/Account.php:103
 #: controllers/my/Profile.php:76 controllers/my/Security.php:79
 #: controllers/my/Security.php:150 controllers/my/Subscription.php:74
 #: controllers/my/Validation.php:132
@@ -103,7 +103,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:66 models/User.php:572
+#: controllers/Passwords.php:66 models/User.php:574
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -303,23 +303,23 @@ msgstr "Le filtre est invalide."
 msgid "The name must be less than %d characters."
 msgstr "Le nom ne doit pas faire plus de %d caractères."
 
-#: models/Link.php:287
+#: models/Link.php:310
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:289
+#: models/Link.php:312
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:308
+#: models/Link.php:331
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:313
+#: models/Link.php:336
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:317
+#: models/Link.php:340
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -334,31 +334,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:534
+#: models/User.php:536
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:538
+#: models/User.php:540
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:568
+#: models/User.php:570
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:570
+#: models/User.php:572
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:574
+#: models/User.php:576
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:576
+#: models/User.php:578
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:578
+#: models/User.php:580
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -440,20 +440,20 @@ msgstr "plateforme inconnue"
 msgid "%s on %s"
 msgstr "%s sur %s"
 
-#: utils/view_helpers.php:92
+#: utils/view_helpers.php:106
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:94
+#: utils/view_helpers.php:108
 #, php-format
-msgid "%d&nbsp;min"
-msgstr "%d&nbsp;min"
+msgid "%s&nbsp;min"
+msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:226
+#: utils/view_helpers.php:240
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: utils/view_helpers.php:227
+#: utils/view_helpers.php:241
 #, php-format
 msgid ""
 "You can add links to <a href=\"%s\">your bookmarks</a> to read them later."
@@ -695,12 +695,12 @@ msgstr "Mauvaise requête"
 msgid "The request is invalid."
 msgstr "La requête est invalide."
 
-#: views/bad_request.phtml:22 views/internal_server_error.phtml:22
+#: views/bad_request.phtml:22 views/internal_server_error.phtml:23
 #: views/not_found.phtml:22 views/unauthorized.phtml:22
 msgid "Back to the previous page"
 msgstr "Retour à la page précédente"
 
-#: views/bad_request.phtml:26 views/internal_server_error.phtml:26
+#: views/bad_request.phtml:26 views/internal_server_error.phtml:27
 #: views/not_found.phtml:26 views/unauthorized.phtml:26
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
@@ -721,10 +721,10 @@ msgstr "aucun lien"
 #: views/collections/_collection.phtml:12
 #: views/collections/_collection.phtml:33 views/links/searches/show.phtml:194
 #, php-format
-msgid "%d link"
-msgid_plural "%d links"
-msgstr[0] "%d lien"
-msgstr[1] "%d liens"
+msgid "%s link"
+msgid_plural "%s links"
+msgstr[0] "%s lien"
+msgstr[1] "%s liens"
 
 #: views/collections/_collection.phtml:17 views/collections/show.phtml:61
 msgid "public"
@@ -953,8 +953,8 @@ msgstr "Une collection créée par %s sur %s."
 msgid ""
 "Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
 msgstr ""
-"Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" "
-"href=\"%s\">%s</a>"
+"Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
+"%s</a>"
 
 #: views/collections/show_public.phtml:92
 #, php-format
@@ -998,10 +998,10 @@ msgstr "Choisissez une thématique…"
 
 #: views/discovery/show.phtml:37
 #, php-format
-msgid "%d collection"
-msgid_plural "%d collections"
-msgstr[0] "%d collection"
-msgstr[1] "%d collections"
+msgid "%s collection"
+msgid_plural "%s collections"
+msgstr[0] "%s collection"
+msgstr[1] "%s collections"
 
 #: views/discovery/show.phtml:39
 msgid "No collections"
@@ -1243,7 +1243,7 @@ msgstr "Se connecter à Pocket"
 msgid "Something bad happened"
 msgstr "Quelque chose s’est mal passé"
 
-#: views/internal_server_error.phtml:10
+#: views/internal_server_error.phtml:11
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
@@ -1281,10 +1281,10 @@ msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
 #: views/links/_link.phtml:100 views/links/searches/show.phtml:110
 #, php-format
-msgid "%d comment"
-msgid_plural "%d comments"
-msgstr[0] "%d commentaire"
-msgstr[1] "%d commentaires"
+msgid "%s comment"
+msgid_plural "%s comments"
+msgstr[0] "%s commentaire"
+msgstr[1] "%s commentaires"
 
 #: views/links/_link.phtml:105
 msgid "hidden"
@@ -1439,10 +1439,10 @@ msgstr "Résultats de la recherche"
 
 #: views/links/search.phtml:24
 #, php-format
-msgid "%d result (“%s”)"
-msgid_plural "%d results (“%s”)"
-msgstr[0] "%d résultat (« %s »)"
-msgstr[1] "%d résultats (« %s »)"
+msgid "%s result (“%s”)"
+msgid_plural "%s results (“%s”)"
+msgstr[0] "%s résultat (« %s »)"
+msgstr[1] "%s résultats (« %s »)"
 
 #: views/links/searches/show.phtml:31
 msgid "What’s the address of the link or feed?"
@@ -1604,8 +1604,7 @@ msgstr "Vous êtes inscrit‧e depuis le %s."
 
 #: views/my/account/show.phtml:20
 msgid "You have a <strong>free subscription</strong>!&nbsp;😊"
-msgstr ""
-"Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
+msgstr "Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
 
 #: views/my/account/show.phtml:22
 #, php-format
@@ -2210,9 +2209,9 @@ msgid ""
 "Before going any further, please read <a href=\"%s\" target=\"_blank\">the "
 "terms of service</a> to make sure they are suitable for you."
 msgstr ""
-"Avant d’aller plus loin, prenez le temps de lire <a href=\"%s\" "
-"target=\"_blank\">les conditions générales d’utilisation</a> pour vous "
-"assurer que celles-ci vous conviennent."
+"Avant d’aller plus loin, prenez le temps de lire <a href=\"%s\" target="
+"\"_blank\">les conditions générales d’utilisation</a> pour vous assurer que "
+"celles-ci vous conviennent."
 
 #: views/registrations/new.phtml:151
 msgid "Accept the terms of service"
