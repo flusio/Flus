@@ -20,7 +20,7 @@ trait PocketQueries
     public function listUrlsToIdsByUserId($user_id)
     {
         $sql = <<<SQL
-            SELECT id, url FROM links
+            SELECT url, id FROM links
             WHERE user_id = :user_id
         SQL;
 
@@ -29,10 +29,6 @@ trait PocketQueries
             ':user_id' => $user_id,
         ]);
 
-        $ids_by_urls = [];
-        foreach ($statement->fetchAll() as $row) {
-            $ids_by_urls[$row['url']] = $row['id'];
-        }
-        return $ids_by_urls;
+        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 }

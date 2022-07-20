@@ -20,7 +20,7 @@ trait OpmlImportatorQueries
     public function listFeedUrlsToIdsByUserId($user_id)
     {
         $sql = <<<SQL
-            SELECT id, feed_url FROM collections
+            SELECT feed_url, id FROM collections
             WHERE user_id = :user_id
             AND type = 'feed'
         SQL;
@@ -30,10 +30,6 @@ trait OpmlImportatorQueries
             ':user_id' => $user_id,
         ]);
 
-        $ids_by_feed_urls = [];
-        foreach ($statement->fetchAll() as $row) {
-            $ids_by_feed_urls[$row['feed_url']] = $row['id'];
-        }
-        return $ids_by_feed_urls;
+        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 }

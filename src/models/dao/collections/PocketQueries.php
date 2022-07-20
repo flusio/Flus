@@ -20,7 +20,7 @@ trait PocketQueries
     public function listNamesToIdsByUserId($user_id)
     {
         $sql = <<<SQL
-            SELECT id, name FROM collections
+            SELECT name, id FROM collections
             WHERE user_id = :user_id
         SQL;
 
@@ -29,10 +29,6 @@ trait PocketQueries
             ':user_id' => $user_id,
         ]);
 
-        $ids_by_names = [];
-        foreach ($statement->fetchAll() as $row) {
-            $ids_by_names[$row['name']] = $row['id'];
-        }
-        return $ids_by_names;
+        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 }

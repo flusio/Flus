@@ -20,7 +20,7 @@ trait FetcherQueries
     public function listUrlsToIdsByCollectionId($collection_id)
     {
         $sql = <<<SQL
-            SELECT l.id, l.url FROM links l, links_to_collections lc
+            SELECT l.url, l.id FROM links l, links_to_collections lc
             WHERE lc.link_id = l.id
             AND lc.collection_id = :collection_id
         SQL;
@@ -30,11 +30,7 @@ trait FetcherQueries
             ':collection_id' => $collection_id,
         ]);
 
-        $ids_by_urls = [];
-        foreach ($statement->fetchAll() as $row) {
-            $ids_by_urls[$row['url']] = $row['id'];
-        }
-        return $ids_by_urls;
+        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 
     /**
@@ -47,7 +43,7 @@ trait FetcherQueries
     public function listEntryIdsToUrlsByCollectionId($collection_id)
     {
         $sql = <<<SQL
-            SELECT l.id, l.url, l.feed_entry_id
+            SELECT l.feed_entry_id, l.id, l.url
             FROM links l, links_to_collections lc
 
             WHERE l.id = lc.link_id
@@ -62,14 +58,7 @@ trait FetcherQueries
             ':collection_id' => $collection_id,
         ]);
 
-        $urls_by_entry_ids = [];
-        foreach ($statement->fetchAll() as $row) {
-            $urls_by_entry_ids[$row['feed_entry_id']] = [
-                'url' => $row['url'],
-                'id' => $row['id'],
-            ];
-        }
-        return $urls_by_entry_ids;
+        return $statement->fetchAll(\PDO::FETCH_UNIQUE);
     }
 
     /**
