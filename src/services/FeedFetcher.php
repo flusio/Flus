@@ -105,6 +105,9 @@ class FeedFetcher
         $link_ids_by_urls = models\Link::daoCall('listUrlsToIdsByCollectionId', $collection->id);
         $link_urls_by_entry_ids = models\Link::daoCall('listEntryIdsToUrlsByCollectionId', $collection->id);
 
+        $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
+        $feeds_keep_links_date = \Minz\Time::ago($feeds_links_keep_period, 'months');
+
         $links_to_create = [];
         $links_to_collections_to_create = [];
 
@@ -126,6 +129,15 @@ class FeedFetcher
                 $published_at = $entry->published_at;
             } else {
                 $published_at = \Minz\Time::now();
+            }
+
+            if (
+                $feeds_links_keep_period > 0 &&
+                $published_at < $feeds_keep_links_date
+            ) {
+                // Skip entries older than the "keep period" defined in
+                // the configuration
+                continue;
             }
 
             if ($entry->id) {

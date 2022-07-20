@@ -296,6 +296,15 @@ the feeds and add bookmarks. Then, export your data via “Account & data”,
 “Download your data”. You’ll find a `followed.opml.xml` and a
 `bookmarks.atom.xml` files in the archive: that's the ones you’re looking for.
 
+## Optional: Purge old links from the feeds
+
+Over the time, the number of links in database will increase. flusio can handle
+a lot of links, but you may want to keep the size of your DB under control. For
+this, you can purge the old links from the feeds by uncommenting and setting the
+`FEEDS_LINKS_KEEP_PERIOD` variable in your `.env` file. It takes a number of
+months, greater or equal to 1. Links in feeds with an older publication date
+will then be purged every night by the `Cleaner` job.
+
 ## Optional: Close the registrations
 
 You might want to setup a private instance of flusio. The registrations can be
