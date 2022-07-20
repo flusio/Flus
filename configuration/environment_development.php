@@ -9,6 +9,8 @@ $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-dev';
 $user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio)";
 
+$feeds_links_keep_period = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_PERIOD', '0')));
+
 $job_feeds_sync_count = max(1, intval($dotenv->pop('JOB_FEEDS_SYNC_COUNT', '1')));
 $job_links_sync_count = max(1, intval($dotenv->pop('JOB_LINKS_SYNC_COUNT', '1')));
 
@@ -39,6 +41,7 @@ return [
         'subscriptions_enabled' => $subscriptions_host !== null,
         'subscriptions_host' => $subscriptions_host,
         'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
+        'feeds_links_keep_period' => $feeds_links_keep_period,
         'job_adapter' => 'database',
         'job_feeds_sync_count' => $job_feeds_sync_count,
         'job_links_sync_count' => $job_links_sync_count,

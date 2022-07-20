@@ -1,5 +1,12 @@
 # Changelog of flusio
 
+## 2022-xx-xx - unreleased
+
+### Migration notes
+
+A new `FEEDS_LINKS_KEEP_PERIOD` environment variable can be set to purge old
+links from feeds. This allows to reduce the number of links in database.
+
 ## 2022-05-31 - v0.46
 
 ### Breaking changes
