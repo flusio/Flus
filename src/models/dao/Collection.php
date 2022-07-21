@@ -244,6 +244,61 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
+     * Return the collections shared by a user to another user with their computed properties.
+     *
+     * @param string $user_id
+     *     The id of the user who shares the collections.
+     * @param string $to_user_id
+     *     The id of the user with who the collections are shared.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
+     *
+     * @return array
+     */
+    public function listComputedSharedByUserIdTo($user_id, $to_user_id, $selected_computed_props)
+    {
+        $parameters = [
+            ':user_id' => $user_id,
+            ':to_user_id' => $to_user_id,
+        ];
+
+        $number_links_clause = '';
+        $join_clause = '';
+        $group_by_clause = '';
+        if (in_array('number_links', $selected_computed_props)) {
+            $number_links_clause = ', COUNT(lc.*) AS number_links';
+            $join_clause = <<<SQL
+                LEFT JOIN links_to_collections lc
+                ON lc.collection_id = c.id
+            SQL;
+            $group_by_clause = 'GROUP BY c.id';
+        }
+
+        $sql = <<<SQL
+            SELECT
+                c.*
+                {$number_links_clause}
+            FROM collection_shares cs, collections c
+
+            {$join_clause}
+
+            WHERE c.user_id = :user_id
+            AND c.type = 'collection'
+
+            AND cs.collection_id = c.id
+            AND cs.user_id = :to_user_id
+
+            {$group_by_clause}
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute($parameters);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Return whether the given user owns the given collections or not.
      *
      * @param string $user_id

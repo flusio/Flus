@@ -292,6 +292,26 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the collections shared by the user to the given user.
+     *
+     * @see \flusio\models\dao\Collection::listComputedSharedByUserIdTo
+     *
+     * @param string $to_user_id
+     * @param string[] $selected_computed_props
+     *
+     * @return \flusio\models\Collection[]
+     */
+    public function sharedCollectionsTo($to_user_id, $selected_computed_props = [])
+    {
+        return Collection::daoToList(
+            'listComputedSharedByUserIdTo',
+            $this->id,
+            $to_user_id,
+            $selected_computed_props
+        );
+    }
+
+    /**
      * @param string $collection_id
      *
      * @return boolean
