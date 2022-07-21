@@ -251,6 +251,19 @@ class Link extends \Minz\Model
     }
 
     /**
+     * Return whether the link is shared with the given user (i.e. it is
+     * attached to a shared collection).
+     *
+     * @param \flusio\models\User $user
+     *
+     * @return boolean
+     */
+    public function sharedWith($user)
+    {
+        return CollectionShare::daoCall('existsForUserIdAndLinkId', $user->id, $this->id);
+    }
+
+    /**
      * Return the list of feeds URLs if any
      *
      * @return string[]

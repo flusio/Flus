@@ -57,4 +57,32 @@ class CollectionShare extends \Minz\DatabaseModel
         $statement->execute($parameters);
         return $statement->fetchAll();
     }
+
+    /**
+     * Return whether the link is shared with the given user (i.e. it is
+     * attached to a shared collection).
+     *
+     * @param string $user_id
+     * @param string $link_id
+     *
+     * @return boolean
+     */
+    public function existsForUserIdAndLinkId($user_id, $link_id)
+    {
+        $sql = <<<'SQL'
+            SELECT TRUE
+            FROM collection_shares cs, links_to_collections lc
+
+            WHERE cs.collection_id = lc.collection_id
+            AND cs.user_id = :user_id
+            AND lc.link_id = :link_id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':link_id' => $link_id,
+        ]);
+        return $statement->fetchColumn();
+    }
 }
