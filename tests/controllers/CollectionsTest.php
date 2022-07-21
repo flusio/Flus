@@ -286,7 +286,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
             'title' => $link_title,
-            'is_hidden' => 0,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
@@ -387,7 +386,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $link_id = $this->create('link', [
             'user_id' => $other_user_id,
-            'is_hidden' => 0,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
