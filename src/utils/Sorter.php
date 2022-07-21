@@ -11,7 +11,7 @@ class Sorter
     /**
      * Sort items by the given property, based on the current locale.
      *
-     * @param object $items
+     * @param object[] $items
      * @param string $property
      */
     public static function localeSort(&$items, $property)
