@@ -135,22 +135,6 @@
                         <?= icon('image') ?>
                         <?= _('Change the illustration') ?>
                     </button>
-
-                    <?php if ($collection->is_public): ?>
-                        <div data-controller="copy-to-clipboard">
-                            <input type="hidden" value="<?= url_full('collection', ['id' => $collection->id]) ?>" data-copy-to-clipboard-target="copyable" />
-
-                            <button
-                                class="popup__item popup__item--button share__button"
-                                data-action="copy-to-clipboard#copy"
-                                data-copy-to-clipboard-target="feedback"
-                                role="menuitem"
-                            >
-                                <?= icon('copy-to-clipboard') ?>
-                                <?= _('Copy the link') ?>
-                            </button>
-                        </div>
-                    <?php endif; ?>
                 </nav>
             </details>
         </div>

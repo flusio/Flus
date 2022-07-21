@@ -78,4 +78,17 @@
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
+
+    <div class="share" data-controller="copy-to-clipboard">
+        <span class="share__text" data-copy-to-clipboard-target="copyable"><?= url_full('collection', ['id' => $collection->id]) ?></span>
+
+        <button
+            class="share__button"
+            data-action="copy-to-clipboard#copy"
+            data-copy-to-clipboard-target="feedback"
+        >
+            <?= icon('copy-to-clipboard') ?>
+            <?= _('Copy') ?>
+        </button>
+    </div>
 </div>
