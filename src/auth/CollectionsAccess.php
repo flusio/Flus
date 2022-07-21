@@ -18,7 +18,15 @@ class CollectionsAccess
             return true;
         }
 
-        return $user && $user->id === $collection->user_id;
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->id === $collection->user_id) {
+            return true;
+        }
+
+        return $collection->sharedWith($user);
     }
 
     public static function canUpdate($user, $collection)

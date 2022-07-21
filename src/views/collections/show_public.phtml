@@ -89,6 +89,12 @@
         <?php else: ?>
             <div class="collection__details">
                 <p class="collection__owner">
+                    <?php if (!$collection->is_public): ?>
+                        <span class="collection__public sticker">
+                            <?= _('private') ?>
+                        </span>
+                    <?php endif; ?>
+
                     <?= _f('Created by <a href="%s">%s</a>', url('profile', ['id' => $owner->id]), protect($owner->username)) ?>
                 </p>
             </div>
