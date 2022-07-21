@@ -159,4 +159,49 @@ class Shares
 
         return Response::found($from);
     }
+
+    /**
+     * @request_param string id
+     * @request_param string from
+     * @request_param string csrf
+     *
+     * @response 302 /login?redirect_to=:from
+     *     If not connected
+     * @response 404
+     *     If the shared collection doesn’t exist or is inaccessible
+     * @response 302 :from
+     *     On success
+     */
+    public function delete($request)
+    {
+        $current_user = auth\CurrentUser::get();
+        $from = $request->param('from');
+        if (!$current_user) {
+            return Response::redirect('login', [
+                'redirect_to' => $from,
+            ]);
+        }
+
+        $csrf = $request->param('csrf');
+        $collection_share_id = $request->paramInteger('id');
+        $collection_share = models\CollectionShare::find($collection_share_id);
+        if (!$collection_share) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $collection = models\Collection::find($collection_share->collection_id);
+        $can_update = auth\CollectionsAccess::canUpdate($current_user, $collection);
+        if (!$can_update) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        if (!\Minz\CSRF::validate($csrf)) {
+            utils\Flash::set('error', _('A security verification failed.'));
+            return Response::found($from);
+        }
+
+        models\CollectionShare::delete($collection_share->id);
+
+        return Response::found($from);
+    }
 }

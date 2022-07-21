@@ -378,4 +378,147 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNull($collection_share);
     }
+
+    public function testDeleteDeletesCollectionShare()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $collection_share_id = $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+
+        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+        ]);
+
+        $this->assertFalse(models\CollectionShare::exists($collection_share_id));
+    }
+
+    public function testDeleteRedirectsToFrom()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $collection_share_id = $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+    }
+
+    public function testDeleteRedirectsToLoginIfNotConnected()
+    {
+        $user_id = $this->create('user', [
+            'csrf' => 'a token',
+        ]);
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user_id,
+        ]);
+        $collection_share_id = $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+            'csrf' => 'a token',
+            'from' => $from,
+        ]);
+
+        $encoded_from = urlencode($from);
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$encoded_from}");
+        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+    }
+
+    public function testDeleteFailsIfCollectionShareDoesNotExist()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $collection_share_id = $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', '/collections/shares/not-an-id/delete', [
+            'csrf' => $user->csrf,
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+    }
+
+    public function testDeleteFailsIfUnauthorizedToUpdateCollection()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $other_user_id,
+            'is_public' => 1,
+        ]);
+        $collection_share_id = $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+    }
+
+    public function testDeleteFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $collection_share_id = $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+            'csrf' => 'not the token',
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $this->assertFlash('error', 'A security verification failed.');
+        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+    }
 }

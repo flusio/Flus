@@ -69,11 +69,26 @@
         <ul class="list list--no-style">
             <?php foreach ($collection_shares as $collection_share): ?>
                 <?php $user = $collection_share->user(); ?>
-                <li class="list__item">
-                    <img class="avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
-                    <a class="anchor--hidden" href="<?= url('profile', ['id' => $user->id]) ?>">
-                        <?= protect($user->username) ?>
-                    </a>
+                <li class="list__item line">
+                    <span class="line__item">
+                        <img class="avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+                    </span>
+
+                    <span class="line__item line__item--extend">
+                        <a class="anchor--hidden" href="<?= url('profile', ['id' => $user->id]) ?>">
+                            <?= protect($user->username) ?>
+                        </a>
+                    </span>
+
+                    <form class="line__item" method="post" action="<?= url('delete collection share', ['id' => $collection_share->id]) ?>">
+                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        <input type="hidden" name="from" value="<?= $from ?>" />
+
+                        <button type="submit" class="button--ghost">
+                            <?= icon('times') ?>
+                            <?= _('Revoke') ?>
+                        </button>
+                    </form>
                 </li>
             <?php endforeach; ?>
         </ul>
