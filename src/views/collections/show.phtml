@@ -84,6 +84,21 @@
                         class="popup__item popup__item--button"
                         data-controller="modal-opener"
                         data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="<?= url('collection shares', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                        role="menuitem"
+                    >
+                        <?= icon('share') ?>
+                        <?= _('Share') ?>
+                    </button>
+
+                    <div class="popup__separator"></div>
+
+                    <button
+                        class="popup__item popup__item--button"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
                         data-modal-opener-href-value="<?= url('edit collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
                         aria-haspopup="dialog"
                         aria-controls="modal"

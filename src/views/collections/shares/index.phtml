@@ -1,0 +1,64 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Share collection'),
+        'canonical' => url_full('share collection', ['id' => $collection->id]),
+        'has_errors' => $error || $errors,
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1 id="modal-title"><?= _f('Share “%s”', protect($collection->name)) ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?php if ($collection->is_public): ?>
+            <?= _('This collection is public, anyone can access it.') ?>
+        <?php else: ?>
+            <?= _('This collection is private, you can share access to other users.') ?>
+        <?php endif; ?>
+    </p>
+
+    <form method="post" action="<?= url('share collection', ['id' => $collection->id]) ?>">
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
+        <input type="hidden" name="type" value="<?= $type ?>" />
+
+        <div class="form-group <?= isset($errors['user_id']) ? 'form-group--invalid' : '' ?>">
+            <label for="user-id">
+                <?= _('Share read access with') ?>
+            </label>
+
+            <div class="form-group__stack">
+                <input
+                    id="user-id"
+                    name="user_id"
+                    type="text"
+                    required
+                    value="<?= $user_id ?>"
+                    aria-describedby="user-id-desc"
+                    placeholder="<?= protect($current_user->id) ?>"
+                />
+
+                <button type="submit" class="button--primary">
+                    <?= _('Share') ?>
+                </button>
+            </div>
+
+            <div id="user-id-desc">
+                <?php if (isset($errors['user_id'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['user_id'] ?>
+                    </p>
+                <?php endif; ?>
+
+                <p class="form-group__caption">
+                    <?= _('Sharing read access with other users gives them access to the whole collection, <strong>including their hidden links,</strong> but they can’t modify it.') ?>
+                </p>
+            </div>
+        </div>
+    </form>
+</div>

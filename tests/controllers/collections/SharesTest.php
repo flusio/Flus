@@ -1,0 +1,357 @@
+<?php
+
+namespace flusio\controllers\collections;
+
+use flusio\models;
+
+class SharesTest extends \PHPUnit\Framework\TestCase
+{
+    use \tests\FakerHelper;
+    use \tests\InitializerHelper;
+    use \tests\LoginHelper;
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\ResponseAsserts;
+
+    public function testIndexRendersCorrectly()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('text', 50);
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+            'name' => $collection_name,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/share", [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseContains($response, $collection_name);
+    }
+
+    public function testIndexRedirectsIfNotConnected()
+    {
+        $user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/share", [
+            'from' => $from,
+        ]);
+
+        $from_encoded = urlencode($from);
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+    }
+
+    public function testIndexFailsIfCollectionDoesNotExist()
+    {
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', '/collections/not-an-id/share', [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testCreateRedirectsToFrom()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => $other_user_id,
+            'type' => 'read',
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+    }
+
+    public function testCreateCreatesCollectionShare()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => $other_user_id,
+            'type' => 'read',
+        ]);
+
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $this->assertNotNull($collection_share);
+    }
+
+    public function testCreateRedirectsToLoginIfNotConnected()
+    {
+        $user_id = $this->create('user', [
+            'csrf' => 'a token',
+        ]);
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => 'a token',
+            'from' => $from,
+            'user_id' => $other_user_id,
+            'type' => 'read',
+        ]);
+
+        $from_encoded = urlencode($from);
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $this->assertNull($collection_share);
+    }
+
+    public function testCreateFailsIfCollectionDoesNotExist()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', '/collections/not-an-id/share', [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => $other_user_id,
+            'type' => 'read',
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $this->assertNull($collection_share);
+    }
+
+    public function testCreateFailsIfCsrfIsInvalid()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => 'not the token',
+            'from' => $from,
+            'user_id' => $other_user_id,
+            'type' => 'read',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseContains($response, 'A security verification failed');
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $this->assertNull($collection_share);
+    }
+
+    public function testCreateFailsIfUserIdIsTheCurrentUserId()
+    {
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => $user->id,
+            'type' => 'read',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseContains($response, 'You can’t share access with yourself');
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+        ]);
+        $this->assertNull($collection_share);
+    }
+
+    public function testCreateFailsIfUserIdDoesNotExist()
+    {
+        $user = $this->login();
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => 'not a user id',
+            'type' => 'read',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseContains($response, 'This user doesn’t exist');
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => 'not a user id',
+        ]);
+        $this->assertNull($collection_share);
+    }
+
+    public function testCreateFailsIfUserIdIsSupportUserId()
+    {
+        $user = $this->login();
+        $support_user = models\User::supportUser();
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => $support_user->id,
+            'type' => 'read',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseContains($response, 'This user doesn’t exist');
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => $support_user->id,
+        ]);
+        $this->assertNull($collection_share);
+    }
+
+    public function testCreateFailsIfCollectionIsAlreadySharedWithUserId()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $collection_share_id = $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => $other_user_id,
+            'type' => 'read',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseContains($response, 'The collection is already shared with this user');
+        $collection_shares = models\CollectionShare::listBy([
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $this->assertSame(1, count($collection_shares));
+        $this->assertSame($collection_share_id, $collection_shares[0]->id);
+    }
+
+    public function testCreateFailsIfTypeIsInvalid()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => $other_user_id,
+            'type' => 'not a type',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseContains($response, 'The type is invalid');
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $this->assertNull($collection_share);
+    }
+
+    public function testCreateFailsIfTypeIsEmpty()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => $other_user_id,
+            'type' => '',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseContains($response, 'The type is required');
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $this->assertNull($collection_share);
+    }
+}
