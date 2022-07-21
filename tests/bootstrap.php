@@ -258,6 +258,27 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
 );
 
 \Minz\Tests\DatabaseFactory::addFactory(
+    'collection_share',
+    '\flusio\models\dao\CollectionShare',
+    [
+        'created_at' => function () use ($faker) {
+            return $faker->iso8601;
+        },
+        'user_id' => function () {
+            $user_factory = new \Minz\Tests\DatabaseFactory('user');
+            return $user_factory->create();
+        },
+        'collection_id' => function () {
+            $collection_factory = new \Minz\Tests\DatabaseFactory('collection');
+            return $collection_factory->create();
+        },
+        'type' => function () use ($faker) {
+            return $faker->randomElement(\flusio\models\CollectionShare::VALID_TYPES);
+        },
+    ]
+);
+
+\Minz\Tests\DatabaseFactory::addFactory(
     'message',
     '\flusio\models\dao\Message',
     [
