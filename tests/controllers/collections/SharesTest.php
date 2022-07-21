@@ -134,6 +134,30 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection_share);
     }
 
+    public function testCreateAcceptsProfileUrlAsUserId()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'user_id' => \Minz\Url::absoluteFor('profile', ['id' => $other_user_id]),
+            'type' => 'read',
+        ]);
+
+        $collection_share = models\CollectionShare::findBy([
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $this->assertNotNull($collection_share);
+    }
+
     public function testCreateRedirectsToLoginIfNotConnected()
     {
         $user_id = $this->create('user', [

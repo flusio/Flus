@@ -79,6 +79,9 @@ class Shares
         $type = $request->param('type');
         $csrf = $request->param('csrf');
 
+        // We also accept profiles URLs
+        $user_id = $this->extractUserId($user_id);
+
         $collection = models\Collection::find($collection_id);
         $can_update = auth\CollectionsAccess::canUpdate($current_user, $collection);
         if (!$can_update) {
@@ -203,5 +206,42 @@ class Shares
         models\CollectionShare::delete($collection_share->id);
 
         return Response::found($from);
+    }
+
+    /**
+     * Extract a user_id from a string.
+     *
+     * The string can be the user_id, or the URL to the profile of a user.
+     * This method doesn't check if the id exists or is valid.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    private function extractUserId($string)
+    {
+        $string = trim($string);
+        $url = \SpiderBits\Url::sanitize($string);
+        $base_url = \Minz\Url::baseUrl();
+
+        if (!utils\Belt::startsWith($url, $base_url)) {
+            return $string;
+        }
+
+        $parsed_url = parse_url($url);
+        $path = $parsed_url['path'] ?? '/';
+
+        // instead of loading the whole router, we recreate one with only the
+        // profile route.
+        $router = new \Minz\Router();
+        $router->addRoute('get', '/p/:id', 'Profiles#show');
+
+        // and try to extract the id if the path match the route.
+        try {
+            list($action_pointer, $parameters) = $router->match('get', $path);
+            return $parameters['id'];
+        } catch (\Minz\Errors\RouteNotFoundError $e) {
+            return $string;
+        }
     }
 }
