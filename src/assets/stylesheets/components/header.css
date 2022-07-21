@@ -31,15 +31,6 @@
 }
 
 .header__avatar {
-    display: block;
-    height: 5rem;
-
-    background-color: var(--color-white);
-    border: 2px solid var(--color-turquoise-5);
-    border-radius: 50%;
-
-    transition: filter 0.3s ease-in-out;
-
     cursor: pointer;
 }
 

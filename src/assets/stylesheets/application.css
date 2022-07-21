@@ -2,6 +2,7 @@
 @import './utils/fonts.css';
 @import './utils/animations.css';
 @import './components/alerts.css';
+@import './components/avatars.css';
 @import './components/anchors.css';
 @import './components/buttons.css';
 @import './components/cards.css';

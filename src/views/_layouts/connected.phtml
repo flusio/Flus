@@ -124,7 +124,7 @@
                         data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
                     >
                         <summary class="popup__opener" title="<?= _f('Menu of %s', protect($current_user->username)) ?>">
-                            <img class="header__avatar" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
+                            <img class="header__avatar avatar" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
                             <span class="sr-only">
                                 <?= _f('Menu of %s', protect($current_user->username)) ?>
                             </span>

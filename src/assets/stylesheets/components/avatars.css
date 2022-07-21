@@ -1,0 +1,20 @@
+.avatar {
+    width: 5rem;
+
+    vertical-align: middle;
+
+    background-color: var(--color-white);
+    border: 2px solid var(--color-turquoise-5);
+    border-radius: 50%;
+}
+
+.avatar--banner {
+    display: block;
+    width: 15rem;
+    height: 15rem;
+    margin-right: auto;
+    margin-bottom: var(--space-medium);
+    margin-left: auto;
+
+    border-width: 4px;
+}
