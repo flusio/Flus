@@ -61,4 +61,21 @@
             </div>
         </div>
     </form>
+
+    <?php $collection_shares = $collection->shares(); ?>
+    <?php if ($collection_shares): ?>
+        <h2 class="title title--small"><?= _('Shared with:') ?></h2>
+
+        <ul class="list list--no-style">
+            <?php foreach ($collection_shares as $collection_share): ?>
+                <?php $user = $collection_share->user(); ?>
+                <li class="list__item">
+                    <img class="avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+                    <a class="anchor--hidden" href="<?= url('profile', ['id' => $user->id]) ?>">
+                        <?= protect($user->username) ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
 </div>

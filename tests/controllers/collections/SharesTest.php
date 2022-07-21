@@ -33,6 +33,30 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
+    public function testIndexRendersExistingShares()
+    {
+        $user = $this->login();
+        $username = $this->fake('username');
+        $other_user_id = $this->create('user', [
+            'username' => $username,
+        ]);
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $user->id,
+        ]);
+        $collection_share_id = $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $other_user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/share", [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseContains($response, $username);
+    }
+
     public function testIndexRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');

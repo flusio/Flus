@@ -16,4 +16,45 @@ class CollectionShare extends \Minz\DatabaseModel
         $properties = array_keys(\flusio\models\CollectionShare::PROPERTIES);
         parent::__construct('collection_shares', 'id', $properties);
     }
+
+    /**
+     * Return CollectionShares of the given collection with its computed properties.
+     *
+     * @param string $collection_id
+     *     The collection id the links must match.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
+     *
+     * @return array
+     */
+    public function listComputedByCollectionId($collection_id, $selected_computed_props)
+    {
+        $parameters = [
+            ':collection_id' => $collection_id,
+        ];
+
+        $username_clause = '';
+        $join_clause = '';
+        if (in_array('username', $selected_computed_props)) {
+            $username_clause = ', u.username';
+            $join_clause = 'INNER JOIN users u ON u.id = cs.user_id';
+        }
+
+        $sql = <<<SQL
+            SELECT
+                cs.*
+                {$username_clause}
+            FROM collection_shares cs
+
+            {$join_clause}
+
+            WHERE cs.collection_id = :collection_id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute($parameters);
+        return $statement->fetchAll();
+    }
 }

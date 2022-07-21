@@ -303,6 +303,22 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return the CollectionShares attached to the current collection
+     *
+     * @return \flusio\models\CollectionShare[]
+     */
+    public function shares()
+    {
+        $collection_shares = CollectionShare::daoToList(
+            'listComputedByCollectionId',
+            $this->id,
+            ['username']
+        );
+        utils\Sorter::localeSort($collection_shares, 'username');
+        return $collection_shares;
+    }
+
+    /**
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt

@@ -38,6 +38,12 @@ class CollectionShare extends \Minz\Model
             'required' => true,
             'validator' => '\flusio\models\CollectionShare::validateType',
         ],
+
+        // used to sort collection shares easily
+        'username' => [
+            'type' => 'string',
+            'computed' => true,
+        ],
     ];
 
     /**
@@ -66,6 +72,16 @@ class CollectionShare extends \Minz\Model
             'collection_id' => $collection_id,
             'type' => $type,
         ]);
+    }
+
+    /**
+     * Return the user attached to the CollectionShare
+     *
+     * @return \flusio\models\User
+     */
+    public function user()
+    {
+        return User::find($this->user_id);
     }
 
     /**
