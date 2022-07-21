@@ -122,8 +122,14 @@ trait NewsQueries
             AND lc.link_id = l.id
             AND lc.collection_id = c.id
 
-            AND l.is_hidden = false
-            AND c.is_public = true
+            AND (
+                (l.is_hidden = false AND c.is_public = true) OR
+                EXISTS (
+                    SELECT 1 FROM collection_shares cs
+                    WHERE cs.user_id = :user_id
+                    AND cs.collection_id = c.id
+                )
+            )
 
             AND excluded_links.id IS NULL
 

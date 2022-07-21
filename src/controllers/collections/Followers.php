@@ -40,7 +40,8 @@ class Followers
         }
 
         $collection = models\Collection::find($collection_id);
-        if (!$collection || !$collection->is_public) {
+        $can_view = auth\CollectionsAccess::canView($user, $collection);
+        if (!$can_view) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -67,7 +68,7 @@ class Followers
      * @response 302 /login?redirect_to=:from
      *     if not connected
      * @response 404
-     *     if the collection doesn’t exist or user hasn't access
+     *     if the collection doesn’t exist
      * @response 302 :from
      *     if CSRF is invalid
      * @response 302 :from
@@ -84,7 +85,7 @@ class Followers
         }
 
         $collection = models\Collection::find($collection_id);
-        if (!$collection || !$collection->is_public) {
+        if (!$collection) {
             return Response::notFound('not_found.phtml');
         }
 
