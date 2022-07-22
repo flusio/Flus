@@ -61,35 +61,10 @@
                 <?php endif; ?>
             </div>
 
-            <div class="collections-selector" data-controller="collections-selector">
-                <select
-                    id="collection-ids"
-                    class="collections-selector__data"
-                    name="collection_ids[]"
-                    data-collections-selector-target="data"
-                    multiple
-                    required
-                    tabindex="-1"
-                >
-                    <?php foreach ($collections as $collection): ?>
-                        <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
-                            <?= protect($collection->name()) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-
-                <ul class="collections-selector__list" data-collections-selector-target="list"></ul>
-
-                <select
-                    data-collections-selector-target="select"
-                    data-action="collections-selector#attach"
-                    aria-label="<?= _('Select a collection') ?>"
-                >
-                    <option selected disabled>
-                        <?= _('Select a collection') ?>
-                    </option>
-                </select>
-            </div>
+            <?= $this->include('collections/_selector.phtml', [
+                'collections' => $collections,
+                'collection_ids' => $collection_ids,
+            ]) ?>
         </fieldset>
 
         <div class="form-group">
