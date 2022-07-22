@@ -32,6 +32,11 @@ class LinkToCollection extends \Minz\DatabaseModel
      */
     public function attach($link_ids, $collection_ids, $created_at = null)
     {
+        if (!$link_ids || !$collection_ids) {
+            // nothing to insert
+            return true;
+        }
+
         if (!$created_at) {
             $created_at = \Minz\Time::now();
         }
@@ -70,6 +75,11 @@ class LinkToCollection extends \Minz\DatabaseModel
      */
     public function detach($link_ids, $collection_ids)
     {
+        if (!$link_ids || !$collection_ids) {
+            // nothing to delete
+            return true;
+        }
+
         $values_as_question_marks = [];
         $values = [];
         foreach ($link_ids as $link_id) {
@@ -100,6 +110,11 @@ class LinkToCollection extends \Minz\DatabaseModel
      */
     public function detachCollections($link_ids, $collection_ids)
     {
+        if (!$link_ids || !$collection_ids) {
+            // nothing to delete
+            return true;
+        }
+
         $values_as_question_marks = [];
         $values = [];
         foreach ($link_ids as $link_id) {

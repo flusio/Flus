@@ -23,6 +23,11 @@ trait BulkQueries
      */
     public function bulkInsert($columns, $values)
     {
+        if (!$columns || !$values) {
+            // nothing to insert
+            return true;
+        }
+
         $number_rows = count($values) / count($columns);
         $row_as_question_marks = array_fill(0, count($columns), '?');
         $row_placeholder = implode(', ', $row_as_question_marks);
