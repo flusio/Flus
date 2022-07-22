@@ -154,17 +154,13 @@ class Shares
 
         $collection_share = models\CollectionShare::init($user_id, $collection->id, $type);
         $errors = $collection_share->validate();
-        if (isset($errors['type'])) {
-            // type doesn't have a dedicated HTML field yet, so we want to
-            // display its errors in the "global" alert.
-            // Since, in theory, validate() only return errors concerning the
-            // type property, we can handle it this way.
+        if ($errors) {
             return Response::badRequest($view_file, [
                 'collection' => $collection,
                 'from' => $from,
                 'type' => $type,
                 'user_id' => $user_id,
-                'error' => $errors['type'],
+                'errors' => $errors,
             ]);
         }
 

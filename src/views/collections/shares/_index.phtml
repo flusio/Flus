@@ -17,11 +17,10 @@
 
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
             <input type="hidden" name="from" value="<?= $from ?>" />
-            <input type="hidden" name="type" value="<?= $type ?>" />
 
             <div class="form-group <?= isset($errors['user_id']) ? 'form-group--invalid' : '' ?>">
                 <label for="user-id">
-                    <?= _('Share read access with') ?>
+                    <?= _('Share access with') ?>
                 </label>
 
                 <div class="form-group__stack">
@@ -47,9 +46,59 @@
                             <?= $errors['user_id'] ?>
                         </p>
                     <?php endif; ?>
+                </div>
+            </div>
 
-                    <p class="form-group__caption">
-                        <?= _('Sharing read access with other users gives them access to the whole collection, <strong>including their hidden links,</strong> but they can’t modify it.') ?>
+            <div
+                class="form-group <?= isset($errors['type']) ? 'form-group--invalid' : '' ?>"
+                data-controller="caption-switcher"
+            >
+                <input
+                    type="radio"
+                    id="type-read"
+                    name="type"
+                    value="read"
+                    <?= $type === 'read' ? 'checked' : '' ?>
+                    aria-describedby="type-desc"
+                    data-action="caption-switcher#switch"
+                    data-caption-switcher-target="switch"
+                />
+
+                <label class="label--radio" for="type-read">
+                    <?= _('Read access') ?>
+                </label>
+
+                <input
+                    type="radio"
+                    id="type-write"
+                    name="type"
+                    value="write"
+                    <?= $type === 'write' ? 'checked' : '' ?>
+                    aria-describedby="type-desc"
+                    data-action="caption-switcher#switch"
+                    data-caption-switcher-target="switch"
+                />
+
+                <label class="label--radio" for="type-write">
+                    <?= _('Read and write access') ?>
+                </label>
+
+                <div id="type-desc">
+                    <?php if (isset($errors['type'])): ?>
+                        <p class="form-group__error">
+                            <span class="sr-only"><?= _('Error') ?></span>
+                            <?= $errors['type'] ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <p class="form-group__caption" aria-live="polite">
+                        <span data-caption-switcher-target="caption" data-caption-value="read">
+                            <?= _('Sharing read access with other users gives them access to the whole collection, <strong>including their hidden links,</strong> but they can’t modify it.') ?>
+                        </span>
+
+                        <span data-caption-switcher-target="caption" data-caption-value="write">
+                            <?= _('Sharing read and write access with other users gives them access to the whole collection, <strong>including their hidden links,</strong> and they can modify information, add links or comment them.') ?>
+                        </span>
                     </p>
                 </div>
             </div>
@@ -73,13 +122,23 @@
                             </a>
                         </span>
 
+                        <span class="line__item text--secondary">
+                            <?php if ($collection_share->type === 'read'): ?>
+                                <?= _('read only') ?>
+                            <?php else: ?>
+                                <?= _('read / write') ?>
+                            <?php endif; ?>
+                        </span>
+
                         <form class="line__item" method="post" action="<?= url('delete collection share', ['id' => $collection_share->id]) ?>">
                             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                             <input type="hidden" name="from" value="<?= $from ?>" />
 
-                            <button type="submit" class="button--ghost">
+                            <button type="submit" class="button--ghost button--small">
                                 <?= icon('times') ?>
-                                <?= _('Revoke') ?>
+                                <span class="no-mobile">
+                                    <?= _('Revoke') ?>
+                                </span>
                             </button>
                         </form>
                     </li>
