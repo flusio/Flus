@@ -1,0 +1,12 @@
+<turbo-stream action="replace" target="modal-collections-shares-index">
+    <template>
+        <?= $this->include('collections/shares/_index.phtml', [
+            'collection' => $collection,
+            'type' => $type,
+            'user_id' => $user_id,
+            'from' => $from,
+            'errors' => $errors,
+            'error' => $error,
+        ]); ?>
+    </template>
+</turbo-stream>
