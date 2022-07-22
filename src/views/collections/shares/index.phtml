@@ -1,0 +1,16 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Share collection'),
+        'canonical' => url_full('share collection', ['id' => $collection->id]),
+        'has_errors' => $error || $errors,
+    ]);
+?>
+
+<?= $this->include('collections/shares/_index.phtml', [
+    'collection' => $collection,
+    'type' => $type,
+    'user_id' => $user_id,
+    'from' => $from,
+    'errors' => $errors,
+    'error' => $error,
+]); ?>

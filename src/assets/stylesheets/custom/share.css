@@ -1,5 +1,7 @@
 .share {
     display: flex;
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
     padding: var(--space-small) var(--space-medium);
 
     flex-direction: column;
@@ -17,4 +19,8 @@
 
 .share__text {
     flex: 1;
+
+    font-family: monospace;
+    text-align: center;
+    word-break: break-all;
 }

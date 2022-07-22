@@ -122,6 +122,14 @@ class Router
         $router->addRoute('post', '/collections/:id/read', 'collections/Read#create', 'mark collection as read');
         $router->addRoute('post', '/collections/:id/read/later', 'collections/Read#later', 'read collection later');
         $router->addRoute('post', '/collections/:id/read/never', 'collections/Read#never', 'never read collection');
+        $router->addRoute('get', '/collections/:id/share', 'collections/Shares#index', 'collection shares');
+        $router->addRoute('post', '/collections/:id/share', 'collections/Shares#create', 'share collection');
+        $router->addRoute(
+            'post',
+            '/collections/shares/:id/delete',
+            'collections/Shares#delete',
+            'delete collection share'
+        );
 
         $router->addRoute('get', '/bookmarks', 'Bookmarks#index', 'bookmarks');
         $router->addRoute('get', '/read', 'Read#index', 'read list');

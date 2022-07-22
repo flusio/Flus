@@ -164,7 +164,10 @@ class Collections
             ]);
         }
 
-        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, ['hidden' => $can_update]);
+        $access_is_shared = $user && $collection->sharedWith($user);
+        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, [
+            'hidden' => $can_update || $access_is_shared,
+        ]);
         $pagination_page = intval($request->param('page', 1));
         $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!
         $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
@@ -199,7 +202,7 @@ class Collections
                 'links' => $collection->links(
                     ['published_at', 'number_comments'],
                     [
-                        'hidden' => false,
+                        'hidden' => $access_is_shared,
                         'offset' => $pagination->currentOffset(),
                         'limit' => $pagination->numberPerPage(),
                         'context_user_id' => $user ? $user->id : '',

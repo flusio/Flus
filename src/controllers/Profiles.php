@@ -47,10 +47,17 @@ class Profiles
         ]);
         utils\Sorter::localeSort($collections, 'name');
 
+        $shared_collections = [];
+        if ($current_user) {
+            $shared_collections = $user->sharedCollectionsTo($current_user->id, ['number_links']);
+            utils\Sorter::localeSort($shared_collections, 'name');
+        }
+
         return Response::ok('profiles/show.phtml', [
             'user' => $user,
             'links' => $links,
             'collections' => $collections,
+            'shared_collections' => $shared_collections,
             'is_current_user_profile' => $is_current_user_profile,
         ]);
     }

@@ -46,7 +46,9 @@ class Read
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
             $links = $collection->links();
         } elseif ($user->isFollowing($collection->id)) {
-            $collection_links = $collection->links([], ['hidden' => false]);
+            $collection_links = $collection->links([], [
+                'hidden' => $collection->sharedWith($user),
+            ]);
             $links = $user->obtainLinks($collection_links);
 
             $links_to_create = [];
@@ -105,7 +107,9 @@ class Read
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
             $links = $collection->links();
         } elseif ($user->isFollowing($collection->id)) {
-            $collection_links = $collection->links([], ['hidden' => false]);
+            $collection_links = $collection->links([], [
+                'hidden' => $collection->sharedWith($user),
+            ]);
             $links = $user->obtainLinks($collection_links);
 
             $links_to_create = [];
@@ -164,7 +168,9 @@ class Read
         if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
             $links = $collection->links();
         } elseif ($user->isFollowing($collection->id)) {
-            $collection_links = $collection->links([], ['hidden' => false]);
+            $collection_links = $collection->links([], [
+                'hidden' => $collection->sharedWith($user),
+            ]);
             $links = $user->obtainLinks($collection_links);
 
             $links_to_create = [];

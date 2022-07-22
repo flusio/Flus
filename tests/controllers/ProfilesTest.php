@@ -89,6 +89,38 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $link_title);
     }
 
+    public function testShowDisplaysSharedCollections()
+    {
+        $current_user = $this->login();
+        $username = $this->fake('username');
+        $user_id = $this->create('user', [
+            'username' => $username,
+        ]);
+        $collection_name = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user_id,
+            'type' => 'collection',
+            'is_public' => 0,
+            'name' => $collection_name,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'is_hidden' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $current_user->id,
+        ]);
+
+        $response = $this->appRun('get', "/p/{$user_id}");
+
+        $this->assertResponseContains($response, $collection_name);
+    }
+
     public function testShowDoesNotDisplayPublicCollectionsWithOnlyHiddenLinks()
     {
         $username = $this->fake('username');

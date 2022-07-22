@@ -1,0 +1,17 @@
+.line {
+    display: flex;
+
+    align-items: center;
+}
+
+.line > * + * {
+    margin-left: var(--space-small);
+}
+
+.line__item {
+    flex-shrink: 0;
+}
+
+.line__item--extend {
+    flex: 1;
+}

@@ -99,4 +99,19 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+    <?php if ($shared_collections): ?>
+        <h2 class="group__subtitle">
+            <?= _('Collections shared with you') ?>
+        </h2>
+
+        <div class="cards">
+            <?php foreach ($shared_collections as $collection): ?>
+                <?= $this->include('collections/_collection.phtml', [
+                    'display_mode' => 'public',
+                    'collection' => $collection,
+                ]) ?>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </div>

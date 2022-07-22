@@ -273,6 +273,36 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/show_public.phtml');
     }
 
+    public function testShowRendersCorrectlyIfPrivateAndSharedAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_title = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'is_public' => 0,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'title' => $link_title,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponsePointer($response, 'collections/show_public.phtml');
+    }
+
     public function testShowHidesHiddenLinksInPublicCollections()
     {
         $user_id = $this->create('user');
@@ -341,6 +371,28 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->login();
 
         $response = $this->appRun('get', '/collections/unknown');
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testShowFailsIfPrivateAndNoSharedAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'is_public' => 0,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}");
 
         $this->assertResponseCode($response, 404);
     }

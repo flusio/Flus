@@ -18,7 +18,15 @@ class LinksAccess
             return true;
         }
 
-        return $user && $user->id === $link->user_id;
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->id === $link->user_id) {
+            return true;
+        }
+
+        return $link->sharedWith($user);
     }
 
     public static function canUpdate($user, $link)

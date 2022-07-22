@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-07-20 19:34+0200\n"
-"PO-Revision-Date: 2022-07-20 19:35+0200\n"
+"POT-Creation-Date: 2022-07-22 12:19+0200\n"
+"PO-Revision-Date: 2022-07-22 12:19+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -45,16 +45,18 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:99 controllers/Collections.php:303
+#: controllers/Collections.php:99 controllers/Collections.php:306
 #: controllers/Feeds.php:116 controllers/Groups.php:90
 #: controllers/Links.php:216 controllers/News.php:77
 #: controllers/Passwords.php:88 controllers/Passwords.php:191
 #: controllers/Registrations.php:104 controllers/Sessions.php:85
 #: controllers/Support.php:70 controllers/collections/Filters.php:104
-#: controllers/collections/Followers.php:48
-#: controllers/collections/Followers.php:92
+#: controllers/collections/Followers.php:49
+#: controllers/collections/Followers.php:93
 #: controllers/collections/Groups.php:122
-#: controllers/collections/Images.php:113 controllers/links/Messages.php:69
+#: controllers/collections/Images.php:113
+#: controllers/collections/Shares.php:107
+#: controllers/collections/Shares.php:234 controllers/links/Messages.php:69
 #: controllers/links/Searches.php:106 controllers/my/Account.php:103
 #: controllers/my/Profile.php:76 controllers/my/Security.php:79
 #: controllers/my/Security.php:150 controllers/my/Subscription.php:74
@@ -64,16 +66,16 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:112 controllers/Collections.php:318
+#: controllers/Collections.php:112 controllers/Collections.php:321
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:378 controllers/Exportations.php:61
+#: controllers/Collections.php:381 controllers/Exportations.php:61
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:348 controllers/Links.php:395
 #: controllers/Messages.php:47 controllers/Sessions.php:202
-#: controllers/collections/Read.php:65 controllers/collections/Read.php:124
-#: controllers/collections/Read.php:183 controllers/importations/Opml.php:78
+#: controllers/collections/Read.php:67 controllers/collections/Read.php:128
+#: controllers/collections/Read.php:189 controllers/importations/Opml.php:78
 #: controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
@@ -103,7 +105,7 @@ msgstr "Le lien doit être associé à une collection."
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:66 models/User.php:574
+#: controllers/Passwords.php:66 models/User.php:594
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -164,6 +166,18 @@ msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
 #: controllers/collections/Images.php:146 controllers/my/Avatar.php:81
 msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
 msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
+
+#: controllers/collections/Shares.php:118
+msgid "You can’t share access with yourself."
+msgstr "Vous ne pouvez pas partager l’accès avec vous-même."
+
+#: controllers/collections/Shares.php:134
+msgid "This user doesn’t exist."
+msgstr "Cet‧te utilisateur‧ice n’existe pas."
+
+#: controllers/collections/Shares.php:150
+msgid "The collection is already shared with this user."
+msgstr "Cette collection est déjà partagée avec cet‧te utilisateur‧ice."
 
 #: controllers/importations/Opml.php:71
 msgid "You already have an ongoing OPML importation."
@@ -282,13 +296,21 @@ msgstr "Liens à ne jamais lire"
 msgid "News"
 msgstr "Journal"
 
-#: models/Collection.php:376 models/Group.php:87
+#: models/Collection.php:408 models/Group.php:87
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:378
+#: models/Collection.php:410
 msgid "The name must be less than 100 characters."
 msgstr "Le nom ne doit pas faire plus de 100 caractères."
+
+#: models/CollectionShare.php:110
+msgid "The type is required."
+msgstr "Le type est obligatoire."
+
+#: models/CollectionShare.php:112
+msgid "The type is invalid."
+msgstr "Le type est invalide."
 
 #: models/FollowedCollection.php:96
 msgid "The filter is required."
@@ -303,23 +325,23 @@ msgstr "Le filtre est invalide."
 msgid "The name must be less than %d characters."
 msgstr "Le nom ne doit pas faire plus de %d caractères."
 
-#: models/Link.php:310
+#: models/Link.php:323
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:312
+#: models/Link.php:325
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:331
+#: models/Link.php:344
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:336
+#: models/Link.php:349
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:340
+#: models/Link.php:353
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -334,31 +356,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than %d characters."
 msgstr "Le nom doit faire moins de %d caractères."
 
-#: models/User.php:536
+#: models/User.php:556
 msgid "The username must be less than 50 characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
 
-#: models/User.php:540
+#: models/User.php:560
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:570
+#: models/User.php:590
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:572
+#: models/User.php:592
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:576
+#: models/User.php:596
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:578
+#: models/User.php:598
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:580
+#: models/User.php:600
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -659,8 +681,8 @@ msgstr "Suivant"
 #: views/collections/groups/edit.phtml:95
 #: views/collections/images/edit.phtml:59 views/collections/new.phtml:42
 #: views/collections/new.phtml:68 views/collections/new.phtml:82
-#: views/feeds/_new.phtml:33 views/groups/edit.phtml:43
-#: views/importations/opml/show.phtml:103
+#: views/collections/shares/_index.phtml:46 views/feeds/_new.phtml:33
+#: views/groups/edit.phtml:43 views/importations/opml/show.phtml:103
 #: views/links/collections/index.phtml:28
 #: views/links/collections/index_adding.phtml:29
 #: views/links/collections/index_news.phtml:32 views/links/edit.phtml:43
@@ -709,7 +731,7 @@ msgstr "Retour à la page d’accueil"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.phtml:30 views/collections/show.phtml:159
+#: views/bookmarks/index.phtml:30 views/collections/show.phtml:160
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -901,6 +923,55 @@ msgstr "Quelles thématiques seront abordées ?"
 msgid "Create the collection"
 msgstr "Créer la collection"
 
+#: views/collections/shares/_index.phtml:4
+#, php-format
+msgid "Share “%s”"
+msgstr "Partager « %s »"
+
+#: views/collections/shares/_index.phtml:9
+msgid "This collection is public, anyone can access it."
+msgstr "Cette collection est publique, n’importe qui peut y accéder."
+
+#: views/collections/shares/_index.phtml:11
+msgid "This collection is private, you can share access to other users."
+msgstr ""
+"Cette collection est privée, vous pouvez en partager l’accès à d’autres "
+"utilisateur‧ices."
+
+#: views/collections/shares/_index.phtml:24
+msgid "Share read access with"
+msgstr "Partagez l’accès en lecture avec"
+
+#: views/collections/shares/_index.phtml:39 views/collections/show.phtml:95
+msgid "Share"
+msgstr "Partager"
+
+#: views/collections/shares/_index.phtml:52
+msgid ""
+"Sharing read access with other users gives them access to the whole "
+"collection, <strong>including their hidden links,</strong> but they can’t "
+"modify it."
+msgstr ""
+"Partager l’accès en lecture permet à d’autres utilisateur‧ices d’accéder à "
+"l’ensemble de la collection, <strong>liens masqués inclus,</strong> mais ils "
+"et elles ne pourront pas la modifier."
+
+#: views/collections/shares/_index.phtml:60
+msgid "Shared with:"
+msgstr "Partagée avec :"
+
+#: views/collections/shares/_index.phtml:82
+msgid "Revoke"
+msgstr "Révoquer"
+
+#: views/collections/shares/_index.phtml:99
+msgid "Copy"
+msgstr "Copier"
+
+#: views/collections/shares/index.phtml:3
+msgid "Share collection"
+msgstr "Partager la collection"
+
 #: views/collections/show.phtml:6 views/collections/show.phtml:14
 #: views/collections/show_public.phtml:15
 #: views/collections/show_public.phtml:28 views/profiles/show.phtml:20
@@ -908,34 +979,34 @@ msgstr "Créer la collection"
 msgid "Syndication feed of %s"
 msgstr "Flux de syndication de %s"
 
-#: views/collections/show.phtml:65
-#, php-format
-msgid "created by <a href=\"%s\">you</a>"
-msgstr "créée par <a href=\"%s\">vous</a>"
+#: views/collections/show.phtml:63 views/collections/show_public.phtml:94
+msgid "private"
+msgstr "privée"
 
-#: views/collections/show.phtml:78 views/collections/show_public.phtml:108
+#: views/collections/show.phtml:67
+#, php-format
+msgid "Created by <a href=\"%s\">you</a>"
+msgstr "Créée par <a href=\"%s\">vous</a>"
+
+#: views/collections/show.phtml:80 views/collections/show_public.phtml:114
 #: views/links/_link.phtml:120 views/links/_link.phtml:124
 #: views/links/show.phtml:86 views/links/show.phtml:90
 msgid "Actions"
 msgstr "Actions"
 
-#: views/collections/show.phtml:93 views/groups/_group.phtml:23
+#: views/collections/show.phtml:110 views/groups/_group.phtml:23
 #: views/groups/_group.phtml:37 views/links/_link.phtml:141
 #: views/links/searches/show.phtml:124 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/collections/show.phtml:106 views/collections/show_public.phtml:136
+#: views/collections/show.phtml:123 views/collections/show_public.phtml:142
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
-#: views/collections/show.phtml:119
+#: views/collections/show.phtml:136
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
-
-#: views/collections/show.phtml:133 views/collections/show_public.phtml:149
-msgid "Copy the link"
-msgstr "Copier le lien"
 
 #: views/collections/show_public.phtml:7
 #, php-format
@@ -956,29 +1027,33 @@ msgstr ""
 "Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
 "%s</a>"
 
-#: views/collections/show_public.phtml:92
+#: views/collections/show_public.phtml:98
 #, php-format
 msgid "Created by <a href=\"%s\">%s</a>"
 msgstr "Créée par <a href=\"%s\">%s</a>"
 
-#: views/collections/show_public.phtml:123
+#: views/collections/show_public.phtml:129
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show_public.phtml:161 views/news/index.phtml:52
+#: views/collections/show_public.phtml:155
+msgid "Copy the link"
+msgstr "Copier le lien"
+
+#: views/collections/show_public.phtml:167 views/news/index.phtml:52
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/collections/show_public.phtml:171 views/links/searches/show.phtml:209
+#: views/collections/show_public.phtml:177 views/links/searches/show.phtml:209
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:182
-#: views/collections/show_public.phtml:196 views/links/searches/show.phtml:218
+#: views/collections/show_public.phtml:188
+#: views/collections/show_public.phtml:202 views/links/searches/show.phtml:218
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:224
+#: views/collections/show_public.phtml:231
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -2171,6 +2246,10 @@ msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
 #: views/profiles/show.phtml:90
 msgid "Published collections"
 msgstr "Collections publiées"
+
+#: views/profiles/show.phtml:105
+msgid "Collections shared with you"
+msgstr "Collections partagées avec vous"
 
 #: views/read/index.phtml:24
 msgid "Find here all the links you’ve marked as read."
