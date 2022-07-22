@@ -31,11 +31,19 @@ class CollectionsAccess
 
     public static function canUpdate($user, $collection)
     {
-        return (
-            $user && $collection &&
-            $user->id === $collection->user_id &&
-            $collection->type === 'collection'
-        );
+        if (!$user || !$collection) {
+            return false;
+        }
+
+        if ($collection->type !== 'collection') {
+            return false;
+        }
+
+        if ($user->id === $collection->user_id) {
+            return true;
+        }
+
+        return $collection->sharedWith($user, 'write');
     }
 
     public static function canUpdateRead($user, $collection)
