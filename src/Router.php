@@ -106,6 +106,8 @@ class Router
         $router->addRoute('post', '/collections/new', 'Collections#create', 'create collection');
         $router->addRoute('get', '/collections/discover', 'collections/Discovery#show', 'discover collections');
         $router->addRoute('get', '/collections/:id', 'Collections#show', 'collection');
+        $router->addRoute('get', '/collections/:id/links/new', 'collections/Links#new', 'new collection link');
+        $router->addRoute('post', '/collections/:id/links/new', 'collections/Links#create', 'create collection link');
         $router->addRoute('get', '/collections/:id/feed.atom.xml', 'collections/Feeds#show', 'collection feed');
         $router->addRoute('get', '/collections/:id/feed', 'collections/Feeds#alias');
         $router->addRoute('get', '/collections/:id/edit', 'Collections#edit', 'edit collection');

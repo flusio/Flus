@@ -55,6 +55,19 @@ class CollectionsAccess
         );
     }
 
+    public static function canAddLinks($user, $collection)
+    {
+        if (!$user || !$collection) {
+            return false;
+        }
+
+        if ($user->id === $collection->user_id) {
+            return true;
+        }
+
+        return $collection->sharedWith($user, 'write');
+    }
+
     public static function canDelete($user, $collection)
     {
         return (
