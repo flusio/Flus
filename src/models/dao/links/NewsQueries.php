@@ -131,6 +131,8 @@ trait NewsQueries
                 )
             )
 
+            AND l.user_id != :user_id
+
             AND excluded_links.id IS NULL
 
             {$where_placeholder}

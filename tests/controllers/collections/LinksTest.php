@@ -6,8 +6,6 @@ use flusio\models;
 
 class LinksTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\FlashAsserts;
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \tests\MockHttpHelper;
