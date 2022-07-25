@@ -42,6 +42,14 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
+        $existing_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url_lookup' => utils\Belt::removeScheme($link->url),
+        ]);
+        if ($existing_link) {
+            $link = $existing_link;
+        }
+
         if (auth\LinksAccess::canUpdate($user, $link)) {
             $collection_ids = array_column($link->collections(), 'id');
         } else {

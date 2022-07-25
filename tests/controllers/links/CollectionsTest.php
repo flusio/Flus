@@ -116,6 +116,47 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'What do you think?');
     }
 
+    public function testIndexRendersExistingLink()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $url = $this->fake('url');
+        $link_id_not_owned = $this->create('link', [
+            'user_id' => $other_user_id,
+            'url' => $url,
+            'is_hidden' => 0,
+        ]);
+        $link_id_owned = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $collection_id_not_owned = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+        $collection_id_owned = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_not_owned,
+            'collection_id' => $collection_id_not_owned,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_owned,
+            'collection_id' => $collection_id_owned,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id_not_owned}/collections", [
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'links/collections/index.phtml');
+        $this->assertResponseContains($response, $link_id_owned);
+        $this->assertResponseNotContains($response, $link_id_not_owned);
+    }
+
     public function testIndexDoesNotCopyNotOwnedAndAccessibleLinks()
     {
         $user = $this->login();
