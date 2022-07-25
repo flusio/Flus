@@ -162,7 +162,7 @@
                 'display_via' => $link->via_type !== 'bookmarks',
                 'display_comments' => true,
                 'display_hidden' => $collection->is_public && $link->is_hidden,
-                'display_edit' => true,
+                'display_edit' => $link->user_id === $current_user->id,
                 'display_mark_as_read' => !$link->isReadBy($current_user),
                 'collections_mode' => 'managing',
             ]); ?>
