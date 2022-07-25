@@ -292,6 +292,26 @@ class User extends \Minz\Model
     }
 
     /**
+     * Return the collections shared to the user.
+     *
+     * @see \flusio\models\dao\Collection::listComputedSharedToUserId
+     *
+     * @param string[] $selected_computed_props
+     * @param array $options
+     *
+     * @return \flusio\models\Collection[]
+     */
+    public function sharedCollections($selected_computed_props = [], $options = [])
+    {
+        return Collection::daoToList(
+            'listComputedSharedToUserId',
+            $this->id,
+            $selected_computed_props,
+            $options
+        );
+    }
+
+    /**
      * Return the collections shared by the user to the given user.
      *
      * @see \flusio\models\dao\Collection::listComputedSharedByUserIdTo
@@ -309,6 +329,35 @@ class User extends \Minz\Model
             $to_user_id,
             $selected_computed_props
         );
+    }
+
+    /**
+     * Return whether the user can write to the given collections or not.
+     *
+     * @param string[] $collection_ids
+     *
+     * @return boolean
+     */
+    public function canWriteCollections($collection_ids)
+    {
+        if (empty($collection_ids)) {
+            return true;
+        }
+
+        $count_owned_collections = Collection::countBy([
+            'id' => $collection_ids,
+            'user_id' => $this->id,
+        ]);
+        $count_shared_collections = CollectionShare::countBy([
+            'collection_id' => $collection_ids,
+            'user_id' => $this->id,
+            'type' => 'write',
+        ]);
+
+        // This only works because an owned collection cannot be shared to
+        // oneself, otherwise the same id could be present in both counts.
+        $count_writable_collections = $count_owned_collections + $count_shared_collections;
+        return $count_writable_collections === count($collection_ids);
     }
 
     /**

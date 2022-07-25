@@ -56,39 +56,42 @@ class Collections
             $collection_ids = [];
         }
 
-        if ($mode === 'news') {
-            $collections = $user->collections();
-            utils\Sorter::localeSort($collections, 'name');
+        $collections = $user->collections();
+        utils\Sorter::localeSort($collections, 'name');
+        $shared_collections = $user->sharedCollections([], [
+            'access_type' => 'write',
+        ]);
+        utils\Sorter::localeSort($shared_collections, 'name');
 
+        if ($mode === 'news') {
             return Response::ok('links/collections/index_news.phtml', [
                 'link' => $link,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'shared_collections' => $shared_collections,
                 'comment' => '',
                 'from' => $from,
             ]);
         } elseif ($mode === 'adding') {
             $bookmarks = $user->bookmarks();
-            $collections = $user->collections();
-            utils\Sorter::localeSort($collections, 'name');
             $collections = array_merge([$bookmarks], $collections);
 
             return Response::ok('links/collections/index_adding.phtml', [
                 'link' => $link,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'shared_collections' => $shared_collections,
                 'from' => $from,
             ]);
         } else {
             $bookmarks = $user->bookmarks();
-            $collections = $user->collections();
-            utils\Sorter::localeSort($collections, 'name');
             $collections = array_merge([$bookmarks], $collections);
 
             return Response::ok('links/collections/index.phtml', [
                 'link' => $link,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'shared_collections' => $shared_collections,
                 'from' => $from,
             ]);
         }
@@ -134,7 +137,7 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
-        if (!models\Collection::daoCall('doesUserOwnCollections', $user->id, $new_collection_ids)) {
+        if (!$user->canWriteCollections($new_collection_ids)) {
             utils\Flash::set('error', _('One of the associated collection doesn’t exist.'));
             return Response::found($from);
         }

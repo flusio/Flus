@@ -335,6 +335,50 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_id, $variables['collection_ids']);
     }
 
+    public function testNewRendersCollectionSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'write',
+        ]);
+        $from = \Minz\Url::for('bookmarks');
+
+        $response = $this->appRun('get', '/links/new', [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $collection_id);
+    }
+
+    public function testNewDoesNotRenderCollectionSharedWithReadAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'read',
+        ]);
+        $from = \Minz\Url::for('bookmarks');
+
+        $response = $this->appRun('get', '/links/new', [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseNotContains($response, $collection_id);
+    }
+
     public function testNewRedirectsIfNotConnected()
     {
         $from = \Minz\Url::for('bookmarks');
@@ -499,6 +543,40 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_id_2, array_column($link->collections(), 'id'));
     }
 
+    public function testCreateWorksIfCollectionIsSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'write',
+        ]);
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $from = \Minz\Url::for('bookmarks');
+
+        $this->assertSame(0, models\Link::count());
+        $this->assertSame(0, models\LinkToCollection::count());
+
+        $response = $this->appRun('post', '/links/new', [
+            'csrf' => $user->csrf,
+            'url' => $url,
+            'collection_ids' => [$collection_id],
+            'from' => $from,
+        ]);
+
+        $this->assertSame(1, models\Link::count());
+        $this->assertSame(1, models\LinkToCollection::count());
+
+        $this->assertResponseCode($response, 302, $from);
+        $link = models\Link::take();
+        $this->assertContains($collection_id, array_column($link->collections(), 'id'));
+    }
+
     public function testCreateRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -615,6 +693,59 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The link must be associated to a collection.');
         $this->assertSame(0, models\Link::count());
+    }
+
+    public function testCreateFailsIfCollectionIsSharedWithReadAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'read',
+        ]);
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $from = \Minz\Url::for('bookmarks');
+
+        $response = $this->appRun('post', '/links/new', [
+            'csrf' => $user->csrf,
+            'url' => $url,
+            'collection_ids' => [$collection_id],
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
+        $this->assertSame(0, models\Link::count());
+        $this->assertSame(0, models\LinkToCollection::count());
+    }
+
+    public function testCreateFailsIfCollectionIsNotShared()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+        ]);
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $from = \Minz\Url::for('bookmarks');
+
+        $response = $this->appRun('post', '/links/new', [
+            'csrf' => $user->csrf,
+            'url' => $url,
+            'collection_ids' => [$collection_id],
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
+        $this->assertSame(0, models\Link::count());
+        $this->assertSame(0, models\LinkToCollection::count());
     }
 
     public function testEditRendersCorrectly()
