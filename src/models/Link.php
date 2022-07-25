@@ -251,8 +251,8 @@ class Link extends \Minz\Model
     }
 
     /**
-     * Return whether the link is shared with the given user (i.e. it is
-     * attached to a shared collection).
+     * Return whether the link is shared with the given user or not (i.e. it is
+     * attached to a shared collection or to an owned collection).
      *
      * @param \flusio\models\User $user
      *
@@ -260,7 +260,10 @@ class Link extends \Minz\Model
      */
     public function sharedWith($user)
     {
-        return CollectionShare::daoCall('existsForUserIdAndLinkId', $user->id, $this->id);
+        return (
+            Collection::daoCall('existsForUserIdAndLinkId', $user->id, $this->id) ||
+            CollectionShare::daoCall('existsForUserIdAndLinkId', $user->id, $this->id)
+        );
     }
 
     /**

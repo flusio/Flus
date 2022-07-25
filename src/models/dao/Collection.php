@@ -318,4 +318,33 @@ class Collection extends \Minz\DatabaseModel
         ]);
         return count($matching_rows) === count($collection_ids);
     }
+
+    /**
+     * Return whether the link is in a collection owned by the given user or not.
+     *
+     * @param string $user_id
+     * @param string $link_id
+     *
+     * @return boolean
+     */
+    public function existsForUserIdAndLinkId($user_id, $link_id)
+    {
+        $sql = <<<'SQL'
+            SELECT EXISTS (
+                SELECT 1
+                FROM collections c, links_to_collections lc
+
+                WHERE c.id = lc.collection_id
+                AND c.user_id = :user_id
+                AND lc.link_id = :link_id
+            )
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':link_id' => $link_id,
+        ]);
+        return $statement->fetchColumn();
+    }
 }

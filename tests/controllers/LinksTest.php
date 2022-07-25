@@ -178,6 +178,32 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
+    public function testShowRendersCorrectlyIfHiddenAndNotOwnedButInOwnedCollection()
+    {
+        $current_user = $this->login();
+        $title = $this->fake('words', 3, true);
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'fetched_at' => $this->fake('iso8601'),
+            'title' => $title,
+            'is_hidden' => 1,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $current_user->id,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $title);
+        $this->assertResponsePointer($response, 'links/show.phtml');
+    }
+
     public function testShowRendersCorrectlyIfHiddenButInSharedCollection()
     {
         $current_user = $this->login();
