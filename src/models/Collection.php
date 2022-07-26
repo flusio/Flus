@@ -324,14 +324,19 @@ class Collection extends \Minz\Model
     /**
      * Return the CollectionShares attached to the current collection
      *
+     * @see \flusio\models\dao\CollectionShare::listComputedByCollectionId
+     *
+     * @param array $options
+     *
      * @return \flusio\models\CollectionShare[]
      */
-    public function shares()
+    public function shares($options = [])
     {
         $collection_shares = CollectionShare::daoToList(
             'listComputedByCollectionId',
             $this->id,
-            ['username']
+            ['username'],
+            $options,
         );
         utils\Sorter::localeSort($collection_shares, 'username');
         return $collection_shares;

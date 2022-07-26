@@ -250,3 +250,35 @@ function no_news_sentence()
 
     return $sentence;
 }
+
+/**
+ * Return the list of publishers of a collection.
+ *
+ * @param \flusio\models\Collection $collection
+ * @param \flusio\models\User|null $current_user
+ *
+ * @return string
+ */
+function collection_publishers($collection, $current_user)
+{
+    $owner = $collection->owner();
+    $shares = $collection->shares(['access_type' => 'write']);
+
+    $publishers = array_map(function ($share) {
+        return $share->user();
+    }, $shares);
+    array_unshift($publishers, $owner);
+
+    $publishers_as_strings = array_map(function ($user) use ($current_user) {
+        $url_profile = url('profile', ['id' => $user->id]);
+        if ($current_user && $user->id === $current_user->id) {
+            $username = _('you');
+        } else {
+            $username = protect($user->username);
+        }
+
+        return "<a href=\"{$url_profile}\">{$username}</a>";
+    }, $publishers);
+
+    return implode(', ', $publishers_as_strings);
+}
