@@ -57,7 +57,8 @@ class Messages
         }
 
         $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
+        $can_comment = auth\LinksAccess::canComment($user, $link);
+        if (!$can_comment) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -65,6 +66,7 @@ class Messages
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
+                'can_comment' => $can_comment,
                 'comment' => $content,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
@@ -76,6 +78,7 @@ class Messages
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
+                'can_comment' => $can_comment,
                 'comment' => $content,
                 'errors' => $errors,
             ]);

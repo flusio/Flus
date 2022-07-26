@@ -254,15 +254,25 @@ class Link extends \Minz\Model
      * Return whether the link is shared with the given user or not (i.e. it is
      * attached to a shared collection or to an owned collection).
      *
+     * If $access_type is 'any' or 'read', the method returns true just if a
+     * collection_share exists for this collection and user.
+     *
+     * If $access_type is 'write', the method will check that the collection
+     * share has a 'write' type.
+     *
+     * $access_type has no effect if a link is in an owned collection (i.e. it
+     * implies the user has write effect over it).
+     *
      * @param \flusio\models\User $user
+     * @param string $access_type
      *
      * @return boolean
      */
-    public function sharedWith($user)
+    public function sharedWith($user, $access_type = 'any')
     {
         return (
             Collection::daoCall('existsForUserIdAndLinkId', $user->id, $this->id) ||
-            CollectionShare::daoCall('existsForUserIdAndLinkId', $user->id, $this->id)
+            CollectionShare::daoCall('existsForUserIdAndLinkId', $user->id, $this->id, $access_type)
         );
     }
 

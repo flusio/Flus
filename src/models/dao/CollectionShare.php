@@ -83,18 +83,31 @@ class CollectionShare extends \Minz\DatabaseModel
      *
      * @param string $user_id
      * @param string $link_id
+     * @param string $access_type
      *
      * @return boolean
      */
-    public function existsForUserIdAndLinkId($user_id, $link_id)
+    public function existsForUserIdAndLinkId($user_id, $link_id, $access_type = 'any')
     {
-        $sql = <<<'SQL'
-            SELECT TRUE
-            FROM collection_shares cs, links_to_collections lc
+        // we don't need the clause if access_type is 'any' (i.e. the type
+        // doesn't matter) or 'read' (i.e. read access is included in write
+        // access)
+        $access_type_clause = '';
+        if ($access_type === 'write') {
+            $access_type_clause = "AND cs.type = 'write'";
+        }
 
-            WHERE cs.collection_id = lc.collection_id
-            AND cs.user_id = :user_id
-            AND lc.link_id = :link_id
+        $sql = <<<SQL
+            SELECT EXISTS (
+                SELECT 1
+                FROM collection_shares cs, links_to_collections lc
+
+                WHERE cs.collection_id = lc.collection_id
+                AND cs.user_id = :user_id
+                AND lc.link_id = :link_id
+
+                {$access_type_clause}
+            )
         SQL;
 
         $statement = $this->prepare($sql);

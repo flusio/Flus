@@ -111,6 +111,7 @@ class Links
         $link = models\Link::find($link_id);
 
         $can_view = auth\LinksAccess::canView($user, $link);
+        $can_comment = auth\LinksAccess::canComment($user, $link);
         if (!$can_view && $user) {
             return Response::notFound('not_found.phtml');
         } elseif (!$can_view) {
@@ -122,6 +123,7 @@ class Links
         return Response::ok('links/show.phtml', [
             'link' => $link,
             'messages' => $link->messages(),
+            'can_comment' => $can_comment,
             'comment' => '',
         ]);
     }
