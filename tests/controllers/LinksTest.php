@@ -156,7 +156,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show_public.phtml');
+        $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfNotHiddenAndDoesNotOwnTheLink()
@@ -175,7 +175,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show_public.phtml');
+        $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfHiddenButInSharedCollection()
@@ -205,7 +205,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show_public.phtml');
+        $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
     public function testShowRedirectsIfHiddenAndNotConnected()

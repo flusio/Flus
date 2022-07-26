@@ -1,4 +1,15 @@
 <?php
+    $owner = $link->owner();
+    $open_graph = [
+        'title' => _f('Shared on %s: %s', $brand, $link->title),
+        'description' => _f('A link shared by %s on %s.', $owner->username, $brand),
+        'locale' => $owner->locale,
+        'url' => url_full('link', ['id' => $link->id]),
+    ];
+    if ($link->image_filename) {
+        $open_graph['image'] = url_media_full('cards', $link->image_filename);
+    }
+
     $this->layout('base.phtml', [
         'title' => $link->title,
         'canonical' => url_full('link', ['id' => $link->id]),
@@ -9,11 +20,12 @@
                 'title' => _f('Syndication feed of comments on %s', $link->title),
             ],
         ],
+        'open_graph' => $open_graph,
         'has_errors' => $error || $errors,
     ]);
 ?>
 
-<div class="section section--longbottom">
+<div class="section">
     <?php if ($link->image_filename): ?>
         <img
             class="section__image"
@@ -78,39 +90,41 @@
                             <?= format_message_date($message->created_at) ?>
                         </time>
 
-                        <details
-                            class="popup"
-                            data-controller="popup"
-                            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                        >
-                            <summary class="popup__opener" title="<?= _('Actions') ?>">
-                                <span class="button button--ghost button--smaller">
-                                    <?= icon('menu') ?>
-                                    <span class="sr-only">
-                                        <?= _('Actions') ?>
+                        <?php if ($current_user && $user->id === $current_user->id): ?>
+                            <details
+                                class="popup"
+                                data-controller="popup"
+                                data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                            >
+                                <summary class="popup__opener" title="<?= _('Actions') ?>">
+                                    <span class="button button--ghost button--smaller">
+                                        <?= icon('menu') ?>
+                                        <span class="sr-only">
+                                            <?= _('Actions') ?>
+                                        </span>
                                     </span>
-                                </span>
-                            </summary>
+                                </summary>
 
-                            <nav class="popup__container popup__container--left" role="menu">
-                                <form
-                                    method="post"
-                                    action="<?= url('delete message', ['id' => $message->id]) ?>"
-                                    data-controller="confirmation"
-                                    data-action="confirmation#confirm"
-                                    data-confirmation-message-value="<?= _('Are you sure that you want to delete this message?') ?>"
-                                    role="menuitem"
-                                >
-                                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                                    <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />
+                                <nav class="popup__container popup__container--left" role="menu">
+                                    <form
+                                        method="post"
+                                        action="<?= url('delete message', ['id' => $message->id]) ?>"
+                                        data-controller="confirmation"
+                                        data-action="confirmation#confirm"
+                                        data-confirmation-message-value="<?= _('Are you sure that you want to delete this message?') ?>"
+                                        role="menuitem"
+                                    >
+                                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                        <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />
 
-                                    <button type="submit" class="popup__item popup__item--button">
-                                        <?= icon('trash') ?>
-                                        <?= _('Delete') ?>
-                                    </button>
-                                </form>
-                            </nav>
-                        </details>
+                                        <button type="submit" class="popup__item popup__item--button">
+                                            <?= icon('trash') ?>
+                                            <?= _('Delete') ?>
+                                        </button>
+                                    </form>
+                                </nav>
+                            </details>
+                        <?php endif; ?>
                     </div>
                 </header>
 
@@ -120,50 +134,62 @@
             </article>
         <?php endforeach; ?>
 
-        <form method="post" action="<?= url('links/create message', ['link_id' => $link->id]) ?>">
-            <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
-
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-            <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
-                <label for="content">
-                    <?php if (count($messages) === 0): ?>
-                        <?= _('What do you think?') ?>
-                    <?php else: ?>
-                        <?= _('Anything else to add?') ?>
-                    <?php endif; ?>
-                </label>
-
-                <textarea
-                    id="content"
-                    name="content"
-                    required
-                    data-controller="text-editor"
-                    data-action="text-editor#refresh"
-                    aria-describedby="content-desc"
-                ><?= $comment ?></textarea>
-
-                <div id="content-desc">
-                    <?php if (isset($errors['content'])): ?>
-                        <p class="form-group__error">
-                            <span class="sr-only"><?= _('Error') ?></span>
-                            <?= $errors['content'] ?>
-                        </p>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <div class="form__actions">
-                <button type="submit" class="button--primary">
-                    <?= _('Comment') ?>
-                </button>
-            </div>
-        </form>
-
-        <?php if ($link->is_hidden): ?>
-            <p class="paragraph--centered paragraph--secondary">
-                <?= _('This link being hidden, the comments are private.') ?>
+        <?php if (!$messages): ?>
+            <p class="paragraph--placeholder">
+                <?php if ($current_user && $owner->id === $current_user->id): ?>
+                    <?= _('You didn’t comment on this link.') ?>
+                <?php else: ?>
+                    <?= _f('%s didn’t comment on this link.', protect($owner->username)) ?>
+                <?php endif; ?>
             </p>
+        <?php endif; ?>
+
+        <?php if ($current_user && $owner->id === $current_user->id): ?>
+            <form method="post" action="<?= url('links/create message', ['link_id' => $link->id]) ?>">
+                <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+
+                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+                <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
+                    <label for="content">
+                        <?php if (count($messages) === 0): ?>
+                            <?= _('What do you think?') ?>
+                        <?php else: ?>
+                            <?= _('Anything else to add?') ?>
+                        <?php endif; ?>
+                    </label>
+
+                    <textarea
+                        id="content"
+                        name="content"
+                        required
+                        data-controller="text-editor"
+                        data-action="text-editor#refresh"
+                        aria-describedby="content-desc"
+                    ><?= $comment ?></textarea>
+
+                    <div id="content-desc">
+                        <?php if (isset($errors['content'])): ?>
+                            <p class="form-group__error">
+                                <span class="sr-only"><?= _('Error') ?></span>
+                                <?= $errors['content'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="form__actions">
+                    <button type="submit" class="button--primary">
+                        <?= _('Comment') ?>
+                    </button>
+                </div>
+            </form>
+
+            <?php if ($link->is_hidden): ?>
+                <p class="paragraph--centered paragraph--secondary">
+                    <?= _('This link being hidden, the comments are private.') ?>
+                </p>
+            <?php endif; ?>
         <?php endif; ?>
     </section>
 </div>

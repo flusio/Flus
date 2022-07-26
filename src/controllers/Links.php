@@ -105,7 +105,6 @@ class Links
         $link = models\Link::find($link_id);
 
         $can_view = auth\LinksAccess::canView($user, $link);
-        $can_update = auth\LinksAccess::canUpdate($user, $link);
         if (!$can_view && $user) {
             return Response::notFound('not_found.phtml');
         } elseif (!$can_view) {
@@ -114,22 +113,11 @@ class Links
             ]);
         }
 
-        if ($can_update) {
-            $collections = $link->collections();
-            utils\Sorter::localeSort($collections, 'name');
-
-            return Response::ok('links/show.phtml', [
-                'link' => $link,
-                'collections' => $collections,
-                'messages' => $link->messages(),
-                'comment' => '',
-            ]);
-        } else {
-            return Response::ok('links/show_public.phtml', [
-                'link' => $link,
-                'messages' => $link->messages(),
-            ]);
-        }
+        return Response::ok('links/show.phtml', [
+            'link' => $link,
+            'messages' => $link->messages(),
+            'comment' => '',
+        ]);
     }
 
     /**
