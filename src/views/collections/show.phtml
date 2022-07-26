@@ -104,18 +104,20 @@
                         <?= _('Edit') ?>
                     </button>
 
-                    <button
-                        class="popup__item popup__item--button"
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                        role="menuitem"
-                    >
-                        <?= icon('directory') ?>
-                        <?= _('Put in a group') ?>
-                    </button>
+                    <?php if ($collection->user_id === $current_user->id): ?>
+                        <button
+                            class="popup__item popup__item--button"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href-value="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                            role="menuitem"
+                        >
+                            <?= icon('directory') ?>
+                            <?= _('Put in a group') ?>
+                        </button>
+                    <?php endif; ?>
 
                     <button
                         class="popup__item popup__item--button"

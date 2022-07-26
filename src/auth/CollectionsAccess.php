@@ -46,6 +46,15 @@ class CollectionsAccess
         return $collection->sharedWith($user, 'write');
     }
 
+    public static function canUpdateGroup($user, $collection)
+    {
+        return (
+            $user && $collection &&
+            $collection->type === 'collection' &&
+            $user->id === $collection->user_id
+        );
+    }
+
     public static function canUpdateRead($user, $collection)
     {
         return (

@@ -38,7 +38,7 @@ class Groups
             return Response::notFound('not_found.phtml');
         }
 
-        $can_update = auth\CollectionsAccess::canUpdate($user, $collection);
+        $can_update = auth\CollectionsAccess::canUpdateGroup($user, $collection);
         $is_following = $user->isFollowing($collection->id);
         if (!$can_update && !$is_following) {
             return Response::notFound('not_found.phtml');
@@ -101,7 +101,7 @@ class Groups
             return Response::notFound('not_found.phtml');
         }
 
-        $can_update = auth\CollectionsAccess::canUpdate($user, $collection);
+        $can_update = auth\CollectionsAccess::canUpdateGroup($user, $collection);
         $is_following = $user->isFollowing($collection->id);
         if (!$can_update && !$is_following) {
             return Response::notFound('not_found.phtml');
