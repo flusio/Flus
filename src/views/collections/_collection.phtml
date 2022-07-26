@@ -1,41 +1,55 @@
+<?php
+    $display_by = $display_by ?? true;
+    $display_visibility = $display_visibility ?? true;
+    $display_number_links = $display_number_links ?? true;
+?>
+
 <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>');">
     <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
         <div class="card__title">
             <?= protect($collection->name) ?>
         </div>
 
-        <?php if ($display_mode === 'owned'): ?>
-            <p class="card__text">
-                <?php if ($collection->number_links === 0): ?>
-                    <?= _('no links') ?>
-                <?php else: ?>
-                    <?= _nf('%s link', '%s links', $collection->number_links, format_number($collection->number_links)) ?>
-                <?php endif; ?>
-
-                <?php if ($collection->is_public): ?>
-                    <span class="sticker sticker--right">
-                        <?= _('public') ?>
-                    </span>
-                <?php endif; ?>
-            </p>
-        <?php else: ?>
-            <p class="card__text card__text--oneline">
-                <?php
+        <p class="card__text card__text--oneline">
+            <?php
+                $by = '';
+                if ($display_by):
                     if ($collection->type === 'feed'):
-                        $via = _f('Feed %s', protect($collection->feedWebsite()));
+                        $by = _f('Feed %s', protect($collection->feedWebsite()));
                     else:
-                        $via = _f('By %s', protect($collection->owner()->username));
+                        $by = _f('By %s', protect($collection->owner()->username));
                     endif;
 
+                    $by = "<span class=\"card__ellipsis\">{$by}</span>";
+                endif;
+
+                $number_links = '';
+                if ($display_number_links):
                     if ($collection->number_links === 0):
                         $number_links = _('no links');
                     else:
                         $number_links = _nf('%s link', '%s links', $collection->number_links, format_number($collection->number_links));
                     endif;
-                ?>
 
-                <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
-            </p>
-        <?php endif; ?>
+                    $number_links = "<span class=\"card__text--extend\">{$number_links}</span>";
+                endif;
+
+                echo $by;
+                if ($by && $number_links):
+                    echo '&nbsp;·&nbsp;';
+                endif;
+                echo $number_links;
+            ?>
+
+            <?php if ($display_visibility): ?>
+                <span class="sticker">
+                    <?php if ($collection->is_public): ?>
+                        <?= _('public') ?>
+                    <?php else: ?>
+                        <?= _('private') ?>
+                    <?php endif; ?>
+                </span>
+            <?php endif; ?>
+        </p>
     </a>
 </div>

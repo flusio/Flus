@@ -43,8 +43,10 @@
         <div class="cards">
             <?php foreach ($collections as $collection): ?>
                 <?= $this->include('collections/_collection.phtml', [
-                    'display_mode' => $display_mode,
                     'collection' => $collection,
+                    'display_by' => $display_by,
+                    'display_number_links' => $display_number_links,
+                    'display_visibility' => $display_visibility && $collection->is_public,
                 ]) ?>
             <?php endforeach; ?>
 

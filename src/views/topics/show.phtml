@@ -43,8 +43,10 @@
         <div class="cards cards--centered">
             <?php foreach ($collections as $collection): ?>
                 <?= $this->include('collections/_collection.phtml', [
-                    'display_mode' => 'public',
                     'collection' => $collection,
+                    'display_by' => true,
+                    'display_number_links' => true,
+                    'display_visibility' => false,
                 ]) ?>
             <?php endforeach; ?>
         </div>

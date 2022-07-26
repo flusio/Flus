@@ -93,8 +93,10 @@
         <div class="cards">
             <?php foreach ($collections as $collection): ?>
                 <?= $this->include('collections/_collection.phtml', [
-                    'display_mode' => 'public',
                     'collection' => $collection,
+                    'display_by' => false,
+                    'display_number_links' => true,
+                    'display_visibility' => false,
                 ]) ?>
             <?php endforeach; ?>
         </div>
@@ -108,8 +110,10 @@
         <div class="cards">
             <?php foreach ($shared_collections as $collection): ?>
                 <?= $this->include('collections/_collection.phtml', [
-                    'display_mode' => 'public',
                     'collection' => $collection,
+                    'display_by' => false,
+                    'display_number_links' => true,
+                    'display_visibility' => false,
                 ]) ?>
             <?php endforeach; ?>
         </div>

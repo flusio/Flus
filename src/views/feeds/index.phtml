@@ -45,8 +45,10 @@
 
             <?php foreach ($collections as $collection): ?>
                 <?= $this->include('collections/_collection.phtml', [
-                    'display_mode' => 'public',
                     'collection' => $collection,
+                    'display_by' => true,
+                    'display_number_links' => true,
+                    'display_visibility' => false,
                 ]) ?>
             <?php endforeach; ?>
 
@@ -59,9 +61,11 @@
     <?php foreach ($groups as $group): ?>
         <?php if (isset($groups_to_collections[$group->id])): ?>
             <?= $this->include('groups/_group.phtml', [
-                'display_mode' => 'public',
                 'group' => $group,
                 'collections' => $groups_to_collections[$group->id],
+                'display_by' => true,
+                'display_number_links' => true,
+                'display_visibility' => false,
                 'from' => url('feeds'),
             ]) ?>
         <?php endif; ?>

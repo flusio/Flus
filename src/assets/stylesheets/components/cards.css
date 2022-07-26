@@ -242,7 +242,13 @@
 .card__text--oneline {
     display: flex;
 
+    align-items: baseline;
+
     white-space: nowrap;
+}
+
+.card__text--extend {
+    flex: 1;
 }
 
 .card__ellipsis {

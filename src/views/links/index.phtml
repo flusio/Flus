@@ -70,8 +70,10 @@
             <?php $collections = $groups_to_collections[null] ?? []; ?>
             <?php foreach ($collections as $collection): ?>
                 <?= $this->include('collections/_collection.phtml', [
-                    'display_mode' => 'owned',
                     'collection' => $collection,
+                    'display_by' => false,
+                    'display_number_links' => true,
+                    'display_visibility' => $collection->is_public,
                 ]) ?>
             <?php endforeach; ?>
 
@@ -84,9 +86,11 @@
     <?php foreach ($groups as $group): ?>
         <?php if (isset($groups_to_collections[$group->id])): ?>
             <?= $this->include('groups/_group.phtml', [
-                'display_mode' => 'owned',
                 'group' => $group,
                 'collections' => $groups_to_collections[$group->id],
+                'display_by' => false,
+                'display_number_links' => true,
+                'display_visibility' => true,
                 'from' => url('links'),
             ]) ?>
         <?php endif; ?>
