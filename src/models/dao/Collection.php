@@ -392,4 +392,44 @@ class Collection extends \Minz\DatabaseModel
         ]);
         return $statement->fetchColumn();
     }
+
+    /**
+     * List collections which are writable by the given user, containing a link
+     * not owned by the given user and with the given URL.
+     *
+     * @param string $user_id
+     * @param string $url_lookup
+     *
+     * @return array
+     */
+    public function listWritableContainingNotOwnedLinkWithUrl($user_id, $url_lookup)
+    {
+        $sql = <<<'SQL'
+            SELECT DISTINCT c.*
+            FROM links_to_collections lc, links l, collections c
+
+            LEFT JOIN collection_shares cs
+            ON cs.user_id = :user_id
+            AND cs.collection_id = c.id
+            AND cs.type = 'write'
+
+            WHERE lc.collection_id = c.id
+            AND lc.link_id = l.id
+
+            AND l.user_id != :user_id
+            AND l.url_lookup = :url_lookup
+
+            AND (
+                c.user_id = :user_id OR
+                cs.id IS NOT NULL
+            )
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':url_lookup' => $url_lookup,
+        ]);
+        return $statement->fetchAll();
+    }
 }

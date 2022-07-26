@@ -62,6 +62,12 @@ class Collections
             'access_type' => 'write',
         ]);
         utils\Sorter::localeSort($shared_collections, 'name');
+        $collections_by_others = models\Collection::daoToList(
+            'listWritableContainingNotOwnedLinkWithUrl',
+            $user->id,
+            $link->url_lookup,
+        );
+        utils\Sorter::localeSort($collections_by_others, 'name');
 
         if ($mode === 'news') {
             return Response::ok('links/collections/index_news.phtml', [
@@ -69,6 +75,7 @@ class Collections
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'shared_collections' => $shared_collections,
+                'collections_by_others' => $collections_by_others,
                 'comment' => '',
                 'from' => $from,
             ]);
@@ -81,6 +88,7 @@ class Collections
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'shared_collections' => $shared_collections,
+                'collections_by_others' => $collections_by_others,
                 'from' => $from,
             ]);
         } else {
@@ -92,6 +100,7 @@ class Collections
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
                 'shared_collections' => $shared_collections,
+                'collections_by_others' => $collections_by_others,
                 'from' => $from,
             ]);
         }

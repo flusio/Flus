@@ -39,6 +39,13 @@
             ]) ?>
         </fieldset>
 
+        <?php if ($collections_by_others): ?>
+            <?= $this->include('collections/_collections_by_others.phtml', [
+                'collections' => $collections_by_others,
+                'link' => $link,
+            ]) ?>
+        <?php endif; ?>
+
         <div class="form-group">
             <input
                 type="checkbox"

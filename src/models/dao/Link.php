@@ -362,6 +362,43 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Find a link by its URL and collection id but not owned by the given user.
+     *
+     * @param string $user_id
+     * @param string $collection_id
+     * @param string $url_lookup
+     *
+     * @return array
+     */
+    public function findNotOwnedByCollectionIdAndUrl($user_id, $collection_id, $url_lookup)
+    {
+        $sql = <<<SQL
+            SELECT l.*
+            FROM links l, links_to_collections lc
+
+            WHERE lc.link_id = l.id
+            AND lc.collection_id = :collection_id
+
+            AND l.url_lookup = :url_lookup
+            AND l.user_id != :user_id
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':collection_id' => $collection_id,
+            ':url_lookup' => $url_lookup,
+        ]);
+        $result = $statement->fetch();
+
+        if ($result) {
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Return an estimated number of links.
      *
      * This method have better performance than basic count but is less

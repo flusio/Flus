@@ -12,6 +12,7 @@
 
 .collections-selector__item {
     display: flex;
+    min-height: 6rem;
     margin-bottom: var(--space-small);
     padding: var(--space-smaller) var(--space-small);
 

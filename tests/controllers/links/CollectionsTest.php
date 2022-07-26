@@ -157,6 +157,76 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_id_not_owned);
     }
 
+    public function testIndexRendersIfUrlAddedByAnotherUserInCollectionOwned()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $other_link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'url' => $url,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $other_link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('collection_share', [
+            'user_id' => $other_user_id,
+            'collection_id' => $collection_id,
+            'type' => 'write',
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/collections", [
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $other_link_id);
+    }
+
+    public function testIndexRendersIfUrlAddedByOwnerInCollectionWithWriteAccess()
+    {
+        $user = $this->login();
+        $owner_user_id = $this->create('user');
+        $url = $this->fake('url');
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $owner_user_id,
+            'type' => 'collection',
+        ]);
+        $owner_link_id = $this->create('link', [
+            'user_id' => $owner_user_id,
+            'url' => $url,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $owner_link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('collection_share', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+            'type' => 'write',
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id}/collections", [
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $owner_link_id);
+    }
+
     public function testIndexRendersCollectionSharedWithWriteAccess()
     {
         $user = $this->login();

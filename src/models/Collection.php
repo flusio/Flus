@@ -265,6 +265,25 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return a link from this collection with the given URL and not owned by
+     * the given user.
+     *
+     * @param string $user_id
+     * @param string $url_lookup
+     *
+     * @return \flusio\models\Link|null
+     */
+    public function linkNotOwnedByUrl($user_id, $url_lookup)
+    {
+        return Link::daoToModel(
+            'findNotOwnedByCollectionIdAndUrl',
+            $user_id,
+            $this->id,
+            $url_lookup,
+        );
+    }
+
+    /**
      * Return the group if any for a given user.
      *
      * If the collection is owned by the user, the group is the one directly
