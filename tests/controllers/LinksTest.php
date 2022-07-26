@@ -82,6 +82,50 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $title_2);
     }
 
+    public function testIndexRendersCollectionsSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_name = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'name' => $collection_name,
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+        $this->create('collection_share', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+            'type' => 'write',
+        ]);
+
+        $response = $this->appRun('get', '/links');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $collection_name);
+    }
+
+    public function testIndexDoesNotRenderCollectionsSharedWithReadAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_name = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'name' => $collection_name,
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+        $this->create('collection_share', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+            'type' => 'read',
+        ]);
+
+        $response = $this->appRun('get', '/links');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseNotContains($response, $collection_name);
+    }
+
     public function testIndexRedirectsToLoginIfNotConnected()
     {
         $response = $this->appRun('get', '/links');

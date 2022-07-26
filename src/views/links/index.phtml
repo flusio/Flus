@@ -96,6 +96,37 @@
         <?php endif; ?>
     <?php endforeach; ?>
 
+    <?php if ($shared_collections): ?>
+        <section class="group">
+            <header class="group__header">
+                <div class="group__icon">
+                    <?= icon('share') ?>
+                </div>
+
+                <h2 class="group__title">
+                    <?= _('Shared with me') ?>
+                </h2>
+
+                <div class="group__separator"></div>
+            </header>
+
+            <div class="cards">
+                <?php foreach ($shared_collections as $collection): ?>
+                    <?= $this->include('collections/_collection.phtml', [
+                        'collection' => $collection,
+                        'display_by' => true,
+                        'display_number_links' => true,
+                        'display_visibility' => $collection->is_public,
+                    ]) ?>
+                <?php endforeach; ?>
+
+                <?php for ($i = 0; $i < (3 - (count($shared_collections) % 3)); $i++): ?>
+                    <div class="card card--shadow no-mobile"></div>
+                <?php endfor; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
     <img
         class="illustration illustration--centered"
         alt=""

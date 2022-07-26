@@ -77,11 +77,17 @@ class Links
             utils\Sorter::localeSort($collections, 'name');
             $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
+            $shared_collections = $user->sharedCollections(['number_links'], [
+                'access_type' => 'write',
+            ]);
+            utils\Sorter::localeSort($shared_collections, 'name');
+
             return Response::ok('links/index.phtml', [
                 'bookmarks' => $bookmarks,
                 'read_list' => $read_list,
                 'groups' => $groups,
                 'groups_to_collections' => $groups_to_collections,
+                'shared_collections' => $shared_collections,
                 'query' => $query,
             ]);
         }
