@@ -1,11 +1,43 @@
 # Changelog of flusio
 
-## 2022-xx-xx - unreleased
+## 2022-07-27 - v0.47
 
 ### Migration notes
 
 A new `FEEDS_LINKS_KEEP_PERIOD` environment variable can be set to purge old
-links from feeds. This allows to reduce the number of links in database.
+links from feeds. This allows to reduce the number of links in database. You’ll
+have to set the variable in your `.env` file and restart your jobs workers.
+
+### New
+
+- Allow to share read and write access to collections ([2c20d924](https://github.com/flusio/flusio/commit/2c20d924) and [2516bb56](https://github.com/flusio/flusio/commit/2516bb56))
+- Allow to purge old feeds links ([889754cd](https://github.com/flusio/flusio/commit/889754cd))
+
+### Improvements
+
+- Improve performance when getting news from followed collections ([f706d416](https://github.com/flusio/flusio/commit/f706d416))
+- Improve performance when listing links ([e65d0237](https://github.com/flusio/flusio/commit/e65d0237))
+- Allow to unset all collections of a link ([849bfa09](https://github.com/flusio/flusio/commit/849bfa09))
+- Move the link visibility checkbox to the collections modal ([233acd0c](https://github.com/flusio/flusio/commit/233acd0c))
+- Format numbers accordingly to the current locale ([9ad383b9](https://github.com/flusio/flusio/commit/9ad383b9))
+- Add style to blockquotes and code in messages ([49b77190](https://github.com/flusio/flusio/commit/49b77190))
+- Remove the trailing space in visibility badge ([0c3dbc01](https://github.com/flusio/flusio/commit/0c3dbc01))
+
+### Bug fixes
+
+- Handle errors in `Application::run` correctly ([a6aaa0c2](https://github.com/flusio/flusio/commit/a6aaa0c2))
+- Fix changing collections when passing by a not owned link ([93b817ec](https://github.com/flusio/flusio/commit/93b817ec))
+- Declare `links.search_index` as a normal property ([7532d61b](https://github.com/flusio/flusio/commit/7532d61b))
+- Handle bulk methods with no values ([12d22824](https://github.com/flusio/flusio/commit/12d22824))
+- Fix Node Dockerfile ([1af3d480](https://github.com/flusio/flusio/commit/1af3d480))
+
+### Misc
+
+- Add a command to clean the media files ([fec39a8c](https://github.com/flusio/flusio/commit/fec39a8c))
+- Add a `.gitattributes` file ([2f1621ee](https://github.com/flusio/flusio/commit/2f1621ee))
+- Fix documentation of the `Sorter` class ([fe387dea](https://github.com/flusio/flusio/commit/fe387dea))
+- Reorganize the `env.sample` file ([0d08ef1d](https://github.com/flusio/flusio/commit/0d08ef1d))
+- Fix link to Docker Engine installation guide ([26a4c007](https://github.com/flusio/flusio/commit/26a4c007))
 
 ## 2022-05-31 - v0.46
 
