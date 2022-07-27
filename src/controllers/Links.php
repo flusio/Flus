@@ -77,11 +77,17 @@ class Links
             utils\Sorter::localeSort($collections, 'name');
             $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
+            $shared_collections = $user->sharedCollections(['number_links'], [
+                'access_type' => 'write',
+            ]);
+            utils\Sorter::localeSort($shared_collections, 'name');
+
             return Response::ok('links/index.phtml', [
                 'bookmarks' => $bookmarks,
                 'read_list' => $read_list,
                 'groups' => $groups,
                 'groups_to_collections' => $groups_to_collections,
+                'shared_collections' => $shared_collections,
                 'query' => $query,
             ]);
         }
@@ -105,6 +111,7 @@ class Links
         $link = models\Link::find($link_id);
 
         $can_view = auth\LinksAccess::canView($user, $link);
+        $can_comment = auth\LinksAccess::canComment($user, $link);
         if (!$can_view && $user) {
             return Response::notFound('not_found.phtml');
         } elseif (!$can_view) {
@@ -116,6 +123,7 @@ class Links
         return Response::ok('links/show.phtml', [
             'link' => $link,
             'messages' => $link->messages(),
+            'can_comment' => $can_comment,
             'comment' => '',
         ]);
     }
@@ -144,6 +152,10 @@ class Links
         $collections = $user->collections();
         utils\Sorter::localeSort($collections, 'name');
         $collections = array_merge([$bookmarks], $collections);
+        $shared_collections = $user->sharedCollections([], [
+            'access_type' => 'write',
+        ]);
+        utils\Sorter::localeSort($shared_collections, 'name');
 
         $default_collection_id = $request->param('collection_id');
         if ($default_collection_id) {
@@ -157,6 +169,7 @@ class Links
             'is_hidden' => false,
             'collection_ids' => $default_collection_ids,
             'collections' => $collections,
+            'shared_collections' => $shared_collections,
             'from' => $from,
         ]);
     }
@@ -193,6 +206,10 @@ class Links
         $collections = $user->collections();
         utils\Sorter::localeSort($collections, 'name');
         $collections = array_merge([$bookmarks], $collections);
+        $shared_collections = $user->sharedCollections([], [
+            'access_type' => 'write',
+        ]);
+        utils\Sorter::localeSort($shared_collections, 'name');
 
         if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('links/new.phtml', [
@@ -200,6 +217,7 @@ class Links
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'shared_collections' => $shared_collections,
                 'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
@@ -213,6 +231,7 @@ class Links
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'shared_collections' => $shared_collections,
                 'from' => $from,
                 'errors' => $errors,
             ]);
@@ -224,6 +243,7 @@ class Links
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'shared_collections' => $shared_collections,
                 'from' => $from,
                 'errors' => [
                     'collection_ids' => _('The link must be associated to a collection.'),
@@ -231,12 +251,13 @@ class Links
             ]);
         }
 
-        if (!models\Collection::daoCall('doesUserOwnCollections', $user->id, $collection_ids)) {
+        if (!$user->canWriteCollections($collection_ids)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
                 'collections' => $collections,
+                'shared_collections' => $shared_collections,
                 'from' => $from,
                 'errors' => [
                     'collection_ids' => _('One of the associated collection doesn’t exist.'),

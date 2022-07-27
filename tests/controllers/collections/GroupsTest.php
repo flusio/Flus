@@ -165,6 +165,28 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
+    public function testEditFailsIfCollectionIsSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('collection_share', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+            'type' => 'write',
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/group", [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
     public function testUpdateRedirectsToFrom()
     {
         $user = $this->login();
@@ -347,6 +369,33 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $other_user_id,
             'is_public' => 1,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'name' => $group_name,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertSame(0, models\Group::count());
+    }
+
+    public function testUpdateFailsIfCollectionIsSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $group_name = $this->fake('text', 50);
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $other_user_id,
+            'group_id' => null,
+        ]);
+        $this->create('collection_share', [
+            'user_id' => $user->id,
+            'collection_id' => $collection_id,
+            'type' => 'write',
         ]);
         $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 

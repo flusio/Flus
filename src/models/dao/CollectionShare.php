@@ -26,11 +26,20 @@ class CollectionShare extends \Minz\DatabaseModel
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
+     * @param array $options
+     *     Custom options to filter collections. Possible options are:
+     *     - access_type (string, either 'any' [default], 'read' or 'write'),
+     *       indicates with which access the collections must have been shared.
      *
      * @return array
      */
-    public function listComputedByCollectionId($collection_id, $selected_computed_props)
+    public function listComputedByCollectionId($collection_id, $selected_computed_props, $options = [])
     {
+        $default_options = [
+            'access_type' => 'any',
+        ];
+        $options = array_merge($default_options, $options);
+
         $parameters = [
             ':collection_id' => $collection_id,
         ];
@@ -42,6 +51,14 @@ class CollectionShare extends \Minz\DatabaseModel
             $join_clause = 'INNER JOIN users u ON u.id = cs.user_id';
         }
 
+        // we don't need the clause if access_type is 'any' (i.e. the type
+        // doesn't matter) or 'read' (i.e. read access is included in write
+        // access)
+        $access_type_clause = '';
+        if ($options['access_type'] === 'write') {
+            $access_type_clause = "AND cs.type = 'write'";
+        }
+
         $sql = <<<SQL
             SELECT
                 cs.*
@@ -49,6 +66,8 @@ class CollectionShare extends \Minz\DatabaseModel
             FROM collection_shares cs
 
             {$join_clause}
+
+            {$access_type_clause}
 
             WHERE cs.collection_id = :collection_id
         SQL;
@@ -64,18 +83,31 @@ class CollectionShare extends \Minz\DatabaseModel
      *
      * @param string $user_id
      * @param string $link_id
+     * @param string $access_type
      *
      * @return boolean
      */
-    public function existsForUserIdAndLinkId($user_id, $link_id)
+    public function existsForUserIdAndLinkId($user_id, $link_id, $access_type = 'any')
     {
-        $sql = <<<'SQL'
-            SELECT TRUE
-            FROM collection_shares cs, links_to_collections lc
+        // we don't need the clause if access_type is 'any' (i.e. the type
+        // doesn't matter) or 'read' (i.e. read access is included in write
+        // access)
+        $access_type_clause = '';
+        if ($access_type === 'write') {
+            $access_type_clause = "AND cs.type = 'write'";
+        }
 
-            WHERE cs.collection_id = lc.collection_id
-            AND cs.user_id = :user_id
-            AND lc.link_id = :link_id
+        $sql = <<<SQL
+            SELECT EXISTS (
+                SELECT 1
+                FROM collection_shares cs, links_to_collections lc
+
+                WHERE cs.collection_id = lc.collection_id
+                AND cs.user_id = :user_id
+                AND lc.link_id = :link_id
+
+                {$access_type_clause}
+            )
         SQL;
 
         $statement = $this->prepare($sql);

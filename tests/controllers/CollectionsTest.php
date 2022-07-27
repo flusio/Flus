@@ -273,7 +273,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/show_public.phtml');
     }
 
-    public function testShowRendersCorrectlyIfPrivateAndSharedAccess()
+    public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithReadAccess()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
@@ -294,6 +294,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->create('collection_share', [
             'collection_id' => $collection_id,
             'user_id' => $user->id,
+            'type' => 'read',
         ]);
 
         $response = $this->appRun('get', "/collections/{$collection_id}");
@@ -301,6 +302,37 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
         $this->assertResponsePointer($response, 'collections/show_public.phtml');
+    }
+
+    public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $link_title = $this->fake('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'is_public' => 0,
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+            'title' => $link_title,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'write',
+        ]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponsePointer($response, 'collections/show.phtml');
     }
 
     public function testShowHidesHiddenLinksInPublicCollections()
@@ -414,6 +446,29 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/edit.phtml');
     }
 
+    public function testEditRendersCorrectlyIfCollectionIsSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'write',
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/edit", [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'collections/edit.phtml');
+    }
+
     public function testEditRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -442,13 +497,35 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsNotOwnedByCurrentUser()
+    public function testEditFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
             'type' => 'collection',
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/edit", [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testEditFailsIfCollectionIsSharedWithReadAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'read',
         ]);
         $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
@@ -538,6 +615,35 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection = models\Collection::take();
         $topic_ids = array_column($collection->topics(), 'id');
         $this->assertSame([$new_topic_id], $topic_ids);
+    }
+
+    public function testUpdateWorksIfCollectionIsSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $old_name = $this->fakeUnique('words', 3, true);
+        $new_name = $this->fakeUnique('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'name' => $old_name,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'write',
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'name' => $new_name,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $collection = models\Collection::take();
+        $this->assertSame($new_name, $collection->name);
     }
 
     public function testUpdateRedirectsIfNotConnected()
@@ -705,7 +811,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateFailsIfCollectionIsNotOwnedByCurrentUser()
+    public function testUpdateFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
@@ -732,6 +838,35 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection = models\Collection::take();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
+    }
+
+    public function testUpdateFailsIfCollectionIsSharedWithReadAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $old_name = $this->fakeUnique('words', 3, true);
+        $new_name = $this->fakeUnique('words', 3, true);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+            'name' => $old_name,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'read',
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'name' => $new_name,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $collection = models\Collection::take();
+        $this->assertSame($old_name, $collection->name);
     }
 
     public function testUpdateFailsIfCollectionIsNotOfCorrectType()
@@ -813,13 +948,35 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Collection::exists($collection_id));
     }
 
-    public function testDeleteFailsIfCollectionIsNotOwnedByCurrentUser()
+    public function testDeleteFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
         $other_user_id = $this->create('user');
         $collection_id = $this->create('collection', [
             'user_id' => $other_user_id,
             'type' => 'collection',
+        ]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+            'csrf' => $user->csrf,
+            'from' => "/collections/{$collection_id}/edit",
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue(models\Collection::exists($collection_id));
+    }
+
+    public function testDeleteFailsIfCollectionIsShared()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+            'type' => 'collection',
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/delete", [

@@ -93,7 +93,7 @@
                         <span class="collection__public sticker"><?= _('private') ?></span>
                     <?php endif; ?>
 
-                    <?= _f('Created by <a href="%s">%s</a>', url('profile', ['id' => $owner->id]), protect($owner->username)) ?>
+                    <?= _f('Published by %s', collection_publishers($collection, $current_user)) ?></li>
                 </p>
             </div>
         <?php endif; ?>

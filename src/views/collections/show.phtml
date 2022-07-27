@@ -58,7 +58,7 @@
             <p class="collection__owner">
                 <span class="collection__public sticker"><?= $collection->is_public ? _('public') : _('private') ?></span>
 
-                <?= _f('Created by <a href="%s">you</a>', url('profile', ['id' => $current_user->id])) ?>
+                <?= _f('Published by %s', collection_publishers($collection, $current_user)) ?></li>
             </p>
         </div>
 
@@ -104,18 +104,20 @@
                         <?= _('Edit') ?>
                     </button>
 
-                    <button
-                        class="popup__item popup__item--button"
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                        role="menuitem"
-                    >
-                        <?= icon('directory') ?>
-                        <?= _('Put in a group') ?>
-                    </button>
+                    <?php if ($collection->user_id === $current_user->id): ?>
+                        <button
+                            class="popup__item popup__item--button"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href-value="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                            role="menuitem"
+                        >
+                            <?= icon('directory') ?>
+                            <?= _('Put in a group') ?>
+                        </button>
+                    <?php endif; ?>
 
                     <button
                         class="popup__item popup__item--button"
@@ -146,7 +148,7 @@
                 class="card__button card__button--link"
                 data-controller="modal-opener"
                 data-action="modal-opener#fetch"
-                data-modal-opener-href-value="<?= url('new link', ['collection_id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                data-modal-opener-href-value="<?= url('new collection link', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
                 aria-haspopup="dialog"
                 aria-controls="modal"
             >
@@ -162,7 +164,7 @@
                 'display_via' => $link->via_type !== 'bookmarks',
                 'display_comments' => true,
                 'display_hidden' => $collection->is_public && $link->is_hidden,
-                'display_edit' => true,
+                'display_edit' => $link->user_id === $current_user->id,
                 'display_mark_as_read' => !$link->isReadBy($current_user),
                 'collections_mode' => 'managing',
             ]); ?>

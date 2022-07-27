@@ -13,6 +13,12 @@
                 <?= protect($collection->name()) ?>
             </option>
         <?php endforeach; ?>
+
+        <?php foreach ($shared_collections as $collection): ?>
+            <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
+                <?= _f('%s (shared by %s)', protect($collection->name()),protect($collection->owner()->username)) ?>
+            </option>
+        <?php endforeach; ?>
     </select>
 
     <ul class="collections-selector__list" data-collections-selector-target="list"></ul>

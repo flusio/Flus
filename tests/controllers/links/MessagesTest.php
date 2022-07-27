@@ -45,6 +45,44 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_id, $message->link_id);
     }
 
+    public function testCreateWorksIfLinkIsInCollectionSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $user_id = $user->id;
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user_id,
+            'type' => 'write',
+        ]);
+        $csrf = $user->csrf;
+        $content = $this->fake('paragraphs', 3, true);
+
+        $this->assertSame(0, models\Message::count());
+
+        $response = $this->appRun('post', "/links/{$link_id}/messages", [
+            'csrf' => $csrf,
+            'content' => $content,
+        ]);
+
+        $this->assertResponseCode($response, 302, "/links/{$link_id}");
+        $this->assertSame(1, models\Message::count());
+        $message = models\Message::take();
+        $this->assertSame($content, $message->content);
+        $this->assertSame($user_id, $message->user_id);
+        $this->assertSame($link_id, $message->link_id);
+    }
+
     public function testCreateRedirectsIfNotConnected()
     {
         $csrf = 'the token';
@@ -71,6 +109,40 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
             'user_id' => $user_id,
+        ]);
+        $csrf = $user->csrf;
+        $content = $this->fake('paragraphs', 3, true);
+
+        $this->assertSame(0, models\Message::count());
+
+        $response = $this->appRun('post', "/links/{$link_id}/messages", [
+            'csrf' => $csrf,
+            'content' => $content,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertSame(0, models\Message::count());
+    }
+
+    public function testCreateFailsIfLinkIsInCollectionSharedWithReadAccess()
+    {
+        $user = $this->login();
+        $user_id = $user->id;
+        $other_user_id = $this->create('user');
+        $link_id = $this->create('link', [
+            'user_id' => $other_user_id,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $collection_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user_id,
+            'type' => 'read',
         ]);
         $csrf = $user->csrf;
         $content = $this->fake('paragraphs', 3, true);

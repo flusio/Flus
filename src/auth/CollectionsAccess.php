@@ -31,10 +31,27 @@ class CollectionsAccess
 
     public static function canUpdate($user, $collection)
     {
+        if (!$user || !$collection) {
+            return false;
+        }
+
+        if ($collection->type !== 'collection') {
+            return false;
+        }
+
+        if ($user->id === $collection->user_id) {
+            return true;
+        }
+
+        return $collection->sharedWith($user, 'write');
+    }
+
+    public static function canUpdateGroup($user, $collection)
+    {
         return (
             $user && $collection &&
-            $user->id === $collection->user_id &&
-            $collection->type === 'collection'
+            $collection->type === 'collection' &&
+            $user->id === $collection->user_id
         );
     }
 
@@ -45,6 +62,19 @@ class CollectionsAccess
             $user->id === $collection->user_id &&
             ($collection->type === 'collection' || $collection->type === 'news')
         );
+    }
+
+    public static function canAddLinks($user, $collection)
+    {
+        if (!$user || !$collection) {
+            return false;
+        }
+
+        if ($user->id === $collection->user_id) {
+            return true;
+        }
+
+        return $collection->sharedWith($user, 'write');
     }
 
     public static function canDelete($user, $collection)

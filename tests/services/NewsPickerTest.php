@@ -600,4 +600,42 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, count($db_links));
     }
+
+    public function testPickDoesNotSelectFromFollowedIfLinkIsOwned()
+    {
+        // This is a very particular use case where the user got write access
+        // to a collection while he was following it (or followed it
+        // afterwards). This link should not appear in the news link.
+        // We don't create a CollectionShare because it doesn't matter whether
+        // the permission still exists or not.
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days_ago = $this->fake('numberBetween', 0, 3);
+        $published_at = \Minz\Time::ago($days_ago, 'days');
+        $news_picker = new NewsPicker($this->user, [
+            'from' => 'followed',
+        ]);
+        $link_id = $this->create('link', [
+            'user_id' => $this->user->id,
+            'is_hidden' => 0,
+        ]);
+        $collection_id = $this->create('collection', [
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => 1,
+        ]);
+        $this->create('link_to_collection', [
+            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+            'collection_id' => $collection_id,
+            'link_id' => $link_id,
+        ]);
+        $this->create('followed_collection', [
+            'user_id' => $this->user->id,
+            'collection_id' => $collection_id,
+        ]);
+
+        $db_links = $news_picker->pick();
+
+        $this->assertSame(0, count($db_links));
+    }
 }

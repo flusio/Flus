@@ -34,6 +34,23 @@ class LinksAccess
         return $user && $link && $user->id === $link->user_id;
     }
 
+    public static function canComment($user, $link)
+    {
+        if (!$link) {
+            return false;
+        }
+
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->id === $link->user_id) {
+            return true;
+        }
+
+        return $link->sharedWith($user, 'write');
+    }
+
     public static function canDelete($user, $link)
     {
         return $user && $link && $user->id === $link->user_id;

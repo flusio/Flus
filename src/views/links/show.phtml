@@ -144,7 +144,7 @@
             </p>
         <?php endif; ?>
 
-        <?php if ($current_user && $owner->id === $current_user->id): ?>
+        <?php if ($can_comment): ?>
             <form method="post" action="<?= url('links/create message', ['link_id' => $link->id]) ?>">
                 <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 

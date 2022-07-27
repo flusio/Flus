@@ -12,6 +12,7 @@
 @media (min-width: 800px) {
     .collection__meta {
         flex-direction: row;
+        align-items: baseline;
     }
 }
 
@@ -29,6 +30,10 @@
 
 .collection__public {
     margin-right: var(--space-small);
+}
+
+.collection__actions {
+    flex-shrink: 0;
 }
 
 .collection__topics {

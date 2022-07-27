@@ -265,6 +265,25 @@ class Collection extends \Minz\Model
     }
 
     /**
+     * Return a link from this collection with the given URL and not owned by
+     * the given user.
+     *
+     * @param string $user_id
+     * @param string $url_lookup
+     *
+     * @return \flusio\models\Link|null
+     */
+    public function linkNotOwnedByUrl($user_id, $url_lookup)
+    {
+        return Link::daoToModel(
+            'findNotOwnedByCollectionIdAndUrl',
+            $user_id,
+            $this->id,
+            $url_lookup,
+        );
+    }
+
+    /**
      * Return the group if any for a given user.
      *
      * If the collection is owned by the user, the group is the one directly
@@ -305,33 +324,54 @@ class Collection extends \Minz\Model
     /**
      * Return the CollectionShares attached to the current collection
      *
+     * @see \flusio\models\dao\CollectionShare::listComputedByCollectionId
+     *
+     * @param array $options
+     *
      * @return \flusio\models\CollectionShare[]
      */
-    public function shares()
+    public function shares($options = [])
     {
         $collection_shares = CollectionShare::daoToList(
             'listComputedByCollectionId',
             $this->id,
-            ['username']
+            ['username'],
+            $options,
         );
         utils\Sorter::localeSort($collection_shares, 'username');
         return $collection_shares;
     }
 
     /**
-     * Return whether the collections is shared with the given user
+     * Return whether the collections is shared with the given user.
+     *
+     * If $access_type is 'any' or 'read', the method returns true just if a
+     * collection_share exists for this collection and user.
+     *
+     * If $access_type is 'write', the method will check that the collection
+     * share has a 'write' type.
      *
      * @param \flusio\models\User $user
+     * @param string $access_type
      *
      * @return boolean
      */
-    public function sharedWith($user)
+    public function sharedWith($user, $access_type = 'any')
     {
         $existing_collection_share = CollectionShare::findBy([
             'collection_id' => $this->id,
             'user_id' => $user->id,
         ]);
-        return $existing_collection_share !== null;
+
+        if (!$existing_collection_share) {
+            return false;
+        }
+
+        return (
+            $access_type === 'any' ||
+            $access_type === 'read' ||
+            $access_type === $existing_collection_share->type
+        );
     }
 
     /**

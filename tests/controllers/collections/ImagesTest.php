@@ -35,6 +35,32 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
+    public function testEditWorksIfCollectionIsSharedWithWriteAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_name = $this->fake('text', 50);
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $other_user_id,
+            'name' => $collection_name,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'write',
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/image", [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'collections/images/edit.phtml');
+        $this->assertResponseContains($response, $collection_name);
+    }
+
     public function testEditRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -62,6 +88,45 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('get', '/collections/not-an-id/image', [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testEditFailsIfCollectionIsNotShared()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $other_user_id,
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/image", [
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testEditFailsIfCollectionIsSharedWithReadAccess()
+    {
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $other_user_id,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'read',
+        ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('get', "/collections/{$collection_id}/image", [
             'from' => $from,
         ]);
 
@@ -127,6 +192,39 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
+    public function testUpdateWorksIfCollectionIsSharedWithWriteAccess()
+    {
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $other_user_id,
+            'image_filename' => null,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'write',
+        ]);
+        $file = [
+            'tmp_name' => $tmp_filepath,
+            'error' => UPLOAD_ERR_OK,
+        ];
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'image' => $file,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $collection = models\Collection::find($collection_id);
+        $this->assertNotNull($collection->image_filename);
+    }
+
     public function testUpdateRedirectsIfNotConnected()
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
@@ -174,6 +272,67 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', '/collections/not-an-id/image', [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'image' => $file,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $collection = models\Collection::find($collection_id);
+        $this->assertNull($collection->image_filename);
+    }
+
+    public function testUpdateFailsIfCollectionIsNotShared()
+    {
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $other_user_id,
+            'image_filename' => null,
+        ]);
+        $file = [
+            'tmp_name' => $tmp_filepath,
+            'error' => UPLOAD_ERR_OK,
+        ];
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+            'csrf' => $user->csrf,
+            'from' => $from,
+            'image' => $file,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $collection = models\Collection::find($collection_id);
+        $this->assertNull($collection->image_filename);
+    }
+
+    public function testUpdateFailsIfCollectionIsSharedWithReadAccess()
+    {
+        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
+        $user = $this->login();
+        $other_user_id = $this->create('user');
+        $collection_id = $this->create('collection', [
+            'type' => 'collection',
+            'user_id' => $other_user_id,
+            'image_filename' => null,
+        ]);
+        $this->create('collection_share', [
+            'collection_id' => $collection_id,
+            'user_id' => $user->id,
+            'type' => 'read',
+        ]);
+        $file = [
+            'tmp_name' => $tmp_filepath,
+            'error' => UPLOAD_ERR_OK,
+        ];
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+
+        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,

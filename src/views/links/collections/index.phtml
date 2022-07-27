@@ -33,9 +33,17 @@
 
             <?= $this->include('collections/_selector.phtml', [
                 'collections' => $collections,
+                'shared_collections' => $shared_collections,
                 'collection_ids' => $collection_ids,
             ]) ?>
         </fieldset>
+
+        <?php if ($collections_by_others): ?>
+            <?= $this->include('collections/_collections_by_others.phtml', [
+                'collections' => $collections_by_others,
+                'link' => $link,
+            ]) ?>
+        <?php endif; ?>
 
         <div class="form__actions">
             <button type="submit" class="button--primary">

@@ -1,8 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => _('New link'),
-        'canonical' => url_full('new link'),
-        'current_page' => 'new link',
+        'canonical' => url_full('new collection link', ['id' => $collection->id]),
         'has_errors' => $error || $errors,
     ]);
 ?>
@@ -12,7 +11,7 @@
         <h1 id="modal-title"><?= _('New link') ?></h1>
     </div>
 
-    <form method="post" action="<?= url('create link') ?>">
+    <form method="post" action="<?= url('create collection link', ['id' => $collection->id]) ?>">
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
@@ -49,25 +48,6 @@
             </div>
         </div>
 
-        <fieldset aria-describedby="collections-desc">
-            <legend><?= _('Collections') ?></legend>
-
-            <div id="collections-desc">
-                <?php if (isset($errors['collection_ids'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['collection_ids'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
-
-            <?= $this->include('collections/_selector.phtml', [
-                'collections' => $collections,
-                'shared_collections' => $shared_collections,
-                'collection_ids' => $collection_ids,
-            ]) ?>
-        </fieldset>
-
         <div class="form-group">
             <input
                 type="checkbox"
@@ -87,21 +67,4 @@
             </button>
         </div>
     </form>
-
-    <p class="paragraph--secondary no-extension no-mobile">
-        <small>
-            <?= _('Make your life easier by using the Web extension on') ?>
-            <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://addons.mozilla.org/fr/firefox/addon/flus/"
-            >Firefox</a>
-            <?= _('or') ?>
-            <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://chrome.google.com/webstore/detail/flus/gikjpohbbimicecbndkefebbpjobokjd?hl=fr"
-            >Chrome</a>
-        </small>
-    </p>
 </div>

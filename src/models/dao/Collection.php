@@ -244,6 +244,72 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
+     * Return the collections shared to the given user with its computed properties.
+     *
+     * @param string $user_id
+     *     The id of the user with who the collections are shared.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
+     * @param array $options
+     *     Custom options to filter collections. Possible options are:
+     *     - access_type (string, either 'any' [default], 'read' or 'write'),
+     *       indicates with which access the collections must have been shared.
+     *
+     * @return array
+     */
+    public function listComputedSharedToUserId($user_id, $selected_computed_props, $options = [])
+    {
+        $default_options = [
+            'access_type' => 'any',
+        ];
+        $options = array_merge($default_options, $options);
+
+        $number_links_clause = '';
+        $join_clause = '';
+        $group_by_clause = '';
+        if (in_array('number_links', $selected_computed_props)) {
+            $number_links_clause = ', COUNT(lc.*) AS number_links';
+            $join_clause = <<<SQL
+                LEFT JOIN links_to_collections lc
+                ON lc.collection_id = c.id
+            SQL;
+            $group_by_clause = 'GROUP BY c.id';
+        }
+
+        // we don't need the clause if access_type is 'any' (i.e. the type
+        // doesn't matter) or 'read' (i.e. read access is included in write
+        // access)
+        $access_type_clause = '';
+        if ($options['access_type'] === 'write') {
+            $access_type_clause = "AND cs.type = 'write'";
+        }
+
+        $sql = <<<SQL
+            SELECT
+                c.*
+                {$number_links_clause}
+            FROM collection_shares cs, collections c
+
+            {$join_clause}
+
+            WHERE cs.collection_id = c.id
+            AND cs.user_id = :user_id
+
+            {$access_type_clause}
+
+            {$group_by_clause}
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+        ]);
+        return $statement->fetchAll();
+    }
+
+    /**
      * Return the collections shared by a user to another user with their computed properties.
      *
      * @param string $user_id
@@ -299,23 +365,71 @@ class Collection extends \Minz\DatabaseModel
     }
 
     /**
-     * Return whether the given user owns the given collections or not.
+     * Return whether the link is in a collection owned by the given user or not.
      *
      * @param string $user_id
-     * @param string[] $collection_ids
+     * @param string $link_id
      *
-     * @return boolean True if all the ids exist
+     * @return boolean
      */
-    public function doesUserOwnCollections($user_id, $collection_ids)
+    public function existsForUserIdAndLinkId($user_id, $link_id)
     {
-        if (empty($collection_ids)) {
-            return true;
-        }
+        $sql = <<<'SQL'
+            SELECT EXISTS (
+                SELECT 1
+                FROM collections c, links_to_collections lc
 
-        $matching_rows = $this->listBy([
-            'id' => $collection_ids,
-            'user_id' => $user_id,
+                WHERE c.id = lc.collection_id
+                AND c.user_id = :user_id
+                AND lc.link_id = :link_id
+            )
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':link_id' => $link_id,
         ]);
-        return count($matching_rows) === count($collection_ids);
+        return $statement->fetchColumn();
+    }
+
+    /**
+     * List collections which are writable by the given user, containing a link
+     * not owned by the given user and with the given URL.
+     *
+     * @param string $user_id
+     * @param string $url_lookup
+     *
+     * @return array
+     */
+    public function listWritableContainingNotOwnedLinkWithUrl($user_id, $url_lookup)
+    {
+        $sql = <<<'SQL'
+            SELECT DISTINCT c.*
+            FROM links_to_collections lc, links l, collections c
+
+            LEFT JOIN collection_shares cs
+            ON cs.user_id = :user_id
+            AND cs.collection_id = c.id
+            AND cs.type = 'write'
+
+            WHERE lc.collection_id = c.id
+            AND lc.link_id = l.id
+
+            AND l.user_id != :user_id
+            AND l.url_lookup = :url_lookup
+
+            AND (
+                c.user_id = :user_id OR
+                cs.id IS NOT NULL
+            )
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':url_lookup' => $url_lookup,
+        ]);
+        return $statement->fetchAll();
     }
 }
