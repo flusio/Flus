@@ -31,7 +31,7 @@
                         required
                         value="<?= $user_id ?>"
                         aria-describedby="user-id-desc"
-                        placeholder="<?= protect($current_user->id) ?>"
+                        placeholder="<?= url_full('profile', ['id' => $current_user->id]) ?>"
                     />
 
                     <button type="submit" class="button--primary">
@@ -46,6 +46,10 @@
                             <?= $errors['user_id'] ?>
                         </p>
                     <?php endif; ?>
+
+                    <p class="form-group__caption">
+                        <?= _('Copy and paste the <abbr>URL</abbr> of a user’s profile.') ?>
+                    </p>
                 </div>
             </div>
 
