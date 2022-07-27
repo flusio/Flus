@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-07-27 09:53+0200\n"
-"PO-Revision-Date: 2022-07-27 09:53+0200\n"
+"POT-Creation-Date: 2022-07-27 11:19+0200\n"
+"PO-Revision-Date: 2022-07-27 11:19+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -72,14 +72,14 @@ msgstr "L’une des thématiques associées n’existe pas."
 
 #: controllers/Collections.php:381 controllers/Exportations.php:61
 #: controllers/Groups.php:161 controllers/Importations.php:48
-#: controllers/Links.php:357 controllers/Links.php:404
+#: controllers/Links.php:354 controllers/Links.php:400
 #: controllers/Messages.php:47 controllers/Sessions.php:202
 #: controllers/collections/Read.php:67 controllers/collections/Read.php:128
 #: controllers/collections/Read.php:189 controllers/importations/Opml.php:78
 #: controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
-#: controllers/links/Collections.php:155 controllers/links/Read.php:45
+#: controllers/links/Collections.php:154 controllers/links/Read.php:45
 #: controllers/links/Read.php:93 controllers/links/Read.php:141
 #: controllers/links/Read.php:189 controllers/my/Avatar.php:43
 msgid "A security verification failed."
@@ -101,7 +101,7 @@ msgstr "Vous avez déjà un groupe portant le même nom."
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:263 controllers/links/Collections.php:150
+#: controllers/Links.php:263 controllers/links/Collections.php:149
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
@@ -825,7 +825,7 @@ msgstr "Afficher la collection publiquement"
 
 #: views/collections/edit.phtml:125 views/collections/filters/edit.phtml:89
 #: views/collections/groups/edit.phtml:104 views/groups/edit.phtml:52
-#: views/links/collections/index.phtml:50 views/links/edit.phtml:65
+#: views/links/collections/index.phtml:63 views/links/edit.phtml:52
 #: views/my/profile/edit.phtml:127 views/my/security/show_confirmed.phtml:94
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -950,10 +950,9 @@ msgstr ""
 "Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
 "votre navigateur."
 
-#: views/collections/links/new.phtml:60
+#: views/collections/links/new.phtml:60 views/links/collections/index.phtml:57
 #: views/links/collections/index_adding.phtml:58
-#: views/links/collections/index_news.phtml:77 views/links/edit.phtml:59
-#: views/links/new.phtml:80
+#: views/links/collections/index_news.phtml:77 views/links/new.phtml:80
 msgid "Hide this link in public collections"
 msgstr "Masquer ce lien dans les collections publiques"
 
@@ -1517,11 +1516,11 @@ msgstr "Modification d’un lien"
 msgid "The title of your link"
 msgstr "Le titre de votre lien"
 
-#: views/links/edit.phtml:76
+#: views/links/edit.phtml:63
 msgid "Are you sure that you want to remove this link?"
 msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
 
-#: views/links/edit.phtml:84
+#: views/links/edit.phtml:71
 msgid "Delete the link"
 msgstr "Supprimer le lien"
 

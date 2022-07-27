@@ -109,9 +109,8 @@ class Collections
     /**
      * Update the link collections list
      *
-     * News mode allows to set is_hidden and add a comment. It also removes the
-     * link from the news and from bookmarks and adds it to the read list.
-     * Adding mode allows to set is_hidden.
+     * News mode allows to add a comment. It also removes the link from the
+     * news and from bookmarks and adds it to the read list.
      *
      * @request_param string csrf
      * @request_param string id
@@ -164,19 +163,14 @@ class Collections
                 $link->via_type = $via_type;
                 $link->via_resource_id = $via_resource_id;
             }
-
-            $link->save();
         }
+
+        $link->is_hidden = $is_hidden;
+        $link->save();
 
         models\LinkToCollection::setCollections($link->id, $new_collection_ids);
 
-        if ($mode === 'adding') {
-            $link->is_hidden = $is_hidden;
-            $link->save();
-        } elseif ($mode === 'news') {
-            $link->is_hidden = $is_hidden;
-            $link->save();
-
+        if ($mode === 'news') {
             if ($comment) {
                 $message = models\Message::init($user->id, $link->id, $comment);
                 $message->save();

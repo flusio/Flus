@@ -353,6 +353,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateChangesCollectionsAndRedirects()
     {
         $user = $this->login();
+        $is_hidden = $this->fake('boolean');
         $link_id = $this->create('link', [
             'user_id' => $user->id,
         ]);
@@ -373,6 +374,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_id_2],
+            'is_hidden' => $is_hidden,
         ]);
 
         $this->assertResponseCode($response, 302, '/bookmarks');
@@ -386,6 +388,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNull($link_to_collection_1);
         $this->assertNotNull($link_to_collection_2);
+        $link = models\Link::find($link_id);
+        $this->assertSame($is_hidden, $link->is_hidden);
     }
 
     public function testUpdateDoesNotRemoveFromNewsOrReadList()
@@ -423,31 +427,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_collection);
         $this->assertTrue(models\LinkToCollection::exists($link_to_news));
         $this->assertTrue(models\LinkToCollection::exists($link_to_read_list));
-    }
-
-    public function testUpdateInModeAddingAcceptsIsHiden()
-    {
-        $user = $this->login();
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-        ]);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
-        $is_hidden = $this->fake('boolean');
-
-        $response = $this->appRun('post', "/links/{$link_id}/collections", [
-            'csrf' => $user->csrf,
-            'from' => \Minz\Url::for('bookmarks'),
-            'collection_ids' => [$collection_id],
-            'is_hidden' => $is_hidden,
-            'mode' => 'adding',
-        ]);
-
-        $this->assertResponseCode($response, 302, '/bookmarks');
-        $link = models\Link::find($link_id);
-        $this->assertSame($is_hidden, $link->is_hidden);
     }
 
     public function testUpdateInModeNewsAcceptsComment()

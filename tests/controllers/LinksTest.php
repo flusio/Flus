@@ -846,54 +846,44 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
-        $old_hidden = 0;
-        $new_hidden = 1;
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
-            'is_hidden' => $old_hidden,
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
-            'is_hidden' => $new_hidden,
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link_id}");
         $link = models\Link::find($link_id);
         $this->assertSame($new_title, $link->title);
-        $this->assertTrue($link->is_hidden);
     }
 
     public function testUpdateRedirectsToFrom()
     {
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
-        $old_hidden = 0;
-        $new_hidden = 1;
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
-            'is_hidden' => $old_hidden,
         ]);
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
-            'is_hidden' => $new_hidden,
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 302, $from);
         $link = models\Link::find($link_id);
         $this->assertSame($new_title, $link->title);
-        $this->assertTrue($link->is_hidden);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid()

@@ -311,7 +311,6 @@ class Links
             return Response::ok('links/edit.phtml', [
                 'link' => $link,
                 'title' => $link->title,
-                'is_hidden' => $link->is_hidden,
                 'from' => $from,
             ]);
         } else {
@@ -325,7 +324,6 @@ class Links
      * @request_param string csrf
      * @request_param string id
      * @request_param string title
-     * @request_param boolean is_hidden
      * @request_param string from (default is /links/:id)
      *
      * @response 302 /login?redirect_to=/links/:id/edit if not connected
@@ -338,7 +336,6 @@ class Links
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $new_title = $request->param('title');
-        $is_hidden = $request->paramBoolean('is_hidden', false);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
         $csrf = $request->param('csrf');
 
@@ -359,7 +356,6 @@ class Links
         }
 
         $link->title = trim($new_title);
-        $link->is_hidden = filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN);
         $errors = $link->validate();
         if ($errors) {
             utils\Flash::set('errors', $errors);
