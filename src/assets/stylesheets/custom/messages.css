@@ -24,7 +24,6 @@
 .message__content {
     overflow: hidden;
 
-    margin-left: 5rem;
     padding: var(--space-smaller);
 
     text-overflow: ellipsis;
@@ -33,6 +32,69 @@
 
 @media (min-width: 800px) {
     .message__content {
+        margin-left: 5rem;
         padding: var(--space-small);
+    }
+}
+
+.message__content code {
+    padding-right: var(--space-smaller);
+    padding-left: var(--space-smaller);
+
+    font-size: var(--size-small);
+
+    background-color: var(--color-turquoise-1);
+    border-radius: var(--radius);
+}
+
+.message__content pre {
+    overflow: auto;
+
+    padding: var(--space-medium) var(--space-small);
+
+    color: var(--color-white);
+
+    background-color: var(--color-turquoise-9);
+    border-top: var(--width-border) solid var(--color-turquoise-5);
+    border-bottom: var(--width-border-bold) solid var(--color-turquoise-5);
+    border-radius: var(--radius);
+}
+
+@media (min-width: 800px) {
+    .message__content pre {
+        padding-right: var(--space-medium);
+        padding-left: var(--space-medium);
+    }
+}
+
+.message__content pre code {
+    padding: 0;
+
+    color: var(--color-white);
+
+    background-color: transparent;
+    border: none;
+}
+
+.message__content blockquote {
+    margin-right: 0;
+    margin-left: 0;
+    padding: var(--space-medium) var(--space-small);
+
+    font-style: italic;
+
+    background:
+        url('../../icons/block-quote.svg') no-repeat,
+        linear-gradient(to bottom, var(--color-turquoise-4), var(--color-turquoise-5));
+    background-color: var(--color-turquoise-4);
+    background-size: 45px;
+    border-radius: var(--radius);
+}
+
+@media (min-width: 800px) {
+    .message__content blockquote {
+        padding: var(--space-smaller) var(--space-larger);
+
+        background-size: 75px;
     }
 }
