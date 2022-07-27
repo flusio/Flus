@@ -1,4 +1,4 @@
-<ul class="list list--no-style">
+<ul class="list--collections-others list list--no-style">
     <?php foreach ($collections as $collection): ?>
         <?php $other_link = $collection->linkNotOwnedByUrl($current_user->id, $link->url_lookup); ?>
         <?php $owner = $other_link->owner(); ?>
