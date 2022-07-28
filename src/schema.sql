@@ -170,6 +170,7 @@ CREATE TABLE links (
 );
 
 CREATE INDEX idx_links_user_id_url ON links(user_id, url_lookup);
+CREATE INDEX idx_links_url ON links(url_lookup);
 CREATE INDEX idx_links_fetched_at ON links(fetched_at) WHERE fetched_at IS NULL;
 CREATE INDEX idx_links_fetched_code ON links(fetched_code) WHERE fetched_code < 200 OR fetched_code >= 300;
 CREATE INDEX idx_links_image_filename ON links(image_filename) WHERE image_filename IS NOT NULL;

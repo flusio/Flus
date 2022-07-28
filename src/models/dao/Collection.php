@@ -405,13 +405,8 @@ class Collection extends \Minz\DatabaseModel
     public function listWritableContainingNotOwnedLinkWithUrl($user_id, $url_lookup)
     {
         $sql = <<<'SQL'
-            SELECT DISTINCT c.*
+            SELECT c.*
             FROM links_to_collections lc, links l, collections c
-
-            LEFT JOIN collection_shares cs
-            ON cs.user_id = :user_id
-            AND cs.collection_id = c.id
-            AND cs.type = 'write'
 
             WHERE lc.collection_id = c.id
             AND lc.link_id = l.id
@@ -420,8 +415,13 @@ class Collection extends \Minz\DatabaseModel
             AND l.url_lookup = :url_lookup
 
             AND (
-                c.user_id = :user_id OR
-                cs.id IS NOT NULL
+                c.user_id = :user_id OR EXISTS (
+                    SELECT 1
+                    FROM collection_shares cs
+                    WHERE cs.user_id = :user_id
+                    AND cs.collection_id = c.id
+                    AND cs.type = 'write'
+                )
             )
         SQL;
 
