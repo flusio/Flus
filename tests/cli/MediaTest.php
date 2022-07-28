@@ -50,6 +50,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $image_url = 'https://flus.fr/carnet/card.png';
         $this->mockHttpWithFile($image_url, 'public/static/og-card.png');
         $image_filename = $image_service->generatePreviews($image_url);
+        $subdir_name = substr($image_filename, 0, 3);
 
         $this->assertNotEmpty($image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
@@ -73,7 +74,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, 'Searching for unused media files...');
+        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (67%)");
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
@@ -93,6 +94,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $image_url = 'https://flus.fr/carnet/card.png';
         $this->mockHttpWithFile($image_url, 'public/static/og-card.png');
         $image_filename = $image_service->generatePreviews($image_url);
+        $subdir_name = substr($image_filename, 0, 3);
         $this->create('link', [
             'image_filename' => $image_filename,
         ]);
@@ -119,7 +121,11 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, 'Searching for unused media files...');
+        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (67%)");
+        $response_generator->next();
+        $response = $response_generator->current();
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
@@ -135,6 +141,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $image_url = 'https://flus.fr/carnet/card.png';
         $this->mockHttpWithFile($image_url, 'public/static/og-card.png');
         $image_filename = $image_service->generatePreviews($image_url);
+        $subdir_name = substr($image_filename, 0, 3);
         $this->create('collection', [
             'image_filename' => $image_filename,
         ]);
@@ -161,7 +168,11 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, 'Searching for unused media files...');
+        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (67%)");
+        $response_generator->next();
+        $response = $response_generator->current();
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
@@ -177,6 +188,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $image_url = 'https://flus.fr/carnet/card.png';
         $this->mockHttpWithFile($image_url, 'public/static/og-card.png');
         $image_filename = $image_service->generatePreviews($image_url);
+        $subdir_name = substr($image_filename, 0, 3);
         $this->create('topic', [
             'image_filename' => $image_filename,
         ]);
@@ -203,7 +215,11 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, 'Searching for unused media files...');
+        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (67%)");
+        $response_generator->next();
+        $response = $response_generator->current();
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);

@@ -35,11 +35,13 @@ class Media
         yield Response::text(200, "{$number_subdirs} sub-directories found.");
 
         // Iterate over the first level of media subdirectories
-        yield Response::text(200, 'Searching for unused media files...');
-        foreach ($subdir_names_depth_1 as $subdir_name) {
+        foreach ($subdir_names_depth_1 as $index => $subdir_name) {
             if ($subdir_name[0] === '.') {
                 continue;
             }
+
+            $progress_percent = round($index * 100 / count($subdir_names_depth_1));
+            yield Response::text(200, "Removing files under {$subdir_name}/... ({$progress_percent}%)");
 
             // get the full list of file names under the current subdirectory
             $subdir_path = "{$path_cards}/{$subdir_name}";
@@ -67,6 +69,10 @@ class Media
                 @unlink("{$path_large}/{$sub_path}/{$file_name}");
                 $count_deleted = $count_deleted + 1;
                 yield Response::text(200, "Deleted file {$file_name}");
+            }
+
+            if (!$file_names_to_delete) {
+                yield Response::text(200, "Nothing to delete under {$subdir_name}/.");
             }
         }
 
