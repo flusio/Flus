@@ -41,6 +41,7 @@ class Cleaner extends jobs\Job
         $cache->clean();
 
         $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
+        $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
 
         $support_user = models\User::supportUser();
 
@@ -54,7 +55,8 @@ class Cleaner extends jobs\Job
             models\Link::daoCall(
                 'deleteFromFeedsOlderThan',
                 $support_user->id,
-                \Minz\Time::ago($feeds_links_keep_period, 'months')
+                \Minz\Time::ago($feeds_links_keep_period, 'months'),
+                $feeds_links_keep_minimum
             );
         }
 

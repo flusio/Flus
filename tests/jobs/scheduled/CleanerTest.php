@@ -371,6 +371,69 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link_id));
     }
 
+    public function testPerformKeepsOldEnoughFeedsLinksInMinimumLimit()
+    {
+        \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
+        \Minz\Configuration::$application['feeds_links_keep_minimum'] = 1;
+        $this->freeze($this->fake('dateTime'));
+        $cleaner_job = new Cleaner();
+        $support_user = models\User::supportUser();
+        $months = $this->fake('numberBetween', 7, 100);
+        $published_at_old = \Minz\Time::ago($months, 'months');
+        $published_at_older = \Minz\Time::ago($months + 1, 'months');
+        $link_id_1 = $this->create('link', [
+            'user_id' => $support_user->id,
+        ]);
+        $link_id_2 = $this->create('link', [
+            'user_id' => $support_user->id,
+        ]);
+        $link_id_3 = $this->create('link', [
+            'user_id' => $support_user->id,
+        ]);
+        $collection_id_1 = $this->create('collection', [
+            'type' => 'feed',
+            'user_id' => $support_user->id,
+        ]);
+        $collection_id_2 = $this->create('collection', [
+            'type' => 'feed',
+            'user_id' => $support_user->id,
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_1,
+            'collection_id' => $collection_id_1,
+            'created_at' => $published_at_older->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_2,
+            'collection_id' => $collection_id_1,
+            'created_at' => $published_at_old->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        // Attach the last link to another collection to check that the
+        // deletion is done per feed and not globally.
+        $this->create('link_to_collection', [
+            'link_id' => $link_id_3,
+            'collection_id' => $collection_id_2,
+            'created_at' => $published_at_older->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        // follow the feeds, otherwise the cleaner may delete them
+        $this->create('followed_collection', [
+            'collection_id' => $collection_id_1,
+        ]);
+        $this->create('followed_collection', [
+            'collection_id' => $collection_id_2,
+        ]);
+
+        $cleaner_job->perform();
+
+        \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
+        \Minz\Configuration::$application['feeds_links_keep_minimum'] = 0;
+
+        $this->assertSame(2, models\Link::count());
+        $this->assertFalse(models\Link::exists($link_id_1));
+        $this->assertTrue(models\Link::exists($link_id_2));
+        $this->assertTrue(models\Link::exists($link_id_3));
+    }
+
     public function testPerformDeletesDataIfDemoIsEnabled()
     {
         \Minz\Configuration::$application['demo'] = true;
