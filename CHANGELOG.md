@@ -1,5 +1,15 @@
 # Changelog of flusio
 
+## 2022-xx-xx - v0.48
+
+### Migration notes
+
+A new `FEEDS_LINKS_KEEP_MINIMUM` environment variable can be set to keep a
+minimum number of links per feed when purging is enabled (see `FEEDS_LINKS_KEEP_PERIOD`).
+You’ll have to set the variable in your `.env` file and restart your jobs
+workers. You may also want to execute the `cli feeds reset-hashes` command so
+the old unchanged feeds can be synchronized again to get old links.
+
 ## 2022-07-27 - v0.47
 
 ### Migration notes

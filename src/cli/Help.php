@@ -36,6 +36,7 @@ class Help
         $usage .= "  feeds                    List the feeds\n";
         $usage .= "  feeds add                Add a feed\n";
         $usage .= "      --url=URL            where URL is the link to the feed\n";
+        $usage .= "  feeds reset-hashes       Reset the hashes of all the feeds (allow sync of unchanged feeds)\n";
         $usage .= "  feeds sync               Synchronize a feed\n";
         $usage .= "      --id=ID              where ID is the id of the feed\n";
         $usage .= "      [--nocache=BOOL]     Indicates if the cache should be ignored (default is false)\n";

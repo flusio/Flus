@@ -313,4 +313,19 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
         $this->assertResponseEquals($response, 'Feed id `not an id` does not exist.');
     }
+
+    public function testResetHashesSetsAllFeedLastHashToEmptyString()
+    {
+        $feed_id = $this->create('collection', [
+            'type' => 'feed',
+            'feed_last_hash' => hash('sha256', 'foo'),
+        ]);
+
+        $response = $this->appRun('cli', '/feeds/reset-hashes');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'Feeds hashes have been reset.');
+        $feed = models\Collection::find($feed_id);
+        $this->assertSame('', $feed->feed_last_hash);
+    }
 }
