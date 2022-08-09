@@ -305,6 +305,10 @@ this, you can purge the old links from the feeds by uncommenting and setting the
 months, greater or equal to 1. Links in feeds with an older publication date
 will then be purged every night by the `Cleaner` job.
 
+If you want to keep a minimum number of links per feed (e.g. in case of a feed
+which didn't publish for a long time), you can set `FEEDS_LINKS_KEEP_MINIMUM`
+as well.
+
 ## Optional: Close the registrations
 
 You might want to setup a private instance of flusio. The registrations can be
