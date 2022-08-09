@@ -309,6 +309,15 @@ If you want to keep a minimum number of links per feed (e.g. in case of a feed
 which didn't publish for a long time), you can set `FEEDS_LINKS_KEEP_MINIMUM`
 as well.
 
+Anytime you increase the value of `FEEDS_LINKS_KEEP_MINIMUM`, you should
+execute the following command:
+
+```console
+flusio# sudo -u www-data php cli feeds reset-hashes
+```
+
+This allows to synchronize feeds that are unchanged to get their old links.
+
 ## Optional: Close the registrations
 
 You might want to setup a private instance of flusio. The registrations can be

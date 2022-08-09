@@ -109,4 +109,15 @@ class Feeds
 
         return Response::text(200, "Feed {$id} ({$collection->feed_url}) has been synchronized.");
     }
+
+    /**
+     * Reset all the feeds last_hash.
+     *
+     * @response 200
+     */
+    public function resetHashes($request)
+    {
+        models\Collection::daoCall('resetHashes');
+        return Response::text(200, 'Feeds hashes have been reset.');
+    }
 }

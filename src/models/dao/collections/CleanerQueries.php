@@ -41,4 +41,20 @@ trait CleanerQueries
             ':date' => $date->format(\Minz\Model::DATETIME_FORMAT),
         ]);
     }
+
+    /**
+     * Set all the feed_last_hash to empty string.
+     *
+     * return boolean True on success
+     */
+    public function resetHashes()
+    {
+        $sql = <<<SQL
+            UPDATE collections
+            SET feed_last_hash = ''
+            WHERE type = 'feed'
+        SQL;
+
+        return $this->exec($sql) !== false;
+    }
 }
