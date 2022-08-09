@@ -104,12 +104,10 @@ class FeedFetcher
 
         $link_ids_by_urls = models\Link::daoCall('listUrlsToIdsByCollectionId', $collection->id);
         $link_urls_by_entry_ids = models\Link::daoCall('listEntryIdsToUrlsByCollectionId', $collection->id);
-
-        $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
-        $feeds_keep_links_date = \Minz\Time::ago($feeds_links_keep_period, 'months');
+        $initial_links_count = count($link_ids_by_urls);
 
         $links_to_create = [];
-        $links_to_collections_to_create = [];
+        $links_to_collections = [];
 
         foreach ($feed->entries as $entry) {
             if (!$entry->link) {
@@ -129,15 +127,6 @@ class FeedFetcher
                 $published_at = $entry->published_at;
             } else {
                 $published_at = \Minz\Time::now();
-            }
-
-            if (
-                $feeds_links_keep_period > 0 &&
-                $published_at < $feeds_keep_links_date
-            ) {
-                // Skip entries older than the "keep period" defined in
-                // the configuration
-                continue;
             }
 
             if ($entry->id) {
@@ -191,18 +180,20 @@ class FeedFetcher
                 $link_id = $link->id;
             }
 
-            $links_to_collections_to_create[] = $published_at->format(\Minz\Model::DATETIME_FORMAT);
-            $links_to_collections_to_create[] = $link_id;
-            $links_to_collections_to_create[] = $collection->id;
+            $links_to_collections[] = [
+                'published_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+                'link_id' => $link_id,
+                'collection_id' => $collection->id,
+            ];
         }
 
         models\Link::bulkInsert($links_to_create);
 
-        if ($links_to_collections_to_create) {
+        if ($links_to_collections) {
             models\LinkToCollection::daoCall(
                 'bulkInsert',
                 ['created_at', 'link_id', 'collection_id'],
-                $links_to_collections_to_create
+                $this->filterLinksToCollections($links_to_collections, $initial_links_count)
             );
         }
 
@@ -357,6 +348,66 @@ class FeedFetcher
         }
 
         return $info;
+    }
+
+    /**
+     * Filter the links_to_collections list in order to create them.
+     *
+     * In normal case, it should return the full list. But if the administrator
+     * has configured the feeds_links_keep_period, the list is limited to the
+     * recent enough links_to_collections (or until there are enough of them,
+     * i.e. links_count is more than feeds_links_keep_minimum).
+     *
+     * Note that in both cases, all the links are already created. Only their
+     * relations with collections will not be created. It's not a problem
+     * because they will be removed by the Cleaner job during the night.
+     *
+     * @param array $links_to_collections
+     *     All the links_to_collections initialized from the feed.
+     * @param integer $links_count
+     *     The initial count of collection links.
+     *
+     * @return array
+     */
+    private function filterLinksToCollections($links_to_collections, $links_count)
+    {
+        $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
+        $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
+        $feeds_keep_links_date = \Minz\Time::ago($feeds_links_keep_period, 'months');
+
+        $to_create = [];
+
+        if ($feeds_links_keep_period <= 0) {
+            // If "keep period" is not set, we create all the links_to_collections
+            foreach ($links_to_collections as $link_to_collection) {
+                $to_create[] = $link_to_collection['published_at'];
+                $to_create[] = $link_to_collection['link_id'];
+                $to_create[] = $link_to_collection['collection_id'];
+            }
+        } else {
+            // Otherwise, we only keep the newest.
+
+            // sort the links_to_collections by their publication dates
+            // (newest first)
+            usort($links_to_collections, function ($lc1, $lc2) {
+                return $lc2['published_at'] <=> $lc1['published_at'];
+            });
+
+            foreach ($links_to_collections as $link_to_collection) {
+                $published_at = $link_to_collection['published_at'];
+                $recent_enough = $published_at >= $feeds_keep_links_date;
+                $enough_links = $links_count >= $feeds_links_keep_minimum;
+
+                if ($recent_enough || !$enough_links) {
+                    $to_create[] = $link_to_collection['published_at'];
+                    $to_create[] = $link_to_collection['link_id'];
+                    $to_create[] = $link_to_collection['collection_id'];
+                    $links_count = $links_count + 1;
+                }
+            }
+        }
+
+        return $to_create;
     }
 
     /**
