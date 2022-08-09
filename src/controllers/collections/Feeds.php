@@ -17,6 +17,9 @@ class Feeds
      * Show the feed of a collection.
      *
      * @request_param string id
+     * @request_param boolean direct
+     *     Indicate if <link rel=alternate> should point directly to the
+     *     external websites (true) or not (false, default).
      *
      * @response 404
      *     if the collection doesn’t exist or is inaccessible
@@ -28,8 +31,9 @@ class Feeds
     {
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
-        $collection = models\Collection::find($collection_id);
+        $direct = $request->paramBoolean('direct', false);
 
+        $collection = models\Collection::find($collection_id);
         if (!auth\CollectionsAccess::canView($user, $collection)) {
             return Response::notFound('not_found.phtml');
         }
@@ -54,6 +58,7 @@ class Feeds
             'topics' => $topics,
             'links' => $links,
             'user_agent' => \Minz\Configuration::$application['user_agent'],
+            'direct' => $direct,
         ]);
         $response->setHeader('X-Content-Type-Options', 'nosniff');
         return $response;
@@ -70,6 +75,9 @@ class Feeds
     {
         $collection_id = $request->param('id');
         $url = \Minz\Url::for('collection feed', ['id' => $collection_id]);
+        if (!empty($_SERVER['QUERY_STRING'])) {
+            $url .= '?' . $_SERVER['QUERY_STRING'];
+        }
         return Response::movedPermanently($url);
     }
 }

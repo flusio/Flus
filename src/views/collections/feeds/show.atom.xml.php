@@ -30,8 +30,13 @@
             <title><?= protect($link->title) ?></title>
             <id><?= $link->tagUri() ?></id>
 
-            <link href="<?= url_full('link', ['id' => $link->id]) ?>" rel="alternate" type="text/html" />
-            <link href="<?= protect($link->url) ?>" rel="via" type="text/html" />
+            <?php if ($direct): ?>
+                <link href="<?= protect($link->url) ?>" rel="alternate" type="text/html" />
+                <link href="<?= url_full('link', ['id' => $link->id]) ?>" rel="replies" type="text/html" />
+            <?php else: ?>
+                <link href="<?= url_full('link', ['id' => $link->id]) ?>" rel="alternate" type="text/html" />
+                <link href="<?= protect($link->url) ?>" rel="via" type="text/html" />
+            <?php endif; ?>
 
             <?php
                 $messages = $link->messages();

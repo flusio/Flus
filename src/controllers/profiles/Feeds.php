@@ -17,6 +17,9 @@ class Feeds
      * Show the feed of a user.
      *
      * @request_param string id
+     * @request_param boolean direct
+     *     Indicate if <link rel=alternate> should point directly to the
+     *     external websites (true) or not (false, default).
      *
      * @response 404
      *    If the requested profile doesn’t exist or is associated to the
@@ -27,8 +30,9 @@ class Feeds
     public function show($request)
     {
         $user_id = $request->param('id');
-        $user = models\User::find($user_id);
+        $direct = $request->paramBoolean('direct', false);
 
+        $user = models\User::find($user_id);
         if (!$user || $user->isSupportUser()) {
             return Response::notFound('not_found.phtml');
         }
@@ -43,6 +47,7 @@ class Feeds
             'user' => $user,
             'links' => $links,
             'user_agent' => \Minz\Configuration::$application['user_agent'],
+            'direct' => $direct,
         ]);
         $response->setHeader('X-Content-Type-Options', 'nosniff');
         return $response;
@@ -59,6 +64,9 @@ class Feeds
     {
         $user_id = $request->param('id');
         $url = \Minz\Url::for('profile feed', ['id' => $user_id]);
+        if (!empty($_SERVER['QUERY_STRING'])) {
+            $url .= '?' . $_SERVER['QUERY_STRING'];
+        }
         return Response::movedPermanently($url);
     }
 }
