@@ -113,6 +113,19 @@
                                 </summary>
 
                                 <nav class="popup__container popup__container--left" role="menu">
+                                    <button
+                                        class="popup__item popup__item--button"
+                                        data-controller="modal-opener"
+                                        data-action="modal-opener#fetch"
+                                        data-modal-opener-href-value="<?= url('edit message', ['id' => $message->id, 'from' => url('link', ['id' => $link->id])]) ?>"
+                                        aria-haspopup="dialog"
+                                        aria-controls="modal"
+                                        role="menuitem"
+                                    >
+                                        <?= icon('pencil') ?>
+                                        <?= _('Edit') ?>
+                                    </button>
+
                                     <form
                                         method="post"
                                         action="<?= url('delete message', ['id' => $message->id]) ?>"

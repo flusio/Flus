@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-08-10 14:52+0200\n"
-"PO-Revision-Date: 2022-08-10 14:52+0200\n"
+"POT-Creation-Date: 2022-08-10 17:08+0200\n"
+"PO-Revision-Date: 2022-08-10 17:08+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -73,10 +73,10 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Collections.php:381 controllers/Exportations.php:61
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:354 controllers/Links.php:400
-#: controllers/Messages.php:47 controllers/Sessions.php:202
-#: controllers/collections/Read.php:67 controllers/collections/Read.php:128
-#: controllers/collections/Read.php:189 controllers/importations/Opml.php:78
-#: controllers/importations/Pocket.php:102
+#: controllers/Messages.php:93 controllers/Messages.php:141
+#: controllers/Sessions.php:202 controllers/collections/Read.php:67
+#: controllers/collections/Read.php:128 controllers/collections/Read.php:189
+#: controllers/importations/Opml.php:78 controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
 #: controllers/links/Collections.php:154 controllers/links/Read.php:45
@@ -692,10 +692,10 @@ msgstr "Suivant"
 #: views/links/collections/index_adding.phtml:29
 #: views/links/collections/index_news.phtml:32 views/links/edit.phtml:43
 #: views/links/new.phtml:41 views/links/new.phtml:58
-#: views/links/searches/show.phtml:55 views/links/show.phtml:171
-#: views/my/account/deletion.phtml:63 views/my/profile/edit.phtml:55
-#: views/my/profile/edit.phtml:91 views/my/profile/edit.phtml:118
-#: views/my/security/show_confirmed.phtml:41
+#: views/links/searches/show.phtml:55 views/links/show.phtml:184
+#: views/messages/edit.phtml:37 views/my/account/deletion.phtml:63
+#: views/my/profile/edit.phtml:55 views/my/profile/edit.phtml:91
+#: views/my/profile/edit.phtml:118 views/my/security/show_confirmed.phtml:41
 #: views/my/security/show_confirmed.phtml:81
 #: views/my/security/show_to_confirm.phtml:55 views/passwords/edit.phtml:58
 #: views/passwords/forgot.phtml:48 views/registrations/new.phtml:50
@@ -826,7 +826,8 @@ msgstr "Afficher la collection publiquement"
 #: views/collections/edit.phtml:125 views/collections/filters/edit.phtml:89
 #: views/collections/groups/edit.phtml:104 views/groups/edit.phtml:52
 #: views/links/collections/index.phtml:63 views/links/edit.phtml:52
-#: views/my/profile/edit.phtml:127 views/my/security/show_confirmed.phtml:94
+#: views/messages/edit.phtml:46 views/my/profile/edit.phtml:127
+#: views/my/security/show_confirmed.phtml:94
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -1080,7 +1081,8 @@ msgstr "Actions"
 
 #: views/collections/show.phtml:104 views/groups/_group.phtml:23
 #: views/groups/_group.phtml:37 views/links/_link.phtml:141
-#: views/links/searches/show.phtml:124 views/profiles/show.phtml:55
+#: views/links/searches/show.phtml:124 views/links/show.phtml:126
+#: views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1500,7 +1502,7 @@ msgstr "Collections"
 msgid "Add to your collections"
 msgstr "Ajouter à vos collections"
 
-#: views/links/collections/index_news.phtml:54 views/links/show.phtml:153
+#: views/links/collections/index_news.phtml:54 views/links/show.phtml:166
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -1591,23 +1593,23 @@ msgstr "Flux de syndication de commentaires sur %s"
 msgid "Added by <a href=\"%s\">%s</a>"
 msgstr "Ajouté par <a href=\"%s\">%s</a>"
 
-#: views/links/show.phtml:121
+#: views/links/show.phtml:134
 msgid "Are you sure that you want to delete this message?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
 
-#: views/links/show.phtml:129
+#: views/links/show.phtml:142
 msgid "Delete"
 msgstr "Supprimer"
 
-#: views/links/show.phtml:155
+#: views/links/show.phtml:168
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:180
+#: views/links/show.phtml:193
 msgid "Comment"
 msgstr "Commenter"
 
-#: views/links/show.phtml:187
+#: views/links/show.phtml:200
 msgid "This link being hidden, the comments are private."
 msgstr "Ce lien étant masqué, les commentaires sont privés."
 
@@ -1675,6 +1677,14 @@ msgid ""
 msgstr ""
 "P.S. – Si vous n’avez pas demandé à réinitialiser votre mot de passe, vous "
 "pouvez ignorer ce courriel."
+
+#: views/messages/edit.phtml:3 views/messages/edit.phtml:11
+msgid "Message edition"
+msgstr "Modification d’un message"
+
+#: views/messages/edit.phtml:22 views/support/show.phtml:54
+msgid "Your message"
+msgstr "Votre message"
 
 #: views/my/account/deletion.phtml:3 views/my/account/deletion.phtml:14
 msgid "Account deletion"
@@ -2424,10 +2434,6 @@ msgstr "Votre message a été envoyé."
 #: views/support/show.phtml:30
 msgid "Subject"
 msgstr "Sujet"
-
-#: views/support/show.phtml:54
-msgid "Your message"
-msgstr "Votre message"
 
 #: views/support/show.phtml:77
 #, php-format

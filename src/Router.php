@@ -161,6 +161,8 @@ class Router
         // Messages
         $router->addRoute('get', '/links/:link_id/messages', 'links/Messages#index', 'links/messages');
         $router->addRoute('post', '/links/:link_id/messages', 'links/Messages#create', 'links/create message');
+        $router->addRoute('get', '/messages/:id/edit', 'Messages#edit', 'edit message');
+        $router->addRoute('post', '/messages/:id/edit', 'Messages#update', 'update message');
         $router->addRoute('post', '/messages/:id/delete', 'Messages#delete', 'delete message');
 
         // Groups
