@@ -2,6 +2,7 @@
     display: flex;
     max-width: 55ch;
     margin-right: auto;
+    margin-bottom: var(--space-larger);
     margin-left: auto;
 
     flex-direction: column;
@@ -16,9 +17,6 @@
 
 .link__details {
     flex-grow: 1;
-
-    color: var(--color-text-secondary);
-    font-size: var(--size-small);
 }
 
 .link__public {

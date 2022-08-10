@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-07-27 11:19+0200\n"
-"PO-Revision-Date: 2022-07-27 11:19+0200\n"
+"POT-Creation-Date: 2022-08-10 14:52+0200\n"
+"PO-Revision-Date: 2022-08-10 14:52+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -483,12 +483,12 @@ msgstr ""
 "Vous pouvez placer des liens dans <a href=\"%s\">vos signets</a> pour les "
 "lire plus tard."
 
-#: utils/view_helpers.php:275
+#: utils/view_helpers.php:275 views/links/show.phtml:56
 msgid "you"
 msgstr "vous"
 
-#: views/collections/feeds/show.atom.xml.php:54
-#: views/profiles/feeds/show.atom.xml.php:47
+#: views/collections/feeds/show.atom.xml.php:59
+#: views/profiles/feeds/show.atom.xml.php:52
 #, php-format
 msgid "— “<a href=\"%s\">%s</a>” was published on %s"
 msgstr "— « <a href=\"%s\">%s</a> » a été publié sur %s"
@@ -692,7 +692,7 @@ msgstr "Suivant"
 #: views/links/collections/index_adding.phtml:29
 #: views/links/collections/index_news.phtml:32 views/links/edit.phtml:43
 #: views/links/new.phtml:41 views/links/new.phtml:58
-#: views/links/searches/show.phtml:55 views/links/show.phtml:174
+#: views/links/searches/show.phtml:55 views/links/show.phtml:171
 #: views/my/account/deletion.phtml:63 views/my/profile/edit.phtml:55
 #: views/my/profile/edit.phtml:91 views/my/profile/edit.phtml:118
 #: views/my/security/show_confirmed.phtml:41
@@ -782,12 +782,12 @@ msgid ""
 msgstr ""
 "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong> (partagée par %s)."
 
-#: views/collections/_selector.phtml:19
+#: views/collections/_selector.phtml:18
 #, php-format
 msgid "%s (shared by %s)"
 msgstr "%s (partagée par %s)"
 
-#: views/collections/_selector.phtml:29 views/collections/_selector.phtml:32
+#: views/collections/_selector.phtml:28 views/collections/_selector.phtml:31
 msgid "Select a collection"
 msgstr "Sélectionner une collection"
 
@@ -1074,7 +1074,7 @@ msgstr "Publiée par %s"
 
 #: views/collections/show.phtml:74 views/collections/show_public.phtml:112
 #: views/links/_link.phtml:120 views/links/_link.phtml:124
-#: views/links/show.phtml:99 views/links/show.phtml:103
+#: views/links/show.phtml:106 views/links/show.phtml:110
 msgid "Actions"
 msgstr "Actions"
 
@@ -1394,7 +1394,7 @@ msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
 #: views/links/_link.phtml:54 views/links/searches/show.phtml:100
-#: views/links/searches/show.phtml:157 views/links/show.phtml:46
+#: views/links/searches/show.phtml:157 views/links/show.phtml:47
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
@@ -1475,11 +1475,11 @@ msgstr "Gérer les collections"
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/links/_link.phtml:268 views/links/show.phtml:62
+#: views/links/_link.phtml:268 views/links/show.phtml:69
 msgid "read"
 msgstr "lire"
 
-#: views/links/_link.phtml:270 views/links/show.phtml:64
+#: views/links/_link.phtml:270 views/links/show.phtml:71
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
@@ -1500,7 +1500,7 @@ msgstr "Collections"
 msgid "Add to your collections"
 msgstr "Ajouter à vos collections"
 
-#: views/links/collections/index_news.phtml:54 views/links/show.phtml:156
+#: views/links/collections/index_news.phtml:54 views/links/show.phtml:153
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -1571,47 +1571,43 @@ msgstr "Quelle est l’adresse du lien ou du flux ?"
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/links/show.phtml:4
+#: views/links/show.phtml:6
 #, php-format
 msgid "Shared on %s: %s"
 msgstr "Partagé sur %s : %s"
 
-#: views/links/show.phtml:5
+#: views/links/show.phtml:7
 #, php-format
 msgid "A link shared by %s on %s."
 msgstr "Un lien partagé par %s sur %s."
 
-#: views/links/show.phtml:20
+#: views/links/show.phtml:22
 #, php-format
 msgid "Syndication feed of comments on %s"
 msgstr "Flux de syndication de commentaires sur %s"
 
-#: views/links/show.phtml:114
+#: views/links/show.phtml:57
+#, php-format
+msgid "Added by <a href=\"%s\">%s</a>"
+msgstr "Ajouté par <a href=\"%s\">%s</a>"
+
+#: views/links/show.phtml:121
 msgid "Are you sure that you want to delete this message?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
 
-#: views/links/show.phtml:122
+#: views/links/show.phtml:129
 msgid "Delete"
 msgstr "Supprimer"
 
-#: views/links/show.phtml:140
-msgid "You didn’t comment on this link."
-msgstr "Vous n’avez pas commenté ce lien."
-
-#: views/links/show.phtml:142
-#, php-format
-msgid "%s didn’t comment on this link."
-msgstr "%s n’a pas commenté ce lien."
-
-#: views/links/show.phtml:158
+#: views/links/show.phtml:155
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/show.phtml:183
+#: views/links/show.phtml:180
 msgid "Comment"
 msgstr "Commenter"
 
-#: views/links/show.phtml:190
+#: views/links/show.phtml:187
 msgid "This link being hidden, the comments are private."
 msgstr "Ce lien étant masqué, les commentaires sont privés."
 

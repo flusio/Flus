@@ -1,5 +1,7 @@
 <?php
     $owner = $link->owner();
+    $owner_is_current_user = $current_user && $current_user->id === $owner->id;
+
     $open_graph = [
         'title' => _f('Shared on %s: %s', $brand, $link->title),
         'description' => _f('A link shared by %s on %s.', $owner->username, $brand),
@@ -38,16 +40,21 @@
         <h1><?= protect($link->title) ?></h1>
     </div>
 
+    <p class="section__intro">
+        <?php if (!$link->fetched_at): ?>
+            <span class="icon--spin">
+                <?= icon('sync') ?>
+                <?= _('ongoing synchronisation…') ?>
+            </span>
+        <?php else: ?>
+            <?= protect($link->host()) ?>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+        <?php endif; ?>
+    </p>
+
     <section class="link__meta">
         <p class="link__details">
-            <?php if (!$link->fetched_at): ?>
-                <span class="icon--spin">
-                    <?= icon('sync') ?>
-                    <?= _('ongoing synchronisation…') ?>
-                </span>
-            <?php else: ?>
-                <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
-            <?php endif; ?>
+            <?php $username = $owner_is_current_user ? _('you') : protect($owner->username); ?>
+            <?= _f('Added by <a href="%s">%s</a>', url('profile', ['id' => $owner->id]), $username) ?>
         </p>
 
         <ul class="link__actions">
@@ -133,16 +140,6 @@
                 </div>
             </article>
         <?php endforeach; ?>
-
-        <?php if (!$messages): ?>
-            <p class="paragraph--placeholder">
-                <?php if ($current_user && $owner->id === $current_user->id): ?>
-                    <?= _('You didn’t comment on this link.') ?>
-                <?php else: ?>
-                    <?= _f('%s didn’t comment on this link.', protect($owner->username)) ?>
-                <?php endif; ?>
-            </p>
-        <?php endif; ?>
 
         <?php if ($can_comment): ?>
             <form method="post" action="<?= url('links/create message', ['link_id' => $link->id]) ?>">
