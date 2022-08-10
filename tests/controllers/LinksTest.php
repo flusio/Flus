@@ -842,25 +842,30 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateChangesTheTitleAndRedirects()
+    public function testUpdateChangesTheLinkAndRedirects()
     {
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
+        $old_reading_time = $this->fakeUnique('numberBetween', 0, 9000);
+        $new_reading_time = $this->fakeUnique('numberBetween', 0, 9000);
         $user = $this->login();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'fetched_at' => $this->fake('iso8601'),
             'title' => $old_title,
+            'reading_time' => $old_reading_time,
         ]);
 
         $response = $this->appRun('post', "/links/{$link_id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
+            'reading_time' => $new_reading_time,
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link_id}");
         $link = models\Link::find($link_id);
         $this->assertSame($new_title, $link->title);
+        $this->assertSame($new_reading_time, $link->reading_time);
     }
 
     public function testUpdateRedirectsToFrom()

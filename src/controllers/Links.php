@@ -311,6 +311,7 @@ class Links
             return Response::ok('links/edit.phtml', [
                 'link' => $link,
                 'title' => $link->title,
+                'reading_time' => $link->reading_time,
                 'from' => $from,
             ]);
         } else {
@@ -324,6 +325,7 @@ class Links
      * @request_param string csrf
      * @request_param string id
      * @request_param string title
+     * @request_param integer reading_time
      * @request_param string from (default is /links/:id)
      *
      * @response 302 /login?redirect_to=/links/:id/edit if not connected
@@ -336,6 +338,7 @@ class Links
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $new_title = $request->param('title');
+        $new_reading_time = $request->paramInteger('reading_time', 0);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
         $csrf = $request->param('csrf');
 
@@ -356,6 +359,7 @@ class Links
         }
 
         $link->title = trim($new_title);
+        $link->reading_time = max(0, $new_reading_time);
         $errors = $link->validate();
         if ($errors) {
             utils\Flash::set('errors', $errors);

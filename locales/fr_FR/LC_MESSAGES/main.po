@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-08-10 17:08+0200\n"
-"PO-Revision-Date: 2022-08-10 17:08+0200\n"
+"POT-Creation-Date: 2022-08-10 17:38+0200\n"
+"PO-Revision-Date: 2022-08-10 17:38+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -72,7 +72,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 
 #: controllers/Collections.php:381 controllers/Exportations.php:61
 #: controllers/Groups.php:161 controllers/Importations.php:48
-#: controllers/Links.php:354 controllers/Links.php:400
+#: controllers/Links.php:357 controllers/Links.php:404
 #: controllers/Messages.php:93 controllers/Messages.php:141
 #: controllers/Sessions.php:202 controllers/collections/Read.php:67
 #: controllers/collections/Read.php:128 controllers/collections/Read.php:189
@@ -691,7 +691,7 @@ msgstr "Suivant"
 #: views/links/collections/index.phtml:28
 #: views/links/collections/index_adding.phtml:29
 #: views/links/collections/index_news.phtml:32 views/links/edit.phtml:43
-#: views/links/new.phtml:41 views/links/new.phtml:58
+#: views/links/edit.phtml:72 views/links/new.phtml:41 views/links/new.phtml:58
 #: views/links/searches/show.phtml:55 views/links/show.phtml:184
 #: views/messages/edit.phtml:37 views/my/account/deletion.phtml:63
 #: views/my/profile/edit.phtml:55 views/my/profile/edit.phtml:91
@@ -825,7 +825,7 @@ msgstr "Afficher la collection publiquement"
 
 #: views/collections/edit.phtml:125 views/collections/filters/edit.phtml:89
 #: views/collections/groups/edit.phtml:104 views/groups/edit.phtml:52
-#: views/links/collections/index.phtml:63 views/links/edit.phtml:52
+#: views/links/collections/index.phtml:63 views/links/edit.phtml:81
 #: views/messages/edit.phtml:46 views/my/profile/edit.phtml:127
 #: views/my/security/show_confirmed.phtml:94
 msgid "Save changes"
@@ -1518,11 +1518,19 @@ msgstr "Modification d’un lien"
 msgid "The title of your link"
 msgstr "Le titre de votre lien"
 
-#: views/links/edit.phtml:63
+#: views/links/edit.phtml:52
+msgid "It takes"
+msgstr "Il faut"
+
+#: views/links/edit.phtml:66
+msgid "minutes to consult."
+msgstr "minutes pour le consulter."
+
+#: views/links/edit.phtml:92
 msgid "Are you sure that you want to remove this link?"
 msgstr "Êtes-vous sur·e de vouloir retirer ce lien ?"
 
-#: views/links/edit.phtml:71
+#: views/links/edit.phtml:100
 msgid "Delete the link"
 msgstr "Supprimer le lien"
 
