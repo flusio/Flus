@@ -83,10 +83,9 @@
 
     font-style: italic;
 
-    background:
-        url('../../icons/block-quote.svg') no-repeat,
-        linear-gradient(to bottom, var(--color-turquoise-4), var(--color-turquoise-5));
-    background-color: var(--color-turquoise-4);
+    background-color: var(--color-turquoise-3);
+    background-image: url('../../icons/block-quote.svg');
+    background-repeat: no-repeat;
     background-size: 45px;
     border-radius: var(--radius);
 }
