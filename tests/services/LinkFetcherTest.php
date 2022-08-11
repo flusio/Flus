@@ -244,13 +244,14 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     public function testFetchDoesNotChangeTitleIfAlreadySet()
     {
         $link_fetcher_service = new LinkFetcher();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://flus.fr/carnet/index.html';
         $title = $this->fake('sentence');
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $title,
         ]);
         $link = models\Link::find($link_id);
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $link_fetcher_service->fetch($link);
 
@@ -285,13 +286,14 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     public function testFetchDoesNotChangeReadingTimeIfAlreadySet()
     {
         $link_fetcher_service = new LinkFetcher();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://flus.fr/carnet/index.html';
         $reading_time = 999999;
         $link_id = $this->create('link', [
             'url' => $url,
             'reading_time' => $reading_time,
         ]);
         $link = models\Link::find($link_id);
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $link_fetcher_service->fetch($link);
 
