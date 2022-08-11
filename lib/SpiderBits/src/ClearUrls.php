@@ -1,0 +1,201 @@
+<?php
+
+namespace SpiderBits;
+
+/**
+ * @author  Marien Fressinaud <dev@marienfressinaud.fr>
+ * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
+ */
+class ClearUrls
+{
+    private static $clear_urls_data = null;
+
+    /**
+     * Clear a URL from its tracker parameters.
+     *
+     * It uses ClearURLs rules internally to clear the URL. Some behaviours
+     * differ from ClearURLs:
+     *
+     * - if a URL matches a rule with `completeProvider=true`, an empty string
+     *   is returned;
+     * - referralMarketing parameters are always removed (i.e. there's no
+     *   option to allow referral marketing);
+     * - `forceRedirection` is ignored.
+     *
+     * @see https://docs.clearurls.xyz/1.23.0/specs/rules/
+     *
+     * @param string $url
+     *
+     * @throws \Exception
+     *     Raised if the clearurls-data.minify.json file cannot be read, or
+     *     cannot be parsed to JSON.
+     *
+     * @return string
+     */
+    public static function clear($url)
+    {
+        // A note about the regex used in this method: PCRE patterns must be
+        // enclosed by delimiters. They are generally "/", "#" or "~". Problem:
+        // these characters are often used in URLs, and so they can be present
+        // in the patterns (in which case the `preg_*` functions may fail). It
+        // is why I use "@" instead which has very few chances to be used in
+        // the patterns.
+
+        $providers = self::loadClearUrlsProviders();
+        foreach ($providers as $provider_name => $provider) {
+            // set default values so we don't have to check for their presence
+            $provider = array_merge([
+                'urlPattern' => '',
+                'completeProvider' => false,
+                'rules' => [],
+                'rawRules' => [],
+                'referralMarketing' => [],
+                'exceptions' => [],
+                'redirections' => [],
+                'forceRedirection' => false,
+            ], $provider);
+
+            // First, verify our URL matches the urlPattern (if not, skip it).
+            if (!preg_match("@{$provider['urlPattern']}@i", $url)) {
+                continue;
+            }
+
+            // Secondly, verify the URL is not in the exceptions list (if it
+            // is, skip it).
+            $is_exception = false;
+            foreach ($provider['exceptions'] ?? [] as $exception_pattern) {
+                if (preg_match("@{$exception_pattern}@i", $url)) {
+                    $is_exception = true;
+                    break;
+                }
+            }
+
+            if ($is_exception) {
+                continue;
+            }
+
+            // If the provider is "completeProvider", the URL should be blocked
+            // (i.e. an empty string in flusio context).
+            if (isset($provider['completeProvider']) && $provider['completeProvider']) {
+                return '';
+            }
+
+            // Extract redirections from the URL if any (e.g.
+            // https://google.com/url?q=https://example.com)
+            // If we find a redirection, we call clear() recursively (but
+            // the current call ends here)
+            foreach ($provider['redirections'] ?? [] as $redirection_pattern) {
+                $result = preg_match("@{$redirection_pattern}@i", $url, $matches);
+                if ($result && count($matches) >= 2) {
+                    // the redirected URL is in the first Regex group (index 0
+                    // is the full matching string).
+                    $redirected_url = rawurldecode($matches[1]);
+                    $redirected_url = Url::sanitize($redirected_url);
+                    return self::clear($redirected_url);
+                }
+            }
+
+            // Directly remove matching rawRules from the URL
+            foreach ($provider['rawRules'] ?? [] as $raw_rule_pattern) {
+                $url = preg_replace("@{$raw_rule_pattern}@i", '', $url);
+            }
+
+            // Apply rules and referralMarketing rules to query parameters.
+            // Since trackers can also be inserted in the URL fragment, we
+            // clear it as well.
+            $rules = array_merge(
+                $provider['rules'] ?? [],
+                $provider['referralMarketing'] ?? []
+            );
+
+            $parsed_url = parse_url($url);
+            $parsed_url['query'] = $parsed_url['query'] ?? '';
+            $parsed_url['fragment'] = $parsed_url['fragment'] ?? '';
+
+            $cleared_query = self::clearQuery($parsed_url['query'], $rules);
+            $cleared_fragment = self::clearQuery($parsed_url['fragment'], $rules);
+
+            // Finally, rebuild the URL from the parsed and cleared parts
+            $rebuilt_url = $parsed_url['scheme'] . '://';
+            $rebuilt_url .= $parsed_url['host'];
+            if (!empty($parsed_url['port'])) {
+                $rebuilt_url .= ':' . $parsed_url['port'];
+            }
+            $rebuilt_url .= $parsed_url['path'] ?? '';
+
+            $had_empty_query = strpos($url, '?') !== false && $parsed_url['query'] === '';
+            if (!empty($cleared_query) || $had_empty_query) {
+                $rebuilt_url .= '?' . $cleared_query;
+            }
+
+            $had_empty_fragment = strpos($url, '#') !== false && $parsed_url['fragment'] === '';
+            if (!empty($cleared_fragment) || $had_empty_fragment) {
+                $rebuilt_url .= '#' . $cleared_fragment;
+            }
+
+            $url = $rebuilt_url;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Load and return the ClearURLs providers rules from the file.
+     *
+     * The file is only loaded once, even if you call this method multiple
+     * times.
+     *
+     * @throws \Exception
+     *     Raised if the clearurls-data.minify.json file cannot be read, or
+     *     cannot be parsed to JSON.
+     *
+     * @return array
+     */
+    private static function loadClearUrlsProviders()
+    {
+        if (self::$clear_urls_data === null) {
+            $clear_urls_file_content = file_get_contents(__DIR__ . '/clearurls-data.min.json');
+            if ($clear_urls_file_content === false) {
+                throw new \Exception(
+                    __DIR__ . '/clearurls-data.min.json file cannot be found.'
+                );
+            }
+
+            self::$clear_urls_data = json_decode($clear_urls_file_content, true);
+            if (self::$clear_urls_data === null) {
+                throw new \Exception(
+                    __DIR__ . '/clearurls-data.min.json file does not contain valid JSON.'
+                );
+            }
+        }
+
+        return self::$clear_urls_data['providers'];
+    }
+
+    /**
+     * Remove parameters from a URL query.
+     *
+     * Parameters are removed from the string if their names match any of the
+     * provided rules patterns.
+     *
+     * @param string $query
+     * @param string[] $rules
+     *
+     * @return string
+     */
+    private static function clearQuery($query, $rules)
+    {
+        $parameters = Url::parseQuery($query);
+
+        foreach ($parameters as $name => $value) {
+            foreach ($rules as $rule_pattern) {
+                if (preg_match("@{$rule_pattern}@i", $name)) {
+                    unset($parameters[$name]);
+                    break;
+                }
+            }
+        }
+
+        return Url::buildQuery($parameters);
+    }
+}
