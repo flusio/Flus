@@ -127,21 +127,6 @@
                     </summary>
 
                     <nav class="popup__container popup__container--over" role="menu">
-                        <?php if ($display_edit): ?>
-                            <button
-                                class="popup__item popup__item--button"
-                                data-controller="modal-opener"
-                                data-action="modal-opener#fetch"
-                                data-modal-opener-href-value="<?= url('edit link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
-                                aria-haspopup="dialog"
-                                aria-controls="modal"
-                                role="menuitem"
-                            >
-                                <?= icon('pencil') ?>
-                                <?= _('Edit') ?>
-                            </button>
-                        <?php endif; ?>
-
                         <div data-controller="copy-to-clipboard">
                             <input type="hidden" value="<?= protect($link->url) ?>" data-copy-to-clipboard-target="copyable" />
 
@@ -178,6 +163,23 @@
                                     <?= _('Remove from read list') ?>
                                 </button>
                             </form>
+                        <?php endif; ?>
+
+                        <?php if ($display_edit): ?>
+                            <div class="popup__separator"></div>
+
+                            <button
+                                class="popup__item popup__item--button"
+                                data-controller="modal-opener"
+                                data-action="modal-opener#fetch"
+                                data-modal-opener-href-value="<?= url('edit link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
+                                aria-haspopup="dialog"
+                                aria-controls="modal"
+                                role="menuitem"
+                            >
+                                <?= icon('pencil') ?>
+                                <?= _('Edit') ?>
+                            </button>
                         <?php endif; ?>
                     </nav>
                 </details>
