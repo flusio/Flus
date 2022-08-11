@@ -53,7 +53,9 @@ class Messages
         $csrf = $request->param('csrf');
 
         if (!$user) {
-            return Response::redirect('link', ['id' => $link_id]);
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('link', ['id' => $link_id]),
+            ]);
         }
 
         $link = models\Link::find($link_id);

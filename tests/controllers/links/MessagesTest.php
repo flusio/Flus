@@ -99,7 +99,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'content' => $content,
         ]);
 
-        $this->assertResponseCode($response, 302, "/links/{$link_id}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
         $this->assertSame(0, models\Message::count());
     }
 
