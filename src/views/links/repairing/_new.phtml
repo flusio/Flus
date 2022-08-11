@@ -1,0 +1,73 @@
+<turbo-frame id="modal-links-repairing-new" target="_top">
+    <div class="section">
+        <div class="section__title">
+            <h1 id="modal-title"><?= _('Repairing a link') ?></h1>
+        </div>
+
+        <p class="section__intro">
+            <?= _('You can change the <abbr>URL</abbr> of a link if it’s broken, or if you made a mistake in it.') ?>
+        </p>
+
+        <form method="post" action="<?= url('repair link', ['id' => $link->id]) ?>">
+            <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="from" value="<?= $from ?>" />
+
+            <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
+                <label for="url">
+                    <?= _('What’s the address of the link?') ?>
+                </label>
+
+                <input
+                    id="url"
+                    name="url"
+                    type="url"
+                    placeholder="https://…"
+                    required
+                    value="<?= $url ?>"
+                    autocomplete="off"
+                    autofocus
+                    aria-describedby="url-desc"
+                />
+
+                <div id="url-desc">
+                    <?php if (isset($errors['url'])): ?>
+                        <p class="form-group__error">
+                            <span class="sr-only"><?= _('Error') ?></span>
+                            <?= $errors['url'] ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <p class="form-group__caption">
+                        <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input
+                    type="checkbox"
+                    id="ask-sync"
+                    name="ask_sync"
+                    <?= $ask_sync ? 'checked' : '' ?>
+                    aria-describedby="ask-sync-caption"
+                />
+
+                <label class="label--checkbox" for="ask-sync">
+                    <?= _('Ask for a new synchronization') ?>
+                </label>
+
+                <p class="form-group__caption" id="ask-sync-caption">
+                    <?= _('This will check the status of the page and possibly update the illustration.') ?>
+                </p>
+            </div>
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Repair the link') ?>
+                </button>
+            </div>
+        </form>
+    </div>
+</turbo-frame>

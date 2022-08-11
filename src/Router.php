@@ -147,6 +147,8 @@ class Router
         $router->addRoute('get', '/links/:id/feed', 'links/Feeds#alias');
         $router->addRoute('get', '/links/:id/edit', 'Links#edit', 'edit link');
         $router->addRoute('post', '/links/:id/edit', 'Links#update', 'update link');
+        $router->addRoute('get', '/links/:id/repair', 'links/Repairing#new', 'repairing link');
+        $router->addRoute('post', '/links/:id/repair', 'links/Repairing#create', 'repair link');
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');
         $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
         $router->addRoute('post', '/links/:id/read', 'links/Read#create', 'mark link as read');

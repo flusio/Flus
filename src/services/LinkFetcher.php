@@ -77,7 +77,7 @@ class LinkFetcher
             $link->title = $info['title'];
         }
 
-        if (isset($info['reading_time'])) {
+        if (isset($info['reading_time']) && $link->reading_time <= 0) {
             $link->reading_time = $info['reading_time'];
         }
 

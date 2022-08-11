@@ -281,4 +281,21 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($url, $link->title);
         $this->assertSame(404, $link->fetched_code);
     }
+
+    public function testFetchDoesNotChangeReadingTimeIfAlreadySet()
+    {
+        $link_fetcher_service = new LinkFetcher();
+        $url = 'https://github.com/flusio/flusio';
+        $reading_time = 999999;
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'reading_time' => $reading_time,
+        ]);
+        $link = models\Link::find($link_id);
+
+        $link_fetcher_service->fetch($link);
+
+        $link = models\Link::find($link_id);
+        $this->assertSame($reading_time, $link->reading_time);
+    }
 }

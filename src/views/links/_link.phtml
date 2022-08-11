@@ -2,6 +2,7 @@
     $display_comments = $display_comments ?? false;
     $display_hidden = $display_hidden ?? false;
     $display_edit = $display_edit ?? false;
+    $display_repair = $display_repair ?? false;
     $display_mark_as_read = $display_mark_as_read ?? false;
     $display_mark_as_unread = $display_mark_as_unread ?? false;
     $display_via = $display_via ?? false;
@@ -165,9 +166,11 @@
                             </form>
                         <?php endif; ?>
 
-                        <?php if ($display_edit): ?>
+                        <?php if ($display_edit || $display_repair): ?>
                             <div class="popup__separator"></div>
+                        <?php endif; ?>
 
+                        <?php if ($display_edit): ?>
                             <button
                                 class="popup__item popup__item--button"
                                 data-controller="modal-opener"
@@ -179,6 +182,21 @@
                             >
                                 <?= icon('pencil') ?>
                                 <?= _('Edit') ?>
+                            </button>
+                        <?php endif; ?>
+
+                        <?php if ($display_repair): ?>
+                            <button
+                                class="popup__item popup__item--button"
+                                data-controller="modal-opener"
+                                data-action="modal-opener#fetch"
+                                data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
+                                aria-haspopup="dialog"
+                                aria-controls="modal"
+                                role="menuitem"
+                            >
+                                <?= icon('wrench') ?>
+                                <?= _('Repair') ?>
                             </button>
                         <?php endif; ?>
                     </nav>

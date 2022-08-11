@@ -1,0 +1,12 @@
+<turbo-stream action="replace" target="modal-links-repairing-new">
+    <template>
+        <?= $this->include('links/repairing/_new.phtml', [
+            'link' => $link,
+            'url' => $url,
+            'ask_sync' => $ask_sync,
+            'from' => $from,
+            'errors' => $errors,
+            'error' => $error,
+        ]); ?>
+    </template>
+</turbo-stream>
