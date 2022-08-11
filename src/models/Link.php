@@ -306,6 +306,16 @@ class Link extends \Minz\Model
     }
 
     /**
+     * Return whether a link is in error or not.
+     *
+     * @return boolean
+     */
+    public function inError()
+    {
+        return $this->fetched_code < 200 || $this->fetched_code >= 400;
+    }
+
+    /**
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt

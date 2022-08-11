@@ -14,6 +14,8 @@
 
     $via_collection = $display_via ? $link->viaCollection() : null;
     $via_user = $display_via ? $link->viaUser() : null;
+
+    $is_current_user_owner = $current_user && $current_user->id === $link->user_id;
 ?>
 
 <div class="card">
@@ -27,7 +29,20 @@
         <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" loading="lazy" />
     </a>
 
-    <time class="card__image-overlay" datetime="<?= $link->published_at->format(DATE_ATOM) ?>" title="<?= _date($link->published_at, 'dd MMM Y, HH:mm') ?>">
+    <?php if ($link->inError()): ?>
+        <?php
+            if ($is_current_user_owner):
+                $title = _('This link seems to be inaccessible, you should repair it.');
+            else:
+                $title = _('This link seems to be inaccessible, you may have difficulties to access it.');
+            endif;
+        ?>
+        <span class="card__image-overlay" title="<?= $title ?>">
+            <?= icon('disconnect') ?> <?= _('inaccessible') ?>
+        </span>
+    <?php endif; ?>
+
+    <time class="card__image-overlay card__image-overlay--right" datetime="<?= $link->published_at->format(DATE_ATOM) ?>" title="<?= _date($link->published_at, 'dd MMM Y, HH:mm') ?>">
         <?php if ($now->format('Y') === $link->published_at->format('Y')): ?>
             <?= _date($link->published_at, 'dd MMM') ?>
         <?php else: ?>

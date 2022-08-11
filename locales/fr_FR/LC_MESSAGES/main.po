@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-08-11 12:06+0200\n"
-"PO-Revision-Date: 2022-08-11 12:06+0200\n"
+"POT-Creation-Date: 2022-08-11 14:45+0200\n"
+"PO-Revision-Date: 2022-08-11 14:46+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -325,23 +325,23 @@ msgstr "Le filtre est invalide."
 msgid "The name must be less than %d characters."
 msgstr "Le nom ne doit pas faire plus de %d caractères."
 
-#: models/Link.php:336
+#: models/Link.php:346
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:338
+#: models/Link.php:348
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:357
+#: models/Link.php:367
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:362
+#: models/Link.php:372
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:366
+#: models/Link.php:376
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -1076,13 +1076,13 @@ msgid "Published by %s"
 msgstr "Publiée par %s"
 
 #: views/collections/show.phtml:74 views/collections/show_public.phtml:112
-#: views/links/_link.phtml:121 views/links/_link.phtml:125
+#: views/links/_link.phtml:136 views/links/_link.phtml:140
 #: views/links/show.phtml:106 views/links/show.phtml:110
 msgid "Actions"
 msgstr "Actions"
 
 #: views/collections/show.phtml:104 views/groups/_group.phtml:23
-#: views/groups/_group.phtml:37 views/links/_link.phtml:184
+#: views/groups/_group.phtml:37 views/links/_link.phtml:199
 #: views/links/searches/show.phtml:124 views/links/show.phtml:126
 #: views/profiles/show.phtml:55
 msgid "Edit"
@@ -1397,16 +1397,31 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/links/_link.phtml:55 views/links/searches/show.phtml:100
+#: views/links/_link.phtml:35
+msgid "This link seems to be inaccessible, you should repair it."
+msgstr "Ce lien semble inaccessible, vous devriez le réparer."
+
+#: views/links/_link.phtml:37
+msgid ""
+"This link seems to be inaccessible, you may have difficulties to access it."
+msgstr ""
+"Ce lien semble inaccessible, vous pourriez rencontrer des difficultés pour y "
+"accéder."
+
+#: views/links/_link.phtml:41
+msgid "inaccessible"
+msgstr "inaccessible"
+
+#: views/links/_link.phtml:70 views/links/searches/show.phtml:100
 #: views/links/searches/show.phtml:157 views/links/show.phtml:47
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/links/_link.phtml:62
+#: views/links/_link.phtml:77
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.phtml:69
+#: views/links/_link.phtml:84
 #, php-format
 msgid ""
 "via your <strong><a class=\"anchor--hidden\" href=\"%s\">bookmarks</a></"
@@ -1414,7 +1429,7 @@ msgid ""
 msgstr ""
 "via vos <strong><a class=\"anchor--hidden\" href=\"%s\">signets</a></strong>"
 
-#: views/links/_link.phtml:74
+#: views/links/_link.phtml:89
 #, php-format
 msgid ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> by <a "
@@ -1423,71 +1438,71 @@ msgstr ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> de <a "
 "class=\"anchor--hidden\" href=\"%s\">%s</a>"
 
-#: views/links/_link.phtml:82 views/links/_link.phtml:89
+#: views/links/_link.phtml:97 views/links/_link.phtml:104
 #, php-format
 msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
-#: views/links/_link.phtml:101 views/links/searches/show.phtml:110
+#: views/links/_link.phtml:116 views/links/searches/show.phtml:110
 #, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
 msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
 
-#: views/links/_link.phtml:106
+#: views/links/_link.phtml:121
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.phtml:141
+#: views/links/_link.phtml:156
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:151
+#: views/links/_link.phtml:166
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:164
+#: views/links/_link.phtml:179
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.phtml:199
+#: views/links/_link.phtml:214
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.phtml:210 views/links/_link.phtml:214
+#: views/links/_link.phtml:225 views/links/_link.phtml:229
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/links/_link.phtml:221
+#: views/links/_link.phtml:236
 msgid "Remove from the news…"
 msgstr "Retirer du journal…"
 
-#: views/links/_link.phtml:229
+#: views/links/_link.phtml:244
 msgid "and mark as read"
 msgstr "et marquer comme lu"
 
-#: views/links/_link.phtml:238
+#: views/links/_link.phtml:253
 msgid "and read later"
 msgstr "et lire plus tard"
 
-#: views/links/_link.phtml:249
+#: views/links/_link.phtml:264
 msgid "and never see again"
 msgstr "et ne plus revoir"
 
-#: views/links/_link.phtml:264 views/links/_link.phtml:269
+#: views/links/_link.phtml:279 views/links/_link.phtml:284
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/links/_link.phtml:264 views/links/_link.phtml:274
+#: views/links/_link.phtml:279 views/links/_link.phtml:289
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/links/_link.phtml:288 views/links/show.phtml:69
+#: views/links/_link.phtml:303 views/links/show.phtml:69
 msgid "read"
 msgstr "lire"
 
-#: views/links/_link.phtml:290 views/links/show.phtml:71
+#: views/links/_link.phtml:305 views/links/show.phtml:71
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 

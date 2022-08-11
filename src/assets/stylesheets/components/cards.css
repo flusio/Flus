@@ -129,7 +129,7 @@
 .card__image-overlay {
     position: absolute;
     top: var(--space-smaller);
-    right: var(--space-smaller);
+    left: var(--space-smaller);
 
     padding: 0 var(--space-small);
 
@@ -139,6 +139,11 @@
     opacity: 0.8;
     background-color: var(--color-purple-1);
     border-radius: var(--radius);
+}
+
+.card__image-overlay--right {
+    right: var(--space-smaller);
+    left: auto;
 }
 
 .card__body {
