@@ -316,6 +316,17 @@ class Link extends \Minz\Model
     }
 
     /**
+     * Return whether trackers are detected in the URL.
+     *
+     * @return boolean
+     */
+    public function trackersDetected()
+    {
+        $cleared_url = \SpiderBits\ClearUrls::clear($this->url);
+        return $this->url !== $cleared_url;
+    }
+
+    /**
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt
