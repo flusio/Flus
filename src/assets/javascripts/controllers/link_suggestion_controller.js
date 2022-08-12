@@ -9,9 +9,7 @@ export default class extends Controller {
         url: String,
     }
 
-    change (event) {
-        event.preventDefault();
-
+    change () {
         this.inputTarget.value = this.urlValue;
         this.messageTarget.hidden = true;
         this.inputTarget.focus();
