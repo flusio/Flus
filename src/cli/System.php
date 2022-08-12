@@ -70,7 +70,7 @@ class System
         $info .= "→ {$count_users_week} this week\n";
         $info .= "→ {$percent_users_validated}% validated\n";
         $info .= "\n";
-        $info .= "{$count_links} links\n";
+        $info .= "{$count_links} links (estimated)\n";
         $info .= "→ {$count_links_to_fetch} to synchronize\n";
         $info .= "\n";
         $info .= "{$count_collections} collections\n";
