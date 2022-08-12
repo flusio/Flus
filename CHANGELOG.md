@@ -1,6 +1,6 @@
 # Changelog of flusio
 
-## 2022-xx-xx - v0.48
+## 2022-08-12 - v0.48
 
 ### Migration notes
 
@@ -9,6 +9,33 @@ minimum number of links per feed when purging is enabled (see `FEEDS_LINKS_KEEP_
 You’ll have to set the variable in your `.env` file and restart your jobs
 workers. You may also want to execute the `cli feeds reset-hashes` command so
 the old unchanged feeds can be synchronized again to get old links.
+
+### New
+
+- Warn about trackers in URLs ([172fa8be](https://github.com/flusio/flusio/commit/172fa8be))
+- Allow to repair links ([2d68e25d](https://github.com/flusio/flusio/commit/2d68e25d))
+- Allow to edit links reading time ([d1aa62a3](https://github.com/flusio/flusio/commit/d1aa62a3))
+- Allow to edit messages ([2cf523db](https://github.com/flusio/flusio/commit/2cf523db))
+
+### Improvements
+
+- Show an icon on links in error ([8f668e43](https://github.com/flusio/flusio/commit/8f668e43))
+- Show who added a link on the comments page ([65e9584d](https://github.com/flusio/flusio/commit/65e9584d))
+- Move links edit button at the end of the menu ([b60e8351](https://github.com/flusio/flusio/commit/b60e8351))
+- Lighten the background of blockquotes ([eb56e0f0](https://github.com/flusio/flusio/commit/eb56e0f0))
+- Allow to set feeds `<link rel="alternate">` to original links ([bc0d8acb](https://github.com/flusio/flusio/commit/bc0d8acb))
+- Improve perf when displaying link collections ([0a474ba9](https://github.com/flusio/flusio/commit/0a474ba9))
+- (admin) Allow to keep a minimum number of links in feeds ([71e20731](https://github.com/flusio/flusio/commit/71e20731))
+- (admin) Make /cli/clean command more verbose ([666c2903](https://github.com/flusio/flusio/commit/666c2903))
+
+### Bug fixes
+
+- Fix the strategy to sanitize URLs ([c41afda2](https://github.com/flusio/flusio/commit/c41afda2))
+- Redirect unlogged users to login when posting messages ([84176df3](https://github.com/flusio/flusio/commit/84176df3))
+
+### Misc
+
+- Add credits to dependencies in the README ([a25277e6](https://github.com/flusio/flusio/commit/a25277e6))
 
 ## 2022-07-27 - v0.47
 
