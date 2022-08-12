@@ -288,7 +288,7 @@ legend {
 
     background-image: url("../../icons/error-red.svg");
     background-repeat: no-repeat;
-    background-position: left var(--space-small) top;
+    background-position: left var(--space-small) center;
     background-size: 1.5em;
 }
 

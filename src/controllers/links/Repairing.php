@@ -45,6 +45,7 @@ class Repairing
         return Response::ok('links/repairing/new.phtml', [
             'link' => $link,
             'url' => $link->url,
+            'url_cleared' => \SpiderBits\ClearUrls::clear($link->url),
             'ask_sync' => false,
             'from' => $from,
         ]);
@@ -76,6 +77,7 @@ class Repairing
         $ask_sync = $request->paramBoolean('ask_sync', false);
         $csrf = $request->param('csrf');
         $from = $request->param('from');
+        $url_cleared = \SpiderBits\ClearUrls::clear($url);
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -101,6 +103,7 @@ class Repairing
             return Response::badRequest($view_file, [
                 'link' => $link,
                 'url' => $url,
+                'url_cleared' => $url_cleared,
                 'ask_sync' => $ask_sync,
                 'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -113,6 +116,7 @@ class Repairing
             return Response::badRequest($view_file, [
                 'link' => $link,
                 'url' => $url,
+                'url_cleared' => $url_cleared,
                 'ask_sync' => $ask_sync,
                 'from' => $from,
                 'errors' => $errors,
