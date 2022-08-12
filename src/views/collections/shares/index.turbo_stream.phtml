@@ -2,11 +2,11 @@
     <template>
         <?= $this->include('collections/shares/_index.phtml', [
             'collection' => $collection,
-            'type' => $type,
-            'user_id' => $user_id,
-            'from' => $from,
+            'type' => $this->safe('type'),
+            'user_id' => $this->safe('user_id'),
+            'from' => $this->safe('from'),
             'errors' => $errors,
-            'error' => $error,
+            'error' => $this->safe('error'),
         ]); ?>
     </template>
 </turbo-stream>

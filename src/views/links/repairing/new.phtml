@@ -8,10 +8,10 @@
 
 <?= $this->include('links/repairing/_new.phtml', [
     'link' => $link,
-    'url' => $url,
-    'url_cleared' => $url_cleared,
+    'url' => $this->safe('url'),
+    'url_cleared' => $this->safe('url_cleared'),
     'ask_sync' => $ask_sync,
-    'from' => $from,
+    'from' => $this->safe('from'),
     'errors' => $errors,
-    'error' => $error,
+    'error' => $this->safe('error'),
 ]); ?>

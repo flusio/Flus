@@ -17,6 +17,7 @@
             <div
                 class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>"
                 data-controller="link-suggestion"
+                data-link-suggestion-url-value="<?= $this->safe('url_cleared') ?>"
             >
                 <label for="url">
                     <?= _('What’s the address of the link?') ?>
@@ -47,9 +48,7 @@
                         <p class="form-group__error" data-link-suggestion-target="message">
                             <?= _f('%s has detected trackers in this <abbr>URL</abbr>. Suggestion:', $brand) ?>
 
-                            <span data-link-suggestion-target="suggestion">
-                                <?= $url_cleared ?>
-                            </span>
+                            <?= $url_cleared ?>
 
                             <button
                                 class="button--small"

@@ -2,13 +2,17 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static get targets () {
-        return ['input', 'message', 'suggestion'];
+        return ['input', 'message'];
+    }
+
+    static values = {
+        url: String,
     }
 
     change (event) {
         event.preventDefault();
 
-        this.inputTarget.value = this.suggestionTarget.innerHTML;
+        this.inputTarget.value = this.urlValue;
         this.messageTarget.hidden = true;
         this.inputTarget.focus();
     }
