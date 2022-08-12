@@ -28,7 +28,7 @@ flusio is licensed under [AGPL 3](/LICENSE.txt).
 
 ![Screenshot of the news page with 3 links](/public/static/screenshot.jpg)
 
-## Credits
+## Credits and dependencies
 
 flusio is built upon the work of many other people:
 
@@ -39,6 +39,23 @@ flusio is built upon the work of many other people:
 - the icons are from [the Clarity project](https://clarity.design/);
 - the illustrations are from [the unDraw project](https://undraw.co), by [Katerina Limpitsouni](https://twitter.com/ninaLimpi);
 - default cards illustrations are from [SVGBackgrounds](https://www.svgbackgrounds.com/).
+
+It’s also based on other projects:
+
+- [ClearURLs rules](https://clearurls.xyz/) to detect and remove trackers from
+  URLs;
+- [FakerPHP](https://fakerphp.github.io/) to generate fake data during tests;
+- [Minz](https://github.com/flusio/Minz), a small and personal PHP framework;
+- [Parcel](https://parceljs.org/), a build tool for JavaScript;
+- [Parsedown](https://parsedown.org/) to render Markdown;
+- [PHP\_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer),
+  [Eslint](https://eslint.org/) and [Stylelint](https://stylelint.io/) to
+  enforce PHP, JavaScript and CSS coding standards;
+- [PHPMailer](https://github.com/PHPMailer/PHPMailer) to send emails with PHP;
+- [PHPUnit](https://phpunit.de/), a testing framework for PHP;
+- [Stimulus](https://stimulus.hotwired.dev/), a modest JavaScript framework;
+- [Turbo](https://turbo.hotwired.dev/) to bring speed of single-page
+  applications to flusio.
 
 ## How to contribute?
 
