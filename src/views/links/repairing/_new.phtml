@@ -14,7 +14,10 @@
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
             <input type="hidden" name="from" value="<?= $from ?>" />
 
-            <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
+            <div
+                class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>"
+                data-controller="link-suggestion"
+            >
                 <label for="url">
                     <?= _('What’s the address of the link?') ?>
                 </label>
@@ -29,6 +32,7 @@
                     autocomplete="off"
                     autofocus
                     aria-describedby="url-desc"
+                    data-link-suggestion-target="input"
                 />
 
                 <div id="url-desc">
@@ -39,9 +43,22 @@
                         </p>
                     <?php endif; ?>
 
-                    <p class="form-group__caption">
-                        <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
-                    </p>
+                    <?php if ($url !== $url_cleared): ?>
+                        <p class="form-group__error" data-link-suggestion-target="message">
+                            <?= _f('%s has detected trackers in this <abbr>URL</abbr>. Suggestion:', $brand) ?>
+
+                            <span data-link-suggestion-target="suggestion">
+                                <?= $url_cleared ?>
+                            </span>
+
+                            <button
+                                class="button--small"
+                                data-action="link-suggestion#change"
+                            >
+                                <?= _('Ok') ?>
+                            </button>
+                        </p>
+                    <?php endif; ?>
                 </div>
             </div>
 

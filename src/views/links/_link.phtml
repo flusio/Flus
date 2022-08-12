@@ -16,6 +16,8 @@
     $via_user = $display_via ? $link->viaUser() : null;
 
     $is_current_user_owner = $current_user && $current_user->id === $link->user_id;
+    $in_error = $link->inError();
+    $trackers_detected = $link->trackersDetected();
 ?>
 
 <div class="card">
@@ -29,16 +31,37 @@
         <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" loading="lazy" />
     </a>
 
-    <?php if ($link->inError()): ?>
-        <?php
-            if ($is_current_user_owner):
-                $title = _('This link seems to be inaccessible, you should repair it.');
-            else:
-                $title = _('This link seems to be inaccessible, you may have difficulties to access it.');
-            endif;
-        ?>
-        <span class="card__image-overlay" title="<?= $title ?>">
-            <?= icon('disconnect') ?> <?= _('inaccessible') ?>
+    <?php if ($in_error || $trackers_detected): ?>
+        <span class="card__image-overlay">
+            <?php if ($in_error): ?>
+                <?php
+                    if ($is_current_user_owner):
+                        $title = _('This link seems to be inaccessible, you should repair it.');
+                    else:
+                        $title = _('This link seems to be inaccessible, you may have difficulties to access it.');
+                    endif;
+                ?>
+                <span title="<?= $title ?>">
+                    <?= icon('disconnect') ?> <?= _('inaccessible') ?>
+                </span>
+            <?php endif; ?>
+
+            <?php if ($in_error && $trackers_detected): ?>
+                <br />
+            <?php endif; ?>
+
+            <?php if ($trackers_detected): ?>
+                <?php
+                    if ($is_current_user_owner):
+                        $title = _('Trackers have been detected in this link, you should repair it.');
+                    else:
+                        $title = _('Trackers have been detected in this link, your privacy might not be respected if you click on it.');
+                    endif;
+                ?>
+                <span title="<?= $title ?>">
+                    <?= icon('eye') ?> <?= _('trackers') ?>
+                </span>
+            <?php endif; ?>
         </span>
     <?php endif; ?>
 
