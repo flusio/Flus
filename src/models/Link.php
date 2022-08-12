@@ -312,7 +312,9 @@ class Link extends \Minz\Model
      */
     public function inError()
     {
-        return $this->fetched_code < 200 || $this->fetched_code >= 400;
+        return $this->fetched_at !== null && (
+            $this->fetched_code < 200 || $this->fetched_code >= 400
+        );
     }
 
     /**
