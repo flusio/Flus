@@ -101,19 +101,9 @@ class Url
             return '';
         }
 
-        // Then, we decode each part of the parsed URL. We want to decode as
-        // long as percent-encoding characters exist.
-        foreach ($parsed_url as $component => $value) {
-            while (preg_match('/%[0-9A-Fa-f]{2}/', $value) === 1) {
-                $value = rawurldecode($value);
-            }
-
-            $parsed_url[$component] = $value;
-        }
-
         // Get the scheme (default is http)
         if (isset($parsed_url['scheme'])) {
-            $scheme = $parsed_url['scheme'];
+            $scheme = self::fullPercentDecode($parsed_url['scheme']);
         } else {
             $scheme = 'http';
         }
@@ -128,6 +118,8 @@ class Url
         } else {
             $host = '';
         }
+
+        $host = self::fullPercentDecode($host);
 
         // Clean the extra dots from the host
         $host = trim($host, '.');
@@ -147,36 +139,31 @@ class Url
 
         // Get the path with ./ and ../ paths replaced.
         if (isset($parsed_url['path'])) {
-            $path = self::normalizePath($parsed_url['path']);
+            $path = self::fullPercentDecode($parsed_url['path']);
+            $path = self::normalizePath($path);
         } else {
             $path = '/';
         }
 
         // We finally rebuild the sanitized URL.
-        $sanitized_url = $scheme . '://';
-        $sanitized_url .= $host;
+        $sanitized_url = self::percentEncode($scheme) . '://';
+        $sanitized_url .= self::percentEncode($host);
         if (isset($parsed_url['port'])) {
-            $sanitized_url .= ':' . $parsed_url['port'];
+            $port = self::fullPercentDecode($parsed_url['port']);
+            $sanitized_url .= ':' . self::percentEncode($port);
         }
-        $sanitized_url .= $path;
+        $sanitized_url .= self::percentEncode($path);
         if (isset($parsed_url['query'])) {
-            $sanitized_url .= '?' . $parsed_url['query'];
+            $sanitized_url .= '?' . self::percentRecodeQuery($parsed_url['query']);
         } elseif (strpos($url, '?') !== false) {
             // If the initial URL had a `?` without query string, `parse_url()`
             // doesn't return the query component. We want to keep the question
             // mark though.
             $sanitized_url .= '?';
         }
-
-        // Re-percent-encode the URL. We don't want to use directly
-        // rawurlencode() since it will convert slashes (/), colons (:) and
-        // question mark (?)
-        $sanitized_url = self::percentEncode($sanitized_url);
-
-        // The fragment must be added afterwhile or the hash (#) could be
-        // converted.
         if (isset($parsed_url['fragment'])) {
-            $sanitized_url .= '#' . self::percentEncode($parsed_url['fragment']);
+            $fragment = self::fullPercentDecode($parsed_url['fragment']);
+            $sanitized_url .= '#' . self::percentEncode($fragment);
         }
 
         return $sanitized_url;
@@ -230,7 +217,26 @@ class Url
     }
 
     /**
-     * Percent-encode a URL.
+     * Percent-decode a value.
+     *
+     * It applies rawurldecode() on the value as long as a percent-encoded
+     * character is detected.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private static function fullPercentDecode($value)
+    {
+        while (preg_match('/%[0-9A-Fa-f]{2}/', $value) === 1) {
+            $value = rawurldecode($value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Percent-encode a value.
      *
      * Contrary to urlencode() and rawurlencode(), this method only encodes
      * ASCII characters <= 32, >= 127, '"', "#" and "%". This leaves for
@@ -239,14 +245,14 @@ class Url
      * @see https://www.php.net/manual/function.rawurlencode.php
      * @see https://en.wikipedia.org/wiki/ASCII
      *
-     * @param string url
+     * @param string $value
      *
      * @return string
      */
-    private static function percentEncode($url)
+    private static function percentEncode($value)
     {
         $escaped_url = '';
-        foreach (str_split($url) as $char) {
+        foreach (str_split($value) as $char) {
             $ord = ord($char);
             if ($ord > 32 && $ord < 127 && $char !== '"' && $char !== '#' && $char !== '%') {
                 $escaped_url .= $char;
@@ -255,5 +261,112 @@ class Url
             }
         }
         return $escaped_url;
+    }
+
+    /**
+     * Re-encode the query parameters.
+     *
+     * @param string $query
+     *
+     * @return string
+     */
+    private static function percentRecodeQuery($query)
+    {
+        $decoded_parameters = [];
+        $parameters = self::parseQuery($query);
+        foreach ($parameters as $name => $value) {
+            $name = rawurlencode(self::fullPercentDecode($name));
+            if ($value !== null) {
+                $value = rawurlencode(self::fullPercentDecode($value));
+            }
+            $decoded_parameters[$name] = $value;
+        }
+        return self::buildQuery($decoded_parameters);
+    }
+
+    /**
+     * Parse a query to parameters similarly to the parse_str function.
+     *
+     * Differences compared to parse_str:
+     *
+     * - the parameters are returned as an array;
+     * - the parameters with the same name are returned in an array instead of
+     *   being overwritten;
+     * - the value of parameters with no `=` sign is `null` instead of empty
+     *   string.
+     *
+     * @see https://www.php.net/manual/function.parse-str.php
+     *
+     * @param string $query
+     *
+     * @return array
+     */
+    public static function parseQuery($query)
+    {
+        if (empty($query)) {
+            return [];
+        }
+
+        $raw_parameters = explode('&', $query);
+        foreach ($raw_parameters as $raw_parameter) {
+            $exploded_parameter = explode('=', $raw_parameter, 2);
+            $name = $exploded_parameter[0];
+
+            if (count($exploded_parameter) === 2) {
+                $value = $exploded_parameter[1];
+            } else {
+                // The parameter may not contain a "=". Setting the value to
+                // null allows to distinguish both cases: `?foo` (value will
+                // be null) and `?foo=` (value will be empty string). This
+                // allows to rebuild the query properly later.
+                $value = null;
+            }
+
+            if (isset($parameters[$name])) {
+                if (!is_array($parameters[$name])) {
+                    $parameters[$name] = [$parameters[$name]];
+                }
+                $parameters[$name][] = $value;
+            } else {
+                $parameters[$name] = $value;
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Rebuild a query from parameters similarly to the http_build_query function.
+     *
+     * Differences compared to http_build_query:
+     *
+     * - parameters can only be an array;
+     * - it takes less arguments;
+     * - the arg separator is always "&";
+     * - it is expected than values are already encoded;
+     * - if a value is null, the parameter name is still appended, but without
+     *   an "=" sign.
+     *
+     * @see https://www.php.net/manual/function.http-build-query.php
+     *
+     * @param array $parameters
+     *
+     * @return string
+     */
+    public static function buildQuery($parameters)
+    {
+        $built_parameters = [];
+        foreach ($parameters as $name => $value) {
+            if ($value === null) {
+                $built_parameters[] = $name;
+            } elseif (is_array($value)) {
+                foreach ($value as $partial_value) {
+                    $built_parameters[] = "{$name}={$partial_value}";
+                }
+            } else {
+                $built_parameters[] = "{$name}={$value}";
+            }
+        }
+        return implode('&', $built_parameters);
     }
 }

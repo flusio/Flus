@@ -24,6 +24,26 @@ class UrlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected, $sanitized_url);
     }
 
+    /**
+     * @dataProvider parseAndBuildQueryProvider
+     */
+    public function testParseQuery($query, $expected_parameters)
+    {
+        $parameters = Url::parseQuery($query);
+
+        $this->assertSame($expected_parameters, $parameters);
+    }
+
+    /**
+     * @dataProvider parseAndBuildQueryProvider
+     */
+    public function testBuildQuery($expected_query, $parameters)
+    {
+        $query = Url::buildQuery($parameters);
+
+        $this->assertSame($expected_query, $query);
+    }
+
     public function absolutizeProvider()
     {
         return [
@@ -75,12 +95,12 @@ class UrlTest extends \PHPUnit\Framework\TestCase
             ["http://www.google.com.../", 'http://www.google.com/'],
             ["http://www.google.com/foo\tbar\rbaz\n2",'http://www.google.com/foobarbaz2'],
             ["http://www.google.com/q?", 'http://www.google.com/q?'],
-            ["http://www.google.com/q?r?", 'http://www.google.com/q?r?'],
-            ["http://www.google.com/q?r?s", 'http://www.google.com/q?r?s'],
+            ["http://www.google.com/q?r?", 'http://www.google.com/q?r%3F'],
+            ["http://www.google.com/q?r?s", 'http://www.google.com/q?r%3Fs'],
             // We want to keep the fragment
             ["http://evil.com/foo#bar#baz", 'http://evil.com/foo#bar%23baz'],
             ["http://evil.com/foo;", 'http://evil.com/foo;'],
-            ["http://evil.com/foo?bar;", 'http://evil.com/foo?bar;'],
+            ["http://evil.com/foo?bar;", 'http://evil.com/foo?bar%3B'],
             // idn_to_ascii cannot handle this url (which is invalid anyway)
             // and return an empty host
             ["http://\x01\x80.com/", 'http:///'],
@@ -93,13 +113,16 @@ class UrlTest extends \PHPUnit\Framework\TestCase
             ["%20leadingspace.com/", 'http://%20leadingspace.com/'],
             ["https://www.securesite.com/", 'https://www.securesite.com/'],
             ["http://host.com/ab%23cd", 'http://host.com/ab%23cd'],
-            ["http://host.com//twoslashes?more//slashes", 'http://host.com/twoslashes?more//slashes'],
+            ["http://host.com//twoslashes?more//slashes", 'http://host.com/twoslashes?more%2F%2Fslashes'],
             // More tests
+            ['https://example.com/?url=http%3A%2F%2Fexample.fr%2F%3Ffoo%3Dbar&spam=egg', 'https://example.com/?url=http%3A%2F%2Fexample.fr%2F%3Ffoo%3Dbar&spam=egg'], // phpcs:ignore Generic.Files.LineLength.TooLong
+            ['https://example.com/?foo?=bar', 'https://example.com/?foo%3F=bar'],
+            ['https://example.com/?foo%26=bar&spam=egg', 'https://example.com/?foo%26=bar&spam=egg'],
             ["https://domén-with-accent.com?query=with-àccent", 'https://xn--domn-with-accent-dqb.com/?query=with-%C3%A0ccent'], // phpcs:ignore Generic.Files.LineLength.TooLong
             ["https://host.com?query=with-%C3%A0ccent", 'https://host.com/?query=with-%C3%A0ccent'],
-            ["https://host.com?utm_source=gazette%252B-%252Babonn%25C3%25A9s", 'https://host.com/?utm_source=gazette+-+abonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong
-            ["https://host.com?utm_source=gazette%2B-%2Babonn%25C3%25A9s", 'https://host.com/?utm_source=gazette+-+abonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong
-            ["https://host.com?utm_source=gazette+-+abonn%C3%A9s", 'https://host.com/?utm_source=gazette+-+abonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong
+            ["https://host.com?utm_source=gazette%252B-%252Babonn%25C3%25A9s", 'https://host.com/?utm_source=gazette%2B-%2Babonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong
+            ["https://host.com?utm_source=gazette%2B-%2Babonn%25C3%25A9s", 'https://host.com/?utm_source=gazette%2B-%2Babonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong
+            ["https://host.com?utm_source=gazette+-+abonn%C3%A9s", 'https://host.com/?utm_source=gazette%2B-%2Babonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong
             ["http://evil.com/foo#bar/baz", 'http://evil.com/foo#bar/baz'],
             ["http://evil.com/foo#bar%22baz", 'http://evil.com/foo#bar%22baz'],
             ["http://evil.com/foo#🐘", 'http://evil.com/foo#%F0%9F%90%98'],
@@ -107,6 +130,44 @@ class UrlTest extends \PHPUnit\Framework\TestCase
             ["http:///example.com", ''],
             ["http://:80", ''],
             ["http://user@:80", ''],
+        ];
+    }
+
+    public function parseAndBuildQueryProvider()
+    {
+        return [
+            [
+                'foo=bar',
+                ['foo' => 'bar'],
+            ],
+            [
+                'foo=bar&spam=egg',
+                ['foo' => 'bar', 'spam' => 'egg'],
+            ],
+            [
+                'id=1',
+                ['id' => '1'],
+            ],
+            [
+                'foo',
+                ['foo' => null],
+            ],
+            [
+                'foo=',
+                ['foo' => ''],
+            ],
+            [
+                'foo=bar&foo=baz',
+                ['foo' => ['bar', 'baz']],
+            ],
+            [
+                'foo[]=bar&foo[]=baz',
+                ['foo[]' => ['bar', 'baz']],
+            ],
+            [
+                '',
+                [],
+            ],
         ];
     }
 }
