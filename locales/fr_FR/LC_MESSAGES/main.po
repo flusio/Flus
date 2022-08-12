@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-08-11 14:45+0200\n"
-"PO-Revision-Date: 2022-08-11 14:46+0200\n"
+"POT-Creation-Date: 2022-08-12 16:25+0200\n"
+"PO-Revision-Date: 2022-08-12 16:27+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -56,8 +56,8 @@ msgstr "Afficher"
 #: controllers/collections/Groups.php:122
 #: controllers/collections/Images.php:113 controllers/collections/Links.php:104
 #: controllers/collections/Shares.php:107
-#: controllers/collections/Shares.php:230 controllers/links/Messages.php:71
-#: controllers/links/Repairing.php:106 controllers/links/Searches.php:106
+#: controllers/collections/Shares.php:230 controllers/links/Messages.php:73
+#: controllers/links/Repairing.php:109 controllers/links/Searches.php:106
 #: controllers/my/Account.php:103 controllers/my/Profile.php:76
 #: controllers/my/Security.php:79 controllers/my/Security.php:150
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
@@ -325,23 +325,23 @@ msgstr "Le filtre est invalide."
 msgid "The name must be less than %d characters."
 msgstr "Le nom ne doit pas faire plus de %d caractères."
 
-#: models/Link.php:346
+#: models/Link.php:357
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:348
+#: models/Link.php:359
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:367
+#: models/Link.php:378
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:372
+#: models/Link.php:383
 msgid "Link scheme must be either http or https."
 msgstr "Le protocole du lien doit être http ou https."
 
-#: models/Link.php:376
+#: models/Link.php:387
 msgid "The link must not include a password as it’s sensitive data."
 msgstr ""
 "Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
@@ -692,7 +692,7 @@ msgstr "Suivant"
 #: views/links/collections/index_adding.phtml:29
 #: views/links/collections/index_news.phtml:32 views/links/edit.phtml:43
 #: views/links/edit.phtml:72 views/links/new.phtml:41 views/links/new.phtml:58
-#: views/links/repairing/_new.phtml:37 views/links/searches/show.phtml:55
+#: views/links/repairing/_new.phtml:41 views/links/searches/show.phtml:55
 #: views/links/show.phtml:184 views/messages/edit.phtml:37
 #: views/my/account/deletion.phtml:63 views/my/profile/edit.phtml:55
 #: views/my/profile/edit.phtml:91 views/my/profile/edit.phtml:118
@@ -940,12 +940,12 @@ msgid "New link"
 msgstr "Nouveau lien"
 
 #: views/collections/links/new.phtml:22 views/links/new.phtml:23
-#: views/links/repairing/_new.phtml:19
+#: views/links/repairing/_new.phtml:22
 msgid "What’s the address of the link?"
 msgstr "Quelle est l’adresse du lien ?"
 
 #: views/collections/links/new.phtml:46 views/feeds/_new.phtml:39
-#: views/links/new.phtml:47 views/links/repairing/_new.phtml:43
+#: views/links/new.phtml:47
 msgid ""
 "It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
 "browser."
@@ -1076,13 +1076,13 @@ msgid "Published by %s"
 msgstr "Publiée par %s"
 
 #: views/collections/show.phtml:74 views/collections/show_public.phtml:112
-#: views/links/_link.phtml:136 views/links/_link.phtml:140
+#: views/links/_link.phtml:159 views/links/_link.phtml:163
 #: views/links/show.phtml:106 views/links/show.phtml:110
 msgid "Actions"
 msgstr "Actions"
 
 #: views/collections/show.phtml:104 views/groups/_group.phtml:23
-#: views/groups/_group.phtml:37 views/links/_link.phtml:199
+#: views/groups/_group.phtml:37 views/links/_link.phtml:222
 #: views/links/searches/show.phtml:124 views/links/show.phtml:126
 #: views/profiles/show.phtml:55
 msgid "Edit"
@@ -1397,31 +1397,47 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/links/_link.phtml:35
+#: views/links/_link.phtml:39
 msgid "This link seems to be inaccessible, you should repair it."
 msgstr "Ce lien semble inaccessible, vous devriez le réparer."
 
-#: views/links/_link.phtml:37
+#: views/links/_link.phtml:41
 msgid ""
 "This link seems to be inaccessible, you may have difficulties to access it."
 msgstr ""
 "Ce lien semble inaccessible, vous pourriez rencontrer des difficultés pour y "
 "accéder."
 
-#: views/links/_link.phtml:41
+#: views/links/_link.phtml:45
 msgid "inaccessible"
 msgstr "inaccessible"
 
-#: views/links/_link.phtml:70 views/links/searches/show.phtml:100
+#: views/links/_link.phtml:56
+msgid "Trackers have been detected in this link, you should repair it."
+msgstr "Des pisteurs ont été détectés dans ce lien, vous devriez le réparer."
+
+#: views/links/_link.phtml:58
+msgid ""
+"Trackers have been detected in this link, your privacy might not be "
+"respected if you click on it."
+msgstr ""
+"Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
+"être respectée si vous cliquez dessus."
+
+#: views/links/_link.phtml:62
+msgid "trackers"
+msgstr "pisteurs"
+
+#: views/links/_link.phtml:93 views/links/searches/show.phtml:100
 #: views/links/searches/show.phtml:157 views/links/show.phtml:47
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/links/_link.phtml:77
+#: views/links/_link.phtml:100
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.phtml:84
+#: views/links/_link.phtml:107
 #, php-format
 msgid ""
 "via your <strong><a class=\"anchor--hidden\" href=\"%s\">bookmarks</a></"
@@ -1429,7 +1445,7 @@ msgid ""
 msgstr ""
 "via vos <strong><a class=\"anchor--hidden\" href=\"%s\">signets</a></strong>"
 
-#: views/links/_link.phtml:89
+#: views/links/_link.phtml:112
 #, php-format
 msgid ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> by <a "
@@ -1438,71 +1454,71 @@ msgstr ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> de <a "
 "class=\"anchor--hidden\" href=\"%s\">%s</a>"
 
-#: views/links/_link.phtml:97 views/links/_link.phtml:104
+#: views/links/_link.phtml:120 views/links/_link.phtml:127
 #, php-format
 msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
-#: views/links/_link.phtml:116 views/links/searches/show.phtml:110
+#: views/links/_link.phtml:139 views/links/searches/show.phtml:110
 #, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
 msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
 
-#: views/links/_link.phtml:121
+#: views/links/_link.phtml:144
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.phtml:156
+#: views/links/_link.phtml:179
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:166
+#: views/links/_link.phtml:189
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:179
+#: views/links/_link.phtml:202
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.phtml:214
+#: views/links/_link.phtml:237
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.phtml:225 views/links/_link.phtml:229
+#: views/links/_link.phtml:248 views/links/_link.phtml:252
 msgid "Remove from the news page"
 msgstr "Retirer du journal"
 
-#: views/links/_link.phtml:236
+#: views/links/_link.phtml:259
 msgid "Remove from the news…"
 msgstr "Retirer du journal…"
 
-#: views/links/_link.phtml:244
+#: views/links/_link.phtml:267
 msgid "and mark as read"
 msgstr "et marquer comme lu"
 
-#: views/links/_link.phtml:253
+#: views/links/_link.phtml:276
 msgid "and read later"
 msgstr "et lire plus tard"
 
-#: views/links/_link.phtml:264
+#: views/links/_link.phtml:287
 msgid "and never see again"
 msgstr "et ne plus revoir"
 
-#: views/links/_link.phtml:279 views/links/_link.phtml:284
+#: views/links/_link.phtml:302 views/links/_link.phtml:307
 msgid "Manage collections"
 msgstr "Gérer les collections"
 
-#: views/links/_link.phtml:279 views/links/_link.phtml:289
+#: views/links/_link.phtml:302 views/links/_link.phtml:312
 msgid "Add to collections"
 msgstr "Ajouter aux collections"
 
-#: views/links/_link.phtml:303 views/links/show.phtml:69
+#: views/links/_link.phtml:326 views/links/show.phtml:69
 msgid "read"
 msgstr "lire"
 
-#: views/links/_link.phtml:305 views/links/show.phtml:71
+#: views/links/_link.phtml:328 views/links/show.phtml:71
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
@@ -1595,18 +1611,27 @@ msgstr ""
 "Vous pouvez modifier l’<abbr>URL</abbr> d’un lien s’il est cassé, ou si vous "
 "avez fait une erreur."
 
+#: views/links/repairing/_new.phtml:48
+#, php-format
+msgid "%s has detected trackers in this <abbr>URL</abbr>. Suggestion:"
+msgstr "%s a détecté des pisteurs dans cette <abbr>URL</abbr>. Suggestion :"
+
 #: views/links/repairing/_new.phtml:58
+msgid "Ok"
+msgstr "Ok"
+
+#: views/links/repairing/_new.phtml:75
 msgid "Ask for a new synchronization"
 msgstr "Demander une nouvelle synchronisation"
 
-#: views/links/repairing/_new.phtml:62
+#: views/links/repairing/_new.phtml:79
 msgid ""
 "This will check the status of the page and possibly update the illustration."
 msgstr ""
 "Cela vérifiera le statut de la page et mettra éventuellement à jour "
 "l’illustration."
 
-#: views/links/repairing/_new.phtml:68
+#: views/links/repairing/_new.phtml:85
 msgid "Repair the link"
 msgstr "Réparer le lien"
 
