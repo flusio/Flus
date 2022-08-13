@@ -181,7 +181,7 @@ class FeedFetcher
             }
 
             $links_to_collections[] = [
-                'published_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+                'published_at' => $published_at,
                 'link_id' => $link_id,
                 'collection_id' => $collection->id,
             ];
@@ -380,7 +380,7 @@ class FeedFetcher
         if ($feeds_links_keep_period <= 0) {
             // If "keep period" is not set, we create all the links_to_collections
             foreach ($links_to_collections as $link_to_collection) {
-                $to_create[] = $link_to_collection['published_at'];
+                $to_create[] = $link_to_collection['published_at']->format(\Minz\Model::DATETIME_FORMAT);
                 $to_create[] = $link_to_collection['link_id'];
                 $to_create[] = $link_to_collection['collection_id'];
             }
@@ -399,7 +399,7 @@ class FeedFetcher
                 $enough_links = $links_count >= $feeds_links_keep_minimum;
 
                 if ($recent_enough || !$enough_links) {
-                    $to_create[] = $link_to_collection['published_at'];
+                    $to_create[] = $link_to_collection['published_at']->format(\Minz\Model::DATETIME_FORMAT);
                     $to_create[] = $link_to_collection['link_id'];
                     $to_create[] = $link_to_collection['collection_id'];
                     $links_count = $links_count + 1;
