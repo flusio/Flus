@@ -118,6 +118,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
             ['https://example.com/?url=http%3A%2F%2Fexample.fr%2F%3Ffoo%3Dbar&spam=egg', 'https://example.com/?url=http%3A%2F%2Fexample.fr%2F%3Ffoo%3Dbar&spam=egg'], // phpcs:ignore Generic.Files.LineLength.TooLong
             ['https://example.com/?foo?=bar', 'https://example.com/?foo%3F=bar'],
             ['https://example.com/?foo%26=bar&spam=egg', 'https://example.com/?foo%26=bar&spam=egg'],
+            ['https://example.com/?foo=bar?&foo=baz?', 'https://example.com/?foo=bar%3F&foo=baz%3F'],
             ["https://domén-with-accent.com?query=with-àccent", 'https://xn--domn-with-accent-dqb.com/?query=with-%C3%A0ccent'], // phpcs:ignore Generic.Files.LineLength.TooLong
             ["https://host.com?query=with-%C3%A0ccent", 'https://host.com/?query=with-%C3%A0ccent'],
             ["https://host.com?utm_source=gazette%252B-%252Babonn%25C3%25A9s", 'https://host.com/?utm_source=gazette%2B-%2Babonn%C3%A9s'], // phpcs:ignore Generic.Files.LineLength.TooLong

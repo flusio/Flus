@@ -276,7 +276,11 @@ class Url
         $parameters = self::parseQuery($query);
         foreach ($parameters as $name => $value) {
             $name = rawurlencode(self::fullPercentDecode($name));
-            if ($value !== null) {
+            if (is_array($value)) {
+                $value = array_map(function ($partial_value) {
+                    return rawurlencode(self::fullPercentDecode($partial_value));
+                }, $value);
+            } elseif ($value !== null) {
                 $value = rawurlencode(self::fullPercentDecode($value));
             }
             $decoded_parameters[$name] = $value;
