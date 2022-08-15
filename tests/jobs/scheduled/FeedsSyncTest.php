@@ -617,8 +617,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
 
-        $collection = models\Collection::find($collection_id);
-        $this->assertEmpty($collection->links());
+        $this->assertSame(0, models\Link::count());
     }
 
     public function testPerformTakesEntriesIfRecentEnoughWhenKeepPeriodIsSet()
@@ -667,6 +666,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
 
+        $this->assertSame(1, models\Link::count());
         $collection = models\Collection::find($collection_id);
         $links = $collection->links();
         $this->assertSame(1, count($links));

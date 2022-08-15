@@ -173,7 +173,7 @@ class FeedFetcher
                 $link->created_at = \Minz\Time::now();
                 $link->feed_entry_id = $feed_entry_id;
 
-                $links_to_create[] = $link;
+                $links_to_create[$link->id] = $link;
 
                 $link_ids_by_urls[$link->url] = $link->id;
                 $link_urls_by_entry_ids[$link->url] = $link->feed_entry_id;
@@ -193,6 +193,17 @@ class FeedFetcher
             $initial_links_count
         );
 
+        // Because some links_to_collections may have been excluded, we don't
+        // want to create the associated links.
+        // First, we get the list of link_ids that should be created.
+        $link_ids_to_keep = array_column($links_to_collections_to_create, 'link_id');
+        // Then we do an intersection between links_to_create and link_ids_to_keep.
+        // links_to_create is already indexed by link ids, and array_flip
+        // returns an array where keys are the values of link_ids_to_keep (i.e.
+        // link ids). The resting links are those that we want to create, tada!
+        $links_to_create = array_intersect_key($links_to_create, array_flip($link_ids_to_keep));
+
+        // We now can insert the links and links_to_collections via a bulkInsert
         models\Link::bulkInsert($links_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
 
@@ -356,10 +367,6 @@ class FeedFetcher
      * has configured the feeds_links_keep_period, the list is limited to the
      * recent enough links_to_collections (or until there are enough of them,
      * i.e. links_count is more than feeds_links_keep_minimum).
-     *
-     * Note that in both cases, all the links are already created. Only their
-     * relations with collections will not be created. It's not a problem
-     * because they will be removed by the Cleaner job during the night.
      *
      * @param array $links_to_collections
      *     All the links_to_collections initialized from the feed.
