@@ -141,6 +141,13 @@
     border-radius: var(--radius);
 }
 
+.card__image-overlay--warning {
+    color: var(--color-text-warning);
+
+    opacity: 1;
+    background-color: var(--color-back-warning);
+}
+
 .card__image-overlay--right {
     right: var(--space-smaller);
     left: auto;

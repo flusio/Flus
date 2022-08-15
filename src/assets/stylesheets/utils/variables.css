@@ -32,6 +32,16 @@
     --color-turquoise-8: #004e41;
     --color-turquoise-9: #001a16;
 
+    --color-orange-1: #fff1e7;
+    --color-orange-2: #ffdcc3;
+    --color-orange-3: #ffcca7;
+    --color-orange-4: #ffb381;
+    --color-orange-5: #fa934e;
+    --color-orange-6: #f76808;
+    --color-orange-7: #ed5f00;
+    --color-orange-8: #bd4b00;
+    --color-orange-9: #451e11;
+
     --color-red-1: #f9dfe4;
     --color-red-2: #ed9fad;
     --color-red-3: #e26076;
@@ -61,6 +71,7 @@
     --color-back-error: var(--color-red-1);
     --color-back-info: var(--color-purple-1);
     --color-back-success: var(--color-turquoise-1);
+    --color-back-warning: var(--color-orange-1);
 
     --color-border: var(--color-grey-6);
     --color-border-active: var(--color-turquoise-5);
@@ -68,12 +79,14 @@
     --color-border-info: var(--color-purple-5);
     --color-border-success: var(--color-turquoise-6);
     --color-border-search: var(--color-grey-3);
+    --color-border-warning: var(--color-orange-2);
 
     --color-text: var(--color-purple-9);
     --color-text-error: var(--color-red-6);
     --color-text-info: var(--color-purple-6);
     --color-text-secondary: var(--color-grey-7);
     --color-text-success: var(--color-turquoise-7);
+    --color-text-warning: var(--color-orange-9);
 
     --width-border: 0.2rem;
     --width-border-bold: 0.3rem;
