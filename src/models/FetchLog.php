@@ -88,4 +88,21 @@ class FetchLog extends \Minz\Model
         $count = self::daoCall('countFetchesToHost', $host, $since, $type, $ip);
         return $count >= $count_limit;
     }
+
+    /**
+     * Return the list of declared properties values.
+     *
+     * It doesn't return the id property because it is automatically generated
+     * by the database.
+     *
+     * @see \Minz\Model::toValues
+     *
+     * @return array
+     */
+    public function toValues()
+    {
+        $values = parent::toValues();
+        unset($values['id']);
+        return $values;
+    }
 }
