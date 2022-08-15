@@ -154,17 +154,18 @@ class ClearUrls
     private static function loadClearUrlsProviders()
     {
         if (self::$clear_urls_data === null) {
-            $clear_urls_file_content = file_get_contents(__DIR__ . '/clearurls-data.min.json');
+            $rules_path = realpath(__DIR__ . '/../lib/ClearUrlsRules/data.min.json');
+            $clear_urls_file_content = file_get_contents($rules_path);
             if ($clear_urls_file_content === false) {
                 throw new \Exception(
-                    __DIR__ . '/clearurls-data.min.json file cannot be found.'
+                    $rules_path . ' file cannot be found.'
                 );
             }
 
             self::$clear_urls_data = json_decode($clear_urls_file_content, true);
             if (self::$clear_urls_data === null) {
                 throw new \Exception(
-                    __DIR__ . '/clearurls-data.min.json file does not contain valid JSON.'
+                    $rules_path . ' file does not contain valid JSON.'
                 );
             }
         }
