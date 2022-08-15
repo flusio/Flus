@@ -28,6 +28,7 @@ class LinkFetcher
         'timeout' => 10,
         'rate_limit' => true,
         'cache' => true,
+        'force_sync' => false,
     ];
 
     /**
@@ -36,6 +37,7 @@ class LinkFetcher
      *     - timeout (integer)
      *     - rate_limit (boolean)
      *     - cache (boolean)
+     *     - force_sync (boolean)
      */
     public function __construct($options = [])
     {
@@ -73,15 +75,27 @@ class LinkFetcher
         }
 
         // we set the title only if it wasn't changed yet
-        if ($link->title === $link->url && isset($info['title'])) {
+        $title_never_changed = $link->title === $link->url;
+        if (
+            isset($info['title']) &&
+            ($this->options['force_sync'] || $title_never_changed)
+        ) {
             $link->title = $info['title'];
         }
 
-        if (isset($info['reading_time']) && $link->reading_time <= 0) {
+        $reading_never_changed = $link->reading_time <= 0;
+        if (
+            isset($info['reading_time']) &&
+            ($this->options['force_sync'] || $reading_never_changed)
+        ) {
             $link->reading_time = $info['reading_time'];
         }
 
-        if (isset($info['url_illustration'])) {
+        $illustration_never_set = empty($link->image_filename);
+        if (
+            isset($info['url_illustration']) &&
+            ($this->options['force_sync'] || $illustration_never_set)
+        ) {
             $image_service = new Image();
             $image_filename = $image_service->generatePreviews($info['url_illustration']);
             $link->image_filename = $image_filename;

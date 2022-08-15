@@ -46,7 +46,7 @@ class Repairing
             'link' => $link,
             'url' => $link->url,
             'url_cleared' => \SpiderBits\ClearUrls::clear($link->url),
-            'ask_sync' => false,
+            'force_sync' => $link->title === $link->url,
             'from' => $from,
         ]);
     }
@@ -56,7 +56,7 @@ class Repairing
      *
      * @request_param string id
      * @request_param string url
-     * @request_param boolean ask_sync
+     * @request_param boolean force_sync
      * @request_param string from
      * @request_param string csrf
      *
@@ -74,7 +74,7 @@ class Repairing
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $url = $request->param('url', '');
-        $ask_sync = $request->paramBoolean('ask_sync', false);
+        $force_sync = $request->paramBoolean('force_sync', false);
         $csrf = $request->param('csrf');
         $from = $request->param('from');
         $url_cleared = \SpiderBits\ClearUrls::clear($url);
@@ -104,7 +104,7 @@ class Repairing
                 'link' => $link,
                 'url' => $url,
                 'url_cleared' => $url_cleared,
-                'ask_sync' => $ask_sync,
+                'force_sync' => $force_sync,
                 'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
@@ -117,22 +117,18 @@ class Repairing
                 'link' => $link,
                 'url' => $url,
                 'url_cleared' => $url_cleared,
-                'ask_sync' => $ask_sync,
+                'force_sync' => $force_sync,
                 'from' => $from,
                 'errors' => $errors,
             ]);
         }
 
-
-        if ($ask_sync) {
-            $link_fetcher_service = new services\LinkFetcher([
-                'timeout' => 10,
-                'rate_limit' => false,
-            ]);
-            $link_fetcher_service->fetch($link);
-        } else {
-            $link->save();
-        }
+        $link_fetcher_service = new services\LinkFetcher([
+            'timeout' => 10,
+            'rate_limit' => false,
+            'force_sync' => $force_sync,
+        ]);
+        $link_fetcher_service->fetch($link);
 
         return Response::found($from);
     }

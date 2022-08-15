@@ -217,6 +217,76 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
+    public function testFetchChangesTitleIfAlreadySetAndForceSync()
+    {
+        $link_fetcher_service = new LinkFetcher([
+            'force_sync' => true,
+        ]);
+        $url = 'https://flus.fr/carnet/index.html';
+        $title = $this->fake('sentence');
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'title' => $title,
+        ]);
+        $link = models\Link::find($link_id);
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+
+        $link_fetcher_service->fetch($link);
+
+        $link = models\Link::find($link_id);
+        $this->assertSame('Carnet de Flus', $link->title);
+    }
+
+    public function testFetchChangesReadingTimeIfAlreadySetAndForceSync()
+    {
+        $link_fetcher_service = new LinkFetcher([
+            'force_sync' => true,
+        ]);
+        $url = 'https://flus.fr/carnet/index.html';
+        $reading_time = 999999;
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'reading_time' => $reading_time,
+        ]);
+        $link = models\Link::find($link_id);
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+
+        $link_fetcher_service->fetch($link);
+
+        $link = models\Link::find($link_id);
+        $this->assertSame(0, $link->reading_time);
+    }
+
+    public function testFetchChangesIllustrationIfAlreadySetAndForceSync()
+    {
+        $link_fetcher_service = new LinkFetcher([
+            'force_sync' => true,
+        ]);
+        $url = 'https://flus.fr/carnet/index.html';
+        $card_url = 'https://flus.fr/carnet/card.png';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $this->mockHttpWithFile($card_url, 'public/static/og-card.png');
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'image_filename' => 'old.png',
+        ]);
+        $link = models\Link::find($link_id);
+
+        $link_fetcher_service->fetch($link);
+
+        $link = models\Link::find($link_id);
+        $image_filename = $link->image_filename;
+        $this->assertNotSame('old.png', $image_filename);
+        $media_path = \Minz\Configuration::$application['media_path'];
+        $subpath = utils\Belt::filenameToSubpath($image_filename);
+        $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
+        $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
+        $large_filepath = "{$media_path}/large/{$subpath}/{$image_filename}";
+        $this->assertTrue(file_exists($card_filepath));
+        $this->assertTrue(file_exists($cover_filepath));
+        $this->assertTrue(file_exists($large_filepath));
+    }
+
     public function testFetchDoesNotSaveResponseInCacheIfResponseIsInError()
     {
         $link_fetcher_service = new LinkFetcher();
@@ -299,5 +369,24 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::find($link_id);
         $this->assertSame($reading_time, $link->reading_time);
+    }
+
+    public function testFetchDoesNotChangeIllustrationIfAlreadySet()
+    {
+        $link_fetcher_service = new LinkFetcher();
+        $url = 'https://flus.fr/carnet/index.html';
+        $card_url = 'https://flus.fr/carnet/card.png';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $this->mockHttpWithFile($card_url, 'public/static/og-card.png');
+        $link_id = $this->create('link', [
+            'url' => $url,
+            'image_filename' => 'old.png',
+        ]);
+        $link = models\Link::find($link_id);
+
+        $link_fetcher_service->fetch($link);
+
+        $link = models\Link::find($link_id);
+        $this->assertSame('old.png', $link->image_filename);
     }
 }

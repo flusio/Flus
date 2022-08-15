@@ -65,21 +65,29 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-controller="caption-switcher">
                 <input
                     type="checkbox"
-                    id="ask-sync"
-                    name="ask_sync"
-                    <?= $ask_sync ? 'checked' : '' ?>
-                    aria-describedby="ask-sync-caption"
+                    id="force-sync"
+                    name="force_sync"
+                    <?= $force_sync ? 'checked' : '' ?>
+                    aria-describedby="force-sync-caption"
+                    data-action="caption-switcher#switch"
+                    data-caption-switcher-target="switch"
                 />
 
-                <label class="label--checkbox" for="ask-sync">
-                    <?= _('Ask for a new synchronization') ?>
+                <label class="label--checkbox" for="force-sync">
+                    <?= _('Force the synchronization') ?>
                 </label>
 
-                <p class="form-group__caption" id="ask-sync-caption">
-                    <?= _('This will check the status of the page and possibly update the illustration.') ?>
+                <p class="form-group__caption" id="force-sync-caption" aria-live="polite">
+                    <span data-caption-switcher-target="caption" data-caption-value="on">
+                        <?= _('The title, reading time and illustration will be re-synchronized even if you’ve changed them.') ?>
+                    </span>
+
+                    <span data-caption-switcher-target="caption" data-caption-unchecked>
+                        <?= _('The title, reading time and illustration will be synchronize only if you’ve never changed them.') ?>
+                    </span>
                 </p>
             </div>
 

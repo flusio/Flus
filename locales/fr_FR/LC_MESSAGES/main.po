@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-08-15 09:21+0200\n"
-"PO-Revision-Date: 2022-08-15 09:22+0200\n"
+"POT-Creation-Date: 2022-08-15 10:01+0200\n"
+"PO-Revision-Date: 2022-08-15 10:01+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -416,7 +416,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:244
+#: services/LinkFetcher.php:258
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -1629,18 +1629,27 @@ msgstr ""
 "%s a détecté que cette <abbr>URL</abbr> piste les utilisateur‧ices. Il est "
 "suggéré de supprimer le lien."
 
-#: views/links/repairing/_new.phtml:78
-msgid "Ask for a new synchronization"
-msgstr "Demander une nouvelle synchronisation"
+#: views/links/repairing/_new.phtml:80
+msgid "Force the synchronization"
+msgstr "Forcer la synchronisation"
 
-#: views/links/repairing/_new.phtml:82
+#: views/links/repairing/_new.phtml:85
 msgid ""
-"This will check the status of the page and possibly update the illustration."
+"The title, reading time and illustration will be re-synchronized even if "
+"you’ve changed them."
 msgstr ""
-"Cela vérifiera le statut de la page et mettra éventuellement à jour "
-"l’illustration."
+"Le titre, le temps de lecture et l’illustration seront re-synchronisés même "
+"si vous les avez changés."
 
-#: views/links/repairing/_new.phtml:88
+#: views/links/repairing/_new.phtml:89
+msgid ""
+"The title, reading time and illustration will be synchronize only if you’ve "
+"never changed them."
+msgstr ""
+"Le titre, le temps de lecture et l’illustration seront synchronisés "
+"seulement si vous ne les avez jamais changés."
+
+#: views/links/repairing/_new.phtml:96
 msgid "Repair the link"
 msgstr "Réparer le lien"
 
