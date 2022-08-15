@@ -178,13 +178,13 @@ class FeedFetcher
                 $link_ids_by_urls[$link->url] = $link->id;
                 $link_urls_by_entry_ids[$link->url] = $link->feed_entry_id;
                 $link_id = $link->id;
-            }
 
-            $links_to_collections[] = [
-                'published_at' => $published_at,
-                'link_id' => $link_id,
-                'collection_id' => $collection->id,
-            ];
+                $links_to_collections[] = [
+                    'published_at' => $published_at,
+                    'link_id' => $link_id,
+                    'collection_id' => $collection->id,
+                ];
+            }
         }
 
         models\Link::bulkInsert($links_to_create);
