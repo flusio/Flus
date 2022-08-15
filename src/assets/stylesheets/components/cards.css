@@ -135,9 +135,11 @@
 
     font-size: var(--size-small);
     font-style: italic;
+    text-align: left;
 
     opacity: 0.8;
     background-color: var(--color-purple-1);
+    border: none;
     border-radius: var(--radius);
 }
 
@@ -145,6 +147,11 @@
     color: var(--color-text-warning);
 
     opacity: 1;
+    background-color: var(--color-back-warning);
+}
+
+.card__image-overlay--warning:hover,
+.card__image-overlay--warning:focus {
     background-color: var(--color-back-warning);
 }
 

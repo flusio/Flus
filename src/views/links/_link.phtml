@@ -32,37 +32,50 @@
     </a>
 
     <?php if ($in_error || $trackers_detected): ?>
-        <span class="card__image-overlay card__image-overlay--warning">
-            <?php if ($in_error): ?>
-                <?php
-                    if ($is_current_user_owner):
-                        $title = _('This link seems to be inaccessible, you should repair it.');
-                    else:
-                        $title = _('This link seems to be inaccessible, you may have difficulties to access it.');
-                    endif;
-                ?>
-                <span title="<?= $title ?>">
-                    <?= icon('disconnect') ?> <?= _('inaccessible') ?>
-                </span>
-            <?php endif; ?>
+        <?php if ($is_current_user_owner): ?>
+            <button
+                class="card__image-overlay card__image-overlay--warning"
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                <?php if ($in_error): ?>
+                    <span title="<?= _('This link seems to be inaccessible, you should repair it.') ?>">
+                        <?= icon('disconnect') ?> <?= _('inaccessible') ?>
+                    </span>
+                <?php endif; ?>
 
-            <?php if ($in_error && $trackers_detected): ?>
-                <br />
-            <?php endif; ?>
+                <?php if ($in_error && $trackers_detected): ?>
+                    <br />
+                <?php endif; ?>
 
-            <?php if ($trackers_detected): ?>
-                <?php
-                    if ($is_current_user_owner):
-                        $title = _('Trackers have been detected in this link, you should repair it.');
-                    else:
-                        $title = _('Trackers have been detected in this link, your privacy might not be respected if you click on it.');
-                    endif;
-                ?>
-                <span title="<?= $title ?>">
-                    <?= icon('eye') ?> <?= _('trackers') ?>
-                </span>
-            <?php endif; ?>
-        </span>
+                <?php if ($trackers_detected): ?>
+                    <span title="<?= _('Trackers have been detected in this link, you should repair it.') ?>">
+                        <?= icon('eye') ?> <?= _('trackers') ?>
+                    </span>
+                <?php endif; ?>
+            </button>
+        <?php else: ?>
+            <span class="card__image-overlay card__image-overlay--warning">
+                <?php if ($in_error): ?>
+                    <span title="<?= _('This link seems to be inaccessible, you may have difficulties to access it.') ?>">
+                        <?= icon('disconnect') ?> <?= _('inaccessible') ?>
+                    </span>
+                <?php endif; ?>
+
+                <?php if ($in_error && $trackers_detected): ?>
+                    <br />
+                <?php endif; ?>
+
+                <?php if ($trackers_detected): ?>
+                    <span title="<?= _('Trackers have been detected in this link, your privacy might not be respected if you click on it.') ?>">
+                        <?= icon('eye') ?> <?= _('trackers') ?>
+                    </span>
+                <?php endif; ?>
+            </span>
+        <?php endif; ?>
     <?php endif; ?>
 
     <time class="card__image-overlay card__image-overlay--right" datetime="<?= $link->published_at->format(DATE_ATOM) ?>" title="<?= _date($link->published_at, 'dd MMM Y, HH:mm') ?>">
