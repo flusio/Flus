@@ -1,5 +1,28 @@
 # Changelog of flusio
 
+## 2022-08-15 - v0.49
+
+### Improvements
+
+- Allow to repair links directly by clicking on warning ([1efc4c10](https://github.com/flusio/flusio/commit/1efc4c10))
+- Improve links warnings visibility ([d211533f](https://github.com/flusio/flusio/commit/d211533f))
+- Change "ask sync" by "force sync" ([a3c19380](https://github.com/flusio/flusio/commit/a3c19380))
+- Suggest to delete link when cleared url is empty ([221616c9](https://github.com/flusio/flusio/commit/221616c9))
+- Remove the separator above the unread link button ([83f26f89](https://github.com/flusio/flusio/commit/83f26f89))
+- (admin) Indicate that links count is estimated in /system command ([8315c9e9](https://github.com/flusio/flusio/commit/8315c9e9))
+
+### Bug fixes
+
+- Allow to submit the repair form with enter ([22caafee](https://github.com/flusio/flusio/commit/22caafee))
+- Get newest feeds links when `keep_period` is set ([9cd437ae](https://github.com/flusio/flusio/commit/9cd437ae))
+- Fix the `Url::percentRecodeQuery()` method ([23be6a62](https://github.com/flusio/flusio/commit/23be6a62))
+- Handle URLs with "&" correctly ([85935bbf](https://github.com/flusio/flusio/commit/85935bbf))
+- Consider unfetched links to not be in error ([f81136c0](https://github.com/flusio/flusio/commit/f81136c0))
+
+### Misc
+
+- Provide ClearURLs rules README and license ([8869bfc0](https://github.com/flusio/flusio/commit/8869bfc0))
+
 ## 2022-08-12 - v0.48
 
 ### Migration notes
