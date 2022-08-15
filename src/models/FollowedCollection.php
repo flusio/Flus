@@ -11,6 +11,7 @@ use flusio\utils;
 class FollowedCollection extends \Minz\Model
 {
     use DaoConnector;
+    use BulkDaoConnector;
 
     public const VALID_TIME_FILTERS = ['strict', 'normal', 'all'];
 
@@ -104,5 +105,22 @@ class FollowedCollection extends \Minz\Model
         }
 
         return $formatted_errors;
+    }
+
+    /**
+     * Return the list of declared properties values.
+     *
+     * It doesn't return the id property because it is automatically generated
+     * by the database.
+     *
+     * @see \Minz\Model::toValues
+     *
+     * @return array
+     */
+    public function toValues()
+    {
+        $values = parent::toValues();
+        unset($values['id']);
+        return $values;
     }
 }

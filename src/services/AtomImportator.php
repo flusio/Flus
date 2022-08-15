@@ -85,19 +85,14 @@ class AtomImportator
 
             $link_ids_by_urls[$link->url] = $link->id;
 
-            $links_to_collections_to_create[] = $published_at->format(\Minz\Model::DATETIME_FORMAT);
-            $links_to_collections_to_create[] = $link->id;
-            $links_to_collections_to_create[] = $collection->id;
+            $links_to_collections_to_create[] = new models\LinkToCollection([
+                'created_at' => $published_at,
+                'link_id' => $link->id,
+                'collection_id' => $collection->id,
+            ]);
         }
 
         models\Link::bulkInsert($links_to_create);
-
-        if ($links_to_collections_to_create) {
-            models\LinkToCollection::daoCall(
-                'bulkInsert',
-                ['created_at', 'link_id', 'collection_id'],
-                $links_to_collections_to_create
-            );
-        }
+        models\LinkToCollection::bulkInsert($links_to_collections_to_create);
     }
 }

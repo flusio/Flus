@@ -214,23 +214,18 @@ class PocketImportator extends Job
             // We now have a link_id and a list of collection ids. We store
             // here the relations in the last _to_create array.
             foreach ($collection_ids as $collection_id) {
-                $links_to_collections_to_create[] = $published_at->format(\Minz\Model::DATETIME_FORMAT);
-                $links_to_collections_to_create[] = $link_id;
-                $links_to_collections_to_create[] = $collection_id;
+                $links_to_collections_to_create[] = new models\LinkToCollection([
+                    'created_at' => $published_at,
+                    'link_id' => $link_id,
+                    'collection_id' => $collection_id,
+                ]);
             }
         }
 
         // Finally, let the big import (in DB) begin!
         models\Link::bulkInsert($links_to_create);
         models\Collection::bulkInsert($collections_to_create);
-
-        if ($links_to_collections_to_create) {
-            models\LinkToCollection::daoCall(
-                'bulkInsert',
-                ['created_at', 'link_id', 'collection_id'],
-                $links_to_collections_to_create
-            );
-        }
+        models\LinkToCollection::bulkInsert($links_to_collections_to_create);
 
         // Delete the collections if they are empty at the end of the
         // importation.

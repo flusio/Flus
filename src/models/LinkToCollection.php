@@ -11,11 +11,11 @@ use flusio\utils;
 class LinkToCollection extends \Minz\Model
 {
     use DaoConnector;
+    use BulkDaoConnector;
 
     public const PROPERTIES = [
         'id' => [
-            'type' => 'string',
-            'required' => true,
+            'type' => 'integer',
         ],
 
         'created_at' => 'datetime',
@@ -167,5 +167,22 @@ class LinkToCollection extends \Minz\Model
         }
 
         return $database->commit();
+    }
+
+    /**
+     * Return the list of declared properties values.
+     *
+     * It doesn't return the id property because it is automatically generated
+     * by the database.
+     *
+     * @see \Minz\Model::toValues
+     *
+     * @return array
+     */
+    public function toValues()
+    {
+        $values = parent::toValues();
+        unset($values['id']);
+        return $values;
     }
 }

@@ -107,7 +107,7 @@ class FeedFetcher
         $initial_links_count = count($link_ids_by_urls);
 
         $links_to_create = [];
-        $links_to_collections = [];
+        $links_to_collections_to_create = [];
 
         foreach ($feed->entries as $entry) {
             if (!$entry->link) {
@@ -179,23 +179,22 @@ class FeedFetcher
                 $link_urls_by_entry_ids[$link->url] = $link->feed_entry_id;
                 $link_id = $link->id;
 
-                $links_to_collections[] = [
-                    'published_at' => $published_at,
+                $links_to_collections_to_create[] = new models\LinkToCollection([
+                    'created_at' => $published_at,
                     'link_id' => $link_id,
                     'collection_id' => $collection->id,
-                ];
+                ]);
             }
         }
 
-        models\Link::bulkInsert($links_to_create);
+        // Filter the links to collections to exclude old ones
+        $links_to_collections_to_create = $this->filterLinksToCollections(
+            $links_to_collections_to_create,
+            $initial_links_count
+        );
 
-        if ($links_to_collections) {
-            models\LinkToCollection::daoCall(
-                'bulkInsert',
-                ['created_at', 'link_id', 'collection_id'],
-                $this->filterLinksToCollections($links_to_collections, $initial_links_count)
-            );
-        }
+        models\Link::bulkInsert($links_to_create);
+        models\LinkToCollection::bulkInsert($links_to_collections_to_create);
 
         if (!$collection->image_fetched_at) {
             try {
@@ -375,35 +374,27 @@ class FeedFetcher
         $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
         $feeds_keep_links_date = \Minz\Time::ago($feeds_links_keep_period, 'months');
 
-        $to_create = [];
-
         if ($feeds_links_keep_period <= 0) {
             // If "keep period" is not set, we create all the links_to_collections
-            foreach ($links_to_collections as $link_to_collection) {
-                $to_create[] = $link_to_collection['published_at']->format(\Minz\Model::DATETIME_FORMAT);
-                $to_create[] = $link_to_collection['link_id'];
-                $to_create[] = $link_to_collection['collection_id'];
-            }
-        } else {
-            // Otherwise, we only keep the newest.
+            return $links_to_collections;
+        }
 
-            // sort the links_to_collections by their publication dates
-            // (newest first)
-            usort($links_to_collections, function ($lc1, $lc2) {
-                return $lc2['published_at'] <=> $lc1['published_at'];
-            });
+        $to_create = [];
 
-            foreach ($links_to_collections as $link_to_collection) {
-                $published_at = $link_to_collection['published_at'];
-                $recent_enough = $published_at >= $feeds_keep_links_date;
-                $enough_links = $links_count >= $feeds_links_keep_minimum;
+        // sort the links_to_collections by their publication dates
+        // (newest first)
+        usort($links_to_collections, function ($lc1, $lc2) {
+            return $lc2->created_at <=> $lc1->created_at;
+        });
 
-                if ($recent_enough || !$enough_links) {
-                    $to_create[] = $link_to_collection['published_at']->format(\Minz\Model::DATETIME_FORMAT);
-                    $to_create[] = $link_to_collection['link_id'];
-                    $to_create[] = $link_to_collection['collection_id'];
-                    $links_count = $links_count + 1;
-                }
+        foreach ($links_to_collections as $link_to_collection) {
+            $published_at = $link_to_collection->created_at;
+            $recent_enough = $published_at >= $feeds_keep_links_date;
+            $enough_links = $links_count >= $feeds_links_keep_minimum;
+
+            if ($recent_enough || !$enough_links) {
+                $to_create[] = $link_to_collection;
+                $links_count = $links_count + 1;
             }
         }
 

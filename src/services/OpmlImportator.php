@@ -91,22 +91,17 @@ class OpmlImportator
                     $collection_id = $collection->id;
                 }
 
-                $followed_collections_to_create[] = $user->id;
-                $followed_collections_to_create[] = $collection_id;
-                $followed_collections_to_create[] = $group_id;
-                $followed_collections_to_create[] = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
+                $followed_collections_to_create[] = new models\FollowedCollection([
+                    'created_at' => \Minz\Time::now(),
+                    'user_id' => $user->id,
+                    'collection_id' => $collection_id,
+                    'group_id' => $group_id,
+                ]);
             }
         }
 
         models\Collection::bulkInsert($collections_to_create);
-
-        if ($followed_collections_to_create) {
-            $followed_collections_dao = new models\dao\FollowedCollection();
-            $followed_collections_dao->bulkInsert(
-                ['user_id', 'collection_id', 'group_id', 'created_at'],
-                $followed_collections_to_create
-            );
-        }
+        models\FollowedCollection::bulkInsert($followed_collections_to_create);
     }
 
     /**
