@@ -43,21 +43,41 @@ trait CleanerQueries
     }
 
     /**
-     * Delete links that are attached to feeds collections with a publication
-     * date older than the given date for the given user.
+     * Delete links that are attached to feeds collections according to the
+     * retention policy.
+     *
+     * The retention policy is defined by $keep_period (the number max of
+     * months to keep links) and by $keep_maximum (no more links than this
+     * number).
+     *
+     * An additional $keep_minimum policy allows to bypass the $keep_period in
+     * order to keep a minimum number of links in feeds. Note that this value
+     * MUST be smaller or equal to $keep_maximum. Unexpected behaviour may
+     * happen otherwise and this method doesn't check the values.
      *
      * @param string $user_id
-     * @param \DateTime $date
+     * @param integer $keep_period
      * @param integer $keep_minimum
+     * @param integer $keep_maximum
      *
      * @return boolean True on success
      */
-    public function deleteFromFeedsOlderThan($user_id, $date, $keep_minimum)
+    public function deleteFromFeeds($user_id, $keep_period, $keep_minimum, $keep_maximum)
     {
+        if ($keep_period === 0 && $keep_maximum === 0) {
+            // no retention policy, nothing to do
+            return true;
+        }
+
         // This SQL query is pretty complicated. The difficulty is to get old
-        // links while keeping enough links in each feed. The trick is to count
-        // row numbers over a table temporarily partitioned by collection_id and
-        // then filter this list to get the links to delete.
+        // enough or the excess of links while keeping enough links in each
+        // feed. The trick is to count row numbers over a table temporarily
+        // partitioned by collection_id and then filter this list to get the
+        // links to delete.
+
+        $parameters = [
+            ':user_id' => $user_id,
+        ];
 
         // The first sub-query is to select all the links ids with their
         // position in their own feed, ordered by their publication date
@@ -80,16 +100,36 @@ trait CleanerQueries
         SQL;
 
         // The second subquery get the result of the first sub-query, and
-        // keep only the old enough ones IF their position is after the minimum
-        // limit (so we are sure to keep at least the "minimum" number of links
-        // in each feed).
+        // keep:
+
+        // 1. the old enough ones IF their position is after the minimum limit
+        $period_clause = '';
+        if ($keep_period > 0) {
+            $retention_date = \Minz\Time::ago($keep_period, 'months');
+            $parameters[':date'] = $retention_date->format(\Minz\Model::DATETIME_FORMAT);
+            $parameters[':minimum'] = $keep_minimum;
+            $period_clause = '(tmp.created_at < :date AND tmp.row_number > :minimum)';
+        }
+
+        // 2. links in excess (i.e. position is after the maximum limit)
+        $maximum_clause = '';
+        if ($keep_maximum > 0) {
+            $parameters[':maximum'] = $keep_maximum;
+            $maximum_clause = 'tmp.row_number > :maximum';
+
+            if ($period_clause) {
+                $maximum_clause = 'OR ' . $maximum_clause;
+            }
+        }
+
         $sql_links_to_delete = <<<SQL
             SELECT tmp.link_id FROM (
                 {$sql_select_links_with_position}
             ) tmp
 
-            WHERE tmp.created_at < :date
-            AND tmp.row_number > :minimum
+            WHERE
+                {$period_clause}
+                {$maximum_clause}
         SQL;
 
         // And finally, delete the links that have been selected by the
@@ -102,10 +142,6 @@ trait CleanerQueries
         SQL;
 
         $statement = $this->prepare($sql);
-        return $statement->execute([
-            ':user_id' => $user_id,
-            ':date' => $date->format(\Minz\Model::DATETIME_FORMAT),
-            ':minimum' => $keep_minimum,
-        ]);
+        return $statement->execute($parameters);
     }
 }
