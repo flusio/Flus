@@ -10,6 +10,13 @@ $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt'));
 $user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio)";
 
 $feeds_links_keep_minimum = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_MINIMUM', '0')));
+$feeds_links_keep_maximum = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_MAXIMUM', '0')));
+if (
+    $feeds_links_keep_maximum > 0 &&
+    $feeds_links_keep_maximum < $feeds_links_keep_minimum
+) {
+    $feeds_links_keep_minimum = $feeds_links_keep_maximum;
+}
 $feeds_links_keep_period = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_PERIOD', '0')));
 
 $job_feeds_sync_count = max(1, intval($dotenv->pop('JOB_FEEDS_SYNC_COUNT', '1')));
@@ -46,6 +53,7 @@ return [
         'subscriptions_host' => $subscriptions_host,
         'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
         'feeds_links_keep_minimum' => $feeds_links_keep_minimum,
+        'feeds_links_keep_maximum' => $feeds_links_keep_maximum,
         'feeds_links_keep_period' => $feeds_links_keep_period,
         'job_adapter' => 'database',
         'job_feeds_sync_count' => $job_feeds_sync_count,

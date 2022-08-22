@@ -1,5 +1,13 @@
 # Changelog of flusio
 
+## 2022-xx-xx - v0.50
+
+### Migration notes
+
+A new `FEEDS_LINKS_KEEP_MAXIMUM` environment variable can be set to keep a
+maximum number of links per feed. You’ll have to set the variable in your
+`.env` file and restart your jobs workers.
+
 ## 2022-08-15 - v0.49
 
 ### Improvements

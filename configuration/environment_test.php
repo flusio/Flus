@@ -44,6 +44,7 @@ return [
         'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
         'feeds_links_keep_period' => 0,
         'feeds_links_keep_minimum' => 0,
+        'feeds_links_keep_maximum' => 0,
         'job_adapter' => 'test',
         'job_feeds_sync_count' => 1,
         'job_links_sync_count' => 1,

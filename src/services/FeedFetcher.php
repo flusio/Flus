@@ -364,44 +364,68 @@ class FeedFetcher
      * Filter the links_to_collections list in order to create them.
      *
      * In normal case, it should return the full list. But if the administrator
-     * has configured the feeds_links_keep_period, the list is limited to the
-     * recent enough links_to_collections (or until there are enough of them,
-     * i.e. links_count is more than feeds_links_keep_minimum).
+     * has configured retention policy (keep_period or keep_maximum), the list
+     * is limited to the recent enough links_to_collections (or until there are
+     * enough of them, i.e. links_count is more than feeds_links_keep_minimum)
+     * and to a maximum of feeds_links_keep_maximum.
+     *
+     * Note that the maximum policy doesn't take into account the initial
+     * $links_count. Indeed, the database may already contain the maximum of
+     * links, but we want to create the newest links (which should be in the
+     * feed that we’re processing). The links in database are probably older
+     * and will be deleted later by the Cleaner. However, the method will not
+     * return more links_to_collections than the policy.
      *
      * @param array $links_to_collections
      *     All the links_to_collections initialized from the feed.
-     * @param integer $links_count
+     * @param integer $initial_links_count
      *     The initial count of collection links.
      *
      * @return array
      */
-    private function filterLinksToCollections($links_to_collections, $links_count)
+    private function filterLinksToCollections($links_to_collections, $initial_links_count)
     {
         $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
+        $feeds_links_keep_maximum = \Minz\Configuration::$application['feeds_links_keep_maximum'];
         $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
         $feeds_keep_links_date = \Minz\Time::ago($feeds_links_keep_period, 'months');
 
-        if ($feeds_links_keep_period <= 0) {
-            // If "keep period" is not set, we create all the links_to_collections
+        if ($feeds_links_keep_period === 0 && $feeds_links_keep_maximum === 0) {
+            // If no retention policy, we return all the links_to_collections
             return $links_to_collections;
         }
 
-        $to_create = [];
-
-        // sort the links_to_collections by their publication dates
-        // (newest first)
+        // sort the links_to_collections by their publication dates (newest first)
         usort($links_to_collections, function ($lc1, $lc2) {
-            return $lc2->created_at <=> $lc1->created_at;
+            $comparaison = $lc2->created_at <=> $lc1->created_at;
+            if ($comparaison !== 0) {
+                return $comparaison;
+            }
+            return $lc2->id <=> $lc1->id;
         });
 
+        $to_create = [];
         foreach ($links_to_collections as $link_to_collection) {
             $published_at = $link_to_collection->created_at;
-            $recent_enough = $published_at >= $feeds_keep_links_date;
+            $recent_enough = (
+                $feeds_links_keep_period === 0 ||
+                $published_at >= $feeds_keep_links_date
+            );
+            $links_count = $initial_links_count + count($to_create);
             $enough_links = $links_count >= $feeds_links_keep_minimum;
+            $too_many_links = (
+                $feeds_links_keep_maximum > 0 &&
+                count($to_create) >= $feeds_links_keep_maximum
+            );
+            $should_be_created = ($recent_enough || !$enough_links) && !$too_many_links;
 
-            if ($recent_enough || !$enough_links) {
+            if ($should_be_created) {
                 $to_create[] = $link_to_collection;
-                $links_count = $links_count + 1;
+            } else {
+                // Because the links are sorted by publication date, we know
+                // that either the next will also be too old, or we already
+                // reached the limit of links. So we can stop here.
+                break;
             }
         }
 

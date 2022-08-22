@@ -571,6 +571,69 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($link_published, $link->created_at->format(\DateTimeInterface::ATOM));
     }
 
+    public function testPerformIgnoresEntriesIfOverKeepMaximum()
+    {
+        \Minz\Configuration::$application['feeds_links_keep_maximum'] = 1;
+
+        $this->freeze($this->fake('dateTime'));
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $published_at_1 = \Minz\Time::ago(1, 'months');
+        $published_at_2 = \Minz\Time::ago(2, 'months');
+        $collection_id = $this->create('collection', [
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+            'feed_fetched_at' => \Minz\Time::ago(2, 'hours')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('followed_collection', [
+            'collection_id' => $collection_id,
+        ]);
+        $hash = \SpiderBits\Cache::hash($feed_url);
+        $raw_response = <<<XML
+        HTTP/2 200 OK
+        Content-Type: application/xml
+
+        <?xml version='1.0' encoding='UTF-8'?>
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <title>carnet de flus</title>
+            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
+            <updated>2021-03-30T11:26:00+02:00</updated>
+            <entry>
+                <title>Les nouveautés de mars 2021</title>
+                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                <author><name>Marien</name></author>
+                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
+                <published>{$published_at_1->format(DATE_ATOM)}</published>
+                <updated>2021-03-30T11:26:00+02:00</updated>
+                <content type="html"></content>
+            </entry>
+            <entry>
+                <title>Bilan 2021</title>
+                <id>urn:uuid:d4281ca0-f103-529b-9a47-adee05477c31</id>
+                <author><name>Marien</name></author>
+                <link href="https://flus.fr/carnet/bilan-2021.html" rel="alternate" type="text/html" />
+                <published>{$published_at_2->format(DATE_ATOM)}</published>
+                <updated>2022-01-05T17:30:00+01:00</updated>
+                <content type="html"></content>
+            </entry>
+        </feed>
+        XML;
+        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $cache->save($hash, $raw_response);
+        $feeds_sync_job = new FeedsSync();
+
+        $feeds_sync_job->perform();
+
+        \Minz\Configuration::$application['feeds_links_keep_maximum'] = 0;
+
+        $this->assertSame(1, models\Link::count());
+        $collection = models\Collection::find($collection_id);
+        $links = $collection->links();
+        $this->assertSame(1, count($links));
+        $this->assertSame('Les nouveautés de mars 2021', $links[0]->title);
+    }
+
     public function testPerformIgnoresEntriesIfOlderThanKeepPeriod()
     {
         \Minz\Configuration::$application['feeds_links_keep_period'] = 6;

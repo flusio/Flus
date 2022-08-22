@@ -296,27 +296,35 @@ the feeds and add bookmarks. Then, export your data via “Account & data”,
 “Download your data”. You’ll find a `followed.opml.xml` and a
 `bookmarks.atom.xml` files in the archive: that's the ones you’re looking for.
 
-## Optional: Purge old links from the feeds
+## Optional: Set a retention policy for the links in feeds
 
 Over the time, the number of links in database will increase. flusio can handle
 a lot of links, but you may want to keep the size of your DB under control. For
-this, you can purge the old links from the feeds by uncommenting and setting the
-`FEEDS_LINKS_KEEP_PERIOD` variable in your `.env` file. It takes a number of
-months, greater or equal to 1. Links in feeds with an older publication date
-will then be purged every night by the `Cleaner` job.
+this, you have two (non-exclusive) options.
+
+The most effective is to set the `FEEDS_LINKS_KEEP_MAXIMUM` variable in your
+`.env` file. It takes a number greater or equal to 1. If set, the `Cleaner` job
+will remove the links in excess every night (by removing the older ones). Note
+that during the journey, flusio may create more links than the limit.
+
+The second option is to purge the old links by setting the `FEEDS_LINKS_KEEP_PERIOD`
+variable in your `.env` file. It takes a number of months, greater or equal to 1.
+Links in feeds with an older publication date will then be purged every night.
 
 If you want to keep a minimum number of links per feed (e.g. in case of a feed
 which didn't publish for a long time), you can set `FEEDS_LINKS_KEEP_MINIMUM`
-as well.
+as well. Note that it should be smaller or equal to `FEEDS_LINKS_KEEP_MAXIMUM`.
+On the contrary, the latter takes the priority.
 
-Anytime you increase the value of `FEEDS_LINKS_KEEP_MINIMUM`, you should
-execute the following command:
+Anytime you change these options, you should also consider to execute the
+following command:
 
 ```console
 flusio# sudo -u www-data php cli feeds reset-hashes
 ```
 
-This allows to synchronize feeds that are unchanged to get their old links.
+This allows to force the synchronization of feeds that are unchanged to get
+their old links in case you have loosened the retention policy.
 
 ## Optional: Close the registrations
 

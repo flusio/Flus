@@ -40,9 +40,6 @@ class Cleaner extends jobs\Job
         $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
         $cache->clean();
 
-        $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
-        $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
-
         $support_user = models\User::supportUser();
 
         models\FetchLog::daoCall('deleteOlderThan', \Minz\Time::ago(3, 'days'));
@@ -51,14 +48,13 @@ class Cleaner extends jobs\Job
         models\User::daoCall('deleteNotValidatedOlderThan', \Minz\Time::ago(6, 'months'));
         models\Collection::daoCall('deleteUnfollowedOlderThan', $support_user->id, \Minz\Time::ago(7, 'days'));
         models\Link::daoCall('deleteNotStoredOlderThan', $support_user->id, \Minz\Time::ago(7, 'days'));
-        if ($feeds_links_keep_period > 0) {
-            models\Link::daoCall(
-                'deleteFromFeedsOlderThan',
-                $support_user->id,
-                \Minz\Time::ago($feeds_links_keep_period, 'months'),
-                $feeds_links_keep_minimum
-            );
-        }
+        models\Link::daoCall(
+            'deleteFromFeeds',
+            $support_user->id,
+            \Minz\Configuration::$application['feeds_links_keep_period'],
+            \Minz\Configuration::$application['feeds_links_keep_minimum'],
+            \Minz\Configuration::$application['feeds_links_keep_maximum'],
+        );
 
         if (\Minz\Configuration::$application['demo']) {
             // with these two delete, the other tables should be deleted in cascade
