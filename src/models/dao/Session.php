@@ -58,4 +58,27 @@ class Session extends \Minz\DatabaseModel
         $statement = $this->prepare($sql);
         return $statement->execute($values);
     }
+
+    /**
+     * Return the number of active sessions (1 max per users) since the given
+     * date.
+     *
+     * @param \DateTime $since
+     *
+     * @return integer
+     */
+    public function countUsersActiveSince($since)
+    {
+        $sql = <<<'SQL'
+            SELECT COUNT(DISTINCT user_id) FROM sessions
+            WHERE token IS NOT NULL
+            AND created_at >= :since
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':since' => $since->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        return intval($statement->fetchColumn());
+    }
 }
