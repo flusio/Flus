@@ -8,6 +8,11 @@ A new `FEEDS_LINKS_KEEP_MAXIMUM` environment variable can be set to keep a
 maximum number of links per feed. You’ll have to set the variable in your
 `.env` file and restart your jobs workers.
 
+When you change values of `JOB_FEEDS_SYNC_COUNT` and `JOB_LINKS_SYNC_COUNT`,
+you can now execute the command `php cli jobs install` instead of executing
+the migrations command. It is quite the same under the hood, but it should be
+more intuitive.
+
 ## 2022-08-15 - v0.49
 
 ### Improvements

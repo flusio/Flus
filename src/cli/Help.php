@@ -42,6 +42,7 @@ class Help
         $usage .= "      [--nocache=BOOL]     Indicates if the cache should be ignored (default is false)\n";
         $usage .= "\n";
         $usage .= "  jobs                     List the jobs\n";
+        $usage .= "  jobs install             (Re-)install the jobs (to run after a configuration change)\n";
         $usage .= "  jobs run                 Execute one waiting job\n";
         $usage .= "      [--queue=TEXT]       where TEXT is one of default, mailers, importators, fetchers or all\n";
         $usage .= "  jobs unlock              Unlock a job\n";

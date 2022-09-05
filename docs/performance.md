@@ -62,18 +62,17 @@ no longer impact the other jobs.
 However, you might still have performance issues. We’ll now increase the number
 of jobs and workers to handle the synchronization. First, you need to increase
 the values of the `JOB_FEEDS_SYNC_COUNT` and `JOB_LINKS_SYNC_COUNT` environment
-variables in your `.env` file. Apply the change by executing the migration
-command:
+variables in your `.env` file. Apply the change by (re-)installing the jobs:
 
 ```console
-flusio$ sudo -u www-data make update NO_DOCKER=true
+flusio$ sudo -u www-data php cli jobs install
 ```
 
-It should tell you that your system is already up to date and seeds have been
-loaded. Now, you must start more workers for the `fetchers` queue. To know how
-many workers to start, add up values of `JOB_FEEDS_SYNC_COUNT` and `JOB_LINKS_SYNC_COUNT`
-variables. For example, if you’ve chosen 2 and 2 jobs, you should start 3 more
-services (for a total of 4):
+It should tell you that the jobs have been installed. Now, you must start more
+workers for the `fetchers` queue. To know how many workers to start, add up
+values of `JOB_FEEDS_SYNC_COUNT` and `JOB_LINKS_SYNC_COUNT` variables. For
+example, if you’ve chosen 2 and 2 jobs, you should start 3 more services (for a
+total of 4):
 
 ```console
 # systemctl enable flusio-worker@fetchers2 flusio-worker@fetchers3 flusio-worker@fetchers4

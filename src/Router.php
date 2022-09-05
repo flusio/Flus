@@ -238,6 +238,7 @@ class Router
         $router->addRoute('cli', '/topics/delete', 'Topics#delete');
 
         $router->addRoute('cli', '/jobs', 'JobsWorker#index');
+        $router->addRoute('cli', '/jobs/install', 'JobsWorker#install');
         $router->addRoute('cli', '/jobs/run', 'JobsWorker#run');
         $router->addRoute('cli', '/jobs/unlock', 'JobsWorker#unlock');
         $router->addRoute('cli', '/jobs/watch', 'JobsWorker#watch');

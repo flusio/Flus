@@ -93,6 +93,40 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         TEXT);
     }
 
+    public function testInstallRendersCorrectlyAndInstallsTheJobs()
+    {
+        $job_dao = new models\dao\Job();
+
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+
+        $response = $this->appRun('cli', '/jobs/install');
+
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'Jobs installed.');
+        $this->assertSame(1, $job_dao->countBy(['name' => 'flusio\\jobs\\scheduled\\FeedsSync']));
+        $this->assertSame(1, $job_dao->countBy(['name' => 'flusio\\jobs\\scheduled\\LinksSync']));
+        $this->assertSame(1, $job_dao->countBy(['name' => 'flusio\\jobs\\scheduled\\Cleaner']));
+        $this->assertSame(0, $job_dao->countBy(['name' => 'flusio\\jobs\\scheduled\\SubscriptionsSync']));
+    }
+
+    public function testInstallInstallsSubscriptionsSyncIfEnabled()
+    {
+        $job_dao = new models\dao\Job();
+
+        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        \Minz\Configuration::$application['job_adapter'] = 'database';
+
+        $response = $this->appRun('cli', '/jobs/install');
+
+        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        \Minz\Configuration::$application['job_adapter'] = 'test';
+
+        $this->assertResponseCode($response, 200);
+        $this->assertSame(1, $job_dao->countBy(['name' => 'flusio\\jobs\\scheduled\\SubscriptionsSync']));
+    }
+
     public function testUnlockRemovesLockAndRendersCorrectly()
     {
         $job_dao = new models\dao\Job();

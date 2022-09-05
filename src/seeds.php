@@ -1,18 +1,13 @@
 <?php
 
 $environment = \Minz\Configuration::$environment;
-$subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+$application = new \flusio\cli\Application();
 
 // Make sure that the technical user is initialized
 \flusio\models\User::supportUser();
 
 // Install the scheduled jobs in database
-\flusio\jobs\scheduled\FeedsSync::install();
-\flusio\jobs\scheduled\LinksSync::install();
-\flusio\jobs\scheduled\Cleaner::install();
-if ($subscriptions_enabled) {
-    \flusio\jobs\scheduled\SubscriptionsSync::install();
-}
+$application->run(new \Minz\Request('cli', '/jobs/install'));
 
 if ($environment === 'development') {
     // Initialize topics (only in development)

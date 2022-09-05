@@ -49,6 +49,25 @@ class JobsWorker
     }
 
     /**
+     * (Re-)install the jobs.
+     *
+     * @response 200
+     */
+    public function install($request)
+    {
+        $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+
+        jobs\scheduled\FeedsSync::install();
+        jobs\scheduled\LinksSync::install();
+        jobs\scheduled\Cleaner::install();
+        if ($subscriptions_enabled) {
+            jobs\scheduled\SubscriptionsSync::install();
+        }
+
+        return Response::text(200, 'Jobs installed.');
+    }
+
+    /**
      * Unlock a job.
      *
      * @request_param string id
