@@ -190,13 +190,19 @@ function url_avatar($filename)
 }
 
 /**
- * Return a SVG icon
+ * Return a SVG icon.
  *
- * @see \flusio\utils\Icon::get
+ * @param string $icon_name
+ *
+ * @return string
  */
 function icon($icon_name)
 {
-    return \flusio\utils\Icon::get($icon_name);
+    $url_icons = \Minz\Output\ViewHelpers::urlStatic('icons.svg');
+    $svg = "<svg class=\"icon icon--{$icon_name}\" aria-hidden=\"true\" width=\"36\" height=\"36\">";
+    $svg .= "<use xlink:href=\"{$url_icons}#{$icon_name}\"/>";
+    $svg .= '</svg>';
+    return $svg;
 }
 
 /**

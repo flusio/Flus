@@ -17,10 +17,10 @@ foreach ($translations as $translation) {
 return [
     'l10n' => $l10n,
     'icons' => [
-        'back' => \flusio\utils\Icon::get('arrow-left'),
-        'check' => \flusio\utils\Icon::get('check'),
-        'eye' => \flusio\utils\Icon::get('eye'),
-        'eye-hide' => \flusio\utils\Icon::get('eye-hide'),
-        'times' => \flusio\utils\Icon::get('times'),
+        'back' => icon('arrow-left'),
+        'check' => icon('check'),
+        'eye' => icon('eye'),
+        'eye-hide' => icon('eye-hide'),
+        'times' => icon('times'),
     ],
 ];
