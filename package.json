@@ -5,6 +5,7 @@
   "scripts": {
     "watch": "parcel watch --no-hmr --dist-dir public/dev_assets src/assets/*/application.*",
     "build": "parcel build --dist-dir public/assets src/assets/*/application.*",
+    "build:icons": "svg-sprite --symbol --symbol-dest=. --symbol-sprite=icons.svg --dest=public/static src/assets/icons/*",
     "lint-js": "eslint src/assets/javascripts/",
     "lint-js-fix": "eslint --fix src/assets/javascripts/",
     "lint-css": "stylelint src/assets/stylesheets/**/*.css",
@@ -33,7 +34,8 @@
     "parcel": "^2.6.0",
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^20.0.0",
-    "stylelint-order": "^4.1.0"
+    "stylelint-order": "^4.1.0",
+    "svg-sprite": "^1.5.4"
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.0.1",

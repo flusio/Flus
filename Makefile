@@ -64,6 +64,10 @@ reset: ## Reset the database
 	rm data/migrations_version.txt || true
 	$(CLI) system setup
 
+.PHONY: icons-build
+icons-build: ## Build the icons asset
+	$(NPM) run build:icons
+
 .PHONY: test
 test: ## Run the test suite
 	$(PHP) ./vendor/bin/phpunit \
