@@ -50,12 +50,44 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testTermsRendersCorrectly()
+    public function testAboutRendersCorrectly()
     {
         $response = $this->appRun('GET', '/about');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'pages/about.phtml');
         $this->assertResponseContains($response, 'About flusio');
+    }
+
+    public function testRobotsRendersCorrectlyWhenRegistrationsAreOpened()
+    {
+        \Minz\Configuration::$application['registrations_opened'] = true;
+
+        $response = $this->appRun('GET', '/robots.txt');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'pages/robots.txt');
+        $this->assertResponseEquals($response, <<<TXT
+            User-agent: *
+            Allow: /
+
+            TXT);
+    }
+
+    public function testRobotsRendersCorrectlyWhenRegistrationsAreClosed()
+    {
+        \Minz\Configuration::$application['registrations_opened'] = false;
+
+        $response = $this->appRun('GET', '/robots.txt');
+
+        \Minz\Configuration::$application['registrations_opened'] = true;
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'pages/robots.txt');
+        $this->assertResponseEquals($response, <<<TXT
+            User-agent: *
+            Disallow: /
+
+            TXT);
     }
 }

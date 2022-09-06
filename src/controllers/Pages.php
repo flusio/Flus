@@ -67,6 +67,16 @@ class Pages
     }
 
     /**
+     * Show the robots page.
+     *
+     * @response 200
+     */
+    public function robots()
+    {
+        return Response::ok('pages/robots.txt');
+    }
+
+    /**
      * Show the webmanifest page.
      *
      * @response 200

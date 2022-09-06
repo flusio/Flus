@@ -20,6 +20,7 @@ class Router
         $router->addRoute('get', '/', 'Pages#home', 'home');
         $router->addRoute('get', '/terms', 'Pages#terms', 'terms');
         $router->addRoute('get', '/about', 'Pages#about', 'about');
+        $router->addRoute('get', '/robots.txt', 'Pages#robots', 'robots.txt');
         $router->addRoute('get', '/app.webmanifest', 'Pages#webmanifest', 'webmanifest');
         $router->addRoute('get', '/.well-known/change-password', 'WellKnown#changePassword');
 

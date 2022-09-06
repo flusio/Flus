@@ -1,0 +1,6 @@
+User-agent: *
+<?php if ($registrations_opened): ?>
+Allow: /
+<?php else: ?>
+Disallow: /
+<?php endif; ?>
