@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-08-15 10:01+0200\n"
-"PO-Revision-Date: 2022-08-15 10:01+0200\n"
+"POT-Creation-Date: 2022-09-08 14:14+0200\n"
+"PO-Revision-Date: 2022-09-08 14:14+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -45,7 +45,7 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:99 controllers/Collections.php:306
+#: controllers/Collections.php:99 controllers/Collections.php:307
 #: controllers/Feeds.php:116 controllers/Groups.php:90
 #: controllers/Links.php:222 controllers/News.php:77
 #: controllers/Passwords.php:88 controllers/Passwords.php:191
@@ -66,11 +66,11 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:112 controllers/Collections.php:321
+#: controllers/Collections.php:112 controllers/Collections.php:322
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:381 controllers/Exportations.php:61
+#: controllers/Collections.php:382 controllers/Exportations.php:61
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:357 controllers/Links.php:404
 #: controllers/Messages.php:93 controllers/Messages.php:141
@@ -278,7 +278,7 @@ msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
 #: models/Collection.php:151 models/Collection.php:227
-#: views/bookmarks/index.phtml:3
+#: views/bookmarks/index.phtml:10
 msgid "Bookmarks"
 msgstr "Signets"
 
@@ -312,11 +312,11 @@ msgstr "Le type est obligatoire."
 msgid "The type is invalid."
 msgstr "Le type est invalide."
 
-#: models/FollowedCollection.php:96
+#: models/FollowedCollection.php:97
 msgid "The filter is required."
 msgstr "Le filtre est obligatoire."
 
-#: models/FollowedCollection.php:98
+#: models/FollowedCollection.php:99
 msgid "The filter is invalid."
 msgstr "Le filtre est invalide."
 
@@ -384,35 +384,35 @@ msgstr "La langue est obligatoire."
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
-#: seeds.php:19
+#: seeds.php:14
 msgid "Business"
 msgstr "Business"
 
-#: seeds.php:20
+#: seeds.php:15
 msgid "Climate"
 msgstr "Climat"
 
-#: seeds.php:21
+#: seeds.php:16
 msgid "Culture"
 msgstr "Culture"
 
-#: seeds.php:22
+#: seeds.php:17
 msgid "Health"
 msgstr "Santé"
 
-#: seeds.php:23
+#: seeds.php:18
 msgid "Politics"
 msgstr "Politique"
 
-#: seeds.php:24
+#: seeds.php:19
 msgid "Science"
 msgstr "Science"
 
-#: seeds.php:25
+#: seeds.php:20
 msgid "Sport"
 msgstr "Sport"
 
-#: seeds.php:26
+#: seeds.php:21
 msgid "Tech"
 msgstr "Tech"
 
@@ -471,11 +471,11 @@ msgstr "< 1 min"
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:240
+#: utils/view_helpers.php:246
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: utils/view_helpers.php:241
+#: utils/view_helpers.php:247
 #, php-format
 msgid ""
 "You can add links to <a href=\"%s\">your bookmarks</a> to read them later."
@@ -483,7 +483,7 @@ msgstr ""
 "Vous pouvez placer des liens dans <a href=\"%s\">vos signets</a> pour les "
 "lire plus tard."
 
-#: utils/view_helpers.php:275 views/links/show.phtml:56
+#: utils/view_helpers.php:281 views/links/show.phtml:56
 msgid "you"
 msgstr "vous"
 
@@ -733,11 +733,20 @@ msgstr "Retour à la page précédente"
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
-#: views/bookmarks/index.phtml:16
+#: views/bookmarks/index.phtml:23
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.phtml:30 views/collections/show.phtml:156
+#: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:31
+#: views/collections/show.phtml:147 views/collections/show_public.phtml:214
+#: views/links/searches/show.phtml:194 views/read/index.phtml:29
+#, php-format
+msgid "%s link"
+msgid_plural "%s links"
+msgstr[0] "%s lien"
+msgstr[1] "%s liens"
+
+#: views/bookmarks/index.phtml:43 views/collections/show.phtml:162
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -754,13 +763,6 @@ msgstr "Par %s"
 #: views/collections/_collection.phtml:29 views/links/searches/show.phtml:192
 msgid "no links"
 msgstr "aucun lien"
-
-#: views/collections/_collection.phtml:31 views/links/searches/show.phtml:194
-#, php-format
-msgid "%s link"
-msgid_plural "%s links"
-msgstr[0] "%s lien"
-msgstr[1] "%s liens"
 
 #: views/collections/_collection.phtml:47 views/collections/show.phtml:59
 msgid "public"
@@ -1136,7 +1138,7 @@ msgstr "Ne plus suivre"
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:229
+#: views/collections/show_public.phtml:235
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 

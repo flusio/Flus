@@ -142,6 +142,12 @@
         </div>
     <?php endif; ?>
 
+    <?php if ($pagination->numberElements() > 0): ?>
+        <div class="collection__number-links">
+            <?= _nf('%s link', '%s links', $pagination->numberElements(), format_number($pagination->numberElements())) ?>
+        </div>
+    <?php endif; ?>
+
     <div class="cards">
         <div class="card card--action">
             <button

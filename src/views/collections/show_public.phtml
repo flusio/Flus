@@ -209,6 +209,12 @@
         </div>
     <?php endif; ?>
 
+    <?php if ($pagination->numberElements() > 0): ?>
+        <div class="collection__number-links">
+            <?= _nf('%s link', '%s links', $pagination->numberElements(), format_number($pagination->numberElements())) ?>
+        </div>
+    <?php endif; ?>
+
     <?php if ($links): ?>
         <div class="cards cards--centered">
             <?php foreach ($links as $link): ?>

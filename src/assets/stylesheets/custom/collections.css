@@ -59,6 +59,14 @@
     }
 }
 
+.collection__number-links {
+    margin-bottom: var(--space-small);
+
+    color: var(--color-text-secondary);
+    font-size: var(--size-small);
+    text-align: center;
+}
+
 .list--collections-others {
     margin-top: 0;
 }
