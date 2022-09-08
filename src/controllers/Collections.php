@@ -141,6 +141,7 @@ class Collections
      * Show a collection page
      *
      * @request_param string id
+     * @request_param integer page
      *
      * @response 302 /login?redirect_to=/collection/:id
      *     if user is not connected and the collection is not public
@@ -152,6 +153,7 @@ class Collections
     {
         $user = auth\CurrentUser::get();
         $collection_id = $request->param('id');
+        $pagination_page = $request->paramInteger('page', 1);
         $collection = models\Collection::find($collection_id);
 
         $can_view = auth\CollectionsAccess::canView($user, $collection);
@@ -168,7 +170,6 @@ class Collections
         $number_links = models\Link::daoCall('countByCollectionId', $collection->id, [
             'hidden' => $can_update || $access_is_shared,
         ]);
-        $pagination_page = intval($request->param('page', 1));
         $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!
         $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
         if ($pagination_page !== $pagination->currentPage()) {
