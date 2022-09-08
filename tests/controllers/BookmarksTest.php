@@ -17,17 +17,14 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
+        $bookmarks = $user->bookmarks();
         $link_id = $this->create('link', [
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
         $this->create('link_to_collection', [
             'link_id' => $link_id,
-            'collection_id' => $collection_id,
+            'collection_id' => $bookmarks->id,
         ]);
 
         $response = $this->appRun('get', '/bookmarks');
