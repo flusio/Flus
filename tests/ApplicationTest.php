@@ -164,6 +164,8 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
         $headers = $response->headers(true);
         $this->assertSame('interest-cohort=()', $headers['Permissions-Policy']);
+        $this->assertSame('same-origin', $headers['Referrer-Policy']);
+        $this->assertSame('nosniff', $headers['X-Content-Type-Options']);
         $this->assertSame('deny', $headers['X-Frame-Options']);
         $this->assertSame([
             'default-src' => "'self'",

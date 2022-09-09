@@ -138,6 +138,8 @@ class Application
 
         $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
         $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
+        $response->setHeader('Referrer-Policy', 'same-origin');
+        $response->setHeader('X-Content-Type-Options', 'nosniff');
         $response->setHeader('X-Frame-Options', 'deny');
 
         if (
