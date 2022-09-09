@@ -238,6 +238,28 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('4a022608d595e9000d1f1be22a0a6a0763ad853d2417b1c8ea0ea12bd047bdcd', $feed->hash());
     }
 
+    public function testFromTextRecoversFromWrongEncoding()
+    {
+        // Create a XML string declaring encoding UTF-8
+        $xml = <<<XML
+            <?xml version="1.0" encoding="UTF-8"?>
+            <rss version="2.0">
+                <channel>
+                    <title>My feed with an àccent</title>
+                    <link>https://example.com</link>
+                </channel>
+            </rss>
+            XML;
+        // … but its real encoding is ISO-8859-1!
+        $xml = mb_convert_encoding($xml, 'ISO-8859-1', 'UTF-8');
+
+        $feed = Feed::fromText($xml);
+
+        $this->assertSame('My feed with an ?ccent', $feed->title);
+        $this->assertSame('https://example.com', $feed->link);
+        $this->assertSame('0ca0efc2ed6d8bfab90dbd3f42a473465c505b3d13b4da5975b0deed52c4b231', $feed->hash());
+    }
+
     public function testFromTextFailsWithEmptyString()
     {
         $this->expectException(\DomainException::class);

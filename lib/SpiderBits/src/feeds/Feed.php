@@ -50,7 +50,26 @@ class Feed
         $dom_document = new \DOMDocument();
         $result = @$dom_document->loadXML($feed_as_string);
         if (!$result) {
-            throw new \DomainException('Can’t parse the given string.');
+            // It might be an encoding issue. We try to recover by re-encoding
+            // the string with the declared encoding, or UTF-8. It will most
+            // probably generate a string with characters replaced by `?`, but
+            // at least it will be parsable.
+            $result = preg_match(
+                '/<?xml\s+(?:(?:.*?)\s)?encoding="(.+?)"/i',
+                $feed_as_string,
+                $matches
+            );
+            if ($result) {
+                $encoding = $matches[1];
+            } else {
+                $encoding = 'UTF-8';
+            }
+            $feed_as_string = mb_convert_encoding($feed_as_string, $encoding, $encoding);
+            $result = @$dom_document->loadXML($feed_as_string);
+
+            if (!$result) {
+                throw new \DomainException('Can’t parse the given string.');
+            }
         }
 
         if (AtomParser::canHandle($dom_document)) {
