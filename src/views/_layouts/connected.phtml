@@ -167,6 +167,16 @@
 
                             <a
                                 class="popup__item popup__item--link"
+                                <?= $current_page === 'addons' ? 'aria-current="page"' : '' ?>
+                                href="<?= url('addons') ?>"
+                                role="menuitem"
+                            >
+                                <?= icon('plugin') ?>
+                                <?= _('Add-ons') ?>
+                            </a>
+
+                            <a
+                                class="popup__item popup__item--link"
                                 <?= $current_page === 'support' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('support') ?>"
                                 role="menuitem"

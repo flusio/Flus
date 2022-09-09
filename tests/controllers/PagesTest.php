@@ -50,6 +50,15 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
+    public function testAddonsRendersCorrectly()
+    {
+        $response = $this->appRun('GET', '/addons');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'pages/addons.phtml');
+        $this->assertResponseContains($response, ' Keep flusio at hand in your browser');
+    }
+
     public function testAboutRendersCorrectly()
     {
         $response = $this->appRun('GET', '/about');

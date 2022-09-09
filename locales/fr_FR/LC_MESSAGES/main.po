@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-09-08 14:14+0200\n"
-"PO-Revision-Date: 2022-09-08 14:14+0200\n"
+"POT-Creation-Date: 2022-09-09 14:29+0200\n"
+"PO-Revision-Date: 2022-09-09 14:29+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:39
-#: views/_layouts/connected.phtml:215
-#: views/_layouts/connected_blocked.phtml:174
+#: views/_layouts/connected.phtml:225
+#: views/_layouts/connected_blocked.phtml:184
 #: views/_layouts/not_connected.phtml:147
 msgid "Back"
 msgstr "Retour"
@@ -605,35 +605,41 @@ msgid "Login & security"
 msgstr "Identifiants & sécurité"
 
 #: views/_layouts/connected.phtml:175
-#: views/_layouts/connected_blocked.phtml:134 views/support/show.phtml:3
+#: views/_layouts/connected_blocked.phtml:134 views/pages/addons.phtml:3
+#: views/pages/addons.phtml:11
+msgid "Add-ons"
+msgstr "Extensions"
+
+#: views/_layouts/connected.phtml:185
+#: views/_layouts/connected_blocked.phtml:144 views/support/show.phtml:3
 #: views/support/show.phtml:12
 msgid "Support"
 msgstr "Support"
 
-#: views/_layouts/connected.phtml:185
-#: views/_layouts/connected_blocked.phtml:144
+#: views/_layouts/connected.phtml:195
+#: views/_layouts/connected_blocked.phtml:154
 msgid "About"
 msgstr "À propos"
 
-#: views/_layouts/connected.phtml:192
-#: views/_layouts/connected_blocked.phtml:151
+#: views/_layouts/connected.phtml:202
+#: views/_layouts/connected_blocked.phtml:161
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:226 views/_layouts/connected.phtml:227
+#: views/_layouts/connected.phtml:236 views/_layouts/connected.phtml:237
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:235 views/links/searches/show.phtml:48
+#: views/_layouts/connected.phtml:245 views/links/searches/show.phtml:48
 #: views/links/searches/show.phtml:64
 msgid "Search"
 msgstr "Rechercher"
 
-#: views/_layouts/connected.phtml:272 views/_layouts/not_connected.phtml:188
+#: views/_layouts/connected.phtml:282 views/_layouts/not_connected.phtml:188
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:273 views/_layouts/not_connected.phtml:189
+#: views/_layouts/connected.phtml:283 views/_layouts/not_connected.phtml:189
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -1593,14 +1599,6 @@ msgstr "Créer une collection"
 msgid "Shared with me"
 msgstr "Partagées avec moi"
 
-#: views/links/new.phtml:93 views/onboarding/step6.phtml:37
-msgid "Make your life easier by using the Web extension on"
-msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
-
-#: views/links/new.phtml:99 views/onboarding/step6.phtml:44
-msgid "or"
-msgstr "ou"
-
 #: views/links/repairing/_new.phtml:4 views/links/repairing/new.phtml:3
 msgid "Repairing a link"
 msgstr "Réparation d’un lien"
@@ -2186,6 +2184,14 @@ msgstr "Vous avez encore des choses à découvrir, restez curieux ou curieuse !
 msgid "Start using %s"
 msgstr "Commencer à utiliser %s"
 
+#: views/onboarding/step6.phtml:37
+msgid "Make your life easier by using the Web extension on"
+msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
+
+#: views/onboarding/step6.phtml:44
+msgid "or"
+msgstr "ou"
+
 #: views/onboarding/step6.phtml:55
 msgid "Tip: if you use Pocket, you can import your links:"
 msgstr "Astuce : si vous utilisez Pocket, vous pouvez importer vos liens :"
@@ -2312,6 +2318,63 @@ msgstr ""
 "Et un énorme merci aux personnes qui s’abonnent au service officiel, parlent "
 "de flusio autour d’elleux, partagent leur opinion et leurs idées, ou "
 "remontent des bugs !"
+
+#: views/pages/addons.phtml:16
+#, php-format
+msgid "Keep %s at hand in your browser"
+msgstr "Gardez %s à portée de navigateur"
+
+#: views/pages/addons.phtml:24
+msgid "Download for Firefox"
+msgstr "Télécharger pour Firefox"
+
+#: views/pages/addons.phtml:32
+msgid "Download for Chrome"
+msgstr "Télécharger pour Chrome"
+
+#: views/pages/addons.phtml:40
+msgid "Your browser is not in the list?"
+msgstr "Votre navigateur n’est pas dans la liste ?"
+
+#: views/pages/addons.phtml:45
+msgid "Drag and drop this link to your browser bookmarks bar:"
+msgstr ""
+"Glissez et déposez ce lien dans la barre de marque-pages de votre "
+"navigateur :"
+
+#: views/pages/addons.phtml:53
+msgid ""
+"Clicking on this link does nothing: just drag and drop it to your browser "
+"bookmarks bar :)"
+msgstr ""
+"Cliquer sur ce lien ne fait rien : glissez et déposez-le simplement dans la "
+"barre de marque-pages de votre navigateur :)"
+
+#: views/pages/addons.phtml:55
+#, php-format
+msgid "Add to %s"
+msgstr "Ajouter à %s"
+
+#: views/pages/addons.phtml:62
+msgid "Using a smartphone?"
+msgstr "Vous utilisez un smartphone ?"
+
+#: views/pages/addons.phtml:66
+msgid "Sorry, there’s no app for that."
+msgstr "Désolé, il n’y a pas d’application pour ça."
+
+#: views/pages/addons.phtml:70
+#, php-format
+msgid ""
+"Instead, you can <strong>add a shortcut to %s on your home screen.</strong>"
+msgstr ""
+"À la place, vous pouvez <strong>ajouter un raccourci vers %s à votre écran "
+"d’accueil.</strong>"
+
+#: views/pages/addons.phtml:71
+msgid "With modern browsers, it will work as a mobile application."
+msgstr ""
+"Avec les navigateurs modernes, il fonctionnera comme une application mobile."
 
 #: views/pages/terms.phtml:3 views/pages/terms.phtml:10
 msgid "Terms of service"

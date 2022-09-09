@@ -10,4 +10,8 @@ export default class extends Controller {
             event.preventDefault();
         }
     }
+
+    alert (event) {
+        alert(this.messageValue);
+    }
 };

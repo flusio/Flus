@@ -55,6 +55,16 @@ class Pages
     }
 
     /**
+     * Show the addons page.
+     *
+     * @response 200
+     */
+    public function addons($request)
+    {
+        return Response::ok('pages/addons.phtml');
+    }
+
+    /**
      * Show the about page.
      *
      * @response 200

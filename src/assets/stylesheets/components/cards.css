@@ -58,7 +58,7 @@
 .card--showcase {
     padding: var(--space-small);
 
-    align-items: stretch;
+    align-items: center;
     justify-content: center;
 
     text-align: center;
