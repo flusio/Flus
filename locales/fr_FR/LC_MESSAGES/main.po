@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-09-09 14:29+0200\n"
-"PO-Revision-Date: 2022-09-09 14:29+0200\n"
+"POT-Creation-Date: 2022-09-09 14:56+0200\n"
+"PO-Revision-Date: 2022-09-09 14:56+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:39
-#: views/_layouts/connected.phtml:225
-#: views/_layouts/connected_blocked.phtml:184
+#: views/_layouts/connected.phtml:217
+#: views/_layouts/connected_blocked.phtml:176
 #: views/_layouts/not_connected.phtml:147
 msgid "Back"
 msgstr "Retour"
@@ -613,33 +613,28 @@ msgstr "Extensions"
 #: views/_layouts/connected.phtml:185
 #: views/_layouts/connected_blocked.phtml:144 views/support/show.phtml:3
 #: views/support/show.phtml:12
-msgid "Support"
-msgstr "Support"
+msgid "Help & support"
+msgstr "Aide & support"
 
-#: views/_layouts/connected.phtml:195
-#: views/_layouts/connected_blocked.phtml:154
-msgid "About"
-msgstr "À propos"
-
-#: views/_layouts/connected.phtml:202
-#: views/_layouts/connected_blocked.phtml:161
+#: views/_layouts/connected.phtml:194
+#: views/_layouts/connected_blocked.phtml:153
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:236 views/_layouts/connected.phtml:237
+#: views/_layouts/connected.phtml:228 views/_layouts/connected.phtml:229
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:245 views/links/searches/show.phtml:48
+#: views/_layouts/connected.phtml:237 views/links/searches/show.phtml:48
 #: views/links/searches/show.phtml:64
 msgid "Search"
 msgstr "Rechercher"
 
-#: views/_layouts/connected.phtml:282 views/_layouts/not_connected.phtml:188
+#: views/_layouts/connected.phtml:274 views/_layouts/not_connected.phtml:188
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:283 views/_layouts/not_connected.phtml:189
+#: views/_layouts/connected.phtml:275 views/_layouts/not_connected.phtml:189
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -660,7 +655,7 @@ msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
 #: views/_layouts/not_connected.phtml:160 views/pages/about.phtml:3
-#: views/pages/about.phtml:11
+#: views/pages/about.phtml:11 views/support/show.phtml:94
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
@@ -2607,6 +2602,14 @@ msgstr "Je vous répondrai à <strong>%s</strong>"
 #: views/support/show.phtml:82
 msgid "Send your message"
 msgstr "Envoyer votre message"
+
+#: views/support/show.phtml:90
+msgid "More help"
+msgstr "Plus d’aide"
+
+#: views/support/show.phtml:95
+msgid "Start the onboarding again"
+msgstr "Recommencer l’introduction"
 
 #: views/topics/show.phtml:13
 #, php-format

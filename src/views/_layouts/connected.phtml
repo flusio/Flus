@@ -182,18 +182,10 @@
                                 role="menuitem"
                             >
                                 <?= icon('help') ?>
-                                <?= _('Support') ?>
+                                <?= _('Help & support') ?>
                             </a>
 
-                            <a
-                                class="popup__item popup__item--link"
-                                <?= $current_page === 'about' ? 'aria-current="page"' : '' ?>
-                                href="<?= url('about') ?>"
-                                role="menuitem"
-                            >
-                                <?= icon('info') ?>
-                                <?= _('About') ?>
-                            </a>
+                            <div class="popup__separator"></div>
 
                             <form method="post" action="<?= url('logout') ?>" role="menuitem">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
