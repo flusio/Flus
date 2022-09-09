@@ -37,6 +37,10 @@
         border-radius: var(--radius);
     }
 
+    .popup__container--large {
+        min-width: 31rem;
+    }
+
     .popup__container--bottom {
         left: 50%;
 
