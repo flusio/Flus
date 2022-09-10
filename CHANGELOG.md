@@ -1,6 +1,6 @@
 # Changelog of flusio
 
-## 2022-xx-xx - v0.50
+## 2022-09-10 - v0.50
 
 ### Migration notes
 
@@ -12,6 +12,33 @@ When you change values of `JOB_FEEDS_SYNC_COUNT` and `JOB_LINKS_SYNC_COUNT`,
 you can now execute the command `php cli jobs install` instead of executing
 the migrations command. It is quite the same under the hood, but it should be
 more intuitive.
+
+### New
+
+- Display the number of links in collections ([f1e8f3b4](https://github.com/flusio/flusio/commit/f1e8f3b4))
+- Paginate the bookmarks ([ba84a1fb](https://github.com/flusio/flusio/commit/ba84a1fb))
+- Create an Add-ons page ([a709c586](https://github.com/flusio/flusio/commit/a709c586))
+
+### Security
+
+- Force the login redirection on the current instance ([2f087f2f](https://github.com/flusio/flusio/commit/2f087f2f))
+
+### Improvements
+
+- Move "About" menu item in "Help & support" ([ab89479e](https://github.com/flusio/flusio/commit/ab89479e))
+- Enlarge the avatar menu popup container ([f3fdf68a](https://github.com/flusio/flusio/commit/f3fdf68a))
+
+### Misc
+
+- Handle feeds declaring a wrong encoding ([0cb9840e](https://github.com/flusio/flusio/commit/0cb9840e))
+- Add Referrer-Policy and X-Content-Type-Options headers ([fe2e227d](https://github.com/flusio/flusio/commit/fe2e227d))
+- Display icons with svg symbols ([99388f10](https://github.com/flusio/flusio/commit/99388f10))
+- Provide a robots.txt file ([13bb3694](https://github.com/flusio/flusio/commit/13bb3694))
+- Don't create too old links in FeedFetcher ([53a10c0a](https://github.com/flusio/flusio/commit/53a10c0a))
+- (admin) Allow to limit the number of links in feeds ([26f1de9d](https://github.com/flusio/flusio/commit/26f1de9d))
+- (admin) Add a /jobs/install command ([469f49ad](https://github.com/flusio/flusio/commit/469f49ad))
+- (admin) Add more info to the /system command ([e936b400](https://github.com/flusio/flusio/commit/e936b400))
+- (dev) Provide a command to create an icon sprite ([961c26f2](https://github.com/flusio/flusio/commit/961c26f2))
 
 ## 2022-08-15 - v0.49
 
