@@ -173,6 +173,26 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/about');
     }
 
+    public function testCreateForcesRedirectionOnCurrentInstance()
+    {
+        $email = $this->fake('email');
+        $password = $this->fake('password');
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+        ]);
+        $redirect_to = 'https://example.com/about';
+
+        $response = $this->appRun('post', '/login', [
+            'csrf' => \Minz\CSRF::generate(),
+            'email' => $email,
+            'password' => $password,
+            'redirect_to' => $redirect_to,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+    }
+
     public function testCreateIsCaseInsensitive()
     {
         $email = $this->fake('email');

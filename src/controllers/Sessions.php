@@ -69,6 +69,15 @@ class Sessions
     public function create($request)
     {
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
+
+        try {
+            // Verify that redirect_to matches a real route in the application.
+            $router = \flusio\Router::load();
+            $router->match('get', $redirect_to);
+        } catch (\Minz\Errors\RouteNotFoundError $e) {
+            $redirect_to = \Minz\Url::for('home');
+        }
+
         if (auth\CurrentUser::get()) {
             return Response::found($redirect_to);
         }
