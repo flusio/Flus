@@ -15,7 +15,6 @@
                             <section class="section section--small">
                                 <header class="section__title">
                                     <h1>
-                                        <?= icon('feed') ?>
                                         <xsl:value-of select="/atom:feed/atom:title"/>
                                         <?= _('(feed)') ?>
                                     </h1>
