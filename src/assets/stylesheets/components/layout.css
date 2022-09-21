@@ -70,7 +70,7 @@
 }
 
 .layout__main:focus {
-    outline: none;
+    outline: 0;
 }
 
 .layout__back a {
@@ -212,10 +212,6 @@
     color: initial;
 
     background-color: var(--color-purple-2);
-}
-
-.banner__container--anchor:focus {
-    outline-color: var(--color-purple-4);
 }
 
 .layout--error {

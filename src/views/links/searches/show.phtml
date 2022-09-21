@@ -82,10 +82,9 @@
                     <div class="card__body">
                         <h2 class="card__title">
                             <a
-                                class="anchor--hidden"
+                                class="card__title-ellipsis"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                tabindex="-1"
                                 href="<?= protect($existing_link->url) ?>"
                             >
                                 <?= protect($existing_link->title) ?>
@@ -139,10 +138,9 @@
                     <div class="card__body">
                         <h2 class="card__title">
                             <a
-                                class="anchor--hidden"
+                                class="card__title-ellipsis"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                tabindex="-1"
                                 href="<?= protect($default_link->url) ?>"
                             >
                                 <?= protect($default_link->title) ?>
@@ -179,7 +177,7 @@
             <?php foreach ($feeds as $feed): ?>
                 <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $feed->image_filename, 'collection-card.svg') ?>');">
                     <a class="card__body card__body--large" href="<?= url('collection', ['id' => $feed->id]) ?>">
-                        <div class="card__title">
+                        <div class="card__title card__title-ellipsis">
                             <?= protect($feed->name) ?>
                         </div>
 

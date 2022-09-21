@@ -27,7 +27,7 @@
         <div class="cards cards--centered">
             <div class="card card--illustrated card--illustrated-alt" style="background-image: url('<?= url_static('bookmarks-card.png') ?>');">
                 <a class="card__body" href="<?= url('bookmarks') ?>">
-                    <div class="card__title">
+                    <div class="card__title card__title-ellipsis">
                         <?= protect($bookmarks->name()) ?>
                     </div>
 
@@ -39,7 +39,7 @@
 
             <div class="card card--illustrated card--illustrated-alt" style="background-image: url('<?= url_static('read-card.png') ?>');">
                 <a class="card__body" href="<?= url('read list') ?>">
-                    <div class="card__title">
+                    <div class="card__title card__title-ellipsis">
                         <?= protect($read_list->name()) ?>
                     </div>
 

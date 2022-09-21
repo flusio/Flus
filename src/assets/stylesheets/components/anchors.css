@@ -13,10 +13,6 @@ a:focus {
     color: var(--color-link);
 }
 
-a:focus {
-    outline-color: var(--color-purple-4);
-}
-
 .anchor--discreet {
     text-decoration: none;
 }

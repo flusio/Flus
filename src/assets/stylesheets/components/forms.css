@@ -114,7 +114,7 @@ input[type="radio"]:focus + label::before {
 }
 
 input[type="checkbox"]:focus + label::before {
-    box-shadow: 0 0 0 1px var(--color-purple-5);
+    outline: var(--width-border-bold) solid var(--color-purple-4);
 }
 
 input[type="checkbox"]:checked + label::before,

@@ -55,6 +55,10 @@ body {
     background: linear-gradient(to bottom, var(--color-body), var(--color-purple-1) 420px);
 }
 
+*:focus {
+    outline: var(--width-border-bold) solid var(--color-purple-4);
+}
+
 .sr-only {
     position: absolute;
 

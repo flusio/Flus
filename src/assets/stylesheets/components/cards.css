@@ -219,30 +219,29 @@
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.card--illustrated .card__body:focus-visible {
-    outline: 3px solid var(--color-purple-5);
-}
-
 .card--illustrated .sticker {
     text-shadow: none;
 }
 
 .card__title {
-    overflow: hidden;
-
     margin-top: 0;
     margin-bottom: var(--space-medium);
 
     font-size: var(--size-normal);
     font-weight: bold;
     line-height: 1.25;
-    text-overflow: ellipsis;
 }
 
 .card__title a {
     display: block;
 
     text-decoration: none;
+}
+
+.card__title-ellipsis {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
 .card__text {
