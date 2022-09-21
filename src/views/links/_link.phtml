@@ -194,7 +194,7 @@
                         </div>
 
                         <?php if ($display_mark_as_read): ?>
-                            <form method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $this->safe('from')]) ?>" role="menuitem">
+                            <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $this->safe('from')]) ?>" role="menuitem">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                                 <button class="popup__item popup__item--button">
@@ -205,7 +205,7 @@
                         <?php endif; ?>
 
                         <?php if ($display_mark_as_unread): ?>
-                            <form method="post" action="<?= url('mark link as unread', ['id' => $link->id, 'from' => $this->safe('from')]) ?>" role="menuitem">
+                            <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as unread', ['id' => $link->id, 'from' => $this->safe('from')]) ?>" role="menuitem">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                                 <button class="popup__item popup__item--button">
@@ -270,7 +270,7 @@
                             <?= _('Remove from the news…') ?>
                         </div>
 
-                        <form method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
+                        <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
                             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                             <button class="popup__item popup__item--button">
@@ -279,7 +279,7 @@
                             </button>
                         </form>
 
-                        <form method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
+                        <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
                             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                             <button class="popup__item popup__item--button">
@@ -290,7 +290,7 @@
 
                         <div class="popup__separator"></div>
 
-                        <form method="post" action="<?= url('mark link to never read', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
+                        <form data-turbo-preserve-scroll method="post" action="<?= url('mark link to never read', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
                             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                             <button class="popup__item popup__item--button">

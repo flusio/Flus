@@ -40,7 +40,6 @@
                     required
                     value="<?= $url ?>"
                     autocomplete="off"
-                    autofocus
                     aria-describedby="url-desc"
                 />
 
@@ -201,7 +200,7 @@
 
                     <div class="card__footer card__footer--centered">
                         <?php if ($current_user->isFollowing($feed->id)): ?>
-                            <form method="post" action="<?= url('unfollow collection', ['id' => $feed->id]) ?>">
+                            <form data-turbo-preserve-scroll method="post" action="<?= url('unfollow collection', ['id' => $feed->id]) ?>">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>
@@ -210,7 +209,7 @@
                                 </button>
                             </form>
                         <?php else: ?>
-                            <form method="post" action="<?= url('follow collection', ['id' => $feed->id]) ?>">
+                            <form data-turbo-preserve-scroll method="post" action="<?= url('follow collection', ['id' => $feed->id]) ?>">
                                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                                 <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>

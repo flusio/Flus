@@ -15,7 +15,7 @@
         <?= protect($link->title) ?>
     </p>
 
-    <form method="post" action="<?= url('update link', ['id' => $link->id]) ?>">
+    <form data-turbo-preserve-scroll method="post" action="<?= url('update link', ['id' => $link->id]) ?>">
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
@@ -84,6 +84,7 @@
     </form>
 
     <form
+        data-turbo-preserve-scroll
         class="form--danger"
         method="post"
         action="<?= url('delete link', ['id' => $link->id]) ?>"

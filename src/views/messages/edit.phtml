@@ -11,7 +11,7 @@
         <h1 id="modal-title"><?= _('Message edition') ?></h1>
     </div>
 
-    <form method="post" action="<?= url('update message', ['id' => $message->id]) ?>">
+    <form data-turbo-preserve-scroll method="post" action="<?= url('update message', ['id' => $message->id]) ?>">
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />

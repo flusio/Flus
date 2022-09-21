@@ -127,6 +127,7 @@
                                     </button>
 
                                     <form
+                                        data-turbo-preserve-scroll
                                         method="post"
                                         action="<?= url('delete message', ['id' => $message->id]) ?>"
                                         data-controller="confirmation"
@@ -155,7 +156,7 @@
         <?php endforeach; ?>
 
         <?php if ($can_comment): ?>
-            <form method="post" action="<?= url('links/create message', ['link_id' => $link->id]) ?>">
+            <form data-turbo-preserve-scroll method="post" action="<?= url('links/create message', ['link_id' => $link->id]) ?>">
                 <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />

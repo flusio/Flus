@@ -15,7 +15,7 @@
         <?= protect($link->title) ?>
     </p>
 
-    <form method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
+    <form data-turbo-preserve-scroll method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
         <input type="hidden" name="mode" value="adding" />

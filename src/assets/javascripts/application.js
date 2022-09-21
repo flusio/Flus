@@ -49,3 +49,27 @@ function adaptLayoutContentBorderRadius () {
 }
 
 document.addEventListener('turbo:load', adaptLayoutContentBorderRadius);
+
+// Allow to disable scroll on form submission.
+// Submitting forms with a `data-turbo-preserve-scroll` attribute will keep the
+// scroll position at the current position.
+let disableScroll = false;
+
+addEventListener('turbo:submit-start', (event) => {
+    if (event.target.hasAttribute('data-turbo-preserve-scroll')) {
+        disableScroll = true;
+    }
+});
+
+addEventListener('turbo:before-render', (event) => {
+    if (disableScroll) {
+        // As explained on GitHub, `Turbo.navigator.currentVisit.scrolled`
+        // is internal and private attribute: we should NOT access it.
+        // Unfortunately, there is no good alternative yet to maintain the
+        // scroll position. This means we have to be pay double attention when
+        // upgrading Turbo.
+        // Reference: https://github.com/hotwired/turbo/issues/37#issuecomment-979466543
+        Turbo.navigator.currentVisit.scrolled = true;
+        disableScroll = false;
+    }
+});
