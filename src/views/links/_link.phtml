@@ -3,14 +3,15 @@
     $display_hidden = $display_hidden ?? false;
     $display_edit = $display_edit ?? false;
     $display_repair = $display_repair ?? false;
+    $display_read_later = $display_read_later ?? false;
     $display_mark_as_read = $display_mark_as_read ?? false;
     $display_mark_as_unread = $display_mark_as_unread ?? false;
+    $display_never = $display_never ?? false;
     $display_via = $display_via ?? false;
     if ($display_via && !$link->via_type) {
         $display_via = false;
     }
     $collections_mode = $collections_mode ?? '';
-    $secondary_menu_mode = $secondary_menu_mode ?? 'default';
 
     $via_collection = $display_via ? $link->viaCollection() : null;
     $via_user = $display_via ? $link->viaUser() : null;
@@ -18,6 +19,20 @@
     $is_current_user_owner = $current_user && $current_user->id === $link->user_id;
     $in_error = $link->inError();
     $trackers_detected = $link->trackersDetected();
+
+    $in_bookmarks = $link->isInBookmarksOf($current_user);
+    if ($display_read_later === 'auto' && $in_bookmarks) {
+        $display_read_later = false;
+    } elseif ($display_read_later === 'auto') {
+        $display_read_later = true;
+    }
+
+    $is_read = $link->isReadBy($current_user);
+    if ($display_mark_as_read === 'auto' && $is_read) {
+        $display_mark_as_read = false;
+    } elseif ($display_mark_as_read === 'auto') {
+        $display_mark_as_read = true;
+    }
 ?>
 
 <div class="card">
@@ -89,10 +104,8 @@
     <div class="card__body">
         <h2 class="card__title">
             <a
-                class="anchor--hidden"
                 target="_blank"
                 rel="noopener noreferrer"
-                tabindex="-1"
                 href="<?= protect($link->url) ?>"
             >
                 <?= protect($link->title) ?>
@@ -109,8 +122,12 @@
                 <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
             <?php endif; ?>
 
-            <?php if ($link->isReadBy($current_user)): ?>
+            <?php if ($is_read): ?>
                 &nbsp;<span title="<?= _('You read this link.') ?>"><?= icon('check') ?><span class="sr-only"><?= _('You read this link.') ?></span></span>
+            <?php endif; ?>
+
+            <?php if ($in_bookmarks): ?>
+                &nbsp;<span title="<?= _('This link is in your bookmarks.') ?>"><?= icon('bookmark') ?><span class="sr-only"><?= _('This link is in your bookmarks.') ?></span></span>
             <?php endif; ?>
         </p>
 
@@ -162,144 +179,122 @@
     </div>
 
     <div class="card__footer">
+        <details
+            class="popup"
+            data-controller="popup"
+            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+        >
+            <summary class="popup__opener" title="<?= _('Actions') ?>">
+                <span class="button button--ghost button--smaller">
+                    <?= icon('menu') ?>
+                    <span class="sr-only">
+                        <?= _('Actions') ?>
+                    </span>
+                </span>
+            </summary>
+
+            <nav class="popup__container popup__container--over" role="menu">
+                <?php if ($display_never): ?>
+                    <form data-turbo-preserve-scroll method="post" action="<?= url('mark link to never read', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
+                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+                        <button class="popup__item popup__item--button">
+                            <?= icon('times') ?>
+                            <?= _('Remove from the news') ?>
+                        </button>
+                    </form>
+
+                    <div class="popup__separator"></div>
+                <?php endif; ?>
+
+                <div data-controller="copy-to-clipboard">
+                    <input type="hidden" value="<?= protect($link->url) ?>" data-copy-to-clipboard-target="copyable" />
+
+                    <button
+                        class="popup__item popup__item--button share__button"
+                        data-action="copy-to-clipboard#copy"
+                        data-copy-to-clipboard-target="feedback"
+                        role="menuitem"
+                    >
+                        <?= icon('copy-to-clipboard') ?>
+                        <?= _('Copy the external link') ?>
+                    </button>
+                </div>
+
+                <?php if ($display_edit || $display_repair): ?>
+                    <div class="popup__separator"></div>
+                <?php endif; ?>
+
+                <?php if ($display_edit): ?>
+                    <button
+                        class="popup__item popup__item--button"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="<?= url('edit link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                        role="menuitem"
+                    >
+                        <?= icon('pencil') ?>
+                        <?= _('Edit') ?>
+                    </button>
+                <?php endif; ?>
+
+                <?php if ($display_repair): ?>
+                    <button
+                        class="popup__item popup__item--button"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                        role="menuitem"
+                    >
+                        <?= icon('wrench') ?>
+                        <?= _('Repair') ?>
+                    </button>
+                <?php endif; ?>
+            </nav>
+        </details>
+
         <div class="card__footer-group">
-            <?php if ($secondary_menu_mode === 'default'): ?>
-                <details
-                    class="popup"
-                    data-controller="popup"
-                    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                >
-                    <summary class="popup__opener" title="<?= _('Actions') ?>">
-                        <span class="button button--ghost button--smaller">
-                            <?= icon('menu') ?>
-                            <span class="sr-only">
-                                <?= _('Actions') ?>
-                            </span>
+            <?php if ($display_mark_as_read): ?>
+                <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
+                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+                    <button class="button--ghost button--smaller" title="<?= _('Mark as read') ?>">
+                        <?= icon('check') ?>
+                        <span class="sr-only">
+                            <?= _('Mark as read') ?>
                         </span>
-                    </summary>
+                    </button>
+                </form>
+            <?php endif; ?>
 
-                    <nav class="popup__container popup__container--over" role="menu">
-                        <div data-controller="copy-to-clipboard">
-                            <input type="hidden" value="<?= protect($link->url) ?>" data-copy-to-clipboard-target="copyable" />
+            <?php if ($display_mark_as_unread): ?>
+                <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as unread', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
+                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
-                            <button
-                                class="popup__item popup__item--button share__button"
-                                data-action="copy-to-clipboard#copy"
-                                data-copy-to-clipboard-target="feedback"
-                                role="menuitem"
-                            >
-                                <?= icon('copy-to-clipboard') ?>
-                                <?= _('Copy the external link') ?>
-                            </button>
-                        </div>
-
-                        <?php if ($display_mark_as_read): ?>
-                            <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $this->safe('from')]) ?>" role="menuitem">
-                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-                                <button class="popup__item popup__item--button">
-                                    <?= icon('check') ?>
-                                    <?= _('Mark as read') ?>
-                                </button>
-                            </form>
-                        <?php endif; ?>
-
-                        <?php if ($display_mark_as_unread): ?>
-                            <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as unread', ['id' => $link->id, 'from' => $this->safe('from')]) ?>" role="menuitem">
-                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-                                <button class="popup__item popup__item--button">
-                                    <?= icon('times') ?>
-                                    <?= _('Remove from read list') ?>
-                                </button>
-                            </form>
-                        <?php endif; ?>
-
-                        <?php if ($display_edit || $display_repair): ?>
-                            <div class="popup__separator"></div>
-                        <?php endif; ?>
-
-                        <?php if ($display_edit): ?>
-                            <button
-                                class="popup__item popup__item--button"
-                                data-controller="modal-opener"
-                                data-action="modal-opener#fetch"
-                                data-modal-opener-href-value="<?= url('edit link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
-                                aria-haspopup="dialog"
-                                aria-controls="modal"
-                                role="menuitem"
-                            >
-                                <?= icon('pencil') ?>
-                                <?= _('Edit') ?>
-                            </button>
-                        <?php endif; ?>
-
-                        <?php if ($display_repair): ?>
-                            <button
-                                class="popup__item popup__item--button"
-                                data-controller="modal-opener"
-                                data-action="modal-opener#fetch"
-                                data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
-                                aria-haspopup="dialog"
-                                aria-controls="modal"
-                                role="menuitem"
-                            >
-                                <?= icon('wrench') ?>
-                                <?= _('Repair') ?>
-                            </button>
-                        <?php endif; ?>
-                    </nav>
-                </details>
-            <?php elseif ($secondary_menu_mode === 'news'): ?>
-                <details
-                    class="popup"
-                    data-controller="popup"
-                    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                >
-                    <summary class="popup__opener" title="<?= _('Remove from the news page') ?>">
-                        <span class="button button--ghost button--smaller">
-                            <?= icon('menu') ?>
-                            <span class="sr-only">
-                                <?= _('Remove from the news page') ?>
-                            </span>
+                    <button class="button--ghost button--smaller" title="<?= _('Remove from read list') ?>">
+                        <?= icon('uncheck') ?>
+                        <span class="sr-only">
+                            <?= _('Remove from read list') ?>
                         </span>
-                    </summary>
+                    </button>
+                </form>
+            <?php endif; ?>
 
-                    <nav class="popup__container popup__container--over" role="menu">
-                        <div class="popup__title">
-                            <?= _('Remove from the news…') ?>
-                        </div>
+            <?php if ($display_read_later): ?>
+                <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
+                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
-                        <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
-                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-                            <button class="popup__item popup__item--button">
-                                <?= icon('check') ?>
-                                <?= _('and mark as read') ?>
-                            </button>
-                        </form>
-
-                        <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
-                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-                            <button class="popup__item popup__item--button">
-                                <?= icon('bookmark') ?>
-                                <?= _('and read later') ?>
-                            </button>
-                        </form>
-
-                        <div class="popup__separator"></div>
-
-                        <form data-turbo-preserve-scroll method="post" action="<?= url('mark link to never read', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
-                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-                            <button class="popup__item popup__item--button">
-                                <?= icon('times') ?>
-                                <?= _('and never see again') ?>
-                            </button>
-                        </form>
-                    </nav>
-                </details>
+                    <button class="button--ghost button--smaller" title="<?= _('Read later') ?>">
+                        <?= icon('bookmark') ?>
+                        <span class="sr-only">
+                            <?= _('Read later') ?>
+                        </span>
+                    </button>
+                </form>
             <?php endif; ?>
 
             <?php if ($collections_mode): ?>
@@ -326,18 +321,5 @@
                 </button>
             <?php endif; ?>
         </div>
-
-        <a
-            class="anchor--action"
-            target="_blank"
-            rel="noopener noreferrer"
-            href="<?= protect($link->url) ?>"
-        >
-            <?= icon('pop-out') ?>
-            <?= _('read') ?>
-            <span class="sr-only">
-                <?= _('(open a new window)') ?>
-            </span>
-        </a>
     </div>
 </div>

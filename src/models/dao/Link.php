@@ -331,6 +331,38 @@ class Link extends \Minz\DatabaseModel
     }
 
     /**
+     * Return whether or not the given user id has the link URL in its
+     * bookmarks.
+     *
+     * @param string $user_id
+     * @param string $url
+     *
+     * @return boolean
+     */
+    public function isUrlInBookmarksOfUserId($user_id, $url)
+    {
+        $sql = <<<'SQL'
+            SELECT 1
+            FROM links l, collections c, links_to_collections lc
+
+            WHERE l.user_id = :user_id
+            AND l.url_lookup = simplify_url(:url)
+
+            AND c.type = 'bookmarks'
+
+            AND lc.collection_id = c.id
+            AND lc.link_id = l.id;
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user_id,
+            ':url' => $url,
+        ]);
+        return (bool)$statement->fetchColumn();
+    }
+
+    /**
      * Return whether or not the given user id read the link URL.
      *
      * @param string $user_id

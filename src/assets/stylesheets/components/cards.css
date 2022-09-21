@@ -235,12 +235,14 @@
 
     font-size: var(--size-normal);
     font-weight: bold;
-    line-height: 1.3;
+    line-height: 1.25;
     text-overflow: ellipsis;
 }
 
 .card__title a {
     display: block;
+
+    text-decoration: none;
 }
 
 .card__text {

@@ -115,9 +115,6 @@ class Link extends \Minz\Model
         ],
     ];
 
-    /** @var array */
-    private $cache_is_read = [];
-
     /**
      * @param string $url
      * @param string $user_id
@@ -229,9 +226,25 @@ class Link extends \Minz\Model
     }
 
     /**
+     * Return whether or not the given user has the link URL in its bookmarks.
+     *
+     * @param \flusio\models\User|null $user
+     *
+     * @return boolean
+     */
+    public function isInBookmarksOf($user)
+    {
+        if (!$user) {
+            return false;
+        }
+
+        return Link::daoCall('isUrlInBookmarksOfUserId', $user->id, $this->url);
+    }
+
+    /**
      * Return whether or not the given user read the link URL.
      *
-     * @param \flusio\models\User $user
+     * @param \flusio\models\User|null $user
      *
      * @return boolean
      */
@@ -241,13 +254,7 @@ class Link extends \Minz\Model
             return false;
         }
 
-        $user_id = $user->id;
-        if (!isset($this->cache_is_read[$user_id])) {
-            $is_read = Link::daoCall('isUrlReadByUserId', $user_id, $this->url);
-            $this->cache_is_read[$user_id] = $is_read;
-        }
-
-        return $this->cache_is_read[$user_id];
+        return Link::daoCall('isUrlReadByUserId', $user->id, $this->url);
     }
 
     /**

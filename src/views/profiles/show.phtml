@@ -71,7 +71,8 @@
                     'display_comments' => true,
                     'display_edit' => $is_current_user_profile,
                     'display_repair' => $is_current_user_profile,
-                    'display_mark_as_read' => $current_user && !$link->isReadBy($current_user),
+                    'display_read_later' => 'auto',
+                    'display_mark_as_read' => 'auto',
                     'collections_mode' => $is_current_user_profile ? 'managing' : 'adding',
                 ]) ?>
             <?php endforeach; ?>

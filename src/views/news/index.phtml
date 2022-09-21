@@ -22,9 +22,13 @@
                 <?= $this->include('links/_link.phtml', [
                     'link' => $link,
                     'from' => \Minz\Url::for('news'),
+                    'display_edit' => true,
+                    'display_repair' => true,
                     'display_via' => true,
+                    'display_read_later' => true,
+                    'display_mark_as_read' => true,
+                    'display_never' => true,
                     'collections_mode' => $has_collections ? 'news' : '',
-                    'secondary_menu_mode' => 'news',
                 ]); ?>
             <?php endforeach; ?>
         </div>

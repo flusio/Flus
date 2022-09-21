@@ -223,7 +223,8 @@
                     'from' => \Minz\Url::for('collection', $current_url_params),
                     'display_comments' => $collection->type !== 'feed',
                     'display_hidden' => $collection->is_public && $link->is_hidden,
-                    'display_mark_as_read' => $current_user && !$link->isReadBy($current_user),
+                    'display_read_later' => 'auto',
+                    'display_mark_as_read' => 'auto',
                     'collections_mode' => 'adding',
                 ]); ?>
             <?php endforeach; ?>
