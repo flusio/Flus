@@ -1,4 +1,8 @@
 <?php
+    $display_published_at = $display_published_at ?? true;
+    if ($display_published_at && !$link->published_at) {
+        $display_published_at = false;
+    }
     $display_comments = $display_comments ?? false;
     $display_hidden = $display_hidden ?? false;
     $display_edit = $display_edit ?? false;
@@ -94,13 +98,15 @@
         <?php endif; ?>
     <?php endif; ?>
 
-    <time class="card__image-overlay card__image-overlay--right" datetime="<?= $link->published_at->format(DATE_ATOM) ?>" title="<?= _date($link->published_at, 'dd MMM Y, HH:mm') ?>">
-        <?php if ($now->format('Y') === $link->published_at->format('Y')): ?>
-            <?= _date($link->published_at, 'dd MMM') ?>
-        <?php else: ?>
-            <?= _date($link->published_at, 'dd MMM Y') ?>
-        <?php endif; ?>
-    </time>
+    <?php if ($display_published_at): ?>
+        <time class="card__image-overlay card__image-overlay--right" datetime="<?= $link->published_at->format(DATE_ATOM) ?>" title="<?= _date($link->published_at, 'dd MMM Y, HH:mm') ?>">
+            <?php if ($now->format('Y') === $link->published_at->format('Y')): ?>
+                <?= _date($link->published_at, 'dd MMM') ?>
+            <?php else: ?>
+                <?= _date($link->published_at, 'dd MMM Y') ?>
+            <?php endif; ?>
+        </time>
+    <?php endif; ?>
 
     <div class="card__body">
         <h2 class="card__title">
