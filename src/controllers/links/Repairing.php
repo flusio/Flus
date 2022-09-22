@@ -110,6 +110,8 @@ class Repairing
             ]);
         }
 
+        $old_link = models\Link::copy($link, $user->id);
+
         $link->url = \SpiderBits\Url::sanitize($url);
         $errors = $link->validate();
         if ($errors) {
@@ -129,6 +131,11 @@ class Repairing
             'force_sync' => $force_sync,
         ]);
         $link_fetcher_service->fetch($link);
+
+        // Add the old link to the never list. It avoids to a link coming from
+        // the news to reappear.
+        $old_link->save();
+        models\LinkToCollection::markToNeverRead($user, [$old_link->id]);
 
         return Response::found($from);
     }
