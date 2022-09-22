@@ -83,9 +83,6 @@ class Collections
                 'from' => $from,
             ]);
         } else {
-            $bookmarks = $user->bookmarks();
-            $collections = array_merge([$bookmarks], $collections);
-
             return Response::ok('links/collections/index.phtml', [
                 'link' => $link,
                 'collection_ids' => $collection_ids,

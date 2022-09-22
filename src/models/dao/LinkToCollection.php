@@ -100,8 +100,7 @@ class LinkToCollection extends \Minz\DatabaseModel
     }
 
     /**
-     * Detach the collections from the given links (only collections of type
-     * 'collection' and 'bookmarks').
+     * Detach the collections from the given links (only of 'collections' type).
      *
      * @param string[] $link_ids
      * @param string[] $collection_ids
@@ -130,7 +129,7 @@ class LinkToCollection extends \Minz\DatabaseModel
             USING collections c
             WHERE ({$values_placeholder})
             AND c.id = lc.collection_id
-            AND (c.type = 'collection' OR c.type = 'bookmarks')
+            AND c.type = 'collection'
         SQL;
 
         $statement = $this->prepare($sql);

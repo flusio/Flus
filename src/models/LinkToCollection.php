@@ -138,10 +138,11 @@ class LinkToCollection extends \Minz\Model
     /**
      * Attach the collections to the given link and remove old ones if any.
      *
-     * This method will not detach the link from the read list, nor news, even
-     * if their ids are missing from $collection_ids. This is because these
-     * collections don't appear in the collections selector, when a user
-     * changes the collections of a link.
+     * This method detaches the link from only collections of type 'collections
+     * (i.e. not 'read', 'never', 'news' or 'bookmarks'), even if their ids are
+     * missing from $collection_ids. This is because these collections don't
+     * appear in the collections selector, when a user changes the collections
+     * of a link.
      *
      * @param string $link_id
      * @param string[] $collection_ids
