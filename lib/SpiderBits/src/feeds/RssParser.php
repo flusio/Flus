@@ -104,7 +104,13 @@ class RssParser
                 $entry->id = $node->nodeValue;
             }
 
-            if ($node->tagName === 'pubDate') {
+            if (
+                !$entry->published_at && (
+                    $node->tagName === 'pubDate' ||
+                    $node->tagName === 'dc:date' ||
+                    $node->tagName === 'dc:created'
+                )
+            ) {
                 $published_at = Date::parse($node->nodeValue);
                 if ($published_at) {
                     $entry->published_at = $published_at;

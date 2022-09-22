@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+	<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:wp="http://wordpress.org/export/1.2/" xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"  >
+		<channel>
+		<title>CommitStrip</title>
+        <description>The blog relating the daily life of web agency developers</description>
+        <link>https://www.commitstrip.com</link>
+		<lastBuildDate>Tue, 13 Sep 2022 14:41:30 +0000</lastBuildDate>
+					<item>
+							<title><![CDATA[C&rsquo;est l&rsquo;histoire d&rsquo;une conf-call Teams]]></title>
+							<link><![CDATA[https://www.commitstrip.com/2022/09/13/once-upon-a-teams-meeting/]]></link>
+							<pubDate>mar., 13 sept. 2022 16:41:30 +0000</pubDate>
+							<dc:creator>CommitStrip</dc:creator>
+							<dc:identifier>21176</dc:identifier>
+							<dc:modified>2022-09-13 16:41:30</dc:modified>
+							<dc:created unix="1663087290">2022-09-13 16:41:30</dc:created>
+							<guid isPermaLink="true"><![CDATA[https://www.commitstrip.com/2022/09/13/once-upon-a-teams-meeting/]]></guid><category>1</category>
+							<description></description><content:encoded></content:encoded>		
+					</item>
+					<item>
+							<title><![CDATA[Le bon outil, pour le bon projet, au bon moment ?]]></title>
+							<link><![CDATA[https://www.commitstrip.com/2022/06/08/the-right-tool-for-the-right-job-at-the-right-time/]]></link>
+							<pubDate>mer., 08 juin 2022 16:26:54 +0000</pubDate>
+							<dc:creator>CommitStrip</dc:creator>
+							<dc:identifier>21163</dc:identifier>
+							<dc:modified>2022-06-08 16:53:54</dc:modified>
+							<dc:created unix="1654705614">2022-06-08 16:26:54</dc:created>
+							<guid isPermaLink="true"><![CDATA[https://www.commitstrip.com/2022/06/08/the-right-tool-for-the-right-job-at-the-right-time/]]></guid><category>1</category>
+							<description></description><content:encoded></content:encoded>
+					</item>
+					<item>
+							<title><![CDATA[Questionnaire de sécurité]]></title>
+							<link><![CDATA[https://www.commitstrip.com/2022/02/22/security-questionnaire/]]></link>
+							<pubDate>mar., 22 févr. 2022 20:04:25 +0000</pubDate>
+							<dc:creator>CommitStrip</dc:creator>
+							<dc:identifier>21155</dc:identifier>
+							<dc:modified>2022-06-08 17:43:14</dc:modified>
+							<dc:created unix="1645560265">2022-02-22 20:04:25</dc:created>
+							<guid isPermaLink="true"><![CDATA[https://www.commitstrip.com/2022/02/22/security-questionnaire/]]></guid><category>1</category>
+							<description></description><content:encoded></content:encoded>
+					</item>
+					</channel></rss><!-- end of xml string -->

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+
+<channel xml:lang="fr">
+	<title>nota-bene.org</title>
+	<link>https://nota-bene.org/</link>
+	<description>Site personnel de Stéphane Deschamps, expert technique Web et incorrigible bavard, amoureux de la vie.</description>
+	<language>fr</language>
+	<generator>SPIP - www.spip.net</generator>
+
+
+
+
+<item xml:lang="fr">
+		<title>J'ai pris le large</title>
+		<link>https://nota-bene.org/J-ai-pris-le-large</link>
+		<guid isPermaLink="true">https://nota-bene.org/J-ai-pris-le-large</guid>
+		<dc:date>2022-09-17T09:31:00Z</dc:date>
+		<dc:format>text/html</dc:format>
+		<dc:language>fr</dc:language>
+		<dc:creator>Stéphane</dc:creator>
+
+
+
+		<description>
+		</description>
+
+<content:encoded>
+		</content:encoded>
+
+		
+
+	</item>
+<item xml:lang="fr">
+		<title>Publions donc !</title>
+		<link>https://nota-bene.org/Publions-donc</link>
+		<guid isPermaLink="true">https://nota-bene.org/Publions-donc</guid>
+		<dc:date>2022-09-16T06:27:45Z</dc:date>
+		<dc:format>text/html</dc:format>
+		<dc:language>fr</dc:language>
+		<dc:creator>Stéphane</dc:creator>
+
+
+
+		<description>
+		</description>
+
+
+<content:encoded>
+		</content:encoded>
+
+		
+
+	</item>
+<item xml:lang="fr">
+		<title>Les pas perdus</title>
+		<link>https://nota-bene.org/Les-pas-perdus</link>
+		<guid isPermaLink="true">https://nota-bene.org/Les-pas-perdus</guid>
+		<dc:date>2022-06-10T08:19:56Z</dc:date>
+		<dc:format>text/html</dc:format>
+		<dc:language>fr</dc:language>
+		<dc:creator>Stéphane</dc:creator>
+
+
+
+		<description>
+		</description>
+
+
+<content:encoded>
+		</content:encoded>
+
+		
+
+	</item>
+
+
+</channel>
+
+<script/></rss>

@@ -212,6 +212,71 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('a92e7df76dcdabe9f70d7eaf2798b2a6190608d1b1a37f41a12897c0e00d2dc0', $feed->hash());
     }
 
+    public function testFromTextWithNotaBene()
+    {
+        $feed_as_string = file_get_contents(self::$examples_path . '/nota-bene.rss.xml');
+
+        $feed = Feed::fromText($feed_as_string);
+
+        $this->assertSame('rss', $feed->type);
+        $this->assertSame('nota-bene.org', $feed->title);
+        $this->assertSame(
+            'Site personnel de Stéphane Deschamps, expert technique Web et incorrigible bavard, amoureux de la vie.',
+            $feed->description
+        );
+        $this->assertSame('https://nota-bene.org/', $feed->link);
+        $this->assertSame('https://nota-bene.org/', $feed->links['alternate']);
+        $this->assertSame(0, count($feed->categories));
+        $this->assertSame(3, count($feed->entries));
+        $entry = $feed->entries[0];
+        $this->assertSame('J\'ai pris le large', $entry->title);
+        $this->assertSame(
+            'https://nota-bene.org/J-ai-pris-le-large',
+            $entry->link
+        );
+        $this->assertSame(
+            'https://nota-bene.org/J-ai-pris-le-large',
+            $entry->links['alternate']
+        );
+        $this->assertSame('https://nota-bene.org/J-ai-pris-le-large', $entry->id);
+        $this->assertSame('', trim($entry->content));
+        $this->assertSame('html', $entry->content_type);
+        $this->assertSame(1663407060, $entry->published_at->getTimestamp());
+        $this->assertSame(0, count($entry->categories));
+        $this->assertSame('7c1c6a388d72505d0ed93b6f58c945f3d022aecc8bddd73f408212c5eb5bd16b', $feed->hash());
+    }
+
+    public function testFromTextWithCommitstrip()
+    {
+        $feed_as_string = file_get_contents(self::$examples_path . '/commitstrip.rss.xml');
+
+        $feed = Feed::fromText($feed_as_string);
+
+        $this->assertSame('rss', $feed->type);
+        $this->assertSame('CommitStrip', $feed->title);
+        $this->assertSame('The blog relating the daily life of web agency developers', $feed->description);
+        $this->assertSame('https://www.commitstrip.com', $feed->link);
+        $this->assertSame('https://www.commitstrip.com', $feed->links['alternate']);
+        $this->assertSame(0, count($feed->categories));
+        $this->assertSame(3, count($feed->entries));
+        $entry = $feed->entries[0];
+        $this->assertSame('C&rsquo;est l&rsquo;histoire d&rsquo;une conf-call Teams', $entry->title);
+        $this->assertSame(
+            'https://www.commitstrip.com/2022/09/13/once-upon-a-teams-meeting/',
+            $entry->link
+        );
+        $this->assertSame(
+            'https://www.commitstrip.com/2022/09/13/once-upon-a-teams-meeting/',
+            $entry->links['alternate']
+        );
+        $this->assertSame('https://www.commitstrip.com/2022/09/13/once-upon-a-teams-meeting/', $entry->id);
+        $this->assertSame('', trim($entry->content));
+        $this->assertSame('html', $entry->content_type);
+        $this->assertSame(1663087290, $entry->published_at->getTimestamp());
+        $this->assertSame(1, count($entry->categories));
+        $this->assertSame('e262ccea05151459f8b608953b6f4cad3c47bcaa05a4867830d5b5c431756424', $feed->hash());
+    }
+
     public function testFromTextWithDatesWithMilliseconds()
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/dates-with-milliseconds.atom.xml');
