@@ -82,23 +82,4 @@
             </button>
         </div>
     </form>
-
-    <form
-        data-turbo-preserve-scroll
-        class="form--danger"
-        method="post"
-        action="<?= url('delete link', ['id' => $link->id]) ?>"
-        data-controller="confirmation"
-        data-action="confirmation#confirm"
-        data-confirmation-message-value="<?= _('Are you sure that you want to remove this link?') ?>"
-    >
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-        <input type="hidden" name="redirect_to" value="<?= $from ?>" />
-
-        <button type="submit" class="button--danger">
-            <?= icon('trash') ?>
-            <?= _('Delete the link') ?>
-        </button>
-    </form>
 </div>

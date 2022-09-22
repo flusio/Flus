@@ -3,6 +3,7 @@
     $display_hidden = $display_hidden ?? false;
     $display_edit = $display_edit ?? false;
     $display_repair = $display_repair ?? false;
+    $display_delete = $display_delete ?? false;
     $display_read_later = $display_read_later ?? false;
     $display_mark_as_read = $display_mark_as_read ?? false;
     $display_mark_as_unread = $display_mark_as_unread ?? false;
@@ -254,6 +255,32 @@
                         <?= icon('wrench') ?>
                         <?= _('Repair') ?>
                     </button>
+                <?php endif; ?>
+
+                <?php if ($display_delete): ?>
+                    <div class="popup__separator"></div>
+
+                    <form
+                        data-turbo-preserve-scroll
+                        method="post"
+                        action="<?= url('delete link', ['id' => $link->id]) ?>"
+                        data-controller="confirmation"
+                        data-action="confirmation#confirm"
+                        data-confirmation-message-value="<?= _('Are you sure that you want to delete this link?') ?>"
+                    >
+                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        <input type="hidden" name="from" value="<?= $from ?>" />
+                        <input type="hidden" name="redirect_to" value="<?= $from ?>" />
+
+                        <button
+                            type="submit"
+                            class="popup__item popup__item--button"
+                            role="menuitem"
+                        >
+                            <?= icon('trash') ?>
+                            <?= _('Delete') ?>
+                        </button>
+                    </form>
                 <?php endif; ?>
             </nav>
         </details>
