@@ -38,6 +38,7 @@ class Collections
         }
 
         $link = models\Link::find($link_id);
+        $messages = [];
         if (!auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
@@ -48,6 +49,7 @@ class Collections
         ]);
         if ($existing_link) {
             $link = $existing_link;
+            $messages = $link->messages();
         }
 
         if (auth\LinksAccess::canUpdate($user, $link)) {
@@ -76,6 +78,7 @@ class Collections
                 'collections' => $collections,
                 'shared_collections' => $shared_collections,
                 'collections_by_others' => $collections_by_others,
+                'messages' => $messages,
                 'comment' => '',
                 'from' => $from,
             ]);

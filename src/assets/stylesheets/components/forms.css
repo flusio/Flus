@@ -315,6 +315,28 @@ legend {
     }
 }
 
+.form-details {
+    margin-bottom: var(--space-medium);
+    padding-left: var(--space-small);
+}
+
+.form-details summary {
+    padding: var(--space-smaller) var(--space-small);
+
+    cursor: pointer;
+}
+
+.form-details__content {
+    padding-top: var(--space-small);
+    padding-bottom: var(--space-small);
+}
+
+@media (min-width: 800px) {
+    .form-details__content {
+        padding: var(--space-medium);
+    }
+}
+
 .form-group--terms {
     padding: var(--space-medium);
 

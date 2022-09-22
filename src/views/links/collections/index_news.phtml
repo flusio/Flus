@@ -49,22 +49,6 @@
         </fieldset>
 
         <div class="form-group">
-            <label for="comment">
-                <?= _('What do you think?') ?>
-                <span class="label__help">
-                    <?= _('(optional)') ?>
-                </span>
-            </label>
-
-            <textarea
-                id="comment"
-                name="comment"
-                data-controller="text-editor"
-                data-action="text-editor#refresh"
-            ><?= $comment ?></textarea>
-        </div>
-
-        <div class="form-group">
             <input
                 type="checkbox"
                 id="is-hidden"
@@ -76,6 +60,73 @@
                 <?= _('Hide this link in public collections') ?>
             </label>
         </div>
+
+        <?php if (count($messages) > 0): ?>
+            <details class="form-details">
+                <summary>
+                    <?= _('You already commented this link.') ?>
+                </summary>
+
+                <div class="form-details__content">
+                    <?php foreach ($messages as $message): ?>
+                        <?php $user = $message->user(); ?>
+                        <article class="message" id="message-<?= $message->id ?>">
+                            <header class="message__header header">
+                                <div class="header__container header__container--centered">
+                                    <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+
+                                    <div class="message__author">
+                                        <?= protect($user->username) ?>
+                                    </div>
+
+                                    <div class="header__separator"></div>
+
+                                    <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
+                                        <?= format_message_date($message->created_at) ?>
+                                    </time>
+                                </div>
+                            </header>
+
+                            <div class="message__content">
+                                <?= $message->contentAsHtml() ?>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+
+                    <div class="form-group">
+                        <label for="comment">
+                            <?= _('Anything else to add?') ?>
+                            <span class="label__help">
+                                <?= _('(optional)') ?>
+                            </span>
+                        </label>
+
+                        <textarea
+                            id="comment"
+                            name="comment"
+                            data-controller="text-editor"
+                            data-action="text-editor#refresh"
+                        ><?= $comment ?></textarea>
+                    </div>
+                </div>
+            </details>
+        <?php else: ?>
+            <div class="form-group">
+                <label for="comment">
+                    <?= _('What do you think?') ?>
+                    <span class="label__help">
+                        <?= _('(optional)') ?>
+                    </span>
+                </label>
+
+                <textarea
+                    id="comment"
+                    name="comment"
+                    data-controller="text-editor"
+                    data-action="text-editor#refresh"
+                ><?= $comment ?></textarea>
+            </div>
+        <?php endif; ?>
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
