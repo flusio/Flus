@@ -12,7 +12,7 @@
     if ($display_via && !$link->via_type) {
         $display_via = false;
     }
-    $collections_mode = $collections_mode ?? '';
+    $storing_must_mark_as_read = $storing_must_mark_as_read ?? false;
 
     $via_collection = $display_via ? $link->viaCollection() : null;
     $via_user = $display_via ? $link->viaUser() : null;
@@ -329,7 +329,7 @@
                 class="button--ghost button--smaller"
                 data-controller="modal-opener"
                 data-action="modal-opener#fetch"
-                data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mode' => $collections_mode, 'from' => $this->safe('from')]) ?>"
+                data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mark_as_read' => $storing_must_mark_as_read, 'from' => $this->safe('from')]) ?>"
                 aria-haspopup="dialog"
                 aria-controls="modal"
                 title="<?= _('Store the link') ?>"

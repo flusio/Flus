@@ -18,6 +18,7 @@
     <form data-turbo-preserve-scroll method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
+        <input type="hidden" name="mark_as_read" value="<?= $mark_as_read ?>" />
 
         <fieldset aria-describedby="collections-desc">
             <legend><?= _('Collections') ?></legend>
@@ -127,7 +128,11 @@
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                <?= _('Store the link') ?>
+                <?php if ($mark_as_read): ?>
+                    <?= _('Store the link and mark as read') ?>
+                <?php else: ?>
+                    <?= _('Store the link') ?>
+                <?php endif; ?>
             </button>
         </div>
     </form>
