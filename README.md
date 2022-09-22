@@ -26,7 +26,7 @@ You can help to fund the development by taking a subscription to the service.
 
 flusio is licensed under [AGPL 3](/LICENSE.txt).
 
-![Screenshot of the news page with 3 links](/public/static/screenshot.jpg)
+![Screenshot of the news page with 3 links](/public/static/screenshot.webp)
 
 ## Credits and dependencies
 
