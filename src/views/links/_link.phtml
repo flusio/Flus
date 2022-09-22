@@ -40,153 +40,160 @@
     }
 ?>
 
-<div class="card">
-    <a
-        class="anchor--hidden"
-        target="_blank"
-        rel="noopener noreferrer"
-        tabindex="-1"
-        href="<?= protect($link->url) ?>"
-    >
-        <img class="card__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" loading="lazy" />
-    </a>
+<div class="link">
+    <?php if ($display_published_at || $in_error || $trackers_detected): ?>
+        <div class="link__meta">
+            <?php if ($in_error || $trackers_detected): ?>
+                <?php if ($is_current_user_owner): ?>
+                    <button
+                        class="link__meta-warning"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        <?php if ($in_error): ?>
+                            <span title="<?= _('This link seems to be inaccessible, you should repair it.') ?>">
+                                <?= icon('disconnect') ?>&nbsp;<?= _('inaccessible') ?>
+                            </span>
+                        <?php endif; ?>
 
-    <?php if ($in_error || $trackers_detected): ?>
-        <?php if ($is_current_user_owner): ?>
-            <button
-                class="card__image-overlay card__image-overlay--warning"
-                data-controller="modal-opener"
-                data-action="modal-opener#fetch"
-                data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
-                aria-haspopup="dialog"
-                aria-controls="modal"
-            >
-                <?php if ($in_error): ?>
-                    <span title="<?= _('This link seems to be inaccessible, you should repair it.') ?>">
-                        <?= icon('disconnect') ?> <?= _('inaccessible') ?>
+                        <?php if ($in_error && $trackers_detected): ?>
+                            <br class="no-mobile" />
+                        <?php endif; ?>
+
+                        <?php if ($trackers_detected): ?>
+                            <span title="<?= _('Trackers have been detected in this link, you should repair it.') ?>">
+                                <?= icon('eye') ?>&nbsp;<?= _('trackers') ?>
+                            </span>
+                        <?php endif; ?>
+                    </button>
+                <?php else: ?>
+                    <span class="link__meta-warning">
+                        <?php if ($in_error): ?>
+                            <span title="<?= _('This link seems to be inaccessible, you may have difficulties to access it.') ?>">
+                                <?= icon('disconnect') ?> <?= _('inaccessible') ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if ($in_error && $trackers_detected): ?>
+                            <br />
+                        <?php endif; ?>
+
+                        <?php if ($trackers_detected): ?>
+                            <span title="<?= _('Trackers have been detected in this link, your privacy might not be respected if you click on it.') ?>">
+                                <?= icon('eye') ?> <?= _('trackers') ?>
+                            </span>
+                        <?php endif; ?>
                     </span>
                 <?php endif; ?>
-
-                <?php if ($in_error && $trackers_detected): ?>
-                    <br />
-                <?php endif; ?>
-
-                <?php if ($trackers_detected): ?>
-                    <span title="<?= _('Trackers have been detected in this link, you should repair it.') ?>">
-                        <?= icon('eye') ?> <?= _('trackers') ?>
-                    </span>
-                <?php endif; ?>
-            </button>
-        <?php else: ?>
-            <span class="card__image-overlay card__image-overlay--warning">
-                <?php if ($in_error): ?>
-                    <span title="<?= _('This link seems to be inaccessible, you may have difficulties to access it.') ?>">
-                        <?= icon('disconnect') ?> <?= _('inaccessible') ?>
-                    </span>
-                <?php endif; ?>
-
-                <?php if ($in_error && $trackers_detected): ?>
-                    <br />
-                <?php endif; ?>
-
-                <?php if ($trackers_detected): ?>
-                    <span title="<?= _('Trackers have been detected in this link, your privacy might not be respected if you click on it.') ?>">
-                        <?= icon('eye') ?> <?= _('trackers') ?>
-                    </span>
-                <?php endif; ?>
-            </span>
-        <?php endif; ?>
-    <?php endif; ?>
-
-    <?php if ($display_published_at): ?>
-        <time class="card__image-overlay card__image-overlay--right" datetime="<?= $link->published_at->format(DATE_ATOM) ?>" title="<?= _date($link->published_at, 'dd MMM Y, HH:mm') ?>">
-            <?php if ($now->format('Y') === $link->published_at->format('Y')): ?>
-                <?= _date($link->published_at, 'dd MMM') ?>
-            <?php else: ?>
-                <?= _date($link->published_at, 'dd MMM Y') ?>
-            <?php endif; ?>
-        </time>
-    <?php endif; ?>
-
-    <div class="card__body">
-        <h2 class="card__title">
-            <a
-                class="card__title-ellipsis"
-                target="_blank"
-                rel="noopener noreferrer"
-                href="<?= protect($link->url) ?>"
-            >
-                <?= protect($link->title) ?>
-            </a>
-        </h2>
-
-        <p class="card__text card__text--oneline">
-            <?php if (!$link->fetched_at): ?>
-                <span class="icon--spin">
-                    <?= icon('sync') ?>
-                    <?= _('ongoing synchronisation…') ?>
-                </span>
-            <?php else: ?>
-                <span class="card__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
             <?php endif; ?>
 
-            <?php if ($is_read): ?>
-                &nbsp;<span title="<?= _('You read this link.') ?>"><?= icon('check') ?><span class="sr-only"><?= _('You read this link.') ?></span></span>
-            <?php endif; ?>
+            <?php if ($display_published_at): ?>
+                <div class="link__meta-separator"></div>
 
-            <?php if ($in_bookmarks): ?>
-                &nbsp;<span title="<?= _('This link is in your bookmarks.') ?>"><?= icon('bookmark') ?><span class="sr-only"><?= _('This link is in your bookmarks.') ?></span></span>
-            <?php endif; ?>
-        </p>
-
-        <?php if ($display_via): ?>
-            <p class="card__text news__via">
-                <?php if ($link->via_type === 'bookmarks'): ?>
-                    <?= _f('via your <strong><a class="anchor--hidden" href="%s">bookmarks</a></strong>', url('bookmarks')) ?>
-                <?php elseif ($via_collection): ?>
-                    <?php if ($via_collection->type === 'collection'): ?>
-                        <?php $owner = $via_collection->owner(); ?>
-                        <?= _f(
-                            'via <strong><a class="anchor--hidden" href="%s">%s</a></strong> by <a class="anchor--hidden" href="%s">%s</a>',
-                            url('collection', ['id' => $via_collection->id]),
-                            protect($via_collection->name()),
-                            url('profile', ['id' => $owner->id]),
-                            protect($owner->username)
-                        ) ?>
+                <time class="link__meta-date" datetime="<?= $link->published_at->format(DATE_ATOM) ?>" title="<?= _date($link->published_at, 'dd MMM Y, HH:mm') ?>">
+                    <?php if ($now->format('Y') === $link->published_at->format('Y')): ?>
+                        <?= _date($link->published_at, 'dd MMM') ?>
                     <?php else: ?>
+                        <?= _date($link->published_at, 'dd MMM Y') ?>
+                    <?php endif; ?>
+                </time>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="link__body">
+        <a
+            class="link__image-container anchor--hidden"
+            target="_blank"
+            rel="noopener noreferrer"
+            tabindex="-1"
+            href="<?= protect($link->url) ?>"
+        >
+            <img class="link__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" loading="lazy" />
+        </a>
+
+        <div class="link__content">
+            <h2 class="link__title">
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="<?= protect($link->url) ?>"
+                >
+                    <?= protect($link->title) ?>
+                </a>
+            </h2>
+
+            <p class="link__text link__text--oneline">
+                <?php if (!$link->fetched_at): ?>
+                    <span class="icon--spin">
+                        <?= icon('sync') ?>
+                        <?= _('ongoing synchronisation…') ?>
+                    </span>
+                <?php else: ?>
+                    <span class="link__ellipsis"><?= protect($link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($link->reading_time) ?>
+                <?php endif; ?>
+
+                <?php if ($is_read): ?>
+                    &nbsp;<span title="<?= _('You read this link.') ?>"><?= icon('check') ?><span class="sr-only"><?= _('You read this link.') ?></span></span>
+                <?php endif; ?>
+
+                <?php if ($in_bookmarks): ?>
+                    &nbsp;<span title="<?= _('This link is in your bookmarks.') ?>"><?= icon('bookmark') ?><span class="sr-only"><?= _('This link is in your bookmarks.') ?></span></span>
+                <?php endif; ?>
+            </p>
+
+            <?php if ($display_via): ?>
+                <p class="link__text news__via">
+                    <?php if ($link->via_type === 'bookmarks'): ?>
+                        <?= _f('via your <strong><a class="anchor--hidden" href="%s">bookmarks</a></strong>', url('bookmarks')) ?>
+                    <?php elseif ($via_collection): ?>
+                        <?php if ($via_collection->type === 'collection'): ?>
+                            <?php $owner = $via_collection->owner(); ?>
+                            <?= _f(
+                                'via <strong><a class="anchor--hidden" href="%s">%s</a></strong> by <a class="anchor--hidden" href="%s">%s</a>',
+                                url('collection', ['id' => $via_collection->id]),
+                                protect($via_collection->name()),
+                                url('profile', ['id' => $owner->id]),
+                                protect($owner->username)
+                            ) ?>
+                        <?php else: ?>
+                            <?= _f(
+                                'via <strong><a class="anchor--hidden" href="%s">%s</a></strong>',
+                                url('collection', ['id' => $via_collection->id]),
+                                protect($via_collection->name())
+                            ) ?>
+                        <?php endif; ?>
+                    <?php elseif ($via_user): ?>
                         <?= _f(
                             'via <strong><a class="anchor--hidden" href="%s">%s</a></strong>',
-                            url('collection', ['id' => $via_collection->id]),
-                            protect($via_collection->name())
+                            url('profile', ['id' => $via_user->id]),
+                            protect($via_user->username)
                         ) ?>
                     <?php endif; ?>
-                <?php elseif ($via_user): ?>
-                    <?= _f(
-                        'via <strong><a class="anchor--hidden" href="%s">%s</a></strong>',
-                        url('profile', ['id' => $via_user->id]),
-                        protect($via_user->username)
-                    ) ?>
-                <?php endif; ?>
-            </p>
-        <?php endif; ?>
+                </p>
+            <?php endif; ?>
 
-        <?php if ($display_comments): ?>
-            <p class="card__text">
-                <a href="<?= url('link', ['id' => $link->id]) ?>">
-                    <?= icon('comment') ?>
-                    <?= _nf('%s comment', '%s comments', $link->number_comments, format_number($link->number_comments)) ?>
-                </a>
+            <?php if ($display_comments): ?>
+                <p class="link__text">
+                    <a href="<?= url('link', ['id' => $link->id]) ?>">
+                        <?= icon('comment') ?>
+                        <?= _nf('%s comment', '%s comments', $link->number_comments, format_number($link->number_comments)) ?>
+                    </a>
 
-                <?php if ($display_hidden): ?>
-                    <span class="sticker sticker--right">
-                        <?= _('hidden') ?>
-                    </span>
-                <?php endif; ?>
-            </p>
-        <?php endif; ?>
+                    <?php if ($display_hidden): ?>
+                        <span class="sticker sticker--right">
+                            <?= _('hidden') ?>
+                        </span>
+                    <?php endif; ?>
+                </p>
+            <?php endif; ?>
+        </div>
     </div>
 
-    <div class="card__footer">
+    <div class="link__actions">
         <details
             class="popup"
             data-controller="popup"
@@ -291,7 +298,7 @@
             </nav>
         </details>
 
-        <div class="card__footer-group">
+        <div class="link__actions-group">
             <?php if ($display_mark_as_read): ?>
                 <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
                     <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
