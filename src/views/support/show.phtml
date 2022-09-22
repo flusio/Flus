@@ -90,8 +90,19 @@
         <?= _('More help') ?>
     </h2>
 
-    <ul>
-        <li><a href="<?= url('about') ?>"><?= _f('About %s', $brand) ?></a></li>
-        <li><a href="<?= url('onboarding') ?>"><?= _('Start the onboarding again') ?></a></li>
-    </ul>
+    <div class="groupnav">
+        <ul class="groupnav__container">
+            <li class="groupnav__item groupnav__item--onboarding">
+                <a class="groupnav__anchor" href="<?= url('onboarding') ?>">
+                    <?= _('Start the onboarding again') ?>
+                </a>
+            </li>
+
+            <li class="groupnav__item groupnav__item--about">
+                <a class="groupnav__anchor" href="<?= url('about') ?>">
+                    <?= _f('About %s', $brand) ?>
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>

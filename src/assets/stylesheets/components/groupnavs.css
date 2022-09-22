@@ -91,6 +91,14 @@
     background-image: url("../../icons/trash.svg");
 }
 
+.groupnav__item--about .groupnav__anchor {
+    background-image: url("../../icons/info.svg");
+}
+
+.groupnav__item--onboarding .groupnav__anchor {
+    background-image: url("../../icons/undo.svg");
+}
+
 .groupnav__item:first-child,
 .groupnav__item:first-child .groupnav__anchor,
 .groupnav__item:first-child .groupnav__button {
