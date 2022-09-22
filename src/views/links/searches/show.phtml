@@ -163,12 +163,12 @@
                         <button
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
-                            data-modal-opener-href-value="<?= url('link collections', ['id' => $default_link->id, 'mode' => 'adding', 'from' => $from]) ?>"
+                            data-modal-opener-href-value="<?= url('link collections', ['id' => $default_link->id, 'from' => $from]) ?>"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                         >
-                            <?= icon('collection-plus') ?>
-                            <?= _('Add') ?>
+                            <?= icon('collection') ?>
+                            <?= _('Store the link') ?>
                         </button>
                     </div>
                 </div>

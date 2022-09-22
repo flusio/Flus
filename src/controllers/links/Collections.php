@@ -19,7 +19,7 @@ class Collections
      * Show the page to update the link collections
      *
      * @request_param string id
-     * @request_param string mode Either 'normal' (default), 'adding' or 'news'
+     * @request_param string mode Either '' (default), or 'news'
      * @request_param string from
      *
      * @response 302 /login?redirect_to=:from
@@ -30,7 +30,7 @@ class Collections
     {
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
-        $mode = $request->param('mode', 'normal');
+        $mode = $request->param('mode', '');
         $from = $request->param('from');
 
         if (!$user) {
@@ -79,18 +79,6 @@ class Collections
                 'comment' => '',
                 'from' => $from,
             ]);
-        } elseif ($mode === 'adding') {
-            $bookmarks = $user->bookmarks();
-            $collections = array_merge([$bookmarks], $collections);
-
-            return Response::ok('links/collections/index_adding.phtml', [
-                'link' => $link,
-                'collection_ids' => $collection_ids,
-                'collections' => $collections,
-                'shared_collections' => $shared_collections,
-                'collections_by_others' => $collections_by_others,
-                'from' => $from,
-            ]);
         } else {
             $bookmarks = $user->bookmarks();
             $collections = array_merge([$bookmarks], $collections);
@@ -117,7 +105,7 @@ class Collections
      * @request_param string[] collection_ids
      * @request_param boolean is_hidden
      * @request_param string comment
-     * @request_param string mode Either 'normal' (default), 'adding' or 'news'
+     * @request_param string mode Either '' (default), or 'news'
      * @request_param string from
      *
      * @response 302 /login?redirect_to=:from
@@ -132,7 +120,7 @@ class Collections
         $new_collection_ids = $request->paramArray('collection_ids', []);
         $is_hidden = $request->paramBoolean('is_hidden', false);
         $comment = trim($request->param('comment', ''));
-        $mode = $request->param('mode', 'normal');
+        $mode = $request->param('mode', '');
         $from = $request->param('from');
         $csrf = $request->param('csrf');
 

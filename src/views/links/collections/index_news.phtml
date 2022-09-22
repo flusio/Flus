@@ -1,7 +1,6 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('Add to your collections'),
-        'current_tab' => 'news',
+        'title' => _('Storing a link'),
         'canonical' => url_full('link collections', ['id' => $link->id, 'mode' => 'news']),
         'has_errors' => $error || $errors,
     ]);
@@ -9,7 +8,7 @@
 
 <div class="section">
     <div class="section__title">
-        <h1 id="modal-title"><?= _('Add to your collections') ?></h1>
+        <h1 id="modal-title"><?= _('Storing a link') ?></h1>
     </div>
 
     <p class="section__intro">
@@ -80,7 +79,7 @@
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                <?= _('Save and mark as read') ?>
+                <?= _('Store the link and mark as read') ?>
             </button>
         </div>
     </form>

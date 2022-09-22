@@ -325,29 +325,20 @@
                 </form>
             <?php endif; ?>
 
-            <?php if ($collections_mode): ?>
-                <button
-                    class="button--ghost button--smaller"
-                    data-controller="modal-opener"
-                    data-action="modal-opener#fetch"
-                    data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mode' => $collections_mode, 'from' => $this->safe('from')]) ?>"
-                    aria-haspopup="dialog"
-                    aria-controls="modal"
-                    title="<?= $collections_mode === 'managing' ? _('Manage collections'): _('Add to collections') ?>"
-                >
-                    <?php if ($collections_mode === 'managing'): ?>
-                        <?= icon('collection') ?>
-                        <span class="sr-only">
-                            <?= _('Manage collections') ?>
-                        </span>
-                    <?php else: ?>
-                        <?= icon('collection-plus') ?>
-                        <span class="sr-only">
-                            <?= _('Add to collections') ?>
-                        </span>
-                    <?php endif; ?>
-                </button>
-            <?php endif; ?>
+            <button
+                class="button--ghost button--smaller"
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mode' => $collections_mode, 'from' => $this->safe('from')]) ?>"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+                title="<?= _('Store the link') ?>"
+            >
+                <?= icon('collection') ?>
+                <span class="sr-only">
+                    <?= _('Store the link') ?>
+                </span>
+            </button>
         </div>
     </div>
 </div>
