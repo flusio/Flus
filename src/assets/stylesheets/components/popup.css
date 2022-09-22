@@ -12,6 +12,19 @@
     display: none;
 }
 
+.popup__opener:focus {
+    outline: 0;
+}
+
+.popup__opener:focus > * {
+    outline: var(--width-border-bold) solid var(--color-purple-4);
+}
+
+.popup__opener:focus > .button,
+.popup__opener:active > .button {
+    border-color: var(--color-border-active);
+}
+
 .popup__container {
     position: fixed;
     z-index: 10;
