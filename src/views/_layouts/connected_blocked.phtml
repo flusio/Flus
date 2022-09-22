@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <title><?= $environment === 'development' ? '[dev] ' : '' ?><?= $has_errors ? _('Error: ') : '' ?><?= $title ?> · <?= $brand ?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="canonical" href="<?= $canonical ?>">
+        <link rel="canonical" href="<?= $this->safe('canonical') ?>">
 
         <meta name="application-name" content="<?= $brand ?>">
         <meta name="theme-color" content="#00d0ad">

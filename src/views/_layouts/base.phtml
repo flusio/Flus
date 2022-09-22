@@ -31,7 +31,7 @@
         'current_locale' => $current_locale,
         'current_tab' => $current_tab ?? null,
         'current_page' => $current_page ?? null,
-        'canonical' => $canonical,
+        'canonical' => $this->safe('canonical'),
         'alternates' => $alternates ?? [],
         'open_graph' => $open_graph ?? [],
         'back_options' => $back_options,
