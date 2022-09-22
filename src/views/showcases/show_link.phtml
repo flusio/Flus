@@ -1,13 +1,13 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('A new navigation is available'),
+        'title' => _('Links have been improved'),
         'canonical' => url_full('showcase', ['id' => 'navigation']),
     ]);
 ?>
 
 <div class="section section--small">
     <div class="section__title">
-        <h1><?= _('A new navigation is available') ?></h1>
+        <h1><?= _('Links have been improved') ?></h1>
     </div>
 
     <p class="section__intro">
@@ -15,17 +15,17 @@
     </p>
 
     <p>
-        <?= _('<strong>The navigation has been revised to make it more intuitive.</strong> The things you own are now separated from the things you follow.') ?>
+        <?= _('<strong>The link interface is now more consistent and practical.</strong> You can mark a link as read, or add it to your bookmarks in one click. The “read” link has been removed, but don’t worry: you still can click on titles to read your links!') ?>
     </p>
 
     <img
         class="illustration illustration--centered"
-        alt="<?= _('The navigation bar showing three tabs: News, My links and Feeds') ?>"
-        src="<?= url_static("showcases/navigation.{$current_locale}.png") ?>"
+        alt="<?= _('The screenshot of a link card. The actions at its bottom allow to mark as read, add to bookmarks and store the link.') ?>"
+        src="<?= url_static("showcases/link.{$current_locale}.webp") ?>"
     />
 
     <p>
-        <?= _('Your bookmarks, read links and your own collections are now under the “My links” tab. Followed collections and feeds are only one concept and can be found under the “Feeds” tab.') ?>
+        <?= _('The look of the links on mobile has also been improved to save space.') ?>
     </p>
 
     <p>

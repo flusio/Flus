@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-09-22 14:44+0200\n"
-"PO-Revision-Date: 2022-09-22 14:44+0200\n"
+"POT-Creation-Date: 2022-09-22 17:20+0200\n"
+"PO-Revision-Date: 2022-09-22 17:21+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -692,7 +692,7 @@ msgstr "Suivant"
 #: views/links/collections/index.phtml:29 views/links/edit.phtml:43
 #: views/links/edit.phtml:72 views/links/new.phtml:41 views/links/new.phtml:58
 #: views/links/repairing/_new.phtml:42 views/links/searches/show.phtml:54
-#: views/links/show.phtml:187 views/messages/edit.phtml:37
+#: views/links/show.phtml:185 views/messages/edit.phtml:37
 #: views/my/account/deletion.phtml:63 views/my/profile/edit.phtml:55
 #: views/my/profile/edit.phtml:91 views/my/profile/edit.phtml:118
 #: views/my/security/show_confirmed.phtml:41
@@ -1063,14 +1063,14 @@ msgid "Published by %s"
 msgstr "Publiée par %s"
 
 #: views/collections/show.phtml:74 views/collections/show_public.phtml:112
-#: views/links/_link.phtml:195 views/links/_link.phtml:199
-#: views/links/show.phtml:106 views/links/show.phtml:110
+#: views/links/_link.phtml:202 views/links/_link.phtml:206
+#: views/links/show.phtml:104 views/links/show.phtml:108
 msgid "Actions"
 msgstr "Actions"
 
 #: views/collections/show.phtml:104 views/groups/_group.phtml:23
-#: views/groups/_group.phtml:37 views/links/_link.phtml:247
-#: views/links/show.phtml:126 views/profiles/show.phtml:55
+#: views/groups/_group.phtml:37 views/links/_link.phtml:254
+#: views/links/show.phtml:124 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1090,8 +1090,8 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/show.phtml:153 views/links/_link.phtml:287
-#: views/links/show.phtml:145
+#: views/collections/show.phtml:153 views/links/_link.phtml:294
+#: views/links/show.phtml:143
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1396,30 +1396,30 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/links/_link.phtml:65
+#: views/links/_link.phtml:57
 msgid "This link seems to be inaccessible, you should repair it."
 msgstr "Ce lien semble inaccessible, vous devriez le réparer."
 
-#: views/links/_link.phtml:66 views/links/_link.phtml:84
+#: views/links/_link.phtml:58 views/links/_link.phtml:76
 msgid "inaccessible"
 msgstr "inaccessible"
 
-#: views/links/_link.phtml:75
+#: views/links/_link.phtml:67
 msgid "Trackers have been detected in this link, you should repair it."
 msgstr "Des pisteurs ont été détectés dans ce lien, vous devriez le réparer."
 
-#: views/links/_link.phtml:76 views/links/_link.phtml:94
+#: views/links/_link.phtml:68 views/links/_link.phtml:86
 msgid "trackers"
 msgstr "pisteurs"
 
-#: views/links/_link.phtml:83
+#: views/links/_link.phtml:75
 msgid ""
 "This link seems to be inaccessible, you may have difficulties to access it."
 msgstr ""
 "Ce lien semble inaccessible, vous pourriez rencontrer des difficultés pour y "
 "accéder."
 
-#: views/links/_link.phtml:93
+#: views/links/_link.phtml:85
 msgid ""
 "Trackers have been detected in this link, your privacy might not be "
 "respected if you click on it."
@@ -1427,19 +1427,19 @@ msgstr ""
 "Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
 "être respectée si vous cliquez dessus."
 
-#: views/links/_link.phtml:127 views/links/show.phtml:47
+#: views/links/_link.phtml:133 views/links/show.phtml:47
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/links/_link.phtml:134
+#: views/links/_link.phtml:140
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.phtml:138
+#: views/links/_link.phtml:144
 msgid "This link is in your bookmarks."
 msgstr "Ce lien est dans vos signets."
 
-#: views/links/_link.phtml:145
+#: views/links/_link.phtml:151
 #, php-format
 msgid ""
 "via your <strong><a class=\"anchor--hidden\" href=\"%s\">bookmarks</a></"
@@ -1447,7 +1447,7 @@ msgid ""
 msgstr ""
 "via vos <strong><a class=\"anchor--hidden\" href=\"%s\">signets</a></strong>"
 
-#: views/links/_link.phtml:150
+#: views/links/_link.phtml:156
 #, php-format
 msgid ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> by <a "
@@ -1456,51 +1456,51 @@ msgstr ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> de <a "
 "class=\"anchor--hidden\" href=\"%s\">%s</a>"
 
-#: views/links/_link.phtml:158 views/links/_link.phtml:165
+#: views/links/_link.phtml:164 views/links/_link.phtml:171
 #, php-format
 msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
-#: views/links/_link.phtml:177
+#: views/links/_link.phtml:183
 #, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
 msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
 
-#: views/links/_link.phtml:182
+#: views/links/_link.phtml:188
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.phtml:211
+#: views/links/_link.phtml:218
 msgid "Remove from the news"
 msgstr "Retirer du journal"
 
-#: views/links/_link.phtml:228
+#: views/links/_link.phtml:235
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:262
+#: views/links/_link.phtml:269
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.phtml:275
+#: views/links/_link.phtml:282
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.phtml:299 views/links/_link.phtml:302
+#: views/links/_link.phtml:306 views/links/_link.phtml:309
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:312 views/links/_link.phtml:315
+#: views/links/_link.phtml:319 views/links/_link.phtml:322
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.phtml:325 views/links/_link.phtml:328
+#: views/links/_link.phtml:332 views/links/_link.phtml:335
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.phtml:341 views/links/_link.phtml:345
+#: views/links/_link.phtml:348 views/links/_link.phtml:352
 #: views/links/collections/index.phtml:134
 msgid "Store the link"
 msgstr "Ranger le lien"
@@ -1517,11 +1517,11 @@ msgstr "Collections"
 msgid "You already commented this link."
 msgstr "Vous avez déjà commenté ce lien."
 
-#: views/links/collections/index.phtml:96 views/links/show.phtml:171
+#: views/links/collections/index.phtml:96 views/links/show.phtml:169
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/collections/index.phtml:114 views/links/show.phtml:169
+#: views/links/collections/index.phtml:114 views/links/show.phtml:167
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -1654,23 +1654,23 @@ msgstr "Flux de syndication de commentaires sur %s"
 msgid "Added by <a href=\"%s\">%s</a>"
 msgstr "Ajouté par <a href=\"%s\">%s</a>"
 
-#: views/links/show.phtml:69
+#: views/links/show.phtml:68
 msgid "read"
 msgstr "lire"
 
-#: views/links/show.phtml:71
+#: views/links/show.phtml:70
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
-#: views/links/show.phtml:137
+#: views/links/show.phtml:135
 msgid "Are you sure that you want to delete this message?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
 
-#: views/links/show.phtml:196
+#: views/links/show.phtml:194
 msgid "Comment"
 msgstr "Commenter"
 
-#: views/links/show.phtml:203
+#: views/links/show.phtml:201
 msgid "This link being hidden, the comments are private."
 msgstr "Ce lien étant masqué, les commentaires sont privés."
 
@@ -2501,14 +2501,55 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
+#: views/showcases/show_link.phtml:3 views/showcases/show_link.phtml:10
+msgid "Links have been improved"
+msgstr "Les liens ont été améliorés"
+
+#: views/showcases/show_link.phtml:14 views/showcases/show_navigation.phtml:14
+msgid "Something has changed!"
+msgstr "Quelque chose a changé !"
+
+#: views/showcases/show_link.phtml:18
+msgid ""
+"<strong>The link interface is now more consistent and practical.</strong> "
+"You can mark a link as read, or add it to your bookmarks in one click. The "
+"“read” link has been removed, but don’t worry: you still can click on titles "
+"to read your links!"
+msgstr ""
+"<strong>L’interface des liens est désormais plus cohérente et pratique.</"
+"strong> Vous pouvez marquer un lien comme lu, ou l’ajouter à vos signets en "
+"un clic. Le lien « lire » a été enlevé, mais ne vous inquiétez pas : vous "
+"pouvez toujours cliquer sur les titres pour lire vos liens !"
+
+#: views/showcases/show_link.phtml:23
+msgid ""
+"The screenshot of a link card. The actions at its bottom allow to mark as "
+"read, add to bookmarks and store the link."
+msgstr ""
+"La capture d’écran d’un lien. Les actions en-dessous du lien permettent de "
+"le marquer comme lu, de l’ajouter aux signets et de le ranger."
+
+#: views/showcases/show_link.phtml:28
+msgid "The look of the links on mobile has also been improved to save space."
+msgstr ""
+"Les liens ont également été améliorés sur mobile pour gagner de la place."
+
+#: views/showcases/show_link.phtml:32 views/showcases/show_navigation.phtml:32
+msgid ""
+"Don’t hesitate <strong>to give feedback</strong> from the “Help & support” "
+"menu!"
+msgstr ""
+"N’hésitez pas <strong>à faire des retours</strong> depuis le menu « Aide & "
+"support » !"
+
+#: views/showcases/show_link.phtml:38 views/showcases/show_navigation.phtml:38
+msgid "Got it!"
+msgstr "C’est noté !"
+
 #: views/showcases/show_navigation.phtml:3
 #: views/showcases/show_navigation.phtml:10
 msgid "A new navigation is available"
 msgstr "Une nouvelle navigation est disponible"
-
-#: views/showcases/show_navigation.phtml:14
-msgid "Something has changed!"
-msgstr "Quelque chose a changé !"
 
 #: views/showcases/show_navigation.phtml:18
 msgid ""
@@ -2533,17 +2574,6 @@ msgstr ""
 "Vos signets, liens lus et vos propres collections se trouvent maintenant "
 "dans l’onglet « Mes liens ». Les collections et les flux suivis ne sont plus "
 "qu’un seul concept et peuvent être retrouvés dans l’onglet « Flux »."
-
-#: views/showcases/show_navigation.phtml:32
-msgid ""
-"Don’t hesitate <strong>to give feedback</strong> from the “Support” menu!"
-msgstr ""
-"N’hésitez pas <strong>à faire des retours</strong> depuis le menu "
-"« Support » !"
-
-#: views/showcases/show_navigation.phtml:38
-msgid "Got it!"
-msgstr "C’est noté !"
 
 #: views/support/show.phtml:16
 msgid ""

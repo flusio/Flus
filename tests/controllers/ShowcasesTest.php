@@ -7,13 +7,22 @@ class ShowcasesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectlyForNavigation()
     {
         $response = $this->appRun('get', '/showcases/navigation');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'showcases/show_navigation.phtml');
         $this->assertResponseContains($response, 'A new navigation is available');
+    }
+
+    public function testShowRendersCorrectlyForLink()
+    {
+        $response = $this->appRun('get', '/showcases/link');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'showcases/show_link.phtml');
+        $this->assertResponseContains($response, 'Links have been improved');
     }
 
     public function testShowFailsIfIdDoesNotExist()

@@ -24,10 +24,12 @@ class Showcases
     public function show($request)
     {
         $id = $request->param('id');
-        if ($id !== 'navigation') {
+        if ($id === 'navigation') {
+            return Response::ok('showcases/show_navigation.phtml');
+        } elseif ($id === 'link') {
+            return Response::ok('showcases/show_link.phtml');
+        } else {
             return Response::notFound('not_found.phtml');
         }
-
-        return Response::ok('showcases/show_navigation.phtml');
     }
 }
