@@ -92,6 +92,8 @@ class Collections
                 'collections' => $collections,
                 'shared_collections' => $shared_collections,
                 'collections_by_others' => $collections_by_others,
+                'messages' => $messages,
+                'comment' => '',
                 'from' => $from,
             ]);
         }
@@ -100,8 +102,8 @@ class Collections
     /**
      * Update the link collections list
      *
-     * News mode allows to add a comment. It also removes the link from the
-     * news and from bookmarks and adds it to the read list.
+     * News mode removes the link from the news and from bookmarks and adds it
+     * to the read list.
      *
      * @request_param string csrf
      * @request_param string id
@@ -161,12 +163,12 @@ class Collections
 
         models\LinkToCollection::setCollections($link->id, $new_collection_ids);
 
-        if ($mode === 'news') {
-            if ($comment) {
-                $message = models\Message::init($user->id, $link->id, $comment);
-                $message->save();
-            }
+        if ($comment) {
+            $message = models\Message::init($user->id, $link->id, $comment);
+            $message->save();
+        }
 
+        if ($mode === 'news') {
             models\LinkToCollection::markAsRead($user, [$link->id]);
         }
 
