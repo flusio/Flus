@@ -51,28 +51,26 @@
         <?php endif; ?>
     </p>
 
-    <section class="link__meta">
-        <p class="link__details">
+    <section class="section__meta">
+        <p class="section__details">
             <?php $username = $owner_is_current_user ? _('you') : protect($owner->username); ?>
             <?= _f('Added by <a href="%s">%s</a>', url('profile', ['id' => $owner->id]), $username) ?>
         </p>
 
-        <ul class="link__actions">
-            <li class="link__action">
-                <a
-                    class="anchor--action"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="<?= protect($link->url) ?>"
-                >
-                    <?= icon('pop-out') ?>
-                    <?= _('read') ?>
-                    <span class="sr-only">
-                        <?= _('(open a new window)') ?>
-                    </span>
-                </a>
-            </li>
-        </ul>
+        <div class="section__actions">
+            <a
+                class="anchor--action"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="<?= protect($link->url) ?>"
+            >
+                <?= icon('pop-out') ?>
+                <?= _('read') ?>
+                <span class="sr-only">
+                    <?= _('(open a new window)') ?>
+                </span>
+            </a>
+        </div>
     </section>
 
     <section class="subsection subsection--small" id="messages">

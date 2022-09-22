@@ -74,9 +74,9 @@
         </p>
     <?php endif; ?>
 
-    <div class="collection__meta">
+    <div class="section__meta">
         <?php if ($collection->type === 'feed'): ?>
-            <div class="collection__details">
+            <div class="section__details">
                 <p class="collection__feed">
                     <?= icon('feed') ?>
                     <?php if ($collection->feed_site_url): ?>
@@ -87,7 +87,7 @@
                 </p>
             </div>
         <?php else: ?>
-            <div class="collection__details">
+            <div class="section__details">
                 <p class="collection__owner">
                     <?php if (!$collection->is_public): ?>
                         <span class="collection__public sticker"><?= _('private') ?></span>
@@ -98,7 +98,7 @@
             </div>
         <?php endif; ?>
 
-        <div class="collection__actions">
+        <div class="section__actions">
             <?php if ($current_user): ?>
                 <?php if ($current_user->isFollowing($collection->id)): ?>
                     <details

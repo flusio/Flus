@@ -91,6 +91,40 @@
     }
 }
 
+.section__meta {
+    display: flex;
+    max-width: 55ch;
+    margin-right: auto;
+    margin-bottom: var(--space-medium);
+    margin-left: auto;
+
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (min-width: 800px) {
+    .section__meta {
+        flex-direction: row;
+        align-items: baseline;
+    }
+}
+
+.section__details {
+    flex-grow: 1;
+
+    text-align: center;
+}
+
+@media (min-width: 800px) {
+    .section__details {
+        text-align: left;
+    }
+}
+
+.section__actions {
+    flex-shrink: 0;
+}
+
 .subsection {
     margin-top: var(--space-large);
     margin-bottom: var(--space-large);
