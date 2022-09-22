@@ -19,7 +19,7 @@ class Collections
      * Show the page to update the link collections
      *
      * @request_param string id
-     * @request_param string mode Either 'normal' (default), 'adding' or 'news'
+     * @request_param boolean mark_as_read
      * @request_param string from
      *
      * @response 302 /login?redirect_to=:from
@@ -30,7 +30,7 @@ class Collections
     {
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
-        $mode = $request->param('mode', 'normal');
+        $mark_as_read = $request->paramBoolean('mark_as_read', false);
         $from = $request->param('from');
 
         if (!$user) {
@@ -38,6 +38,7 @@ class Collections
         }
 
         $link = models\Link::find($link_id);
+        $messages = [];
         if (!auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
@@ -48,6 +49,7 @@ class Collections
         ]);
         if ($existing_link) {
             $link = $existing_link;
+            $messages = $link->messages();
         }
 
         if (auth\LinksAccess::canUpdate($user, $link)) {
@@ -69,55 +71,28 @@ class Collections
         );
         utils\Sorter::localeSort($collections_by_others, 'name');
 
-        if ($mode === 'news') {
-            return Response::ok('links/collections/index_news.phtml', [
-                'link' => $link,
-                'collection_ids' => $collection_ids,
-                'collections' => $collections,
-                'shared_collections' => $shared_collections,
-                'collections_by_others' => $collections_by_others,
-                'comment' => '',
-                'from' => $from,
-            ]);
-        } elseif ($mode === 'adding') {
-            $bookmarks = $user->bookmarks();
-            $collections = array_merge([$bookmarks], $collections);
-
-            return Response::ok('links/collections/index_adding.phtml', [
-                'link' => $link,
-                'collection_ids' => $collection_ids,
-                'collections' => $collections,
-                'shared_collections' => $shared_collections,
-                'collections_by_others' => $collections_by_others,
-                'from' => $from,
-            ]);
-        } else {
-            $bookmarks = $user->bookmarks();
-            $collections = array_merge([$bookmarks], $collections);
-
-            return Response::ok('links/collections/index.phtml', [
-                'link' => $link,
-                'collection_ids' => $collection_ids,
-                'collections' => $collections,
-                'shared_collections' => $shared_collections,
-                'collections_by_others' => $collections_by_others,
-                'from' => $from,
-            ]);
-        }
+        return Response::ok('links/collections/index.phtml', [
+            'link' => $link,
+            'collection_ids' => $collection_ids,
+            'collections' => $collections,
+            'shared_collections' => $shared_collections,
+            'collections_by_others' => $collections_by_others,
+            'mark_as_read' => $mark_as_read,
+            'messages' => $messages,
+            'comment' => '',
+            'from' => $from,
+        ]);
     }
 
     /**
      * Update the link collections list
      *
-     * News mode allows to add a comment. It also removes the link from the
-     * news and from bookmarks and adds it to the read list.
-     *
      * @request_param string csrf
      * @request_param string id
      * @request_param string[] collection_ids
      * @request_param boolean is_hidden
+     * @request_param boolean mark_as_read
      * @request_param string comment
-     * @request_param string mode Either 'normal' (default), 'adding' or 'news'
      * @request_param string from
      *
      * @response 302 /login?redirect_to=:from
@@ -131,8 +106,8 @@ class Collections
         $link_id = $request->param('id');
         $new_collection_ids = $request->paramArray('collection_ids', []);
         $is_hidden = $request->paramBoolean('is_hidden', false);
+        $mark_as_read = $request->paramBoolean('mark_as_read', false);
         $comment = trim($request->param('comment', ''));
-        $mode = $request->param('mode', 'normal');
         $from = $request->param('from');
         $csrf = $request->param('csrf');
 
@@ -170,12 +145,12 @@ class Collections
 
         models\LinkToCollection::setCollections($link->id, $new_collection_ids);
 
-        if ($mode === 'news') {
-            if ($comment) {
-                $message = models\Message::init($user->id, $link->id, $comment);
-                $message->save();
-            }
+        if ($comment) {
+            $message = models\Message::init($user->id, $link->id, $comment);
+            $message->save();
+        }
 
+        if ($mark_as_read) {
             models\LinkToCollection::markAsRead($user, [$link->id]);
         }
 

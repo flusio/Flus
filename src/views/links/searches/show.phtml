@@ -68,110 +68,25 @@
     <?php if ($existing_link || $default_link): ?>
         <div class="cards cards--centered">
             <?php if ($existing_link): ?>
-                <div class="card">
-                    <a
-                        class="anchor--hidden"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        tabindex="-1"
-                        href="<?= protect($existing_link->url) ?>"
-                    >
-                        <img class="card__image" alt="" src="<?= url_media('cards', $existing_link->image_filename) ?>" />
-                    </a>
-
-                    <div class="card__body">
-                        <h2 class="card__title">
-                            <a
-                                class="card__title-ellipsis"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href="<?= protect($existing_link->url) ?>"
-                            >
-                                <?= protect($existing_link->title) ?>
-                            </a>
-                        </h2>
-
-                        <p class="card__text card__text--oneline">
-                            <?php if (!$existing_link->fetched_at): ?>
-                                <span class="icon--spin">
-                                    <?= icon('sync') ?>
-                                    <?= _('ongoing synchronisation…') ?>
-                                </span>
-                            <?php else: ?>
-                                <span class="card__ellipsis"><?= protect($existing_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($existing_link->reading_time) ?>
-                            <?php endif; ?>
-                        </p>
-
-                        <p class="card__text">
-                            <a href="<?= url('link', ['id' => $existing_link->id]) ?>">
-                                <?= icon('comment') ?>
-                                <?= _nf('%s comment', '%s comments', $existing_link->number_comments, format_number($existing_link->number_comments)) ?>
-                            </a>
-                        </p>
-                    </div>
-
-                    <div class="card__footer card__footer--centered">
-                        <button
-                            data-controller="modal-opener"
-                            data-action="modal-opener#fetch"
-                            data-modal-opener-href-value="<?= url('link collections', ['id' => $existing_link->id, 'mode' => 'normal', 'from' => $from]) ?>"
-                            aria-haspopup="dialog"
-                            aria-controls="modal"
-                        >
-                            <?= icon('collection') ?>
-                            <?= _('Edit') ?>
-                        </button>
-                    </div>
-                </div>
+                <?= $this->include('links/_link.phtml', [
+                    'link' => $existing_link,
+                    'from' => $from,
+                    'display_published_at' => false,
+                    'display_comments' => true,
+                    'display_edit' => true,
+                    'display_repair' => true,
+                    'display_delete' => true,
+                    'display_read_later' => 'auto',
+                    'display_mark_as_read' => 'auto',
+                ]); ?>
             <?php elseif ($default_link && !($default_link->isFeedUrl() && $feeds)): ?>
-                <div class="card">
-                    <a
-                        class="anchor--hidden"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        tabindex="-1"
-                        href="<?= protect($default_link->url) ?>"
-                    >
-                        <img class="card__image" alt="" src="<?= url_media('cards', $default_link->image_filename) ?>" />
-                    </a>
-
-                    <div class="card__body">
-                        <h2 class="card__title">
-                            <a
-                                class="card__title-ellipsis"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href="<?= protect($default_link->url) ?>"
-                            >
-                                <?= protect($default_link->title) ?>
-                            </a>
-                        </h2>
-
-                        <p class="card__text card__text--oneline">
-                            <?php if (!$default_link->fetched_at): ?>
-                                <span class="icon--spin">
-                                    <?= icon('sync') ?>
-                                    <?= _('ongoing synchronisation…') ?>
-                                </span>
-                            <?php else: ?>
-                                <span class="card__ellipsis"><?= protect($default_link->host()) ?></span>&nbsp;·&nbsp;<?= format_reading_time($default_link->reading_time) ?>
-                            <?php endif; ?>
-                        </p>
-                    </div>
-
-                    <div class="card__footer card__footer--centered">
-                        <button
-                            data-controller="modal-opener"
-                            data-action="modal-opener#fetch"
-                            data-modal-opener-href-value="<?= url('link collections', ['id' => $default_link->id, 'mode' => 'adding', 'from' => $from]) ?>"
-                            aria-haspopup="dialog"
-                            aria-controls="modal"
-                        >
-                            <?= icon('collection-plus') ?>
-                            <?= _('Add') ?>
-                        </button>
-                    </div>
-                </div>
+                <?= $this->include('links/_link.phtml', [
+                    'link' => $default_link,
+                    'from' => $from,
+                    'display_published_at' => false,
+                    'display_read_later' => 'auto',
+                    'display_mark_as_read' => 'auto',
+                ]); ?>
             <?php endif; ?>
 
             <?php foreach ($feeds as $feed): ?>

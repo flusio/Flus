@@ -1,6 +1,6 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('Link collections'),
+        'title' => _('Storing a link'),
         'canonical' => url_full('link collections', ['id' => $link->id]),
         'has_errors' => $error || $errors,
     ]);
@@ -8,7 +8,7 @@
 
 <div class="section">
     <div class="section__title">
-        <h1 id="modal-title"><?= _('Link collections') ?></h1>
+        <h1 id="modal-title"><?= _('Storing a link') ?></h1>
     </div>
 
     <p class="section__intro">
@@ -18,6 +18,7 @@
     <form data-turbo-preserve-scroll method="post" action="<?= url('update link collections', ['id' => $link->id]) ?>">
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
+        <input type="hidden" name="mark_as_read" value="<?= $mark_as_read ?>" />
 
         <fieldset aria-describedby="collections-desc">
             <legend><?= _('Collections') ?></legend>
@@ -58,9 +59,80 @@
             </label>
         </div>
 
+        <?php if (count($messages) > 0): ?>
+            <details class="form-details">
+                <summary>
+                    <?= _('You already commented this link.') ?>
+                </summary>
+
+                <div class="form-details__content">
+                    <?php foreach ($messages as $message): ?>
+                        <?php $user = $message->user(); ?>
+                        <article class="message" id="message-<?= $message->id ?>">
+                            <header class="message__header header">
+                                <div class="header__container header__container--centered">
+                                    <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+
+                                    <div class="message__author">
+                                        <?= protect($user->username) ?>
+                                    </div>
+
+                                    <div class="header__separator"></div>
+
+                                    <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
+                                        <?= format_message_date($message->created_at) ?>
+                                    </time>
+                                </div>
+                            </header>
+
+                            <div class="message__content">
+                                <?= $message->contentAsHtml() ?>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+
+                    <div class="form-group">
+                        <label for="comment">
+                            <?= _('Anything else to add?') ?>
+                            <span class="label__help">
+                                <?= _('(optional)') ?>
+                            </span>
+                        </label>
+
+                        <textarea
+                            id="comment"
+                            name="comment"
+                            data-controller="text-editor"
+                            data-action="text-editor#refresh"
+                        ><?= $comment ?></textarea>
+                    </div>
+                </div>
+            </details>
+        <?php else: ?>
+            <div class="form-group">
+                <label for="comment">
+                    <?= _('What do you think?') ?>
+                    <span class="label__help">
+                        <?= _('(optional)') ?>
+                    </span>
+                </label>
+
+                <textarea
+                    id="comment"
+                    name="comment"
+                    data-controller="text-editor"
+                    data-action="text-editor#refresh"
+                ><?= $comment ?></textarea>
+            </div>
+        <?php endif; ?>
+
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                <?= _('Save changes') ?>
+                <?php if ($mark_as_read): ?>
+                    <?= _('Store the link and mark as read') ?>
+                <?php else: ?>
+                    <?= _('Store the link') ?>
+                <?php endif; ?>
             </button>
         </div>
     </form>

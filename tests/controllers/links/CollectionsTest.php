@@ -48,72 +48,21 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/collections/index.phtml');
     }
 
-    public function testIndexRendersCorrectlyInModeAdding()
+    public function testIndexRendersCorrectlyWhenMarkAsReadIsSet()
     {
         $user = $this->login();
         $collection_name = $this->fake('words', 3, true);
         $link_id = $this->create('link', [
             'user_id' => $user->id,
         ]);
-        $collection_id_1 = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-        $collection_id_2 = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
-        $collection_id_3 = $this->create('collection', [
-            'user_id' => $user->id,
-            'name' => $collection_name,
-            'type' => 'collection',
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id_1,
-        ]);
 
         $response = $this->appRun('get', "/links/{$link_id}/collections", [
             'from' => \Minz\Url::for('bookmarks'),
-            'mode' => 'adding',
+            'mark_as_read' => '1',
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Add the link');
-    }
-
-    public function testIndexRendersCorrectlyInModeNews()
-    {
-        $user = $this->login();
-        $collection_name = $this->fake('words', 3, true);
-        $link_id = $this->create('link', [
-            'user_id' => $user->id,
-        ]);
-        $collection_id_1 = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-        $collection_id_2 = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
-        $collection_id_3 = $this->create('collection', [
-            'user_id' => $user->id,
-            'name' => $collection_name,
-            'type' => 'collection',
-        ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id_1,
-        ]);
-
-        $response = $this->appRun('get', "/links/{$link_id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-            'mode' => 'news',
-        ]);
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'What do you think?');
+        $this->assertResponseContains($response, 'Store the link and mark as read');
     }
 
     public function testIndexRendersExistingLink()
@@ -359,7 +308,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_id_1 = $this->create('collection', [
             'user_id' => $user->id,
-            'type' => 'bookmarks',
+            'type' => 'collection',
         ]);
         $collection_id_2 = $this->create('collection', [
             'user_id' => $user->id,
@@ -392,9 +341,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($is_hidden, $link->is_hidden);
     }
 
-    public function testUpdateDoesNotRemoveFromNewsOrReadList()
+    public function testUpdateDoesNotRemoveFromBookmarksNewsOrReadList()
     {
         $user = $this->login();
+        $bookmarks = $user->bookmarks();
         $news = $user->news();
         $read_list = $user->readList();
         $link_id = $this->create('link', [
@@ -403,6 +353,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_id = $this->create('collection', [
             'user_id' => $user->id,
             'type' => 'collection',
+        ]);
+        $link_to_bookmarks = $this->create('link_to_collection', [
+            'link_id' => $link_id,
+            'collection_id' => $bookmarks->id,
         ]);
         $link_to_news = $this->create('link_to_collection', [
             'link_id' => $link_id,
@@ -425,11 +379,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_id,
         ]);
         $this->assertNotNull($link_to_collection);
+        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks));
         $this->assertTrue(models\LinkToCollection::exists($link_to_news));
         $this->assertTrue(models\LinkToCollection::exists($link_to_read_list));
     }
 
-    public function testUpdateInModeNewsAcceptsComment()
+    public function testUpdateCreatesComment()
     {
         $user = $this->login();
         $link_id = $this->create('link', [
@@ -440,15 +395,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
         ]);
         $comment = $this->fake('sentence');
-        $is_hidden = $this->fake('boolean');
 
         $response = $this->appRun('post', "/links/{$link_id}/collections", [
             'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_id],
             'comment' => $comment,
-            'is_hidden' => $is_hidden,
-            'mode' => 'news',
         ]);
 
         $this->assertResponseCode($response, 302, '/bookmarks');
@@ -457,11 +409,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($comment, $message->content);
         $this->assertSame($user->id, $message->user_id);
         $this->assertSame($link_id, $message->link_id);
-        $link = models\Link::find($link_id);
-        $this->assertSame($is_hidden, $link->is_hidden);
     }
 
-    public function testUpdateInModeNewsMarksAsRead()
+    public function testUpdateCanMarkAsRead()
     {
         $user = $this->login();
         $read_list = $user->readList();
@@ -487,7 +437,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_id],
-            'mode' => 'news',
+            'mark_as_read' => '1',
         ]);
 
         $this->assertResponseCode($response, 302, '/bookmarks');
