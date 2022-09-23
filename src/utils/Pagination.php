@@ -186,15 +186,26 @@ class Pagination
 
         yield ['type' => 'number', 'number' => 1];
 
-        if ($this->current_page >= 1 && $this->current_page <= 2) {
+        if ($this->current_page === 1 || $this->current_page === 2) {
             yield ['type' => 'number', 'number' => 2];
             yield ['type' => 'number', 'number' => 3];
             yield ['type' => 'ellipsis'];
+        } elseif ($this->current_page === 3) {
+            yield ['type' => 'number', 'number' => 2];
+            yield ['type' => 'number', 'number' => 3];
+            yield ['type' => 'number', 'number' => 4];
+            yield ['type' => 'ellipsis'];
         } elseif ($this->current_page < $this->total_pages - 2) {
             yield ['type' => 'ellipsis'];
+            yield ['type' => 'number', 'number' => $this->current_page - 1];
             yield ['type' => 'number', 'number' => $this->current_page];
             yield ['type' => 'number', 'number' => $this->current_page + 1];
             yield ['type' => 'ellipsis'];
+        } elseif ($this->current_page === $this->total_pages - 2) {
+            yield ['type' => 'ellipsis'];
+            yield ['type' => 'number', 'number' => $this->total_pages - 3];
+            yield ['type' => 'number', 'number' => $this->total_pages - 2];
+            yield ['type' => 'number', 'number' => $this->total_pages - 1];
         } else {
             yield ['type' => 'ellipsis'];
             yield ['type' => 'number', 'number' => $this->total_pages - 2];

@@ -25,3 +25,15 @@ svg {
         transform: rotate(360deg);
     }
 }
+
+.icon.rotate90 {
+    transform: rotate(90deg);
+}
+
+.icon.rotate180 {
+    transform: rotate(180deg);
+}
+
+.icon.rotate270 {
+    transform: rotate(270deg);
+}

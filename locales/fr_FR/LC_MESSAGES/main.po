@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-09-22 17:20+0200\n"
-"PO-Revision-Date: 2022-09-22 17:21+0200\n"
+"POT-Creation-Date: 2022-09-23 08:27+0200\n"
+"PO-Revision-Date: 2022-09-23 08:27+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -471,11 +471,11 @@ msgstr "< 1 min"
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:246
+#: utils/view_helpers.php:252
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: utils/view_helpers.php:247
+#: utils/view_helpers.php:253
 #, php-format
 msgid ""
 "You can add links to <a href=\"%s\">your bookmarks</a> to read them later."
@@ -483,7 +483,7 @@ msgstr ""
 "Vous pouvez placer des liens dans <a href=\"%s\">vos signets</a> pour les "
 "lire plus tard."
 
-#: utils/view_helpers.php:281 views/links/show.phtml:56
+#: utils/view_helpers.php:287 views/links/show.phtml:56
 msgid "you"
 msgstr "vous"
 
@@ -673,13 +673,13 @@ msgstr "passer"
 msgid "finished"
 msgstr "terminé"
 
-#: views/_pagination.phtml:7 views/_pagination.phtml:12
-msgid "Previous"
-msgstr "Précédent"
+#: views/_pagination.phtml:11 views/_pagination.phtml:14
+msgid "Previous page"
+msgstr "Page précédente"
 
-#: views/_pagination.phtml:37 views/_pagination.phtml:42
-msgid "Next"
-msgstr "Suivant"
+#: views/_pagination.phtml:44 views/_pagination.phtml:47
+msgid "Next page"
+msgstr "Page suivante"
 
 #: views/alerts/_error.phtml:3 views/collections/edit.phtml:43
 #: views/collections/edit.phtml:69 views/collections/edit.phtml:83

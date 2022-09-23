@@ -19,9 +19,9 @@
     visibility: hidden;
 }
 
-@media (max-width: 799px) {
-    .pagination__item--number:not(.pagination__item--current),
-    .pagination__item--ellipsis {
+@media (max-width: 359px) {
+    .pagination__item--prev,
+    .pagination__item--next {
         display: none;
     }
 }
@@ -43,11 +43,6 @@
     .pagination__item--current .pagination__link {
         border: var(--width-border) solid currentColor;
     }
-}
-
-.pagination__item--prev .pagination__link,
-.pagination__item--next .pagination__link {
-    width: 12rem;
 }
 
 .pagination__item--prev .pagination__link {

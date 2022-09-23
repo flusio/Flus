@@ -4,12 +4,15 @@
         <ul class="pagination__container">
             <?php if ($pagination->isCurrentFirstPage()): ?>
                 <li class="pagination__item pagination__item--prev pagination__item--disabled">
-                    <?= _('Previous') ?>
+                    <?= icon('angle-down', 'rotate90') ?>
                 </li>
             <?php else: ?>
                 <li class="pagination__item pagination__item--prev">
-                    <a class="pagination__link" href="<?= $url . 'page=' . $pagination->previousPageNumber() ?>">
-                        <?= _('Previous') ?>
+                    <a title="<?= _('Previous page') ?>" class="pagination__link" href="<?= $url . 'page=' . $pagination->previousPageNumber() ?>">
+                        <?= icon('angle-down', 'rotate90') ?>
+                        <span class="sr-only">
+                            <?= _('Previous page') ?>
+                        </span>
                     </a>
                 </li>
             <?php endif; ?>
@@ -34,12 +37,15 @@
 
             <?php if ($pagination->isCurrentLastPage()): ?>
                 <li class="pagination__item pagination__item--next pagination__item--disabled">
-                    <?= _('Next') ?>
+                    <?= icon('angle-down', 'rotate270') ?>
                 </li>
             <?php else: ?>
                 <li class="pagination__item pagination__item--next">
-                    <a class="pagination__link" href="<?= $url . 'page=' . $pagination->nextPageNumber() ?>">
-                        <?= _('Next') ?>
+                    <a title="<?= _('Next page') ?>" class="pagination__link" href="<?= $url . 'page=' . $pagination->nextPageNumber() ?>">
+                        <?= icon('angle-down', 'rotate270') ?>
+                        <span class="sr-only">
+                            <?= _('Next page') ?>
+                        </span>
                     </a>
                 </li>
             <?php endif; ?>

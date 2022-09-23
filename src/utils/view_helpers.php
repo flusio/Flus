@@ -193,13 +193,19 @@ function url_avatar($filename)
  * Return a SVG icon.
  *
  * @param string $icon_name
+ * @param string $additional_class_names
  *
  * @return string
  */
-function icon($icon_name)
+function icon($icon_name, $additional_class_names = '')
 {
+    $class = "icon icon--{$icon_name}";
+    if ($additional_class_names) {
+        $class .= ' ' . $additional_class_names;
+    }
+
     $url_icons = \Minz\Output\ViewHelpers::urlStatic('icons.svg');
-    $svg = "<svg class=\"icon icon--{$icon_name}\" aria-hidden=\"true\" width=\"36\" height=\"36\">";
+    $svg = "<svg class=\"{$class}\" aria-hidden=\"true\" width=\"36\" height=\"36\">";
     $svg .= "<use xlink:href=\"{$url_icons}#{$icon_name}\"/>";
     $svg .= '</svg>';
     return $svg;

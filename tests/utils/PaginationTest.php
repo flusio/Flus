@@ -292,20 +292,39 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         ], $pages);
     }
 
-    public function testPagesWhenCurrentPageIsLastPage()
+    public function testPagesWhenCurrentPageIsSecondPage()
     {
         $number_elements = 300;
         $number_per_page = 30;
-        $initial_current_page = 10;
+        $initial_current_page = 2;
         $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
 
         $pages = iterator_to_array($pagination->pages());
 
         $this->assertSame([
             ['type' => 'number', 'number' => 1],
+            ['type' => 'number', 'number' => 2],
+            ['type' => 'number', 'number' => 3],
             ['type' => 'ellipsis'],
-            ['type' => 'number', 'number' => 8],
-            ['type' => 'number', 'number' => 9],
+            ['type' => 'number', 'number' => 10],
+        ], $pages);
+    }
+
+    public function testPagesWhenCurrentPageIsThirdPage()
+    {
+        $number_elements = 300;
+        $number_per_page = 30;
+        $initial_current_page = 3;
+        $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
+
+        $pages = iterator_to_array($pagination->pages());
+
+        $this->assertSame([
+            ['type' => 'number', 'number' => 1],
+            ['type' => 'number', 'number' => 2],
+            ['type' => 'number', 'number' => 3],
+            ['type' => 'number', 'number' => 4],
+            ['type' => 'ellipsis'],
             ['type' => 'number', 'number' => 10],
         ], $pages);
     }
@@ -322,9 +341,65 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([
             ['type' => 'number', 'number' => 1],
             ['type' => 'ellipsis'],
+            ['type' => 'number', 'number' => 4],
             ['type' => 'number', 'number' => 5],
             ['type' => 'number', 'number' => 6],
             ['type' => 'ellipsis'],
+            ['type' => 'number', 'number' => 10],
+        ], $pages);
+    }
+
+    public function testPagesWhenCurrentPageIsThirdToLastPage()
+    {
+        $number_elements = 300;
+        $number_per_page = 30;
+        $initial_current_page = 8;
+        $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
+
+        $pages = iterator_to_array($pagination->pages());
+
+        $this->assertSame([
+            ['type' => 'number', 'number' => 1],
+            ['type' => 'ellipsis'],
+            ['type' => 'number', 'number' => 7],
+            ['type' => 'number', 'number' => 8],
+            ['type' => 'number', 'number' => 9],
+            ['type' => 'number', 'number' => 10],
+        ], $pages);
+    }
+
+    public function testPagesWhenCurrentPageIsSecondToLastPage()
+    {
+        $number_elements = 300;
+        $number_per_page = 30;
+        $initial_current_page = 9;
+        $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
+
+        $pages = iterator_to_array($pagination->pages());
+
+        $this->assertSame([
+            ['type' => 'number', 'number' => 1],
+            ['type' => 'ellipsis'],
+            ['type' => 'number', 'number' => 8],
+            ['type' => 'number', 'number' => 9],
+            ['type' => 'number', 'number' => 10],
+        ], $pages);
+    }
+
+    public function testPagesWhenCurrentPageIsLastPage()
+    {
+        $number_elements = 300;
+        $number_per_page = 30;
+        $initial_current_page = 10;
+        $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
+
+        $pages = iterator_to_array($pagination->pages());
+
+        $this->assertSame([
+            ['type' => 'number', 'number' => 1],
+            ['type' => 'ellipsis'],
+            ['type' => 'number', 'number' => 8],
+            ['type' => 'number', 'number' => 9],
             ['type' => 'number', 'number' => 10],
         ], $pages);
     }
