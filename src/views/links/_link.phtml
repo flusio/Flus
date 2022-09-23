@@ -128,8 +128,8 @@
 
             <p class="link__text link__text--oneline">
                 <?php if (!$link->fetched_at): ?>
-                    <span class="icon--spin">
-                        <?= icon('sync') ?>
+                    <span>
+                        <?= icon('sync', 'spin') ?>
                         <?= _('ongoing synchronisation…') ?>
                     </span>
                 <?php else: ?>

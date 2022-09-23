@@ -12,7 +12,7 @@ svg {
     fill: currentColor;
 }
 
-.icon--spin .icon {
+.icon.spin {
     animation: icon-spin 5s linear infinite;
 }
 

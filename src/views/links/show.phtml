@@ -42,8 +42,8 @@
 
     <p class="section__intro">
         <?php if (!$link->fetched_at): ?>
-            <span class="icon--spin">
-                <?= icon('sync') ?>
+            <span>
+                <?= icon('sync', 'spin') ?>
                 <?= _('ongoing synchronisation…') ?>
             </span>
         <?php else: ?>
