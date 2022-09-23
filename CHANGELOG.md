@@ -1,5 +1,32 @@
 # Changelog of flusio
 
+## 2022-09-23 - v0.51
+
+### Improvements
+
+- Preserve scroll on links actions ([7124f456](https://github.com/flusio/flusio/commit/7124f456))
+- Improve the links UX:
+    - Reorganize links actions ([933815de](https://github.com/flusio/flusio/commit/933815de))
+    - Move the delete action to the "Actions" menus ([612d318a](https://github.com/flusio/flusio/commit/612d318a))
+    - Homogeneize links collections management ([161677a5](https://github.com/flusio/flusio/commit/161677a5))
+    - Improve the look of links on mobile ([6d2e7ada](https://github.com/flusio/flusio/commit/6d2e7ada))
+    - Autoload a modal to explain recent changes to the links ([72fc4405](https://github.com/flusio/flusio/commit/72fc4405))
+- Improve pagination ([cd1bc184](https://github.com/flusio/flusio/commit/cd1bc184))
+- Fix and homogeneize focus outlines ([d1d3bf02](https://github.com/flusio/flusio/commit/d1d3bf02) and [c40ca054](https://github.com/flusio/flusio/commit/c40ca054))
+- Add the link title to the illustrations alt ([be6974b4](https://github.com/flusio/flusio/commit/be6974b4))
+- Improve the look of the "More help" section ([df8c1237](https://github.com/flusio/flusio/commit/df8c1237))
+
+### Bug fixes
+
+- Avoid repaired links to reappear in the news ([55fad70a](https://github.com/flusio/flusio/commit/55fad70a))
+- Fix invalid prefix in feeds XSL file ([7a63d9a0](https://github.com/flusio/flusio/commit/7a63d9a0))
+- Fix canonical links with several parameters ([25f95e92](https://github.com/flusio/flusio/commit/25f95e92))
+
+### Misc
+
+- Remove unused icons ([c4b57982](https://github.com/flusio/flusio/commit/c4b57982))
+- Accept `dc:date` and `dc:created` in RSS feeds ([3578a811](https://github.com/flusio/flusio/commit/3578a811))
+
 ## 2022-09-10 - v0.50
 
 ### Migration notes
