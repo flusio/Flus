@@ -112,7 +112,7 @@
             tabindex="-1"
             href="<?= protect($link->url) ?>"
         >
-            <img class="link__image" alt="" src="<?= url_media('cards', $link->image_filename) ?>" loading="lazy" />
+            <img class="link__image" alt="<?= protect($link->title) ?>" src="<?= url_media('cards', $link->image_filename) ?>" loading="lazy" />
         </a>
 
         <div class="link__content">
