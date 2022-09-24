@@ -16,7 +16,7 @@
     <outline
         type="rss"
         text="<?= protect($collection->name) ?>"
-        xmlUrl="<?= url_full('collection feed', ['id' => $collection->id]) ?>"
+        xmlUrl="<?= url_full('collection feed', ['id' => $collection->id, 'direct' => 'true']) ?>"
         htmlUrl="<?= url_full('collection', ['id' => $collection->id]) ?>"
         <?php if ($display_time_filter): ?>
             category="/flusio/filters/<?= $collection->time_filter ?>"

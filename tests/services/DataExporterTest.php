@@ -136,7 +136,10 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $opml = \SpiderBits\Opml::fromText($opml_content);
         $this->assertSame(3, count($opml->outlines));
 
-        $collection_1_url_feed = \Minz\Url::absoluteFor('collection feed', ['id' => $collection_1_id]);
+        $collection_1_url_feed = \Minz\Url::absoluteFor('collection feed', [
+            'id' => $collection_1_id,
+            'direct' => 'true',
+        ]);
         $collection_1_url = \Minz\Url::absoluteFor('collection', ['id' => $collection_1_id]);
         $this->assertSame($collection_1_url_feed, $opml->outlines[0]['xmlUrl']);
         $this->assertSame($collection_1_url, $opml->outlines[0]['htmlUrl']);
@@ -149,7 +152,10 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($group_name, $opml->outlines[2]['text']);
         $this->assertSame(1, count($opml->outlines[2]['outlines']));
 
-        $collection_3_url_feed = \Minz\Url::absoluteFor('collection feed', ['id' => $collection_3_id]);
+        $collection_3_url_feed = \Minz\Url::absoluteFor('collection feed', [
+            'id' => $collection_3_id,
+            'direct' => 'true',
+        ]);
         $collection_3_url = \Minz\Url::absoluteFor('collection', ['id' => $collection_3_id]);
         $group_outlines = $opml->outlines[2]['outlines'];
         $this->assertSame($collection_3_url_feed, $group_outlines[0]['xmlUrl']);
