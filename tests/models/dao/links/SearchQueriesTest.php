@@ -14,7 +14,7 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
     public function testSearchComputedByUserIdSearchesByTitle()
     {
         $dao = new dao\Link();
-        $title = $this->fake('words', 3, true);
+        $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
@@ -48,7 +48,7 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
     public function testSearchComputedByUserIdSortsByCreatedAt()
     {
         $dao = new dao\Link();
-        $title = $this->fake('words', 3, true);
+        $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user_id = $this->create('user');
         $created_at_1 = \Minz\Time::ago(1, 'day');
@@ -74,7 +74,7 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
     public function testSearchComputedByUserIdCanReturnPublishedAt()
     {
         $dao = new dao\Link();
-        $title = $this->fake('words', 3, true);
+        $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user_id = $this->create('user');
         $published_at = $this->fake('dateTime');
@@ -97,7 +97,7 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
     public function testSearchComputedByUserIdCanReturnNumberComments()
     {
         $dao = new dao\Link();
-        $title = $this->fake('words', 3, true);
+        $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
@@ -117,7 +117,7 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
     public function testSearchComputedByUserIdCanLimitResults()
     {
         $dao = new dao\Link();
-        $title = $this->fake('words', 3, true);
+        $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user_id = $this->create('user');
         $link_id_1 = $this->create('link', [
@@ -151,7 +151,7 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
     public function testSearchComputedByUserIdCanOffsetResults()
     {
         $dao = new dao\Link();
-        $title = $this->fake('words', 3, true);
+        $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user_id = $this->create('user');
         $link_id_1 = $this->create('link', [
@@ -185,7 +185,7 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
     public function testCountByUserId()
     {
         $dao = new dao\Link();
-        $title = $this->fake('words', 3, true);
+        $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user_id = $this->create('user');
         $link_id = $this->create('link', [
