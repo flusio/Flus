@@ -213,3 +213,11 @@
 .link__actions-group > * + * {
     margin-left: var(--space-small);
 }
+
+.link__actions-button {
+    color: var(--color-purple-8);
+}
+
+.link__actions-button:hover {
+    border-color: var(--color-purple-2);
+}

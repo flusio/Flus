@@ -200,7 +200,7 @@
             data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
         >
             <summary class="popup__opener" title="<?= _('Actions') ?>">
-                <span class="button button--ghost button--smaller">
+                <span class="link__actions-button button button--ghost button--smaller">
                     <?= icon('menu') ?>
                     <span class="sr-only">
                         <?= _('Actions') ?>
@@ -303,7 +303,7 @@
                 <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
                     <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
-                    <button class="button--ghost button--smaller" title="<?= _('Mark as read') ?>">
+                    <button class="link__actions-button button--ghost button--smaller" title="<?= _('Mark as read') ?>">
                         <?= icon('check') ?>
                         <span class="sr-only">
                             <?= _('Mark as read') ?>
@@ -316,7 +316,7 @@
                 <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as unread', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
                     <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
-                    <button class="button--ghost button--smaller" title="<?= _('Remove from read list') ?>">
+                    <button class="link__actions-button button--ghost button--smaller" title="<?= _('Remove from read list') ?>">
                         <?= icon('uncheck') ?>
                         <span class="sr-only">
                             <?= _('Remove from read list') ?>
@@ -329,7 +329,7 @@
                 <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
                     <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
-                    <button class="button--ghost button--smaller" title="<?= _('Read later') ?>">
+                    <button class="link__actions-button button--ghost button--smaller" title="<?= _('Read later') ?>">
                         <?= icon('bookmark') ?>
                         <span class="sr-only">
                             <?= _('Read later') ?>
@@ -339,7 +339,7 @@
             <?php endif; ?>
 
             <button
-                class="button--ghost button--smaller"
+                class="link__actions-button button--ghost button--smaller"
                 data-controller="modal-opener"
                 data-action="modal-opener#fetch"
                 data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mark_as_read' => $storing_must_mark_as_read, 'from' => $this->safe('from')]) ?>"
