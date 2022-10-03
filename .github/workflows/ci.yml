@@ -24,7 +24,7 @@ jobs:
 
         strategy:
             matrix:
-                operating-system: [ubuntu-18.04]
+                operating-system: [ubuntu-22.04]
                 php-versions: ['7.4', '8.0', '8.1']
 
         services:
