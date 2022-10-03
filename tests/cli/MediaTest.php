@@ -74,7 +74,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (67%)");
+        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (0%)");
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
@@ -121,7 +121,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (67%)");
+        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (0%)");
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
@@ -168,7 +168,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (67%)");
+        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (0%)");
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
@@ -215,7 +215,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (67%)");
+        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (0%)");
         $response_generator->next();
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);

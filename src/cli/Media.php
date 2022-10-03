@@ -31,16 +31,19 @@ class Media
 
         yield Response::text(200, 'Scanning the media directories...');
         $subdir_names_depth_1 = scandir($path_cards, SCANDIR_SORT_NONE);
+        $subdir_names_depth_1 = array_filter($subdir_names_depth_1, function ($subdir_name) {
+            // Exclude files or dirs starting with a dot.
+            return $subdir_name[0] !== '.';
+        });
+        // Reset the index keys of the array so calculation of progress will be
+        // correct.
+        $subdir_names_depth_1 = array_values($subdir_names_depth_1);
         $number_subdirs = count($subdir_names_depth_1);
         yield Response::text(200, "{$number_subdirs} sub-directories found.");
 
         // Iterate over the first level of media subdirectories
         foreach ($subdir_names_depth_1 as $index => $subdir_name) {
-            if ($subdir_name[0] === '.') {
-                continue;
-            }
-
-            $progress_percent = round($index * 100 / count($subdir_names_depth_1));
+            $progress_percent = round($index * 100 / $number_subdirs);
             yield Response::text(200, "Removing files under {$subdir_name}/... ({$progress_percent}%)");
 
             // get the full list of file names under the current subdirectory
