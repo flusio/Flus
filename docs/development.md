@@ -32,7 +32,7 @@ PHP and JS dependencies.
 Once this is done, you should start the services:
 
 ```console
-$ make start
+$ make docker-start
 ```
 
 This command calls `docker-compose` with the file under the `docker/` folder.
@@ -55,7 +55,7 @@ Now, you should be able to access flusio at [localhost:8000](http://localhost:80
 The containers can be stopped and cleaned with:
 
 ```console
-$ make stop
+$ make docker-clean
 ```
 
 Most of the time, you can settle for <kbd>CTRL + C</kbd> (the Docker network

@@ -1,5 +1,12 @@
 # Changelog of flusio
 
+## 2022-xx-xx - unreleased
+
+### Migration notes
+
+In development, commands `make start` and `make stop` have been renamed to
+`make docker-start` and `make docker-stop`.
+
 ## 2022-09-23 - v0.51
 
 ### Improvements

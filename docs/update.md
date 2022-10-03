@@ -36,7 +36,7 @@ flusio$ sudo systemctl restart php flusio-worker
 ```
 
 **In development,** don’t prefix commands with `sudo -u www-data`. To restart
-php, just stop and restart the `make start` command.
+php, just stop and restart the `make docker-start` command.
 
 That’s all!
 

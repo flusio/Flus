@@ -30,13 +30,13 @@ else
 	PHPUNIT_FILE = ./tests
 endif
 
-.PHONY: start
-start: .env ## Start a development server (use Docker)
+.PHONY: docker-start
+docker-start: .env ## Start a development server with Docker
 	@echo "Running webserver on http://localhost:8000"
 	docker-compose -p flusio -f docker/docker-compose.yml up
 
-.PHONY: stop
-stop: ## Stop and clean Docker server
+.PHONY: docker-clean
+docker-clean: ## Stop and clean Docker server
 	docker-compose -p flusio -f docker/docker-compose.yml down
 
 .PHONY: install
