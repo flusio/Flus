@@ -93,18 +93,21 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection_id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/read", [
             'csrf' => $user->csrf,
-            'from' => \Minz\Url::for('news'),
+            'from' => $from,
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
+        $this->assertResponseCode($response, 302, $from);
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
+        $this->assertSame('collection', $new_link->via_type);
+        $this->assertSame($collection_id, $new_link->via_resource_id);
         $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $read_list->id,
@@ -364,18 +367,21 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection_id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
 
         $response = $this->appRun('post', "/collections/{$collection_id}/read/later", [
             'csrf' => $user->csrf,
-            'from' => \Minz\Url::for('news'),
+            'from' => $from,
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
+        $this->assertResponseCode($response, 302, $from);
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
+        $this->assertSame('collection', $new_link->via_type);
+        $this->assertSame($collection_id, $new_link->via_resource_id);
         $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $bookmarks->id,

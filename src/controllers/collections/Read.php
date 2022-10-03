@@ -50,11 +50,16 @@ class Read
                 'hidden' => $collection->sharedWith($user),
             ]);
             $links = $user->obtainLinks($collection_links);
+            list($via_type, $via_resource_id) = utils\ViaHelper::extractFromPath($from);
 
             $links_to_create = [];
             foreach ($links as $link) {
                 if (!$link->created_at) {
                     $link->created_at = \Minz\Time::now();
+                    if ($via_type) {
+                        $link->via_type = $via_type;
+                        $link->via_resource_id = $via_resource_id;
+                    }
                     $links_to_create[] = $link;
                 }
             }
@@ -111,11 +116,16 @@ class Read
                 'hidden' => $collection->sharedWith($user),
             ]);
             $links = $user->obtainLinks($collection_links);
+            list($via_type, $via_resource_id) = utils\ViaHelper::extractFromPath($from);
 
             $links_to_create = [];
             foreach ($links as $link) {
                 if (!$link->created_at) {
                     $link->created_at = \Minz\Time::now();
+                    if ($via_type) {
+                        $link->via_type = $via_type;
+                        $link->via_resource_id = $via_resource_id;
+                    }
                     $links_to_create[] = $link;
                 }
             }

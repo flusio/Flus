@@ -53,6 +53,7 @@ class Read
 
         $link = $user->obtainLink($link);
         if (!$link->created_at) {
+            utils\ViaHelper::setLinkVia($link, $from);
             $link->save();
         }
 
@@ -101,6 +102,7 @@ class Read
 
         $link = $user->obtainLink($link);
         if (!$link->created_at) {
+            utils\ViaHelper::setLinkVia($link, $from);
             $link->save();
         }
 

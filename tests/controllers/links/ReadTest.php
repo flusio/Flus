@@ -93,13 +93,14 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'link_id' => $link_id,
             'collection_id' => $news->id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $news->id]);
 
         $response = $this->appRun('post', "/links/{$link_id}/read", [
             'csrf' => $user->csrf,
-            'from' => \Minz\Url::for('bookmarks'),
+            'from' => $from,
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, $from);
         // The initial link is not modified since it's not owned by the logged
         // user.
         $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks_id));
@@ -110,6 +111,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
+        $this->assertSame('collection', $new_link->via_type);
+        $this->assertSame($news->id, $new_link->via_resource_id);
         $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $read_list->id,
@@ -288,13 +291,14 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'link_id' => $link_id,
             'collection_id' => $news->id,
         ]);
+        $from = \Minz\Url::for('collection', ['id' => $news->id]);
 
         $response = $this->appRun('post', "/links/{$link_id}/read/later", [
             'csrf' => $user->csrf,
-            'from' => \Minz\Url::for('bookmarks'),
+            'from' => $from,
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, $from);
         // The initial link is not modified since it's not owned by the logged
         // user.
         $this->assertTrue(models\LinkToCollection::exists($link_to_news_id));
@@ -304,6 +308,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
+        $this->assertSame('collection', $new_link->via_type);
+        $this->assertSame($news->id, $new_link->via_resource_id);
         $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $bookmarks->id,
