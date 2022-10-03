@@ -224,7 +224,8 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
 
         $content = DomExtractor::content($dom);
 
-        $this->assertSame('This is headerThis is main', $content);
+        $this->assertStringContainsString('This is header', $content);
+        $this->assertStringContainsString('This is main', $content);
     }
 
     public function testContentReturnsMainTagEvenIfNotInBody()
