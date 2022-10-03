@@ -39,6 +39,10 @@ docker-start: .env ## Start a development server with Docker
 docker-clean: ## Stop and clean Docker server
 	docker-compose -p flusio -f docker/docker-compose.yml down
 
+.PHONY: docker-build
+docker-build: ## Rebuild the Docker images
+	docker-compose -p flusio -f docker/docker-compose.yml build
+
 .PHONY: install
 install: ## Install the dependencies
 	$(COMPOSER) install
