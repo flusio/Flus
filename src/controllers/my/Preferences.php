@@ -32,6 +32,7 @@ class Preferences
 
         return Response::ok('my/preferences/edit.phtml', [
             'locale' => $user->locale,
+            'option_compact_mode' => $user->option_compact_mode,
             // Don't name it "beta_enabled" because there's already a global
             // view variable named like this.
             'is_beta_enabled' => models\FeatureFlag::isEnabled('beta', $user->id),
@@ -43,6 +44,7 @@ class Preferences
      *
      * @request_param string csrf
      * @request_param string locale
+     * @request_param boolean option_compact_mode
      * @request_param boolean beta_enabled
      * @request_param string from
      *
@@ -56,6 +58,7 @@ class Preferences
     public function update($request)
     {
         $locale = $request->param('locale', '');
+        $option_compact_mode = $request->paramBoolean('option_compact_mode', false);
         $beta_enabled = $request->paramBoolean('beta_enabled', false);
         $csrf = $request->param('csrf');
         $from = $request->param('from');
@@ -68,6 +71,7 @@ class Preferences
         if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('my/preferences/edit.phtml', [
                 'locale' => $locale,
+                'option_compact_mode' => $option_compact_mode,
                 'is_beta_enabled' => $beta_enabled,
                 'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -76,12 +80,14 @@ class Preferences
 
         $old_locale = $user->locale;
         $user->locale = trim($locale);
+        $user->option_compact_mode = $option_compact_mode;
 
         $errors = $user->validate();
         if ($errors) {
             $user->locale = $old_locale;
             return Response::badRequest('my/preferences/edit.phtml', [
                 'locale' => $locale,
+                'option_compact_mode' => $option_compact_mode,
                 'is_beta_enabled' => $beta_enabled,
                 'from' => $from,
                 'errors' => $errors,

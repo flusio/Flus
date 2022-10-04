@@ -53,7 +53,8 @@
     --color-red-9: #1a0004;
 
     --size-base: calc(1.6em + 0.5vw);
-    --size-small: 0.8em;
+    --size-smaller: 0.75em;
+    --size-small: 0.85em;
     --size-normal: 1em;
     --size-large: 1.2em;
 

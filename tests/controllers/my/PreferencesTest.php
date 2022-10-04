@@ -32,15 +32,17 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fpreferences');
     }
 
-    public function testUpdateSavesTheLocaleAndRedirects()
+    public function testUpdateSavesTheUserAndRedirects()
     {
         $user = $this->login([
             'locale' => 'en_GB',
+            'option_compact_mode' => 0,
         ]);
 
         $response = $this->appRun('post', '/my/preferences', [
             'csrf' => $user->csrf,
             'locale' => 'fr_FR',
+            'option_compact_mode' => true,
             'from' => \Minz\Url::for('preferences'),
         ]);
 
@@ -48,6 +50,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $user = auth\CurrentUser::reload();
         $this->assertSame('fr_FR', $user->locale);
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
+        $this->assertTrue($user->option_compact_mode);
     }
 
     public function testUpdateCanEnableBetaFeatures()

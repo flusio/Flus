@@ -34,7 +34,7 @@
 }
 
 @media (min-width: 800px) {
-    .link__meta {
+    .link:not(.link--compact) .link__meta {
         position: absolute;
         right: 0;
         left: 0;
@@ -77,6 +77,13 @@
     background-color: var(--color-purple-1);
 }
 
+@media (min-width: 800px) {
+    .link--compact .link__meta-warning,
+    .link--compact .link__meta-date {
+        font-size: var(--size-smaller);
+    }
+}
+
 .link__body {
     display: flex;
     padding: var(--space-smaller);
@@ -89,20 +96,20 @@
 }
 
 @media (min-width: 800px) {
-    .link__body {
+    .link:not(.link--compact) .link__body {
         padding: 0;
 
         flex-direction: column;
     }
 
-    .link__meta + .link__body {
+    .link:not(.link--compact) .link__meta + .link__body {
         margin-top: 0;
     }
 }
 
 .link__image-container {
-    width: 85px;
-    height: 85px;
+    width: 75px;
+    height: 75px;
 
     flex-shrink: 0;
 }
@@ -117,12 +124,12 @@
 }
 
 @media (min-width: 800px) {
-    .link__image-container {
+    .link:not(.link--compact) .link__image-container {
         width: 100%;
         height: 156px;
     }
 
-    .link__image {
+    .link:not(.link--compact) .link__image {
         border-radius: 0;
     }
 }
@@ -136,7 +143,7 @@
 }
 
 @media (min-width: 800px) {
-    .link__content {
+    .link:not(.link--compact) .link__content {
         margin-left: 0;
         padding: var(--space-small);
     }
@@ -160,6 +167,12 @@
     text-overflow: ellipsis;
 }
 
+@media (min-width: 800px) {
+    .link--compact .link__title {
+        font-size: var(--size-small);
+    }
+}
+
 .link__text {
     margin-top: var(--space-small);
     margin-bottom: var(--space-small);
@@ -167,6 +180,12 @@
     color: var(--color-text-secondary);
     font-size: var(--size-small);
     overflow-wrap: anywhere;
+}
+
+@media (min-width: 800px) {
+    .link--compact .link__text {
+        font-size: var(--size-smaller);
+    }
 }
 
 .link__text--oneline {
@@ -199,7 +218,7 @@
 }
 
 @media (min-width: 800px) {
-    .link__actions {
+    .link:not(.link--compact) .link__actions {
         padding: var(--space-small);
     }
 }
