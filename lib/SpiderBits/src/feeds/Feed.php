@@ -64,27 +64,40 @@ class Feed
             } else {
                 $encoding = 'UTF-8';
             }
+            // TODO don't convert if "<?xml" is not present
             $feed_as_string = mb_convert_encoding($feed_as_string, $encoding, $encoding);
             $result = @$dom_document->loadXML($feed_as_string);
+        }
 
-            if (!$result) {
-                throw new \DomainException('Can’t parse the given string.');
+        if ($result) {
+            // It is XML, so we parse it as XML
+            if (AtomParser::canHandle($dom_document)) {
+                return AtomParser::parse($dom_document);
             }
+
+            if (RssParser::canHandle($dom_document)) {
+                return RssParser::parse($dom_document);
+            }
+
+            if (RdfParser::canHandle($dom_document)) {
+                return RdfParser::parse($dom_document);
+            }
+
+            throw new \DomainException('Given string is not a supported standard.');
         }
 
-        if (AtomParser::canHandle($dom_document)) {
-            return AtomParser::parse($dom_document);
+        // Maybe HTML and h-feed?
+        $result = @$dom_document->loadHTML($feed_as_string);
+        if ($result) {
+            $dom = new \SpiderBits\Dom($dom_document);
+            if (HFeedParser::canHandle($dom)) {
+                return HFeedParser::parse($dom);
+            }
+
+            throw new \DomainException('Given string is not a supported standard.');
         }
 
-        if (RssParser::canHandle($dom_document)) {
-            return RssParser::parse($dom_document);
-        }
-
-        if (RdfParser::canHandle($dom_document)) {
-            return RdfParser::parse($dom_document);
-        }
-
-        throw new \DomainException('Given string is not a supported standard.');
+        throw new \DomainException('Can’t parse the given string.');
     }
 
     /**
@@ -121,6 +134,7 @@ class Feed
             strpos($content_type, 'application/xml') !== false ||
             strpos($content_type, 'text/rss+xml') !== false ||
             strpos($content_type, 'text/xml') !== false ||
+            strpos($content_type, 'text/html') !== false ||
             strpos($content_type, 'text/plain') !== false
         );
     }
