@@ -265,4 +265,49 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'There is no valid feeds at this address');
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
     }
+
+    public function testWhatIsNewRedirectsToCollection()
+    {
+        $support_user = models\User::supportUser();
+        $feed_url = 'https://github.com/flusio/flusio/releases.atom';
+        $collection_id = $this->create('collection', [
+            'user_id' => $support_user->id,
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+        ]);
+
+        $response = $this->appRun('get', '/about/new');
+
+        $this->assertResponseCode($response, 302, "/collections/{$collection_id}");
+    }
+
+    public function testWhatIsNewCreatesFeedIfItDoesNotExist()
+    {
+        $support_user = models\User::supportUser();
+        $feed_url = 'https://github.com/flusio/flusio/releases.atom';
+        $this->mockHttpWithFixture(
+            $feed_url,
+            'responses/flus.fr_carnet_feeds_all.atom.xml'
+        );
+        // The FeedFetcher will call these URLs as well because the feed URL is
+        // mocked with the feed of flus.fr/carnet.
+        $this->mockHttpWithFixture(
+            'https://flus.fr/carnet/',
+            'responses/flus.fr_carnet_index.html'
+        );
+        $this->mockHttpWithFile(
+            'https://flus.fr/carnet/card.png',
+            'public/static/og-card.png'
+        );
+
+        $this->assertSame(0, models\Collection::count());
+
+        $response = $this->appRun('get', '/about/new');
+
+        $this->assertSame(1, models\Collection::count());
+
+        $collection = models\Collection::take();
+        $this->assertSame($feed_url, $collection->feed_url);
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
+    }
 }

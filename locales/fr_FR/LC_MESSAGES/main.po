@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-10-04 14:33+0200\n"
-"PO-Revision-Date: 2022-10-04 14:36+0200\n"
+"POT-Creation-Date: 2022-10-04 20:31+0200\n"
+"PO-Revision-Date: 2022-10-04 20:31+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: assets/javascripts/controllers/back_button_controller.js:39
+#: assets/javascripts/controllers/back_button_controller.js:47
 #: views/_layouts/connected.phtml:217
 #: views/_layouts/connected_blocked.phtml:176
 #: views/_layouts/not_connected.phtml:147
@@ -45,7 +45,7 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:99 controllers/Collections.php:307
+#: controllers/Collections.php:100 controllers/Collections.php:308
 #: controllers/Feeds.php:116 controllers/Groups.php:90
 #: controllers/Links.php:222 controllers/News.php:75
 #: controllers/Passwords.php:88 controllers/Passwords.php:191
@@ -58,7 +58,7 @@ msgstr "Afficher"
 #: controllers/collections/Shares.php:107
 #: controllers/collections/Shares.php:230 controllers/links/Messages.php:73
 #: controllers/links/Repairing.php:109 controllers/links/Searches.php:106
-#: controllers/my/Account.php:103 controllers/my/Preferences.php:76
+#: controllers/my/Account.php:103 controllers/my/Preferences.php:77
 #: controllers/my/Profile.php:72 controllers/my/Security.php:79
 #: controllers/my/Security.php:150 controllers/my/Subscription.php:74
 #: controllers/my/Validation.php:132
@@ -67,11 +67,11 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:112 controllers/Collections.php:322
+#: controllers/Collections.php:113 controllers/Collections.php:323
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:382 controllers/Exportations.php:61
+#: controllers/Collections.php:383 controllers/Exportations.php:61
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:357 controllers/Links.php:404
 #: controllers/Messages.php:93 controllers/Messages.php:141
@@ -653,7 +653,7 @@ msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
 #: views/_layouts/not_connected.phtml:160 views/pages/about.phtml:3
-#: views/pages/about.phtml:11 views/support/show.phtml:103
+#: views/pages/about.phtml:11 views/support/show.phtml:109
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
@@ -2641,6 +2641,10 @@ msgstr "Plus d’aide"
 #: views/support/show.phtml:97
 msgid "Start the onboarding again"
 msgstr "Recommencer l’introduction"
+
+#: views/support/show.phtml:103
+msgid "What’s new?"
+msgstr "Quoi de neuf ?"
 
 #: views/topics/show.phtml:13
 #, php-format

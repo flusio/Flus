@@ -8,6 +8,9 @@ In development, commands `make start` and `make stop` have been renamed to
 `make docker-start` and `make docker-stop`. You’ll also have to rebuild the
 bundler image with `make docker-build`.
 
+You can set the new `APP_FEED_WHAT_IS_NEW` environment variable to change the
+feed served by the “What’s new?” link (in “Help & support”).
+
 ## 2022-09-23 - v0.51
 
 ### Improvements

@@ -338,6 +338,19 @@ CLI:
 flusio# sudo -u www-data php cli users create --username=Abby --email=email@example.com --password=secret
 ```
 
+## Optional: Change the “What’s new?” feed
+
+In the “Help & support” page, there’s a link named “What’s new?”. It
+automatically redirects to the feed of the [flusio releases](https://github.com/flusio/flusio/releases)
+on GitHub.
+
+You can set a custom feed in your `.env` file (if you offer a service based on
+flusio for instance, and that you have a blog explaining the latest changes):
+
+```dotenv
+APP_FEED_WHAT_IS_NEW=https://example.com/your/feed.xml
+```
+
 ## Optional: Change CLI default locale
 
 You can force the locale of CLI commands by setting the `CLI_LOCALE`

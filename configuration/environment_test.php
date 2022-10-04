@@ -39,6 +39,10 @@ return [
         'media_path' => $media_directory,
         'demo' => false,
         'registrations_opened' => true,
+        'what_is_new_feed' => $dotenv->pop(
+            'APP_FEED_WHAT_IS_NEW',
+            'https://github.com/flusio/flusio/releases.atom'
+        ),
         'subscriptions_enabled' => false, // should be enable on a case-by-case basis
         'subscriptions_host' => $subscriptions_host,
         'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),

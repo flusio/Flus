@@ -20,6 +20,7 @@ class Router
         $router->addRoute('get', '/', 'Pages#home', 'home');
         $router->addRoute('get', '/terms', 'Pages#terms', 'terms');
         $router->addRoute('get', '/about', 'Pages#about', 'about');
+        $router->addRoute('get', '/about/new', 'Feeds#whatIsNew', 'what is new');
         $router->addRoute('get', '/addons', 'Pages#addons', 'addons');
         $router->addRoute('get', '/robots.txt', 'Pages#robots', 'robots.txt');
         $router->addRoute('get', '/app.webmanifest', 'Pages#webmanifest', 'webmanifest');

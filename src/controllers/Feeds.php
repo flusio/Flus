@@ -176,6 +176,34 @@ class Feeds
     }
 
     /**
+     * Redirect to the "what is new" feed.
+     *
+     * @response 302 /collections/:id
+     */
+    public function whatIsNew()
+    {
+        $support_user = models\User::supportUser();
+        $feed_url = \Minz\Configuration::$application['what_is_new_feed'];
+
+        $feed = models\Collection::findBy([
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+            'user_id' => $support_user->id,
+        ]);
+        if (!$feed) {
+            $feed_fetcher_service = new services\FeedFetcher([
+                'timeout' => 10,
+                'rate_limit' => false,
+            ]);
+
+            $feed = models\Collection::initFeed($support_user->id, $feed_url);
+            $feed_fetcher_service->fetch($feed);
+        }
+
+        return Response::redirect('collection', ['id' => $feed->id]);
+    }
+
+    /**
      * Return a XSL file to style the feeds.
      *
      * @response 200

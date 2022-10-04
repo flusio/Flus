@@ -19,7 +19,15 @@ export default class extends Controller {
             backHistory = [];
         }
 
-        if (this.trackValue) {
+        if (
+            this.trackValue &&
+            // This URL is automatically redirected to /collections/:id.
+            // Unfortunately, because how Turbo works, both URLs call this
+            // initialize() method and add them to the history. I don't have a
+            // simple and clean solution on the backend-side to solve this
+            // issue, so I use this little hack to not track the /about/new URL.
+            window.location.pathname !== '/about/new'
+        ) {
             // Stack the current path at the top of the history only if we’re
             // asked to track the current page
             const currentPath = window.location.pathname + window.location.search;
