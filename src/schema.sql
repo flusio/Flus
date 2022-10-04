@@ -36,6 +36,7 @@ CREATE TABLE users (
     avatar_filename TEXT,
     csrf TEXT NOT NULL DEFAULT '',
     autoload_modal TEXT NOT NULL DEFAULT '',
+    option_compact_mode BOOLEAN NOT NULL DEFAULT false,
 
     validated_at TIMESTAMPTZ,
     validation_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE,

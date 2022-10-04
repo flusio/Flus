@@ -73,10 +73,7 @@ class FeatureFlags
             return Response::text(404, "User {$user_id} doesn’t exist");
         }
 
-        models\FeatureFlag::findOrCreateBy([
-            'type' => $type,
-            'user_id' => $user->id,
-        ]);
+        models\FeatureFlag::enable($type, $user->id);
 
         return Response::text(200, "{$type} is enabled for user {$user->id} ({$user->email})");
     }
@@ -87,7 +84,6 @@ class FeatureFlags
      * @request_param string type
      * @request_param string user_id
      *
-     * @response 400 if the flag isn't enabled
      * @response 404 if user doesn’t exist
      * @response 200
      */
@@ -101,15 +97,7 @@ class FeatureFlags
             return Response::text(404, "User {$user_id} doesn’t exist");
         }
 
-        $feature_flag = models\FeatureFlag::findBy([
-            'type' => $type,
-            'user_id' => $user->id,
-        ]);
-        if (!$feature_flag) {
-            return Response::text(400, "Feature flag {$type} isn’t enabled for user {$user_id}");
-        }
-
-        models\FeatureFlag::delete($feature_flag->id);
+        models\FeatureFlag::disable($type, $user->id);
 
         return Response::text(200, "{$type} is disabled for user {$user->id} ({$user->email})");
     }

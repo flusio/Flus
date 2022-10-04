@@ -36,7 +36,6 @@ class Profile
 
         return Response::ok('my/profile/edit.phtml', [
             'username' => $user->username,
-            'locale' => $user->locale,
             'from' => $from,
         ]);
     }
@@ -46,20 +45,18 @@ class Profile
      *
      * @request_param string csrf
      * @request_param string username
-     * @request_param string locale
      * @request_param string from
      *
      * @response 302 /login?redirect_to=:from
      *     If the user is not connected
      * @response 400
-     *     If the CSRF, username or locale are invalid
+     *     If the CSRF or username are invalid
      * @response 302 :from
      *     On success
      */
     public function update($request)
     {
         $username = $request->param('username', '');
-        $locale = $request->param('locale', '');
         $csrf = $request->param('csrf');
         $from = $request->param('from');
 
@@ -71,17 +68,13 @@ class Profile
         if (!\Minz\CSRF::validate($csrf)) {
             return Response::badRequest('my/profile/edit.phtml', [
                 'username' => $username,
-                'locale' => $locale,
                 'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
         $old_username = $user->username;
-        $old_locale = $user->locale;
-
         $user->username = trim($username);
-        $user->locale = trim($locale);
 
         $errors = $user->validate();
         if ($errors) {
@@ -89,17 +82,14 @@ class Profile
             // displayed in the header since the `$user` objects are the same
             // (referenced by the CurrentUser::$instance)
             $user->username = $old_username;
-            $user->locale = $old_locale;
             return Response::badRequest('my/profile/edit.phtml', [
                 'username' => $username,
-                'locale' => $locale,
                 'from' => $from,
                 'errors' => $errors,
             ]);
         }
 
         $user->save();
-        utils\Locale::setCurrentLocale($locale);
 
         return Response::found($from);
     }

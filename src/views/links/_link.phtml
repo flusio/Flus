@@ -38,9 +38,11 @@
     } elseif ($display_mark_as_read === 'auto') {
         $display_mark_as_read = true;
     }
+
+    $option_compact_mode = $current_user && $current_user->option_compact_mode;
 ?>
 
-<div class="link">
+<div class="link <?= $option_compact_mode ? 'link--compact' : '' ?>">
     <?php if ($display_published_at || $in_error || $trackers_detected): ?>
         <div class="link__meta">
             <?php if ($in_error || $trackers_detected): ?>
@@ -128,7 +130,7 @@
 
             <p class="link__text link__text--oneline">
                 <?php if (!$link->fetched_at): ?>
-                    <span>
+                    <span class="link__ellipsis">
                         <?= icon('sync', 'spin') ?>
                         <?= _('ongoing synchronisation…') ?>
                     </span>

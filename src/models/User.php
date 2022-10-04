@@ -73,6 +73,11 @@ class User extends \Minz\Model
             'type' => 'string',
         ],
 
+        'option_compact_mode' => [
+            'type' => 'boolean',
+            'required' => true,
+        ],
+
         'pocket_username' => [
             'type' => 'string',
         ],
@@ -107,6 +112,7 @@ class User extends \Minz\Model
             'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
             'csrf' => utils\Random::hex(64),
             'autoload_modal' => '',
+            'option_compact_mode' => false,
         ], $values));
     }
 

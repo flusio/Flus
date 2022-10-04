@@ -4,7 +4,6 @@ namespace flusio\controllers\my;
 
 use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 class ProfileTest extends \PHPUnit\Framework\TestCase
 {
@@ -42,36 +41,17 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $new_username = $this->fakeUnique('username');
         $user = $this->login([
             'username' => $old_username,
-            'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
-            'locale' => 'fr_FR',
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/profile');
         $user = auth\CurrentUser::reload();
         $this->assertSame($new_username, $user->username);
-        $this->assertSame('fr_FR', $user->locale);
-    }
-
-    public function testUpdateSetsTheCurrentLocale()
-    {
-        $user = $this->login([
-            'locale' => 'en_GB',
-        ]);
-
-        $response = $this->appRun('post', '/my/profile', [
-            'csrf' => $user->csrf,
-            'username' => $this->fake('username'),
-            'locale' => 'fr_FR',
-            'from' => \Minz\Url::for('edit profile'),
-        ]);
-
-        $this->assertSame('fr_FR', utils\Locale::currentLocale());
     }
 
     public function testUpdateRedirectsToLoginIfUserNotConnected()
@@ -80,20 +60,17 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $new_username = $this->fakeUnique('username');
         $user_id = $this->create('user', [
             'username' => $old_username,
-            'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/my/profile', [
             'csrf' => \Minz\CSRF::generate(),
             'username' => $new_username,
-            'locale' => 'fr_FR',
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
         $user = models\User::find($user_id);
         $this->assertSame($old_username, $user->username);
-        $this->assertSame('en_GB', $user->locale);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid()
@@ -102,13 +79,11 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $new_username = $this->fakeUnique('username');
         $user = $this->login([
             'username' => $old_username,
-            'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/my/profile', [
             'csrf' => 'not the token',
             'username' => $new_username,
-            'locale' => 'fr_FR',
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
@@ -116,7 +91,6 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'A security verification failed');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
-        $this->assertSame('en_GB', $user->locale);
     }
 
     public function testUpdateFailsIfUsernameIsTooLong()
@@ -125,13 +99,11 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $new_username = $this->fake('sentence', 50, false);
         $user = $this->login([
             'username' => $old_username,
-            'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
-            'locale' => 'fr_FR',
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
@@ -139,7 +111,6 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The username must be less than 50 characters');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
-        $this->assertSame('en_GB', $user->locale);
     }
 
     public function testUpdateFailsIfUsernameContainsAnAt()
@@ -148,13 +119,11 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $new_username = $this->fakeUnique('username') . '@';
         $user = $this->login([
             'username' => $old_username,
-            'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
-            'locale' => 'fr_FR',
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
@@ -162,7 +131,6 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The username cannot contain the character ‘@’');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
-        $this->assertSame('en_GB', $user->locale);
     }
 
     public function testUpdateFailsIfUsernameIsMissing()
@@ -170,12 +138,10 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $old_username = $this->fakeUnique('username');
         $user = $this->login([
             'username' => $old_username,
-            'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('post', '/my/profile', [
             'csrf' => $user->csrf,
-            'locale' => 'fr_FR',
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
@@ -183,51 +149,5 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The username is required');
         $user = auth\CurrentUser::reload();
         $this->assertSame($old_username, $user->username);
-        $this->assertSame('en_GB', $user->locale);
-    }
-
-    public function testUpdateFailsIfLocaleIsMissing()
-    {
-        $old_username = $this->fakeUnique('username');
-        $new_username = $this->fakeUnique('username');
-        $user = $this->login([
-            'username' => $old_username,
-            'locale' => 'en_GB',
-        ]);
-
-        $response = $this->appRun('post', '/my/profile', [
-            'csrf' => $user->csrf,
-            'username' => $new_username,
-            'from' => \Minz\Url::for('edit profile'),
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'The locale is required');
-        $user = auth\CurrentUser::reload();
-        $this->assertSame($old_username, $user->username);
-        $this->assertSame('en_GB', $user->locale);
-    }
-
-    public function testUpdateFailsIfLocaleIsInvalid()
-    {
-        $old_username = $this->fakeUnique('username');
-        $new_username = $this->fakeUnique('username');
-        $user = $this->login([
-            'username' => $old_username,
-            'locale' => 'en_GB',
-        ]);
-
-        $response = $this->appRun('post', '/my/profile', [
-            'csrf' => $user->csrf,
-            'username' => $new_username,
-            'locale' => 'not a locale',
-            'from' => \Minz\Url::for('edit profile'),
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'The locale is invalid');
-        $user = auth\CurrentUser::reload();
-        $this->assertSame($old_username, $user->username);
-        $this->assertSame('en_GB', $user->locale);
     }
 }
