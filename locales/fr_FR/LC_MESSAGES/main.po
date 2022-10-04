@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-09-23 08:27+0200\n"
-"PO-Revision-Date: 2022-09-23 08:27+0200\n"
+"POT-Creation-Date: 2022-10-04 10:12+0200\n"
+"PO-Revision-Date: 2022-10-04 10:12+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:39
-#: views/_layouts/connected.phtml:217
-#: views/_layouts/connected_blocked.phtml:176
+#: views/_layouts/connected.phtml:207
+#: views/_layouts/connected_blocked.phtml:166
 #: views/_layouts/not_connected.phtml:147
 msgid "Back"
 msgstr "Retour"
@@ -74,14 +74,14 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:357 controllers/Links.php:404
 #: controllers/Messages.php:93 controllers/Messages.php:141
-#: controllers/Sessions.php:211 controllers/collections/Read.php:67
-#: controllers/collections/Read.php:128 controllers/collections/Read.php:189
+#: controllers/Sessions.php:211 controllers/collections/Read.php:72
+#: controllers/collections/Read.php:138 controllers/collections/Read.php:199
 #: controllers/importations/Opml.php:78 controllers/importations/Pocket.php:102
 #: controllers/importations/Pocket.php:149
 #: controllers/importations/Pocket.php:241
 #: controllers/links/Collections.php:129 controllers/links/Read.php:45
-#: controllers/links/Read.php:93 controllers/links/Read.php:141
-#: controllers/links/Read.php:189 controllers/my/Avatar.php:43
+#: controllers/links/Read.php:94 controllers/links/Read.php:143
+#: controllers/links/Read.php:191 controllers/my/Avatar.php:43
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
@@ -595,46 +595,37 @@ msgstr "Profil"
 msgid "Account & data"
 msgstr "Compte & données"
 
-#: views/_layouts/connected.phtml:163
-#: views/_layouts/connected_blocked.phtml:122
-#: views/my/security/show_confirmed.phtml:3
-#: views/my/security/show_confirmed.phtml:12
-#: views/my/security/show_to_confirm.phtml:3
-#: views/my/security/show_to_confirm.phtml:12
-msgid "Login & security"
-msgstr "Identifiants & sécurité"
-
-#: views/_layouts/connected.phtml:175
-#: views/_layouts/connected_blocked.phtml:134 views/pages/addons.phtml:3
+#: views/_layouts/connected.phtml:165
+#: views/_layouts/connected_blocked.phtml:124 views/pages/addons.phtml:3
 #: views/pages/addons.phtml:11
 msgid "Add-ons"
 msgstr "Extensions"
 
-#: views/_layouts/connected.phtml:185
-#: views/_layouts/connected_blocked.phtml:144 views/support/show.phtml:3
+#: views/_layouts/connected.phtml:175
+#: views/_layouts/connected_blocked.phtml:134 views/support/show.phtml:3
 #: views/support/show.phtml:12
 msgid "Help & support"
 msgstr "Aide & support"
 
-#: views/_layouts/connected.phtml:194
-#: views/_layouts/connected_blocked.phtml:153
+#: views/_layouts/connected.phtml:184
+#: views/_layouts/connected_blocked.phtml:143
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:228 views/_layouts/connected.phtml:229
+#: views/_layouts/connected.phtml:218 views/_layouts/connected.phtml:219
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:237 views/links/searches/show.phtml:47
+#: views/_layouts/connected.phtml:227 views/links/searches/show.phtml:47
 #: views/links/searches/show.phtml:63
 msgid "Search"
 msgstr "Rechercher"
 
-#: views/_layouts/connected.phtml:274 views/_layouts/not_connected.phtml:188
+#: views/_layouts/connected.phtml:264 views/_layouts/not_connected.phtml:188
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_layouts/connected.phtml:275 views/_layouts/not_connected.phtml:189
+#: views/_layouts/connected.phtml:265 views/_layouts/not_connected.phtml:189
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -1832,6 +1823,10 @@ msgid "Download your data"
 msgstr "Télécharger vos données"
 
 #: views/my/account/show.phtml:80
+msgid "Manage your credentials"
+msgstr "Gérer vos identifiants"
+
+#: views/my/account/show.phtml:86
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 
@@ -1859,6 +1854,13 @@ msgstr "(public, max. %d caractères)"
 #: views/my/profile/edit.phtml:101
 msgid "Your language"
 msgstr "Votre langue"
+
+#: views/my/security/show_confirmed.phtml:3
+#: views/my/security/show_confirmed.phtml:12
+#: views/my/security/show_to_confirm.phtml:3
+#: views/my/security/show_to_confirm.phtml:12
+msgid "Login & security"
+msgstr "Identifiants & sécurité"
 
 #: views/my/security/show_confirmed.phtml:16
 msgid "You can change your login details here."

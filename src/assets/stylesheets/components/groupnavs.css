@@ -87,6 +87,10 @@
     background-image: url("../../icons/backup.svg");
 }
 
+.groupnav__item--credentials .groupnav__anchor {
+    background-image: url("../../icons/key.svg");
+}
+
 .groupnav__item--delete .groupnav__anchor {
     background-image: url("../../icons/trash.svg");
 }
