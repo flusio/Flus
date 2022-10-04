@@ -146,23 +146,4 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, 'User not an id doesn’t exist');
         $this->assertSame(1, models\FeatureFlag::count());
     }
-
-    public function testDisableFailsIfFeatureFlagIsNotEnabledForUser()
-    {
-        $email = $this->fake('email');
-        $user_id = $this->create('user', [
-            'email' => $email,
-        ]);
-
-        $this->assertSame(0, models\FeatureFlag::count());
-
-        $response = $this->appRun('cli', '/features/disable', [
-            'type' => 'beta',
-            'user_id' => $user_id,
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseEquals($response, "Feature flag beta isn’t enabled for user {$user_id}");
-        $this->assertSame(0, models\FeatureFlag::count());
-    }
 }

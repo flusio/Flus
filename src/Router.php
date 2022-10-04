@@ -81,6 +81,9 @@ class Router
         $router->addRoute('get', '/my/account/subscription', 'my/Subscription#redirect', 'subscription');
         $router->addRoute('post', '/my/account/subscription', 'my/Subscription#create', 'create subscription account');
 
+        $router->addRoute('get', '/my/preferences', 'my/Preferences#edit', 'preferences');
+        $router->addRoute('post', '/my/preferences', 'my/Preferences#update', 'update preferences');
+
         // Importations
         $router->addRoute('post', '/importations/:id/delete', 'Importations#delete', 'delete importation');
 

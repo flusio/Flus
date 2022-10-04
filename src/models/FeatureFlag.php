@@ -44,6 +44,37 @@ class FeatureFlag extends \Minz\Model
     }
 
     /**
+     * Enable a flag for a user.
+     *
+     * @param string $type
+     * @param string $user_id
+     */
+    public static function enable($type, $user_id)
+    {
+        self::findOrCreateBy([
+            'type' => $type,
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * Disable a flag for a user.
+     *
+     * @param string $type
+     * @param string $user_id
+     */
+    public static function disable($type, $user_id)
+    {
+        $feature_flag = self::findBy([
+            'type' => $type,
+            'user_id' => $user_id,
+        ]);
+        if ($feature_flag) {
+            self::delete($feature_flag->id);
+        }
+    }
+
+    /**
      * Return whether a flag is enabled for the given user
      *
      * @param string $type

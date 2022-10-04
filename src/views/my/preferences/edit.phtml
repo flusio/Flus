@@ -1,0 +1,72 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Preferences'),
+        'canonical' => url_full('preferences'),
+        'current_page' => 'preferences',
+        'has_errors' => $error || $errors,
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _('Preferences') ?></h1>
+    </div>
+
+    <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+
+    <form method="post" action="<?= url('update preferences') ?>">
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="from" value="<?= url('preferences') ?>" />
+
+        <div class="form-group <?= isset($errors['locale']) ? 'form-group--invalid' : '' ?>">
+            <label for="locale">
+                <?= icon('language') ?>
+                <?= _('Your language') ?>
+            </label>
+
+            <select id="locale" name="locale" aria-describedby="locale-desc">
+                <?php foreach ($available_locales as $locale_value => $locale_name): ?>
+                    <option
+                        value="<?= $locale_value ?>"
+                        <?= $locale_value === $locale ? 'selected' : '' ?>
+                    >
+                        <?= $locale_name ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <div id="locale-desc">
+                <?php if (isset($errors['locale'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['locale'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input
+                type="checkbox"
+                id="beta-enabled"
+                name="beta_enabled"
+                aria-describedby="beta-enabled-caption"
+                <?= $is_beta_enabled ? 'checked' : '' ?>
+            />
+
+            <label class="label--checkbox" for="beta-enabled">
+                <?= _('Enable beta features') ?>
+            </label>
+
+            <p class="form-group__caption" id="beta-enabled-caption">
+                <?= _('With beta features you test some features before everyone else, but you enter a turbulent zone.') ?>
+            </p>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Save changes') ?>
+            </button>
+        </div>
+    </form>
+</div>

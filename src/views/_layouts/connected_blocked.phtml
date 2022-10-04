@@ -104,6 +104,16 @@
 
                             <a
                                 class="popup__item popup__item--link"
+                                <?= $current_page === 'preferences' ? 'aria-current="page"' : '' ?>
+                                href="<?= url('preferences') ?>"
+                                role="menuitem"
+                            >
+                                <?= icon('color-palette') ?>
+                                <?= _('Preferences') ?>
+                            </a>
+
+                            <a
+                                class="popup__item popup__item--link"
                                 <?= $current_page === 'account' ? 'aria-current="page"' : '' ?>
                                 href="<?= url('account') ?>"
                                 role="menuitem"
