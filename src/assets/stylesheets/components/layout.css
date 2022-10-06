@@ -89,6 +89,8 @@
     text-overflow: ellipsis;
     vertical-align: top;
     white-space: nowrap;
+
+    outline-offset: calc(-1 * var(--width-border-bold));
 }
 
 @media (min-width: 800px) {

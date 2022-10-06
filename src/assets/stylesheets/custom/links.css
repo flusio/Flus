@@ -112,6 +112,8 @@
     height: 75px;
 
     flex-shrink: 0;
+
+    border-radius: var(--radius);
 }
 
 .link__image {
@@ -127,6 +129,8 @@
     .link:not(.link--compact) .link__image-container {
         width: 100%;
         height: 156px;
+
+        border-radius: 0;
     }
 
     .link:not(.link--compact) .link__image {
@@ -135,11 +139,8 @@
 }
 
 .link__content {
-    overflow: hidden;
-
+    min-width: 0;
     margin-left: var(--space-small);
-
-    flex-shrink: 1;
 }
 
 @media (min-width: 800px) {
