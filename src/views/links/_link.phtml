@@ -4,6 +4,10 @@
         $display_published_at = false;
     }
     $display_comments = $display_comments ?? false;
+    $display_external_comments = $display_external_comments ?? false;
+    if ($display_external_comments && !$link->url_replies) {
+        $display_external_comments = false;
+    }
     $display_hidden = $display_hidden ?? false;
     $display_edit = $display_edit ?? false;
     $display_repair = $display_repair ?? false;
@@ -190,6 +194,19 @@
                             <?= _('hidden') ?>
                         </span>
                     <?php endif; ?>
+                </p>
+            <?php endif; ?>
+
+            <?php if ($display_external_comments): ?>
+                <p class="link__text">
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="<?= protect($link->url_replies) ?>"
+                    >
+                        <?= icon('comment') ?>
+                        <?= _('Comments') ?>
+                    </a>
                 </p>
             <?php endif; ?>
         </div>

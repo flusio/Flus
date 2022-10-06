@@ -172,6 +172,12 @@ class FeedFetcher
                 }
                 $link->created_at = \Minz\Time::now();
                 $link->feed_entry_id = $feed_entry_id;
+                if (isset($entry->links['replies'])) {
+                    $url_replies = \SpiderBits\Url::sanitize($entry->links['replies']);
+                    if (models\Link::validateUrl($url_replies)) {
+                        $link->url_replies = $url_replies;
+                    }
+                }
 
                 $links_to_create[$link->id] = $link;
 

@@ -151,6 +151,7 @@ CREATE TABLE links (
     title TEXT NOT NULL,
     url TEXT NOT NULL,
     url_feeds JSON NOT NULL DEFAULT '[]',
+    url_replies TEXT NOT NULL DEFAULT '',
     reading_time INTEGER NOT NULL DEFAULT 0,
     image_filename TEXT,
 

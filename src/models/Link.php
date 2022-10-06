@@ -39,6 +39,10 @@ class Link extends \Minz\Model
             'required' => true,
         ],
 
+        'url_replies' => [
+            'type' => 'string',
+        ],
+
         'is_hidden' => [
             'type' => 'boolean',
             'required' => true,
@@ -130,6 +134,7 @@ class Link extends \Minz\Model
             'title' => $url,
             'url' => $url,
             'url_feeds' => '[]',
+            'url_replies' => '',
             'is_hidden' => filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN),
             'user_id' => $user_id,
             'reading_time' => 0,
@@ -154,6 +159,7 @@ class Link extends \Minz\Model
             'title' => $link->title,
             'url' => $link->url,
             'url_feeds' => $link->url_feeds,
+            'url_replies' => $link->url_replies,
             'image_filename' => $link->image_filename,
             'is_hidden' => false,
             'reading_time' => $link->reading_time,
