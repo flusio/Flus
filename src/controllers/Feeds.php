@@ -183,7 +183,7 @@ class Feeds
     public function whatIsNew()
     {
         $support_user = models\User::supportUser();
-        $feed_url = \Minz\Configuration::$application['what_is_new_feed'];
+        $feed_url = \Minz\Configuration::$application['feed_what_is_new'];
 
         $feed = models\Collection::findBy([
             'type' => 'feed',

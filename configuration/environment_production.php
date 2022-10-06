@@ -49,7 +49,7 @@ return [
         'media_path' => $dotenv->pop('APP_MEDIA_PATH', $app_path . '/public/media'),
         'demo' => filter_var($dotenv->pop('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN),
         'registrations_opened' => filter_var($dotenv->pop('APP_OPEN_REGISTRATIONS', true), FILTER_VALIDATE_BOOLEAN),
-        'what_is_new_feed' => $dotenv->pop(
+        'feed_what_is_new' => $dotenv->pop(
             'APP_FEED_WHAT_IS_NEW',
             'https://github.com/flusio/flusio/releases.atom'
         ),

@@ -39,7 +39,7 @@ return [
         'media_path' => $media_directory,
         'demo' => false,
         'registrations_opened' => true,
-        'what_is_new_feed' => $dotenv->pop(
+        'feed_what_is_new' => $dotenv->pop(
             'APP_FEED_WHAT_IS_NEW',
             'https://github.com/flusio/flusio/releases.atom'
         ),
