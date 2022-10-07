@@ -48,9 +48,6 @@
             <a
                 class="anchor--action"
                 href="javascript:(function(){var%20win=window.open('about:blank','_blank');win.opener=null;win.location='<?= url_full('new link') ?>?url='+encodeURIComponent(location.href);})();"
-                data-controller="confirmation"
-                data-action="confirmation#alert"
-                data-confirmation-message-value="<?= _('Clicking on this link does nothing: just drag and drop it to your browser bookmarks bar :)') ?>"
             >
                 <?= _f('Add to %s', $brand) ?>
             </a>

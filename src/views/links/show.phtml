@@ -130,9 +130,7 @@
                                         data-turbo-preserve-scroll
                                         method="post"
                                         action="<?= url('delete message', ['id' => $message->id]) ?>"
-                                        data-controller="confirmation"
-                                        data-action="confirmation#confirm"
-                                        data-confirmation-message-value="<?= _('Are you sure that you want to delete this message?') ?>"
+                                        data-turbo-confirm="<?= _('Are you sure that you want to delete this message?') ?>"
                                         role="menuitem"
                                     >
                                         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
