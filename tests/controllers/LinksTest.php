@@ -907,8 +907,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponseCode($response, 302, "/links/{$link_id}");
-        $this->assertFlash('error', 'A security verification failed.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'links/edit.phtml');
+        $this->assertResponseContains($response, 'A security verification failed');
         $link = models\Link::find($link_id);
         $this->assertSame($old_title, $link->title);
     }
@@ -929,10 +930,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponseCode($response, 302, "/links/{$link_id}");
-        $this->assertFlash('errors', [
-            'title' => 'The title is required.',
-        ]);
+        $this->assertResponseCode($response, 400);
+        $this->assertResponsePointer($response, 'links/edit.phtml');
+        $this->assertResponseContains($response, 'The title is required.');
         $link = models\Link::find($link_id);
         $this->assertSame($old_title, $link->title);
     }

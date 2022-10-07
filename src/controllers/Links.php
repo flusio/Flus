@@ -330,7 +330,7 @@ class Links
      *
      * @response 302 /login?redirect_to=/links/:id/edit if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
-     * @response 302 :from if csrf token or title are invalid
+     * @response 400 :from if csrf token or title are invalid
      * @response 302 :from
      */
     public function update($request)
@@ -354,16 +354,31 @@ class Links
         }
 
         if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
-            return Response::found($from);
+            return Response::badRequest('links/edit.phtml', [
+                'link' => $link,
+                'title' => $new_title,
+                'reading_time' => $new_reading_time,
+                'from' => $from,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
         }
+
+        $old_title = $link->title;
+        $old_reading_time = $link->reading_time;
 
         $link->title = trim($new_title);
         $link->reading_time = max(0, $new_reading_time);
         $errors = $link->validate();
         if ($errors) {
-            utils\Flash::set('errors', $errors);
-            return Response::found($from);
+            $link->title = $old_title;
+            $link->reading_time = $old_reading_time;
+            return Response::badRequest('links/edit.phtml', [
+                'link' => $link,
+                'title' => $new_title,
+                'reading_time' => $new_reading_time,
+                'from' => $from,
+                'errors' => $errors,
+            ]);
         }
 
         $link->save();
