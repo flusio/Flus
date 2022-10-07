@@ -23,6 +23,11 @@ export default class extends Controller {
     }
 
     connect () {
+        // Set the id of the content turbo-frame. It must not be set directly
+        // in the HTML, or Turbo will try to load its content when a form in
+        // the modal redirects to a new page (instead of showing the full HTML).
+        this.contentTarget.setAttribute('id', 'modal-content');
+
         this.element.addEventListener('open-modal', this.open.bind(this));
 
         // handle modal shortcuts

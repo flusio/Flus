@@ -89,18 +89,8 @@ class Repairing
             return Response::notFound('not_found.phtml');
         }
 
-        if ($request->isAccepting('text/vnd.turbo-stream.html')) {
-            // This allows to display the errors within the modal instead of
-            // sending a whole new page. This is a bit hacky so I'm going
-            // to use this method only where absolutely needed.
-            // @see https://github.com/hotwired/turbo/issues/138#issuecomment-847699281
-            $view_file = 'links/repairing/new.turbo_stream.phtml';
-        } else {
-            $view_file = 'links/repairing/new.phtml';
-        }
-
         if (!\Minz\CSRF::validate($csrf)) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('links/repairing/new.phtml', [
                 'link' => $link,
                 'url' => $url,
                 'url_cleared' => $url_cleared,
@@ -115,7 +105,7 @@ class Repairing
         $link->url = \SpiderBits\Url::sanitize($url);
         $errors = $link->validate();
         if ($errors) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('links/repairing/new.phtml', [
                 'link' => $link,
                 'url' => $url,
                 'url_cleared' => $url_cleared,

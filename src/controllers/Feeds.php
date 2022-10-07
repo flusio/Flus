@@ -99,18 +99,8 @@ class Feeds
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if ($request->isAccepting('text/vnd.turbo-stream.html')) {
-            // This allows to display the errors within the modal instead of
-            // sending a whole new page. This is a bit hacky so I'm going
-            // to use this method only where absolutely needed.
-            // @see https://github.com/hotwired/turbo/issues/138#issuecomment-847699281
-            $view_file = 'feeds/new.turbo_stream.phtml';
-        } else {
-            $view_file = 'feeds/new.phtml';
-        }
-
         if (!\Minz\CSRF::validate($csrf)) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('feeds/new.phtml', [
                 'url' => $url,
                 'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -127,7 +117,7 @@ class Feeds
 
         $errors = $default_link->validate();
         if ($errors) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('feeds/new.phtml', [
                 'url' => $url,
                 'from' => $from,
                 'errors' => $errors,
@@ -142,7 +132,7 @@ class Feeds
 
         $feed_urls = $default_link->feedUrls();
         if (count($feed_urls) === 0) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('feeds/new.phtml', [
                 'url' => $url,
                 'from' => $from,
                 'errors' => [

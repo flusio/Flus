@@ -274,7 +274,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/repairing/new.turbo_stream.phtml');
+        $this->assertResponsePointer($response, 'links/repairing/new.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $link = models\Link::find($link_id);
         $this->assertSame($old_url, $link->url);
@@ -298,7 +298,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/repairing/new.turbo_stream.phtml');
+        $this->assertResponsePointer($response, 'links/repairing/new.phtml');
         $this->assertResponseContains($response, 'Link scheme must be either http or https.');
         $link = models\Link::find($link_id);
         $this->assertSame($old_url, $link->url);

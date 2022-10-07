@@ -1,6 +1,7 @@
 <?php
-    if ($turbo_frame) {
-        $layout_name = 'turbo_frame.phtml';
+    $modal_enabled = $modal_enabled ?? false;
+    if ($modal_enabled && $modal_requested) {
+        $layout_name = 'modal.phtml';
     } elseif ($current_user && !$current_user->isBlocked()) {
         $layout_name = 'connected.phtml';
     } elseif ($current_user) {

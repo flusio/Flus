@@ -3,15 +3,106 @@
         'title' => _('Repairing a link'),
         'canonical' => url_full('repairing link', ['id' => $link->id]),
         'has_errors' => $error || $errors,
+        'modal_enabled' => true,
     ]);
 ?>
 
-<?= $this->include('links/repairing/_new.phtml', [
-    'link' => $link,
-    'url' => $this->safe('url'),
-    'url_cleared' => $this->safe('url_cleared'),
-    'force_sync' => $force_sync,
-    'from' => $this->safe('from'),
-    'errors' => $errors,
-    'error' => $this->safe('error'),
-]); ?>
+<div class="section">
+    <div class="section__title">
+        <h1 id="modal-title"><?= _('Repairing a link') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('You can change the <abbr>URL</abbr> of a link if it’s broken, or if you made a mistake in it.') ?>
+    </p>
+
+    <form data-turbo-preserve-scroll method="post" action="<?= url('repair link', ['id' => $link->id]) ?>">
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
+
+        <div
+            class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>"
+            data-controller="link-suggestion"
+            data-link-suggestion-url-value="<?= $this->safe('url_cleared') ?>"
+        >
+            <label for="url">
+                <?= _('What’s the address of the link?') ?>
+            </label>
+
+            <input
+                id="url"
+                name="url"
+                type="url"
+                placeholder="https://…"
+                required
+                value="<?= $url ?>"
+                autocomplete="off"
+                autofocus
+                aria-describedby="url-desc"
+                data-link-suggestion-target="input"
+            />
+
+            <div id="url-desc">
+                <?php if (isset($errors['url'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['url'] ?>
+                    </p>
+                <?php endif; ?>
+
+                <?php if ($url !== $url_cleared): ?>
+                    <p class="form-group__error" data-link-suggestion-target="message">
+                        <?php if ($url_cleared): ?>
+                            <?= _f('%s has detected trackers in this <abbr>URL</abbr>. Suggestion:', $brand) ?>
+                            <?= $url_cleared ?>
+
+                            <button
+                                type="button"
+                                class="button--small"
+                                data-action="link-suggestion#change"
+                            >
+                                <?= _('Ok') ?>
+                            </button>
+                        <?php else: ?>
+                            <?= _f('%s has detected that this <abbr>URL</abbr> tracks users. It is suggested to delete the link.', $brand) ?>
+                        <?php endif; ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="form-group" data-controller="caption-switcher">
+            <input
+                type="checkbox"
+                id="force-sync"
+                name="force_sync"
+                <?= $force_sync ? 'checked' : '' ?>
+                aria-describedby="force-sync-caption"
+                data-action="caption-switcher#switch"
+                data-caption-switcher-target="switch"
+            />
+
+            <label class="label--checkbox" for="force-sync">
+                <?= _('Force the synchronization') ?>
+            </label>
+
+            <p class="form-group__caption" id="force-sync-caption" aria-live="polite">
+                <span data-caption-switcher-target="caption" data-caption-value="on">
+                    <?= _('The title, reading time and illustration will be re-synchronized even if you’ve changed them.') ?>
+                </span>
+
+                <span data-caption-switcher-target="caption" data-caption-unchecked>
+                    <?= _('The title, reading time and illustration will be synchronize only if you’ve never changed them.') ?>
+                </span>
+            </p>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Repair the link') ?>
+            </button>
+        </div>
+    </form>
+</div>

@@ -74,16 +74,6 @@ class Shares
             ]);
         }
 
-        if ($request->isAccepting('text/vnd.turbo-stream.html')) {
-            // This allows to display the errors within the modal instead of
-            // sending a whole new page. This is a bit hacky so I'm going
-            // to use this method only where absolutely needed.
-            // @see https://github.com/hotwired/turbo/issues/138#issuecomment-847699281
-            $view_file = 'collections/shares/index.turbo_stream.phtml';
-        } else {
-            $view_file = 'collections/shares/index.phtml';
-        }
-
         $collection_id = $request->param('id');
         $user_id = $request->param('user_id');
         $type = $request->param('type');
@@ -99,7 +89,7 @@ class Shares
         }
 
         if (!\Minz\CSRF::validate($csrf)) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'type' => $type,
@@ -109,7 +99,7 @@ class Shares
         }
 
         if ($current_user->id === $user_id) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'type' => $type,
@@ -125,7 +115,7 @@ class Shares
             !models\User::exists($user_id) ||
             $support_user->id === $user_id
         ) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'type' => $type,
@@ -141,7 +131,7 @@ class Shares
             'user_id' => $user_id,
         ]);
         if ($existing_collection_share) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'type' => $type,
@@ -155,7 +145,7 @@ class Shares
         $collection_share = models\CollectionShare::init($user_id, $collection->id, $type);
         $errors = $collection_share->validate();
         if ($errors) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'type' => $type,
@@ -166,7 +156,7 @@ class Shares
 
         $collection_share->save();
 
-        return Response::ok($view_file, [
+        return Response::ok('collections/shares/index.phtml', [
             'collection' => $collection,
             'from' => $from,
             'type' => 'read',
@@ -198,16 +188,6 @@ class Shares
             ]);
         }
 
-        if ($request->isAccepting('text/vnd.turbo-stream.html')) {
-            // This allows to display the errors within the modal instead of
-            // sending a whole new page. This is a bit hacky so I'm going
-            // to use this method only where absolutely needed.
-            // @see https://github.com/hotwired/turbo/issues/138#issuecomment-847699281
-            $view_file = 'collections/shares/index.turbo_stream.phtml';
-        } else {
-            $view_file = 'collections/shares/index.phtml';
-        }
-
         $csrf = $request->param('csrf');
         $collection_share_id = $request->paramInteger('id');
         $collection_share = models\CollectionShare::find($collection_share_id);
@@ -222,7 +202,7 @@ class Shares
         }
 
         if (!\Minz\CSRF::validate($csrf)) {
-            return Response::badRequest($view_file, [
+            return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'type' => 'read',
@@ -233,7 +213,7 @@ class Shares
 
         models\CollectionShare::delete($collection_share->id);
 
-        return Response::ok($view_file, [
+        return Response::ok('collections/shares/index.phtml', [
             'collection' => $collection,
             'from' => $from,
             'type' => 'read',

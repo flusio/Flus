@@ -38,7 +38,6 @@ class Application
 
         \Minz\Output\View::$extensions_to_content_types['.atom.xml.php'] = 'application/xml';
         \Minz\Output\View::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
-        \Minz\Output\View::$extensions_to_content_types['.turbo_stream.phtml'] = 'text/vnd.turbo-stream.html';
         \Minz\Output\View::$extensions_to_content_types['.xsl.php'] = 'application/xslt+xml';
     }
 
@@ -133,7 +132,7 @@ class Application
             'autoload_modal_url' => $autoload_modal_url,
             'now' => \Minz\Time::now(),
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
-            'turbo_frame' => $request->header('HTTP_TURBO_FRAME'),
+            'modal_requested' => $request->header('HTTP_TURBO_FRAME') === 'modal-content',
             'demo' => $app_conf['demo'],
             'registrations_opened' => $app_conf['registrations_opened'],
         ]);

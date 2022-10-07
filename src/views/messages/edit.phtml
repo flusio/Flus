@@ -3,6 +3,7 @@
         'title' => _('Message edition'),
         'canonical' => url_full('edit message', ['id' => $message->id]),
         'has_errors' => $error || $errors,
+        'modal_enabled' => true,
     ]);
 ?>
 
