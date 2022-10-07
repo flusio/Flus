@@ -431,14 +431,4 @@ class Links
 
         return Response::found($redirect_to);
     }
-
-    /**
-     * Do nothing, it handles webextension requests on the removed fetch endpoint.
-     *
-     * @response 200
-     */
-    public function fetch()
-    {
-        return \Minz\Response::ok();
-    }
 }

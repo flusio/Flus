@@ -156,7 +156,6 @@ class Router
         $router->addRoute('get', '/links/:id/repair', 'links/Repairing#new', 'repairing link');
         $router->addRoute('post', '/links/:id/repair', 'links/Repairing#create', 'repair link');
         $router->addRoute('post', '/links/:id/delete', 'Links#delete', 'delete link');
-        $router->addRoute('post', '/links/:id/fetch', 'Links#fetch', 'fetch link');
         $router->addRoute('post', '/links/:id/read', 'links/Read#create', 'mark link as read');
         $router->addRoute('post', '/links/:id/read/later', 'links/Read#later', 'read link later');
         $router->addRoute('post', '/links/:id/read/never', 'links/Read#never', 'mark link to never read');
