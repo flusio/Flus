@@ -1,15 +1,46 @@
 # Changelog of flusio
 
-## 2022-xx-xx - unreleased
+## 2022-10-07 - v0.52
 
 ### Migration notes
 
 In development, commands `make start` and `make stop` have been renamed to
-`make docker-start` and `make docker-stop`. You’ll also have to rebuild the
+`make docker-start` and `make docker-clean`. You’ll also have to rebuild the
 bundler image with `make docker-build`.
 
 You can set the new `APP_FEED_WHAT_IS_NEW` environment variable to change the
 feed served by the “What’s new?” link (in “Help & support”).
+
+### New
+
+- Provide a compact mode for links ([6bfd55a6](https://github.com/flusio/flusio/commit/6bfd55a6))
+- Provide a “Preferences” page to change locale and enable beta features ([b13d4999](https://github.com/flusio/flusio/commit/b13d4999))
+- Provide a “What's new?” page ([14ffb40e](https://github.com/flusio/flusio/commit/14ffb40e))
+- Add anchors to external comments on links from feeds ([63343e06](https://github.com/flusio/flusio/commit/63343e06))
+
+### Improvements
+
+- Track “via” info on mark as read and read later ([7795570d](https://github.com/flusio/flusio/commit/7795570d))
+- Move “Login & security” in “Account & data” ([16590954](https://github.com/flusio/flusio/commit/16590954))
+- Add more purple to buttons in links footers ([c4dc24f5](https://github.com/flusio/flusio/commit/c4dc24f5))
+- Improve the look of buttons at the bottom of feeds cards ([6603ef9b](https://github.com/flusio/flusio/commit/6603ef9b))
+- Improve the look of the current item in pagination ([277f19a3](https://github.com/flusio/flusio/commit/277f19a3))
+- Export collections feeds with `direct=true` in OPMLs ([6160516a](https://github.com/flusio/flusio/commit/6160516a))
+
+### Bug fixes
+
+- Allow to click on the top of links images ([90fa04f5](https://github.com/flusio/flusio/commit/90fa04f5))
+- Fix various outlines style ([33fe6284](https://github.com/flusio/flusio/commit/33fe6284))
+- Try to fix a bug on links actions ([c9ecbd10](https://github.com/flusio/flusio/commit/c9ecbd10))
+
+### Misc
+
+- Support more DateTime formats in feeds parser ([9fc53d5d](https://github.com/flusio/flusio/commit/9fc53d5d))
+- (dev) Use ubuntu-22.04 on the CI ([bdb935b5](https://github.com/flusio/flusio/commit/bdb935b5))
+- (dev) Update svg-sprite to 2.0.0 ([09362b93](https://github.com/flusio/flusio/commit/09362b93))
+- (dev) Update Node and NPM in the Docker image ([8d473217](https://github.com/flusio/flusio/commit/8d473217))
+- (dev) Add a command to rebuild Docker images ([448ec722](https://github.com/flusio/flusio/commit/448ec722))
+- (dev) Prepend start and stop make targets with docker ([f86e1fe0](https://github.com/flusio/flusio/commit/f86e1fe0))
 
 ## 2022-09-23 - v0.51
 
