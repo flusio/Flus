@@ -251,44 +251,6 @@
             </main>
         </div>
 
-        <div
-            id="modal"
-            class="modal modal--opened"
-            role="dialog"
-            data-controller="modal"
-            data-action="click->modal#closeOnMask"
-            <?php if ($autoload_modal_url): ?>
-                data-modal-autoload-value="<?= $autoload_modal_url ?>"
-            <?php endif; ?>
-            aria-labelledby="modal-title"
-            aria-modal="true"
-            aria-hidden="true"
-            tabindex="-1"
-            data-turbo-cache="false"
-        >
-            <section
-                class="modal__box"
-                data-modal-target="box"
-                role="document"
-            >
-                <header class="modal__header">
-                    <button
-                        type="button"
-                        class="button--ghost button--smaller"
-                        data-action="modal#close"
-                        aria-label="<?= _('Close') ?>"
-                        title="<?= _('Close this window') ?>"
-                    >
-                        <?= icon('times') ?>
-                    </button>
-                </header>
-
-                <div data-modal-target="body" class="modal__body">
-                    <turbo-frame data-modal-target="content">
-                        <div class="spinner"></div>
-                    </turbo-frame>
-                </div>
-            </section>
-        </div>
+        <?= $this->include('_modal.phtml'); ?>
     </body>
 </html>
