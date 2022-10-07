@@ -123,11 +123,12 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
     public function testShowWithTokenSetsSubscriptionAccountId()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
         $account_id = $this->fake('uuid');
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
-        $subscription_api_url = "https://next.flus.io/api/account?email={$email}";
+        $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json

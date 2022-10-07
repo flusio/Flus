@@ -13,8 +13,6 @@ $media_directory = $temporary_directory . '/media';
 @mkdir($cache_directory, 0777, true);
 @mkdir($media_directory, 0777, true);
 
-$subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
-
 $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-test';
 $user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio)";
 
@@ -44,8 +42,8 @@ return [
             'https://github.com/flusio/flusio/releases.atom'
         ),
         'subscriptions_enabled' => false, // should be enable on a case-by-case basis
-        'subscriptions_host' => $subscriptions_host,
-        'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
+        'subscriptions_host' => 'https://flus.example.com',
+        'subscriptions_private_key' => 'some key',
         'feeds_links_keep_period' => 0,
         'feeds_links_keep_minimum' => 0,
         'feeds_links_keep_maximum' => 0,

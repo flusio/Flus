@@ -58,11 +58,12 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncUpdatesExpiredAt()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         $account_id = $this->fake('uuid');
         $old_expired_at = $this->fake('dateTime');
         $new_expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json
@@ -85,11 +86,12 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncGetsAccountIdIfMissing()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         $email = $this->fake('email');
         $account_id = $this->fake('uuid');
         $expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/account?email={$email}";
+        $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json
@@ -116,10 +118,11 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncHandlesIfAccountIdFailsBeingGet()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         $email = $this->fake('email');
         $expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/account?email={$email}";
+        $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 400
             Content-type: application/json
@@ -142,10 +145,11 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncIgnoresInvalidExpiredAt()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         $account_id = $this->fake('uuid');
         $old_expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json
@@ -168,6 +172,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncIgnoresUnexpectedAccountIds()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         $account_id_1 = $this->fake('uuid');
         // this account id is unknown to our system but returned by the API, it
@@ -175,7 +180,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $account_id_2 = $this->fake('uuid');
         $old_expired_at = $this->fake('dateTime');
         $new_expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json
@@ -199,11 +204,12 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncDoesNotGetAccountIdIfNotValidated()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         $email = $this->fake('email');
         $account_id = $this->fake('uuid');
         $expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/account?email={$email}";
+        $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json
@@ -230,11 +236,12 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncDoesNothingIfHttpIsInError()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         $account_id = $this->fake('uuid');
         $old_expired_at = $this->fake('dateTime');
         $new_expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 500
             Content-type: application/json
@@ -259,11 +266,12 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
     {
         $subscriptions_sync_job = new SubscriptionsSync();
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         $account_id = $this->fake('uuid');
         $old_expired_at = $this->fake('dateTime');
         $new_expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/accounts/sync";
+        $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json

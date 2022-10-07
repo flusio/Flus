@@ -188,10 +188,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     public function testValidateSetsSubscriptionAccountId()
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $email = $this->fake('email');
         $account_id = $this->fake('uuid');
         $expired_at = $this->fake('dateTime');
-        $url = "https://next.flus.io/api/account?email={$email}";
+        $url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($url, <<<TEXT
             HTTP/2 200
             Content-type: application/json

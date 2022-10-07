@@ -34,10 +34,11 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateSetsSubscriptionProperties()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $email = $this->fake('email');
         $account_id = $this->fake('uuid');
         $expired_at = $this->fake('dateTime');
-        $subscription_api_url = "https://next.flus.io/api/account?email={$email}";
+        $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json
@@ -211,9 +212,10 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testRedirectRedirectsToLoginUrl()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $account_id = $this->fake('uuid');
         $redirection_url = $this->fake('url');
-        $subscription_api_url = "https://next.flus.io/api/account/login-url?account_id={$account_id}&service=flusio";
+        $subscription_api_url = "{$subscriptions_host}/api/account/login-url?account_id={$account_id}&service=flusio";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json

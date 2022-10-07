@@ -125,10 +125,11 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testShowSyncsExpiredAtIfOverdue()
     {
+        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $old_expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
         $new_expired_at = $this->fake('dateTime');
         $account_id = $this->fake('uuid');
-        $subscription_api_url = "https://next.flus.io/api/account/expired-at?account_id={$account_id}";
+        $subscription_api_url = "{$subscriptions_host}/api/account/expired-at?account_id={$account_id}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json
