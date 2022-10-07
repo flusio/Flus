@@ -182,7 +182,31 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_id_1, $db_links[1]['id']);
     }
 
-    public function testCountByUserId()
+    public function testSearchComputedByUserIdCanExcludeLinksOnlyInNeverCollection()
+    {
+        $dao = new dao\Link();
+        $title = $this->fake('sentence', 10, false);
+        $query = $title;
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $never_list = $user->neverList();
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'title' => $title,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $never_list->id,
+            'link_id' => $link_id,
+        ]);
+
+        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, [], [
+            'exclude_never_only' => true,
+        ]);
+
+        $this->assertSame(0, count($db_links));
+    }
+
+    public function testCountByQueryAndUserId()
     {
         $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
@@ -196,5 +220,29 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $count = $dao->countByQueryAndUserId($query, $user_id);
 
         $this->assertSame(1, $count);
+    }
+
+    public function testCountByQueryAndUserIdCanExcludeLinksOnlyInNeverCollection()
+    {
+        $dao = new dao\Link();
+        $title = $this->fake('sentence', 10, false);
+        $query = $title;
+        $user_id = $this->create('user');
+        $user = models\User::find($user_id);
+        $never_list = $user->neverList();
+        $link_id = $this->create('link', [
+            'user_id' => $user_id,
+            'title' => $title,
+        ]);
+        $this->create('link_to_collection', [
+            'collection_id' => $never_list->id,
+            'link_id' => $link_id,
+        ]);
+
+        $count = $dao->countByQueryAndUserId($query, $user_id, [
+            'exclude_never_only' => true,
+        ]);
+
+        $this->assertSame(0, $count);
     }
 }

@@ -39,7 +39,14 @@ class Links
         $pagination_page = $request->paramInteger('page', 1);
 
         if ($query) {
-            $number_links = models\Link::daoCall('countByQueryAndUserId', $query, $user->id);
+            $number_links = models\Link::daoCall(
+                'countByQueryAndUserId',
+                $query,
+                $user->id,
+                [
+                    'exclude_never_only' => true,
+                ]
+            );
             $number_per_page = 30;
             $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
             if ($pagination_page !== $pagination->currentPage()) {
@@ -55,9 +62,9 @@ class Links
                 $user->id,
                 ['published_at', 'number_comments'],
                 [
+                    'exclude_never_only' => true,
                     'offset' => $pagination->currentOffset(),
                     'limit' => $pagination->numberPerPage(),
-                    'context_user_id' => $user->id,
                 ]
             );
 
