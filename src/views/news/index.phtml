@@ -89,12 +89,12 @@
             </details>
         </div>
     <?php else: ?>
+        <p class="section__intro">
+            <?= _('Fill the news with…') ?>
+        </p>
+
         <?php if ($no_news): ?>
             <?= $this->include('alerts/_info.phtml', ['message' => no_news_sentence()]) ?>
-        <?php else: ?>
-            <p class="section__intro">
-                <?= _('Fill the news with…') ?>
-            </p>
         <?php endif; ?>
 
         <form method="post" action="<?= url('fill news') ?>">
