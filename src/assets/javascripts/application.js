@@ -55,13 +55,13 @@ document.addEventListener('turbo:load', adaptLayoutContentBorderRadius);
 // scroll position at the current position.
 let disableScroll = false;
 
-addEventListener('turbo:submit-start', (event) => {
-    if (event.target.hasAttribute('data-turbo-preserve-scroll')) {
+document.addEventListener('turbo:submit-start', (event) => {
+    if (event.detail.formSubmission.formElement.hasAttribute('data-turbo-preserve-scroll')) {
         disableScroll = true;
     }
 });
 
-addEventListener('turbo:before-render', (event) => {
+document.addEventListener('turbo:before-render', (event) => {
     if (disableScroll) {
         // As explained on GitHub, `Turbo.navigator.currentVisit.scrolled`
         // is internal and private attribute: we should NOT access it.
