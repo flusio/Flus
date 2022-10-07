@@ -72,8 +72,8 @@
                     'display_edit' => $is_current_user_profile,
                     'display_repair' => $is_current_user_profile,
                     'display_delete' => $is_current_user_profile,
-                    'display_read_later' => 'auto',
-                    'display_mark_as_read' => 'auto',
+                    'display_read_later' => $current_user ? 'auto' : false,
+                    'display_mark_as_read' => $current_user ? 'auto' : false,
                 ]) ?>
             <?php endforeach; ?>
         </div>

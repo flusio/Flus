@@ -224,8 +224,8 @@
                     'display_comments' => $collection->type !== 'feed',
                     'display_external_comments' => $collection->type === 'feed',
                     'display_hidden' => $collection->is_public && $link->is_hidden,
-                    'display_read_later' => 'auto',
-                    'display_mark_as_read' => 'auto',
+                    'display_read_later' => $current_user ? 'auto' : false,
+                    'display_mark_as_read' => $current_user ? 'auto' : false,
                 ]); ?>
             <?php endforeach; ?>
         </div>
