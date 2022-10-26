@@ -106,6 +106,29 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_id_not_owned);
     }
 
+    public function testIndexRendersCorrectLinkIfDuplicated()
+    {
+        $user = $this->login();
+        $url = $this->fake('url');
+        $link_id_1 = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $link_id_2 = $this->create('link', [
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+
+        $response = $this->appRun('get', "/links/{$link_id_2}/collections", [
+            'from' => \Minz\Url::for('bookmarks'),
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'links/collections/index.phtml');
+        $this->assertResponseContains($response, $link_id_2);
+        $this->assertResponseNotContains($response, $link_id_1);
+    }
+
     public function testIndexRendersIfUrlAddedByAnotherUserInCollectionOwned()
     {
         $user = $this->login();
