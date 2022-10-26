@@ -26,7 +26,7 @@ export default class extends Controller {
         this.selectTarget.innerHTML = '';
 
         const newOption = document.createElement('option');
-        newOption.text = _('Select a collection');
+        newOption.text = _('Open the list');
         newOption.disabled = true;
         newOption.selected = true;
         this.selectTarget.add(newOption);
@@ -73,9 +73,9 @@ export default class extends Controller {
 
         // hide the select input if all collections have been selected
         if (this.selectTarget.options.length === 1) {
-            this.selectTarget.style.display = 'none';
+            this.selectTarget.parentElement.hidden = true;
         } else {
-            this.selectTarget.style.display = 'block';
+            this.selectTarget.parentElement.hidden = false;
         }
 
         // make the select required if no options have been selected and data

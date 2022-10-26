@@ -51,11 +51,17 @@
         <?php endif; ?>
     </select>
 
-    <ul class="collections-selector__list" data-collections-selector-target="list"></ul>
+    <div class="form-group">
+        <label for="collections-selector-select">
+            <?= _('Select a collection') ?>
+        </label>
 
-    <select
-        data-collections-selector-target="select"
-        data-action="collections-selector#attach"
-        aria-label="<?= _('Select a collection') ?>"
-    ></select>
+        <select
+            id="collections-selector-select"
+            data-collections-selector-target="select"
+            data-action="collections-selector#attach"
+        ></select>
+    </div>
+
+    <ul class="collections-selector__list" data-collections-selector-target="list"></ul>
 </div>
