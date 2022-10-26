@@ -23,6 +23,10 @@
     border-radius: var(--radius);
 }
 
+.collections-selector__item > * + * {
+    margin-left: var(--space-small);
+}
+
 .collections-selector__item-label {
     flex-grow: 1;
 }

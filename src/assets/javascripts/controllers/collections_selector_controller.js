@@ -38,6 +38,9 @@ export default class extends Controller {
                 const newOption = document.createElement('option');
                 newOption.value = option.value;
                 newOption.text = option.text;
+                if ('public' in option.dataset) {
+                    newOption.text += _(' (public)');
+                }
                 this.selectTarget.add(newOption);
             }
         }
@@ -55,6 +58,9 @@ export default class extends Controller {
                     const newOption = document.createElement('option');
                     newOption.value = option.value;
                     newOption.text = option.text;
+                    if ('public' in option.dataset) {
+                        newOption.text += _(' (public)');
+                    }
                     newOptGroup.append(newOption);
                     groupIsEmpty = false;
                 }
@@ -112,11 +118,18 @@ export default class extends Controller {
     }
 
     _item (option) {
+        let publicNode = '';
+        if ('public' in option.dataset) {
+            publicNode = `<span class="sticker">${_('public')}</span>`;
+        }
+
         return `
             <li class="collections-selector__item">
                 <span class="collections-selector__item-label">
                     ${option.text}
                 </span>
+
+                ${publicNode}
 
                 <button
                     class="collections-selector__unselect button--smaller button--ghost"

@@ -9,7 +9,11 @@
     >
         <?php $collections = $groups_to_collections[null] ?? []; ?>
         <?php foreach ($collections as $collection): ?>
-            <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
+            <option
+                value="<?= $collection->id ?>"
+                <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
+                <?= $collection->is_public ? 'data-public' : '' ?>
+            >
                 <?= protect($collection->name()) ?>
             </option>
         <?php endforeach; ?>
@@ -19,7 +23,11 @@
                 <optgroup label="<?= protect($group->name) ?>">
                     <?php $collections = $groups_to_collections[$group->id]; ?>
                     <?php foreach ($collections as $collection): ?>
-                        <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
+                        <option
+                            value="<?= $collection->id ?>"
+                            <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
+                            <?= $collection->is_public ? 'data-public' : '' ?>
+                        >
                             <?= protect($collection->name()) ?>
                         </option>
                     <?php endforeach; ?>
@@ -30,8 +38,13 @@
         <?php if ($shared_collections): ?>
             <optgroup label="<?= _('Shared with me') ?>">
                 <?php foreach ($shared_collections as $collection): ?>
-                    <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
-                        <?= _f('%s (by %s)', protect($collection->name()),protect($collection->owner()->username)) ?>
+                    <option
+                        value="<?= $collection->id ?>"
+                        <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
+                        <?= $collection->is_public ? 'data-public' : '' ?>
+                    >
+                        <?= protect($collection->name()) ?>
+                        <?= _f('(by %s)', protect($collection->owner()->username)) ?>
                     </option>
                 <?php endforeach; ?>
             </optgroup>
