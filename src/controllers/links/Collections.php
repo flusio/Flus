@@ -62,8 +62,13 @@ class Collections
             $collection_ids = [];
         }
 
+        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        utils\Sorter::localeSort($groups, 'name');
+
         $collections = $user->collections();
         utils\Sorter::localeSort($collections, 'name');
+        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
+
         $shared_collections = $user->sharedCollections([], [
             'access_type' => 'write',
         ]);
@@ -78,7 +83,8 @@ class Collections
         return Response::ok('links/collections/index.phtml', [
             'link' => $link,
             'collection_ids' => $collection_ids,
-            'collections' => $collections,
+            'groups' => $groups,
+            'groups_to_collections' => $groups_to_collections,
             'shared_collections' => $shared_collections,
             'collections_by_others' => $collections_by_others,
             'mark_as_read' => $mark_as_read,

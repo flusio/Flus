@@ -22,21 +22,48 @@ export default class extends Controller {
     }
 
     refreshSelect () {
-        // remove all the options except the first one ('Attach a collection')
-        while (this.selectTarget.options.length > 1) {
-            this.selectTarget.remove(1);
-        }
+        // Reset the options and optgroups of the select
+        this.selectTarget.innerHTML = '';
 
-        // readd options that have not been selected yet
-        for (const option of this.dataTarget.options) {
+        const newOption = document.createElement('option');
+        newOption.text = _('Select a collection');
+        newOption.disabled = true;
+        newOption.selected = true;
+        this.selectTarget.add(newOption);
+
+        // read options that have not been selected yet
+        const optionsNoGroup = this.dataTarget.querySelectorAll('select > option');
+        for (const option of optionsNoGroup) {
             if (!option.selected) {
-                const newOption = new Option(option.text, option.value);
+                const newOption = document.createElement('option');
+                newOption.value = option.value;
+                newOption.text = option.text;
                 this.selectTarget.add(newOption);
             }
         }
 
-        // force the selection of the first option
-        this.selectTarget.options[0].selected = true;
+        // same with the options in optgroups
+        const groups = this.dataTarget.querySelectorAll('select > optgroup');
+        for (const group of groups) {
+            const newOptGroup = document.createElement('optgroup');
+            newOptGroup.label = group.label;
+
+            let groupIsEmpty = true;
+            const groupOptions = group.querySelectorAll('optgroup > option');
+            for (const option of groupOptions) {
+                if (!option.selected) {
+                    const newOption = document.createElement('option');
+                    newOption.value = option.value;
+                    newOption.text = option.text;
+                    newOptGroup.append(newOption);
+                    groupIsEmpty = false;
+                }
+            }
+
+            if (!groupIsEmpty) {
+                this.selectTarget.add(newOptGroup);
+            }
+        }
 
         // hide the select input if all collections have been selected
         if (this.selectTarget.options.length === 1) {

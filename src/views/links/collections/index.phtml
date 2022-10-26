@@ -41,7 +41,8 @@
             <?php endif; ?>
 
             <?= $this->include('collections/_selector.phtml', [
-                'collections' => $collections,
+                'groups' => $groups,
+                'groups_to_collections' => $groups_to_collections,
                 'shared_collections' => $shared_collections,
                 'collection_ids' => $collection_ids,
             ]) ?>

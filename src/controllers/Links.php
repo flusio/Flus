@@ -156,9 +156,15 @@ class Links
         }
 
         $bookmarks = $user->bookmarks();
+
+        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        utils\Sorter::localeSort($groups, 'name');
+
         $collections = $user->collections();
         utils\Sorter::localeSort($collections, 'name');
         $collections = array_merge([$bookmarks], $collections);
+        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
+
         $shared_collections = $user->sharedCollections([], [
             'access_type' => 'write',
         ]);
@@ -175,7 +181,8 @@ class Links
             'url' => $default_url,
             'is_hidden' => false,
             'collection_ids' => $default_collection_ids,
-            'collections' => $collections,
+            'groups' => $groups,
+            'groups_to_collections' => $groups_to_collections,
             'shared_collections' => $shared_collections,
             'from' => $from,
         ]);
@@ -210,9 +217,15 @@ class Links
         }
 
         $bookmarks = $user->bookmarks();
+
+        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        utils\Sorter::localeSort($groups, 'name');
+
         $collections = $user->collections();
         utils\Sorter::localeSort($collections, 'name');
         $collections = array_merge([$bookmarks], $collections);
+        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
+
         $shared_collections = $user->sharedCollections([], [
             'access_type' => 'write',
         ]);
@@ -223,7 +236,8 @@ class Links
                 'url' => $url,
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
-                'collections' => $collections,
+                'groups' => $groups,
+                'groups_to_collections' => $groups_to_collections,
                 'shared_collections' => $shared_collections,
                 'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -237,7 +251,8 @@ class Links
                 'url' => $url,
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
-                'collections' => $collections,
+                'groups' => $groups,
+                'groups_to_collections' => $groups_to_collections,
                 'shared_collections' => $shared_collections,
                 'from' => $from,
                 'errors' => $errors,
@@ -249,7 +264,8 @@ class Links
                 'url' => $url,
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
-                'collections' => $collections,
+                'groups' => $groups,
+                'groups_to_collections' => $groups_to_collections,
                 'shared_collections' => $shared_collections,
                 'from' => $from,
                 'errors' => [
@@ -263,7 +279,8 @@ class Links
                 'url' => $url,
                 'is_hidden' => $is_hidden,
                 'collection_ids' => $collection_ids,
-                'collections' => $collections,
+                'groups' => $groups,
+                'groups_to_collections' => $groups_to_collections,
                 'shared_collections' => $shared_collections,
                 'from' => $from,
                 'errors' => [

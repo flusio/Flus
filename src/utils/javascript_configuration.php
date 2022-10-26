@@ -4,6 +4,7 @@ $translations = [
     'Back',
     'Copied',
     'Hide',
+    'Select a collection',
     'Show',
     'Unselect',
     'Unselect this collection',
