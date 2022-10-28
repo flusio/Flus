@@ -1,5 +1,35 @@
 # Changelog of flusio
 
+## 2022-10-28 - v0.53
+
+### Improvements
+
+- Improve the selector of collections ([02b12c70](https://github.com/flusio/flusio/commit/02b12c70))
+- Improve outline of header links ([f0cd2db3](https://github.com/flusio/flusio/commit/f0cd2db3))
+- Improve error message when email is invalid during login ([ef4a9bca](https://github.com/flusio/flusio/commit/ef4a9bca))
+- Improve compatibility with passwords managers ([54f4c013](https://github.com/flusio/flusio/commit/54f4c013))
+- Rename label of read links card ([9130e6c7](https://github.com/flusio/flusio/commit/9130e6c7))
+- Remove user menu and alerts from Turbo cache ([9f2534ca](https://github.com/flusio/flusio/commit/9f2534ca))
+
+### Bug fixes
+
+- Display the correct link when URL is duplicated ([16a41d51](https://github.com/flusio/flusio/commit/16a41d51))
+- Exclude links only in the never list from the search ([b80eb736](https://github.com/flusio/flusio/commit/b80eb736))
+- Render links update errors in the edit form ([649c0f36](https://github.com/flusio/flusio/commit/649c0f36))
+- Show the collection delete button only if it's owned ([06875bf4](https://github.com/flusio/flusio/commit/06875bf4))
+- Don’t warn about tracking when repairing form has errors ([5773763b](https://github.com/flusio/flusio/commit/5773763b))
+- Hide links actions to unconnected users ([75c1b059](https://github.com/flusio/flusio/commit/75c1b059))
+
+### Misc
+
+- Change how modals are rendered ([fcabfbe7](https://github.com/flusio/flusio/commit/fcabfbe7))
+- Update dependencies:
+    - Update Minz lib ([5a1a09bd](https://github.com/flusio/flusio/commit/5a1a09bd))
+    - Update Turbo to 7.2.4 ([e3eaf68a](https://github.com/flusio/flusio/commit/e3eaf68a))
+    - Update Stimulus to 3.1.0 ([be301915](https://github.com/flusio/flusio/commit/be301915))
+    - Update parcel to 2.7.0 ([81283df7](https://github.com/flusio/flusio/commit/81283df7))
+    - Update with audit fix ([cb516879](https://github.com/flusio/flusio/commit/cb516879))
+
 ## 2022-10-07 - v0.52
 
 ### Migration notes
