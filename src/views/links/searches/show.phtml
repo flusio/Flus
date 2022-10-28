@@ -92,7 +92,7 @@
 
             <?php foreach ($feeds as $feed): ?>
                 <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $feed->image_filename, 'collection-card.svg') ?>');">
-                    <a class="card__body card__body--large" href="<?= url('collection', ['id' => $feed->id]) ?>">
+                    <a class="card__body card__body--larger" href="<?= url('collection', ['id' => $feed->id]) ?>">
                         <div class="card__title card__title-ellipsis">
                             <?= protect($feed->name) ?>
                         </div>

@@ -164,10 +164,12 @@
     padding: var(--space-small);
 
     flex-grow: 1;
+
+    background-color: var(--color-white);
 }
 
 .card--illustrated .card__body {
-    padding-top: calc(70px + var(--space-small));
+    padding-top: calc(25px + var(--space-small));
 
     color: var(--color-white);
     text-decoration: none;
@@ -181,20 +183,29 @@
     background-image:
         linear-gradient(
             to bottom,
-            transparent 30px,
-            rgba(0, 0, 0, 0.4) 70px,
-            rgba(0, 0, 0, 0.6) 90px,
+            transparent 0,
+            rgba(0, 0, 0, 0.4) 25px,
+            rgba(0, 0, 0, 0.6) 45px,
             rgba(0, 0, 0, 0.8)
         );
 
     transition: background-color 0.3s ease-in-out;
 }
 
-.card--illustrated-alt .card__body {
-    background-image: none;
+.card--illustrated .card__body--large {
+    padding-top: calc(70px + var(--space-small));
+
+    background-image:
+        linear-gradient(
+            to bottom,
+            transparent 30px,
+            rgba(0, 0, 0, 0.4) 70px,
+            rgba(0, 0, 0, 0.6) 90px,
+            rgba(0, 0, 0, 0.8)
+        );
 }
 
-.card--illustrated .card__body--large {
+.card--illustrated .card__body--larger {
     padding-top: calc(156px + var(--space-small));
 
     background-image:
@@ -207,15 +218,19 @@
         );
 }
 
-.card--illustrated .card__body:hover,
-.card--illustrated .card__body:focus {
+.card--illustrated-alt .card__body {
+    background-image: none;
+}
+
+.card--illustrated a.card__body:hover,
+.card--illustrated a.card__body:focus {
     color: var(--color-white);
 
     background-color: transparent;
 }
 
-.card--illustrated-alt .card__body:hover,
-.card--illustrated-alt .card__body:focus {
+.card--illustrated-alt a.card__body:hover,
+.card--illustrated-alt a.card__body:focus {
     background-color: rgba(0, 0, 0, 0.3);
 }
 

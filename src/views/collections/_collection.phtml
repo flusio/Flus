@@ -5,7 +5,7 @@
 ?>
 
 <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>');">
-    <a class="card__body" href="<?= url('collection', ['id' => $collection->id]) ?>">
+    <a class="card__body card__body--large" href="<?= url('collection', ['id' => $collection->id]) ?>">
         <div class="card__title card__title-ellipsis">
             <?= protect($collection->name) ?>
         </div>

@@ -26,7 +26,7 @@
         <div class="cards cards--centered">
             <?php foreach ($topics as $topic): ?>
                 <div class="card card--illustrated" style="background-image: url('<?= url_media('cards', $topic->image_filename) ?>');">
-                    <a class="card__body" href="<?= url('topic', ['id' => $topic->id]) ?>">
+                    <a class="card__body card__body--large" href="<?= url('topic', ['id' => $topic->id]) ?>">
                         <h2 class="card__title card__title-ellipsis">
                             <?= protect($topic->label) ?>
                         </h2>

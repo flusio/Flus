@@ -1,11 +1,16 @@
 import { Controller } from '@hotwired/stimulus';
 
 import _ from 'js/l10n.js';
-import icon from 'js/icon.js';
 
 export default class extends Controller {
     static get targets () {
-        return ['data', 'list', 'select'];
+        return [
+            'dataCollections',
+            'selectGroup',
+            'collectionCards',
+            'select',
+            'collectionTemplate',
+        ];
     }
 
     connect () {
@@ -14,11 +19,16 @@ export default class extends Controller {
     }
 
     refreshList () {
-        let html = '';
-        for (const option of this.dataTarget.selectedOptions) {
-            html += this._item(option);
+        this.collectionCardsTarget.innerHTML = '';
+        for (const option of this.dataCollectionsTarget.selectedOptions) {
+            this.collectionCardsTarget.appendChild(
+                this.collectionNode(option.value, {
+                    name: option.text,
+                    imageFilename: option.dataset.illustration,
+                    isPublic: 'public' in option.dataset,
+                }, false)
+            );
         }
-        this.listTarget.innerHTML = html;
     }
 
     refreshSelect () {
@@ -32,7 +42,7 @@ export default class extends Controller {
         this.selectTarget.add(newOption);
 
         // read options that have not been selected yet
-        const optionsNoGroup = this.dataTarget.querySelectorAll('select > option');
+        const optionsNoGroup = this.dataCollectionsTarget.querySelectorAll('select > option');
         for (const option of optionsNoGroup) {
             if (!option.selected) {
                 const newOption = document.createElement('option');
@@ -46,7 +56,7 @@ export default class extends Controller {
         }
 
         // same with the options in optgroups
-        const groups = this.dataTarget.querySelectorAll('select > optgroup');
+        const groups = this.dataCollectionsTarget.querySelectorAll('select > optgroup');
         for (const group of groups) {
             const newOptGroup = document.createElement('optgroup');
             newOptGroup.label = group.label;
@@ -80,8 +90,8 @@ export default class extends Controller {
 
         // make the select required if no options have been selected and data
         // target have been marked as required.
-        if (this.dataTarget.selectedOptions.length === 0) {
-            this.selectTarget.required = this.dataTarget.required;
+        if (this.dataCollectionsTarget.selectedOptions.length === 0) {
+            this.selectTarget.required = this.dataCollectionsTarget.required;
         } else {
             this.selectTarget.required = false;
         }
@@ -91,7 +101,7 @@ export default class extends Controller {
         event.preventDefault();
 
         const value = event.target.value;
-        for (const option of this.dataTarget.options) {
+        for (const option of this.dataCollectionsTarget.options) {
             if (option.value === value) {
                 option.selected = true;
                 this.refreshList();
@@ -106,7 +116,7 @@ export default class extends Controller {
         event.preventDefault();
 
         const value = event.currentTarget.getAttribute('data-value');
-        for (const option of this.dataTarget.selectedOptions) {
+        for (const option of this.dataCollectionsTarget.selectedOptions) {
             if (option.value === value) {
                 option.selected = false;
                 this.refreshList();
@@ -117,31 +127,22 @@ export default class extends Controller {
         }
     }
 
-    _item (option) {
-        let publicNode = '';
-        if ('public' in option.dataset) {
-            publicNode = `<span class="sticker">${_('public')}</span>`;
+    collectionNode (value, collection, isNew) {
+        const item = this.collectionTemplateTarget.content.firstElementChild.cloneNode(true);
+
+        item.querySelector('[data-target="name"]').textContent = collection.name;
+
+        if (collection.imageFilename) {
+            item.style.backgroundImage = `url('${collection.imageFilename}')`;
         }
 
-        return `
-            <li class="collections-selector__item">
-                <span class="collections-selector__item-label">
-                    ${option.text}
-                </span>
+        if (!collection.isPublic) {
+            item.querySelector('[data-target="isPublic"]').remove();
+        }
 
-                ${publicNode}
+        const unselectButton = item.querySelector('[data-target="unselect"]');
+        unselectButton.setAttribute('data-value', value);
 
-                <button
-                    class="collections-selector__unselect button--smaller button--ghost"
-                    type="button"
-                    data-action="collections-selector#detach"
-                    data-value="${option.value}"
-                    title="${_('Unselect this collection')}"
-                    aria-label="${_('Unselect')}"
-                >
-                    ${icon('times')}
-                </button>
-            </li>
-        `;
+        return item;
     }
 };

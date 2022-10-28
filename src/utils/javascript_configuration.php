@@ -5,11 +5,8 @@ $translations = [
     'Copied',
     'Hide',
     'Open the list',
-    'public',
     ' (public)',
     'Show',
-    'Unselect',
-    'Unselect this collection',
 ];
 
 $l10n = [];
