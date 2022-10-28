@@ -76,6 +76,7 @@
 
     --color-border: var(--color-grey-6);
     --color-border-active: var(--color-turquoise-5);
+    --color-border-disabled: var(--color-grey-3);
     --color-border-error: var(--color-red-5);
     --color-border-info: var(--color-purple-5);
     --color-border-success: var(--color-turquoise-6);

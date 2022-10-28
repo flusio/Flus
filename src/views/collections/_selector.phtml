@@ -54,6 +54,15 @@
             <?php endif; ?>
         </select>
 
+        <div data-collections-selector-target="dataNewCollections">
+            <?php foreach ($new_collection_names as $name): ?>
+                <input
+                    type="hidden"
+                    name="new_collection_names[]"
+                    value="<?= protect($name) ?>"
+                />
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <div class="form-group" data-collections-selector-target="selectGroup">
@@ -67,6 +76,47 @@
                 data-collections-selector-target="select"
                 data-action="collections-selector#attach"
             ></select>
+
+            <button type="button" data-action="collections-selector#showInput">
+                <?= icon('plus') ?>
+                <span class="no-mobile">
+                    <?= _('New') ?>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="form-group" data-collections-selector-target="inputGroup" hidden>
+        <label for="new-name">
+            <?= _('What do you want to name the collection?') ?>
+            <span class="label__help">
+                <?= _f('(max. %d characters)', $name_max_length) ?>
+            </span>
+        </label>
+
+        <div class="form-group__stack">
+            <input
+                id="new-name"
+                name=""
+                type="text"
+                maxlength="<?= $name_max_length ?>"
+                data-collections-selector-target="input"
+            />
+
+            <button type="button" data-action="collections-selector#attach">
+                <?= icon('check') ?>
+                <span class="no-mobile">
+                    <?= _('Add') ?>
+                </span>
+            </button>
+
+            <button type="button" data-action="collections-selector#showSelect" title="<?= _('Cancel the creation of the collection') ?>">
+                <?= icon('times') ?>
+
+                <span class="sr-only">
+                    <?= _('Cancel') ?>
+                </span>
+            </button>
         </div>
     </div>
 
@@ -75,11 +125,12 @@
     <template data-collections-selector-target="collectionTemplate">
         <li class="card card--illustrated" style="background-image: url('<?= url_media('covers', '', 'collection-card.svg') ?>');">
             <div class="card__body">
-                <div class="card__title" data-target="name">
+                <div class="card__title card__title-ellipsis" data-target="name">
                 </div>
 
                 <p class="card__text">
                     <span class="sticker sticker--right" data-target="isPublic"><?= _('public') ?></span>
+                    <span class="sticker sticker--right" data-target="isNew"><?= _('new') ?></span>
                 </p>
             </div>
 

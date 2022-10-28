@@ -83,6 +83,8 @@ class Collections
         return Response::ok('links/collections/index.phtml', [
             'link' => $link,
             'collection_ids' => $collection_ids,
+            'new_collection_names' => [],
+            'name_max_length' => models\Collection::NAME_MAX_LENGTH,
             'groups' => $groups,
             'groups_to_collections' => $groups_to_collections,
             'shared_collections' => $shared_collections,
