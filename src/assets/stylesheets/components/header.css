@@ -38,6 +38,10 @@
     padding: var(--space-medium) var(--space-large);
 }
 
+.header__link:focus {
+    outline-offset: -0.3rem;
+}
+
 .header__action {
     margin: var(--space-smaller);
     padding: var(--space-small);

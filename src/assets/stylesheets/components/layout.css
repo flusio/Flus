@@ -44,10 +44,6 @@
     border-bottom: 0.5rem solid transparent;
 }
 
-.layout--connected .layout__header .header__link:focus {
-    outline-offset: -0.3rem;
-}
-
 @media (min-width: 800px) {
     .layout--connected .layout__header .header__link {
         width: auto;
