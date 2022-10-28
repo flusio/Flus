@@ -95,8 +95,20 @@ class Sessions
             ]);
         }
 
+        $email = utils\Email::sanitize($email);
+        if (!utils\Email::validate($email)) {
+            return Response::badRequest('sessions/new.phtml', [
+                'email' => $email,
+                'password' => $password,
+                'redirect_to' => $redirect_to,
+                'errors' => [
+                    'email' => _('The address email is invalid.'),
+                ],
+            ]);
+        }
+
         $user = models\User::findBy([
-            'email' => utils\Email::sanitize($email),
+            'email' => $email,
         ]);
         if (!$user) {
             return Response::badRequest('sessions/new.phtml', [

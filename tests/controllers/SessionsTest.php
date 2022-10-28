@@ -277,6 +277,26 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
     }
 
+    public function testCreateFailsIfEmailIsInvalid()
+    {
+        $email = $this->fake('email');
+        $password = $this->fake('password');
+        $user_id = $this->create('user', [
+            'email' => $email,
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+        ]);
+
+        $response = $this->appRun('post', '/login', [
+            'csrf' => \Minz\CSRF::generate(),
+            'email' => 'foo',
+            'password' => $password,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The address email is invalid');
+        $this->assertSame(0, models\Session::count());
+    }
+
     public function testCreateFailsIfPasswordDoesNotMatch()
     {
         $email = $this->fake('email');
