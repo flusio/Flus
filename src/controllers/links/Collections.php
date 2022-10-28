@@ -100,21 +100,27 @@ class Collections
      * @request_param string csrf
      * @request_param string id
      * @request_param string[] collection_ids
+     * @request_param string[] new_collection_names
      * @request_param boolean is_hidden
      * @request_param boolean mark_as_read
      * @request_param string comment
      * @request_param string from
      *
      * @response 302 /login?redirect_to=:from
-     * @response 404 if the link is not found
-     * @response 302 :from if CSRF or collection_ids are invalid
+     *     If not connected.
+     * @response 404
+     *     If the link is not found.
      * @response 302 :from
+     *     If CSRF, collection_ids or new_collection_names are invalid.
+     * @response 302 :from
+     *     On success.
      */
     public function update($request)
     {
         $user = auth\CurrentUser::get();
         $link_id = $request->param('id');
         $new_collection_ids = $request->paramArray('collection_ids', []);
+        $new_collection_names = $request->paramArray('new_collection_names', []);
         $is_hidden = $request->paramBoolean('is_hidden', false);
         $mark_as_read = $request->paramBoolean('mark_as_read', false);
         $comment = trim($request->param('comment', ''));
@@ -138,6 +144,19 @@ class Collections
         if (!\Minz\CSRF::validate($csrf)) {
             utils\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
+        }
+
+        foreach ($new_collection_names as $name) {
+            $new_collection = models\Collection::init($user->id, $name, '', false);
+
+            $errors = $new_collection->validate();
+            if ($errors) {
+                utils\Flash::set('errors', $errors);
+                return Response::found($from);
+            }
+
+            $new_collection->save();
+            $new_collection_ids[] = $new_collection->id;
         }
 
         if (!auth\LinksAccess::canUpdate($user, $link)) {

@@ -192,16 +192,21 @@ class Links
      * Create a link for the current user.
      *
      * @request_param string csrf
-     * @request_param string url It must be a valid non-empty URL
+     * @request_param string url
      * @request_param boolean is_hidden
-     * @request_param string[] collection_ids It must contain at least one
-     *                                        collection id
-     * @request_param string from The page to redirect to after creation (default is /links/new)
+     * @request_param string[] collection_ids
+     * @request_param string[] new_collection_names
+     * @request_param string from
+     *     The page to redirect to after creation (default is /links/new).
      *
-     * @response 302 /login?redirect_to=:from if not connected
-     * @response 400 if CSRF or the url is invalid, of if one collection id
-     *               doesn't exist or parameter is missing/empty
-     * @response 302 :from on success
+     * @response 302 /login?redirect_to=:from
+     *     If not connected.
+     * @response 400
+     *     If CSRF or the url is invalid, if one collection id doesn't exist
+     *     or if both collection_ids and new_collection_names parameters are
+     *     missing/empty.
+     * @response 302 :from
+     *     On success.
      */
     public function create($request)
     {
@@ -209,6 +214,7 @@ class Links
         $url = $request->param('url', '');
         $is_hidden = $request->paramBoolean('is_hidden', false);
         $collection_ids = $request->paramArray('collection_ids', []);
+        $new_collection_names = $request->paramArray('new_collection_names', []);
         $from = $request->param('from', \Minz\Url::for('new link', ['url' => $url]));
         $csrf = $request->param('csrf');
 
@@ -259,7 +265,7 @@ class Links
             ]);
         }
 
-        if (empty($collection_ids)) {
+        if (empty($collection_ids) && empty($new_collection_names)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_hidden' => $is_hidden,
@@ -287,6 +293,29 @@ class Links
                     'collection_ids' => _('One of the associated collection doesn’t exist.'),
                 ],
             ]);
+        }
+
+        foreach ($new_collection_names as $name) {
+            $new_collection = models\Collection::init($user->id, $name, '', false);
+
+            $errors = $new_collection->validate();
+            if ($errors) {
+                return Response::badRequest('links/new.phtml', [
+                    'url' => $url,
+                    'is_hidden' => $is_hidden,
+                    'collection_ids' => $collection_ids,
+                    'new_collection_names' => $new_collection_names,
+                    'name_max_length' => models\Collection::NAME_MAX_LENGTH,
+                    'groups' => $groups,
+                    'groups_to_collections' => $groups_to_collections,
+                    'shared_collections' => $shared_collections,
+                    'from' => $from,
+                    'errors' => $errors,
+                ]);
+            }
+
+            $new_collection->save();
+            $collection_ids[] = $new_collection->id;
         }
 
         $existing_link = models\Link::findBy([

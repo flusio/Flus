@@ -568,6 +568,34 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_collection);
     }
 
+    public function testUpdateCanCreateCollections()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('words', 3, true);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+
+        $this->assertSame(0, models\Collection::count());
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+            'new_collection_names' => [$collection_name],
+        ]);
+
+        $this->assertSame(1, models\Collection::count());
+
+        $link = models\Link::find($link_id);
+        $collection = models\Collection::findBy([
+            'user_id' => $user->id,
+            'name' => $collection_name,
+        ]);
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertNotNull($collection);
+        $this->assertContains($collection->id, array_column($link->collections(), 'id'));
+    }
+
     public function testUpdateRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -715,6 +743,29 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/bookmarks');
         $this->assertFlash('error', 'One of the associated collection doesn’t exist.');
+        $this->assertSame(0, models\LinkToCollection::count());
+    }
+
+    public function testUpdateFailsIfNewCollectionNameIsInvalid()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('words', 100, true);
+        $link_id = $this->create('link', [
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('post', "/links/{$link_id}/collections", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+            'new_collection_names' => [$collection_name],
+        ]);
+
+        $this->assertSame(0, models\Collection::count());
+
+        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertFlash('errors', [
+            'name' => 'The name must be less than 100 characters.',
+        ]);
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
