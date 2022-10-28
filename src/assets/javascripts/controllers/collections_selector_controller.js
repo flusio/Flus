@@ -32,6 +32,7 @@ export default class extends Controller {
                     name: option.text,
                     imageFilename: option.dataset.illustration,
                     isPublic: 'public' in option.dataset,
+                    by: option.dataset.by,
                 }, false)
             );
         }
@@ -42,6 +43,7 @@ export default class extends Controller {
                     name: input.value,
                     imageFilename: '',
                     isPublic: false,
+                    by: null,
                 }, true)
             );
         }
@@ -84,6 +86,9 @@ export default class extends Controller {
                     const newOption = document.createElement('option');
                     newOption.value = option.value;
                     newOption.text = option.text;
+                    if ('by' in option.dataset) {
+                        newOption.text += ` (${option.dataset.by})`;
+                    }
                     if ('public' in option.dataset) {
                         newOption.text += _(' (public)');
                     }
@@ -210,6 +215,10 @@ export default class extends Controller {
 
         if (collection.imageFilename) {
             item.style.backgroundImage = `url('${collection.imageFilename}')`;
+        }
+
+        if (collection.by) {
+            item.querySelector('[data-target="by"]').textContent = collection.by;
         }
 
         if (!collection.isPublic) {

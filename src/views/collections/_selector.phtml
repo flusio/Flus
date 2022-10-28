@@ -45,9 +45,9 @@
                             <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
                             <?= $collection->is_public ? 'data-public' : '' ?>
                             data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>"
+                            data-by="<?= _f('By %s', protect($collection->owner()->username)) ?>"
                         >
                             <?= protect($collection->name()) ?>
-                            <?= _f('(by %s)', protect($collection->owner()->username)) ?>
                         </option>
                     <?php endforeach; ?>
                 </optgroup>
@@ -128,9 +128,11 @@
                 <div class="card__title card__title-ellipsis" data-target="name">
                 </div>
 
-                <p class="card__text">
-                    <span class="sticker sticker--right" data-target="isPublic"><?= _('public') ?></span>
-                    <span class="sticker sticker--right" data-target="isNew"><?= _('new') ?></span>
+                <p class="card__text card__text--oneline">
+                    <span class="card__ellipsis card__text--extend" data-target="by"></span>
+
+                    <span class="sticker" data-target="isPublic"><?= _('public') ?></span>
+                    <span class="sticker" data-target="isNew"><?= _('new') ?></span>
                 </p>
             </div>
 
