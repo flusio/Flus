@@ -621,6 +621,37 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_id, array_column($link->collections(), 'id'));
     }
 
+    public function testCreateCanCreateCollections()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('words', 3, true);
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $from = \Minz\Url::for('bookmarks');
+
+        $this->assertSame(0, models\Collection::count());
+
+        $response = $this->appRun('post', '/links/new', [
+            'csrf' => $user->csrf,
+            'url' => $url,
+            'new_collection_names' => [$collection_name],
+            'from' => $from,
+        ]);
+
+        $this->assertSame(1, models\Link::count());
+        $this->assertSame(2, models\Collection::count());
+        $this->assertSame(1, models\LinkToCollection::count());
+
+        $link = models\Link::take();
+        $collection = models\Collection::findBy([
+            'user_id' => $user->id,
+            'name' => $collection_name,
+        ]);
+        $this->assertResponseCode($response, 302, $from);
+        $this->assertNotNull($collection);
+        $this->assertContains($collection->id, array_column($link->collections(), 'id'));
+    }
+
     public function testCreateRedirectsIfNotConnected()
     {
         $user_id = $this->create('user');
@@ -790,6 +821,27 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, models\Link::count());
         $this->assertSame(0, models\LinkToCollection::count());
+    }
+
+    public function testCreateFailsIfNewCollectionNameIsInvalid()
+    {
+        $user = $this->login();
+        $collection_name = $this->fake('words', 100, true);
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $from = \Minz\Url::for('bookmarks');
+
+        $response = $this->appRun('post', '/links/new', [
+            'csrf' => $user->csrf,
+            'url' => $url,
+            'new_collection_names' => [$collection_name],
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The name must be less than 100 characters');
+        $this->assertSame(0, models\Link::count());
+        $this->assertSame(1, models\Collection::count()); // this counts the bookmarks collection
     }
 
     public function testEditRendersCorrectly()

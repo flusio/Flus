@@ -1,34 +1,151 @@
 <div class="collections-selector" data-controller="collections-selector">
-    <select
-        id="collection-ids"
-        class="collections-selector__data"
-        name="collection_ids[]"
-        data-collections-selector-target="data"
-        multiple
-        tabindex="-1"
-    >
-        <?php foreach ($collections as $collection): ?>
-            <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
-                <?= protect($collection->name()) ?>
-            </option>
-        <?php endforeach; ?>
+    <div hidden>
+        <select
+            id="collection-ids"
+            name="collection_ids[]"
+            multiple
+            tabindex="-1"
+            data-collections-selector-target="dataCollections"
+        >
+            <?php $collections = $groups_to_collections[null] ?? []; ?>
+            <?php foreach ($collections as $collection): ?>
+                <option
+                    value="<?= $collection->id ?>"
+                    <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
+                    <?= $collection->is_public ? 'data-public' : '' ?>
+                    data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>"
+                >
+                    <?= protect($collection->name()) ?>
+                </option>
+            <?php endforeach; ?>
 
-        <?php foreach ($shared_collections as $collection): ?>
-            <option <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?> value="<?= $collection->id ?>">
-                <?= _f('%s (shared by %s)', protect($collection->name()),protect($collection->owner()->username)) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+            <?php foreach ($groups as $group): ?>
+                <?php if (isset($groups_to_collections[$group->id])): ?>
+                    <optgroup label="<?= protect($group->name) ?>">
+                        <?php $collections = $groups_to_collections[$group->id]; ?>
+                        <?php foreach ($collections as $collection): ?>
+                            <option
+                                value="<?= $collection->id ?>"
+                                <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
+                                <?= $collection->is_public ? 'data-public' : '' ?>
+                                data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>"
+                            >
+                                <?= protect($collection->name()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </optgroup>
+                <?php endif; ?>
+            <?php endforeach; ?>
 
-    <ul class="collections-selector__list" data-collections-selector-target="list"></ul>
+            <?php if ($shared_collections): ?>
+                <optgroup label="<?= _('Shared with me') ?>">
+                    <?php foreach ($shared_collections as $collection): ?>
+                        <option
+                            value="<?= $collection->id ?>"
+                            <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
+                            <?= $collection->is_public ? 'data-public' : '' ?>
+                            data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>"
+                            data-by="<?= _f('By %s', protect($collection->owner()->username)) ?>"
+                        >
+                            <?= protect($collection->name()) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </optgroup>
+            <?php endif; ?>
+        </select>
 
-    <select
-        data-collections-selector-target="select"
-        data-action="collections-selector#attach"
-        aria-label="<?= _('Select a collection') ?>"
-    >
-        <option selected disabled>
+        <div data-collections-selector-target="dataNewCollections">
+            <?php foreach ($new_collection_names as $name): ?>
+                <input
+                    type="hidden"
+                    name="new_collection_names[]"
+                    value="<?= protect($name) ?>"
+                />
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <div class="form-group" data-collections-selector-target="selectGroup">
+        <label for="collections-selector-select">
             <?= _('Select a collection') ?>
-        </option>
-    </select>
+        </label>
+
+        <div class="form-group__stack">
+            <select
+                id="collections-selector-select"
+                data-collections-selector-target="select"
+                data-action="collections-selector#attach"
+            ></select>
+
+            <button type="button" data-action="collections-selector#showInput">
+                <?= icon('plus') ?>
+                <span class="no-mobile">
+                    <?= _('New') ?>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="form-group" data-collections-selector-target="inputGroup" hidden>
+        <label for="new-name">
+            <?= _('What do you want to name the collection?') ?>
+            <span class="label__help">
+                <?= _f('(max. %d characters)', $name_max_length) ?>
+            </span>
+        </label>
+
+        <div class="form-group__stack">
+            <input
+                id="new-name"
+                name=""
+                type="text"
+                maxlength="<?= $name_max_length ?>"
+                data-collections-selector-target="input"
+            />
+
+            <button type="button" data-action="collections-selector#attach">
+                <?= icon('check') ?>
+                <span class="no-mobile">
+                    <?= _('Add') ?>
+                </span>
+            </button>
+
+            <button type="button" data-action="collections-selector#showSelect" title="<?= _('Cancel the creation of the collection') ?>">
+                <?= icon('times') ?>
+
+                <span class="sr-only">
+                    <?= _('Cancel') ?>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <ul class="cards" data-collections-selector-target="collectionCards"></ul>
+
+    <template data-collections-selector-target="collectionTemplate">
+        <li class="card card--illustrated" style="background-image: url('<?= url_media('covers', '', 'collection-card.svg') ?>');">
+            <div class="card__body">
+                <div class="card__title card__title-ellipsis" data-target="name">
+                </div>
+
+                <p class="card__text card__text--oneline">
+                    <span class="card__ellipsis card__text--extend" data-target="by"></span>
+
+                    <span class="sticker" data-target="isPublic"><?= _('public') ?></span>
+                    <span class="sticker" data-target="isNew"><?= _('new') ?></span>
+                </p>
+            </div>
+
+            <div class="card__footer card__footer--centered">
+                <button
+                    type="button"
+                    data-action="collections-selector#detach"
+                    data-target="unselect"
+                >
+                    <?= icon('times') ?>
+                    <?= _('Unselect') ?>
+                </button>
+            </div>
+        </li>
+    </template>
 </div>

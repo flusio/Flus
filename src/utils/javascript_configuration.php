@@ -4,9 +4,9 @@ $translations = [
     'Back',
     'Copied',
     'Hide',
+    'Open the list',
+    ' (public)',
     'Show',
-    'Unselect',
-    'Unselect this collection',
 ];
 
 $l10n = [];

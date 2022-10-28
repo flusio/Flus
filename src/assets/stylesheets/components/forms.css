@@ -198,16 +198,23 @@ select:not([multiple]) {
     appearance: none;
 }
 
-select:hover,
-select:focus {
+select:not([disabled]):hover,
+select:not([disabled]):focus {
     background-color: var(--color-turquoise-1);
 }
 
-select:focus {
+select:not([disabled]):focus {
     border-color: var(--color-border-active);
 }
 
+select[disabled] {
+    color: var(--color-text-secondary);
+
+    border-color: var(--color-border-disabled);
+}
+
 fieldset {
+    min-width: auto;
     margin-top: var(--space-medium);
     margin-bottom: var(--space-medium);
     padding: var(--space-small);

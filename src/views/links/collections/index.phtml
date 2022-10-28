@@ -31,6 +31,13 @@
                         <?= $errors['collection_ids'] ?>
                     </p>
                 <?php endif; ?>
+
+                <?php if (isset($errors['name'])): ?>
+                    <p class="form-group__error">
+                        <span class="sr-only"><?= _('Error') ?></span>
+                        <?= $errors['name'] ?>
+                    </p>
+                <?php endif; ?>
             </div>
 
             <?php if ($collections_by_others): ?>
@@ -41,9 +48,12 @@
             <?php endif; ?>
 
             <?= $this->include('collections/_selector.phtml', [
-                'collections' => $collections,
+                'groups' => $groups,
+                'groups_to_collections' => $groups_to_collections,
                 'shared_collections' => $shared_collections,
                 'collection_ids' => $collection_ids,
+                'new_collection_names' => $new_collection_names,
+                'name_max_length' => $name_max_length,
             ]) ?>
         </fieldset>
 
