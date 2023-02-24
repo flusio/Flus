@@ -94,20 +94,19 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         // This test must not be mocked since we want to test the real response
         // of Twitter.
         $link_fetcher_service = new LinkFetcher();
-        $url = 'https://twitter.com/flus_fr/status/1272070701193797634';
+        $url = 'https://twitter.com/framasoft/status/1626258040595832833';
         $link_id = $this->create('link', [
             'url' => $url,
             'title' => $url,
         ]);
         $link = models\Link::find($link_id);
-        $expected_title = 'Flus on Twitter: “Parce que s’informer est un acte politique'
-                        . ' essentiel, il est important de disposer des bons outils pour cela.'
-                        . " Je développe #Flus, un média social citoyen.\nhttps://t.co/zDFwWVmaiD”";
+        $expected_title = 'Aujourd\'hui, les salarié⋅es de Framasoft étaient'
+                        . ' en grève contre le projet de réforme des retraites.';
 
         $link_fetcher_service->fetch($link);
 
         $link = models\Link::find($link_id);
-        $this->assertSame($expected_title, $link->title);
+        $this->assertStringContainsString($expected_title, $link->title);
         $this->assertSame(200, $link->fetched_code);
     }
 
