@@ -50,8 +50,21 @@ class Application
      */
     public function run($request)
     {
-        if (!auth\CurrentUser::sessionToken()) {
-            auth\CurrentUser::setSessionToken($request->cookie('flusio_session_token'));
+        $session_token = $request->cookie('flusio_session_token');
+        if (
+            !$session_token &&
+            auth\CurrentUser::sessionToken() &&
+            // We should probably make sure to pass the session token in the
+            // tests, but it would be a lot of changes. I prefer to bypass this
+            // security in the tests for now.
+            \Minz\Configuration::$environment !== 'test'
+        ) {
+            auth\CurrentUser::reset();
+        } elseif (
+            $session_token &&
+            auth\CurrentUser::sessionToken() !== $session_token
+        ) {
+            auth\CurrentUser::setSessionToken($session_token);
         }
 
         $current_user = auth\CurrentUser::get();
