@@ -12,8 +12,8 @@ class Url
      * Make an URL absolute.
      *
      * If the URL is already absolute, it’s returned as it is. Otherwise, it’s
-     * appended to a base URL. You must make sure to pass a valid base or the
-     * URL will be returned directly.
+     * returned relatively to a base URL. You must make sure to pass a valid
+     * base or the URL will be returned directly.
      *
      * @param string $url
      * @param string $base_url
@@ -61,12 +61,18 @@ class Url
             // If initial URL starts with a slash, it’s an absolute path
             $absolute_url .= $url;
         } else {
-            // Else, it’s a relative path, rebuild a path by taking care of the
-            // slashes
+            // Else, it’s a relative path, rebuild a path by removing the last
+            // part of the $base_path (i.e. $url is relative to the document
+            // served by $base_url).
             $base_path = trim($parsed_base_url['path'], '/');
+            $base_path_split = explode('/', $base_path);
+            array_pop($base_path_split);
+            $base_path = implode('/', $base_path_split);
+
             if ($base_path) {
                 $base_path = '/' . $base_path;
             }
+
             $absolute_url .= $base_path . '/' . $url;
         }
 
