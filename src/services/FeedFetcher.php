@@ -174,7 +174,7 @@ class FeedFetcher
                 $link->feed_entry_id = $feed_entry_id;
                 if (isset($entry->links['replies'])) {
                     $url_replies = \SpiderBits\Url::sanitize($entry->links['replies']);
-                    if (models\Link::validateUrl($url_replies)) {
+                    if (models\Link::validateUrl($url_replies) === true) {
                         $link->url_replies = $url_replies;
                     }
                 }

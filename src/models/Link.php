@@ -384,7 +384,7 @@ class Link extends \Minz\Model
 
     /**
      * @param string $url
-     * @return boolean
+     * @return string|true
      */
     public static function validateUrl($url)
     {
