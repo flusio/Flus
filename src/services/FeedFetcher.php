@@ -182,7 +182,10 @@ class FeedFetcher
                 $links_to_create[$link->id] = $link;
 
                 $link_ids_by_urls[$link->url] = $link->id;
-                $link_urls_by_entry_ids[$link->url] = $link->feed_entry_id;
+                $link_urls_by_entry_ids[$link->feed_entry_id] = [
+                    'id' => $link->id,
+                    'url' => $link->url,
+                ];
                 $link_id = $link->id;
 
                 $links_to_collections_to_create[] = new models\LinkToCollection([
