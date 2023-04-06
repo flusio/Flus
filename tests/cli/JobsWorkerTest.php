@@ -535,6 +535,43 @@ class JobsWorkerTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($db_job['last_error']);
     }
 
+    public function testRunReschedulesJobTakingCareOfDst()
+    {
+        $initial_timezone = date_default_timezone_get();
+        date_default_timezone_set('Europe/Paris');
+        // In France, timezone offset was +01 on 25th March and +02 on 26th
+        // March. This is because of Daylight Saving Time (DST).
+        $now = new \DateTime('2023-03-25 04:00:00');
+        $this->freeze($now);
+        $job_dao = new models\dao\Job();
+        $token = $this->create('token');
+        $user_id = $this->create('user', [
+            'validation_token' => $token,
+        ]);
+        $job_id = $this->create('job', [
+            'perform_at' => $now->format(\Minz\Model::DATETIME_FORMAT),
+            'frequency' => '+1 day',
+            'locked_at' => null,
+            'number_attempts' => 0,
+            'handler' => json_encode([
+                'job_class' => 'flusio\jobs\Mailer',
+                'job_args' => ['Users', 'sendAccountValidationEmail', $user_id],
+            ]),
+        ]);
+
+        $db_job = $job_dao->find($job_id);
+        $this->assertSame('2023-03-25 03:00:00+00', $db_job['perform_at']); // PGSQL does not store the timezone
+
+        $response = $this->appRun('cli', '/jobs/run');
+
+        date_default_timezone_set($initial_timezone);
+
+        $this->assertResponseCode($response, 200);
+        $db_job = $job_dao->find($job_id);
+        // If DST wasn't considered, the time would still be 03:00:00+00
+        $this->assertSame('2023-03-26 02:00:00+00', $db_job['perform_at']);
+    }
+
     public function testWatchRendersCorrectly()
     {
         $job_dao = new models\dao\Job();

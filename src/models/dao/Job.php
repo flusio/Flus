@@ -156,6 +156,10 @@ class Job extends \Minz\DatabaseModel
     private function rescheduledPerformAt($current_perform_at, $frequency)
     {
         $date = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $current_perform_at);
+
+        $timezone = new \DateTimeZone(date_default_timezone_get());
+        $date->setTimezone($timezone);
+
         while ($date <= \Minz\Time::now()) {
             $date->modify($frequency);
         }
