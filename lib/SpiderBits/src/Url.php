@@ -28,6 +28,15 @@ class Url
             return $url;
         }
 
+        if (strpos($url, '#') === 0) {
+            // If the URL starts by a hash, it should simply be added to the
+            // base URL (by removing its own hash if any).
+            if (strpos($base_url, '#') !== false) {
+                $base_url = strtok($base_url, '#');
+            }
+            return $base_url . $url;
+        }
+
         $parsed_base_url = parse_url(trim($base_url));
         if (!isset($parsed_base_url['host'])) {
             // If there is no host in the base URL, we can’t do anything.
