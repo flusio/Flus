@@ -58,7 +58,7 @@ class Job extends \Minz\DatabaseModel
             AND perform_at <= :perform_at
             AND (number_attempts <= 25 OR frequency != '')
             {$queue_placeholder}
-            ORDER BY frequency, created_at;
+            ORDER BY perform_at ASC
         SQL;
 
         $statement = $this->prepare($sql);

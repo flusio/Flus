@@ -34,19 +34,17 @@ class JobTest extends \PHPUnit\Framework\TestCase
         $this->freeze($now);
         $minutes_ago = $this->fake('randomNumber');
         $number_attempts = $this->fake('numberBetween', 0, 25);
-        $created_at_1 = \Minz\Time::ago($minutes_ago, 'minutes');
-        $created_at_2 = \Minz\Time::ago($minutes_ago + 5, 'minutes');
+        $perform_at_1 = \Minz\Time::ago($minutes_ago, 'minutes');
+        $perform_at_2 = \Minz\Time::ago($minutes_ago + 5, 'minutes');
         $job_dao = new Job();
         $job_id_1 = $this->create('job', [
-            'created_at' => $created_at_1->format(\Minz\Model::DATETIME_FORMAT),
-            'perform_at' => \Minz\Time::ago($minutes_ago, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
+            'perform_at' => $perform_at_1->format(\Minz\Model::DATETIME_FORMAT),
             'locked_at' => null,
             'number_attempts' => $number_attempts,
             'frequency' => '',
         ]);
         $job_id_2 = $this->create('job', [
-            'created_at' => $created_at_2->format(\Minz\Model::DATETIME_FORMAT),
-            'perform_at' => \Minz\Time::ago($minutes_ago, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
+            'perform_at' => $perform_at_2->format(\Minz\Model::DATETIME_FORMAT),
             'locked_at' => null,
             'number_attempts' => $number_attempts,
             'frequency' => '',
@@ -55,35 +53,6 @@ class JobTest extends \PHPUnit\Framework\TestCase
         $db_job = $job_dao->findNextJob('all');
 
         $this->assertSame($job_id_2, $db_job['id']);
-    }
-
-    public function testFindNextJobGivesPriorityToJobsWithNoFrequency()
-    {
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        $minutes_ago = $this->fake('randomNumber');
-        $number_attempts = $this->fake('numberBetween', 0, 25);
-        $created_at_1 = \Minz\Time::ago($minutes_ago, 'minutes');
-        $created_at_2 = \Minz\Time::ago($minutes_ago + 5, 'minutes');
-        $job_dao = new Job();
-        $job_id_1 = $this->create('job', [
-            'created_at' => $created_at_1->format(\Minz\Model::DATETIME_FORMAT),
-            'perform_at' => \Minz\Time::ago($minutes_ago, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
-            'locked_at' => null,
-            'number_attempts' => $number_attempts,
-            'frequency' => '',
-        ]);
-        $job_id_2 = $this->create('job', [
-            'created_at' => $created_at_2->format(\Minz\Model::DATETIME_FORMAT),
-            'perform_at' => \Minz\Time::ago($minutes_ago, 'minutes')->format(\Minz\Model::DATETIME_FORMAT),
-            'locked_at' => null,
-            'number_attempts' => $number_attempts,
-            'frequency' => '+5 minutes',
-        ]);
-
-        $db_job = $job_dao->findNextJob('all');
-
-        $this->assertSame($job_id_1, $db_job['id']);
     }
 
     public function testFindNextJobReturnsJobInGivenQueue()
