@@ -1,5 +1,24 @@
 # Changelog of flusio
 
+## 2023-04-07 - v0.54
+
+### Security
+
+- Reset the session if it exists but the token is not in the cookies ([0f537541](https://github.com/flusio/flusio/commit/0f537541))
+
+### Bug fixes
+
+- Absolutize correctly the URLs relatively to the $base\_url document ([8609c787](https://github.com/flusio/flusio/commit/8609c787))
+- Absolutize correctly the URLs starting with a hash ([7bf78bcc](https://github.com/flusio/flusio/commit/7bf78bcc))
+- Validate replies URL correctly ([db3103c3](https://github.com/flusio/flusio/commit/db3103c3))
+- Take next job with the oldest perform\_at ([ebc484a8](https://github.com/flusio/flusio/commit/ebc484a8))
+- Reschedule jobs considering Daylight Saving Time ([49b25c6f](https://github.com/flusio/flusio/commit/49b25c6f))
+- Fix mapping of entries ids in FeedFetcher ([cbe374bf](https://github.com/flusio/flusio/commit/cbe374bf))
+
+### Misc
+
+- Force the xdebug version in the Dockerfile ([6effdf05](https://github.com/flusio/flusio/commit/6effdf05))
+
 ## 2022-10-28 - v0.53
 
 ### Improvements
