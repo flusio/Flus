@@ -10,19 +10,9 @@ $app_path = realpath(__DIR__ . '/..');
 
 include $app_path . '/autoload.php';
 \Minz\Configuration::load('dotenv', $app_path);
-\Minz\Environment::initialize();
-\Minz\Environment::startSession();
 
 // Get the http information and create a Request
-$request_method = strtolower($_SERVER['REQUEST_METHOD']);
-$http_method = $request_method === 'head' ? 'get' : $request_method;
-$http_uri = $_SERVER['REQUEST_URI'];
-$http_parameters = array_merge($_GET, $_POST, $_FILES);
-$headers = array_merge($_SERVER, [
-    'COOKIE' => $_COOKIE,
-]);
-
-$request = new \Minz\Request($http_method, $http_uri, $http_parameters, $headers);
+$request = \Minz\Request::initFromGlobals();
 
 // In development mode, all the requests are redirected to this file. However,
 // if the file exists, we want to serve it as-is, which is done by returning
@@ -49,17 +39,5 @@ try {
     ]);
 }
 
-// Generate the HTTP headers, cookies and output
-http_response_code($response->code());
-
-foreach ($response->cookies() as $cookie) {
-    setcookie($cookie['name'], $cookie['value'], $cookie['options']);
-}
-
-foreach ($response->headers() as $header) {
-    header($header);
-}
-
-if ($request_method !== 'head') {
-    echo $response->render();
-}
+$is_head = strtoupper($_SERVER['REQUEST_METHOD']) === 'HEAD';
+\Minz\Response::sendByHttp($response, echo_output: !$is_head);

@@ -16,66 +16,11 @@ $app_path = __DIR__;
 include $app_path . '/autoload.php';
 \Minz\Configuration::load('dotenv', $app_path);
 \Minz\Configuration::$no_syslog_output = true;
-\Minz\Environment::initialize();
 
-// Read command line parameters to create a Request
-$command = [];
-$parameters = [];
-
-// We need to skip the first argument which is the name of the script
-$arguments = array_slice($argv, 1);
-foreach ($arguments as $argument) {
-    $result = preg_match('/^--(?P<option>\w+)(=(?P<argument>.+))?$/sm', $argument, $matches);
-    if ($result) {
-        $parameters[$matches['option']] = $matches['argument'] ?? true;
-    } else {
-        $command[] = $argument;
-    }
-}
-
-$request_uri = implode('/', $command);
-if (!$request_uri) {
-    $request_uri = '/help';
-} elseif ($request_uri[0] !== '/') {
-    $request_uri = '/' . $request_uri;
-}
-
-try {
-    $request = new \Minz\Request('cli', $request_uri, $parameters);
-} catch (\Minz\Errors\RequestError $e) {
-    die($e->getMessage() . "\n");
-}
-
-$request->setParam('bin', $argv[0]);
+$request = \Minz\Request::initFromCli($argv);
 
 // Initialize the Application and execute the request to get a Response
 $application = new \flusio\cli\Application();
 $response = $application->run($request);
 
-if ($response instanceof Generator) {
-    // This is used by the JobsWorker#watch method in order to provide a
-    // long-running service.
-    foreach ($response as $response_part) {
-        $output = $response_part->render();
-        if ($output) {
-            echo $output . "\n";
-        }
-    }
-
-    exit(0);
-} else {
-    // Display the content
-    $output = $response->render();
-    if ($output && $output[-1] === "\n") {
-        echo $output;
-    } elseif ($output) {
-        echo $output . "\n";
-    }
-
-    $code = $response->code();
-    if ($code >= 200 && $code < 300) {
-        exit(0);
-    } else {
-        exit(1);
-    }
-}
+\Minz\Response::sendToCli($response);
