@@ -2,30 +2,20 @@
 
 namespace flusio\models\dao;
 
+use Minz\Database;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class CollectionsToTopics extends \Minz\DatabaseModel
+trait CollectionToTopic
 {
-    /**
-     * @throws \Minz\Errors\DatabaseError
-     */
-    public function __construct()
-    {
-        $properties = ['id', 'collection_id', 'topic_id'];
-        parent::__construct('collections_to_topics', 'id', $properties);
-    }
-
     /**
      * Attach the topics to the given collection.
      *
-     * @param string $collection_id
      * @param string[] $topic_ids
-     *
-     * @return boolean True on success
      */
-    public function attach($collection_id, $topic_ids)
+    public static function attach(string $collection_id, array $topic_ids): bool
     {
         $values_as_question_marks = [];
         $values = [];
@@ -40,20 +30,19 @@ class CollectionsToTopics extends \Minz\DatabaseModel
             VALUES {$values_placeholder};
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $result = $statement->execute($values);
-        return $this->lastInsertId();
+
+        return $database->lastInsertId();
     }
 
     /**
      * Detach the topics from the given collection.
      *
-     * @param string $collection_id
      * @param string[] $topic_ids
-     *
-     * @return boolean True on success
      */
-    public function detach($collection_id, $topic_ids)
+    public static function detach(string $collection_id, array $topic_ids): bool
     {
         $values_as_question_marks = [];
         $values = [];
@@ -68,35 +57,34 @@ class CollectionsToTopics extends \Minz\DatabaseModel
             WHERE {$values_placeholder};
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = database::get();
+        $statement = $database->prepare($sql);
         return $statement->execute($values);
     }
 
     /**
      * Attach the topics to the given collection and remove old ones if any.
      *
-     * @param string $collection_id
      * @param string[] $topic_ids
-     *
-     * @return boolean True on success
      */
-    public function set($collection_id, $topic_ids)
+    public static function set(string $collection_id, array $topic_ids): bool
     {
-        $previous_attachments = $this->listBy(['collection_id' => $collection_id]);
+        $previous_attachments = self::listBy(['collection_id' => $collection_id]);
         $previous_topic_ids = array_column($previous_attachments, 'topic_id');
         $ids_to_attach = array_diff($topic_ids, $previous_topic_ids);
         $ids_to_detach = array_diff($previous_topic_ids, $topic_ids);
 
-        $this->beginTransaction();
+        $database = Database::get();
+        $database->beginTransaction();
 
         if ($ids_to_attach) {
-            $this->attach($collection_id, $ids_to_attach);
+            self::attach($collection_id, $ids_to_attach);
         }
 
         if ($ids_to_detach) {
-            $this->detach($collection_id, $ids_to_detach);
+            self::detach($collection_id, $ids_to_detach);
         }
 
-        return $this->commit();
+        return $database->commit();
     }
 }

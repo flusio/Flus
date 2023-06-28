@@ -3,6 +3,9 @@
 namespace flusio\models;
 
 use flusio\utils;
+use Minz\Database;
+use Minz\Translatable;
+use Minz\Validable;
 
 /**
  * Represent a list containing a set of links.
@@ -10,207 +13,161 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Collection extends \Minz\Model
+#[Database\Table(name: 'collections')]
+class Collection
 {
-    use DaoConnector;
-    use BulkDaoConnector;
+    use dao\Collection;
+    use Database\Recordable;
+    use Validable;
 
     public const VALID_TYPES = ['bookmarks', 'news', 'read', 'never', 'collection', 'feed'];
 
     public const NAME_MAX_LENGTH = 100;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $id;
 
-        'created_at' => 'datetime',
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'locked_at' => 'datetime',
+    #[Database\Column]
+    public ?\DateTimeImmutable $locked_at = null;
 
-        'name' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\Collection::validateName',
-        ],
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The name is required.'),
+    )]
+    #[Validable\Length(
+        max: self::NAME_MAX_LENGTH,
+        message: new Translatable('The name must be less than {max} characters.'),
+    )]
+    public string $name = '';
 
-        'description' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public string $description = '';
 
-        'type' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\Collection::validateType',
-        ],
+    /** @var value-of<self::VALID_TYPES> */
+    #[Database\Column]
+    public string $type = 'collection';
 
-        'is_public' => [
-            'type' => 'boolean',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public bool $is_public = false;
 
-        'image_filename' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $image_filename = null;
 
-        'image_fetched_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public ?\DateTimeImmutable $image_fetched_at = null;
 
-        'user_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $user_id;
 
-        'group_id' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $group_id = null;
 
-        'feed_url' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $feed_url = null;
 
-        'feed_type' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $feed_type = null;
 
-        'feed_site_url' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $feed_site_url = null;
 
-        'feed_last_hash' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $feed_last_hash = null;
 
-        'feed_fetched_code' => [
-            'type' => 'integer',
-        ],
+    #[Database\Column]
+    public int $feed_fetched_code = 0;
 
-        'feed_fetched_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public ?\DateTimeImmutable $feed_fetched_at = null;
 
-        'feed_fetched_error' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $feed_fetched_error = null;
 
-        'number_links' => [
-            'type' => 'integer',
-            'computed' => true,
-        ],
+    #[Database\Column(computed: true)]
+    public ?int $number_links = null;
 
-        'time_filter' => [
-            'type' => 'string',
-            'computed' => true,
-        ],
-    ];
+    #[Database\Column(computed: true)]
+    public ?string $time_filter = null;
 
-    /**
-     * Initialize the model with default values.
-     *
-     * @param mixed $values
-     */
-    public function __construct($values)
+    public function __construct()
     {
-        parent::__construct(array_merge([
-            'id' => utils\Random::timebased(),
-            'description' => '',
-            'type' => 'collection',
-            'is_public' => false,
-            'feed_fetched_code' => 0,
-        ], $values));
+        $this->id = \Minz\Random::timebased();
     }
 
-    /**
-     * @param string $user_id
-     * @param string $name
-     * @param string $description
-     * @param boolean|string $is_public
-     *
-     * @return \flusio\models\Collection
-     */
-    public static function init($user_id, $name, $description, $is_public)
-    {
-        return new self([
-            'name' => trim($name),
-            'description' => trim($description),
-            'is_public' => filter_var($is_public, FILTER_VALIDATE_BOOLEAN),
-            'user_id' => $user_id,
-        ]);
+    public static function init(
+        string $user_id,
+        string $name,
+        string $description,
+        bool $is_public,
+    ): self {
+        $collection = new self();
+
+        $collection->name = trim($name);
+        $collection->description = trim($description);
+        $collection->is_public = $is_public;
+        $collection->user_id = $user_id;
+
+        return $collection;
     }
 
-    /**
-     * @param string $user_id
-     *
-     * @return \flusio\models\Collection
-     */
-    public static function initBookmarks($user_id)
+    public static function initBookmarks(string $user_id): self
     {
-        return new self([
-            'name' => _('Bookmarks'),
-            'type' => 'bookmarks',
-            'user_id' => $user_id,
-        ]);
+        $collection = new self();
+
+        $collection->name = _('Bookmarks');
+        $collection->type = 'bookmarks';
+        $collection->user_id = $user_id;
+
+        return $collection;
     }
 
-    /**
-     * @param string $user_id
-     *
-     * @return \flusio\models\Collection
-     */
-    public static function initReadList($user_id)
+    public static function initReadList(string $user_id): self
     {
-        return new self([
-            'name' => _('Links read'),
-            'type' => 'read',
-            'user_id' => $user_id,
-        ]);
+        $collection = new self();
+
+        $collection->name = _('Links read');
+        $collection->type = 'read';
+        $collection->user_id = $user_id;
+
+        return $collection;
     }
 
-    /**
-     * @param string $user_id
-     *
-     * @return \flusio\models\Collection
-     */
-    public static function initNeverList($user_id)
+    public static function initNeverList(string $user_id): self
     {
-        return new self([
-            'name' => _('Links never to read'),
-            'type' => 'never',
-            'user_id' => $user_id,
-        ]);
+        $collection = new self();
+
+        $collection->name = _('Links never to read');
+        $collection->type = 'never';
+        $collection->user_id = $user_id;
+
+        return $collection;
     }
 
-    /**
-     * @param string $user_id
-     *
-     * @return \flusio\models\Collection
-     */
-    public static function initNews($user_id)
+    public static function initNews(string $user_id): self
     {
-        return new self([
-            'name' => _('News'),
-            'type' => 'news',
-            'user_id' => $user_id,
-        ]);
+        $collection = new self();
+
+        $collection->name = _('News');
+        $collection->type = 'news';
+        $collection->user_id = $user_id;
+
+        return $collection;
     }
 
-    /**
-     * @param string $user_id
-     *
-     * @return \flusio\models\Collection
-     */
-    public static function initFeed($user_id, $feed_url)
+    public static function initFeed(string $user_id, string $feed_url): self
     {
-        $feed_url = \SpiderBits\Url::sanitize($feed_url);
-        return new self([
-            'name' => utils\Belt::cut($feed_url, self::NAME_MAX_LENGTH),
-            'feed_url' => $feed_url,
-            'type' => 'feed',
-            'user_id' => $user_id,
-            'is_public' => true,
-        ]);
+        $collection = new self();
+
+        $collection->name = utils\Belt::cut($feed_url, self::NAME_MAX_LENGTH);
+        $collection->feed_url = \SpiderBits\Url::sanitize($feed_url);
+        $collection->type = 'feed';
+        $collection->user_id = $user_id;
+        $collection->is_public = true;
+
+        return $collection;
     }
 
     /**
@@ -218,10 +175,8 @@ class Collection extends \Minz\Model
      *
      * If the collection is one of bookmarks, read or news types, the localized
      * version is returned.
-     *
-     * @return string
      */
-    public function name()
+    public function name(): string
     {
         if ($this->type === 'bookmarks') {
             return _('Bookmarks');
@@ -236,10 +191,8 @@ class Collection extends \Minz\Model
 
     /**
      * Return the owner of the collection.
-     *
-     * @return \flusio\models\User
      */
-    public function owner()
+    public function owner(): User
     {
         return User::find($this->user_id);
     }
@@ -247,17 +200,16 @@ class Collection extends \Minz\Model
     /**
      * Return links of the current collection.
      *
-     * @see \flusio\models\dao\Link::listComputedByCollectionId
+     * @see Link::listComputedByCollectionId
      *
      * @param string[] $selected_computed_props
      * @param array $options
      *
-     * @return \flusio\models\Link[]
+     * @return Link[]
      */
-    public function links($selected_computed_props = [], $options = [])
+    public function links(array $selected_computed_props = [], array $options = []): array
     {
-        return Link::daoToList(
-            'listComputedByCollectionId',
+        return Link::listComputedByCollectionId(
             $this->id,
             $selected_computed_props,
             $options
@@ -267,16 +219,10 @@ class Collection extends \Minz\Model
     /**
      * Return a link from this collection with the given URL and not owned by
      * the given user.
-     *
-     * @param string $user_id
-     * @param string $url_lookup
-     *
-     * @return \flusio\models\Link|null
      */
-    public function linkNotOwnedByUrl($user_id, $url_lookup)
+    public function linkNotOwnedByUrl(string $user_id, string $url_lookup): ?Link
     {
-        return Link::daoToModel(
-            'findNotOwnedByCollectionIdAndUrl',
+        return Link::findNotOwnedByCollectionIdAndUrl(
             $user_id,
             $this->id,
             $url_lookup,
@@ -289,12 +235,8 @@ class Collection extends \Minz\Model
      * If the collection is owned by the user, the group is the one directly
      * attached to the current collection. Otherwise, the group is the one
      * attached to a corresponding FollowedCollection.
-     *
-     * @param string $user_id
-     *
-     * @return \flusio\models\Group|null
      */
-    public function groupForUser($user_id)
+    public function groupForUser(string $user_id): ?Group
     {
         if ($this->user_id === $user_id) {
             return Group::find($this->group_id);
@@ -312,28 +254,27 @@ class Collection extends \Minz\Model
     }
 
     /**
-     * Return the topics attached to the current collection
+     * Return the topics attached to the current collection.
      *
-     * @return \flusio\models\Topic[]
+     * @return Topic[]
      */
-    public function topics()
+    public function topics(): array
     {
-        return Topic::daoToList('listByCollectionId', $this->id);
+        return Topic::listByCollectionId($this->id);
     }
 
     /**
      * Return the CollectionShares attached to the current collection
      *
-     * @see \flusio\models\dao\CollectionShare::listComputedByCollectionId
+     * @see CollectionShare::listComputedByCollectionId
      *
      * @param array $options
      *
-     * @return \flusio\models\CollectionShare[]
+     * @return CollectionShare[]
      */
-    public function shares($options = [])
+    public function shares(array $options = []): array
     {
-        $collection_shares = CollectionShare::daoToList(
-            'listComputedByCollectionId',
+        $collection_shares = CollectionShare::listComputedByCollectionId(
             $this->id,
             ['username'],
             $options,
@@ -350,13 +291,8 @@ class Collection extends \Minz\Model
      *
      * If $access_type is 'write', the method will check that the collection
      * share has a 'write' type.
-     *
-     * @param \flusio\models\User $user
-     * @param string $access_type
-     *
-     * @return boolean
      */
-    public function sharedWith($user, $access_type = 'any')
+    public function sharedWith(User $user, string $access_type = 'any'): bool
     {
         $existing_collection_share = CollectionShare::findBy([
             'collection_id' => $this->id,
@@ -378,10 +314,8 @@ class Collection extends \Minz\Model
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt
-     *
-     * @return string
      */
-    public function tagUri()
+    public function tagUri(): string
     {
         $host = \Minz\Configuration::$url_options['host'];
         $date = $this->created_at->format('Y-m-d');
@@ -390,71 +324,22 @@ class Collection extends \Minz\Model
 
     /**
      * Return the feed site URL to be displayed
-     *
-     * @return string
      */
-    public function feedWebsite()
+    public function feedWebsite(): string
     {
         if ($this->feed_site_url) {
-            return \flusio\utils\Belt::host($this->feed_site_url);
+            return utils\Belt::host($this->feed_site_url);
         } else {
-            return \flusio\utils\Belt::host($this->feed_url);
+            return utils\Belt::host($this->feed_url);
         }
     }
 
     /**
      * Return the description as HTML (from Markdown).
-     *
-     * @return string
      */
-    public function descriptionAsHtml()
+    public function descriptionAsHtml(): string
     {
         $markdown = new utils\MiniMarkdown();
         return $markdown->text($this->description);
-    }
-
-    /**
-     * @param string $type
-     * @return boolean
-     */
-    public static function validateType($type)
-    {
-        return in_array($type, self::VALID_TYPES);
-    }
-
-    /**
-     * @param string $name
-     * @return boolean
-     */
-    public static function validateName($name)
-    {
-        return mb_strlen($name) <= self::NAME_MAX_LENGTH;
-    }
-
-    /**
-     * Return a list of errors (if any). The array keys indicated the concerned
-     * property.
-     *
-     * @return string[]
-     */
-    public function validate()
-    {
-        $formatted_errors = [];
-
-        foreach (parent::validate() as $property => $error) {
-            $code = $error['code'];
-
-            if ($property === 'name' && $code === 'required') {
-                $formatted_error = _('The name is required.');
-            } elseif ($property === 'name') {
-                $formatted_error = _('The name must be less than 100 characters.');
-            } else {
-                $formatted_error = $error['description']; // @codeCoverageIgnore
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-
-        return $formatted_errors;
     }
 }

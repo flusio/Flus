@@ -2,36 +2,26 @@
 
 namespace flusio\models\dao;
 
+use Minz\Database;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class FetchLog extends \Minz\DatabaseModel
+trait FetchLog
 {
     /**
-     * @throws \Minz\Errors\DatabaseError
-     */
-    public function __construct()
-    {
-        $properties = array_keys(\flusio\models\FetchLog::PROPERTIES);
-        parent::__construct('fetch_logs', 'id', $properties);
-    }
-
-    /**
      * Return the number of fetch_logs by type
-     *
-     * @param string $type
-     *
-     * @return integer
      */
-    public function countByType($type)
+    public static function countByType(string $type): int
     {
         $sql = <<<'SQL'
             SELECT COUNT(*) FROM fetch_logs
             WHERE type = ?
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([$type]);
         return intval($statement->fetchColumn());
     }
@@ -39,9 +29,9 @@ class FetchLog extends \Minz\DatabaseModel
     /**
      * Return the number of fetch_logs by days.
      *
-     * @return integer[]
+     * @return array<string, int>
      */
-    public function countByDays()
+    public static function countByDays(): array
     {
         $sql = <<<'SQL'
             SELECT TO_CHAR(created_at, 'yyyy-mm-dd') AS day, COUNT(*) as count
@@ -49,13 +39,17 @@ class FetchLog extends \Minz\DatabaseModel
             GROUP BY day
         SQL;
 
-        $statement = $this->query($sql);
+        $database = Database::get();
+        $statement = $database->query($sql);
         $result = $statement->fetchAll();
+
         $count_by_days = [];
         foreach ($result as $row) {
             $count_by_days[$row['day']] = intval($row['count']);
         }
+
         ksort($count_by_days);
+
         return $count_by_days;
     }
 
@@ -69,9 +63,13 @@ class FetchLog extends \Minz\DatabaseModel
      *
      * @return integer
      */
-    public function countFetchesToHost($host, $since, $type = null, $ip = null)
-    {
-        $since = $since->format(\Minz\Model::DATETIME_FORMAT);
+    public static function countFetchesToHost(
+        string $host,
+        \DateTimeImmutable $since,
+        ?string $type = null,
+        ?string $ip = null
+    ): int {
+        $since = $since->format(Database\Column::DATETIME_FORMAT);
         $values = [
             ':host' => $host,
             ':since' => $since,
@@ -97,8 +95,10 @@ class FetchLog extends \Minz\DatabaseModel
             {$ip_placeholder}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($values);
+
         return intval($statement->fetchColumn());
     }
 
@@ -109,38 +109,37 @@ class FetchLog extends \Minz\DatabaseModel
      * precise.
      *
      * @see https://wiki.postgresql.org/wiki/Count_estimate
-     *
-     * @return integer
      */
-    public function countEstimated()
+    public static function countEstimated(): int
     {
+        $table_name = self::tableName();
+
         $sql = <<<SQL
             SELECT reltuples AS count
             FROM pg_class
-            WHERE relname = '{$this->table_name}';
+            WHERE relname = ?;
         SQL;
 
-        $statement = $this->query($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([$table_name]);
         return intval($statement->fetchColumn());
     }
 
     /**
      * Delete logs older than the given date
-     *
-     * @param \DateTime $date
-     *
-     * @return boolean True on success
      */
-    public function deleteOlderThan($date)
+    public static function deleteOlderThan(\DateTimeImmutable $date): bool
     {
         $sql = <<<SQL
             DELETE FROM fetch_logs
             WHERE created_at < ?
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         return $statement->execute([
-            $date->format(\Minz\Model::DATETIME_FORMAT),
+            $date->format(Database\Column::DATETIME_FORMAT),
         ]);
     }
 }

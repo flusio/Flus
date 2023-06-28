@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\links;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the Pocket importation system.
  *
@@ -13,18 +15,17 @@ trait PocketQueries
     /**
      * Return the list of url ids indexed by urls for the given user.
      *
-     * @param string $user_id
-     *
-     * @return array
+     * @return array<string, string>
      */
-    public function listUrlsToIdsByUserId($user_id)
+    public static function listUrlsToIdsByUserId(string $user_id): array
     {
         $sql = <<<SQL
             SELECT url, id FROM links
             WHERE user_id = :user_id
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
         ]);

@@ -3,180 +3,138 @@
 namespace flusio\models;
 
 use flusio\utils;
+use Minz\Database;
+use Minz\Translatable;
+use Minz\Validable;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Link extends \Minz\Model
+#[Database\Table(name: 'links')]
+class Link
 {
-    use DaoConnector;
-    use BulkDaoConnector;
+    use dao\Link;
+    use Database\Recordable;
+    use Validable;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $id;
 
-        'created_at' => 'datetime',
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'locked_at' => 'datetime',
+    #[Database\Column]
+    public ?\DateTimeImmutable $locked_at = null;
 
-        'title' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The title is required.'),
+    )]
+    public string $title;
 
-        'url' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\Link::validateUrl',
-        ],
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The link is required.'),
+    )]
+    #[Validable\Url(
+        message: new Translatable('The link is invalid.'),
+    )]
+    public string $url;
 
-        'url_feeds' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    /** @var string[] */
+    #[Database\Column]
+    public array $url_feeds = [];
 
-        'url_replies' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public string $url_replies = '';
 
-        'is_hidden' => [
-            'type' => 'boolean',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public bool $is_hidden = true;
 
-        'reading_time' => [
-            'type' => 'integer',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public int $reading_time = 0;
 
-        'image_filename' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $image_filename = null;
 
-        'fetched_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public ?\DateTimeImmutable $fetched_at = null;
 
-        'fetched_code' => [
-            'type' => 'integer',
-        ],
+    #[Database\Column]
+    public int $fetched_code = 0;
 
-        'fetched_error' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $fetched_error = null;
 
-        'fetched_count' => [
-            'type' => 'integer',
-        ],
+    #[Database\Column]
+    public int $fetched_count = 0;
 
-        'user_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $user_id;
 
-        'feed_entry_id' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $feed_entry_id = null;
 
-        'via_type' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public string $via_type = '';
 
-        'via_resource_id' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $via_resource_id = null;
 
-        'via_news_type' => [
-            'type' => 'string',
-            'computed' => true,
-        ],
+    #[Database\Column(computed: true)]
+    public ?string $via_news_type = null;
 
-        'via_news_resource_id' => [
-            'type' => 'string',
-            'computed' => true,
-        ],
+    #[Database\Column(computed: true)]
+    public ?string $via_news_resource_id = null;
 
-        'published_at' => [
-            'type' => 'datetime',
-            'computed' => true,
-        ],
+    #[Database\Column(computed: true)]
+    public ?\DateTimeImmutable $published_at = null;
 
-        'number_comments' => [
-            'type' => 'integer',
-            'computed' => true,
-        ],
+    #[Database\Column(computed: true)]
+    public ?int $number_comments = null;
 
-        'search_index' => [
-            'type' => 'string',
-        ],
+    #[Database\Column(computed: true)]
+    public ?string $search_index = null;
 
-        'url_lookup' => [
-            'type' => 'string',
-        ],
-    ];
+    #[Database\Column(computed: true)]
+    public ?string $url_lookup = null;
 
-    /**
-     * @param string $url
-     * @param string $user_id
-     * @param boolean|string $is_hidden
-     *
-     * @return \flusio\models\Link
-     */
-    public static function init($url, $user_id, $is_hidden)
+    public function __construct(string $url, string $user_id, bool $is_hidden)
     {
         $url = \SpiderBits\Url::sanitize($url);
-        return new self([
-            'id' => utils\Random::timebased(),
-            'title' => $url,
-            'url' => $url,
-            'url_feeds' => '[]',
-            'url_replies' => '',
-            'is_hidden' => filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN),
-            'user_id' => $user_id,
-            'reading_time' => 0,
-            'fetched_code' => 0,
-            'fetched_count' => 0,
-            'via_type' => '',
-        ]);
+
+        $this->id = \Minz\Random::timebased();
+        $this->title = $url;
+        $this->url = $url;
+        $this->is_hidden = $is_hidden;
+        $this->user_id = $user_id;
     }
 
     /**
      * Copy a Link to the given user.
-     *
-     * @param \flusio\models\Link $link
-     * @param string $user_id
-     *
-     * @return \flusio\models\Link
      */
-    public static function copy($link, $user_id)
+    public static function copy(self $link, string $user_id): self
     {
-        return new self([
-            'id' => utils\Random::timebased(),
-            'title' => $link->title,
-            'url' => $link->url,
-            'url_feeds' => $link->url_feeds,
-            'url_replies' => $link->url_replies,
-            'image_filename' => $link->image_filename,
-            'is_hidden' => false,
-            'reading_time' => $link->reading_time,
-            'fetched_at' => $link->fetched_at,
-            'fetched_code' => $link->fetched_code,
-            'fetched_count' => $link->fetched_count,
-            'via_type' => '',
-            'user_id' => $user_id,
-        ]);
+        $link = new self($link->url, $user_id, false);
+
+        $link->title = $link->title;
+        $link->url_feeds = $link->url_feeds;
+        $link->url_replies = $link->url_replies;
+        $link->image_filename = $link->image_filename;
+        $link->reading_time = $link->reading_time;
+        $link->fetched_at = $link->fetched_at;
+        $link->fetched_code = $link->fetched_code;
+        $link->fetched_count = $link->fetched_count;
+        $link->via_type = '';
+
+        return $link;
     }
 
     /**
      * Return the owner of the link.
-     *
-     * @return \flusio\models\User
      */
-    public function owner()
+    public function owner(): User
     {
         return User::find($this->user_id);
     }
@@ -184,27 +142,24 @@ class Link extends \Minz\Model
     /**
      * Return the collections attached to the current link
      *
-     * @return \flusio\models\Collection[]
+     * @return Collection[]
      */
-    public function collections()
+    public function collections(): array
     {
-        return Collection::daoToList('listByLinkId', $this->id);
+        return Collection::listByLinkId($this->id);
     }
 
     /**
      * Return the messages attached to the current link
      *
-     * @return \flusio\models\Message[]
+     * @return Message[]
      */
-    public function messages()
+    public function messages(): array
     {
-        return Message::daoToList('listByLink', $this->id);
+        return Message::listByLink($this->id);
     }
 
-    /**
-     * @return \flusio\models\Collection|null
-     */
-    public function viaCollection()
+    public function viaCollection(): ?Collection
     {
         if (
             $this->via_type !== 'collection' ||
@@ -219,7 +174,7 @@ class Link extends \Minz\Model
     /**
      * @return \flusio\models\User|null
      */
-    public function viaUser()
+    public function viaUser(): ?User
     {
         if (
             $this->via_type !== 'user' ||
@@ -233,34 +188,26 @@ class Link extends \Minz\Model
 
     /**
      * Return whether or not the given user has the link URL in its bookmarks.
-     *
-     * @param \flusio\models\User|null $user
-     *
-     * @return boolean
      */
-    public function isInBookmarksOf($user)
+    public function isInBookmarksOf(?User $user): bool
     {
         if (!$user) {
             return false;
         }
 
-        return Link::daoCall('isUrlInBookmarksOfUserId', $user->id, $this->url);
+        return self::isUrlInBookmarksOfUserId($user->id, $this->url);
     }
 
     /**
      * Return whether or not the given user read the link URL.
-     *
-     * @param \flusio\models\User|null $user
-     *
-     * @return boolean
      */
-    public function isReadBy($user)
+    public function isReadBy(?User $user): bool
     {
         if (!$user) {
             return false;
         }
 
-        return Link::daoCall('isUrlReadByUserId', $user->id, $this->url);
+        return Link::isUrlReadByUserId($user->id, $this->url);
     }
 
     /**
@@ -275,55 +222,32 @@ class Link extends \Minz\Model
      *
      * $access_type has no effect if a link is in an owned collection (i.e. it
      * implies the user has write effect over it).
-     *
-     * @param \flusio\models\User $user
-     * @param string $access_type
-     *
-     * @return boolean
      */
-    public function sharedWith($user, $access_type = 'any')
+    public function sharedWith(User $user, string $access_type = 'any'): bool
     {
         return (
-            Collection::daoCall('existsForUserIdAndLinkId', $user->id, $this->id) ||
-            CollectionShare::daoCall('existsForUserIdAndLinkId', $user->id, $this->id, $access_type)
+            Collection::existsForUserIdAndLinkId($user->id, $this->id) ||
+            CollectionShare::existsForUserIdAndLinkId($user->id, $this->id, $access_type)
         );
     }
 
     /**
-     * Return the list of feeds URLs if any
-     *
-     * @return string[]
-     */
-    public function feedUrls()
-    {
-        return json_decode($this->url_feeds, true);
-    }
-
-    /**
      * Return whether the link URL is a feed URL.
-     *
-     * @return boolean
      */
-    public function isFeedUrl()
+    public function isFeedUrl(): bool
     {
-        $feed_urls = $this->feedUrls();
-        return in_array($this->url, $feed_urls);
+        return in_array($this->url, $this->url_feeds);
     }
 
-    /**
-     * @return string
-     */
-    public function host()
+    public function host(): string
     {
-        return \flusio\utils\Belt::host($this->url);
+        return utils\Belt::host($this->url);
     }
 
     /**
      * Return whether a link is in error or not.
-     *
-     * @return boolean
      */
-    public function inError()
+    public function inError(): bool
     {
         return $this->fetched_at !== null && (
             $this->fetched_code < 200 || $this->fetched_code >= 400
@@ -332,10 +256,8 @@ class Link extends \Minz\Model
 
     /**
      * Return whether trackers are detected in the URL.
-     *
-     * @return boolean
      */
-    public function trackersDetected()
+    public function trackersDetected(): bool
     {
         $cleared_url = \SpiderBits\ClearUrls::clear($this->url);
         return $this->url !== $cleared_url;
@@ -345,81 +267,11 @@ class Link extends \Minz\Model
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt
-     *
-     * @return string
      */
-    public function tagUri()
+    public function tagUri(): string
     {
         $host = \Minz\Configuration::$url_options['host'];
         $date = $this->created_at->format('Y-m-d');
         return "tag:{$host},{$date}:links/{$this->id}";
-    }
-
-    /**
-     * Return a list of errors (if any). The array keys indicated the concerned
-     * property.
-     *
-     * @return string[]
-     */
-    public function validate()
-    {
-        $formatted_errors = [];
-
-        foreach (parent::validate() as $property => $error) {
-            $code = $error['code'];
-
-            if ($property === 'url' && $code === 'required') {
-                $formatted_error = _('The link is required.');
-            } elseif ($property === 'title' && $code === 'required') {
-                $formatted_error = _('The title is required.');
-            } else {
-                $formatted_error = $error['description'];
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-
-        return $formatted_errors;
-    }
-
-    /**
-     * @param string $url
-     * @return string|true
-     */
-    public static function validateUrl($url)
-    {
-        $validate = filter_var($url, FILTER_VALIDATE_URL) !== false;
-        if (!$validate) {
-            return _('The link is invalid.'); // @codeCoverageIgnore
-        }
-
-        $parsed_url = parse_url($url);
-        if ($parsed_url['scheme'] !== 'http' && $parsed_url['scheme'] !== 'https') {
-            return _('Link scheme must be either http or https.');
-        }
-
-        if (isset($parsed_url['pass'])) {
-            return _('The link must not include a password as it’s sensitive data.'); // @codeCoverageIgnore
-        }
-
-        return true;
-    }
-
-    /**
-     * Return the list of declared properties values.
-     *
-     * It doesn't return the search_index and url_lookup properties which are
-     * automatically generated by the database.
-     *
-     * @see \Minz\Model::toValues
-     *
-     * @return array
-     */
-    public function toValues()
-    {
-        $values = parent::toValues();
-        unset($values['search_index']);
-        unset($values['url_lookup']);
-        return $values;
     }
 }

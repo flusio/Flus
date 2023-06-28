@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\collections;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the discovery system.
  *
@@ -13,14 +15,13 @@ trait DiscoveryQueries
     /**
      * Return the list of public collections attached to the given topic.
      *
-     * @param string $topic_id
-     * @param integer $pagination_offset
-     * @param integer $pagination_limit
-     *
-     * @return array
+     * @return self[]
      */
-    public function listPublicByTopicIdWithNumberLinks($topic_id, $pagination_offset, $pagination_limit)
-    {
+    public static function listPublicByTopicIdWithNumberLinks(
+        string $topic_id,
+        int $pagination_offset,
+        int $pagination_limit
+    ): array {
         $sql = <<<'SQL'
             SELECT c.*, COUNT(lc.*) AS number_links
             FROM collections c, collections_to_topics ct, links_to_collections lc, links l
@@ -40,23 +41,20 @@ trait DiscoveryQueries
             LIMIT :limit
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':topic_id' => $topic_id,
             ':offset' => $pagination_offset,
             ':limit' => $pagination_limit,
         ]);
-        return $statement->fetchAll();
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
      * Count the public collections attached to the given topic.
-     *
-     * @param string $topic_id
-     *
-     * @return integer
      */
-    public function countPublicByTopicId($topic_id)
+    public static function countPublicByTopicId(string $topic_id): int
     {
         $sql = <<<'SQL'
             SELECT COUNT(DISTINCT c.id)
@@ -71,7 +69,8 @@ trait DiscoveryQueries
             AND ct.topic_id = :topic_id
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':topic_id' => $topic_id,
         ]);

@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\links;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the fetchers.
  *
@@ -15,9 +17,9 @@ trait FetcherQueries
      *
      * @param string $collection_id
      *
-     * @return array
+     * @return array<string, string>
      */
-    public function listUrlsToIdsByCollectionId($collection_id)
+    public static function listUrlsToIdsByCollectionId(string $collection_id): array
     {
         $sql = <<<SQL
             SELECT l.url, l.id FROM links l, links_to_collections lc
@@ -25,7 +27,8 @@ trait FetcherQueries
             AND lc.collection_id = :collection_id
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':collection_id' => $collection_id,
         ]);
@@ -36,11 +39,12 @@ trait FetcherQueries
     /**
      * Return the list of urls indexed by entry ids for the given collection.
      *
-     * @param string $collection_id
-     *
-     * @return array
+     * @return array<string, array{
+     *     'id': string,
+     *     'url': string,
+     * }>
      */
-    public function listEntryIdsToUrlsByCollectionId($collection_id)
+    public static function listEntryIdsToUrlsByCollectionId(string $collection_id): array
     {
         $sql = <<<SQL
             SELECT l.feed_entry_id, l.id, l.url
@@ -53,7 +57,8 @@ trait FetcherQueries
             LIMIT 200
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':collection_id' => $collection_id,
         ]);
@@ -68,11 +73,9 @@ trait FetcherQueries
      * 25 or if fetched_at is too close (a number of seconds depending on the
      * fetched_count value).
      *
-     * @param integer $max_number
-     *
-     * @return array
+     * @return self[]
      */
-    public function listToFetch($max_number)
+    public static function listToFetch(int $max_number): array
     {
         $sql = <<<SQL
             SELECT * FROM links
@@ -87,20 +90,21 @@ trait FetcherQueries
         SQL;
 
         $now = \Minz\Time::now();
-        $statement = $this->prepare($sql);
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
-            $now->format(\Minz\Model::DATETIME_FORMAT),
+            $now->format(Database\Column::DATETIME_FORMAT),
             $max_number,
         ]);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
      * Return the number of links to fetch.
-     *
-     * @return integer
      */
-    public function countToFetch()
+    public static function countToFetch(): int
     {
         $sql = <<<'SQL'
             SELECT COUNT(*) FROM links
@@ -113,8 +117,13 @@ trait FetcherQueries
         SQL;
 
         $now = \Minz\Time::now();
-        $statement = $this->prepare($sql);
-        $statement->execute([$now->format(\Minz\Model::DATETIME_FORMAT)]);
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            $now->format(Database\Column::DATETIME_FORMAT),
+        ]);
+
         return intval($statement->fetchColumn());
     }
 }

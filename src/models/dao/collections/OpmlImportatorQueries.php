@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\collections;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the OPML importation system.
  *
@@ -13,11 +15,9 @@ trait OpmlImportatorQueries
     /**
      * Return the list of ids indexed by feed urls for the given user.
      *
-     * @param string $user_id
-     *
-     * @return array
+     * @return array<string, string>
      */
-    public function listFeedUrlsToIdsByUserId($user_id)
+    public static function listFeedUrlsToIdsByUserId(string $user_id): array
     {
         $sql = <<<SQL
             SELECT feed_url, id FROM collections
@@ -25,7 +25,8 @@ trait OpmlImportatorQueries
             AND type = 'feed'
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
         ]);

@@ -2,16 +2,19 @@
 
 namespace flusio\models\dao;
 
+use Minz\Database;
+
 /**
  * Represent a link in database.
+ *
+ * @phpstan-import-type DatabaseCriteria from Database\Recordable
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Link extends \Minz\DatabaseModel
+trait Link
 {
     use BulkQueries;
-    use LockQueries;
     use MediaQueries;
     use links\CleanerQueries;
     use links\DataExporterQueries;
@@ -19,34 +22,20 @@ class Link extends \Minz\DatabaseModel
     use links\NewsQueries;
     use links\PocketQueries;
     use links\SearchQueries;
-
-    /**
-     * @throws \Minz\Errors\DatabaseError
-     */
-    public function __construct()
-    {
-        $properties = array_filter(\flusio\models\Link::PROPERTIES, function ($declaration) {
-            return !isset($declaration['computed']) || !$declaration['computed'];
-        });
-        parent::__construct('links', 'id', array_keys($properties));
-    }
+    use Database\Lockable;
 
     /**
      * Return a link with its computed properties.
      *
-     * @param array $values
+     * @param DatabaseCriteria $criteria
      *     The conditions the link must match.
      * @param string[] $selected_computed_props
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
-     *
-     * @return array
      */
-    public function findComputedBy($values, $selected_computed_props)
+    public static function findComputedBy(array $criteria, array $selected_computed_props): ?self
     {
-        $parameters = [];
-
         // Note that publication date is usually computed by considering the
         // date of association with a collection. Without collection, we
         // consider its date of insertion in the database.
@@ -65,12 +54,7 @@ class Link extends \Minz\DatabaseModel
             SQL;
         }
 
-        $where_statement_as_array = [];
-        foreach ($values as $property => $parameter) {
-            $parameters[] = $parameter;
-            $where_statement_as_array[] = "{$property} = ?";
-        }
-        $where_statement = implode(' AND ', $where_statement_as_array);
+        list($where_statement, $parameters) = Database\Helper::buildWhere($criteria);
 
         $sql = <<<SQL
             SELECT
@@ -81,11 +65,13 @@ class Link extends \Minz\DatabaseModel
             WHERE {$where_statement}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($parameters);
+
         $result = $statement->fetch();
-        if ($result) {
-            return $result;
+        if (is_array($result)) {
+            return self::fromDatabaseRow($result);
         } else {
             return null;
         }
@@ -123,10 +109,13 @@ class Link extends \Minz\DatabaseModel
      *     - offset (integer, default to 0), the offset for pagination
      *     - limit (integer|string, default to 'ALL') the limit for pagination
      *
-     * @return array
+     * @return self[]
      */
-    public function listComputedByUserId($user_id, $selected_computed_props, $options = [])
-    {
+    public static function listComputedByUserId(
+        string $user_id,
+        array $selected_computed_props,
+        array $options = [],
+    ): array {
         $default_options = [
             'unshared' => true,
             'offset' => 0,
@@ -201,9 +190,11 @@ class Link extends \Minz\DatabaseModel
             {$limit_clause}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($parameters);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
@@ -224,10 +215,13 @@ class Link extends \Minz\DatabaseModel
      *     - offset (integer, default to 0), the offset for pagination
      *     - limit (integer|string, default to 'ALL') the limit for pagination
      *
-     * @return array
+     * @return self[]
      */
-    public function listComputedByCollectionId($collection_id, $selected_computed_props, $options = [])
-    {
+    public static function listComputedByCollectionId(
+        string $collection_id,
+        array $selected_computed_props,
+        array $options = [],
+    ): array {
         $default_options = [
             'hidden' => true,
             'offset' => 0,
@@ -285,9 +279,11 @@ class Link extends \Minz\DatabaseModel
             {$limit_clause}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($parameters);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
@@ -298,10 +294,8 @@ class Link extends \Minz\DatabaseModel
      * @param array $options
      *     Custom options to filter links. Possible option is:
      *     - hidden (boolean, default to true), indicates if hidden links must be included
-     *
-     * @return array
      */
-    public function countByCollectionId($collection_id, $options = [])
+    public static function countByCollectionId(string $collection_id, array $options = []): int
     {
         $default_options = [
             'hidden' => true,
@@ -323,23 +317,20 @@ class Link extends \Minz\DatabaseModel
             {$visibility_clause}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':collection_id' => $collection_id,
         ]);
+
         return intval($statement->fetchColumn());
     }
 
     /**
      * Return whether or not the given user id has the link URL in its
      * bookmarks.
-     *
-     * @param string $user_id
-     * @param string $url
-     *
-     * @return boolean
      */
-    public function isUrlInBookmarksOfUserId($user_id, $url)
+    public static function isUrlInBookmarksOfUserId(string $user_id, string $url): bool
     {
         $sql = <<<'SQL'
             SELECT 1
@@ -354,23 +345,20 @@ class Link extends \Minz\DatabaseModel
             AND lc.link_id = l.id;
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
             ':url' => $url,
         ]);
-        return (bool)$statement->fetchColumn();
+
+        return (bool) $statement->fetchColumn();
     }
 
     /**
      * Return whether or not the given user id read the link URL.
-     *
-     * @param string $user_id
-     * @param string $url
-     *
-     * @return boolean
      */
-    public function isUrlReadByUserId($user_id, $url)
+    public static function isUrlReadByUserId(string $user_id, string $url): bool
     {
         $sql = <<<'SQL'
             SELECT 1
@@ -385,25 +373,24 @@ class Link extends \Minz\DatabaseModel
             AND lc.link_id = l.id;
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
             ':url' => $url,
         ]);
-        return (bool)$statement->fetchColumn();
+
+        return (bool) $statement->fetchColumn();
     }
 
     /**
      * Find a link by its URL and collection id but not owned by the given user.
-     *
-     * @param string $user_id
-     * @param string $collection_id
-     * @param string $url_lookup
-     *
-     * @return array
      */
-    public function findNotOwnedByCollectionIdAndUrl($user_id, $collection_id, $url_lookup)
-    {
+    public static function findNotOwnedByCollectionIdAndUrl(
+        string $user_id,
+        string $collection_id,
+        string $url_lookup,
+    ): ?self {
         $sql = <<<SQL
             SELECT l.*
             FROM links l, links_to_collections lc
@@ -415,16 +402,17 @@ class Link extends \Minz\DatabaseModel
             AND l.user_id != :user_id
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
             ':collection_id' => $collection_id,
             ':url_lookup' => $url_lookup,
         ]);
-        $result = $statement->fetch();
 
-        if ($result) {
-            return $result;
+        $result = $statement->fetch();
+        if (is_array($result)) {
+            return self::fromDatabaseRow($result);
         } else {
             return null;
         }
@@ -437,18 +425,20 @@ class Link extends \Minz\DatabaseModel
      * precise.
      *
      * @see https://wiki.postgresql.org/wiki/Count_estimate
-     *
-     * @return integer
      */
-    public function countEstimated()
+    public static function countEstimated(): int
     {
+        $table_name = self::tableName();
+
         $sql = <<<SQL
             SELECT reltuples AS count
             FROM pg_class
-            WHERE relname = '{$this->table_name}';
+            WHERE relname = ?;
         SQL;
 
-        $statement = $this->query($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([$table_name]);
         return intval($statement->fetchColumn());
     }
 }

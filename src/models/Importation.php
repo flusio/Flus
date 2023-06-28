@@ -2,132 +2,70 @@
 
 namespace flusio\models;
 
+use Minz\Database;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Importation extends \Minz\Model
+#[Database\Table(name: 'importations')]
+class Importation
 {
-    use DaoConnector;
+    use Database\Recordable;
 
     public const VALID_TYPES = ['pocket', 'opml'];
     public const VALID_STATUSES = ['ongoing', 'finished', 'error'];
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'integer',
-        ],
+    #[Database\Column]
+    public int $id;
 
-        'created_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'type' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\Importation::validateType',
-        ],
+    /** @var value-of<self::VALID_TYPES> */
+    #[Database\Column]
+    public string $type;
 
-        'status' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\Importation::validateStatus',
-        ],
+    /** @var value-of<self::VALID_STATUSES> */
+    #[Database\Column]
+    public string $status;
 
-        'options' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    /** @var mixed[] */
+    #[Database\Column]
+    public array $options;
 
-        'error' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public string $error;
 
-        'user_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-    ];
+    #[Database\Column]
+    public string $user_id;
 
     /**
-     * @param string $type
-     * @param string $user_id
-     * @param array $options
-     *
-     * @return \flusio\models\Importation
+     * @param mixed[] $options
      */
-    public static function init($type, $user_id, $options = [])
+    public function __construct(string $type, string $user_id, array $options = [])
     {
-        return new self([
-            'type' => $type,
-            'status' => 'ongoing',
-            'options' => json_encode($options),
-            'user_id' => $user_id,
-            'error' => '',
-        ]);
-    }
-
-    /**
-     * @return array
-     */
-    public function options()
-    {
-        return json_decode($this->options, true);
+        $this->type = $type;
+        $this->status = 'ongoing';
+        $this->options = $options;
+        $this->user_id = $user_id;
+        $this->error = '';
     }
 
     /**
      * Stop and mark the importation as finished
      */
-    public function finish()
+    public function finish(): void
     {
         $this->status = 'finished';
     }
 
     /**
      * Stop and mark the importation as failed
-     *
-     * @param string $error
      */
-    public function fail($error)
+    public function fail(string $error): void
     {
         $this->status = 'error';
         $this->error = $error;
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return boolean
-     */
-    public static function validateType($type)
-    {
-        return in_array($type, self::VALID_TYPES);
-    }
-
-    /**
-     * @param string $status
-     *
-     * @return boolean
-     */
-    public static function validateStatus($status)
-    {
-        return in_array($status, self::VALID_STATUSES);
-    }
-
-    /**
-     * Return the list of declared properties values.
-     *
-     * It doesn't return the id property because it is automatically generated
-     * by the database.
-     *
-     * @see \Minz\Model::toValues
-     *
-     * @return array
-     */
-    public function toValues()
-    {
-        $values = parent::toValues();
-        unset($values['id']);
-        return $values;
     }
 }

@@ -2,77 +2,61 @@
 
 namespace flusio\models;
 
-use flusio\utils;
+use Minz\Database;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Token extends \Minz\Model
+#[Database\Table(name: 'tokens', primary_key: 'token')]
+class Token
 {
-    use DaoConnector;
+    use dao\Token;
+    use Database\Recordable;
 
-    public const PROPERTIES = [
-        'created_at' => 'datetime',
+    #[Database\Column]
+    public string $token;
 
-        'invalidated_at' => 'datetime',
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'expired_at' => [
-            'type' => 'datetime',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $expired_at;
 
-        'token' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-    ];
+    #[Database\Column]
+    public ?\DateTimeImmutable $invalidated_at;
 
     /**
      * Initialize a token valid for a certain amount of time.
      *
      * @see \Minz\Time
-     *
-     * @param integer $number
-     * @param string $duration
-     * @param integer $length default is 64
-     *
-     * @return \flusio\models\Token
      */
-    public static function init($number, $duration, $length = 64)
+    public function __construct(int $number, string $duration, int $length = 64)
     {
-        return new self([
-            'expired_at' => \Minz\Time::fromNow($number, $duration),
-            'token' => utils\Random::hex($length),
-        ]);
+        $this->token = \Minz\Random::hex($length);
+        $this->expired_at = \Minz\Time::fromNow($number, $duration);
     }
 
     /**
      * Return whether the token has expired.
-     *
-     * @return boolean
      */
-    public function hasExpired()
+    public function hasExpired(): bool
     {
         return \Minz\Time::now() >= $this->expired_at;
     }
 
     /**
      * Return whether the token has been invalidated.
-     *
-     * @return boolean
      */
-    public function isInvalidated()
+    public function isInvalidated(): bool
     {
         return $this->invalidated_at !== null;
     }
 
     /**
      * Return whether the token is valid (i.e. not expired and not invalidated)
-     *
-     * @return boolean
      */
-    public function isValid()
+    public function isValid(): bool
     {
         return !$this->hasExpired() && !$this->isInvalidated();
     }
@@ -80,14 +64,9 @@ class Token extends \Minz\Model
     /**
      * Return wheter the token is going to expire in the next $number of $units.
      *
-     * @see https://www.php.net/manual/datetime.formats.relative.php
-     *
-     * @param integer $number
-     * @param string $unit
-     *
-     * @return boolean
+     * @see \Minz\Time
      */
-    public function expiresIn($number, $unit)
+    public function expiresIn(int $number, string $unit): bool
     {
         return \Minz\Time::fromNow($number, $unit) >= $this->expired_at;
     }

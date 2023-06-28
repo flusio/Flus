@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\collections;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the Fetcher.
  *
@@ -16,12 +18,9 @@ trait FetcherQueries
      * An active feed is a feed followed by at least one active user (i.e.
      * account has been validated)
      *
-     * @param \DateTime $before
-     * @param integer $limit
-     *
-     * @return array
+     * @return self[]
      */
-    public function listActiveFeedsToFetch($before, $limit)
+    public static function listActiveFeedsToFetch(\DateTimeImmutable $before, int $limit): array
     {
         $sql = <<<SQL
             SELECT c.*
@@ -44,23 +43,22 @@ trait FetcherQueries
             LIMIT :limit
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
-            ':before' => $before->format(\Minz\Model::DATETIME_FORMAT),
+            ':before' => $before->format(Database\Column::DATETIME_FORMAT),
             ':limit' => $limit,
         ]);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
      * List feeds that haven't been fetched for the longest time.
      *
-     * @param \DateTime $before
-     * @param integer $limit
-     *
-     * @return array
+     * @return self[]
      */
-    public function listOldestFeedsToFetch($before, $limit)
+    public static function listOldestFeedsToFetch(\DateTimeImmutable $before, int $limit): array
     {
         $sql = <<<SQL
             SELECT c.*
@@ -76,11 +74,13 @@ trait FetcherQueries
             LIMIT :limit
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
-            ':before' => $before->format(\Minz\Model::DATETIME_FORMAT),
+            ':before' => $before->format(Database\Column::DATETIME_FORMAT),
             ':limit' => $limit,
         ]);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 }

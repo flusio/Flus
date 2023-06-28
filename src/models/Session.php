@@ -2,7 +2,7 @@
 
 namespace flusio\models;
 
-use flusio\utils;
+use Minz\Database;
 
 /**
  * Represent a user login session.
@@ -10,66 +10,44 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Session extends \Minz\Model
+#[Database\Table(name: 'sessions')]
+class Session
 {
-    use DaoConnector;
+    use dao\Session;
+    use Database\Recordable;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $id;
 
-        'created_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'confirmed_password_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public ?\DateTimeImmutable $confirmed_password_at;
 
-        'name' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $name;
 
-        'ip' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $ip;
 
-        'user_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $user_id;
 
-        'token' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-    ];
+    #[Database\Column]
+    public string $token;
 
-    /**
-     * @param string $name
-     * @param string $ip
-     *
-     * @return \flusio\models\Session
-     */
-    public static function init($name, $ip)
+    public function __construct(string $name, string $ip)
     {
-        return new self([
-            'id' => utils\Random::hex(32),
-            'name' => trim($name),
-            'ip' => trim($ip),
-        ]);
+        $this->id = \Minz\Random::hex(32);
+        $this->name = trim($name);
+        $this->ip = trim($ip);
     }
 
     /**
      * Return wheter the user confirmed its password within the last 15 minutes.
-     *
-     * @return boolean
      */
-    public function isPasswordConfirmed()
+    public function isPasswordConfirmed(): bool
     {
         if (!$this->confirmed_password_at) {
             return false;
