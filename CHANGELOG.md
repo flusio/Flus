@@ -1,5 +1,11 @@
 # Changelog of flusio
 
+## unreleased
+
+### Migration notes
+
+PHP 8.1+ is now required. Please check your version before updating flusio!
+
 ## 2023-04-07 - v0.54
 
 ### Security

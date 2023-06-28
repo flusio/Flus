@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:8.1-fpm
 
 ENV COMPOSER_HOME /tmp
 
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
         libjpeg62-turbo-dev \
         libpng-dev \
         libwebp-dev \
-    && pecl install xdebug-3.1.6 \
+    && pecl install xdebug \
     && docker-php-ext-configure intl \
     && docker-php-ext-configure gd --with-webp --with-jpeg --with-freetype \
     && docker-php-ext-install -j$(nproc) intl gettext pcntl zip pdo pdo_pgsql gd \
