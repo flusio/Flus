@@ -21,11 +21,8 @@ namespace flusio;
  */
 class Application
 {
-    /** @var \Minz\Engine **/
-    private $engine;
-
     /**
-     * Setup a Router and declare its routes.
+     * Setup the Engine.
      */
     public function __construct()
     {
@@ -33,8 +30,12 @@ class Application
         include_once('utils/view_helpers.php');
 
         $router = Router::load();
-        $this->engine = new \Minz\Engine($router);
-        \Minz\Url::setRouter($router);
+        \Minz\Engine::init($router, [
+            'start_session' => true,
+            'not_found_view_pointer' => 'not_found.phtml',
+            'internal_server_error_view_pointer' => 'internal_server_error.phtml',
+            'controller_namespace' => '\\flusio\\controllers',
+        ]);
 
         \Minz\Output\View::$extensions_to_content_types['.atom.xml.php'] = 'application/xml';
         \Minz\Output\View::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
@@ -117,24 +118,18 @@ class Application
             }
 
             // Force CSRF token to avoid weird issues when user did nothing for a while
-            \Minz\CSRF::set($current_user->csrf);
+            \Minz\Csrf::set($current_user->csrf);
         }
 
-        $errors = utils\Flash::pop('errors', []);
-        $error = utils\Flash::pop('error');
-        $status = utils\Flash::pop('status');
-
-        $response = $this->engine->run($request, [
-            'not_found_view_pointer' => 'not_found.phtml',
-            'internal_server_error_view_pointer' => 'internal_server_error.phtml',
-            'controller_namespace' => '\\flusio\\controllers',
-        ]);
+        $errors = \Minz\Flash::pop('errors', []);
+        $error = \Minz\Flash::pop('error');
+        $status = \Minz\Flash::pop('status');
 
         $app_conf = \Minz\Configuration::$application;
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
             'brand' => $app_conf['brand'],
-            'csrf_token' => \Minz\CSRF::generate(),
+            'csrf_token' => \Minz\Csrf::generate(),
             'errors' => $errors,
             'error' => $error,
             'status' => $status,
@@ -149,6 +144,8 @@ class Application
             'demo' => $app_conf['demo'],
             'registrations_opened' => $app_conf['registrations_opened'],
         ]);
+
+        $response = \Minz\Engine::run($request);
 
         $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
         $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
