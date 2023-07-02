@@ -59,7 +59,6 @@ return [
         'feeds_links_keep_minimum' => $feeds_links_keep_minimum,
         'feeds_links_keep_maximum' => $feeds_links_keep_maximum,
         'feeds_links_keep_period' => $feeds_links_keep_period,
-        'job_adapter' => 'database',
         'job_feeds_sync_count' => $job_feeds_sync_count,
         'job_links_sync_count' => $job_links_sync_count,
         'server_ips' => $server_ips,
@@ -87,4 +86,6 @@ return [
             'secure' => $dotenv->pop('SMTP_SECURE', ''),
         ],
     ],
+
+    'jobs_adapter' => 'database',
 ];

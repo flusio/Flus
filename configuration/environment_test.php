@@ -4,7 +4,7 @@ $db_host = $dotenv->pop('DB_HOST');
 $db_port = intval($dotenv->pop('DB_PORT', '5432'));
 $db_name = 'flusio_test';
 
-$temporary_directory = sys_get_temp_dir() . '/flusio/' . \flusio\utils\Random::hex(10);
+$temporary_directory = sys_get_temp_dir() . '/flusio/' . \Minz\Random::hex(10);
 $data_directory = $temporary_directory . '/data';
 $cache_directory = $temporary_directory . '/cache';
 $media_directory = $temporary_directory . '/media';
@@ -47,7 +47,6 @@ return [
         'feeds_links_keep_period' => 0,
         'feeds_links_keep_minimum' => 0,
         'feeds_links_keep_maximum' => 0,
-        'job_adapter' => 'test',
         'job_feeds_sync_count' => 1,
         'job_links_sync_count' => 1,
         'server_ips' => [],
@@ -66,6 +65,8 @@ return [
         'type' => 'test',
         'from' => 'root@localhost',
     ],
+
+    'jobs_adapter' => 'test',
 
     'data_path' => $data_directory,
     'tmp_path' => $temporary_directory,
