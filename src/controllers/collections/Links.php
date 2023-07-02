@@ -95,7 +95,7 @@ class Links
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/links/new.phtml', [
                 'collection' => $collection,
                 'url' => $url,
@@ -105,7 +105,7 @@ class Links
             ]);
         }
 
-        $link = models\Link::init($url, $user->id, $is_hidden);
+        $link = new models\Link($url, $user->id, $is_hidden);
         $errors = $link->validate();
         if ($errors) {
             return Response::badRequest('collections/links/new.phtml', [

@@ -52,7 +52,7 @@ class OpmlImportator
 
         $feed_urls_by_groups = $this->loadUrlsFromOutlines($this->opml->outlines, '');
 
-        $collection_ids_by_feed_urls = models\Collection::daoCall('listFeedUrlsToIdsByUserId', $support_user->id);
+        $collection_ids_by_feed_urls = models\Collection::listFeedUrlsToIdsByUserId($support_user->id);
         $collections_to_create = [];
         $followed_collections_to_create = [];
 
@@ -63,7 +63,7 @@ class OpmlImportator
                 // database, and get its id to attach it to the followed
                 // collection.
                 $group_name = utils\Belt::cut($group_name, models\Group::NAME_MAX_LENGTH);
-                $group = models\Group::init($user->id, $group_name);
+                $group = new models\Group($user->id, $group_name);
                 $existing_group = models\Group::findBy([
                     'name' => $group->name,
                     'user_id' => $group->user_id,
@@ -91,12 +91,11 @@ class OpmlImportator
                     $collection_id = $collection->id;
                 }
 
-                $followed_collections_to_create[] = new models\FollowedCollection([
-                    'created_at' => \Minz\Time::now(),
-                    'user_id' => $user->id,
-                    'collection_id' => $collection_id,
-                    'group_id' => $group_id,
-                ]);
+                $followed_collection = new models\FollowedCollection($user->id, $collection_id);
+                $followed_collection->group_id = $group_id;
+                $followed_collection->created_at = \Minz\Time::now();
+
+                $followed_collections_to_create[] = $followed_collection;
             }
         }
 

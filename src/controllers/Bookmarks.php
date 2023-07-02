@@ -34,7 +34,7 @@ class Bookmarks
 
         $bookmarks = $user->bookmarks();
 
-        $number_links = models\Link::daoCall('countByCollectionId', $bookmarks->id);
+        $number_links = models\Link::countByCollectionId($bookmarks->id);
         $pagination = new utils\Pagination($number_links, 29, $page);
         if ($page !== $pagination->currentPage()) {
             return Response::redirect('bookmarks', [

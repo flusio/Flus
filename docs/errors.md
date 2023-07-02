@@ -76,7 +76,7 @@ should be a `bad request` HTTP response returning the current `GET` view:
 
 ```php
 $csrf = $request->param('csrf');
-if (!\Minz\CSRF::validate($csrf)) {
+if (!\Minz\Csrf::validate($csrf)) {
     return Response::badRequest('get view pointer', [
         'error' => _('A security verification failed: you should retry to submit the form.'),
     ]);
@@ -158,7 +158,7 @@ Or if an error is expected, you should store the error message as a `Flash`
 variable and redirect to the `from` parameter:
 
 ```php
-utils\Flash::set('error', _('A problem happened.'));
+\Minz\Flash::set('error', _('A problem happened.'));
 return Response::found($from);
 ```
 

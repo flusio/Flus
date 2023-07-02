@@ -2,7 +2,6 @@
 
 namespace flusio\jobs\scheduled;
 
-use flusio\jobs;
 use flusio\models;
 use flusio\services;
 use flusio\utils;
@@ -13,18 +12,17 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class SubscriptionsSync extends jobs\Job
+class SubscriptionsSync extends \Minz\Job
 {
     /**
      * Install the job in database.
      */
     public static function install()
     {
-        $job_dao = new \flusio\models\dao\Job();
-        $subscriptions_sync_job = new SubscriptionsSync();
+        $subscriptions_sync_job = new self();
 
-        if (!$job_dao->findBy(['name' => $subscriptions_sync_job->name])) {
-            $subscriptions_sync_job->performLater();
+        if (!\Minz\Job::existsBy(['name' => $subscriptions_sync_job->name])) {
+            $subscriptions_sync_job->performAsap();
         }
     }
 

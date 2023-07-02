@@ -19,6 +19,6 @@ class PocketError extends \RuntimeException
             $message = _('Pocket error: bad configuration, please contact the support (error code %d).');
         }
 
-        parent::__construct(vsprintf($message, $code));
+        parent::__construct(vsprintf($message, [$code]));
     }
 }

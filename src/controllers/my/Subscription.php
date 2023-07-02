@@ -6,7 +6,6 @@ use Minz\Response;
 use flusio\auth;
 use flusio\models;
 use flusio\services;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -70,15 +69,15 @@ class Subscription
         }
 
         $csrf = $request->param('csrf');
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::redirect('account');
         }
 
         $account = $this->service->account($user->email);
         if (!$account) {
             \Minz\Log::error("Can’t get a subscription account for user {$user->id}.");
-            utils\Flash::set(
+            \Minz\Flash::set(
                 'error',
                 _('An error occured when getting you a subscription account, please contact the support.')
             );

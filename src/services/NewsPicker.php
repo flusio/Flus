@@ -43,39 +43,36 @@ class NewsPicker
      */
     public function pick()
     {
-        $link_dao = new models\dao\Link();
-
         if ($this->options['from'] === 'bookmarks') {
-            $db_links = $link_dao->listFromBookmarksForNews(
+            $links = models\Link::listFromBookmarksForNews(
                 $this->user->id,
                 $this->options['min_duration'],
                 $this->options['max_duration'],
             );
         } else {
-            $db_links = $link_dao->listFromFollowedCollectionsForNews(
+            $links = models\Link::listFromFollowedCollectionsForNews(
                 $this->user->id,
                 $this->options['min_duration'],
                 $this->options['max_duration'],
             );
         }
 
-        $db_links = $this->mergeByUrl($db_links);
-        return array_slice($db_links, 0, $this->options['number_links']);
+        $links = $this->mergeByUrl($links);
+        return array_slice($links, 0, $this->options['number_links']);
     }
 
     /**
      * Removes duplicated links urls.
      *
-     * @param array $db_links
+     * @param models\Link[] $links
      *
-     * @return array
+     * @return models\Link[]
      */
-    private function mergeByUrl($db_links)
+    private function mergeByUrl(array $links): array
     {
         $by_url = [];
-        foreach ($db_links as $db_link) {
-            $url = $db_link['url'];
-            $by_url[$url] = $db_link;
+        foreach ($links as $link) {
+            $by_url[$link->url] = $link;
         }
         return array_values($by_url);
     }

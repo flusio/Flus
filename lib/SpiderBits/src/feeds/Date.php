@@ -13,8 +13,8 @@ class Date
      *
      * @param string $string_date
      *
-     * @return \DateTime|boolean
-     *     Return the parsed DateTime, or false if the string cannot be parsed.
+     * @return \DateTimeImmutable|boolean
+     *     Return the parsed DateTimeImmutable, or false if the string cannot be parsed.
      */
     public static function parse($string_date)
     {
@@ -46,7 +46,7 @@ class Date
         ];
 
         foreach ($date_formats as $format) {
-            $date = \DateTime::createFromFormat($format, $string_date);
+            $date = \DateTimeImmutable::createFromFormat($format, $string_date);
             if ($date) {
                 return $date;
             }

@@ -2,7 +2,6 @@
 
 namespace flusio\jobs\scheduled;
 
-use flusio\jobs;
 use flusio\models;
 use flusio\services;
 use flusio\utils;
@@ -13,18 +12,17 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Cleaner extends jobs\Job
+class Cleaner extends \Minz\Job
 {
     /**
      * Install the job in database.
      */
     public static function install()
     {
-        $job_dao = new \flusio\models\dao\Job();
-        $cleaner_job = new Cleaner();
+        $cleaner_job = new self();
 
-        if (!$job_dao->findBy(['name' => $cleaner_job->name])) {
-            $cleaner_job->performLater();
+        if (!\Minz\Job::existsBy(['name' => $cleaner_job->name])) {
+            $cleaner_job->performAsap();
         }
     }
 
@@ -42,14 +40,13 @@ class Cleaner extends jobs\Job
 
         $support_user = models\User::supportUser();
 
-        models\FetchLog::daoCall('deleteOlderThan', \Minz\Time::ago(3, 'days'));
-        models\Token::daoCall('deleteExpired');
-        models\Session::daoCall('deleteExpired');
-        models\User::daoCall('deleteNotValidatedOlderThan', \Minz\Time::ago(6, 'months'));
-        models\Collection::daoCall('deleteUnfollowedOlderThan', $support_user->id, \Minz\Time::ago(7, 'days'));
-        models\Link::daoCall('deleteNotStoredOlderThan', $support_user->id, \Minz\Time::ago(7, 'days'));
-        models\Link::daoCall(
-            'deleteFromFeeds',
+        models\FetchLog::deleteOlderThan(\Minz\Time::ago(3, 'days'));
+        models\Token::deleteExpired();
+        models\Session::deleteExpired();
+        models\User::deleteNotValidatedOlderThan(\Minz\Time::ago(6, 'months'));
+        models\Collection::deleteUnfollowedOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
+        models\Link::deleteNotStoredOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
+        models\Link::deleteFromFeeds(
             $support_user->id,
             \Minz\Configuration::$application['feeds_links_keep_period'],
             \Minz\Configuration::$application['feeds_links_keep_minimum'],

@@ -93,7 +93,7 @@ class Registrations
         $accept_terms = $request->param('accept_terms', false);
         $csrf = $request->param('csrf');
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('registrations/new.phtml', [
                 'has_terms' => $has_terms,
                 'username' => $username,
@@ -134,21 +134,21 @@ class Registrations
         }
 
         // Initialize the validation token
-        $validation_token = models\Token::init(1, 'day', 16);
+        $validation_token = new models\Token(1, 'day', 16);
         $validation_token->save();
 
         $user->validation_token = $validation_token->token;
         $user->save();
 
         // Initialize the current session
-        $session_token = models\Token::init(1, 'month');
+        $session_token = new models\Token(1, 'month');
         $session_token->save();
 
         // $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
         $session_name = '';
         // $ip = $request->header('REMOTE_ADDR', 'unknown');
         $ip = 'unknown';
-        $session = models\Session::init($session_name, $ip);
+        $session = new models\Session($session_name, $ip);
         $session->user_id = $user->id;
         $session->token = $session_token->token;
         $session->save();
@@ -156,7 +156,7 @@ class Registrations
         auth\CurrentUser::setSessionToken($session_token->token);
 
         $mailer_job = new jobs\Mailer();
-        $mailer_job->performLater('Users', 'sendAccountValidationEmail', $user->id);
+        $mailer_job->performAsap('Users', 'sendAccountValidationEmail', $user->id);
 
         $response = Response::redirect('onboarding');
         $response->setCookie('flusio_session_token', $session_token->token, [

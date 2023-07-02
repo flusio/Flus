@@ -98,7 +98,7 @@ class Account
             ]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('my/account/deletion.phtml', [
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
@@ -128,7 +128,7 @@ class Account
 
         models\User::delete($current_user->id);
         auth\CurrentUser::reset();
-        utils\Flash::set('status', 'user_deleted');
+        \Minz\Flash::set('status', 'user_deleted');
         return Response::redirect('login');
     }
 }

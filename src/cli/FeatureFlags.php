@@ -64,7 +64,7 @@ class FeatureFlags
         $type = $request->param('type');
         $user_id = $request->param('user_id');
 
-        if (!models\FeatureFlag::validateType($type)) {
+        if (!in_array($type, models\FeatureFlag::VALID_TYPES)) {
             return Response::text(400, "{$type} is not a valid feature flag type");
         }
 

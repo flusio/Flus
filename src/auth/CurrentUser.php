@@ -13,8 +13,7 @@ use flusio\models;
  */
 class CurrentUser
 {
-    /** @var \flusio\models\User */
-    private static $instance;
+    private static ?models\User $instance = null;
 
     /**
      * Load a User from the database by the id stored in the session.
@@ -24,10 +23,8 @@ class CurrentUser
      *
      * If the session token doesn't exist, has expired or is invalid, null is
      * returned.
-     *
-     * @return \flusio\models\User|null
      */
-    public static function get()
+    public static function get(): ?models\User
     {
         if (!isset($_SESSION['current_session_token'])) {
             // Not logged in, meh.
@@ -40,7 +37,7 @@ class CurrentUser
         }
 
         // Let's load the user from the database
-        $current_user = models\User::daoToModel('findBySessionToken', $_SESSION['current_session_token']);
+        $current_user = models\User::findBySessionToken($_SESSION['current_session_token']);
         if (!$current_user) {
             // The user doesn't exist… what are you trying to do evil user?
             return null;
@@ -55,10 +52,8 @@ class CurrentUser
      *
      * Please note the token is not verified, so always check the user is
      * logged in with the `get()` method.
-     *
-     * @return \flusio\models\Session|null
      */
-    public static function session()
+    public static function session(): ?models\Session
     {
         if (isset($_SESSION['current_session_token'])) {
             return models\Session::findBy([
@@ -71,10 +66,8 @@ class CurrentUser
 
     /**
      * Reset the current instance of User and reaload it from the database
-     *
-     * @return \flusio\models\User
      */
-    public static function reload()
+    public static function reload(): ?models\User
     {
         self::$instance = null;
         return self::get();
@@ -82,10 +75,8 @@ class CurrentUser
 
     /**
      * Save the given session token in session and reset the instance.
-     *
-     * @param string $token
      */
-    public static function setSessionToken($token)
+    public static function setSessionToken(string $token): void
     {
         $_SESSION['current_session_token'] = $token;
         self::$instance = null;
@@ -94,7 +85,7 @@ class CurrentUser
     /**
      * Unset the user id in session and reset the instance.
      */
-    public static function reset()
+    public static function reset(): void
     {
         unset($_SESSION['current_session_token']);
         self::$instance = null;
@@ -102,10 +93,8 @@ class CurrentUser
 
     /**
      * Return the current session token from $_SESSION.
-     *
-     * @return string|null
      */
-    public static function sessionToken()
+    public static function sessionToken(): ?string
     {
         if (isset($_SESSION['current_session_token'])) {
             return $_SESSION['current_session_token'];

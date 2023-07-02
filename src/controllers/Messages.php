@@ -5,7 +5,6 @@ namespace flusio\controllers;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -89,8 +88,8 @@ class Messages
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 
@@ -98,7 +97,7 @@ class Messages
 
         $errors = $message->validate();
         if ($errors) {
-            utils\Flash::set('errors', $errors);
+            \Minz\Flash::set('errors', $errors);
             return Response::found($from);
         }
 
@@ -137,8 +136,8 @@ class Messages
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($redirect_to);
         }
 

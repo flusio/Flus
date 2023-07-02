@@ -25,7 +25,7 @@ class Entry
     /** @var string[] */
     public $categories = [];
 
-    /** @var \DateTime */
+    /** @var \DateTimeImmutable */
     public $published_at = null;
 
     /** @var string */

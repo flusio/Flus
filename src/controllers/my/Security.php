@@ -5,7 +5,6 @@ namespace flusio\controllers\my;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -73,7 +72,7 @@ class Security
         $password = $request->param('password');
         $csrf = $request->param('csrf');
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('my/security/show_confirmed.phtml', [
                 'email' => $email,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -111,7 +110,7 @@ class Security
             // control back on the account
             models\Token::delete($user->reset_token);
             $current_session = auth\CurrentUser::session();
-            models\Session::daoCall('deleteByUserId', $user->id, $current_session->id);
+            models\Session::deleteByUserId($user->id, $current_session->id);
         }
 
         return Response::redirect('security');
@@ -146,13 +145,13 @@ class Security
         $password = $request->param('password');
         $csrf = $request->param('csrf');
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::redirect('security');
         }
 
         if (!$user->verifyPassword($password)) {
-            utils\Flash::set('errors', [
+            \Minz\Flash::set('errors', [
                 'password_hash' => _('The password is incorrect.'),
             ]);
             return Response::redirect('security');

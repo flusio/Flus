@@ -48,7 +48,7 @@ class AtomImportator
      */
     public function importForCollection($collection)
     {
-        $link_ids_by_urls = models\Link::daoCall('listUrlsToIdsByCollectionId', $collection->id);
+        $link_ids_by_urls = models\Link::listUrlsToIdsByCollectionId($collection->id);
 
         $links_to_create = [];
         $links_to_collections_to_create = [];
@@ -74,7 +74,7 @@ class AtomImportator
 
             // The URL is not associated to the collection in database yet,
             // so we create a new link.
-            $link = models\Link::init($url, $collection->user_id, false);
+            $link = new models\Link($url, $collection->user_id, false);
             $entry_title = trim($entry->title);
             if ($entry_title) {
                 $link->title = $entry_title;
@@ -85,11 +85,10 @@ class AtomImportator
 
             $link_ids_by_urls[$link->url] = $link->id;
 
-            $links_to_collections_to_create[] = new models\LinkToCollection([
-                'created_at' => $published_at,
-                'link_id' => $link->id,
-                'collection_id' => $collection->id,
-            ]);
+            $link_to_collection = new models\LinkToCollection($link->id, $collection->id);
+            $link_to_collection->created_at = $published_at;
+
+            $links_to_collections_to_create[] = $link_to_collection;
         }
 
         models\Link::bulkInsert($links_to_create);

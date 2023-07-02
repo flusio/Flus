@@ -12,7 +12,7 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class PocketImportator extends Job
+class PocketImportator extends \Minz\Job
 {
     public function __construct()
     {
@@ -113,6 +113,7 @@ class PocketImportator extends Job
             'name' => _('Pocket links'),
             'user_id' => $user->id,
         ], [
+            'id' => \Minz\Random::timebased(),
             'description' => _('All your links imported from Pocket.'),
         ]);
         if ($options['import_favorites']) {
@@ -120,14 +121,15 @@ class PocketImportator extends Job
                 'name' => _('Pocket favorite'),
                 'user_id' => $user->id,
             ], [
+                'id' => \Minz\Random::timebased(),
                 'description' => _('All your favorites imported from Pocket.'),
             ]);
         }
 
         // This will be used to check if URL has already been added by the user
-        $link_ids_by_urls = models\Link::daoCall('listUrlsToIdsByUserId', $user->id);
+        $link_ids_by_urls = models\Link::listUrlsToIdsByUserId($user->id);
         // ... or collection already exists
-        $collection_ids_by_names = models\Collection::daoCall('listNamesToIdsByUserId', $user->id);
+        $collection_ids_by_names = models\Collection::listNamesToIdsByUserId($user->id);
 
         // This will store the items that we effectively need to create. We
         // don't create links, collections and their relation on the fly because
@@ -182,7 +184,7 @@ class PocketImportator extends Job
             } else {
                 // The user didn't added this link yet, so we'll need to create
                 // it. First, initiate a new model
-                $link = models\Link::init($given_url, $user->id, false);
+                $link = new models\Link($given_url, $user->id, false);
                 if (!empty($item['resolved_title'])) {
                     $link->title = $item['resolved_title'];
                 } elseif (!empty($item['given_title'])) {
@@ -207,18 +209,16 @@ class PocketImportator extends Job
             if (isset($item['time_added'])) {
                 $timestamp = intval($item['time_added']);
                 if ($timestamp > 0) {
-                    $published_at->setTimestamp($timestamp);
+                    $published_at = \DateTimeImmutable::createFromFormat('U', (string) $timestamp);
                 }
             }
 
             // We now have a link_id and a list of collection ids. We store
             // here the relations in the last _to_create array.
             foreach ($collection_ids as $collection_id) {
-                $links_to_collections_to_create[] = new models\LinkToCollection([
-                    'created_at' => $published_at,
-                    'link_id' => $link_id,
-                    'collection_id' => $collection_id,
-                ]);
+                $link_to_collection = new models\LinkToCollection($link_id, $collection_id);
+                $link_to_collection->created_at = $published_at;
+                $links_to_collections_to_create[] = $link_to_collection;
             }
         }
 
@@ -229,15 +229,15 @@ class PocketImportator extends Job
 
         // Delete the collections if they are empty at the end of the
         // importation.
-        $count_pocket_links = models\Link::daoCall('countByCollectionId', $pocket_collection->id);
+        $count_pocket_links = models\Link::countByCollectionId($pocket_collection->id);
         if ($count_pocket_links === 0) {
-            models\Collection::delete($pocket_collection->id);
+            $pocket_collection->remove();
         }
 
         if ($options['import_favorites']) {
-            $count_favorite_links = models\Link::daoCall('countByCollectionId', $favorite_collection->id);
+            $count_favorite_links = models\Link::countByCollectionId($favorite_collection->id);
             if ($count_favorite_links === 0) {
-                models\Collection::delete($favorite_collection->id);
+                $favorite_collection->remove();
             }
         }
     }

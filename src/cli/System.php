@@ -35,26 +35,26 @@ class System
         $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
 
         $count_users = models\User::count();
-        $count_users_validated = models\User::daoCall('countValidated');
+        $count_users_validated = models\User::countValidated();
         $percent_users_validated = intval($count_users_validated * 100 / max(1, $count_users));
-        $count_users_week = models\User::daoCall('countSince', \Minz\Time::ago(1, 'week'));
-        $count_users_month = models\User::daoCall('countSince', \Minz\Time::ago(1, 'month'));
-        $count_users_active_month = models\Session::daoCall('countUsersActiveSince', \Minz\Time::ago(1, 'month'));
+        $count_users_week = models\User::countSince(\Minz\Time::ago(1, 'week'));
+        $count_users_month = models\User::countSince(\Minz\Time::ago(1, 'month'));
+        $count_users_active_month = models\Session::countUsersActiveSince(\Minz\Time::ago(1, 'month'));
 
-        $count_links = models\Link::daoCall('countEstimated');
-        $count_links_to_fetch = models\Link::daoCall('countToFetch');
+        $count_links = models\Link::countEstimated();
+        $count_links_to_fetch = models\Link::countToFetch();
 
-        $count_collections = models\Collection::daoCall('countCollections');
-        $count_collections_public = models\Collection::daoCall('countCollectionsPublic');
+        $count_collections = models\Collection::countCollections();
+        $count_collections_public = models\Collection::countCollectionsPublic();
 
-        $count_feeds = models\Collection::daoCall('countFeeds');
-        $count_feeds_by_hours = models\Collection::daoCall('countFeedsByHours');
+        $count_feeds = models\Collection::countFeeds();
+        $count_feeds_by_hours = models\Collection::countFeedsByHours();
 
-        $count_requests = models\FetchLog::daoCall('countEstimated');
-        $count_requests_feeds = models\FetchLog::daoCall('countByType', 'feed');
-        $count_requests_links = models\FetchLog::daoCall('countByType', 'link');
-        $count_requests_images = models\FetchLog::daoCall('countByType', 'image');
-        $count_requests_by_days = models\FetchLog::daoCall('countByDays');
+        $count_requests = models\FetchLog::countEstimated();
+        $count_requests_feeds = models\FetchLog::countByType('feed');
+        $count_requests_links = models\FetchLog::countByType('link');
+        $count_requests_images = models\FetchLog::countByType('image');
+        $count_requests_by_days = models\FetchLog::countByDays();
 
         $info =  "{$app_name} v{$app_version}\n";
         $info .= "\n";
@@ -126,7 +126,7 @@ class System
      */
     public function secret()
     {
-        $secret = utils\Random::hex(128);
+        $secret = \Minz\Random::hex(128);
         return Response::text(200, $secret);
     }
 

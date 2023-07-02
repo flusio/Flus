@@ -11,7 +11,7 @@ use flusio\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class OpmlImportator extends Job
+class OpmlImportator extends \Minz\Job
 {
     public function __construct()
     {
@@ -30,7 +30,7 @@ class OpmlImportator extends Job
             return;
         }
 
-        $opml_filepath = $importation->options()['opml_filepath'];
+        $opml_filepath = $importation->options['opml_filepath'];
         $user = models\User::find($importation->user_id);
 
         try {

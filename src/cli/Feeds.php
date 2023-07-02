@@ -21,7 +21,7 @@ class Feeds
      */
     public function index($request)
     {
-        $collections = models\Collection::daoToList('listBy', [
+        $collections = models\Collection::listBy([
             'type' => 'feed',
         ]);
         $feeds_as_text = [];
@@ -117,7 +117,7 @@ class Feeds
      */
     public function resetHashes($request)
     {
-        models\Collection::daoCall('resetHashes');
+        models\Collection::resetHashes();
         return Response::text(200, 'Feeds hashes have been reset.');
     }
 }

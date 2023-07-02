@@ -5,7 +5,6 @@ namespace flusio\controllers\collections;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -45,8 +44,8 @@ class Followers
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::found($from);
         }
 
@@ -89,8 +88,8 @@ class Followers
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::found($from);
         }
 

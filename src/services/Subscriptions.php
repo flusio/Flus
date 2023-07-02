@@ -58,8 +58,8 @@ class Subscriptions
                 return null;
             }
 
-            $data['expired_at'] = date_create_from_format(
-                \Minz\Model::DATETIME_FORMAT,
+            $data['expired_at'] = \DateTimeImmutable::createFromFormat(
+                \Minz\Database\Column::DATETIME_FORMAT,
                 $data['expired_at']
             );
             return $data;
@@ -127,8 +127,8 @@ class Subscriptions
                 return null;
             }
 
-            return date_create_from_format(
-                \Minz\Model::DATETIME_FORMAT,
+            return \DateTimeImmutable::createFromFormat(
+                \Minz\Database\Column::DATETIME_FORMAT,
                 $data['expired_at']
             );
         } else {
@@ -169,8 +169,8 @@ class Subscriptions
 
         $result = [];
         foreach ($data as $account_id => $expired_at) {
-            $expired_at = date_create_from_format(
-                \Minz\Model::DATETIME_FORMAT,
+            $expired_at = \DateTimeImmutable::createFromFormat(
+                \Minz\Database\Column::DATETIME_FORMAT,
                 $expired_at
             );
 

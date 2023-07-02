@@ -7,16 +7,40 @@ $application = new \flusio\cli\Application();
 \flusio\models\User::supportUser();
 
 // Install the scheduled jobs in database
-$application->run(new \Minz\Request('cli', '/jobs/install'));
+$application->run(new \Minz\Request('CLI', '/jobs/install'));
 
 if ($environment === 'development') {
     // Initialize topics (only in development)
-    \flusio\models\Topic::findOrCreateBy(['label' => _('Business')]);
-    \flusio\models\Topic::findOrCreateBy(['label' => _('Climate')]);
-    \flusio\models\Topic::findOrCreateBy(['label' => _('Culture')]);
-    \flusio\models\Topic::findOrCreateBy(['label' => _('Health')]);
-    \flusio\models\Topic::findOrCreateBy(['label' => _('Politics')]);
-    \flusio\models\Topic::findOrCreateBy(['label' => _('Science')]);
-    \flusio\models\Topic::findOrCreateBy(['label' => _('Sport')]);
-    \flusio\models\Topic::findOrCreateBy(['label' => _('Tech')]);
+    \flusio\models\Topic::findOrCreateBy(
+        ['label' => _('Business')],
+        ['id' => \Minz\Random::timebased()],
+    );
+    \flusio\models\Topic::findOrCreateBy(
+        ['label' => _('Climate')],
+        ['id' => \Minz\Random::timebased()],
+    );
+    \flusio\models\Topic::findOrCreateBy(
+        ['label' => _('Culture')],
+        ['id' => \Minz\Random::timebased()],
+    );
+    \flusio\models\Topic::findOrCreateBy(
+        ['label' => _('Health')],
+        ['id' => \Minz\Random::timebased()],
+    );
+    \flusio\models\Topic::findOrCreateBy(
+        ['label' => _('Politics')],
+        ['id' => \Minz\Random::timebased()],
+    );
+    \flusio\models\Topic::findOrCreateBy(
+        ['label' => _('Science')],
+        ['id' => \Minz\Random::timebased()],
+    );
+    \flusio\models\Topic::findOrCreateBy(
+        ['label' => _('Sport')],
+        ['id' => \Minz\Random::timebased()],
+    );
+    \flusio\models\Topic::findOrCreateBy(
+        ['label' => _('Tech')],
+        ['id' => \Minz\Random::timebased()],
+    );
 }

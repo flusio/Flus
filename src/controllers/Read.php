@@ -34,7 +34,7 @@ class Read
         }
 
         $read_list = $user->readList();
-        $number_links = models\Link::daoCall('countByCollectionId', $read_list->id);
+        $number_links = models\Link::countByCollectionId($read_list->id);
         $pagination_page = $request->paramInteger('page', 1);
         $number_per_page = 30;
         $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);

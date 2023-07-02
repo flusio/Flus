@@ -2,6 +2,8 @@
 
 namespace flusio\migrations;
 
+use flusio\models;
+
 class Migration202007150001AddCsrfToUsers
 {
     public function migrate()
@@ -13,10 +15,9 @@ class Migration202007150001AddCsrfToUsers
             ADD COLUMN csrf TEXT NOT NULL DEFAULT '';
         SQL);
 
-        $user_dao = new \flusio\models\dao\User();
-        $db_users = $user_dao->listAll();
-        foreach ($db_users as $db_user) {
-            $user_dao->update($db_user['id'], [
+        $users = models\User::listAll();
+        foreach ($users as $user) {
+            models\User::update($user->id, [
                 'csrf' => \bin2hex(\random_bytes(32)),
             ]);
         }

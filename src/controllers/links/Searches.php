@@ -38,7 +38,7 @@ class Searches
         $url = $request->param('url', '');
         $url = \SpiderBits\Url::sanitize($url);
 
-        $existing_link = models\Link::daoToModel('findComputedBy', [
+        $existing_link = models\Link::findComputedBy([
             'user_id' => $user->id,
             'url_lookup' => utils\Belt::removeScheme($url),
         ], ['number_comments']);
@@ -50,9 +50,8 @@ class Searches
 
         $feeds = [];
         if ($default_link) {
-            $associated_feeds = models\Collection::daoToList(
-                'listComputedFeedsByFeedUrls',
-                $default_link->feedUrls(),
+            $associated_feeds = models\Collection::listComputedFeedsByFeedUrls(
+                $default_link->url_feeds,
                 ['number_links']
             );
 
@@ -97,7 +96,7 @@ class Searches
             ]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('links/searches/show.phtml', [
                 'url' => $url,
                 'default_link' => null,
@@ -112,7 +111,7 @@ class Searches
             'url_lookup' => utils\Belt::removeScheme($url),
         ]);
         if (!$default_link) {
-            $default_link = models\Link::init($url, $support_user->id, false);
+            $default_link = new models\Link($url, $support_user->id, false);
         }
 
         $errors = $default_link->validate();
@@ -136,7 +135,7 @@ class Searches
             'timeout' => 10,
             'rate_limit' => false,
         ]);
-        foreach ($default_link->feedUrls() as $feed_url) {
+        foreach ($default_link->url_feeds as $feed_url) {
             $existing_feed = models\Collection::findBy([
                 'type' => 'feed',
                 'feed_url' => $feed_url,

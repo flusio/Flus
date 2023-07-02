@@ -29,7 +29,7 @@ class Feeds
             return Response::redirect('login', ['redirect_to' => \Minz\Url::for('feeds')]);
         }
 
-        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        $groups = models\Group::listBy(['user_id' => $user->id]);
         utils\Sorter::localeSort($groups, 'name');
 
         // Counting links is optimized for feeds, so we list the collections in
@@ -99,7 +99,7 @@ class Feeds
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('feeds/new.phtml', [
                 'url' => $url,
                 'from' => $from,
@@ -112,7 +112,7 @@ class Feeds
             'url_lookup' => utils\Belt::removeScheme($url),
         ]);
         if (!$default_link) {
-            $default_link = models\Link::init($url, $support_user->id, false);
+            $default_link = new models\Link($url, $support_user->id, false);
         }
 
         $errors = $default_link->validate();
@@ -130,8 +130,7 @@ class Feeds
         ]);
         $link_fetcher_service->fetch($default_link);
 
-        $feed_urls = $default_link->feedUrls();
-        if (count($feed_urls) === 0) {
+        if (count($default_link->url_feeds) === 0) {
             return Response::badRequest('feeds/new.phtml', [
                 'url' => $url,
                 'from' => $from,
@@ -141,7 +140,7 @@ class Feeds
             ]);
         }
 
-        $feed_url = $feed_urls[0];
+        $feed_url = $default_link->url_feeds[0];
         $feed = models\Collection::findBy([
             'type' => 'feed',
             'feed_url' => $feed_url,

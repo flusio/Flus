@@ -102,9 +102,9 @@ class LinkFetcher
         }
 
         if (!empty($info['url_feeds'])) {
-            $link->url_feeds = json_encode($info['url_feeds']);
+            $link->url_feeds = $info['url_feeds'];
         } elseif ($this->isYoutube($link->url)) {
-            $link->url_feeds = json_encode($this->urlToYoutubeFeeds($link->url));
+            $link->url_feeds = $this->urlToYoutubeFeeds($link->url);
         }
 
         $link->save();

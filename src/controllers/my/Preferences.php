@@ -68,7 +68,7 @@ class Preferences
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('my/preferences/edit.phtml', [
                 'locale' => $locale,
                 'option_compact_mode' => $option_compact_mode,

@@ -88,7 +88,7 @@ class Collections
         $topics = models\Topic::listAll();
         utils\Sorter::localeSort($topics, 'label');
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
@@ -130,8 +130,7 @@ class Collections
 
         $collection->save();
         if ($topic_ids) {
-            $collections_to_topics_dao = new models\dao\CollectionsToTopics();
-            $collections_to_topics_dao->attach($collection->id, $topic_ids);
+            models\CollectionToTopic::attach($collection->id, $topic_ids);
         }
 
         return Response::redirect('collection', ['id' => $collection->id]);
@@ -167,7 +166,7 @@ class Collections
         }
 
         $access_is_shared = $user && $collection->sharedWith($user);
-        $number_links = models\Link::daoCall('countByCollectionId', $collection->id, [
+        $number_links = models\Link::countByCollectionId($collection->id, [
             'hidden' => $can_update || $access_is_shared,
         ]);
         $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!
@@ -294,7 +293,7 @@ class Collections
         $topic_ids = $request->paramArray('topic_ids', []);
         $csrf = $request->param('csrf');
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
@@ -343,8 +342,8 @@ class Collections
         }
 
         $collection->save();
-        $collections_to_topics_dao = new models\dao\CollectionsToTopics();
-        $collections_to_topics_dao->set($collection->id, $topic_ids);
+
+        models\CollectionToTopic::set($collection->id, $topic_ids);
 
         return Response::found($from);
     }
@@ -378,8 +377,8 @@ class Collections
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 

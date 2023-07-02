@@ -41,7 +41,7 @@ class Topics
     {
         $label = $request->param('label');
         $image_url = $request->param('image_url');
-        $topic = models\Topic::init($label);
+        $topic = new models\Topic($label);
 
         if ($image_url) {
             $image_service = new services\Image();
