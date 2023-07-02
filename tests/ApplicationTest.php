@@ -2,12 +2,15 @@
 
 namespace flusio;
 
+use tests\factories\SessionFactory;
+use tests\factories\TokenFactory;
+use tests\factories\UserFactory;
+
 class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testRunSetsTheDefaultLocale()
@@ -53,28 +56,28 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
     public function testRunSetsCurrentUserFromCookie()
     {
         $expired_at = \Minz\Time::fromNow(30, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => $expired_at,
         ]);
-        $user_id = $this->create('user');
-        $this->create('session', [
-            'user_id' => $user_id,
-            'token' => $token,
+        $user = UserFactory::create();
+        SessionFactory::create([
+            'user_id' => $user->id,
+            'token' => $token->token,
         ]);
 
-        $user = auth\CurrentUser::get();
-        $this->assertNull($user);
+        $current_user = auth\CurrentUser::get();
+        $this->assertNull($current_user);
 
         $request = new \Minz\Request('GET', '/', [], [
             'COOKIE' => [
-                'flusio_session_token' => $token,
+                'flusio_session_token' => $token->token,
             ],
         ]);
         $application = new Application();
         $response = $application->run($request);
 
-        $user = auth\CurrentUser::get();
-        $this->assertSame($user_id, $user->id);
+        $current_user = auth\CurrentUser::get();
+        $this->assertSame($user->id, $current_user->id);
     }
 
     public function testRunSetsAutoloadModal()
@@ -89,7 +92,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, \Minz\Url::for('showcase', ['id' => 'navigation']));
-        $user = models\User::find($user->id);
+        $user = $user->reload();
         $this->assertEmpty($user->autoload_modal);
     }
 
@@ -104,7 +107,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $response = $application->run($request);
 
         $this->assertResponseCode($response, 301);
-        $user = models\User::find($user->id);
+        $user = $user->reload();
         $this->assertSame('showcase navigation', $user->autoload_modal);
     }
 
@@ -112,7 +115,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
     {
         $created_at = \Minz\Time::ago($this->fake('numberBetween', 2, 42), 'days');
         $this->login([
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'created_at' => $created_at,
             'validated_at' => null,
         ]);
         $request = new \Minz\Request('GET', '/news');
@@ -128,7 +131,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
         $this->login([
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_expired_at' => $expired_at,
         ]);
         $request = new \Minz\Request('GET', '/news');
 

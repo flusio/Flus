@@ -3,6 +3,11 @@
 namespace flusio\controllers;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\UserFactory;
 
 class ProfilesTest extends \PHPUnit\Framework\TestCase
 {
@@ -10,17 +15,16 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
     {
         $username = $this->fake('username');
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'username' => $username,
         ]);
 
-        $response = $this->appRun('get', "/p/{$user_id}");
+        $response = $this->appRun('GET', "/p/{$user->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'profiles/show.phtml');
@@ -31,7 +35,7 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
 
-        $response = $this->appRun('get', "/p/{$user->id}");
+        $response = $this->appRun('GET', "/p/{$user->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'profiles/show.phtml');
@@ -41,50 +45,50 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
     public function testShowDisplaysPublicCollectionsWithLinks()
     {
         $username = $this->fake('username');
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'username' => $username,
         ]);
         $collection_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
             'name' => $collection_name,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $response = $this->appRun('get', "/p/{$user_id}");
+        $response = $this->appRun('GET', "/p/{$user->id}");
 
         $this->assertResponseContains($response, $collection_name);
     }
 
     public function testShowDisplaysLastSharedLinks()
     {
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
             'title' => $link_title,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $response = $this->appRun('get', "/p/{$user_id}");
+        $response = $this->appRun('GET', "/p/{$user->id}");
 
         $this->assertResponseContains($response, $link_title);
     }
@@ -93,30 +97,30 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
     {
         $current_user = $this->login();
         $username = $this->fake('username');
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'username' => $username,
         ]);
         $collection_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
             'name' => $collection_name,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 1,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $current_user->id,
         ]);
 
-        $response = $this->appRun('get', "/p/{$user_id}");
+        $response = $this->appRun('GET', "/p/{$user->id}");
 
         $this->assertResponseContains($response, $collection_name);
     }
@@ -124,26 +128,26 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
     public function testShowDoesNotDisplayPublicCollectionsWithOnlyHiddenLinks()
     {
         $username = $this->fake('username');
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'username' => $username,
         ]);
         $collection_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
             'name' => $collection_name,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 1,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $response = $this->appRun('get', "/p/{$user_id}");
+        $response = $this->appRun('GET', "/p/{$user->id}");
 
         $this->assertResponseNotContains($response, $collection_name);
     }
@@ -151,33 +155,33 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
     public function testShowDoesNotDisplayPrivateCollectionsWithLinks()
     {
         $username = $this->fake('username');
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'username' => $username,
         ]);
         $collection_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
             'name' => $collection_name,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $response = $this->appRun('get', "/p/{$user_id}");
+        $response = $this->appRun('GET', "/p/{$user->id}");
 
         $this->assertResponseNotContains($response, $collection_name);
     }
 
     public function testShowFailsIfUserDoesNotExist()
     {
-        $response = $this->appRun('get', '/p/not-an-id');
+        $response = $this->appRun('GET', '/p/not-an-id');
 
         $this->assertResponseCode($response, 404);
     }
@@ -186,7 +190,7 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
     {
         $support_user = models\User::supportUser();
 
-        $response = $this->appRun('get', "/p/{$support_user->id}");
+        $response = $this->appRun('GET', "/p/{$support_user->id}");
 
         $this->assertResponseCode($response, 404);
     }

@@ -3,11 +3,13 @@
 namespace flusio\jobs;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\ImportationFactory;
+use tests\factories\UserFactory;
 
 class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\FilesHelper;
     use \tests\InitializerHelper;
 
@@ -16,7 +18,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
      */
     public static function setJobAdapterToDatabase()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
+        \Minz\Configuration::$jobs_adapter = 'database';
     }
 
     /**
@@ -24,7 +26,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
      */
     public static function setJobAdapterToTest()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
     }
 
     public function testQueue()
@@ -38,24 +40,22 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
     {
         $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
-        $followed_collections_dao = new models\dao\FollowedCollection();
         $importator = new OpmlImportator();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $support_user = models\User::supportUser();
-        $user = models\User::find($user_id);
-        $importation_id = $this->create('importation', [
+        $importation = ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
-            'options' => json_encode(['opml_filepath' => $opml_filepath]),
+            'options' => ['opml_filepath' => $opml_filepath],
         ]);
 
         $this->assertSame(0, models\Collection::count());
         $this->assertSame(0, models\Group::count());
-        $this->assertSame(0, $followed_collections_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
 
-        $importator->perform($importation_id);
+        $importator->perform($importation->id);
 
-        $importation = models\Importation::find($importation_id);
+        $importation = $importation->reload();
         $this->assertSame('finished', $importation->status);
         $this->assertSame(3, models\Collection::count());
         $collection1 = models\Collection::take(0);
@@ -70,18 +70,18 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Group::count());
         $group = models\Group::take();
         $this->assertSame('Blogs', $group->name);
-        $this->assertSame($user_id, $group->user_id);
-        $this->assertSame(3, $followed_collections_dao->count());
-        $followed_collections = $followed_collections_dao->listAll();
-        $this->assertSame($user->id, $followed_collections[0]['user_id']);
-        $this->assertSame($collection1->id, $followed_collections[0]['collection_id']);
-        $this->assertSame($group->id, $followed_collections[0]['group_id']);
-        $this->assertSame($user->id, $followed_collections[1]['user_id']);
-        $this->assertSame($collection2->id, $followed_collections[1]['collection_id']);
-        $this->assertSame($group->id, $followed_collections[1]['group_id']);
-        $this->assertSame($user->id, $followed_collections[2]['user_id']);
-        $this->assertSame($collection3->id, $followed_collections[2]['collection_id']);
-        $this->assertSame($group->id, $followed_collections[2]['group_id']);
+        $this->assertSame($user->id, $group->user_id);
+        $this->assertSame(3, models\FollowedCollection::count());
+        $followed_collections = models\FollowedCollection::listAll();
+        $this->assertSame($user->id, $followed_collections[0]->user_id);
+        $this->assertSame($collection1->id, $followed_collections[0]->collection_id);
+        $this->assertSame($group->id, $followed_collections[0]->group_id);
+        $this->assertSame($user->id, $followed_collections[1]->user_id);
+        $this->assertSame($collection2->id, $followed_collections[1]->collection_id);
+        $this->assertSame($group->id, $followed_collections[1]->group_id);
+        $this->assertSame($user->id, $followed_collections[2]->user_id);
+        $this->assertSame($collection3->id, $followed_collections[2]->collection_id);
+        $this->assertSame($group->id, $followed_collections[2]->group_id);
     }
 
     public function testPerformRemovesFile()
@@ -89,16 +89,16 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         $importator = new OpmlImportator();
-        $user_id = $this->create('user');
-        $importation_id = $this->create('importation', [
+        $user = UserFactory::create();
+        $importation = ImportationFactory::create([
             'type' => 'opml',
-            'user_id' => $user_id,
-            'options' => json_encode(['opml_filepath' => $opml_filepath]),
+            'user_id' => $user->id,
+            'options' => ['opml_filepath' => $opml_filepath],
         ]);
 
         $this->assertTrue(file_exists($opml_filepath));
 
-        $importator->perform($importation_id);
+        $importator->perform($importation->id);
 
         $this->assertFalse(file_exists($opml_filepath));
     }
@@ -107,30 +107,28 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
     {
         $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
-        $followed_collections_dao = new models\dao\FollowedCollection();
         $importator = new OpmlImportator();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $support_user = models\User::supportUser();
-        $user = models\User::find($user_id);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $support_user->id,
             'type' => 'feed',
             'feed_url' => 'https://flus.fr/carnet/feeds/all.atom.xml',
         ]);
-        $importation_id = $this->create('importation', [
+        $importation = ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
-            'options' => json_encode(['opml_filepath' => $opml_filepath]),
+            'options' => ['opml_filepath' => $opml_filepath],
         ]);
 
         $this->assertSame(1, models\Collection::count());
-        $this->assertSame(0, $followed_collections_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
 
-        $importator->perform($importation_id);
+        $importator->perform($importation->id);
 
         $this->assertSame(3, models\Collection::count());
-        $followed_collection = $followed_collections_dao->findBy([
-            'collection_id' => $collection_id,
+        $followed_collection = models\FollowedCollection::findBy([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
         $this->assertNotNull($followed_collection);
@@ -138,13 +136,12 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformHandlesIfImportationIsMissing()
     {
-        $followed_collections_dao = new models\dao\FollowedCollection();
         $importator = new OpmlImportator();
 
         $importator->perform(1);
 
         $this->assertSame(0, models\Collection::count());
-        $this->assertSame(0, $followed_collections_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
     }
 
     public function testPerformFailsIfFileIsMissing()
@@ -152,24 +149,22 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         unlink($opml_filepath);
-        $followed_collections_dao = new models\dao\FollowedCollection();
         $importator = new OpmlImportator();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $support_user = models\User::supportUser();
-        $user = models\User::find($user_id);
-        $importation_id = $this->create('importation', [
+        $importation = ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
-            'options' => json_encode(['opml_filepath' => $opml_filepath]),
+            'options' => ['opml_filepath' => $opml_filepath],
         ]);
 
-        $importator->perform($importation_id);
+        $importator->perform($importation->id);
 
-        $importation = models\Importation::find($importation_id);
+        $importation = $importation->reload();
         $this->assertSame('error', $importation->status);
         $this->assertSame('Can’t read the OPML file.', $importation->error);
         $this->assertSame(0, models\Collection::count());
-        $this->assertSame(0, $followed_collections_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
     }
 
     public function testPerformFailsIfFileIsNotOpml()
@@ -177,24 +172,22 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         file_put_contents($opml_filepath, 'not opml');
-        $followed_collections_dao = new models\dao\FollowedCollection();
         $importator = new OpmlImportator();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $support_user = models\User::supportUser();
-        $user = models\User::find($user_id);
-        $importation_id = $this->create('importation', [
+        $importation = ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
-            'options' => json_encode(['opml_filepath' => $opml_filepath]),
+            'options' => ['opml_filepath' => $opml_filepath],
         ]);
 
-        $importator->perform($importation_id);
+        $importator->perform($importation->id);
 
-        $importation = models\Importation::find($importation_id);
+        $importation = $importation->reload();
         $this->assertSame('error', $importation->status);
         $this->assertSame('Can’t parse the given string.', $importation->error);
         $this->assertSame(0, models\Collection::count());
-        $this->assertSame(0, $followed_collections_dao->count());
+        $this->assertSame(0, models\FollowedCollection::count());
         $this->assertFalse(file_exists($opml_filepath));
     }
 }

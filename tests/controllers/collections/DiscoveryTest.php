@@ -10,7 +10,7 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRedirects()
     {
-        $response = $this->appRun('get', '/collections/discover');
+        $response = $this->appRun('GET', '/collections/discover');
 
         $this->assertResponseCode($response, 302, '/discovery');
     }

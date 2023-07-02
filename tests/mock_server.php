@@ -65,7 +65,6 @@ $app_path = realpath(__DIR__ . '/..');
 include $app_path . '/autoload.php';
 \Minz\Configuration::load('test', $app_path);
 \Minz\Configuration::$no_syslog_output = false;
-\Minz\Environment::initialize();
 
 $http_parameters = array_merge($_GET, $_POST);
 

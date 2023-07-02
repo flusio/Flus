@@ -3,11 +3,14 @@
 namespace flusio\jobs;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\UserFactory;
 
 class PocketImportatorTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
 
     public function testQueue()
@@ -20,12 +23,8 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsImportInBookmarks()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
-        $bookmarks_id = $this->create('collection', [
-            'type' => 'bookmarks',
-            'user_id' => $user->id,
-        ]);
+        $user = UserFactory::create();
+        $bookmarks = $user->bookmarks();
         $url = $this->fake('url');
         $items = [
             [
@@ -47,7 +46,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link);
         $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
         ]);
         $this->assertNotNull($link_to_collection);
     }
@@ -55,12 +54,8 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsDoesNotImportInBookmarksIfOption()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
-        $bookmarks_id = $this->create('collection', [
-            'type' => 'bookmarks',
-            'user_id' => $user->id,
-        ]);
+        $user = UserFactory::create();
+        $bookmarks = $user->bookmarks();
         $url = $this->fake('url');
         $items = [
             [
@@ -82,7 +77,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link);
         $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
-            'collection_id' => $bookmarks_id,
+            'collection_id' => $bookmarks->id,
         ]);
         $this->assertNull($link_to_collection);
     }
@@ -90,8 +85,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsImportInFavorite()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $url = $this->fake('url');
         $items = [
             [
@@ -123,8 +117,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsDoesNotKeepFavoriteCollectionIfEmpty()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $url = $this->fake('url');
         $items = [
             [
@@ -149,8 +142,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsDoesNotImportInFavoriteIfOption()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $url = $this->fake('url');
         $items = [
             [
@@ -177,8 +169,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsImportInDefaultCollection()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $url = $this->fake('url');
         $items = [
             [
@@ -210,8 +201,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsImportDoesNotKeepDefaultCollectionIfEmpty()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $url = $this->fake('url');
         $items = [];
         $options = [
@@ -229,8 +219,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsDoesNotImportTags()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $url = $this->fake('url');
         $tag = $this->fake('word');
         $items = [
@@ -261,8 +250,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsImportTagsIfOption()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $url = $this->fake('url');
         $tag1 = $this->fake('word');
         $tag2 = $this->fake('word');
@@ -307,12 +295,8 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsUsesTimeAddedIfItExists()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
-        $bookmarks_id = $this->create('collection', [
-            'type' => 'bookmarks',
-            'user_id' => $user->id,
-        ]);
+        $user = UserFactory::create();
+        $bookmarks = $user->bookmarks();
         $url = $this->fake('url');
         $time_added = $this->fake('dateTime');
         $items = [
@@ -340,20 +324,19 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsDoesNotDuplicateAGivenUrlAlreadyThere()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $given_url = $this->fakeUnique('url');
         $resolved_url = $this->fakeUnique('url');
-        $previous_link_id = $this->create('link', [
+        $previous_link = LinkFactory::create([
             'url' => $given_url,
             'user_id' => $user->id,
         ]);
-        $previous_collection_id = $this->create('collection', [
+        $previous_collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $previous_link_to_collection_id = $this->create('link_to_collection', [
-            'link_id' => $previous_link_id,
-            'collection_id' => $previous_collection_id,
+        $previous_link_to_collection = LinkToCollectionFactory::create([
+            'link_id' => $previous_link->id,
+            'collection_id' => $previous_collection->id,
         ]);
         $items = [
             [
@@ -372,8 +355,8 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $given_url]);
-        $this->assertSame($previous_link_id, $link->id);
-        $this->assertTrue(models\LinkToCollection::exists($previous_link_to_collection_id));
+        $this->assertSame($previous_link->id, $link->id);
+        $this->assertTrue(models\LinkToCollection::exists($previous_link_to_collection->id));
         $favorite_collection = models\Collection::findBy(['name' => 'Pocket favorite']);
         $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
@@ -385,20 +368,19 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsDoesNotDuplicateAResolvedUrlAlreadyThere()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $given_url = $this->fakeUnique('url');
         $resolved_url = $this->fakeUnique('url');
-        $previous_link_id = $this->create('link', [
+        $previous_link = LinkFactory::create([
             'url' => $resolved_url,
             'user_id' => $user->id,
         ]);
-        $previous_collection_id = $this->create('collection', [
+        $previous_collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $previous_link_to_collection_id = $this->create('link_to_collection', [
-            'link_id' => $previous_link_id,
-            'collection_id' => $previous_collection_id,
+        $previous_link_to_collection = LinkToCollectionFactory::create([
+            'link_id' => $previous_link->id,
+            'collection_id' => $previous_collection->id,
         ]);
         $items = [
             [
@@ -417,8 +399,8 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $resolved_url]);
-        $this->assertSame($previous_link_id, $link->id);
-        $this->assertTrue(models\LinkToCollection::exists($previous_link_to_collection_id));
+        $this->assertSame($previous_link->id, $link->id);
+        $this->assertTrue(models\LinkToCollection::exists($previous_link_to_collection->id));
         $favorite_collection = models\Collection::findBy(['name' => 'Pocket favorite']);
         $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
@@ -430,8 +412,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsSetsResolvedTitle()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $url = $this->fake('url');
         $title = $this->fake('sentence');
         $items = [
@@ -458,8 +439,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     public function testImportPocketItemsSetsGivenTitle()
     {
         $importator = new PocketImportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $url = $this->fake('url');
         $title = $this->fake('sentence');
         $items = [

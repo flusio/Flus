@@ -2,32 +2,34 @@
 
 namespace flusio\utils;
 
+use tests\factories\CollectionFactory;
+use tests\factories\UserFactory;
+
 class ViaHelperTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
 
     public function testExtractViaFromPathWithExistingCollection()
     {
-        $collection_id = $this->create('collection');
-        $path = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $collection = CollectionFactory::create();
+        $path = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         list($via_type, $via_resource_id) = ViaHelper::extractFromPath($path);
 
         $this->assertSame('collection', $via_type);
-        $this->assertSame($collection_id, $via_resource_id);
+        $this->assertSame($collection->id, $via_resource_id);
     }
 
     public function testExtractViaFromPathWithExistingUser()
     {
-        $user_id = $this->create('user');
-        $path = \Minz\Url::for('profile', ['id' => $user_id]);
+        $user = UserFactory::create();
+        $path = \Minz\Url::for('profile', ['id' => $user->id]);
 
         list($via_type, $via_resource_id) = ViaHelper::extractFromPath($path);
 
         $this->assertSame('user', $via_type);
-        $this->assertSame($user_id, $via_resource_id);
+        $this->assertSame($user->id, $via_resource_id);
     }
 
     public function testExtractViaFromPathWithNonExistingCollection()

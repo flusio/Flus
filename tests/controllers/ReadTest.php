@@ -3,6 +3,9 @@
 namespace flusio\controllers;
 
 use flusio\models;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\UserFactory;
 
 class ReadTest extends \PHPUnit\Framework\TestCase
 {
@@ -10,7 +13,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testIndexRendersCorrectly()
@@ -18,16 +20,16 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $link_title = $this->fake('words', 3, true);
         $read_list = $user->readList();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
             'collection_id' => $read_list->id,
         ]);
 
-        $response = $this->appRun('get', '/read');
+        $response = $this->appRun('GET', '/read');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'read/index.phtml');
@@ -36,18 +38,17 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $read_list = $user->readList();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
             'collection_id' => $read_list->id,
         ]);
 
-        $response = $this->appRun('get', '/read');
+        $response = $this->appRun('GET', '/read');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fread');
     }
@@ -56,15 +57,15 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $read_list = $user->readList();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
             'collection_id' => $read_list->id,
         ]);
 
-        $response = $this->appRun('get', '/read', [
+        $response = $this->appRun('GET', '/read', [
             'page' => 2,
         ]);
 

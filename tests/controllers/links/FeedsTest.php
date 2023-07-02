@@ -2,27 +2,29 @@
 
 namespace flusio\controllers\links;
 
+use tests\factories\LinkFactory;
+use tests\factories\MessageFactory;
+
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
     {
         $title = $this->fake('words', 3, true);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'title' => $title,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $this->create('message', [
-            'link_id' => $link_id,
+        MessageFactory::create([
+            'link_id' => $link->id,
             'content' => '**foo bar**',
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}/feed.atom.xml");
+        $response = $this->appRun('GET', "/links/{$link->id}/feed.atom.xml");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'links/feeds/show.atom.xml.php');
@@ -36,27 +38,27 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testShowFailsIfLinkIsInaccessible()
     {
         $title = $this->fake('words', 3, true);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'title' => $title,
-            'is_hidden' => 1,
+            'is_hidden' => true,
         ]);
         $content = $this->fake('paragraphs', 3, true);
-        $this->create('message', [
-            'link_id' => $link_id,
+        MessageFactory::create([
+            'link_id' => $link->id,
             'content' => $content,
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}/feed.atom.xml");
+        $response = $this->appRun('GET', "/links/{$link->id}/feed.atom.xml");
 
         $this->assertResponseCode($response, 404);
     }
 
     public function testAliasRedirectsToShow()
     {
-        $link_id = $this->create('link');
+        $link = LinkFactory::create();
 
-        $response = $this->appRun('get', "/links/{$link_id}/feed");
+        $response = $this->appRun('GET', "/links/{$link->id}/feed");
 
-        $this->assertResponseCode($response, 301, "/links/{$link_id}/feed.atom.xml");
+        $this->assertResponseCode($response, 301, "/links/{$link->id}/feed.atom.xml");
     }
 }

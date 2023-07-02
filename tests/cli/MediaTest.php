@@ -5,13 +5,15 @@ namespace flusio\cli;
 use flusio\models;
 use flusio\services;
 use flusio\utils;
+use tests\factories\CollectionFactory;
+use tests\factories\LinkFactory;
+use tests\factories\TopicFactory;
 
 class MediaTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\InitializerHelper;
     use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -62,7 +64,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
 
-        $response_generator = $this->appRun('cli', '/media/clean');
+        $response_generator = $this->appRun('CLI', '/media/clean');
 
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
@@ -95,7 +97,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFile($image_url, 'public/static/og-card.png');
         $image_filename = $image_service->generatePreviews($image_url);
         $subdir_name = substr($image_filename, 0, 3);
-        $this->create('link', [
+        LinkFactory::create([
             'image_filename' => $image_filename,
         ]);
 
@@ -109,7 +111,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
 
-        $response_generator = $this->appRun('cli', '/media/clean');
+        $response_generator = $this->appRun('CLI', '/media/clean');
 
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
@@ -142,7 +144,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFile($image_url, 'public/static/og-card.png');
         $image_filename = $image_service->generatePreviews($image_url);
         $subdir_name = substr($image_filename, 0, 3);
-        $this->create('collection', [
+        CollectionFactory::create([
             'image_filename' => $image_filename,
         ]);
 
@@ -156,7 +158,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
 
-        $response_generator = $this->appRun('cli', '/media/clean');
+        $response_generator = $this->appRun('CLI', '/media/clean');
 
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);
@@ -189,7 +191,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFile($image_url, 'public/static/og-card.png');
         $image_filename = $image_service->generatePreviews($image_url);
         $subdir_name = substr($image_filename, 0, 3);
-        $this->create('topic', [
+        TopicFactory::create([
             'image_filename' => $image_filename,
         ]);
 
@@ -203,7 +205,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
 
-        $response_generator = $this->appRun('cli', '/media/clean');
+        $response_generator = $this->appRun('CLI', '/media/clean');
 
         $response = $response_generator->current();
         $this->assertResponseCode($response, 200);

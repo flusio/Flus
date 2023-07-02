@@ -5,6 +5,7 @@ namespace flusio\controllers\my;
 use flusio\auth;
 use flusio\models;
 use flusio\utils;
+use tests\factories\UserFactory;
 
 class PreferencesTest extends \PHPUnit\Framework\TestCase
 {
@@ -12,14 +13,13 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testEditRendersCorrectly()
     {
         $this->login();
 
-        $response = $this->appRun('get', '/my/preferences');
+        $response = $this->appRun('GET', '/my/preferences');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'my/preferences/edit.phtml');
@@ -27,7 +27,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
 
     public function testEditRedirectsToLoginIfUserNotConnected()
     {
-        $response = $this->appRun('get', '/my/preferences');
+        $response = $this->appRun('GET', '/my/preferences');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fpreferences');
     }
@@ -36,10 +36,10 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login([
             'locale' => 'en_GB',
-            'option_compact_mode' => 0,
+            'option_compact_mode' => false,
         ]);
 
-        $response = $this->appRun('post', '/my/preferences', [
+        $response = $this->appRun('POST', '/my/preferences', [
             'csrf' => $user->csrf,
             'locale' => 'fr_FR',
             'option_compact_mode' => true,
@@ -59,7 +59,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse(models\FeatureFlag::isEnabled('beta', $user->id));
 
-        $response = $this->appRun('post', '/my/preferences', [
+        $response = $this->appRun('POST', '/my/preferences', [
             'csrf' => $user->csrf,
             'beta_enabled' => true,
             'locale' => 'fr_FR',
@@ -77,7 +77,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue(models\FeatureFlag::isEnabled('beta', $user->id));
 
-        $response = $this->appRun('post', '/my/preferences', [
+        $response = $this->appRun('POST', '/my/preferences', [
             'csrf' => $user->csrf,
             'beta_enabled' => false,
             'locale' => 'fr_FR',
@@ -90,18 +90,18 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsToLoginIfUserNotConnected()
     {
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/my/preferences', [
-            'csrf' => \Minz\CSRF::generate(),
+        $response = $this->appRun('POST', '/my/preferences', [
+            'csrf' => \Minz\Csrf::generate(),
             'locale' => 'fr_FR',
             'from' => \Minz\Url::for('preferences'),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fpreferences');
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertSame('en_GB', $user->locale);
     }
 
@@ -111,7 +111,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/my/preferences', [
+        $response = $this->appRun('POST', '/my/preferences', [
             'csrf' => 'not the token',
             'locale' => 'fr_FR',
             'from' => \Minz\Url::for('preferences'),
@@ -129,7 +129,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/my/preferences', [
+        $response = $this->appRun('POST', '/my/preferences', [
             'csrf' => $user->csrf,
             'from' => \Minz\Url::for('preferences'),
         ]);
@@ -146,7 +146,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
             'locale' => 'en_GB',
         ]);
 
-        $response = $this->appRun('post', '/my/preferences', [
+        $response = $this->appRun('POST', '/my/preferences', [
             'csrf' => $user->csrf,
             'locale' => 'not a locale',
             'from' => \Minz\Url::for('preferences'),

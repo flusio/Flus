@@ -9,7 +9,7 @@ class ShowcasesTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectlyForNavigation()
     {
-        $response = $this->appRun('get', '/showcases/navigation');
+        $response = $this->appRun('GET', '/showcases/navigation');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'showcases/show_navigation.phtml');
@@ -18,7 +18,7 @@ class ShowcasesTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectlyForLink()
     {
-        $response = $this->appRun('get', '/showcases/link');
+        $response = $this->appRun('GET', '/showcases/link');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'showcases/show_link.phtml');
@@ -27,7 +27,7 @@ class ShowcasesTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfIdDoesNotExist()
     {
-        $response = $this->appRun('get', '/showcases/does-not-exist');
+        $response = $this->appRun('GET', '/showcases/does-not-exist');
 
         $this->assertResponseCode($response, 404);
     }

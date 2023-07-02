@@ -3,326 +3,299 @@
 namespace flusio\models\dao;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\MessageFactory;
+use tests\factories\UserFactory;
 
 class LinkTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
 
     public function testBulkInsert()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $link_url_1 = $this->fake('url');
         $link_url_2 = $this->fake('url');
         $link_url_3 = $this->fake('url');
-        $link_1 = models\Link::init($link_url_1, $user_id, true);
-        $link_2 = models\Link::init($link_url_2, $user_id, true);
-        $link_3 = models\Link::init($link_url_3, $user_id, false);
+        $link_1 = new models\Link($link_url_1, $user->id, true);
+        $link_2 = new models\Link($link_url_2, $user->id, true);
+        $link_3 = new models\Link($link_url_3, $user->id, false);
         $link_1->created_at = $this->fake('dateTime');
         $link_2->created_at = $this->fake('dateTime');
         $link_3->created_at = $this->fake('dateTime');
-        $db_link_1 = $link_1->toValues();
-        $db_link_2 = $link_2->toValues();
-        $db_link_3 = $link_3->toValues();
-        $columns = array_keys($db_link_1);
-        $values = array_merge(
-            array_values($db_link_1),
-            array_values($db_link_2),
-            array_values($db_link_3)
-        );
 
-        $this->assertSame(0, $dao->count());
+        $this->assertSame(0, models\Link::count());
 
-        $result = $dao->bulkInsert($columns, $values);
+        $result = models\Link::bulkInsert([$link_1, $link_2, $link_3]);
 
         $this->assertTrue($result);
-        $this->assertSame(3, $dao->count());
-        $this->assertTrue($dao->exists($link_1->id));
-        $this->assertTrue($dao->exists($link_2->id));
-        $this->assertTrue($dao->exists($link_3->id));
+        $this->assertSame(3, models\Link::count());
+        $this->assertTrue(models\Link::exists($link_1->id));
+        $this->assertTrue(models\Link::exists($link_2->id));
+        $this->assertTrue(models\Link::exists($link_3->id));
     }
 
     public function testListComputedByUserId()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
         ]);
 
-        $db_links = $dao->listComputedByUserId($user_id, []);
+        $links = models\Link::listComputedByUserId($user->id, []);
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id, $db_links[0]['id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
     }
 
     public function testListComputedByUserIdCanReturnPublishedAt()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $published_at = $this->fake('dateTime');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => $published_at,
         ]);
 
-        $db_links = $dao->listComputedByUserId($user_id, ['published_at']);
+        $links = models\Link::listComputedByUserId($user->id, ['published_at']);
 
-        $this->assertSame(1, count($db_links));
-        $link_published_at = date_create_from_format(
-            \Minz\Model::DATETIME_FORMAT,
-            $db_links[0]['published_at']
-        );
-        $this->assertEquals($published_at, $link_published_at);
+        $this->assertSame(1, count($links));
+        $this->assertEquals($published_at, $links[0]->published_at);
     }
 
     public function testListComputedByUserIdConsidersLinkToCollectionPublishedAtWhenUnsharedIsFalse()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $published_at = $this->fake('dateTime');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
-            'is_public' => 1,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
+            'created_at' => $published_at,
         ]);
 
-        $db_links = $dao->listComputedByUserId($user_id, ['published_at'], [
+        $links = models\Link::listComputedByUserId($user->id, ['published_at'], [
             'unshared' => false,
         ]);
 
-        $this->assertSame(1, count($db_links));
-        $link_published_at = date_create_from_format(
-            \Minz\Model::DATETIME_FORMAT,
-            $db_links[0]['published_at']
-        );
-        $this->assertEquals($published_at, $link_published_at);
+        $this->assertSame(1, count($links));
+        $this->assertEquals($published_at, $links[0]->published_at);
     }
 
     public function testListComputedByUserIdCanReturnNumberComments()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
         ]);
-        $message = $this->create('message', [
-            'link_id' => $link_id,
+        MessageFactory::create([
+            'link_id' => $link->id,
         ]);
 
-        $db_links = $dao->listComputedByUserId($user_id, ['number_comments']);
+        $links = models\Link::listComputedByUserId($user->id, ['number_comments']);
 
-        $this->assertSame(1, $db_links[0]['number_comments']);
+        $this->assertSame(1, $links[0]->number_comments);
     }
 
     public function testListComputedByUserIdCanListSharedOnly()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
-        $unshared_link_id_1 = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $user = UserFactory::create();
+        $unshared_link_1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $unshared_link_id_2 = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 1,
+        $unshared_link_2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
         ]);
-        $unshared_link_id_3 = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $unshared_link_3 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $shared_link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $shared_link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $private_collection_id = $this->create('collection', [
-            'user_id' => $user_id,
-            'is_public' => 0,
+        $private_collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => false,
         ]);
-        $public_collection_id = $this->create('collection', [
-            'user_id' => $user_id,
-            'is_public' => 1,
+        $public_collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $unshared_link_id_2,
-            'collection_id' => $public_collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $unshared_link_2->id,
+            'collection_id' => $public_collection->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $unshared_link_id_3,
-            'collection_id' => $private_collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $unshared_link_3->id,
+            'collection_id' => $private_collection->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $shared_link_id,
-            'collection_id' => $public_collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $shared_link->id,
+            'collection_id' => $public_collection->id,
         ]);
 
-        $db_links = $dao->listComputedByUserId($user_id, [], [
+        $links = models\Link::listComputedByUserId($user->id, [], [
             'unshared' => false,
         ]);
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($shared_link_id, $db_links[0]['id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($shared_link->id, $links[0]->id);
     }
 
     public function testListComputedByUserIdCanLimitResults()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
-        $link_id_1 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(3, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $user = UserFactory::create();
+        $link_1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(3, 'days'),
         ]);
-        $link_id_2 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(2, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $link_2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(2, 'days'),
         ]);
-        $link_id_3 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(1, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $link_3 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(1, 'days'),
         ]);
 
-        $db_links = $dao->listComputedByUserId($user_id, [], [
+        $links = models\Link::listComputedByUserId($user->id, [], [
             'limit' => 2,
         ]);
 
-        $this->assertSame(2, count($db_links));
-        $this->assertSame($link_id_3, $db_links[0]['id']);
-        $this->assertSame($link_id_2, $db_links[1]['id']);
+        $this->assertSame(2, count($links));
+        $this->assertSame($link_3->id, $links[0]->id);
+        $this->assertSame($link_2->id, $links[1]->id);
     }
 
     public function testListComputedByUserIdCanOffsetResults()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
-        $link_id_1 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(3, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $user = UserFactory::create();
+        $link_1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(3, 'days'),
         ]);
-        $link_id_2 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(2, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $link_2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(2, 'days'),
         ]);
-        $link_id_3 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(1, 'days')->format(\Minz\Model::DATETIME_FORMAT),
-        ]);
-
-        $db_links = $dao->listComputedByUserId($user_id, [], [
-            'offset' => 1,
+        $link_3 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(1, 'days'),
         ]);
 
-        $this->assertSame(2, count($db_links));
-        $this->assertSame($link_id_2, $db_links[0]['id']);
-        $this->assertSame($link_id_1, $db_links[1]['id']);
+        $links = models\Link::listComputedByUserId($user->id, [], [
+            'offset' => true,
+        ]);
+
+        $this->assertSame(2, count($links));
+        $this->assertSame($link_2->id, $links[0]->id);
+        $this->assertSame($link_1->id, $links[1]->id);
     }
 
     public function testListComputedByUserIdDoesNotDuplicateLinks()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $today = \Minz\Time::relative('today');
         $yesterday = \Minz\Time::relative('today -1 day');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $public_collection_id_1 = $this->create('collection', [
-            'user_id' => $user_id,
-            'is_public' => 1,
+        $public_collection_1 = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
         ]);
-        $public_collection_id_2 = $this->create('collection', [
-            'user_id' => $user_id,
-            'is_public' => 1,
+        $public_collection_2 = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $public_collection_id_1,
-            'created_at' => $today->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $public_collection_1->id,
+            'created_at' => $today,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $public_collection_id_2,
-            'created_at' => $yesterday->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $public_collection_2->id,
+            'created_at' => $yesterday,
         ]);
 
-        $db_links = $dao->listComputedByUserId($user_id, ['published_at'], [
+        $links = models\Link::listComputedByUserId($user->id, ['published_at'], [
             'unshared' => false,
         ]);
 
-        $this->assertSame(1, count($db_links));
-        $link_published_at = date_create_from_format(
-            \Minz\Model::DATETIME_FORMAT,
-            $db_links[0]['published_at']
-        );
-        $this->assertEquals($today, $link_published_at);
+        $this->assertSame(1, count($links));
+        $this->assertEquals($today, $links[0]->published_at);
     }
 
     public function testListComputedByUserIdLimitsResultsAfterDeduplication()
     {
-        $dao = new Link();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $today = \Minz\Time::relative('today');
         $yesterday = \Minz\Time::relative('today -1 day');
         $two_days_ago = \Minz\Time::relative('today -2 days');
         $three_days_ago = \Minz\Time::relative('today -3 days');
-        $link_id_1 = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $link_1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $link_id_2 = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $link_2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $link_id_3 = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $link_3 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $public_collection_id_1 = $this->create('collection', [
-            'user_id' => $user_id,
-            'is_public' => 1,
+        $public_collection_1 = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
         ]);
-        $public_collection_id_2 = $this->create('collection', [
-            'user_id' => $user_id,
-            'is_public' => 1,
+        $public_collection_2 = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_1,
-            'collection_id' => $public_collection_id_2,
-            'created_at' => $three_days_ago->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_1->id,
+            'collection_id' => $public_collection_2->id,
+            'created_at' => $three_days_ago,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_2,
-            'collection_id' => $public_collection_id_1,
-            'created_at' => $two_days_ago->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_2->id,
+            'collection_id' => $public_collection_1->id,
+            'created_at' => $two_days_ago,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_3,
-            'collection_id' => $public_collection_id_1,
-            'created_at' => $yesterday->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_3->id,
+            'collection_id' => $public_collection_1->id,
+            'created_at' => $yesterday,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_1,
-            'collection_id' => $public_collection_id_1,
-            'created_at' => $today->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_1->id,
+            'collection_id' => $public_collection_1->id,
+            'created_at' => $today,
         ]);
 
-        $db_links = $dao->listComputedByUserId($user_id, ['published_at'], [
+        $links = models\Link::listComputedByUserId($user->id, ['published_at'], [
             'unshared' => false,
             'limit' => 2,
         ]);
 
-        $this->assertSame(2, count($db_links));
-        $this->assertEquals($link_id_1, $db_links[0]['id']);
-        $this->assertEquals($link_id_3, $db_links[1]['id']);
+        $this->assertSame(2, count($links));
+        $this->assertEquals($link_1->id, $links[0]->id);
+        $this->assertEquals($link_3->id, $links[1]->id);
     }
 }

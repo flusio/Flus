@@ -3,12 +3,19 @@
 namespace flusio\jobs\scheduled;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\FetchLogFactory;
+use tests\factories\FollowedCollectionFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\SessionFactory;
+use tests\factories\TokenFactory;
+use tests\factories\UserFactory;
 
 class CleanerTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
     public function testQueue()
@@ -70,13 +77,13 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job = new Cleaner();
         $days = $this->fake('numberBetween', 4, 9000);
         $created_at = \Minz\Time::ago($days, 'days');
-        $fetch_log_id = $this->create('fetch_log', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $fetch_log = FetchLogFactory::create([
+            'created_at' => $created_at,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertFalse(models\FetchLog::exists($fetch_log_id));
+        $this->assertFalse(models\FetchLog::exists($fetch_log->id));
     }
 
     public function testPerformKeepsFreshFetchLogs()
@@ -85,13 +92,13 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         // logs are kept up to 3 days, but the test can fail if $days = 3 and it takes too long to execute
         $days = $this->fake('numberBetween', 0, 2);
         $created_at = \Minz\Time::ago($days, 'days');
-        $fetch_log_id = $this->create('fetch_log', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $fetch_log = FetchLogFactory::create([
+            'created_at' => $created_at,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\FetchLog::exists($fetch_log_id));
+        $this->assertTrue(models\FetchLog::exists($fetch_log->id));
     }
 
     public function testPerformDeletesExpiredSession()
@@ -99,17 +106,17 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job = new Cleaner();
         $days = $this->fake('numberBetween', 0, 9000);
         $expired_at = \Minz\Time::ago($days, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => $expired_at,
         ]);
-        $session_id = $this->create('session', [
-            'token' => $token,
+        $session = SessionFactory::create([
+            'token' => $token->token,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertFalse(models\Session::exists($session_id));
-        $this->assertFalse(models\Token::exists($token));
+        $this->assertFalse(models\Session::exists($session->id));
+        $this->assertFalse(models\Token::exists($token->token));
     }
 
     public function testPerformKeepsCurrentSession()
@@ -117,17 +124,17 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job = new Cleaner();
         $days = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($days, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => $expired_at,
         ]);
-        $session_id = $this->create('session', [
-            'token' => $token,
+        $session = SessionFactory::create([
+            'token' => $token->token,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\Session::exists($session_id));
-        $this->assertTrue(models\Token::exists($token));
+        $this->assertTrue(models\Session::exists($session->id));
+        $this->assertTrue(models\Token::exists($token->token));
     }
 
     public function testPerformDeletesOldInvalidatedUsers()
@@ -136,14 +143,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job = new Cleaner();
         $months = $this->fake('numberBetween', 7, 24);
         $created_at = \Minz\Time::ago($months, 'months');
-        $user_id = $this->create('user', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $user = UserFactory::create([
+            'created_at' => $created_at,
             'validated_at' => null,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertFalse(models\User::exists($user_id));
+        $this->assertFalse(models\User::exists($user->id));
     }
 
     public function testPerformKeepsOldValidatedUsers()
@@ -152,14 +159,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job = new Cleaner();
         $months = $this->fake('numberBetween', 7, 24);
         $created_at = \Minz\Time::ago($months, 'months');
-        $user_id = $this->create('user', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
+        $user = UserFactory::create([
+            'created_at' => $created_at,
+            'validated_at' => $this->fake('dateTime'),
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\User::exists($user_id));
+        $this->assertTrue(models\User::exists($user->id));
     }
 
     public function testPerformKeepsRecentInvalidatedUsers()
@@ -168,14 +175,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job = new Cleaner();
         $months = $this->fake('numberBetween', 0, 6);
         $created_at = \Minz\Time::ago($months, 'months');
-        $user_id = $this->create('user', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $user = UserFactory::create([
+            'created_at' => $created_at,
             'validated_at' => null,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\User::exists($user_id));
+        $this->assertTrue(models\User::exists($user->id));
     }
 
     public function testPerformDeletesOldEnoughUnfollowedFeeds()
@@ -185,14 +192,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
-        $collection_id = $this->create('collection', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $collection = CollectionFactory::create([
+            'created_at' => $created_at,
             'user_id' => $support_user->id,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertFalse(models\Collection::exists($collection_id));
+        $this->assertFalse(models\Collection::exists($collection->id));
     }
 
     public function testPerformKeepsOldEnoughFollowedFeeds()
@@ -200,21 +207,21 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->freeze($this->fake('dateTime'));
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
-        $collection_id = $this->create('collection', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $collection = CollectionFactory::create([
+            'created_at' => $created_at,
             'user_id' => $support_user->id,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\Collection::exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection->id));
     }
 
     public function testPerformKeepsRecentUnfollowedFeeds()
@@ -224,14 +231,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $days = $this->fake('numberBetween', 0, 7);
         $created_at = \Minz\Time::ago($days, 'days');
-        $collection_id = $this->create('collection', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $collection = CollectionFactory::create([
+            'created_at' => $created_at,
             'user_id' => $support_user->id,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\Collection::exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection->id));
     }
 
     public function testPerformDeletesOldEnoughNotStoredLinks()
@@ -241,14 +248,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
-        $link_id = $this->create('link', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $link = LinkFactory::create([
+            'created_at' => $created_at,
             'user_id' => $support_user->id,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertFalse(models\Link::exists($link_id));
+        $this->assertFalse(models\Link::exists($link->id));
     }
 
     public function testPerformKeepsOldEnoughStoredLinks()
@@ -258,19 +265,19 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
-        $link_id = $this->create('link', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $link = LinkFactory::create([
+            'created_at' => $created_at,
             'user_id' => $support_user->id,
         ]);
-        $collection_id = $this->create('collection');
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        $collection = CollectionFactory::create();
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\Link::exists($link_id));
+        $this->assertTrue(models\Link::exists($link->id));
     }
 
     public function testPerformKeepsRecentNotStoredLinks()
@@ -280,31 +287,31 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $days = $this->fake('numberBetween', 0, 7);
         $created_at = \Minz\Time::ago($days, 'days');
-        $link_id = $this->create('link', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+        $link = LinkFactory::create([
+            'created_at' => $created_at,
             'user_id' => $support_user->id,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\Link::exists($link_id));
+        $this->assertTrue(models\Link::exists($link->id));
     }
 
     public function testPerformKeepsOldEnoughNotStoredLinksIfNotOwnedBySupportUser()
     {
         $this->freeze($this->fake('dateTime'));
         $cleaner_job = new Cleaner();
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
-        $link_id = $this->create('link', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'created_at' => $created_at,
+            'user_id' => $user->id,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\Link::exists($link_id));
+        $this->assertTrue(models\Link::exists($link->id));
     }
 
     public function testPerformDeletesFeedsLinksInExcess()
@@ -315,37 +322,37 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $published_at_1 = \Minz\Time::ago(1, 'months');
         $published_at_2 = \Minz\Time::ago(2, 'months');
-        $link_id_1 = $this->create('link', [
+        $link_1 = LinkFactory::create([
             'user_id' => $support_user->id,
         ]);
-        $link_id_2 = $this->create('link', [
+        $link_2 = LinkFactory::create([
             'user_id' => $support_user->id,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'feed',
             'user_id' => $support_user->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_1,
-            'collection_id' => $collection_id,
-            'created_at' => $published_at_1->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_1->id,
+            'collection_id' => $collection->id,
+            'created_at' => $published_at_1,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_2,
-            'collection_id' => $collection_id,
-            'created_at' => $published_at_2->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_2->id,
+            'collection_id' => $collection->id,
+            'created_at' => $published_at_2,
         ]);
         // follow the feed, otherwise the cleaner may delete it
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
         ]);
 
         $cleaner_job->perform();
 
         \Minz\Configuration::$application['feeds_links_keep_maximum'] = 0;
 
-        $this->assertTrue(models\Link::exists($link_id_1));
-        $this->assertFalse(models\Link::exists($link_id_2));
+        $this->assertTrue(models\Link::exists($link_1->id));
+        $this->assertFalse(models\Link::exists($link_2->id));
     }
 
     public function testPerformDeletesOldEnoughFeedsLinks()
@@ -356,28 +363,28 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $months = $this->fake('numberBetween', 7, 100);
         $published_at = \Minz\Time::ago($months, 'months');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $support_user->id,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'feed',
             'user_id' => $support_user->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
+            'created_at' => $published_at,
         ]);
         // follow the feed, otherwise the cleaner may delete it
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
         ]);
 
         $cleaner_job->perform();
 
         \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
 
-        $this->assertFalse(models\Link::exists($link_id));
+        $this->assertFalse(models\Link::exists($link->id));
     }
 
     public function testPerformKeepsAllFeedsLinksIfMaximumIsZero()
@@ -388,35 +395,35 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $published_at_1 = \Minz\Time::ago(1, 'months');
         $published_at_2 = \Minz\Time::ago(2, 'months');
-        $link_id_1 = $this->create('link', [
+        $link_1 = LinkFactory::create([
             'user_id' => $support_user->id,
         ]);
-        $link_id_2 = $this->create('link', [
+        $link_2 = LinkFactory::create([
             'user_id' => $support_user->id,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'feed',
             'user_id' => $support_user->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_1,
-            'collection_id' => $collection_id,
-            'created_at' => $published_at_1->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_1->id,
+            'collection_id' => $collection->id,
+            'created_at' => $published_at_1,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_2,
-            'collection_id' => $collection_id,
-            'created_at' => $published_at_2->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_2->id,
+            'collection_id' => $collection->id,
+            'created_at' => $published_at_2,
         ]);
         // follow the feed, otherwise the cleaner may delete it
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\Link::exists($link_id_1));
-        $this->assertTrue(models\Link::exists($link_id_2));
+        $this->assertTrue(models\Link::exists($link_1->id));
+        $this->assertTrue(models\Link::exists($link_2->id));
     }
 
     public function testPerformKeepsRecentFeedsLinks()
@@ -427,28 +434,28 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $months = $this->fake('numberBetween', 0, 6);
         $published_at = \Minz\Time::ago($months, 'months');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $support_user->id,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'feed',
             'user_id' => $support_user->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
+            'created_at' => $published_at,
         ]);
         // follow the feed, otherwise the cleaner may delete it
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
         ]);
 
         $cleaner_job->perform();
 
         \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
 
-        $this->assertTrue(models\Link::exists($link_id));
+        $this->assertTrue(models\Link::exists($link->id));
     }
 
     public function testPerformKeepsOldEnoughFeedsLinksInMinimumLimit()
@@ -461,46 +468,46 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $months = $this->fake('numberBetween', 7, 100);
         $published_at_old = \Minz\Time::ago($months, 'months');
         $published_at_older = \Minz\Time::ago($months + 1, 'months');
-        $link_id_1 = $this->create('link', [
+        $link_1 = LinkFactory::create([
             'user_id' => $support_user->id,
         ]);
-        $link_id_2 = $this->create('link', [
+        $link_2 = LinkFactory::create([
             'user_id' => $support_user->id,
         ]);
-        $link_id_3 = $this->create('link', [
+        $link_3 = LinkFactory::create([
             'user_id' => $support_user->id,
         ]);
-        $collection_id_1 = $this->create('collection', [
+        $collection_1 = CollectionFactory::create([
             'type' => 'feed',
             'user_id' => $support_user->id,
         ]);
-        $collection_id_2 = $this->create('collection', [
+        $collection_2 = CollectionFactory::create([
             'type' => 'feed',
             'user_id' => $support_user->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_1,
-            'collection_id' => $collection_id_1,
-            'created_at' => $published_at_older->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_1->id,
+            'collection_id' => $collection_1->id,
+            'created_at' => $published_at_older,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_2,
-            'collection_id' => $collection_id_1,
-            'created_at' => $published_at_old->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_2->id,
+            'collection_id' => $collection_1->id,
+            'created_at' => $published_at_old,
         ]);
         // Attach the last link to another collection to check that the
         // deletion is done per feed and not globally.
-        $this->create('link_to_collection', [
-            'link_id' => $link_id_3,
-            'collection_id' => $collection_id_2,
-            'created_at' => $published_at_older->format(\Minz\Model::DATETIME_FORMAT),
+        LinkToCollectionFactory::create([
+            'link_id' => $link_3->id,
+            'collection_id' => $collection_2->id,
+            'created_at' => $published_at_older,
         ]);
         // follow the feeds, otherwise the cleaner may delete them
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_1,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection_1->id,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_2,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection_2->id,
         ]);
 
         $cleaner_job->perform();
@@ -509,9 +516,9 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$application['feeds_links_keep_minimum'] = 0;
 
         $this->assertSame(2, models\Link::count());
-        $this->assertFalse(models\Link::exists($link_id_1));
-        $this->assertTrue(models\Link::exists($link_id_2));
-        $this->assertTrue(models\Link::exists($link_id_3));
+        $this->assertFalse(models\Link::exists($link_1->id));
+        $this->assertTrue(models\Link::exists($link_2->id));
+        $this->assertTrue(models\Link::exists($link_3->id));
     }
 
     public function testPerformDeletesDataIfDemoIsEnabled()
@@ -520,17 +527,17 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job = new Cleaner();
         $days = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($days, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => $expired_at,
         ]);
-        $user_id = $this->create('user', [
-            'validation_token' => $token,
+        $user = UserFactory::create([
+            'validation_token' => $token->token,
         ]);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
         ]);
 
         $cleaner_job->perform();
@@ -541,25 +548,25 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertGreaterThan(0, models\Collection::count());
         $this->assertSame(0, models\Token::count());
         $this->assertSame(0, models\Link::count());
-        $user = models\User::take(1);
-        $this->assertNotSame($user_id, $user->id);
-        $this->assertSame('demo@flus.io', $user->email);
-        $this->assertTrue($user->verifyPassword('demo'));
-        $this->assertFalse(models\Collection::exists($collection_id));
+        $demo_user = models\User::take(1);
+        $this->assertNotSame($user->id, $demo_user->id);
+        $this->assertSame('demo@flus.io', $demo_user->email);
+        $this->assertTrue($demo_user->verifyPassword('demo'));
+        $this->assertFalse(models\Collection::exists($collection->id));
         $bookmarks = models\Collection::findBy([
-            'user_id' => $user->id,
+            'user_id' => $demo_user->id,
             'type' => 'bookmarks',
         ]);
         $news = models\Collection::findBy([
-            'user_id' => $user->id,
+            'user_id' => $demo_user->id,
             'type' => 'news',
         ]);
         $read_list = models\Collection::findBy([
-            'user_id' => $user->id,
+            'user_id' => $demo_user->id,
             'type' => 'read',
         ]);
         $never_list = models\Collection::findBy([
-            'user_id' => $user->id,
+            'user_id' => $demo_user->id,
             'type' => 'never',
         ]);
         $this->assertNotNull($bookmarks);
@@ -574,17 +581,17 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job = new Cleaner();
         $days = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($days, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => $expired_at,
         ]);
-        $user_id = $this->create('user', [
-            'validation_token' => $token,
+        $user = UserFactory::create([
+            'validation_token' => $token->token,
         ]);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
         ]);
 
         $cleaner_job->perform();
@@ -593,9 +600,9 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Collection::count());
         $this->assertSame(1, models\Token::count());
         $this->assertSame(1, models\Link::count());
-        $this->assertTrue(models\User::exists($user_id));
-        $this->assertTrue(models\Collection::exists($collection_id));
-        $this->assertTrue(models\Link::exists($link_id));
-        $this->assertTrue(models\Token::exists($token));
+        $this->assertTrue(models\User::exists($user->id));
+        $this->assertTrue(models\Collection::exists($collection->id));
+        $this->assertTrue(models\Link::exists($link->id));
+        $this->assertTrue(models\Token::exists($token->token));
     }
 }

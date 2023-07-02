@@ -3,6 +3,10 @@
 namespace flusio\controllers;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\GroupFactory;
+use tests\factories\FollowedCollectionFactory;
+use tests\factories\UserFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
@@ -11,7 +15,6 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     use \tests\LoginHelper;
     use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -29,17 +32,17 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $feed_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $feed_name,
             'type' => 'feed',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', '/feeds');
+        $response = $this->appRun('GET', '/feeds');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'feeds/index.phtml');
@@ -50,21 +53,21 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $group_name = $this->fake('words', 3, true);
-        $group_id = $this->create('group', [
+        $group = GroupFactory::create([
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'feed',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
-            'group_id' => $group_id
+            'collection_id' => $collection->id,
+            'group_id' => $group->id
         ]);
 
-        $response = $this->appRun('get', '/feeds');
+        $response = $this->appRun('GET', '/feeds');
 
         $this->assertResponseContains($response, $group_name);
     }
@@ -73,36 +76,36 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $feed_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $feed_name,
             'type' => 'feed',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', '/feeds');
+        $response = $this->appRun('GET', '/feeds');
 
         $this->assertResponseNotContains($response, $feed_name);
     }
 
     public function testIndexRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $feed_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $feed_name,
             'type' => 'feed',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
-            'user_id' => $user_id,
-            'collection_id' => $collection_id,
+        FollowedCollectionFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', '/feeds');
+        $response = $this->appRun('GET', '/feeds');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Ffeeds');
     }
@@ -111,7 +114,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
 
-        $response = $this->appRun('get', '/feeds/new', [
+        $response = $this->appRun('GET', '/feeds/new', [
             'from' => \Minz\Url::for('feeds'),
         ]);
 
@@ -122,7 +125,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRedirectsIfNotConnected()
     {
-        $response = $this->appRun('get', '/feeds/new', [
+        $response = $this->appRun('GET', '/feeds/new', [
             'from' => \Minz\Url::for('feeds'),
         ]);
 
@@ -137,7 +140,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
 
-        $response = $this->appRun('post', '/feeds/new', [
+        $response = $this->appRun('POST', '/feeds/new', [
             'csrf' => $user->csrf,
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
@@ -160,7 +163,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
 
-        $response = $this->appRun('post', '/feeds/new', [
+        $response = $this->appRun('POST', '/feeds/new', [
             'csrf' => $user->csrf,
             'url' => $url,
             'from' => \Minz\Url::for('feeds'),
@@ -174,12 +177,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsToLoginIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
-        $response = $this->appRun('post', '/feeds/new', [
+        $response = $this->appRun('POST', '/feeds/new', [
             'csrf' => $user->csrf,
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
@@ -195,7 +197,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
-        $response = $this->appRun('post', '/feeds/new', [
+        $response = $this->appRun('POST', '/feeds/new', [
             'csrf' => 'not the token',
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
@@ -211,14 +213,14 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $feed_url = 'ftp://flus.fr/carnet/feeds/all.atom.xml';
 
-        $response = $this->appRun('post', '/feeds/new', [
+        $response = $this->appRun('POST', '/feeds/new', [
             'csrf' => $user->csrf,
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Link scheme must be either http or https');
+        $this->assertResponseContains($response, 'The link is invalid.');
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
     }
 
@@ -227,7 +229,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $feed_url = '';
 
-        $response = $this->appRun('post', '/feeds/new', [
+        $response = $this->appRun('POST', '/feeds/new', [
             'csrf' => $user->csrf,
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
@@ -255,7 +257,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             TEXT
         );
 
-        $response = $this->appRun('post', '/feeds/new', [
+        $response = $this->appRun('POST', '/feeds/new', [
             'csrf' => $user->csrf,
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
@@ -270,15 +272,15 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         $support_user = models\User::supportUser();
         $feed_url = 'https://github.com/flusio/flusio/releases.atom';
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $support_user->id,
             'type' => 'feed',
             'feed_url' => $feed_url,
         ]);
 
-        $response = $this->appRun('get', '/about/new');
+        $response = $this->appRun('GET', '/about/new');
 
-        $this->assertResponseCode($response, 302, "/collections/{$collection_id}");
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
     }
 
     public function testWhatIsNewCreatesFeedIfItDoesNotExist()
@@ -302,7 +304,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Collection::count());
 
-        $response = $this->appRun('get', '/about/new');
+        $response = $this->appRun('GET', '/about/new');
 
         $this->assertSame(1, models\Collection::count());
 

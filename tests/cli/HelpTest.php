@@ -17,7 +17,7 @@ class HelpTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectly()
     {
-        $response = $this->appRun('cli', '/');
+        $response = $this->appRun('CLI', '/');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Usage: php cli COMMAND [--OPTION=VALUE]...');

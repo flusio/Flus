@@ -3,16 +3,14 @@
 namespace flusio\controllers;
 
 use flusio\models;
-use flusio\utils;
+use tests\factories\UserFactory;
 
 class SupportTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
-    use \tests\FlashAsserts;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
 
@@ -20,7 +18,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
 
-        $response = $this->appRun('get', '/support');
+        $response = $this->appRun('GET', '/support');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'you can contact me via this form');
@@ -30,16 +28,16 @@ class SupportTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersSuccessParagraphIfMessageSent()
     {
         $user = $this->login();
-        utils\Flash::set('message_sent', true);
+        \Minz\Flash::set('message_sent', true);
 
-        $response = $this->appRun('get', '/support');
+        $response = $this->appRun('GET', '/support');
 
         $this->assertResponseContains($response, 'Your message has been sent');
     }
 
     public function testShowRedirectsIfNotConnected()
     {
-        $response = $this->appRun('get', '/support');
+        $response = $this->appRun('GET', '/support');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fsupport');
     }
@@ -54,14 +52,14 @@ class SupportTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
         ]);
 
-        $response = $this->appRun('post', '/support', [
+        $response = $this->appRun('POST', '/support', [
             'csrf' => $user->csrf,
             'subject' => $subject,
             'message' => $message,
         ]);
 
         $this->assertResponseCode($response, 302, '/support');
-        $this->assertFlash('message_sent', true);
+        $this->assertTrue(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(2);
         $email_1 = \Minz\Tests\Mailer::take(0);
         $this->assertEmailSubject($email_1, "[flusio] Contact: {$subject}");
@@ -80,19 +78,19 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         $subject = $this->fake('sentence');
         $message = $this->fake('paragraph');
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'csrf' => 'a token',
             'email' => $email,
         ]);
 
-        $response = $this->appRun('post', '/support', [
+        $response = $this->appRun('POST', '/support', [
             'csrf' => 'a token',
             'subject' => $subject,
             'message' => $message,
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fsupport');
-        $this->assertFlash('message_sent', null);
+        $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }
 
@@ -106,7 +104,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
         ]);
 
-        $response = $this->appRun('post', '/support', [
+        $response = $this->appRun('POST', '/support', [
             'csrf' => 'not the token',
             'subject' => $subject,
             'message' => $message,
@@ -115,7 +113,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
         $this->assertResponsePointer($response, 'support/show.phtml');
-        $this->assertFlash('message_sent', null);
+        $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }
 
@@ -129,7 +127,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
         ]);
 
-        $response = $this->appRun('post', '/support', [
+        $response = $this->appRun('POST', '/support', [
             'csrf' => $user->csrf,
             'subject' => $subject,
             'message' => $message,
@@ -138,7 +136,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The subject is required.');
         $this->assertResponsePointer($response, 'support/show.phtml');
-        $this->assertFlash('message_sent', null);
+        $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }
 
@@ -152,7 +150,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
         ]);
 
-        $response = $this->appRun('post', '/support', [
+        $response = $this->appRun('POST', '/support', [
             'csrf' => $user->csrf,
             'subject' => $subject,
             'message' => $message,
@@ -161,7 +159,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The message is required.');
         $this->assertResponsePointer($response, 'support/show.phtml');
-        $this->assertFlash('message_sent', null);
+        $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }
 }

@@ -3,336 +3,326 @@
 namespace flusio\models\dao;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\FollowedCollectionFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\UserFactory;
 
 class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
-    use \Minz\Tests\FactoriesHelper;
 
     public function testListComputedByUserId()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
         ]);
 
-        $db_collections = $dao->listComputedByUserId($user_id, []);
+        $collections = models\Collection::listComputedByUserId($user->id, []);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id, $db_collections[0]['id']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame($collection->id, $collections[0]->id);
     }
 
     public function testListComputedByUserIdDoesNotReturnFeeds()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'feed',
         ]);
 
-        $db_collections = $dao->listComputedByUserId($user_id, []);
+        $collections = models\Collection::listComputedByUserId($user->id, []);
 
-        $this->assertSame(0, count($db_collections));
+        $this->assertSame(0, count($collections));
     }
 
     public function testListComputedByUserIdCanExcludePrivateCollections()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
 
-        $db_collections = $dao->listComputedByUserId($user_id, [], [
+        $collections = models\Collection::listComputedByUserId($user->id, [], [
             'private' => false,
         ]);
 
-        $this->assertSame(0, count($db_collections));
+        $this->assertSame(0, count($collections));
     }
 
     public function testListComputedByUserIdCanReturnNumberLinks()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $db_collections = $dao->listComputedByUserId($user_id, ['number_links']);
+        $collections = models\Collection::listComputedByUserId($user->id, ['number_links']);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id, $db_collections[0]['id']);
-        $this->assertSame(1, $db_collections[0]['number_links']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame($collection->id, $collections[0]->id);
+        $this->assertSame(1, $collections[0]->number_links);
     }
 
     public function testListComputedByUserIdCanExcludeHiddenLinks()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 1,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $db_collections = $dao->listComputedByUserId($user_id, ['number_links'], [
+        $collections = models\Collection::listComputedByUserId($user->id, ['number_links'], [
             'count_hidden' => false,
         ]);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id, $db_collections[0]['id']);
-        $this->assertSame(0, $db_collections[0]['number_links']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame($collection->id, $collections[0]->id);
+        $this->assertSame(0, $collections[0]->number_links);
     }
 
     public function testListComputedByUserIdCanExcludePublicAndEmptyCollections()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
 
-        $db_collections = $dao->listComputedByUserId($user_id, ['number_links'], [
+        $collections = models\Collection::listComputedByUserId($user->id, ['number_links'], [
             'private' => false,
         ]);
 
-        $this->assertSame(0, count($db_collections));
+        $this->assertSame(0, count($collections));
     }
 
     public function testListComputedByUserIdCanExcludePublicAndEmptyCollectionsAndConsiderCountHidden()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 1,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $db_collections = $dao->listComputedByUserId($user_id, ['number_links'], [
+        $collections = models\Collection::listComputedByUserId($user->id, ['number_links'], [
             'private' => false,
             'count_hidden' => false,
         ]);
 
-        $this->assertSame(0, count($db_collections));
+        $this->assertSame(0, count($collections));
     }
 
     public function testListComputedFollowedByUserId()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
         ]);
 
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, []);
+        $collections = models\Collection::listComputedFollowedByUserId($user->id, []);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id, $db_collections[0]['id']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame($collection->id, $collections[0]->id);
     }
 
     public function testListComputedFollowedByUserIdExcludesPrivateCollections()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
         ]);
 
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, []);
+        $collections = models\Collection::listComputedFollowedByUserId($user->id, []);
 
-        $this->assertSame(0, count($db_collections));
+        $this->assertSame(0, count($collections));
     }
 
     public function testListComputedFollowedByUserIdCanReturnNumberLinks()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, ['number_links']);
+        $collections = models\Collection::listComputedFollowedByUserId($user->id, ['number_links']);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id, $db_collections[0]['id']);
-        $this->assertSame(1, $db_collections[0]['number_links']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame($collection->id, $collections[0]->id);
+        $this->assertSame(1, $collections[0]->number_links);
     }
 
     public function testListComputedFollowedByUserIdCanReturnTimeFilter()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
             'time_filter' => 'strict',
         ]);
 
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, ['time_filter']);
+        $collections = models\Collection::listComputedFollowedByUserId($user->id, ['time_filter']);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame('strict', $db_collections[0]['time_filter']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame('strict', $collections[0]->time_filter);
     }
 
     public function testListComputedFollowedByUserIdCanFilterCollections()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id_1 = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection_1 = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $collection_id_2 = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $collection_2 = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'feed',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_1,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection_1->id,
+            'user_id' => $user->id,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_2,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection_2->id,
+            'user_id' => $user->id,
         ]);
 
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, [], [
+        $collections = models\Collection::listComputedFollowedByUserId($user->id, [], [
             'type' => 'collection',
         ]);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id_1, $db_collections[0]['id']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame($collection_1->id, $collections[0]->id);
     }
 
     public function testListComputedFollowedByUserIdCanFilterFeeds()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id_1 = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection_1 = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $collection_id_2 = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $collection_2 = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'feed',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_1,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection_1->id,
+            'user_id' => $user->id,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id_2,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection_2->id,
+            'user_id' => $user->id,
         ]);
 
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, [], [
+        $collections = models\Collection::listComputedFollowedByUserId($user->id, [], [
             'type' => 'feed',
         ]);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id_2, $db_collections[0]['id']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame($collection_2->id, $collections[0]->id);
     }
 
     public function testListComputedFollowedByUserIdExcludesHiddenLinks()
     {
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 1,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, ['number_links']);
+        $collections = models\Collection::listComputedFollowedByUserId($user->id, ['number_links']);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id, $db_collections[0]['id']);
-        $this->assertSame(0, $db_collections[0]['number_links']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame($collection->id, $collections[0]->id);
+        $this->assertSame(0, $collections[0]->number_links);
     }
 
     /**
@@ -343,33 +333,32 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     public function testListComputedFollowedByUserIdDoesNotExcludeHiddenLinksWhenFilteringFeeds()
     {
 
-        $dao = new Collection();
-        $user_id = $this->create('user');
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'feed',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
-            'collection_id' => $collection_id,
-            'user_id' => $user_id,
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'is_hidden' => 1,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $db_collections = $dao->listComputedFollowedByUserId($user_id, ['number_links'], [
+        $collections = models\Collection::listComputedFollowedByUserId($user->id, ['number_links'], [
             'type' => 'feed',
         ]);
 
-        $this->assertSame(1, count($db_collections));
-        $this->assertSame($collection_id, $db_collections[0]['id']);
-        $this->assertSame(1, $db_collections[0]['number_links']);
+        $this->assertSame(1, count($collections));
+        $this->assertSame($collection->id, $collections[0]->id);
+        $this->assertSame(1, $collections[0]->number_links);
     }
 }

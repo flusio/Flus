@@ -28,7 +28,7 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
 
     public function testStatusCanConnectToTheDatabase()
     {
-        $response = $this->appRun('cli', '/database/status');
+        $response = $this->appRun('CLI', '/database/status');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Database status: OK');
@@ -40,7 +40,7 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
         $initial_database_conf = \Minz\Configuration::$database;
         \Minz\Configuration::$database['username'] = 'not the username';
 
-        $response = $this->appRun('cli', '/database/status');
+        $response = $this->appRun('CLI', '/database/status');
 
         $this->assertResponseCode($response, 500);
         $this->assertResponseContains($response, 'Database status: An error occured during database initialization');
