@@ -2,6 +2,8 @@
 
 USER = $(shell id -u):$(shell id -g)
 
+DOCKER_COMPOSE = docker-compose -p flusio -f docker/docker-compose.yml
+
 ifdef NO_DOCKER
 	PHP = php
 	COMPOSER = composer
@@ -33,15 +35,15 @@ endif
 .PHONY: docker-start
 docker-start: .env ## Start a development server with Docker
 	@echo "Running webserver on http://localhost:8000"
-	docker-compose -p flusio -f docker/docker-compose.yml up
+	$(DOCKER_COMPOSE) up
 
 .PHONY: docker-clean
 docker-clean: ## Stop and clean Docker server
-	docker-compose -p flusio -f docker/docker-compose.yml down
+	$(DOCKER_COMPOSE) down
 
 .PHONY: docker-build
 docker-build: ## Rebuild the Docker images
-	docker-compose -p flusio -f docker/docker-compose.yml build
+	$(DOCKER_COMPOSE) build
 
 .PHONY: install
 install: ## Install the dependencies
