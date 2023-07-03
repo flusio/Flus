@@ -23,7 +23,7 @@ $current_filepath = $_SERVER['PHP_SELF'];
 if (\Minz\Configuration::$environment === 'development' && $current_filepath !== '/index.php') {
     $public_path = $app_path . '/public';
     $filepath = realpath($public_path . $current_filepath);
-    if (\flusio\utils\Belt::startsWith($filepath, $public_path) && file_exists($filepath)) {
+    if (str_starts_with($filepath, $public_path) && file_exists($filepath)) {
         return false;
     }
 }

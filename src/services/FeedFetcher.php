@@ -226,7 +226,7 @@ class FeedFetcher
             }
 
             $content_type = $response->header('content-type');
-            if (!utils\Belt::contains($content_type, 'text/html')) {
+            if (!str_contains($content_type, 'text/html')) {
                 $collection->image_fetched_at = \Minz\Time::now();
                 $collection->save();
                 return;
@@ -449,6 +449,6 @@ class FeedFetcher
     private function isYoutube($url)
     {
         $host = utils\Belt::host($url);
-        return utils\Belt::endsWith($host, 'youtube.com');
+        return str_ends_with($host, 'youtube.com');
     }
 }

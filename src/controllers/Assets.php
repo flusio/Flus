@@ -38,7 +38,7 @@ class Assets
             return Response::text(404, 'This file doesn’t exist.');
         }
 
-        if (!utils\Belt::startsWith($asset_path, $assets_path)) {
+        if (!str_starts_with($asset_path, $assets_path)) {
             \Minz\Log::warning(
                 'Someone tries to access a file that is not under the src/assets/ path!'
             );

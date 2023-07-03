@@ -237,7 +237,7 @@ class Shares
         $url = \SpiderBits\Url::sanitize($string);
         $base_url = \Minz\Url::baseUrl();
 
-        if (!utils\Belt::startsWith($url, $base_url)) {
+        if (!str_starts_with($url, $base_url)) {
             return $string;
         }
 

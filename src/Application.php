@@ -182,15 +182,15 @@ class Application
 
         $path = $request->path();
         $path_is_authorized = (
-            utils\Belt::startsWith($path, '/my/') ||
-            utils\Belt::startsWith($path, '/exportation') ||
-            utils\Belt::startsWith($path, '/logout') ||
-            utils\Belt::startsWith($path, '/terms') ||
-            utils\Belt::startsWith($path, '/about') ||
-            utils\Belt::startsWith($path, '/addons') ||
-            utils\Belt::startsWith($path, '/onboarding') ||
-            utils\Belt::startsWith($path, '/support') ||
-            utils\Belt::startsWith($path, '/src/assets')
+            str_starts_with($path, '/my/') ||
+            str_starts_with($path, '/exportation') ||
+            str_starts_with($path, '/logout') ||
+            str_starts_with($path, '/terms') ||
+            str_starts_with($path, '/about') ||
+            str_starts_with($path, '/addons') ||
+            str_starts_with($path, '/onboarding') ||
+            str_starts_with($path, '/support') ||
+            str_starts_with($path, '/src/assets')
         );
         return !$path_is_authorized;
     }
@@ -216,15 +216,15 @@ class Application
 
         $path = $request->path();
         $path_is_authorized = (
-            utils\Belt::startsWith($path, '/my/') ||
-            utils\Belt::startsWith($path, '/exportation') ||
-            utils\Belt::startsWith($path, '/logout') ||
-            utils\Belt::startsWith($path, '/terms') ||
-            utils\Belt::startsWith($path, '/about') ||
-            utils\Belt::startsWith($path, '/addons') ||
-            utils\Belt::startsWith($path, '/onboarding') ||
-            utils\Belt::startsWith($path, '/support') ||
-            utils\Belt::startsWith($path, '/src/assets')
+            str_starts_with($path, '/my/') ||
+            str_starts_with($path, '/exportation') ||
+            str_starts_with($path, '/logout') ||
+            str_starts_with($path, '/terms') ||
+            str_starts_with($path, '/about') ||
+            str_starts_with($path, '/addons') ||
+            str_starts_with($path, '/onboarding') ||
+            str_starts_with($path, '/support') ||
+            str_starts_with($path, '/src/assets')
         );
         return !$path_is_authorized;
     }

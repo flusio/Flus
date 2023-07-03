@@ -3,7 +3,6 @@
 namespace flusio\jobs;
 
 use flusio\models;
-use flusio\utils;
 use tests\factories\ExportationFactory;
 use tests\factories\UserFactory;
 
@@ -59,7 +58,7 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($exportation->filepath);
         $this->assertTrue(file_exists($exportation->filepath));
         $exportations_path = \Minz\Configuration::$data_path . '/exportations';
-        $this->assertTrue(utils\Belt::startsWith($exportation->filepath, $exportations_path));
+        $this->assertTrue(str_starts_with($exportation->filepath, $exportations_path));
     }
 
     public function testPerformDoesNothingIfStatusIsFinished()

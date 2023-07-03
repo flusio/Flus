@@ -233,7 +233,7 @@ class LinkFetcher
             return $info;
         }
 
-        if ($content_type && !utils\Belt::contains($content_type, 'text/html')) {
+        if ($content_type && !str_contains($content_type, 'text/html')) {
             // We operate on HTML only. If content type is not declared, we
             // examine data hoping for HTML.
             return $info; // @codeCoverageIgnore
@@ -291,7 +291,7 @@ class LinkFetcher
     private function isTwitter($url)
     {
         $host = utils\Belt::host($url);
-        return utils\Belt::endsWith($host, 'twitter.com');
+        return str_ends_with($host, 'twitter.com');
     }
 
     /**
@@ -304,7 +304,7 @@ class LinkFetcher
     private function isYoutube($url)
     {
         $host = utils\Belt::host($url);
-        return utils\Belt::endsWith($host, 'youtube.com');
+        return str_ends_with($host, 'youtube.com');
     }
 
     /**

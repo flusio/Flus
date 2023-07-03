@@ -134,7 +134,7 @@ if (!isset($http_parameters['action'])) {
         }
 
         foreach ($_SERVER as $key => $value) {
-            if (\flusio\utils\Belt::startsWith($key, 'HTTP_')) {
+            if (str_starts_with($key, 'HTTP_')) {
                 $info['headers'][$key] = $value;
             } elseif ($key === 'PHP_AUTH_USER') {
                 $info['user'] = $value;
@@ -157,7 +157,7 @@ if (!isset($http_parameters['action'])) {
     $requested_filename = $app_path . '/' . $content;
     $filename = realpath($requested_filename);
 
-    if (!$filename || !\flusio\utils\Belt::startsWith($filename, $app_path)) {
+    if (!$filename || !str_starts_with($filename, $app_path)) {
         // The file doesn't exist, or is not under the app_path so we consider
         // the mock is invalid.
         \Minz\Log::notice("FILE {$requested_filename} DOES NOT EXIST");
