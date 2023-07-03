@@ -242,11 +242,13 @@ class Router
         $router->addRoute('CLI', '/topics/update', 'Topics#update');
         $router->addRoute('CLI', '/topics/delete', 'Topics#delete');
 
-        $router->addRoute('CLI', '/jobs', 'JobsWorker#index');
-        $router->addRoute('CLI', '/jobs/install', 'JobsWorker#install');
-        $router->addRoute('CLI', '/jobs/run', 'JobsWorker#run');
-        $router->addRoute('CLI', '/jobs/unlock', 'JobsWorker#unlock');
-        $router->addRoute('CLI', '/jobs/watch', 'JobsWorker#watch');
+        $router->addRoute('CLI', '/jobs', 'Jobs#index');
+        $router->addRoute('CLI', '/jobs/install', 'Jobs#install');
+        $router->addRoute('CLI', '/jobs/watch', 'Jobs#watch');
+        $router->addRoute('CLI', '/jobs/run', 'Jobs#run');
+        $router->addRoute('CLI', '/jobs/show', 'Jobs#show');
+        $router->addRoute('CLI', '/jobs/unfail', 'Jobs#unfail');
+        $router->addRoute('CLI', '/jobs/unlock', 'Jobs#unlock');
 
         return $router;
     }

@@ -192,7 +192,7 @@ have permission on your server to create a new service. An alternative is to
 setup a cron task:
 
 ```cron
-* * * * * www-data php /var/www/flusio/cli jobs run >/dev/null 2>&1
+* * * * * www-data php /var/www/flusio/cli jobs watch --stop-after=1 >/dev/null 2>&1
 ```
 
 It will find and run a single job every minute. It’s less efficient than a

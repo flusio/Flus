@@ -6,6 +6,15 @@
 
 PHP 8.1+ is now required. Please check your version before updating flusio!
 
+The CLI command to execute a single job has changed.
+You should now execute:
+
+```console
+$ php cli jobs watch --stop-after=1
+```
+
+The `run` command now takes a job id to execute a specific job.
+
 ## 2023-04-07 - v0.54
 
 ### Security
