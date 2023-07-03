@@ -209,15 +209,15 @@ class Router
 
         $router->addRoute('CLI', '/system', 'System#show');
         $router->addRoute('CLI', '/system/secret', 'System#secret');
-        $router->addRoute('CLI', '/system/setup', 'System#setup');
         $router->addRoute('CLI', '/database/status', 'Database#status');
 
-        $router->addRoute('CLI', '/media/clean', 'Media#clean');
-
         $router->addRoute('CLI', '/migrations', 'Migrations#index');
-        $router->addRoute('CLI', '/migrations/create', 'Migrations#create');
-        $router->addRoute('CLI', '/migrations/apply', 'Migrations#apply');
+        $router->addRoute('CLI', '/migrations/setup', 'Migrations#setup');
         $router->addRoute('CLI', '/migrations/rollback', 'Migrations#rollback');
+        $router->addRoute('CLI', '/migrations/create', 'Migrations#create');
+        $router->addRoute('CLI', '/migrations/reset', 'Migrations#reset');
+
+        $router->addRoute('CLI', '/media/clean', 'Media#clean');
 
         $router->addRoute('CLI', '/urls/show', 'Urls#show');
         $router->addRoute('CLI', '/urls/uncache', 'Urls#uncache');

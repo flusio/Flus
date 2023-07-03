@@ -84,7 +84,7 @@ flusio# chmod 400 .env
 You must now load the SQL schema to your database. You can do it with:
 
 ```console
-flusio# sudo -u www-data php cli system setup
+flusio# sudo -u www-data php cli migrations setup --seed
 flusio# # OR via make
 flusio# sudo -u www-data make setup NO_DOCKER=true
 ```
