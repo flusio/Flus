@@ -86,6 +86,7 @@ test: ## Run the test suite
 
 .PHONY: lint
 lint: ## Run the linters on the PHP and JS files
+	$(PHP) ./vendor/bin/phpstan analyse --memory-limit 1G -c phpstan.neon
 	$(PHP) ./vendor/bin/phpcs --extensions=php --ignore=./src/views/ --standard=PSR12 ./src ./tests ./lib/SpiderBits
 	$(NPM) run lint-js
 	$(NPM) run lint-css
