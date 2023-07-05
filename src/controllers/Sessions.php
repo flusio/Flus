@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -22,12 +23,8 @@ class Sessions
      *
      * @response 302 :redirect_to if already connected
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
-    public function new($request)
+    public function new(Request $request): Response
     {
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
         if (auth\CurrentUser::get()) {
@@ -61,17 +58,14 @@ class Sessions
      * @response 400 if CSRF is invalid, email doesn't match with a User or if
      *               password is wrong
      * @response 302 :redirect_to if logged in
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
 
         try {
             // Verify that redirect_to matches a real route in the application.
+            /** @var \Minz\Router */
             $router = \Minz\Engine::router();
             $router->match('GET', $redirect_to);
         } catch (\Minz\Errors\RouteNotFoundError $e) {
@@ -82,9 +76,9 @@ class Sessions
             return Response::found($redirect_to);
         }
 
-        $email = $request->param('email');
-        $password = $request->param('password');
-        $csrf = $request->param('csrf');
+        $email = $request->param('email', '');
+        $password = $request->param('password', '');
+        $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('sessions/new.phtml', [
@@ -173,16 +167,12 @@ class Sessions
      * @request_param string redirect_to A URL to redirect to (optional, default is `/`)
      *
      * @response 302 :redirect_to
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
-    public function changeLocale($request)
+    public function changeLocale(Request $request): Response
     {
-        $locale = $request->param('locale');
+        $locale = $request->param('locale', '');
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::found($redirect_to);
@@ -206,26 +196,24 @@ class Sessions
      * @request_param string csrf
      *
      * @response 302 /
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
         $current_user = auth\CurrentUser::get();
         if (!$current_user) {
             return Response::redirect('home');
         }
 
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('home');
         }
 
-        $current_session_token = auth\CurrentUser::sessionToken();
-        $session = models\Session::findBy(['token' => $current_session_token]);
+        $session = auth\CurrentUser::session();
+
+        assert($session !== null);
+
         models\Session::delete($session->id);
         auth\CurrentUser::reset();
 

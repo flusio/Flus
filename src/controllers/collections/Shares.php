@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\collections;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -20,20 +21,20 @@ class Shares
      * @response 200
      *     On success
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $current_user = auth\CurrentUser::get();
-        $from = $request->param('from');
+        $from = $request->param('from', '');
         if (!$current_user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $collection_id = $request->param('id');
+        $collection_id = $request->param('id', '');
         $collection = models\Collection::find($collection_id);
 
-        $can_update = auth\CollectionsAccess::canUpdate($current_user, $collection);
+        $can_update = $collection && auth\CollectionsAccess::canUpdate($current_user, $collection);
         if (!$can_update) {
             return Response::notFound('not_found.phtml');
         }
@@ -64,26 +65,26 @@ class Shares
      * @response 200
      *     On success
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $current_user = auth\CurrentUser::get();
-        $from = $request->param('from');
+        $from = $request->param('from', '');
         if (!$current_user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $collection_id = $request->param('id');
-        $user_id = $request->param('user_id');
-        $type = $request->param('type');
-        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id', '');
+        $user_id = $request->param('user_id', '');
+        $type = $request->param('type', '');
+        $csrf = $request->param('csrf', '');
 
         // We also accept profiles URLs
         $user_id = $this->extractUserId($user_id);
 
         $collection = models\Collection::find($collection_id);
-        $can_update = auth\CollectionsAccess::canUpdate($current_user, $collection);
+        $can_update = $collection && auth\CollectionsAccess::canUpdate($current_user, $collection);
         if (!$can_update) {
             return Response::notFound('not_found.phtml');
         }
@@ -178,25 +179,25 @@ class Shares
      * @response 200
      *     On success
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
         $current_user = auth\CurrentUser::get();
-        $from = $request->param('from');
+        $from = $request->param('from', '');
         if (!$current_user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $csrf = $request->param('csrf');
-        $collection_share_id = $request->paramInteger('id');
+        $csrf = $request->param('csrf', '');
+        $collection_share_id = $request->paramInteger('id', -1);
         $collection_share = models\CollectionShare::find($collection_share_id);
         if (!$collection_share) {
             return Response::notFound('not_found.phtml');
         }
 
         $collection = models\Collection::find($collection_share->collection_id);
-        $can_update = auth\CollectionsAccess::canUpdate($current_user, $collection);
+        $can_update = $collection && auth\CollectionsAccess::canUpdate($current_user, $collection);
         if (!$can_update) {
             return Response::notFound('not_found.phtml');
         }
@@ -226,12 +227,8 @@ class Shares
      *
      * The string can be the user_id, or the URL to the profile of a user.
      * This method doesn't check if the id exists or is valid.
-     *
-     * @param string $string
-     *
-     * @return string
      */
-    private function extractUserId($string)
+    private function extractUserId(string $string): string
     {
         $string = trim($string);
         $url = \SpiderBits\Url::sanitize($string);
@@ -244,14 +241,17 @@ class Shares
         $parsed_url = parse_url($url);
         $path = $parsed_url['path'] ?? '/';
 
-        $router = \Minz\Engine::router();
-
-        // try to extract the id if the path match the route.
-        try {
-            list($action_pointer, $parameters) = $router->match('GET', $path);
-            return $parameters['id'];
-        } catch (\Minz\Errors\RouteNotFoundError $e) {
+        $result = preg_match('#^/p/(?P<id>\d+)$#', $path, $matches);
+        if ($result !== 1) {
             return $string;
         }
+
+        $user_id = $matches['id'] ?? '';
+
+        if (!models\User::exists($user_id)) {
+            return $string;
+        }
+
+        return $user_id;
     }
 }

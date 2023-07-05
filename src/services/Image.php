@@ -11,24 +11,23 @@ use flusio\models;
  */
 class Image
 {
-    /** @var \SpiderBits\Http */
-    private $http;
+    private \SpiderBits\Http $http;
 
-    /** @var string */
-    private $path_cards;
+    private string $path_cards;
 
-    /** @var string */
-    private $path_covers;
+    private string $path_covers;
 
-    /** @var string */
-    private $path_large;
+    private string $path_large;
 
     public function __construct()
     {
+        /** @var string */
+        $user_agent = \Minz\Configuration::$application['user_agent'];
         $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
+        $this->http->user_agent = $user_agent;
         $this->http->timeout = 10;
 
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $this->path_cards = "{$media_path}/cards";
         $this->path_covers = "{$media_path}/covers";
@@ -36,14 +35,10 @@ class Image
     }
 
     /**
-     * Generate preview images
-     *
-     * @param string $image_url
-     *
-     * @return string
-     *     The generated image filename on the disk (or an empty string on failure)
+     * Generate preview images and return the generated image filename on the
+     * disk (or an empty string on failure).
      */
-    public function generatePreviews($image_url)
+    public function generatePreviews(string $image_url): string
     {
         $url_hash = \SpiderBits\Cache::hash($image_url);
         $subpath = utils\Belt::filenameToSubpath($url_hash);

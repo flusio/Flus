@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\collections;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -27,26 +28,28 @@ class Feeds
      *     if the collection is a feed
      * @response 200
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->param('id');
+        $collection_id = $request->param('id', '');
         $direct = $request->paramBoolean('direct', false);
 
         $collection = models\Collection::find($collection_id);
-        if (!auth\CollectionsAccess::canView($user, $collection)) {
+        if (!$collection || !auth\CollectionsAccess::canView($user, $collection)) {
             return Response::notFound('not_found.phtml');
         }
 
         if ($collection->type === 'feed') {
-            return Response::movedPermanently($collection->feed_url);
+            /** @var string */
+            $feed_url = $collection->feed_url;
+            return Response::movedPermanently($feed_url);
         }
 
         $locale = $collection->owner()->locale;
         utils\Locale::setCurrentLocale($locale);
 
         $topics = $collection->topics();
-        utils\Sorter::localeSort($topics, 'label');
+        $topics = utils\Sorter::localeSort($topics, 'label');
 
         $links = $collection->links(['published_at'], [
             'hidden' => false,
@@ -71,7 +74,7 @@ class Feeds
      *
      * @response 301 /collections/:id/feed.atom.xml
      */
-    public function alias($request)
+    public function alias(Request $request): Response
     {
         $collection_id = $request->param('id');
         $url = \Minz\Url::for('collection feed', ['id' => $collection_id]);

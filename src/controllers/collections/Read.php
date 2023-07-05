@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\collections;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -30,12 +31,12 @@ class Read
      * @response 302 :from
      *     on success
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
-        $collection_id = $request->param('id');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
+        $collection_id = $request->param('id', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -43,9 +44,9 @@ class Read
 
         $collection = models\Collection::find($collection_id);
         $links = [];
-        if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+        if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
             $links = $collection->links();
-        } elseif ($user->isFollowing($collection->id)) {
+        } elseif ($collection && $user->isFollowing($collection->id)) {
             $collection_links = $collection->links([], [
                 'hidden' => $collection->sharedWith($user),
             ]);
@@ -96,12 +97,12 @@ class Read
      * @response 302 :from
      *     on success
      */
-    public function later($request)
+    public function later(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
-        $collection_id = $request->param('id');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
+        $collection_id = $request->param('id', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -109,9 +110,9 @@ class Read
 
         $collection = models\Collection::find($collection_id);
         $links = [];
-        if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+        if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
             $links = $collection->links();
-        } elseif ($user->isFollowing($collection->id)) {
+        } elseif ($collection && $user->isFollowing($collection->id)) {
             $collection_links = $collection->links([], [
                 'hidden' => $collection->sharedWith($user),
             ]);
@@ -162,12 +163,12 @@ class Read
      * @response 302 :from
      *     on success
      */
-    public function never($request)
+    public function never(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
-        $collection_id = $request->param('id');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
+        $collection_id = $request->param('id', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -175,9 +176,9 @@ class Read
 
         $collection = models\Collection::find($collection_id);
         $links = [];
-        if (auth\CollectionsAccess::canUpdateRead($user, $collection)) {
+        if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
             $links = $collection->links();
-        } elseif ($user->isFollowing($collection->id)) {
+        } elseif ($collection && $user->isFollowing($collection->id)) {
             $collection_links = $collection->links([], [
                 'hidden' => $collection->sharedWith($user),
             ]);

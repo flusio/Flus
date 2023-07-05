@@ -15,9 +15,10 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testNewRendersCorrectly()
+    public function testNewRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -33,9 +34,10 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $url);
     }
 
-    public function testNewRedirectsToLoginIfNotConnected()
+    public function testNewRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -49,9 +51,10 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
     }
 
-    public function testNewFailsIfTheLinkDoesNotExist()
+    public function testNewFailsIfTheLinkDoesNotExist(): void
     {
         $user = $this->login();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -65,10 +68,11 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testNewFailsIfTheUserHasNoAccessToTheLink()
+    public function testNewFailsIfTheUserHasNoAccessToTheLink(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -82,11 +86,13 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testCreateChangesTheUrlAndRedirect()
+    public function testCreateChangesTheUrlAndRedirect(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_url = $this->fakeUnique('url');
         $new_url = 'https://flus.fr/carnet/index.html';
+        /** @var string */
         $old_title = $this->fake('sentence');
         $old_reading_time = 9999;
         $old_illustration = 'old.png';
@@ -116,11 +122,13 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $link->fetched_code);
     }
 
-    public function testCreateResynchronizesTheInfoIfForced()
+    public function testCreateResynchronizesTheInfoIfForced(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_url = $this->fakeUnique('url');
         $new_url = 'https://flus.fr/carnet/index.html';
+        /** @var string */
         $old_title = $this->fake('sentence');
         $old_reading_time = 9999;
         $old_illustration = 'old.png';
@@ -150,11 +158,13 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($old_illustration, $link->image_filename);
     }
 
-    public function testCreateAddsTheOldUrlToTheNeverList()
+    public function testCreateAddsTheOldUrlToTheNeverList(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_url = $this->fakeUnique('url');
         $new_url = 'https://flus.fr/carnet/index.html';
+        /** @var string */
         $old_title = $this->fake('sentence');
         $old_reading_time = 9999;
         $old_illustration = 'old.png';
@@ -188,12 +198,14 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_never_list);
     }
 
-    public function testCreateRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
+        /** @var string */
         $old_url = $this->fakeUnique('url');
+        /** @var string */
         $new_url = $this->fakeUnique('url');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -212,10 +224,12 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_url, $link->url);
     }
 
-    public function testCreateFailsIfTheLinkDoesNotExist()
+    public function testCreateFailsIfTheLinkDoesNotExist(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_url = $this->fakeUnique('url');
+        /** @var string */
         $new_url = $this->fakeUnique('url');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -234,11 +248,13 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_url, $link->url);
     }
 
-    public function testCreateFailsIfTheUserHasNoAccessToTheLink()
+    public function testCreateFailsIfTheUserHasNoAccessToTheLink(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $old_url = $this->fakeUnique('url');
+        /** @var string */
         $new_url = $this->fakeUnique('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -257,10 +273,12 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_url, $link->url);
     }
 
-    public function testCreateFailsIfTheCsrfIsInvalid()
+    public function testCreateFailsIfTheCsrfIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_url = $this->fakeUnique('url');
+        /** @var string */
         $new_url = $this->fakeUnique('url');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -281,9 +299,10 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_url, $link->url);
     }
 
-    public function testCreateFailsIfTheUrlIsInvalid()
+    public function testCreateFailsIfTheUrlIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_url = $this->fakeUnique('url');
         $new_url = 'ftp://example.com';
         $link = LinkFactory::create([

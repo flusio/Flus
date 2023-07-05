@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
@@ -26,7 +27,7 @@ class Registrations
      *
      * @return \Minz\Response
      */
-    public function new()
+    public function new(): Response
     {
         if (auth\CurrentUser::get()) {
             return Response::redirect('home');
@@ -72,7 +73,7 @@ class Registrations
      *
      * @return \Minz\Response
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         if (auth\CurrentUser::get()) {
             return Response::redirect('home');
@@ -91,7 +92,7 @@ class Registrations
         $email = $request->param('email', '');
         $password = $request->param('password', '');
         $accept_terms = $request->param('accept_terms', false);
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('registrations/new.phtml', [

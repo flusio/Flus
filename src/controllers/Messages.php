@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -25,11 +26,11 @@ class Messages
      * @response 200
      *     On success.
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $message_id = $request->param('id');
-        $from = $request->param('from');
+        $message_id = $request->param('id', '');
+        $from = $request->param('from', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -68,13 +69,13 @@ class Messages
      * @response 302 :from
      *     On success.
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         $message_id = $request->param('id');
         $content = $request->param('content', '');
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -117,12 +118,12 @@ class Messages
      * @response 302 :redirect_to if csrf is invalid
      * @response 302 :redirect_to on success
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $message_id = $request->param('id');
+        $message_id = $request->param('id', '');
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $redirect_to]);

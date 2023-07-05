@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\collections;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -27,19 +28,19 @@ class Followers
      *     if CSRF is invalid
      * @response 302 :from
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->param('id');
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id', '');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collection = models\Collection::find($collection_id);
-        $can_view = auth\CollectionsAccess::canView($user, $collection);
+        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
         if (!$can_view) {
             return Response::notFound('not_found.phtml');
         }
@@ -72,12 +73,12 @@ class Followers
      *     if CSRF is invalid
      * @response 302 :from
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->param('id');
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id', '');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);

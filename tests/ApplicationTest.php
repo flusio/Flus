@@ -13,7 +13,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
     use \tests\LoginHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testRunSetsTheDefaultLocale()
+    public function testRunSetsTheDefaultLocale(): void
     {
         $request = new \Minz\Request('GET', '/');
 
@@ -25,7 +25,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en_GB', utils\Locale::currentLocale());
     }
 
-    public function testRunSetsTheLocaleFromSessionLocale()
+    public function testRunSetsTheLocaleFromSessionLocale(): void
     {
         $_SESSION['locale'] = 'fr_FR';
         $request = new \Minz\Request('GET', '/');
@@ -38,7 +38,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
     }
 
-    public function testRunSetsTheLocaleFromConnectedUser()
+    public function testRunSetsTheLocaleFromConnectedUser(): void
     {
         $this->login([
             'locale' => 'fr_FR',
@@ -53,7 +53,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
     }
 
-    public function testRunSetsCurrentUserFromCookie()
+    public function testRunSetsCurrentUserFromCookie(): void
     {
         $expired_at = \Minz\Time::fromNow(30, 'days');
         $token = TokenFactory::create([
@@ -77,10 +77,11 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $response = $application->run($request);
 
         $current_user = auth\CurrentUser::get();
+        $this->assertNotNull($current_user);
         $this->assertSame($user->id, $current_user->id);
     }
 
-    public function testRunSetsAutoloadModal()
+    public function testRunSetsAutoloadModal(): void
     {
         $user = $this->login([
             'autoload_modal' => 'showcase navigation',
@@ -96,7 +97,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertEmpty($user->autoload_modal);
     }
 
-    public function testRunDoesNotResetAutoloadModalOnRedirections()
+    public function testRunDoesNotResetAutoloadModalOnRedirections(): void
     {
         $user = $this->login([
             'autoload_modal' => 'showcase navigation',
@@ -111,9 +112,11 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('showcase navigation', $user->autoload_modal);
     }
 
-    public function testRunRedirectsIfUserOlderThan1DaysNotValidated()
+    public function testRunRedirectsIfUserOlderThan1DaysNotValidated(): void
     {
-        $created_at = \Minz\Time::ago($this->fake('numberBetween', 2, 42), 'days');
+        /** @var int */
+        $days = $this->fake('numberBetween', 2, 42);
+        $created_at = \Minz\Time::ago($days, 'days');
         $this->login([
             'created_at' => $created_at,
             'validated_at' => null,
@@ -126,10 +129,12 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/my/account/validation');
     }
 
-    public function testRunRedirectsIfUserSubscriptionIsOverdue()
+    public function testRunRedirectsIfUserSubscriptionIsOverdue(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
+        /** @var int */
+        $days = $this->fake('randomDigitNotNull');
+        $expired_at = \Minz\Time::ago($days, 'days');
         $this->login([
             'subscription_expired_at' => $expired_at,
         ]);
@@ -143,10 +148,12 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/my/account');
     }
 
-    public function testRunLogoutAndRedirectsIfConnectedWithSupportUser()
+    public function testRunLogoutAndRedirectsIfConnectedWithSupportUser(): void
     {
+        /** @var string */
+        $support_email = \Minz\Configuration::$application['support_email'];
         $this->login([
-            'email' => \Minz\Configuration::$application['support_email'],
+            'email' => $support_email,
         ]);
         $request = new \Minz\Request('GET', '/news');
 
@@ -158,13 +165,14 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($current_user);
     }
 
-    public function testHeaders()
+    public function testHeaders(): void
     {
         $request = new \Minz\Request('GET', '/');
         $application = new Application();
 
         $response = $application->run($request);
 
+        $this->assertInstanceOf(\Minz\Response::class, $response);
         $headers = $response->headers(true);
         $this->assertSame('interest-cohort=()', $headers['Permissions-Policy']);
         $this->assertSame('same-origin', $headers['Referrer-Policy']);

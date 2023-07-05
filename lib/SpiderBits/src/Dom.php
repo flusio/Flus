@@ -10,23 +10,17 @@ namespace SpiderBits;
  */
 class Dom
 {
-    /** @var \DOMDocument */
-    private $dom;
+    private \DOMDocument $dom;
 
-    /** @var string */
-    private $xpath_query;
+    private ?string $xpath_query = null;
 
-    /** @var \DOMNodeList */
-    private $nodes_selected;
+    /** @var ?\DOMNodeList<\DOMNode> */
+    private ?\DOMNodeList $nodes_selected = null;
 
     /**
      * Return a new Dom object from text.
-     *
-     * @param string $html_as_string
-     *
-     * @return \SpiderBits\Dom
      */
-    public static function fromText($html_as_string)
+    public static function fromText(string $html_as_string): self
     {
         $dom = new \DOMDocument();
         @$dom->loadHTML(mb_convert_encoding($html_as_string, 'HTML-ENTITIES', 'UTF-8'));
@@ -34,18 +28,15 @@ class Dom
     }
 
     /**
-     * @param \DOMDocument $dom
-     * @param string $xpath_query default is null
-     *
-     * @throw \DomainException if the xpath is invalid or matches no nodes
+     * @throws \DomainException if the xpath is invalid or matches no nodes
      */
-    public function __construct($dom, $xpath_query = null)
+    public function __construct(\DOMDocument $dom, ?string $xpath_query = null)
     {
         $this->dom = $dom;
 
         $this->xpath_query = $xpath_query;
         if ($xpath_query) {
-            $this->nodes_selected = self::xpathQuery($this->dom, $this->xpath_query);
+            $this->nodes_selected = self::xpathQuery($this->dom, $xpath_query);
         }
     }
 
@@ -55,18 +46,15 @@ class Dom
      * If the query matches no nodes, the method returns null.
      * Note the XPath query is relative to the current selection (i.e. it's
      * appended).
-     *
-     * @param string $xpath_query
-     *
-     * @return \SpiderBits\Dom|null
      */
-    public function select($xpath_query)
+    public function select(string $xpath_query): ?self
     {
         if ($this->xpath_query) {
             $xpath_query = $this->xpath_query . $xpath_query;
         }
 
         try {
+            /** @var \DOMDocument */
             $clone_dom = $this->dom->cloneNode(true);
             return new self($clone_dom, $xpath_query);
         } catch (\DomainException $e) {
@@ -79,10 +67,8 @@ class Dom
      *
      * Note the XPath query is relative to the current selection (i.e. it's
      * appended).
-     *
-     * @param string $xpath_query
      */
-    public function remove($xpath_query)
+    public function remove(string $xpath_query): void
     {
         if ($this->xpath_query) {
             $xpath_query = $this->xpath_query . $xpath_query;
@@ -91,7 +77,9 @@ class Dom
         try {
             $nodes_selected = self::xpathQuery($this->dom, $xpath_query);
             foreach ($nodes_selected as $node) {
-                $node->parentNode->removeChild($node);
+                if ($node->parentNode) {
+                    $node->parentNode->removeChild($node);
+                }
             }
         } catch (\DomainException $e) {
         }
@@ -100,19 +88,17 @@ class Dom
     /**
      * Return the selected nodes.
      *
-     * @return \DOMNodeList|null
+     * @return \DOMNodeList<\DOMNode>
      */
-    public function list()
+    public function list(): ?\DOMNodeList
     {
         return $this->nodes_selected;
     }
 
     /**
      * Return the content of the current selected node(s) as a string
-     *
-     * @return string
      */
-    public function text()
+    public function text(): string
     {
         if ($this->nodes_selected) {
             $texts = [];
@@ -128,14 +114,11 @@ class Dom
     /**
      * Return a list of nodes corresponding to a xpath query
      *
-     * @param \DOMDocument $dom
-     * @param string $xpath_query
+     * @throws \DomainException if the xpath is invalid or matches no nodes
      *
-     * @throw \DomainException if the xpath is invalid or matches no nodes
-     *
-     * @return \DOMNodeList
+     * @return \DOMNodeList<\DOMNode>
      */
-    private static function xpathQuery($dom, $xpath_query)
+    private static function xpathQuery(\DOMDocument $dom, string $xpath_query): \DOMNodeList
     {
         $dom_xpath = new \DomXPath($dom);
         $nodes_selected = @$dom_xpath->query($xpath_query);

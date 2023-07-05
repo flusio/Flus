@@ -95,10 +95,10 @@ class Link
     public ?int $number_comments = null;
 
     #[Database\Column(computed: true)]
-    public ?string $search_index = null;
+    public string $search_index;
 
     #[Database\Column(computed: true)]
-    public ?string $url_lookup = null;
+    public string $url_lookup;
 
     public function __construct(string $url, string $user_id, bool $is_hidden)
     {
@@ -136,7 +136,13 @@ class Link
      */
     public function owner(): User
     {
-        return User::find($this->user_id);
+        $user = User::find($this->user_id);
+
+        if (!$user) {
+            throw new \Exception("Link #{$this->id} has invalid user.");
+        }
+
+        return $user;
     }
 
     /**

@@ -10,15 +10,14 @@ use flusio\models;
  */
 trait InitializerHelper
 {
-    /** @var string */
-    private static $tablenames;
+    private static ?string $tablenames = null;
 
     /**
      * Start a new transaction for the test
      *
      * @before
      */
-    public function truncateTables()
+    public function truncateTables(): void
     {
         $database = \Minz\Database::get();
 
@@ -40,7 +39,7 @@ trait InitializerHelper
     /**
      * @before
      */
-    public function resetSession()
+    public function resetSession(): void
     {
         session_unset();
     }
@@ -48,7 +47,7 @@ trait InitializerHelper
     /**
      * @before
      */
-    public function resetTestMailer()
+    public function resetTestMailer(): void
     {
         \Minz\Tests\Mailer::clear();
     }

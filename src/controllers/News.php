@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -22,7 +23,7 @@ class News
      *     if not connected
      * @response 200
      */
-    public function index()
+    public function index(): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -52,7 +53,7 @@ class News
      *     if csrf is invalid
      * @response 302 /news
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -61,8 +62,8 @@ class News
             ]);
         }
 
-        $type = $request->param('type');
-        $csrf = $request->param('csrf');
+        $type = $request->param('type', '');
+        $csrf = $request->param('csrf', '');
 
         $news = $user->news();
 
@@ -105,7 +106,7 @@ class News
             // If the link has already a via info, we want to keep it (it might
             // have been get via a followed collection, and put in the
             // bookmarks then)
-            if (!$link->via_type) {
+            if (!$link->via_type && $news_link->via_news_type !== null) {
                 $link->via_type = $news_link->via_news_type;
                 $link->via_resource_id = $news_link->via_news_resource_id;
             }

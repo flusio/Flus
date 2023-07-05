@@ -2,6 +2,7 @@
 
 namespace flusio\cli;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\models;
 
@@ -16,15 +17,10 @@ class FeatureFlags
      *
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $types = models\FeatureFlag::VALID_TYPES;
-
-        if ($types) {
-            return Response::text(200, implode("\n", $types));
-        } else {
-            return Response::text(200, 'No types are available');
-        }
+        return Response::text(200, implode("\n", $types));
     }
 
     /**
@@ -32,7 +28,7 @@ class FeatureFlags
      *
      * @response 200
      */
-    public function flags($request)
+    public function flags(Request $request): Response
     {
         $feature_flags = models\FeatureFlag::listAll();
         $output = [];
@@ -59,10 +55,10 @@ class FeatureFlags
      * @response 404 if user doesn’t exist
      * @response 200
      */
-    public function enable($request)
+    public function enable(Request $request): Response
     {
-        $type = $request->param('type');
-        $user_id = $request->param('user_id');
+        $type = $request->param('type', '');
+        $user_id = $request->param('user_id', '');
 
         if (!in_array($type, models\FeatureFlag::VALID_TYPES)) {
             return Response::text(400, "{$type} is not a valid feature flag type");
@@ -87,10 +83,10 @@ class FeatureFlags
      * @response 404 if user doesn’t exist
      * @response 200
      */
-    public function disable($request)
+    public function disable(Request $request): Response
     {
-        $type = $request->param('type');
-        $user_id = $request->param('user_id');
+        $type = $request->param('type', '');
+        $user_id = $request->param('user_id', '');
 
         $user = models\User::find($user_id);
         if (!$user) {

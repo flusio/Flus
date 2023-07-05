@@ -16,7 +16,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function loadApplication()
+    public static function loadApplication(): void
     {
         self::$application = new \flusio\cli\Application();
     }
@@ -24,7 +24,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function changeJobAdapterToDatabase()
+    public static function changeJobAdapterToDatabase(): void
     {
         // Adding a feed will fetch its links one by one via a job.
         // When jobs_adapter is set to test, jobs are automatically triggered.
@@ -35,9 +35,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
@@ -46,14 +49,16 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     /**
      * @afterClass
      */
-    public static function changeJobAdapterToTest()
+    public static function changeJobAdapterToTest(): void
     {
         \Minz\Configuration::$jobs_adapter = 'test';
     }
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
+        /** @var string */
         $feed_url_1 = $this->fake('url');
+        /** @var string */
         $feed_url_2 = $this->fake('url');
         $feed_1 = CollectionFactory::create([
             'type' => 'feed',
@@ -74,7 +79,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, $expected_output);
     }
 
-    public function testIndexRendersCorrectlyWhenNoFeed()
+    public function testIndexRendersCorrectlyWhenNoFeed(): void
     {
         $response = $this->appRun('CLI', '/feeds');
 
@@ -82,7 +87,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, 'No feeds to list.');
     }
 
-    public function testAddCreatesCollectionAndLinksAndRendersCorrectly()
+    public function testAddCreatesCollectionAndLinksAndRendersCorrectly(): void
     {
         $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
@@ -99,12 +104,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Collection::count());
         $this->assertGreaterThan(0, models\Link::count());
         $collection = models\Collection::take();
+        $this->assertNotNull($collection);
         $this->assertSame($url, $collection->feed_url);
         $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame('https://flus.fr/carnet/', $collection->feed_site_url);
     }
 
-    public function testAddCreatesCollectionButFailsIfNotAFeed()
+    public function testAddCreatesCollectionButFailsIfNotAFeed(): void
     {
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -118,13 +124,15 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Collection::count());
         $this->assertSame(0, models\Link::count());
         $collection = models\Collection::take();
+        $this->assertNotNull($collection);
         $this->assertSame('https://flus.fr/carnet/', $collection->name);
         $this->assertSame('https://flus.fr/carnet/', $collection->feed_url);
         $this->assertSame(200, $collection->feed_fetched_code);
+        $this->assertNotNull($collection->feed_fetched_error);
         $this->assertStringContainsString('Invalid content type: text/html', $collection->feed_fetched_error);
     }
 
-    public function testAddCreatesCollectionButFailsIfUrlIsNotSuccessful()
+    public function testAddCreatesCollectionButFailsIfUrlIsNotSuccessful(): void
     {
         $response = $this->appRun('CLI', '/feeds/add', [
             'url' => 'https://not.a.domain.flus.fr/',
@@ -135,13 +143,14 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Collection::count());
         $this->assertSame(0, models\Link::count());
         $collection = models\Collection::take();
+        $this->assertNotNull($collection);
         $this->assertSame('https://not.a.domain.flus.fr/', $collection->name);
         $this->assertSame('https://not.a.domain.flus.fr/', $collection->feed_url);
         $this->assertSame(0, $collection->feed_fetched_code);
         $this->assertSame('Could not resolve host: not.a.domain.flus.fr', $collection->feed_fetched_error);
     }
 
-    public function testAddFailsIfUrlIsInvalid()
+    public function testAddFailsIfUrlIsInvalid(): void
     {
         $response = $this->appRun('CLI', '/feeds/add', [
             'url' => '',
@@ -153,7 +162,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testAddFailsIfFeedAlreadyInDatabase()
+    public function testAddFailsIfFeedAlreadyInDatabase(): void
     {
         $support_user = models\User::supportUser();
         $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
@@ -173,7 +182,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testSyncSyncsFeedAndRendersCorrectly()
+    public function testSyncSyncsFeedAndRendersCorrectly(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
@@ -194,7 +203,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(3, $links_number);
     }
 
-    public function testSyncSavesResponseInCache()
+    public function testSyncSavesResponseInCache(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
@@ -208,18 +217,22 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $hash = \SpiderBits\Cache::hash($feed_url);
-        $cache_filepath = \Minz\Configuration::$application['cache_path'] . '/' . $hash;
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_filepath = $cache_path . '/' . $hash;
         $this->assertTrue(file_exists($cache_filepath));
     }
 
-    public function testSyncUsesCache()
+    public function testSyncUsesCache(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
         ]);
+        /** @var string */
         $expected_name = $this->fake('sentence');
+        /** @var string */
         $expected_title = $this->fake('sentence');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
@@ -244,7 +257,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 
         $response = $this->appRun('CLI', '/feeds/sync', [
@@ -257,7 +272,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_title, $link->title);
     }
 
-    public function testSyncDoesNotUseCacheIfParamNocache()
+    public function testSyncDoesNotUseCacheIfParamNocache(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
@@ -265,7 +280,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'feed_url' => $feed_url,
         ]);
+        /** @var string */
         $not_expected_name = $this->fake('sentence');
+        /** @var string */
         $not_expected_title = $this->fake('sentence');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
@@ -290,7 +307,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 
         $response = $this->appRun('CLI', '/feeds/sync', [
@@ -304,7 +323,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($not_expected_title, $link->title);
     }
 
-    public function testSyncFailsIfIdInvalid()
+    public function testSyncFailsIfIdInvalid(): void
     {
         $response = $this->appRun('CLI', '/feeds/sync', [
             'id' => 'not an id',
@@ -314,7 +333,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, 'Feed id `not an id` does not exist.');
     }
 
-    public function testResetHashesSetsAllFeedLastHashToEmptyString()
+    public function testResetHashesSetsAllFeedLastHashToEmptyString(): void
     {
         $feed = CollectionFactory::create([
             'type' => 'feed',

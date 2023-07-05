@@ -6,7 +6,7 @@ use flusio\models;
 
 class Migration202108310003MigrateNewsLinksToCollections
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -27,6 +27,9 @@ class Migration202108310003MigrateNewsLinksToCollections
                 list($read_list_id, $news_id) = $cache_users[$user_id];
             } else {
                 $user = models\User::find($user_id);
+
+                assert($user !== null);
+
                 $read_list_id = $user->readList()->id;
                 $news_id = $user->news()->id;
                 $cache_users[$user_id] = [$read_list_id, $news_id];
@@ -46,8 +49,11 @@ class Migration202108310003MigrateNewsLinksToCollections
 
             // Update the new "via_*" info of the link
             $link->via_type = $db_news_link['via_type'];
-            $link->via_link_id = $db_news_link['link_id'];
-            $link->via_collection_id = $db_news_link['via_collection_id'];
+            $resource_id = $db_news_link['link_id'];
+            if (!$resource_id) {
+                $resource_id = $db_news_link['via_collection_id'];
+            }
+            $link->via_resource_id = $resource_id;
             $link->save();
 
             // And attach the link to the corresponding collection:
@@ -75,6 +81,8 @@ class Migration202108310003MigrateNewsLinksToCollections
 
             $at = \DateTimeImmutable::createFromFormat(\Minz\Database\Column::DATETIME_FORMAT, $at);
 
+            assert($at !== false);
+
             $link_to_collection = new models\LinkToCollection($link->id, $collection_id);
             $link_to_collection->created_at = $at;
 
@@ -88,7 +96,7 @@ class Migration202108310003MigrateNewsLinksToCollections
         return $database->commit();
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         // Do nothing on purpose
         return true;

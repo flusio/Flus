@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\models;
 use flusio\utils;
@@ -22,9 +23,9 @@ class Topics
      * @response 404 if the topic is missing
      * @response 200
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
-        $id = $request->param('id');
+        $id = $request->param('id', '');
         $pagination_page = $request->paramInteger('page', 1);
 
         $topic = models\Topic::find($id);
@@ -47,7 +48,7 @@ class Topics
             $pagination->currentOffset(),
             $pagination->numberPerPage()
         );
-        utils\Sorter::localeSort($collections, 'name');
+        $collections = utils\Sorter::localeSort($collections, 'name');
 
         return Response::ok('topics/show.phtml', [
             'topic' => $topic,

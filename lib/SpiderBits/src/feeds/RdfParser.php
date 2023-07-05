@@ -10,29 +10,29 @@ class RdfParser
 {
     /**
      * Return whether a DOMDocument can be parsed as a RDF feed or not.
-     *
-     * @param \DOMDocument $dom_document
-     *
-     * @return boolean
      */
-    public static function canHandle($dom_document)
+    public static function canHandle(\DOMDocument $dom_document): bool
     {
-        return strpos($dom_document->documentElement->tagName, 'rdf') !== false;
+        return (
+            $dom_document->documentElement &&
+            str_contains($dom_document->documentElement->tagName, 'rdf')
+        );
     }
 
     /**
      * Parse a DOMDocument as a RDF feed.
-     *
-     * @param \DOMDocument $dom_document
-     *
-     * @return \SpiderBits\feeds\Feed
      */
-    public static function parse($dom_document)
+    public static function parse(\DOMDocument $dom_document): Feed
     {
         $feed = new Feed();
         $feed->type = 'rdf';
 
         $rss_node = $dom_document->documentElement;
+
+        if (!$rss_node) {
+            throw new \Exception('Can’t read the DOMDocument');
+        }
+
         $channel_node = $rss_node->getElementsByTagName('channel')->item(0);
         if (!$channel_node) {
             return $feed;
@@ -43,20 +43,23 @@ class RdfParser
                 continue; // @codeCoverageIgnore
             }
 
-            if ($node->tagName === 'title') {
-                $feed->title = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
+            $tagName = $node->tagName;
+            $value = $node->nodeValue ?: '';
+
+            if ($tagName === 'title') {
+                $feed->title = trim(htmlspecialchars_decode($value, ENT_QUOTES));
             }
 
-            if ($node->tagName === 'description') {
-                $feed->description = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
+            if ($tagName === 'description') {
+                $feed->description = trim(htmlspecialchars_decode($value, ENT_QUOTES));
             }
 
-            if ($node->tagName === 'link') {
-                $feed->link = $node->nodeValue;
-                $feed->links['alternate'] = $node->nodeValue;
+            if ($tagName === 'link') {
+                $feed->link = $value;
+                $feed->links['alternate'] = $value;
             }
 
-            if ($node->tagName === 'atom:link') {
+            if ($tagName === 'atom:link') {
                 $rel = $node->getAttribute('rel');
                 if (!$rel) {
                     $rel = 'alternate';
@@ -81,12 +84,8 @@ class RdfParser
 
     /**
      * Parse a DOMElement as a RDF item.
-     *
-     * @param \DOMElement $dom_element
-     *
-     * @return \flusio\feeds\Entry
      */
-    private static function parseEntry($dom_element)
+    private static function parseEntry(\DOMElement $dom_element): Entry
     {
         $entry = new Entry();
 
@@ -95,28 +94,31 @@ class RdfParser
                 continue; // @codeCoverageIgnore
             }
 
-            if ($node->tagName === 'title') {
-                $entry->title = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
+            $tagName = $node->tagName;
+            $value = $node->nodeValue ?: '';
+
+            if ($tagName === 'title') {
+                $entry->title = trim(htmlspecialchars_decode($value, ENT_QUOTES));
             }
 
-            if ($node->tagName === 'dc:date') {
-                $published_at = Date::parse($node->nodeValue);
+            if ($tagName === 'dc:date') {
+                $published_at = Date::parse($value);
                 if ($published_at) {
                     $entry->published_at = $published_at;
                 }
             }
 
-            if ($node->tagName === 'link') {
-                $entry->link = $node->nodeValue;
-                $entry->id = $node->nodeValue;
-                $entry->links['alternate'] = $node->nodeValue;
+            if ($tagName === 'link') {
+                $entry->link = $value;
+                $entry->id = $value;
+                $entry->links['alternate'] = $value;
             }
 
-            if ($node->tagName === 'source') {
+            if ($tagName === 'source') {
                 $entry->links['via'] = $node->getAttribute('url');
             }
 
-            if ($node->tagName === 'atom:link') {
+            if ($tagName === 'atom:link') {
                 $rel = $node->getAttribute('rel');
                 if (!$rel) {
                     $rel = 'alternate';
@@ -126,18 +128,18 @@ class RdfParser
                 $entry->links[$rel] = $href;
             }
 
-            if ($node->tagName === 'category') {
-                $category = $node->nodeValue;
+            if ($tagName === 'category') {
+                $category = $value;
                 $entry->categories[$category] = $category;
             }
 
-            if ($node->tagName === 'description' && !$entry->content) {
-                $entry->content = $node->nodeValue;
+            if ($tagName === 'description' && !$entry->content) {
+                $entry->content = $value;
                 $entry->content_type = 'html';
             }
 
-            if ($node->tagName === 'content:encoded') {
-                $entry->content = $node->nodeValue;
+            if ($tagName === 'content:encoded') {
+                $entry->content = $value;
                 $entry->content_type = 'html';
             }
         }

@@ -13,17 +13,19 @@ class Support extends \Minz\Mailer
 {
     /**
      * Send an email to the support user.
-     *
-     * @param string $user_id
-     * @param string $subject
-     * @param string $message
      */
-    public function sendMessage($user_id, $subject, $message)
+    public function sendMessage(string $user_id, string $subject, string $message): bool
     {
         $user = models\User::find($user_id);
+        if (!$user) {
+            \Minz\Log::warning("Can’t send message from user {$user_id} (not found)");
+            return false;
+        }
+
         $support_user = models\User::supportUser();
         utils\Locale::setCurrentLocale($support_user->locale);
 
+        /** @var string */
         $brand = \Minz\Configuration::$application['brand'];
         $current_subject = sprintf(_('[%s] Contact: %s'), $brand, $subject);
         $this->setBody(
@@ -40,17 +42,19 @@ class Support extends \Minz\Mailer
 
     /**
      * Send a notification to the user.
-     *
-     * @param string $user_id
-     * @param string $subject
-     *
-     * @return boolean
      */
-    public function sendNotification($user_id, $subject)
+    public function sendNotification(string $user_id, string $subject): bool
     {
         $user = models\User::find($user_id);
+
+        if (!$user) {
+            \Minz\Log::warning("Can’t send notification to user {$user_id} (not found)");
+            return false;
+        }
+
         utils\Locale::setCurrentLocale($user->locale);
 
+        /** @var string */
         $brand = \Minz\Configuration::$application['brand'];
         $current_subject = sprintf(_('[%s] Your message has been sent'), $brand);
         $this->setBody(

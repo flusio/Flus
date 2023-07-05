@@ -15,12 +15,12 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function resetCurrentUser()
+    public function resetCurrentUser(): void
     {
         CurrentUser::reset();
     }
 
-    public function testSetSessionTokenSetsTheTokenInSession()
+    public function testSetSessionTokenSetsTheTokenInSession(): void
     {
         $token = TokenFactory::create();
 
@@ -29,9 +29,11 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($token->token, $_SESSION['current_session_token']);
     }
 
-    public function testGetReturnsTheUser()
+    public function testGetReturnsTheUser(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -44,19 +46,22 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
         $current_user = CurrentUser::get();
 
+        $this->assertNotNull($current_user);
         $this->assertSame($user->id, $current_user->id);
     }
 
-    public function testGetReturnsNullIfSessionTokenIsNotInSession()
+    public function testGetReturnsNullIfSessionTokenIsNotInSession(): void
     {
         $user = CurrentUser::get();
 
         $this->assertNull($user);
     }
 
-    public function testGetReturnsNullIfTheUserDoesNotExist()
+    public function testGetReturnsNullIfTheUserDoesNotExist(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -67,9 +72,11 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
     }
 
-    public function testGetReturnsNullIfTokenHasExpired()
+    public function testGetReturnsNullIfTokenHasExpired(): void
     {
-        $expired_at = \Minz\Time::ago($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::ago($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -85,12 +92,14 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($current_user);
     }
 
-    public function testGetReturnsNullIfTokenIsInvalidated()
+    public function testGetReturnsNullIfTokenIsInvalidated(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
-            'invalidated_at' => $this->fake('dateTime'),
+            'invalidated_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create();
         SessionFactory::create([
@@ -104,9 +113,11 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($current_user);
     }
 
-    public function testGetReturnsTheCorrectUserAfterChangingTheCurrentUser()
+    public function testGetReturnsTheCorrectUserAfterChangingTheCurrentUser(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
 
         $token_1 = TokenFactory::create([
             'expired_at' => $expired_at,
@@ -127,16 +138,20 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
         CurrentUser::setSessionToken($token_1->token);
         $current_user_1 = CurrentUser::get();
+        $this->assertNotNull($current_user_1);
 
         CurrentUser::setSessionToken($token_2->token);
         $current_user_2 = CurrentUser::get();
+        $this->assertNotNull($current_user_2);
 
         $this->assertNotSame($current_user_1->id, $current_user_2->id);
     }
 
-    public function testGetReturnsNullEvenIfInstanceIsNotResetButSessionIs()
+    public function testGetReturnsNullEvenIfInstanceIsNotResetButSessionIs(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -148,6 +163,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
         CurrentUser::setSessionToken($token->token);
         $current_user = CurrentUser::get();
+        $this->assertNotNull($current_user);
         $this->assertSame($user->id, $current_user->id);
 
         unset($_SESSION['current_session_token']);
@@ -155,9 +171,11 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($current_user);
     }
 
-    public function testGetDoesNotResetInstanceIfSessionChanges()
+    public function testGetDoesNotResetInstanceIfSessionChanges(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
 
         $token_1 = TokenFactory::create([
             'expired_at' => $expired_at,
@@ -178,14 +196,16 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
         CurrentUser::setSessionToken($token_1->token);
         $current_user = CurrentUser::get();
+        $this->assertNotNull($current_user);
         $this->assertSame($user_1->id, $current_user->id);
 
         $_SESSION['current_session_token'] = $token_2->token;
         $current_user = CurrentUser::get();
+        $this->assertNotNull($current_user);
         $this->assertSame($user_1->id, $current_user->id);
     }
 
-    public function testGetSessionTokenReturnsCurrentSessionToken()
+    public function testGetSessionTokenReturnsCurrentSessionToken(): void
     {
         $token = TokenFactory::create();
         CurrentUser::setSessionToken($token->token);
@@ -195,18 +215,22 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($token->token, $result_token);
     }
 
-    public function testGetSessionTokenReturnsNullIfNotSet()
+    public function testGetSessionTokenReturnsNullIfNotSet(): void
     {
         $token = CurrentUser::sessionToken();
 
         $this->assertNull($token);
     }
 
-    public function testReloadResetsInstanceAndGetUserFromDatabase()
+    public function testReloadResetsInstanceAndGetUserFromDatabase(): void
     {
+        /** @var string */
         $old_username = $this->fakeUnique('username');
+        /** @var string */
         $new_username = $this->fakeUnique('username');
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -220,9 +244,11 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         CurrentUser::setSessionToken($token->token);
 
         $current_user = CurrentUser::get();
+        $this->assertNotNull($current_user);
         $current_user->username = $new_username;
 
         $current_user = CurrentUser::reload();
+        $this->assertNotNull($current_user);
         $this->assertSame($old_username, $current_user->username);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -21,7 +22,7 @@ class Bookmarks
      * @response 302 /login?redirect_to=/bookmarks if not connected
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         $page = $request->paramInteger('page', 1);

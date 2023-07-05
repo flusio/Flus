@@ -14,13 +14,8 @@ class Url
      * If the URL is already absolute, it’s returned as it is. Otherwise, it’s
      * returned relatively to a base URL. You must make sure to pass a valid
      * base or the URL will be returned directly.
-     *
-     * @param string $url
-     * @param string $base_url
-     *
-     * @return string
      */
-    public static function absolutize($url, $base_url)
+    public static function absolutize(string $url, string $base_url): string
     {
         $parsed_url = parse_url(trim($url));
         if (isset($parsed_url['scheme'])) {
@@ -94,12 +89,8 @@ class Url
      *
      * Algorithm comes from https://developers.google.com/safe-browsing/v4/urls-hashing#canonicalization
      * with few adaptations.
-     *
-     * @param string $url
-     *
-     * @return string
      */
-    public static function sanitize($url)
+    public static function sanitize(string $url): string
     {
         // Remove unwanted characters
         $cleaned_url = trim($url);
@@ -140,10 +131,18 @@ class Url
         $host = trim($host, '.');
         $host = preg_replace('/\.{2,}/', '.', $host);
 
+        if ($host === null) {
+            $host = '';
+        }
+
         // The host can be a valid integer ip address, we want to normalize it
         // to 4 dot-separated decimal values
         if (filter_var($host, FILTER_VALIDATE_INT) !== false) {
-            $host = long2ip($host);
+            $host = long2ip(intval($host));
+
+            if ($host === false) {
+                $host = '';
+            }
         }
 
         // idn_to_ascii allows to transform an unicode hostname to an
@@ -151,6 +150,10 @@ class Url
         // @see https://en.wikipedia.org/wiki/Punycode
         // It also lowercases the string.
         $host = idn_to_ascii($host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+
+        if ($host === false) {
+            $host = '';
+        }
 
         // Get the path with ./ and ../ paths replaced.
         if (isset($parsed_url['path'])) {
@@ -164,8 +167,7 @@ class Url
         $sanitized_url = self::percentEncode($scheme) . '://';
         $sanitized_url .= self::percentEncode($host);
         if (isset($parsed_url['port'])) {
-            $port = self::fullPercentDecode($parsed_url['port']);
-            $sanitized_url .= ':' . self::percentEncode($port);
+            $sanitized_url .= ':' . $parsed_url['port'];
         }
         $sanitized_url .= self::percentEncode($path);
         if (isset($parsed_url['query'])) {
@@ -196,7 +198,7 @@ class Url
      *
      * @return string
      */
-    private static function normalizePath($path)
+    private static function normalizePath(string $path): string
     {
         $realpath = array();
 
@@ -236,12 +238,8 @@ class Url
      *
      * It applies rawurldecode() on the value as long as a percent-encoded
      * character is detected.
-     *
-     * @param string $value
-     *
-     * @return string
      */
-    private static function fullPercentDecode($value)
+    private static function fullPercentDecode(string $value): string
     {
         while (preg_match('/%[0-9A-Fa-f]{2}/', $value) === 1) {
             $value = rawurldecode($value);
@@ -259,12 +257,8 @@ class Url
      *
      * @see https://www.php.net/manual/function.rawurlencode.php
      * @see https://en.wikipedia.org/wiki/ASCII
-     *
-     * @param string $value
-     *
-     * @return string
      */
-    private static function percentEncode($value)
+    private static function percentEncode(string $value): string
     {
         $escaped_url = '';
         foreach (str_split($value) as $char) {
@@ -280,12 +274,8 @@ class Url
 
     /**
      * Re-encode the query parameters.
-     *
-     * @param string $query
-     *
-     * @return string
      */
-    private static function percentRecodeQuery($query)
+    private static function percentRecodeQuery(string $query): string
     {
         $decoded_parameters = [];
         $parameters = self::parseQuery($query);
@@ -293,7 +283,11 @@ class Url
             $name = rawurlencode(self::fullPercentDecode($name));
             if (is_array($value)) {
                 $value = array_map(function ($partial_value) {
-                    return rawurlencode(self::fullPercentDecode($partial_value));
+                    if ($partial_value === null) {
+                        return null;
+                    } else {
+                        return rawurlencode(self::fullPercentDecode($partial_value));
+                    }
                 }, $value);
             } elseif ($value !== null) {
                 $value = rawurlencode(self::fullPercentDecode($value));
@@ -316,11 +310,9 @@ class Url
      *
      * @see https://www.php.net/manual/function.parse-str.php
      *
-     * @param string $query
-     *
-     * @return array
+     * @return array<string, string|null|array<?string>>
      */
-    public static function parseQuery($query)
+    public static function parseQuery(string $query): array
     {
         if (empty($query)) {
             return [];
@@ -368,11 +360,9 @@ class Url
      *
      * @see https://www.php.net/manual/function.http-build-query.php
      *
-     * @param array $parameters
-     *
-     * @return string
+     * @param array<string, string|null|array<?string>> $parameters
      */
-    public static function buildQuery($parameters)
+    public static function buildQuery(array $parameters): string
     {
         $built_parameters = [];
         foreach ($parameters as $name => $value) {

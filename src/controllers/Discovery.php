@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\models;
 use flusio\utils;
@@ -17,10 +18,10 @@ class Discovery
      *
      * @response 200
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $topics = models\Topic::listAll();
-        utils\Sorter::localeSort($topics, 'label');
+        $topics = utils\Sorter::localeSort($topics, 'label');
 
         return Response::ok('discovery/show.phtml', [
             'topics' => $topics,

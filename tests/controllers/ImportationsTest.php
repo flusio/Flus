@@ -14,7 +14,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testDeleteDeletesImportationAndRedirects()
+    public function testDeleteDeletesImportationAndRedirects(): void
     {
         $user = $this->login();
         $importation = ImportationFactory::create([
@@ -31,7 +31,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Importation::exists($importation->id));
     }
 
-    public function testDeleteRedirectsIfNotConnected()
+    public function testDeleteRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -49,7 +49,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Importation::exists($importation->id));
     }
 
-    public function testDeleteFailsIfImportationIsNotOwned()
+    public function testDeleteFailsIfImportationIsNotOwned(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -66,7 +66,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Importation::exists($importation->id));
     }
 
-    public function testDeleteFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $importation = ImportationFactory::create([

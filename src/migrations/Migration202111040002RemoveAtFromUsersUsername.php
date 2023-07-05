@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202111040002RemoveAtFromUsersUsername
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -43,7 +43,7 @@ class Migration202111040002RemoveAtFromUsersUsername
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         // Do nothing on purpose
         return true;

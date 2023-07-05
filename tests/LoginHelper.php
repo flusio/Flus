@@ -11,6 +11,8 @@ use tests\factories\UserFactory;
 /**
  * Provide login utility methods during tests.
  *
+ * @phpstan-import-type ModelValues from \Minz\Database\Recordable
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -19,9 +21,9 @@ trait LoginHelper
     /**
      * Simulate a user who logs in. A User is created using a DatabaseFactory.
      *
-     * @param array $user_values Values of the User to create (optional)
-     * @param array $token_values Values of the associated Token (optional)
-     * @param array $session_values Values of the associated Session (optional)
+     * @param ModelValues $user_values Values of the User to create (optional)
+     * @param ModelValues $token_values Values of the associated Token (optional)
+     * @param ModelValues $session_values Values of the associated Session (optional)
      */
     public function login(array $user_values = [], array $token_values = [], array $session_values = []): models\User
     {
@@ -37,7 +39,8 @@ trait LoginHelper
         SessionFactory::create($session_values);
 
         auth\CurrentUser::setSessionToken($token->token);
-        return auth\CurrentUser::get();
+
+        return $user;
     }
 
     /**

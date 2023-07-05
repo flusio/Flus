@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\collections;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -18,7 +19,7 @@ class Discovery
      *
      * @response 302 /discovery
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         return Response::redirect('discovery');
     }

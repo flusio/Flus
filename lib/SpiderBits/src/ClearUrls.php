@@ -3,12 +3,28 @@
 namespace SpiderBits;
 
 /**
+ * @phpstan-type ClearUrlsProvider array{
+ *     'urlPattern': string,
+ *     'completeProvider': bool,
+ *     'rules': string[],
+ *     'referralMarketing': string[],
+ *     'rawRules': string[],
+ *     'exceptions': string[],
+ *     'redirections': string[],
+ *     'forceRedirection': bool,
+ * }
+ *
+ * @phpstan-type ClearUrlsData array{
+ *     'providers': array<string, ClearUrlsProvider>,
+ * }
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class ClearUrls
 {
-    private static $clear_urls_data = null;
+    /** @var ?ClearUrlsData */
+    private static ?array $clear_urls_data = null;
 
     /**
      * Clear a URL from its tracker parameters.
@@ -24,15 +40,11 @@ class ClearUrls
      *
      * @see https://docs.clearurls.xyz/1.23.0/specs/rules/
      *
-     * @param string $url
-     *
      * @throws \Exception
      *     Raised if the clearurls-data.minify.json file cannot be read, or
      *     cannot be parsed to JSON.
-     *
-     * @return string
      */
-    public static function clear($url)
+    public static function clear(string $url): string
     {
         // A note about the regex used in this method: PCRE patterns must be
         // enclosed by delimiters. They are generally "/", "#" or "~". Problem:
@@ -63,7 +75,7 @@ class ClearUrls
             // Secondly, verify the URL is not in the exceptions list (if it
             // is, skip it).
             $is_exception = false;
-            foreach ($provider['exceptions'] ?? [] as $exception_pattern) {
+            foreach ($provider['exceptions'] as $exception_pattern) {
                 if (preg_match("@{$exception_pattern}@i", $url)) {
                     $is_exception = true;
                     break;
@@ -76,7 +88,7 @@ class ClearUrls
 
             // If the provider is "completeProvider", the URL should be blocked
             // (i.e. an empty string in flusio context).
-            if (isset($provider['completeProvider']) && $provider['completeProvider']) {
+            if ($provider['completeProvider']) {
                 return '';
             }
 
@@ -84,7 +96,7 @@ class ClearUrls
             // https://google.com/url?q=https://example.com)
             // If we find a redirection, we call clear() recursively (but
             // the current call ends here)
-            foreach ($provider['redirections'] ?? [] as $redirection_pattern) {
+            foreach ($provider['redirections'] as $redirection_pattern) {
                 $result = preg_match("@{$redirection_pattern}@i", $url, $matches);
                 if ($result && count($matches) >= 2) {
                     // the redirected URL is in the first Regex group (index 0
@@ -96,19 +108,30 @@ class ClearUrls
             }
 
             // Directly remove matching rawRules from the URL
-            foreach ($provider['rawRules'] ?? [] as $raw_rule_pattern) {
+            foreach ($provider['rawRules'] as $raw_rule_pattern) {
                 $url = preg_replace("@{$raw_rule_pattern}@i", '', $url);
+
+                if ($url === null) {
+                    return '';
+                }
             }
 
             // Apply rules and referralMarketing rules to query parameters.
             // Since trackers can also be inserted in the URL fragment, we
             // clear it as well.
             $rules = array_merge(
-                $provider['rules'] ?? [],
-                $provider['referralMarketing'] ?? []
+                $provider['rules'],
+                $provider['referralMarketing']
             );
 
             $parsed_url = parse_url($url);
+
+            if ($parsed_url === false) {
+                return '';
+            }
+
+            $parsed_url['scheme'] = $parsed_url['scheme'] ?? 'http';
+            $parsed_url['host'] = $parsed_url['host'] ?? '';
             $parsed_url['query'] = $parsed_url['query'] ?? '';
             $parsed_url['fragment'] = $parsed_url['fragment'] ?? '';
 
@@ -149,25 +172,34 @@ class ClearUrls
      *     Raised if the clearurls-data.minify.json file cannot be read, or
      *     cannot be parsed to JSON.
      *
-     * @return array
+     * @return array<string, ClearUrlsProvider>
      */
-    private static function loadClearUrlsProviders()
+    private static function loadClearUrlsProviders(): array
     {
         if (self::$clear_urls_data === null) {
             $rules_path = realpath(__DIR__ . '/../lib/ClearUrlsRules/data.min.json');
-            $clear_urls_file_content = file_get_contents($rules_path);
-            if ($clear_urls_file_content === false) {
-                throw new \Exception(
-                    $rules_path . ' file cannot be found.'
-                );
+
+            if ($rules_path === false) {
+                throw new \Exception('ClearUrlsRules file does not exist.');
             }
 
-            self::$clear_urls_data = json_decode($clear_urls_file_content, true);
-            if (self::$clear_urls_data === null) {
+            $clear_urls_file_content = @file_get_contents($rules_path);
+
+            if ($clear_urls_file_content === false) {
+                throw new \Exception($rules_path . ' file cannot be found.');
+            }
+
+            $clear_urls_data = json_decode($clear_urls_file_content, true);
+
+            if (!is_array($clear_urls_data) || !isset($clear_urls_data['providers'])) {
                 throw new \Exception(
                     $rules_path . ' file does not contain valid JSON.'
                 );
             }
+
+            /** @var ClearUrlsData */
+            $clear_urls_data = $clear_urls_data;
+            self::$clear_urls_data = $clear_urls_data;
         }
 
         return self::$clear_urls_data['providers'];
@@ -179,12 +211,9 @@ class ClearUrls
      * Parameters are removed from the string if their names match any of the
      * provided rules patterns.
      *
-     * @param string $query
      * @param string[] $rules
-     *
-     * @return string
      */
-    private static function clearQuery($query, $rules)
+    private static function clearQuery(string $query, array $rules): string
     {
         $parameters = Url::parseQuery($query);
 

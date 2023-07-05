@@ -13,12 +13,14 @@ use flusio\services;
  */
 class Exportator extends \Minz\Job
 {
-    /**
-     * @param integer $exportation_id
-     */
-    public function perform($exportation_id)
+    public function perform(int $exportation_id): void
     {
         $exportation = models\Exportation::find($exportation_id);
+
+        if (!$exportation) {
+            throw new \Exception("Can’t find exportation {$exportation_id}");
+        }
+
         if ($exportation->status !== 'ongoing') {
             return;
         }

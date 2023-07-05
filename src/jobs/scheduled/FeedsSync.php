@@ -16,7 +16,7 @@ class FeedsSync extends \Minz\Job
     /**
      * Install the correct number of jobs in database.
      */
-    public static function install()
+    public static function install(): void
     {
         $number_jobs_to_install = \Minz\Configuration::$application['job_feeds_sync_count'];
 
@@ -52,7 +52,7 @@ class FeedsSync extends \Minz\Job
     /**
      * Execute the job.
      */
-    public function perform()
+    public function perform(): void
     {
         $feed_fetcher_service = new services\FeedFetcher();
 

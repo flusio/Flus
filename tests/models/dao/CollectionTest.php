@@ -14,7 +14,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
 
-    public function testListComputedByUserId()
+    public function testListComputedByUserId(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -28,7 +28,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $collections[0]->id);
     }
 
-    public function testListComputedByUserIdDoesNotReturnFeeds()
+    public function testListComputedByUserIdDoesNotReturnFeeds(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -41,7 +41,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($collections));
     }
 
-    public function testListComputedByUserIdCanExcludePrivateCollections()
+    public function testListComputedByUserIdCanExcludePrivateCollections(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -57,7 +57,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($collections));
     }
 
-    public function testListComputedByUserIdCanReturnNumberLinks()
+    public function testListComputedByUserIdCanReturnNumberLinks(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -79,7 +79,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $collections[0]->number_links);
     }
 
-    public function testListComputedByUserIdCanExcludeHiddenLinks()
+    public function testListComputedByUserIdCanExcludeHiddenLinks(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -104,7 +104,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $collections[0]->number_links);
     }
 
-    public function testListComputedByUserIdCanExcludePublicAndEmptyCollections()
+    public function testListComputedByUserIdCanExcludePublicAndEmptyCollections(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -120,7 +120,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($collections));
     }
 
-    public function testListComputedByUserIdCanExcludePublicAndEmptyCollectionsAndConsiderCountHidden()
+    public function testListComputedByUserIdCanExcludePublicAndEmptyCollectionsAndConsiderCountHidden(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -145,7 +145,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($collections));
     }
 
-    public function testListComputedFollowedByUserId()
+    public function testListComputedFollowedByUserId(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -165,7 +165,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $collections[0]->id);
     }
 
-    public function testListComputedFollowedByUserIdExcludesPrivateCollections()
+    public function testListComputedFollowedByUserIdExcludesPrivateCollections(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -184,7 +184,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($collections));
     }
 
-    public function testListComputedFollowedByUserIdCanReturnNumberLinks()
+    public function testListComputedFollowedByUserIdCanReturnNumberLinks(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -213,7 +213,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $collections[0]->number_links);
     }
 
-    public function testListComputedFollowedByUserIdCanReturnTimeFilter()
+    public function testListComputedFollowedByUserIdCanReturnTimeFilter(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -234,7 +234,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('strict', $collections[0]->time_filter);
     }
 
-    public function testListComputedFollowedByUserIdCanFilterCollections()
+    public function testListComputedFollowedByUserIdCanFilterCollections(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -265,7 +265,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection_1->id, $collections[0]->id);
     }
 
-    public function testListComputedFollowedByUserIdCanFilterFeeds()
+    public function testListComputedFollowedByUserIdCanFilterFeeds(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -296,7 +296,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection_2->id, $collections[0]->id);
     }
 
-    public function testListComputedFollowedByUserIdExcludesHiddenLinks()
+    public function testListComputedFollowedByUserIdExcludesHiddenLinks(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -330,7 +330,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
      * and, so, we can optimize the count of links. In other words, this test
      * exists only to document a case which should never happen in real life.
      */
-    public function testListComputedFollowedByUserIdDoesNotExcludeHiddenLinksWhenFilteringFeeds()
+    public function testListComputedFollowedByUserIdDoesNotExcludeHiddenLinksWhenFilteringFeeds(): void
     {
 
         $user = UserFactory::create();

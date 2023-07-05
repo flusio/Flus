@@ -6,7 +6,7 @@ use flusio\models;
 
 class Migration202108310002AddViaColumnsToLinks
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -20,7 +20,7 @@ class Migration202108310002AddViaColumnsToLinks
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

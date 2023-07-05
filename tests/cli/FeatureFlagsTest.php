@@ -16,12 +16,12 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function loadApplication()
+    public static function loadApplication(): void
     {
         self::$application = new \flusio\cli\Application();
     }
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
         $response = $this->appRun('CLI', '/features');
 
@@ -29,8 +29,9 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, 'beta');
     }
 
-    public function testFlagsRendersCorrectly()
+    public function testFlagsRendersCorrectly(): void
     {
+        /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
             'email' => $email,
@@ -46,7 +47,7 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, "beta {$user->id} {$email}");
     }
 
-    public function testFlagsDisplaysIfNoFeatureFlags()
+    public function testFlagsDisplaysIfNoFeatureFlags(): void
     {
         $response = $this->appRun('CLI', '/features/flags');
 
@@ -54,8 +55,9 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, 'No feature flags');
     }
 
-    public function testEnableCreatesAFeatureFlagAndRendersCorrectly()
+    public function testEnableCreatesAFeatureFlagAndRendersCorrectly(): void
     {
+        /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
             'email' => $email,
@@ -73,8 +75,9 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\FeatureFlag::count());
     }
 
-    public function testEnableFailsIfTypeIsInvalid()
+    public function testEnableFailsIfTypeIsInvalid(): void
     {
+        /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
             'email' => $email,
@@ -90,7 +93,7 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FeatureFlag::count());
     }
 
-    public function testEnableFailsIfUserDoesNotExist()
+    public function testEnableFailsIfUserDoesNotExist(): void
     {
         $response = $this->appRun('CLI', '/features/enable', [
             'type' => 'beta',
@@ -102,8 +105,9 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FeatureFlag::count());
     }
 
-    public function testDisableDeletesAFeatureFlagsAndRendersCorrectly()
+    public function testDisableDeletesAFeatureFlagsAndRendersCorrectly(): void
     {
+        /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
             'email' => $email,
@@ -125,8 +129,9 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FeatureFlag::count());
     }
 
-    public function testDisableFailsIfUserDoesNotExist()
+    public function testDisableFailsIfUserDoesNotExist(): void
     {
+        /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
             'email' => $email,

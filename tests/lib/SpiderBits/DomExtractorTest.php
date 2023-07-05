@@ -4,7 +4,7 @@ namespace SpiderBits;
 
 class DomExtractorTest extends \PHPUnit\Framework\TestCase
 {
-    public function testTitle()
+    public function testTitle(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -19,7 +19,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is title', $title);
     }
 
-    public function testTitleTakesFirstTitleIfNotInHtmlHead()
+    public function testTitleTakesFirstTitleIfNotInHtmlHead(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -35,7 +35,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is title 1', $title);
     }
 
-    public function testTitleTakesOgTitle()
+    public function testTitleTakesOgTitle(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -51,7 +51,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is title 1', $title);
     }
 
-    public function testTitleTakesTwitterTitle()
+    public function testTitleTakesTwitterTitle(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -67,7 +67,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is title 1', $title);
     }
 
-    public function testTitleDoesNotConsiderSvgTitle()
+    public function testTitleDoesNotConsiderSvgTitle(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -86,7 +86,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $title);
     }
 
-    public function testDescriptionTakesFirstDescriptionIfNotInHtmlHead()
+    public function testDescriptionTakesFirstDescriptionIfNotInHtmlHead(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -102,7 +102,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is description 1', $description);
     }
 
-    public function testDescriptionTakesOgDescription()
+    public function testDescriptionTakesOgDescription(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -118,7 +118,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is description 1', $description);
     }
 
-    public function testDescriptionTakesTwitterDescription()
+    public function testDescriptionTakesTwitterDescription(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -134,7 +134,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is description 1', $description);
     }
 
-    public function testIllustrationTakesOgImage()
+    public function testIllustrationTakesOgImage(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -149,7 +149,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://domain.com/image.jpg', $illustration);
     }
 
-    public function testIllustrationTakesTwitterImage()
+    public function testIllustrationTakesTwitterImage(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -164,7 +164,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://domain.com/image.jpg', $illustration);
     }
 
-    public function testContentReturnsMainTag()
+    public function testContentReturnsMainTag(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -185,7 +185,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is main', $content);
     }
 
-    public function testContentReturnsIdMainIfTagDoesNotExist()
+    public function testContentReturnsIdMainIfTagDoesNotExist(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -206,7 +206,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is main', $content);
     }
 
-    public function testContentReturnsBodyIfNoMainTagOrId()
+    public function testContentReturnsBodyIfNoMainTagOrId(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -228,7 +228,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('This is main', $content);
     }
 
-    public function testContentReturnsMainTagEvenIfNotInBody()
+    public function testContentReturnsMainTagEvenIfNotInBody(): void
     {
         // actually, the DOMDocument class automatically repairs the broken HTML
         $dom = Dom::fromText(<<<HTML
@@ -248,7 +248,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is main', $content);
     }
 
-    public function testContentReturnsEmptyIfNoBody()
+    public function testContentReturnsEmptyIfNoBody(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -263,7 +263,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $content);
     }
 
-    public function testContentStripsScripts()
+    public function testContentStripsScripts(): void
     {
         $dom = Dom::fromText(<<<HTML
             <main>
@@ -280,7 +280,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('This is main', $content);
     }
 
-    public function testFeeds()
+    public function testFeeds(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -298,7 +298,7 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('/atom', $feeds[1]);
     }
 
-    public function testFeedsWithNoLinks()
+    public function testFeedsWithNoLinks(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>

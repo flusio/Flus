@@ -16,6 +16,7 @@ trait SearchQueries
      * Return the list of feeds of the given user and with the given feed URLs.
      *
      * @param string[] $feed_urls
+     * @param string[] $selected_computed_props
      *
      * @return self[]
      */

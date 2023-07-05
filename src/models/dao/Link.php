@@ -101,13 +101,19 @@ trait Link
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
-     * @param array $options
-     *     Custom options to filter links. Possible options are:
-     *     - unshared (boolean, default to true), indicates if unshared links
-     *       must be included. Shared links are visible and are included in one
-     *       public collection at least.
-     *     - offset (integer, default to 0), the offset for pagination
-     *     - limit (integer|string, default to 'ALL') the limit for pagination
+     * @param array{
+     *     'unshared'?: bool,
+     *     'offset'?: int,
+     *     'limit'?: int|'ALL',
+     * } $options
+     *
+     * Description of the options:
+     *
+     * - unshared (default to true), indicates if unshared links must be
+     *   included. Shared links are visible and are included in one public
+     *   collection at least.
+     * - offset (default to 0), the offset for pagination
+     * - limit (default to 'ALL') the limit for pagination
      *
      * @return self[]
      */
@@ -209,11 +215,17 @@ trait Link
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
-     * @param array $options
-     *     Custom options to filter links. Possible options are:
-     *     - hidden (boolean, default to true), indicates if hidden links must be included
-     *     - offset (integer, default to 0), the offset for pagination
-     *     - limit (integer|string, default to 'ALL') the limit for pagination
+     * @param array{
+     *     'hidden'?: bool,
+     *     'offset'?: int,
+     *     'limit'?: int|'ALL',
+     * } $options
+     *
+     * Description of the options:
+     *
+     * - hidden (default to true), indicates if hidden links must be included
+     * - offset (default to 0), the offset for pagination
+     * - limit (default to 'ALL') the limit for pagination
      *
      * @return self[]
      */
@@ -291,9 +303,13 @@ trait Link
      *
      * @param string $collection_id
      *     The collection id the links must match.
-     * @param array $options
-     *     Custom options to filter links. Possible option is:
-     *     - hidden (boolean, default to true), indicates if hidden links must be included
+     * @param array{
+     *     'hidden'?: bool,
+     * } $options
+     *
+     * Description of the options:
+     *
+     * - hidden (default to true), indicates if hidden links must be included
      */
     public static function countByCollectionId(string $collection_id, array $options = []): int
     {

@@ -17,7 +17,7 @@ class Cleaner extends \Minz\Job
     /**
      * Install the job in database.
      */
-    public static function install()
+    public static function install(): void
     {
         $cleaner_job = new self();
 
@@ -33,9 +33,11 @@ class Cleaner extends \Minz\Job
         $this->frequency = '+1 day';
     }
 
-    public function perform()
+    public function perform(): void
     {
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->clean();
 
         $support_user = models\User::supportUser();
@@ -46,11 +48,17 @@ class Cleaner extends \Minz\Job
         models\User::deleteNotValidatedOlderThan(\Minz\Time::ago(6, 'months'));
         models\Collection::deleteUnfollowedOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
         models\Link::deleteNotStoredOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
+        /** @var int */
+        $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
+        /** @var int */
+        $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
+        /** @var int */
+        $feeds_links_keep_maximum = \Minz\Configuration::$application['feeds_links_keep_maximum'];
         models\Link::deleteFromFeeds(
             $support_user->id,
-            \Minz\Configuration::$application['feeds_links_keep_period'],
-            \Minz\Configuration::$application['feeds_links_keep_minimum'],
-            \Minz\Configuration::$application['feeds_links_keep_maximum'],
+            $feeds_links_keep_period,
+            $feeds_links_keep_minimum,
+            $feeds_links_keep_maximum,
         );
 
         if (\Minz\Configuration::$application['demo']) {

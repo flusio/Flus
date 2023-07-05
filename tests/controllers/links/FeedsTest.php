@@ -12,8 +12,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
+        /** @var string */
         $title = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'title' => $title,
@@ -35,13 +36,15 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testShowFailsIfLinkIsInaccessible()
+    public function testShowFailsIfLinkIsInaccessible(): void
     {
+        /** @var string */
         $title = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'title' => $title,
             'is_hidden' => true,
         ]);
+        /** @var string */
         $content = $this->fake('paragraphs', 3, true);
         MessageFactory::create([
             'link_id' => $link->id,
@@ -53,7 +56,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testAliasRedirectsToShow()
+    public function testAliasRedirectsToShow(): void
     {
         $link = LinkFactory::create();
 

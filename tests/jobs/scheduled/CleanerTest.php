@@ -18,15 +18,16 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
 
-    public function testQueue()
+    public function testQueue(): void
     {
         $cleaner_job = new Cleaner();
 
         $this->assertSame('default', $cleaner_job->queue);
     }
 
-    public function testSchedule()
+    public function testSchedule(): void
     {
+        /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
 
@@ -40,7 +41,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('+1 day', $cleaner_job->frequency);
     }
 
-    public function testPerformDeletesFilesOutsideValidityInterval()
+    public function testPerformDeletesFilesOutsideValidityInterval(): void
     {
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $filepath = $cache_path . '/foo';
@@ -56,7 +57,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(file_exists($filepath));
     }
 
-    public function testPerformKeepsFilesWithinValidityInterval()
+    public function testPerformKeepsFilesWithinValidityInterval(): void
     {
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $filepath = $cache_path . '/foo';
@@ -72,9 +73,10 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($filepath));
     }
 
-    public function testPerformDeletesOldFetchLogs()
+    public function testPerformDeletesOldFetchLogs(): void
     {
         $cleaner_job = new Cleaner();
+        /** @var int */
         $days = $this->fake('numberBetween', 4, 9000);
         $created_at = \Minz\Time::ago($days, 'days');
         $fetch_log = FetchLogFactory::create([
@@ -86,10 +88,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\FetchLog::exists($fetch_log->id));
     }
 
-    public function testPerformKeepsFreshFetchLogs()
+    public function testPerformKeepsFreshFetchLogs(): void
     {
         $cleaner_job = new Cleaner();
         // logs are kept up to 3 days, but the test can fail if $days = 3 and it takes too long to execute
+        /** @var int */
         $days = $this->fake('numberBetween', 0, 2);
         $created_at = \Minz\Time::ago($days, 'days');
         $fetch_log = FetchLogFactory::create([
@@ -101,9 +104,10 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\FetchLog::exists($fetch_log->id));
     }
 
-    public function testPerformDeletesExpiredSession()
+    public function testPerformDeletesExpiredSession(): void
     {
         $cleaner_job = new Cleaner();
+        /** @var int */
         $days = $this->fake('numberBetween', 0, 9000);
         $expired_at = \Minz\Time::ago($days, 'days');
         $token = TokenFactory::create([
@@ -119,9 +123,10 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Token::exists($token->token));
     }
 
-    public function testPerformKeepsCurrentSession()
+    public function testPerformKeepsCurrentSession(): void
     {
         $cleaner_job = new Cleaner();
+        /** @var int */
         $days = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($days, 'days');
         $token = TokenFactory::create([
@@ -137,10 +142,13 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Token::exists($token->token));
     }
 
-    public function testPerformDeletesOldInvalidatedUsers()
+    public function testPerformDeletesOldInvalidatedUsers(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
+        /** @var int */
         $months = $this->fake('numberBetween', 7, 24);
         $created_at = \Minz\Time::ago($months, 'months');
         $user = UserFactory::create([
@@ -153,15 +161,18 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\User::exists($user->id));
     }
 
-    public function testPerformKeepsOldValidatedUsers()
+    public function testPerformKeepsOldValidatedUsers(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
+        /** @var int */
         $months = $this->fake('numberBetween', 7, 24);
         $created_at = \Minz\Time::ago($months, 'months');
         $user = UserFactory::create([
             'created_at' => $created_at,
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $cleaner_job->perform();
@@ -169,10 +180,13 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\User::exists($user->id));
     }
 
-    public function testPerformKeepsRecentInvalidatedUsers()
+    public function testPerformKeepsRecentInvalidatedUsers(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
+        /** @var int */
         $months = $this->fake('numberBetween', 0, 6);
         $created_at = \Minz\Time::ago($months, 'months');
         $user = UserFactory::create([
@@ -185,11 +199,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\User::exists($user->id));
     }
 
-    public function testPerformDeletesOldEnoughUnfollowedFeeds()
+    public function testPerformDeletesOldEnoughUnfollowedFeeds(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
+        /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
         $collection = CollectionFactory::create([
@@ -202,12 +219,15 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Collection::exists($collection->id));
     }
 
-    public function testPerformKeepsOldEnoughFollowedFeeds()
+    public function testPerformKeepsOldEnoughFollowedFeeds(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
         $user = UserFactory::create();
+        /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
         $collection = CollectionFactory::create([
@@ -224,11 +244,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Collection::exists($collection->id));
     }
 
-    public function testPerformKeepsRecentUnfollowedFeeds()
+    public function testPerformKeepsRecentUnfollowedFeeds(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
+        /** @var int */
         $days = $this->fake('numberBetween', 0, 7);
         $created_at = \Minz\Time::ago($days, 'days');
         $collection = CollectionFactory::create([
@@ -241,11 +264,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Collection::exists($collection->id));
     }
 
-    public function testPerformDeletesOldEnoughNotStoredLinks()
+    public function testPerformDeletesOldEnoughNotStoredLinks(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
+        /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
         $link = LinkFactory::create([
@@ -258,11 +284,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Link::exists($link->id));
     }
 
-    public function testPerformKeepsOldEnoughStoredLinks()
+    public function testPerformKeepsOldEnoughStoredLinks(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
+        /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
         $link = LinkFactory::create([
@@ -280,11 +309,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link->id));
     }
 
-    public function testPerformKeepsRecentNotStoredLinks()
+    public function testPerformKeepsRecentNotStoredLinks(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
+        /** @var int */
         $days = $this->fake('numberBetween', 0, 7);
         $created_at = \Minz\Time::ago($days, 'days');
         $link = LinkFactory::create([
@@ -297,11 +329,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link->id));
     }
 
-    public function testPerformKeepsOldEnoughNotStoredLinksIfNotOwnedBySupportUser()
+    public function testPerformKeepsOldEnoughNotStoredLinksIfNotOwnedBySupportUser(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $user = UserFactory::create();
+        /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
         $link = LinkFactory::create([
@@ -314,10 +349,12 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link->id));
     }
 
-    public function testPerformDeletesFeedsLinksInExcess()
+    public function testPerformDeletesFeedsLinksInExcess(): void
     {
         \Minz\Configuration::$application['feeds_links_keep_maximum'] = 1;
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
         $published_at_1 = \Minz\Time::ago(1, 'months');
@@ -355,12 +392,15 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Link::exists($link_2->id));
     }
 
-    public function testPerformDeletesOldEnoughFeedsLinks()
+    public function testPerformDeletesOldEnoughFeedsLinks(): void
     {
         \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
+        /** @var int */
         $months = $this->fake('numberBetween', 7, 100);
         $published_at = \Minz\Time::ago($months, 'months');
         $link = LinkFactory::create([
@@ -387,10 +427,12 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Link::exists($link->id));
     }
 
-    public function testPerformKeepsAllFeedsLinksIfMaximumIsZero()
+    public function testPerformKeepsAllFeedsLinksIfMaximumIsZero(): void
     {
         \Minz\Configuration::$application['feeds_links_keep_maximum'] = 0;
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
         $published_at_1 = \Minz\Time::ago(1, 'months');
@@ -426,12 +468,15 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link_2->id));
     }
 
-    public function testPerformKeepsRecentFeedsLinks()
+    public function testPerformKeepsRecentFeedsLinks(): void
     {
         \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
+        /** @var int */
         $months = $this->fake('numberBetween', 0, 6);
         $published_at = \Minz\Time::ago($months, 'months');
         $link = LinkFactory::create([
@@ -458,13 +503,16 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link->id));
     }
 
-    public function testPerformKeepsOldEnoughFeedsLinksInMinimumLimit()
+    public function testPerformKeepsOldEnoughFeedsLinksInMinimumLimit(): void
     {
         \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
         \Minz\Configuration::$application['feeds_links_keep_minimum'] = 1;
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $cleaner_job = new Cleaner();
         $support_user = models\User::supportUser();
+        /** @var int */
         $months = $this->fake('numberBetween', 7, 100);
         $published_at_old = \Minz\Time::ago($months, 'months');
         $published_at_older = \Minz\Time::ago($months + 1, 'months');
@@ -521,10 +569,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link_3->id));
     }
 
-    public function testPerformDeletesDataIfDemoIsEnabled()
+    public function testPerformDeletesDataIfDemoIsEnabled(): void
     {
         \Minz\Configuration::$application['demo'] = true;
         $cleaner_job = new Cleaner();
+        /** @var int */
         $days = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($days, 'days');
         $token = TokenFactory::create([
@@ -549,6 +598,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Token::count());
         $this->assertSame(0, models\Link::count());
         $demo_user = models\User::take(1);
+        $this->assertNotNull($demo_user);
         $this->assertNotSame($user->id, $demo_user->id);
         $this->assertSame('demo@flus.io', $demo_user->email);
         $this->assertTrue($demo_user->verifyPassword('demo'));
@@ -575,10 +625,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($never_list);
     }
 
-    public function testPerformKeepsDataIfDemoIsDisabled()
+    public function testPerformKeepsDataIfDemoIsDisabled(): void
     {
         \Minz\Configuration::$application['demo'] = false;
         $cleaner_job = new Cleaner();
+        /** @var int */
         $days = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($days, 'days');
         $token = TokenFactory::create([

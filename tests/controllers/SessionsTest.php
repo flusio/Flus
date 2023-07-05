@@ -15,7 +15,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
 
-    public function testNewRendersCorrectly()
+    public function testNewRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/login');
 
@@ -24,7 +24,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'sessions/new.phtml');
     }
 
-    public function testNewRedirectsToHomeIfConnected()
+    public function testNewRedirectsToHomeIfConnected(): void
     {
         $this->login();
 
@@ -33,7 +33,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
-    public function testNewRedirectsToRedirectToIfConnectedAndParamIsPassed()
+    public function testNewRedirectsToRedirectToIfConnectedAndParamIsPassed(): void
     {
         $this->login();
 
@@ -44,7 +44,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/about');
     }
 
-    public function testNewShowsDemoCredentialsIfDemo()
+    public function testNewShowsDemoCredentialsIfDemo(): void
     {
         \Minz\Configuration::$application['demo'] = true;
 
@@ -55,9 +55,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'demo@flus.io');
     }
 
-    public function testCreateLogsTheUserInAndRedirectToHome()
+    public function testCreateLogsTheUserInAndRedirectToHome(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -75,12 +77,15 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $current_user = auth\CurrentUser::get();
+        $this->assertNotNull($current_user);
         $this->assertSame($user->id, $current_user->id);
     }
 
-    public function testCreateReturnsACookie()
+    public function testCreateReturnsACookie(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -93,18 +98,23 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
+        $this->assertInstanceOf(\Minz\Response::class, $response);
         $session = models\Session::take();
+        $this->assertNotNull($session);
         $cookie = $response->cookies()['flusio_session_token'];
         $this->assertSame($session->token, $cookie['value']);
         $this->assertSame('Lax', $cookie['options']['samesite']);
     }
 
-    public function testCreateCreatesASessionValidForOneMonth()
+    public function testCreateCreatesASessionValidForOneMonth(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        $this->freeze();
 
+        /** @var string */
         $ip = $this->fake('ipv6');
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -125,16 +135,23 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Session::count());
 
         $session = models\Session::take();
+        $this->assertNotNull($session);
         $token = models\Token::find($session->token);
+        $this->assertNotNull($token);
         $this->assertSame($user->id, $session->user_id);
         $this->assertSame('', $session->name);
         $this->assertSame('unknown', $session->ip);
-        $this->assertEquals(\Minz\Time::fromNow(1, 'month'), $token->expired_at);
+        $this->assertEquals(
+            \Minz\Time::fromNow(1, 'month')->getTimestamp(),
+            $token->expired_at->getTimestamp(),
+        );
     }
 
-    public function testCreateDoesNotCreateASessionIfConnected()
+    public function testCreateDoesNotCreateASessionIfConnected(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
             'email' => $email,
@@ -153,9 +170,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
-    public function testCreateRedirectsToRedirectTo()
+    public function testCreateRedirectsToRedirectTo(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -172,9 +191,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/about');
     }
 
-    public function testCreateForcesRedirectionOnCurrentInstance()
+    public function testCreateForcesRedirectionOnCurrentInstance(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -192,17 +213,19 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
-    public function testCreateIsCaseInsensitive()
+    public function testCreateIsCaseInsensitive(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => strtolower($email),
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $user = auth\CurrentUser::get();
-        $this->assertNull($user);
+        $current_user = auth\CurrentUser::get();
+        $this->assertNull($current_user);
 
         $response = $this->appRun('POST', '/login', [
             'csrf' => \Minz\Csrf::generate(),
@@ -211,13 +234,16 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $user = auth\CurrentUser::get();
-        $this->assertSame($user->id, $user->id);
+        $current_user = auth\CurrentUser::get();
+        $this->assertNotNull($current_user);
+        $this->assertSame($user->id, $current_user->id);
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -236,9 +262,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
     }
 
-    public function testCreateFailsIfEmailDoesNotMatchAUser()
+    public function testCreateFailsIfEmailDoesNotMatchAUser(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -256,9 +284,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
     }
 
-    public function testCreateFailsIfEmailIsSupportUserEmail()
+    public function testCreateFailsIfEmailIsSupportUserEmail(): void
     {
+        /** @var string */
         $email = \Minz\Configuration::$application['support_email'];
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -276,9 +306,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
     }
 
-    public function testCreateFailsIfEmailIsInvalid()
+    public function testCreateFailsIfEmailIsInvalid(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -296,9 +328,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
     }
 
-    public function testCreateFailsIfPasswordDoesNotMatch()
+    public function testCreateFailsIfPasswordDoesNotMatch(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
@@ -316,7 +350,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
     }
 
-    public function testDeleteDeletesCurrentSessionAndRedirectsToHome()
+    public function testDeleteDeletesCurrentSessionAndRedirectsToHome(): void
     {
         $user = $this->login();
 
@@ -331,7 +365,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull(auth\CurrentUser::get());
     }
 
-    public function testDeleteReturnsACookie()
+    public function testDeleteReturnsACookie(): void
     {
         $user = $this->login();
 
@@ -341,12 +375,13 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
+        $this->assertInstanceOf(\Minz\Response::class, $response);
         $cookie = $response->cookies()['flusio_session_token'];
         $this->assertSame('', $cookie['value']);
         $this->assertTrue($cookie['options']['expires'] < \Minz\Time::now()->getTimestamp());
     }
 
-    public function testDeleteRedirectsToHomeIfNotConnected()
+    public function testDeleteRedirectsToHomeIfNotConnected(): void
     {
         $this->assertSame(0, models\Session::count());
 
@@ -357,7 +392,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
-    public function testDeleteFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $this->login();
 
@@ -370,7 +405,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Session::count());
     }
 
-    public function testChangeLocaleSetsSessionLocale()
+    public function testChangeLocaleSetsSessionLocale(): void
     {
         $this->assertArrayNotHasKey('locale', $_SESSION);
 
@@ -383,7 +418,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fr_FR', $_SESSION['locale']);
     }
 
-    public function testChangeLocaleRedirectsToRedirectTo()
+    public function testChangeLocaleRedirectsToRedirectTo(): void
     {
         $response = $this->appRun('POST', '/sessions/locale', [
             'csrf' => \Minz\Csrf::generate(),
@@ -394,7 +429,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/registration');
     }
 
-    public function testChangeLocaleWithWrongCsrfDoesntSetsSessionLocale()
+    public function testChangeLocaleWithWrongCsrfDoesntSetsSessionLocale(): void
     {
         $response = $this->appRun('POST', '/sessions/locale', [
             'csrf' => 'not the token',
@@ -405,7 +440,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey('locale', $_SESSION);
     }
 
-    public function testChangeLocaleWithUnsupportedLocaleDoesntSetsSessionLocale()
+    public function testChangeLocaleWithUnsupportedLocaleDoesntSetsSessionLocale(): void
     {
         $response = $this->appRun('POST', '/sessions/locale', [
             'csrf' => \Minz\Csrf::generate(),

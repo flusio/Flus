@@ -5,35 +5,38 @@ namespace SpiderBits;
 /**
  * HTTP made easy.
  *
+ * @phpstan-type Options array{
+ *     'user_agent'?: string,
+ *     'auth_basic'?: string,
+ *     'force_ipv4'?: bool,
+ *     'interface'?: string,
+ *     'max_size'?: int,
+ *     'headers'?: array<string, string>,
+ * }
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class Http
 {
-    /** @var integer */
-    public $timeout = 5;
+    public int $timeout = 5;
 
-    /** @var string */
-    public $user_agent = 'SpiderBits/0.0.1 (' . PHP_OS . '; https://github.com/flusio/SpiderBits)';
+    public string $user_agent = 'SpiderBits/0.0.1 (' . PHP_OS . '; https://github.com/flusio/SpiderBits)';
 
-    /** @var array */
-    public $headers = [];
+    /** @var array<string, string> */
+    public array $headers = [];
 
-    /** @var string */
-    public static $mock_host = '';
+    public static string $mock_host = '';
 
     /**
      * Make a GET HTTP request.
      *
-     * @param string $url
-     * @param array $parameters
-     * @param array $options
+     * @param array<string, mixed> $parameters
+     * @param Options $options
      *
      * @throws \SpiderBits\HttpError
-     *
-     * @return \SpiderBits\Response
      */
-    public function get($url, $parameters = [], $options = [])
+    public function get(string $url, array $parameters = [], array $options = []): Response
     {
         if ($parameters) {
             $parameters_query = http_build_query($parameters);
@@ -50,15 +53,12 @@ class Http
     /**
      * Make a POST HTTP request.
      *
-     * @param string $url
-     * @param array $parameters
-     * @param array $options
+     * @param array<string, mixed> $parameters
+     * @param Options $options
      *
      * @throws \SpiderBits\HttpError
-     *
-     * @return \SpiderBits\Response
      */
-    public function post($url, $parameters = [], $options = [])
+    public function post(string $url, array $parameters = [], array $options = []): Response
     {
         return $this->request('post', $url, $parameters, $options);
     }
@@ -66,16 +66,13 @@ class Http
     /**
      * Generic method that uses Curl to make HTTP requests.
      *
-     * @param string $method get or post
-     * @param string $url
-     * @param array $parameters
-     * @param array $options
+     * @param 'get'|'post' $method
+     * @param array<string, mixed> $parameters
+     * @param Options $options
      *
      * @throws \SpiderBits\HttpError
-     *
-     * @return \SpiderBits\Response
      */
-    private function request($method, $url, $parameters = [], $options = [])
+    private function request(string $method, string $url, array $parameters = [], array $options = []): Response
     {
         if (self::$mock_host) {
             $encoded_url = urlencode($url);
@@ -160,19 +157,19 @@ class Http
             }
         );
 
+        /** @var string|false */
         $data = curl_exec($curl_handle);
         $status = curl_getinfo($curl_handle, CURLINFO_RESPONSE_CODE);
 
-        $error = null;
         if ($data === false) {
             $error = curl_error($curl_handle);
+
+            curl_close($curl_handle);
+
+            throw new HttpError($error);
         }
 
         curl_close($curl_handle);
-
-        if ($error) {
-            throw new HttpError($error);
-        }
 
         return new Response($status, $data, $headers);
     }

@@ -20,17 +20,21 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
     }
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $feed_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'name' => $feed_name,
@@ -49,9 +53,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $feed_name);
     }
 
-    public function testIndexRendersGroups()
+    public function testIndexRendersGroups(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('words', 3, true);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -72,9 +77,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $group_name);
     }
 
-    public function testIndexDoesNotRenderPrivateFollowed()
+    public function testIndexDoesNotRenderPrivateFollowed(): void
     {
         $user = $this->login();
+        /** @var string */
         $feed_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'name' => $feed_name,
@@ -91,9 +97,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $feed_name);
     }
 
-    public function testIndexRedirectsIfNotConnected()
+    public function testIndexRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $feed_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'name' => $feed_name,
@@ -110,7 +117,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Ffeeds');
     }
 
-    public function testNewRendersCorrectly()
+    public function testNewRendersCorrectly(): void
     {
         $user = $this->login();
 
@@ -123,7 +130,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'New feed');
     }
 
-    public function testNewRedirectsIfNotConnected()
+    public function testNewRedirectsIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/feeds/new', [
             'from' => \Minz\Url::for('feeds'),
@@ -132,7 +139,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Ffeeds');
     }
 
-    public function testCreateCreatesAFeedAndRedirectToTheFeed()
+    public function testCreateCreatesAFeedAndRedirectToTheFeed(): void
     {
         $user = $this->login();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
@@ -148,12 +155,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
         $collection = models\Collection::findBy(['type' => 'feed']);
+        $this->assertNotNull($collection);
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
         $this->assertSame($feed_url, $collection->feed_url);
         $this->assertTrue($user->isFollowing($collection->id));
     }
 
-    public function testCreateAutodetectsFeedUrls()
+    public function testCreateAutodetectsFeedUrls(): void
     {
         $user = $this->login();
         $url = 'https://flus.fr/carnet/';
@@ -171,11 +179,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
         $collection = models\Collection::findBy(['type' => 'feed']);
+        $this->assertNotNull($collection);
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
         $this->assertSame($feed_url, $collection->feed_url);
     }
 
-    public function testCreateRedirectsToLoginIfNotConnected()
+    public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
@@ -191,7 +200,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
@@ -208,7 +217,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
     }
 
-    public function testCreateFailsIfUrlIsInvalid()
+    public function testCreateFailsIfUrlIsInvalid(): void
     {
         $user = $this->login();
         $feed_url = 'ftp://flus.fr/carnet/feeds/all.atom.xml';
@@ -224,7 +233,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
     }
 
-    public function testCreateFailsIfUrlIsMissing()
+    public function testCreateFailsIfUrlIsMissing(): void
     {
         $user = $this->login();
         $feed_url = '';
@@ -240,9 +249,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
     }
 
-    public function testCreateFailsIfNoFeedsCanBeFound()
+    public function testCreateFailsIfNoFeedsCanBeFound(): void
     {
         $user = $this->login();
+        /** @var string */
         $feed_url = $this->fake('url');
         $this->mockHttpWithResponse($feed_url, <<<TEXT
             HTTP/2 200
@@ -268,7 +278,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
     }
 
-    public function testWhatIsNewRedirectsToCollection()
+    public function testWhatIsNewRedirectsToCollection(): void
     {
         $support_user = models\User::supportUser();
         $feed_url = 'https://github.com/flusio/flusio/releases.atom';
@@ -283,7 +293,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
     }
 
-    public function testWhatIsNewCreatesFeedIfItDoesNotExist()
+    public function testWhatIsNewCreatesFeedIfItDoesNotExist(): void
     {
         $support_user = models\User::supportUser();
         $feed_url = 'https://github.com/flusio/flusio/releases.atom';
@@ -309,6 +319,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Collection::count());
 
         $collection = models\Collection::take();
+        $this->assertNotNull($collection);
         $this->assertSame($feed_url, $collection->feed_url);
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
     }

@@ -16,8 +16,9 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
+        /** @var string */
         $topic_label = $this->fakeUnique('sentence');
         $topic = TopicFactory::create([
             'label' => $topic_label,
@@ -46,8 +47,9 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'discovery/show.phtml');
     }
 
-    public function testShowDoesNotCountCollectionIfEmpty()
+    public function testShowDoesNotCountCollectionIfEmpty(): void
     {
+        /** @var string */
         $topic_label = $this->fakeUnique('sentence');
         $topic = TopicFactory::create([
             'label' => $topic_label,
@@ -67,8 +69,9 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, '1 collection');
     }
 
-    public function testShowDoesNotCountCollectionIfOnlyHiddenLink()
+    public function testShowDoesNotCountCollectionIfOnlyHiddenLink(): void
     {
+        /** @var string */
         $topic_label = $this->fakeUnique('sentence');
         $topic = TopicFactory::create([
             'label' => $topic_label,
@@ -95,8 +98,9 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, '1 collection');
     }
 
-    public function testShowDoesNotCountCollectionIfPrivate()
+    public function testShowDoesNotCountCollectionIfPrivate(): void
     {
+        /** @var string */
         $topic_label = $this->fakeUnique('sentence');
         $topic = TopicFactory::create([
             'label' => $topic_label,

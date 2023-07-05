@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\collections;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -24,20 +25,20 @@ class Images
      * @response 200
      *     On success
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $from = $request->param('from');
+        $from = $request->param('from', '');
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $collection_id = $request->param('id');
+        $collection_id = $request->param('id', '');
         $collection = models\Collection::find($collection_id);
 
-        $can_update = auth\CollectionsAccess::canUpdate($user, $collection);
+        $can_update = $collection && auth\CollectionsAccess::canUpdate($user, $collection);
         if (!$can_update) {
             return Response::notFound('not_found.phtml');
         }
@@ -63,12 +64,12 @@ class Images
      * @response 302 :from
      *     On success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $image_file = $request->paramFile('image');
-        $collection_id = $request->param('id');
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id', '');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -79,7 +80,7 @@ class Images
 
         $collection = models\Collection::find($collection_id);
 
-        $can_update = auth\CollectionsAccess::canUpdate($user, $collection);
+        $can_update = $collection && auth\CollectionsAccess::canUpdate($user, $collection);
         if (!$can_update) {
             return Response::notFound('not_found.phtml');
         }
@@ -114,6 +115,7 @@ class Images
             ]);
         }
 
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($collection->id);
         $card_path = "{$media_path}/cards/{$subpath}/";
@@ -130,16 +132,21 @@ class Images
         }
 
         $image_data = $image_file->content();
-        try {
-            $card_image = models\Image::fromString($image_data);
-            $cover_image = models\Image::fromString($image_data);
-            $large_image = models\Image::fromString($image_data);
-            $image_type = $card_image->type();
-        } catch (\DomainException $e) {
-            $image_type = null;
+
+        $card_image = null;
+        $cover_image = null;
+        $large_image = null;
+
+        if ($image_data !== false) {
+            try {
+                $card_image = models\Image::fromString($image_data);
+                $cover_image = models\Image::fromString($image_data);
+                $large_image = models\Image::fromString($image_data);
+            } catch (\DomainException $e) {
+            }
         }
 
-        if ($image_type !== 'png' && $image_type !== 'jpeg') {
+        if (!$card_image || !$cover_image || !$large_image) {
             return Response::badRequest('collections/images/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,
@@ -157,7 +164,7 @@ class Images
             @unlink($large_path . $collection->image_filename);
         }
 
-        $image_filename = "{$collection->id}.{$image_type}";
+        $image_filename = "{$collection->id}.{$card_image->type()}";
         $card_image->save($card_path . $image_filename);
         $cover_image->save($cover_path . $image_filename);
         $large_image->save($large_path . $image_filename);

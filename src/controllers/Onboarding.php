@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -26,7 +27,7 @@ class Onboarding
      *
      * @return \Minz\Response
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -60,10 +61,10 @@ class Onboarding
      *
      * @return \Minz\Response
      */
-    public function updateLocale($request)
+    public function updateLocale(Request $request): Response
     {
-        $locale = $request->param('locale');
-        $csrf = $request->param('csrf');
+        $locale = $request->param('locale', '');
+        $csrf = $request->param('csrf', '');
 
         $user = auth\CurrentUser::get();
         if (!$user) {

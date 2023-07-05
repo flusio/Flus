@@ -15,9 +15,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $read_list = $user->readList();
         $link = LinkFactory::create([
@@ -36,7 +37,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $link_title);
     }
 
-    public function testIndexRedirectsIfNotConnected()
+    public function testIndexRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $read_list = $user->readList();
@@ -53,7 +54,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fread');
     }
 
-    public function testIndexRedirectsIfPageOutOfBound()
+    public function testIndexRedirectsIfPageOutOfBound(): void
     {
         $user = $this->login();
         $read_list = $user->readList();

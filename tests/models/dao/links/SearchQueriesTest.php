@@ -13,8 +13,9 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
 
-    public function testSearchComputedByUserIdSearchesByTitle()
+    public function testSearchComputedByUserIdSearchesByTitle(): void
     {
+        /** @var string */
         $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user = UserFactory::create();
@@ -29,8 +30,9 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link->id, $links[0]->id);
     }
 
-    public function testSearchComputedByUserIdSearchesByUrl()
+    public function testSearchComputedByUserIdSearchesByUrl(): void
     {
+        /** @var string */
         $url = $this->fake('url');
         $query = $url;
         $user = UserFactory::create();
@@ -45,8 +47,9 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link->id, $links[0]->id);
     }
 
-    public function testSearchComputedByUserIdSortsByCreatedAt()
+    public function testSearchComputedByUserIdSortsByCreatedAt(): void
     {
+        /** @var string */
         $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user = UserFactory::create();
@@ -70,11 +73,13 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_2->id, $links[1]->id);
     }
 
-    public function testSearchComputedByUserIdCanReturnPublishedAt()
+    public function testSearchComputedByUserIdCanReturnPublishedAt(): void
     {
+        /** @var string */
         $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user = UserFactory::create();
+        /** @var \DateTimeImmutable */
         $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -88,8 +93,9 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($published_at, $links[0]->published_at);
     }
 
-    public function testSearchComputedByUserIdCanReturnNumberComments()
+    public function testSearchComputedByUserIdCanReturnNumberComments(): void
     {
+        /** @var string */
         $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user = UserFactory::create();
@@ -107,8 +113,9 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $links[0]->number_comments);
     }
 
-    public function testSearchComputedByUserIdCanLimitResults()
+    public function testSearchComputedByUserIdCanLimitResults(): void
     {
+        /** @var string */
         $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user = UserFactory::create();
@@ -140,8 +147,9 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_2->id, $links[1]->id);
     }
 
-    public function testSearchComputedByUserIdCanOffsetResults()
+    public function testSearchComputedByUserIdCanOffsetResults(): void
     {
+        /** @var string */
         $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user = UserFactory::create();
@@ -173,8 +181,9 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_1->id, $links[1]->id);
     }
 
-    public function testSearchComputedByUserIdCanExcludeLinksOnlyInNeverCollection()
+    public function testSearchComputedByUserIdCanExcludeLinksOnlyInNeverCollection(): void
     {
+        /** @var string */
         $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user = UserFactory::create();
@@ -196,8 +205,9 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($links));
     }
 
-    public function testCountByQueryAndUserId()
+    public function testCountByQueryAndUserId(): void
     {
+        /** @var string */
         $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user = UserFactory::create();
@@ -211,8 +221,9 @@ class SearchQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $count);
     }
 
-    public function testCountByQueryAndUserIdCanExcludeLinksOnlyInNeverCollection()
+    public function testCountByQueryAndUserIdCanExcludeLinksOnlyInNeverCollection(): void
     {
+        /** @var string */
         $title = $this->fake('sentence', 10, false);
         $query = $title;
         $user = UserFactory::create();

@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
@@ -20,7 +21,7 @@ class Passwords
      *     If the user is connected or if the demo is enabled
      * @response 200
      */
-    public function forgot($request)
+    public function forgot(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if ($user || \Minz\Configuration::$application['demo']) {
@@ -46,7 +47,7 @@ class Passwords
      * @response 302 /password/forgot
      *     On success
      */
-    public function reset($request)
+    public function reset(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if ($user || \Minz\Configuration::$application['demo']) {
@@ -54,7 +55,7 @@ class Passwords
         }
 
         $email = $request->param('email', '');
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         $email = \Minz\Email::sanitize($email);
         if (!\Minz\Email::validate($email)) {
@@ -113,9 +114,9 @@ class Passwords
      *     If the token has expired or is invalid
      * @response 200
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
-        $t = $request->param('t');
+        $t = $request->param('t', '');
         $token = models\Token::find($t);
         if (!$token) {
             return Response::notFound('passwords/edit.phtml', [
@@ -157,11 +158,11 @@ class Passwords
      * @response 302 /
      *     On success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
-        $t = $request->param('t');
-        $password = $request->param('password');
-        $csrf = $request->param('csrf');
+        $t = $request->param('t', '');
+        $password = $request->param('password', '');
+        $csrf = $request->param('csrf', '');
 
         $token = models\Token::find($t);
         if (!$token) {
@@ -206,7 +207,9 @@ class Passwords
 
         // We make sure to clean token and sessions to prevent attacker to take
         // control back on the account
-        models\Token::delete($user->reset_token);
+        if ($user->reset_token) {
+            models\Token::delete($user->reset_token);
+        }
         models\Session::deleteByUserId($user->id);
 
         // also, the user might be connected with a different account so we

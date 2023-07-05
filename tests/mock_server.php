@@ -62,6 +62,8 @@
 
 $app_path = realpath(__DIR__ . '/..');
 
+assert($app_path !== false);
+
 include $app_path . '/autoload.php';
 \Minz\Configuration::load('test', $app_path);
 \Minz\Configuration::$no_syslog_output = false;
@@ -92,6 +94,11 @@ if (!isset($http_parameters['action'])) {
     // We try to parse the content of the mock as a SpiderBits Response. If it
     // fails, the status code will be set to 0.
     $content = @file_get_contents($mock_path);
+
+    if ($content === false) {
+        $content = '';
+    }
+
     $response = \SpiderBits\Response::fromText($content);
 
     if ($response->status > 0) {
@@ -194,7 +201,13 @@ if ($http_parameters['action'] === 'mock') {
 if ($http_parameters['action'] === 'clear') {
     \Minz\Log::notice('MOCK CLEAR');
 
-    foreach (scandir($mocks_path) as $filename) {
+    $filenames = scandir($mocks_path);
+
+    if ($filenames === false) {
+        return;
+    }
+
+    foreach ($filenames as $filename) {
         if ($filename[0] === '.') {
             continue;
         }

@@ -15,7 +15,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FilesHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $user = $this->login();
 
@@ -26,7 +26,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'importations/opml/show.phtml');
     }
 
-    public function testShowRendersIfImportationIsOngoing()
+    public function testShowRendersIfImportationIsOngoing(): void
     {
         $user = $this->login();
         ImportationFactory::create([
@@ -41,7 +41,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'We’re importing your data');
     }
 
-    public function testShowRendersIfImportationIsFinished()
+    public function testShowRendersIfImportationIsFinished(): void
     {
         $user = $this->login();
         ImportationFactory::create([
@@ -56,9 +56,10 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'We’ve imported your data from your <abbr>OPML</abbr> file.');
     }
 
-    public function testShowRendersIfImportationIsInError()
+    public function testShowRendersIfImportationIsInError(): void
     {
         $user = $this->login();
+        /** @var string */
         $error = $this->fake('sentence');
         ImportationFactory::create([
             'type' => 'opml',
@@ -73,14 +74,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $error);
     }
 
-    public function testShowRedirectsToLoginIfNotConnected()
+    public function testShowRedirectsToLoginIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/opml');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fopml');
     }
 
-    public function testImportRegistersAnOpmlImportatorJobAndRedirects()
+    public function testImportRegistersAnOpmlImportatorJobAndRedirects(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
@@ -105,12 +106,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Importation::count());
         $this->assertSame(1, \Minz\Job::count());
         $importation = models\Importation::take();
+        $this->assertNotNull($importation);
         $job = \Minz\Job::take();
+        $this->assertNotNull($job);
         $this->assertSame(jobs\OpmlImportator::class, $job->name);
         $this->assertSame([$importation->id], $job->args);
     }
 
-    public function testImportCopiesFileUnderData()
+    public function testImportCopiesFileUnderData(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
@@ -132,7 +135,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($destination_filepath));
     }
 
-    public function testImportRedirectsToLoginIfNotConnected()
+    public function testImportRedirectsToLoginIfNotConnected(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
@@ -154,7 +157,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    public function testImportFailsIfAnImportAlreadyExists()
+    public function testImportFailsIfAnImportAlreadyExists(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
@@ -182,7 +185,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    public function testImportFailsIfCsrfIsInvalid()
+    public function testImportFailsIfCsrfIsInvalid(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
@@ -209,7 +212,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    public function testImportFailsIfFileIsNotPassed()
+    public function testImportFailsIfFileIsNotPassed(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
@@ -238,7 +241,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider tooLargeErrorsProvider
      */
-    public function testImportFailsIfFileIsTooLarge($error)
+    public function testImportFailsIfFileIsTooLarge(int $error): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
@@ -265,7 +268,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider otherFileErrorsProvider
      */
-    public function testImportFailsIfFileFailedToUpload($error)
+    public function testImportFailsIfFileFailedToUpload(int $error): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
@@ -289,7 +292,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    public function testImportFailsIfIsUploadedFileReturnsFalse()
+    public function testImportFailsIfIsUploadedFileReturnsFalse(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
@@ -314,7 +317,10 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    public function tooLargeErrorsProvider()
+    /**
+     * @return array<array{int}>
+     */
+    public function tooLargeErrorsProvider(): array
     {
         return [
             [UPLOAD_ERR_INI_SIZE],
@@ -322,7 +328,10 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function otherFileErrorsProvider()
+    /**
+     * @return array<array{int}>
+     */
+    public function otherFileErrorsProvider(): array
     {
         return [
             [UPLOAD_ERR_PARTIAL],

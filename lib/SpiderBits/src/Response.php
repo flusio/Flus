@@ -8,29 +8,21 @@ namespace SpiderBits;
  */
 class Response
 {
-    /** @var integer */
-    public $status;
+    public int $status;
 
-    /** @var string */
-    public $data;
+    public string $data;
 
-    /** @var string */
-    public $raw_headers;
+    public string $raw_headers;
 
-    /** @var array */
-    public $headers;
+    /** @var string[] */
+    public array $headers;
 
-    /** @var boolean */
-    public $success;
+    public bool $success;
 
     /**
      * Construct a Response from a raw string
-     *
-     * @param string $raw_response
-     *
-     * @return \SpiderBits\Response
      */
-    public static function fromText($raw_response)
+    public static function fromText(string $raw_response): self
     {
         $result = preg_match('/^(?P<headers>.+?)\R\R(?P<body>.+)?$/sm', $raw_response, $matches);
         if (!$result) {
@@ -51,12 +43,7 @@ class Response
         return new self($status, $body, $headers);
     }
 
-    /**
-     * @param integer $status
-     * @param string $data
-     * @param string $raw_headers
-     */
-    public function __construct($status, $data, $raw_headers)
+    public function __construct(int $status, string $data, string $raw_headers)
     {
         $this->status = $status;
         $this->data = $data;
@@ -68,23 +55,16 @@ class Response
     /**
      * Return the Response as a string which can be parsed by the fromText()
      * method.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->raw_headers . "\r\n\r\n" . $this->data;
     }
 
     /**
      * Return a header value
-     *
-     * @param string $name The name of the parameter to get (case insensitive)
-     * @param mixed $default A default value to return if the parameter doesn't exist
-     *
-     * @return mixed
      */
-    public function header($name, $default = null)
+    public function header(string $name, ?string $default = null): ?string
     {
         $name = strtolower($name);
         if (isset($this->headers[$name])) {
@@ -103,14 +83,18 @@ class Response
      *
      * @see https://tools.ietf.org/html/rfc2616
      *
-     * @param string $raw_headers
-     *
      * @return string[]
      */
-    public static function parseHeaders($raw_headers)
+    public static function parseHeaders(string $raw_headers): array
     {
         $headers = [];
-        foreach (preg_split('/\R/', $raw_headers) as $raw_field) {
+
+        $raw_fields = preg_split('/\R/', $raw_headers);
+        if ($raw_fields === false) {
+            return [];
+        }
+
+        foreach ($raw_fields as $raw_field) {
             $exploded_field = explode(':', $raw_field, 2);
             if (count($exploded_field) < 2) {
                 // this is most probably the status-line or an empty line
@@ -125,6 +109,7 @@ class Response
                 $headers[$field_name] = $field_content;
             }
         }
+
         return $headers;
     }
 }

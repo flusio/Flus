@@ -17,7 +17,7 @@ class LinksSync extends \Minz\Job
     /**
      * Install the correct number of jobs in database.
      */
-    public static function install()
+    public static function install(): void
     {
         $number_jobs_to_install = \Minz\Configuration::$application['job_links_sync_count'];
 
@@ -53,7 +53,7 @@ class LinksSync extends \Minz\Job
     /**
      * Execute the job.
      */
-    public function perform()
+    public function perform(): void
     {
         $fetch_service = new services\LinkFetcher();
 

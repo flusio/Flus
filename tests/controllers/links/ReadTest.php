@@ -15,7 +15,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testCreateMarksAsRead()
+    public function testCreateMarksAsRead(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
@@ -48,7 +48,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_read_list);
     }
 
-    public function testCreateWorksEvenIfNotInBookmarks()
+    public function testCreateWorksEvenIfNotInBookmarks(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
@@ -72,13 +72,14 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_read_list);
     }
 
-    public function testCreateWorksIfNotOwnedAndNotHidden()
+    public function testCreateWorksIfNotOwnedAndNotHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $bookmarks = $other_user->bookmarks();
         $news = $other_user->news();
         $read_list = $user->readList();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -120,7 +121,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_read_list);
     }
 
-    public function testCreateRedirectsToLoginIfNotConnected()
+    public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $bookmarks = $user->bookmarks();
@@ -153,7 +154,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_read_list);
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
@@ -187,7 +188,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_read_list);
     }
 
-    public function testCreateFailsIfNotOwnedAndHidden()
+    public function testCreateFailsIfNotOwnedAndHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -222,7 +223,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_read_list);
     }
 
-    public function testLaterMarksToBeReadLater()
+    public function testLaterMarksToBeReadLater(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -249,7 +250,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_bookmarks);
     }
 
-    public function testLaterWorksEvenIfNotInNews()
+    public function testLaterWorksEvenIfNotInNews(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -272,12 +273,13 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_bookmarks);
     }
 
-    public function testLaterWorksIfNotOwnedAndNotHidden()
+    public function testLaterWorksIfNotOwnedAndNotHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $news = $other_user->news();
         $bookmarks = $user->bookmarks();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -314,7 +316,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_bookmarks);
     }
 
-    public function testLaterRedirectsToLoginIfNotConnected()
+    public function testLaterRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $news = $user->news();
@@ -341,7 +343,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_bookmarks);
     }
 
-    public function testLaterFailsIfCsrfIsInvalid()
+    public function testLaterFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -369,7 +371,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_bookmarks);
     }
 
-    public function testLaterFailsIfNotOwnedAndHidden()
+    public function testLaterFailsIfNotOwnedAndHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -398,7 +400,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_bookmarks);
     }
 
-    public function testNeverMarksToNeverRead()
+    public function testNeverMarksToNeverRead(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -431,13 +433,14 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_never_list);
     }
 
-    public function testNeverWorksIfNotOwnedAndNotHidden()
+    public function testNeverWorksIfNotOwnedAndNotHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $news = $other_user->news();
         $bookmarks = $other_user->bookmarks();
         $never_list = $user->neverList();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -477,7 +480,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_never_list);
     }
 
-    public function testNeverRedirectsToLoginIfNotConnected()
+    public function testNeverRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $news = $user->news();
@@ -510,7 +513,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_never_list);
     }
 
-    public function testNeverFailsIfCsrfIsInvalid()
+    public function testNeverFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -544,7 +547,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_never_list);
     }
 
-    public function testNeverFailsIfNotOwnedAndHidden()
+    public function testNeverFailsIfNotOwnedAndHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -579,7 +582,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_never_list);
     }
 
-    public function testDeleteMarksAsUnread()
+    public function testDeleteMarksAsUnread(): void
     {
         $user = $this->login();
         $read_list = $user->readList();
@@ -600,7 +603,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\LinkToCollection::exists($link_to_read->id));
     }
 
-    public function testDeleteRedirectsToLoginIfNotConnected()
+    public function testDeleteRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $read_list = $user->readList();
@@ -621,7 +624,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\LinkToCollection::exists($link_to_read->id));
     }
 
-    public function testDeleteFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $read_list = $user->readList();
@@ -643,7 +646,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\LinkToCollection::exists($link_to_read->id));
     }
 
-    public function testDeleteFailsIfNotOwned()
+    public function testDeleteFailsIfNotOwned(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();

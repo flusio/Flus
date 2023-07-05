@@ -8,6 +8,8 @@
 // Setup the Minz framework
 $app_path = realpath(__DIR__ . '/..');
 
+assert($app_path !== false);
+
 include $app_path . '/autoload.php';
 \Minz\Configuration::load('dotenv', $app_path);
 
@@ -23,6 +25,11 @@ $current_filepath = $_SERVER['PHP_SELF'];
 if (\Minz\Configuration::$environment === 'development' && $current_filepath !== '/index.php') {
     $public_path = $app_path . '/public';
     $filepath = realpath($public_path . $current_filepath);
+
+    if ($filepath === false) {
+        $filepath = '';
+    }
+
     if (str_starts_with($filepath, $public_path) && file_exists($filepath)) {
         return false;
     }

@@ -21,7 +21,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function initializeSubscriptionConfiguration()
+    public function initializeSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
     }
@@ -29,14 +29,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     /**
      * @afterClass
      */
-    public static function resetSubscriptionConfiguration()
+    public static function resetSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
     }
 
-    public function testShowWithoutTokenAndConnectedRendersCorrectly()
+    public function testShowWithoutTokenAndConnectedRendersCorrectly(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -51,9 +53,11 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Didn’t receive the email? Resend it');
     }
 
-    public function testShowWithoutTokenAndNotConnectedRedirectsToLogin()
+    public function testShowWithoutTokenAndNotConnectedRedirectsToLogin(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -67,12 +71,15 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fvalidation');
     }
 
-    public function testShowWithValidationEmailSentStatusRendersCorrectly()
+    public function testShowWithValidationEmailSentStatusRendersCorrectly(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
+        /** @var string */
         $email = $this->fake('email');
         $this->login([
             'email' => $email,
@@ -87,10 +94,10 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, "We’ve just sent you an email at {$email}");
     }
 
-    public function testShowRedirectsIfUserConnectedAndRegistrationAlreadyValidated()
+    public function testShowRedirectsIfUserConnectedAndRegistrationAlreadyValidated(): void
     {
         $this->login([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('GET', '/my/account/validation');
@@ -98,11 +105,14 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
-    public function testShowWithTokenRendersCorrectlyAndValidatesRegistration()
+    public function testShowWithTokenRendersCorrectlyAndValidatesRegistration(): void
     {
-        $this->freeze($this->fake('dateTime'));
-
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -121,13 +131,20 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(\Minz\Time::now(), $user->validated_at);
     }
 
-    public function testShowWithTokenSetsSubscriptionAccountId()
+    public function testShowWithTokenSetsSubscriptionAccountId(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $account_id = $this->fake('uuid');
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
@@ -147,7 +164,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'validated_at' => null,
             'validation_token' => $token->token,
             'subscription_account_id' => null,
-            'subscription_expired_at' => $this->fake('dateTime'),
+            'subscription_expired_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('GET', '/my/account/validation', [
@@ -159,16 +176,19 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
-    public function testShowWithTokenRedirectsIfRegistrationAlreadyValidated()
+    public function testShowWithTokenRedirectsIfRegistrationAlreadyValidated(): void
     {
-        $this->freeze($this->fake('dateTime'));
-
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
             'validation_token' => $token->token,
         ]);
 
@@ -179,11 +199,14 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
-    public function testShowWithTokenDeletesToken()
+    public function testShowWithTokenDeletesToken(): void
     {
-        $this->freeze($this->fake('dateTime'));
-
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -201,11 +224,14 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->validation_token);
     }
 
-    public function testShowWithTokenFailsIfTokenHasExpired()
+    public function testShowWithTokenFailsIfTokenHasExpired(): void
     {
-        $this->freeze($this->fake('dateTime'));
-
-        $expired_at = \Minz\Time::ago($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::ago($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -224,14 +250,17 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->validated_at);
     }
 
-    public function testShowWithTokenFailsIfTokenHasBeenInvalidated()
+    public function testShowWithTokenFailsIfTokenHasBeenInvalidated(): void
     {
-        $this->freeze($this->fake('dateTime'));
-
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
-            'invalidated_at' => $this->fake('dateTime'),
+            'invalidated_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => null,
@@ -248,9 +277,11 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->validated_at);
     }
 
-    public function testShowFailsIfTokenIsNotAssociatedToAUser()
+    public function testShowFailsIfTokenIsNotAssociatedToAUser(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -263,11 +294,14 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The token doesn’t exist');
     }
 
-    public function testShowWithTokenFailsIfTokenDoesNotExist()
+    public function testShowWithTokenFailsIfTokenDoesNotExist(): void
     {
-        $this->freeze($this->fake('dateTime'));
-
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -286,9 +320,11 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->validated_at);
     }
 
-    public function testResendEmailSendsAnEmailAndRedirects()
+    public function testResendEmailSendsAnEmailAndRedirects(): void
     {
+        /** @var string */
         $email = $this->fake('email');
+        /** @var int */
         $minutes = $this->fake('numberBetween', 31, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
@@ -308,16 +344,18 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertSame('validation_email_sent', \Minz\Flash::get('status'));
-        $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
+        $this->assertNotNull($email_sent);
         $this->assertEmailSubject($email_sent, '[flusio] Confirm your account');
         $this->assertEmailContainsTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, $token->token);
     }
 
-    public function testResendEmailRedirectsToRedictTo()
+    public function testResendEmailRedirectsToRedictTo(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 31, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 31, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -335,10 +373,13 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('validation_email_sent', \Minz\Flash::get('status'));
     }
 
-    public function testResendEmailCreatesANewTokenIfNoToken()
+    public function testResendEmailCreatesANewTokenIfNoToken(): void
     {
+        /** @var string */
         $email = $this->fake('email');
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $user = $this->login([
             'email' => $email,
             'validated_at' => null,
@@ -356,9 +397,11 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($user->validation_token);
     }
 
-    public function testResendEmailCreatesANewTokenIfExpiresSoon()
+    public function testResendEmailCreatesANewTokenIfExpiresSoon(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 30), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 0, 30);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -378,12 +421,14 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($user->validation_token, $token->token);
     }
 
-    public function testResendEmailCreatesANewTokenIfInvalidated()
+    public function testResendEmailCreatesANewTokenIfInvalidated(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 31, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 31, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
-            'invalidated_at' => $this->fake('dateTime')
+            'invalidated_at' => \Minz\Time::now()
         ]);
         $user = $this->login([
             'validated_at' => null,
@@ -401,10 +446,10 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($user->validation_token, $token->token);
     }
 
-    public function testResendEmailRedirectsSilentlyIfAlreadyValidated()
+    public function testResendEmailRedirectsSilentlyIfAlreadyValidated(): void
     {
         $user = $this->login([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('POST', '/my/account/validation/email', [
@@ -415,9 +460,11 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testResendEmailFailsIfCsrfIsInvalid()
+    public function testResendEmailFailsIfCsrfIsInvalid(): void
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 1, 9000);
+        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
@@ -438,7 +485,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testResendEmailFailsIfUserNotConnected()
+    public function testResendEmailFailsIfUserNotConnected(): void
     {
         $response = $this->appRun('POST', '/my/account/validation/email', [
             'csrf' => \Minz\Csrf::generate(),

@@ -16,6 +16,8 @@ namespace flusio;
  * $response = $application->run($request);
  * echo $response->render();
  *
+ * @phpstan-import-type ResponseReturnable from \Minz\Response
+ *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -45,13 +47,13 @@ class Application
     /**
      * Declare global View variables and execute a request.
      *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @return ResponseReturnable
      */
-    public function run($request)
+    public function run(\Minz\Request $request): mixed
     {
+        /** @var ?string */
         $session_token = $request->cookie('flusio_session_token');
+
         if (
             !$session_token &&
             auth\CurrentUser::sessionToken() &&
@@ -79,7 +81,8 @@ class Application
         } elseif (isset($_SESSION['locale'])) {
             $locale = $_SESSION['locale'];
         } else {
-            $http_accept_language = $request->header('HTTP_ACCEPT_LANGUAGE');
+            /** @var string */
+            $http_accept_language = $request->header('HTTP_ACCEPT_LANGUAGE', '');
             $locale = utils\Locale::best($http_accept_language);
         }
         utils\Locale::setCurrentLocale($locale);
@@ -88,8 +91,10 @@ class Application
             // A malicious user succeeded to logged in as the support user? He
             // should not pass.
             if ($current_user->isSupportUser()) {
-                $current_session_token = auth\CurrentUser::sessionToken();
-                $session = models\Session::findBy(['token' => $current_session_token]);
+                $session = auth\CurrentUser::session();
+
+                assert($session !== null);
+
                 models\Session::delete($session->id);
                 auth\CurrentUser::reset();
 
@@ -147,15 +152,18 @@ class Application
 
         $response = \Minz\Engine::run($request);
 
-        $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
-        $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
-        $response->setHeader('Referrer-Policy', 'same-origin');
-        $response->setHeader('X-Content-Type-Options', 'nosniff');
-        $response->setHeader('X-Frame-Options', 'deny');
+        if ($response instanceof \Minz\Response) {
+            $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
+            $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
+            $response->setHeader('Referrer-Policy', 'same-origin');
+            $response->setHeader('X-Content-Type-Options', 'nosniff');
+            $response->setHeader('X-Frame-Options', 'deny');
+        }
 
         if (
             $current_user &&
             $current_user->autoload_modal !== '' &&
+            $response instanceof \Minz\Response &&
             $response->code() === 200
         ) {
             $current_user->autoload_modal = '';

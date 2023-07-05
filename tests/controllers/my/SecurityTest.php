@@ -17,10 +17,14 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
 
-    public function testShowRendersCorrectlyIfPasswordIsConfirmed()
+    public function testShowRendersCorrectlyIfPasswordIsConfirmed(): void
     {
-        $this->freeze($this->fake('dateTime'));
-        $confirmed_at = \Minz\Time::ago($this->fake('numberBetween', 0, 15), 'minutes');
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 0, 15);
+        $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
         $this->login([], [], [
             'confirmed_password_at' => $confirmed_at,
         ]);
@@ -32,7 +36,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
     }
 
-    public function testShowRendersConfirmFormIfPasswordWasNeverConfirmed()
+    public function testShowRendersConfirmFormIfPasswordWasNeverConfirmed(): void
     {
         $this->login([], [], [
             'confirmed_password_at' => null,
@@ -45,10 +49,14 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'my/security/show_to_confirm.phtml');
     }
 
-    public function testShowRendersConfirmFormIfPasswordIsNotConfirmed()
+    public function testShowRendersConfirmFormIfPasswordIsNotConfirmed(): void
     {
-        $this->freeze($this->fake('dateTime'));
-        $confirmed_at = \Minz\Time::ago($this->fake('numberBetween', 16, 9000), 'minutes');
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 16, 9000);
+        $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
         $this->login([], [], [
             'confirmed_password_at' => $confirmed_at,
         ]);
@@ -60,18 +68,22 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'my/security/show_to_confirm.phtml');
     }
 
-    public function testShowRedirectsIfUserIsNotConnected()
+    public function testShowRedirectsIfUserIsNotConnected(): void
     {
         $response = $this->appRun('GET', '/my/security');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
     }
 
-    public function testUpdateChangesEmailAndPasswordAndRedirects()
+    public function testUpdateChangesEmailAndPasswordAndRedirects(): void
     {
+        /** @var string */
         $old_email = $this->fake('email');
+        /** @var string */
         $new_email = $this->fake('email');
+        /** @var string */
         $old_password = $this->fake('password');
+        /** @var string */
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
@@ -87,15 +99,18 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/my/security');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($new_email, $user->email);
         $this->assertTrue($user->verifyPassword($new_password));
     }
 
-    public function testUpdateDoesNotChangePasswordIfEmpty()
+    public function testUpdateDoesNotChangePasswordIfEmpty(): void
     {
+        /** @var string */
         $old_email = $this->fake('email');
+        /** @var string */
         $new_email = $this->fake('email');
+        /** @var string */
         $old_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
@@ -110,15 +125,19 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password' => '',
         ]);
 
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
-    public function testUpdateDeletesResetTokenIfAny()
+    public function testUpdateDeletesResetTokenIfAny(): void
     {
+        /** @var string */
         $old_email = $this->fakeUnique('email');
+        /** @var string */
         $new_email = $this->fakeUnique('email');
+        /** @var string */
         $old_password = $this->fakeUnique('password');
+        /** @var string */
         $new_password = $this->fakeUnique('password');
         $token = TokenFactory::create();
         $user = $this->login([
@@ -136,16 +155,20 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/my/security');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertNull($user->reset_token);
         $this->assertFalse(models\Token::exists($token->token));
     }
 
-    public function testUpdateDeletesExistingSessionsExceptCurrentOne()
+    public function testUpdateDeletesExistingSessionsExceptCurrentOne(): void
     {
+        /** @var string */
         $old_email = $this->fakeUnique('email');
+        /** @var string */
         $new_email = $this->fakeUnique('email');
+        /** @var string */
         $old_password = $this->fakeUnique('password');
+        /** @var string */
         $new_password = $this->fakeUnique('password');
         $user = $this->login([
             'email' => $old_email,
@@ -158,6 +181,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
+        $this->assertNotNull($current_session);
         $this->assertSame(2, models\Session::count());
 
         $response = $this->appRun('POST', '/my/security', [
@@ -171,14 +195,19 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Session::count());
         $this->assertFalse(models\Session::exists($session->id));
         $session = models\Session::take();
+        $this->assertNotNull($session);
         $this->assertSame($current_session->id, $session->id);
     }
 
-    public function testUpdateRedirectsIfNotConnected()
+    public function testUpdateRedirectsIfNotConnected(): void
     {
+        /** @var string */
         $old_email = $this->fake('email');
+        /** @var string */
         $new_email = $this->fake('email');
+        /** @var string */
         $old_password = $this->fake('password');
+        /** @var string */
         $new_password = $this->fake('password');
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -200,11 +229,15 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
-    public function testUpdateFailsIfPasswordIsNotConfirmed()
+    public function testUpdateFailsIfPasswordIsNotConfirmed(): void
     {
+        /** @var string */
         $old_email = $this->fake('email');
+        /** @var string */
         $new_email = $this->fake('email');
+        /** @var string */
         $old_password = $this->fake('password');
+        /** @var string */
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
@@ -222,16 +255,20 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'You must confirm your password');
         $this->assertResponsePointer($response, 'my/security/show_to_confirm.phtml');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
+        /** @var string */
         $old_email = $this->fake('email');
+        /** @var string */
         $new_email = $this->fake('email');
+        /** @var string */
         $old_password = $this->fake('password');
+        /** @var string */
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
@@ -249,16 +286,20 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
         $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
-    public function testUpdateFailsIfAnotherAccountHasTheSameEmail()
+    public function testUpdateFailsIfAnotherAccountHasTheSameEmail(): void
     {
+        /** @var string */
         $old_email = $this->fake('email');
+        /** @var string */
         $new_email = $this->fake('email');
+        /** @var string */
         $old_password = $this->fake('password');
+        /** @var string */
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
@@ -279,16 +320,20 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'An account already exists with this email address');
         $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
-    public function testUpdateFailsIfEmailIsInvalid()
+    public function testUpdateFailsIfEmailIsInvalid(): void
     {
+        /** @var string */
         $old_email = $this->fake('email');
+        /** @var string */
         $new_email = $this->fake('word');
+        /** @var string */
         $old_password = $this->fake('password');
+        /** @var string */
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
@@ -306,15 +351,18 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The address email is invalid');
         $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
-    public function testUpdateFailsIfEmailIsMissing()
+    public function testUpdateFailsIfEmailIsMissing(): void
     {
+        /** @var string */
         $old_email = $this->fake('email');
+        /** @var string */
         $old_password = $this->fake('password');
+        /** @var string */
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
@@ -332,14 +380,17 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The address email is required');
         $this->assertResponsePointer($response, 'my/security/show_confirmed.phtml');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
-    public function testConfirmPasswordSetsConfirmedPasswordAtAndRedirects()
+    public function testConfirmPasswordSetsConfirmedPasswordAtAndRedirects(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -354,12 +405,14 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/my/security');
         $session = auth\CurrentUser::session();
+        $this->assertNotNull($session);
         $now = \Minz\Time::now();
-        $this->assertSame($now->getTimestamp(), $session->confirmed_password_at->getTimestamp());
+        $this->assertEquals($now, $session->confirmed_password_at);
     }
 
-    public function testConfirmPasswordRedirectsIfUserIsNotConnected()
+    public function testConfirmPasswordRedirectsIfUserIsNotConnected(): void
     {
+        /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -374,8 +427,9 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
     }
 
-    public function testConfirmPasswordFailsIfCsrfIsInvalid()
+    public function testConfirmPasswordFailsIfCsrfIsInvalid(): void
     {
+        /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -394,11 +448,13 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             \Minz\Flash::get('error')
         );
         $session = auth\CurrentUser::session();
+        $this->assertNotNull($session);
         $this->assertNull($session->confirmed_password_at);
     }
 
-    public function testConfirmPasswordFailsIfPasswordIsInvalid()
+    public function testConfirmPasswordFailsIfPasswordIsInvalid(): void
     {
+        /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
@@ -416,6 +472,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'password_hash' => 'The password is incorrect.',
         ], \Minz\Flash::get('errors'));
         $session = auth\CurrentUser::session();
+        $this->assertNotNull($session);
         $this->assertNull($session->confirmed_password_at);
     }
 }

@@ -13,7 +13,7 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function initEngine()
+    public static function initEngine(): void
     {
         $router = \flusio\Router::load();
         \Minz\Engine::init($router);
@@ -22,7 +22,7 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function setJobAdapterToDatabase()
+    public static function setJobAdapterToDatabase(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
     }
@@ -30,19 +30,19 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @afterClass
      */
-    public static function setJobAdapterToTest()
+    public static function setJobAdapterToTest(): void
     {
         \Minz\Configuration::$jobs_adapter = 'test';
     }
 
-    public function testQueue()
+    public function testQueue(): void
     {
         $job = new Exportator();
 
         $this->assertSame('default', $job->queue);
     }
 
-    public function testPerformCreatesAnArchiveAndAcknowledgesTheExportation()
+    public function testPerformCreatesAnArchiveAndAcknowledgesTheExportation(): void
     {
         $job = new Exportator();
         $user = UserFactory::create();
@@ -61,7 +61,7 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(str_starts_with($exportation->filepath, $exportations_path));
     }
 
-    public function testPerformDoesNothingIfStatusIsFinished()
+    public function testPerformDoesNothingIfStatusIsFinished(): void
     {
         $job = new Exportator();
         $user = UserFactory::create();

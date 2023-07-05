@@ -13,10 +13,12 @@ class InfoTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $url_1 = $this->fakeUnique('url');
+        /** @var string */
         $url_2 = $this->fakeUnique('url');
         $bookmarks = $user->bookmarks();
         $link_1 = LinkFactory::create([
@@ -38,13 +40,15 @@ class InfoTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/json',
         ]);
+        $this->assertInstanceOf(\Minz\Response::class, $response);
+        /** @var array<string, mixed> */
         $output = json_decode($response->render(), true);
         $this->assertSame($user->csrf, $output['csrf']);
         $this->assertSame($bookmarks->id, $output['bookmarks_id']);
         $this->assertSame([$url_1], $output['bookmarked_urls']);
     }
 
-    public function testShowRedirectsIfUserNotConnected()
+    public function testShowRedirectsIfUserNotConnected(): void
     {
         $response = $this->appRun('GET', '/my/info.json');
 

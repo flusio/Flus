@@ -19,14 +19,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRedirectsToLinks()
+    public function testIndexRedirectsToLinks(): void
     {
         $response = $this->appRun('GET', '/collections');
 
         $this->assertResponseCode($response, 301, '/links');
     }
 
-    public function testNewRendersCorrectly()
+    public function testNewRendersCorrectly(): void
     {
         $user = $this->login();
 
@@ -37,9 +37,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/new.phtml');
     }
 
-    public function testNewRendersTopics()
+    public function testNewRendersTopics(): void
     {
         $user = $this->login();
+        /** @var string */
         $label = $this->fake('word');
         TopicFactory::create([
             'label' => $label,
@@ -51,17 +52,19 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $label);
     }
 
-    public function testNewRedirectsIfNotConnected()
+    public function testNewRedirectsIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/collections/new');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fcollections%2Fnew');
     }
 
-    public function testCreateCreatesCollectionAndRedirects()
+    public function testCreateCreatesCollectionAndRedirects(): void
     {
         $user = $this->login();
+        /** @var string */
         $name = $this->fake('words', 3, true);
+        /** @var string */
         $description = $this->fake('sentence');
 
         $this->assertSame(0, models\Collection::count());
@@ -74,16 +77,19 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Collection::count());
         $collection = models\Collection::take();
+        $this->assertNotNull($collection);
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
         $this->assertSame($name, $collection->name);
         $this->assertSame($description, $collection->description);
         $this->assertFalse($collection->is_public);
     }
 
-    public function testCreateAllowsToCreatePublicCollections()
+    public function testCreateAllowsToCreatePublicCollections(): void
     {
         $user = $this->login();
+        /** @var string */
         $name = $this->fake('words', 3, true);
+        /** @var string */
         $description = $this->fake('sentence');
 
         $response = $this->appRun('POST', '/collections/new', [
@@ -94,13 +100,16 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $collection = models\Collection::take();
+        $this->assertNotNull($collection);
         $this->assertTrue($collection->is_public);
     }
 
-    public function testCreateAllowsToAttachTopics()
+    public function testCreateAllowsToAttachTopics(): void
     {
         $user = $this->login();
+        /** @var string */
         $name = $this->fake('words', 3, true);
+        /** @var string */
         $description = $this->fake('sentence');
         $topic = TopicFactory::create();
 
@@ -112,12 +121,15 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $collection = models\Collection::take();
+        $this->assertNotNull($collection);
         $this->assertContains($topic->id, array_column($collection->topics(), 'id'));
     }
 
-    public function testCreateRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected(): void
     {
+        /** @var string */
         $name = $this->fake('words', 3, true);
+        /** @var string */
         $description = $this->fake('sentence');
 
         $response = $this->appRun('POST', '/collections/new', [
@@ -130,10 +142,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $name = $this->fake('words', 3, true);
+        /** @var string */
         $description = $this->fake('sentence');
 
         $response = $this->appRun('POST', '/collections/new', [
@@ -147,10 +161,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
     }
 
-    public function testCreateFailsIfNameIsInvalid()
+    public function testCreateFailsIfNameIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $name = $this->fake('words', 100, true);
+        /** @var string */
         $description = $this->fake('sentence');
 
         $response = $this->appRun('POST', '/collections/new', [
@@ -164,9 +180,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
     }
 
-    public function testCreateFailsIfNameIsMissing()
+    public function testCreateFailsIfNameIsMissing(): void
     {
         $user = $this->login();
+        /** @var string */
         $description = $this->fake('sentence');
 
         $response = $this->appRun('POST', '/collections/new', [
@@ -179,10 +196,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
     }
 
-    public function testCreateFailsIfTopicIdsIsInvalid()
+    public function testCreateFailsIfTopicIdsIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $name = $this->fake('words', 3, true);
+        /** @var string */
         $description = $this->fake('sentence');
         $topic = TopicFactory::create();
 
@@ -198,9 +217,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
     }
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -225,9 +245,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/show.phtml');
     }
 
-    public function testShowRendersCorrectlyIfPublicAndNotConnected()
+    public function testShowRendersCorrectlyIfPublicAndNotConnected(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -251,10 +272,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/show_public.phtml');
     }
 
-    public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink()
+    public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $owner->id,
@@ -278,10 +300,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/show_public.phtml');
     }
 
-    public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithReadAccess()
+    public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -309,10 +332,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/show_public.phtml');
     }
 
-    public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithWriteAccess()
+    public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -340,9 +364,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/show.phtml');
     }
 
-    public function testShowHidesHiddenLinksInPublicCollections()
+    public function testShowHidesHiddenLinksInPublicCollections(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -364,9 +389,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_title);
     }
 
-    public function testShowRedirectsIfPageIsOutOfBound()
+    public function testShowRedirectsIfPageIsOutOfBound(): void
     {
         $user = $this->login();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -389,7 +415,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}?page=1");
     }
 
-    public function testShowRedirectsIfPrivateAndNotConnected()
+    public function testShowRedirectsIfPrivateAndNotConnected(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -403,7 +429,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}");
     }
 
-    public function testShowFailsIfCollectionDoesNotExist()
+    public function testShowFailsIfCollectionDoesNotExist(): void
     {
         $this->login();
 
@@ -412,7 +438,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testShowFailsIfPrivateAndNoSharedAccess()
+    public function testShowFailsIfPrivateAndNoSharedAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -434,7 +460,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditRendersCorrectly()
+    public function testEditRendersCorrectly(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -451,7 +477,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/edit.phtml');
     }
 
-    public function testEditRendersCorrectlyIfCollectionIsSharedWithWriteAccess()
+    public function testEditRendersCorrectlyIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -474,7 +500,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/edit.phtml');
     }
 
-    public function testEditRedirectsIfNotConnected()
+    public function testEditRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -491,7 +517,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
-    public function testEditFailsIfCollectionDoesNotExist()
+    public function testEditFailsIfCollectionDoesNotExist(): void
     {
         $this->login();
 
@@ -502,7 +528,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsNotShared()
+    public function testEditFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -519,7 +545,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsSharedWithReadAccess()
+    public function testEditFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -541,7 +567,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsNotOfCorrectType()
+    public function testEditFailsIfCollectionIsNotOfCorrectType(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -557,12 +583,16 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateUpdatesCollectionAndRedirects()
+    public function testUpdateUpdatesCollectionAndRedirects(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $old_description = $this->fakeUnique('sentence');
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
         $old_public = false;
         $new_public = true;
@@ -584,16 +614,18 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $this->assertSame($new_name, $collection->name);
         $this->assertSame($new_description, $collection->description);
         $this->assertTrue($collection->is_public);
     }
 
-    public function testUpdateChangesTopics()
+    public function testUpdateChangesTopics(): void
     {
         $user = $this->login();
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
         $new_public = 1;
         $old_topic = TopicFactory::create();
@@ -617,16 +649,18 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $topic_ids = array_column($collection->topics(), 'id');
         $this->assertSame([$new_topic->id], $topic_ids);
     }
 
-    public function testUpdateWorksIfCollectionIsSharedWithWriteAccess()
+    public function testUpdateWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -647,16 +681,20 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $this->assertSame($new_name, $collection->name);
     }
 
-    public function testUpdateRedirectsIfNotConnected()
+    public function testUpdateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $old_description = $this->fakeUnique('sentence');
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -675,17 +713,21 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $from_encoded = urlencode($from);
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $old_description = $this->fakeUnique('sentence');
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -704,17 +746,21 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
     }
 
-    public function testUpdateFailsIfNameIsInvalid()
+    public function testUpdateFailsIfNameIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_name = $this->fakeUnique('words', 100, true);
+        /** @var string */
         $old_description = $this->fakeUnique('sentence');
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -733,17 +779,20 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The name must be less than 100 characters');
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
     }
 
-    public function testUpdateFailsIfNameIsMissing()
+    public function testUpdateFailsIfNameIsMissing(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = '';
+        /** @var string */
         $old_description = $this->fakeUnique('sentence');
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -762,15 +811,17 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The name is required');
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
     }
 
-    public function testUpdateFailsIfTopicIdsIsInvalid()
+    public function testUpdateFailsIfTopicIdsIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
         $new_public = 1;
         $old_topic = TopicFactory::create();
@@ -800,10 +851,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([$old_topic->id], $topic_ids);
     }
 
-    public function testUpdateFailsIfCollectionDoesNotExist()
+    public function testUpdateFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
 
         $response = $this->appRun('POST', '/collections/unknown/edit', [
@@ -816,13 +869,17 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateFailsIfCollectionIsNotShared()
+    public function testUpdateFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $old_description = $this->fakeUnique('sentence');
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -840,16 +897,18 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
     }
 
-    public function testUpdateFailsIfCollectionIsSharedWithReadAccess()
+    public function testUpdateFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -870,16 +929,20 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $this->assertSame($old_name, $collection->name);
     }
 
-    public function testUpdateFailsIfCollectionIsNotOfCorrectType()
+    public function testUpdateFailsIfCollectionIsNotOfCorrectType(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $old_description = $this->fakeUnique('sentence');
+        /** @var string */
         $new_description = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -897,12 +960,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $collection = models\Collection::take();
+        $collection = $collection->reload();
         $this->assertSame($old_name, $collection->name);
         $this->assertSame($old_description, $collection->description);
     }
 
-    public function testDeleteDeletesCollectionAndRedirects()
+    public function testDeleteDeletesCollectionAndRedirects(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -919,7 +982,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Collection::exists($collection->id));
     }
 
-    public function testDeleteRedirectsIfNotConnected()
+    public function testDeleteRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -936,7 +999,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Collection::exists($collection->id));
     }
 
-    public function testDeleteFailsIfCollectionDoesNotExist()
+    public function testDeleteFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -953,7 +1016,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Collection::exists($collection->id));
     }
 
-    public function testDeleteFailsIfCollectionIsNotShared()
+    public function testDeleteFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -971,7 +1034,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Collection::exists($collection->id));
     }
 
-    public function testDeleteFailsIfCollectionIsShared()
+    public function testDeleteFailsIfCollectionIsShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -993,7 +1056,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Collection::exists($collection->id));
     }
 
-    public function testDeleteFailsIfCollectionIsNotOfCorrectType()
+    public function testDeleteFailsIfCollectionIsNotOfCorrectType(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -1010,7 +1073,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Collection::exists($collection->id));
     }
 
-    public function testDeleteFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([

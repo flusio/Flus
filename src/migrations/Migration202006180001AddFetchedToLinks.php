@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202006180001AddFetchedToLinks
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -20,7 +20,7 @@ class Migration202006180001AddFetchedToLinks
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

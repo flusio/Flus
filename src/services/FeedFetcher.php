@@ -6,6 +6,12 @@ use flusio\models;
 use flusio\utils;
 
 /**
+ * @phpstan-type Options array{
+ *     'timeout': int,
+ *     'rate_limit': bool,
+ *     'cache': bool,
+ * }
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -13,13 +19,11 @@ class FeedFetcher
 {
     public const ERROR_RATE_LIMIT = -1;
 
-    /** @var \SpiderBits\Cache */
-    private $cache;
+    private \SpiderBits\Cache $cache;
 
-    /** @var \SpiderBits\Http */
-    private $http;
+    private \SpiderBits\Http $http;
 
-    /** @var array */
+    /** @var Options */
     private $options = [
         'timeout' => 20,
         'rate_limit' => true,
@@ -27,32 +31,38 @@ class FeedFetcher
     ];
 
     /**
-     * @param array $options
-     *     A list of options where possible keys are:
-     *     - timeout (integer)
-     *     - rate_limit (boolean)
-     *     - cache (boolean)
+     * @param array{
+     *     'timeout'?: int,
+     *     'rate_limit'?: bool,
+     *     'cache'?: bool,
+     * } $options
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->options = array_merge($this->options, $options);
 
+        /** @var string */
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $this->cache = new \SpiderBits\Cache($cache_path);
 
+        /** @var string */
+        $user_agent = \Minz\Configuration::$application['user_agent'];
         $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
+        $this->http->user_agent = $user_agent;
         $this->http->timeout = $this->options['timeout'];
     }
 
     /**
      * Fetch a feed collection
-     *
-     * @param \flusio\models\Collection $collection
      */
-    public function fetch($collection)
+    public function fetch(models\Collection $collection): void
     {
-        $info = $this->fetchUrl($collection->feed_url);
+        $feed_url = $collection->feed_url;
+        if (!$feed_url) {
+            return;
+        }
+
+        $info = $this->fetchUrl($feed_url);
 
         if ($info['status'] === self::ERROR_RATE_LIMIT) {
             // In case of a rate limit error, skip the link so it can be
@@ -66,6 +76,10 @@ class FeedFetcher
         if (isset($info['error'])) {
             $collection->feed_fetched_error = $info['error'];
             $collection->save();
+            return;
+        }
+
+        if (!isset($info['feed'])) {
             return;
         }
 
@@ -92,10 +106,10 @@ class FeedFetcher
         }
 
         if ($feed->link) {
-            $feed_site_url = \SpiderBits\Url::absolutize($feed->link, $collection->feed_url);
+            $feed_site_url = \SpiderBits\Url::absolutize($feed->link, $feed_url);
             $feed_site_url = \SpiderBits\Url::sanitize($feed_site_url);
         } else {
-            $feed_site_url = $collection->feed_url;
+            $feed_site_url = $feed_url;
         }
 
         $collection->feed_site_url = $feed_site_url;
@@ -114,7 +128,7 @@ class FeedFetcher
                 continue;
             }
 
-            $url = \SpiderBits\Url::absolutize($entry->link, $collection->feed_url);
+            $url = \SpiderBits\Url::absolutize($entry->link, $feed_url);
             $url = \SpiderBits\Url::sanitize($url);
 
             if (isset($link_ids_by_urls[$url])) {
@@ -159,9 +173,11 @@ class FeedFetcher
                     'link_id' => $link_id,
                     'collection_id' => $collection->id,
                 ]);
-                models\LinkToCollection::update($link_to_collection->id, [
-                    'created_at' => $published_at,
-                ]);
+                if ($link_to_collection) {
+                    models\LinkToCollection::update($link_to_collection->id, [
+                        'created_at' => $published_at,
+                    ]);
+                }
             } else {
                 // The URL is not associated to the collection in database yet,
                 // so we create a new link.
@@ -214,7 +230,7 @@ class FeedFetcher
         models\Link::bulkInsert($links_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
 
-        if (!$collection->image_fetched_at) {
+        if (!$collection->image_fetched_at && $collection->feed_site_url) {
             try {
                 $response = $this->http->get($collection->feed_site_url);
             } catch (\SpiderBits\HttpError $e) {
@@ -225,7 +241,8 @@ class FeedFetcher
                 return;
             }
 
-            $content_type = $response->header('content-type');
+            /** @var string */
+            $content_type = $response->header('content-type', '');
             if (!str_contains($content_type, 'text/html')) {
                 $collection->image_fetched_at = \Minz\Time::now();
                 $collection->save();
@@ -255,17 +272,17 @@ class FeedFetcher
     /**
      * Fetch URL content and return information about the feed
      *
-     * @param string $url
-     *
-     * @return array Possible keys are:
-     *     - status (always)
-     *     - error
-     *     - feed
+     * @return array{
+     *     'status': int,
+     *     'error'?: string,
+     *     'feed'?: \SpiderBits\feeds\Feed,
+     * }
      */
-    public function fetchUrl($url)
+    public function fetchUrl(string $url): array
     {
         // First, we get information about rate limit and IP to select to
         // execute the request (for Youtube).
+        /** @var string[] */
         $server_ips = \Minz\Configuration::$application['server_ips'];
         if (!$this->options['rate_limit']) {
             // rate limit is disabled for this call
@@ -351,7 +368,8 @@ class FeedFetcher
             return $info;
         }
 
-        $content_type = $response->header('content-type');
+        /** @var string */
+        $content_type = $response->header('content-type', '');
         if (!\SpiderBits\feeds\Feed::isFeedContentType($content_type)) {
             $info['error'] = "Invalid content type: {$content_type}";
             return $info; // @codeCoverageIgnore
@@ -383,18 +401,19 @@ class FeedFetcher
      * and will be deleted later by the Cleaner. However, the method will not
      * return more links_to_collections than the policy.
      *
-     * @param array $links_to_collections
-     *     All the links_to_collections initialized from the feed.
-     * @param integer $initial_links_count
-     *     The initial count of collection links.
+     * @param models\LinkToCollection[] $links_to_collections
      *
-     * @return array
+     * @return models\LinkToCollection[]
      */
-    private function filterLinksToCollections($links_to_collections, $initial_links_count)
+    private function filterLinksToCollections(array $links_to_collections, int $initial_links_count): array
     {
+        /** @var int */
         $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
+        /** @var int */
         $feeds_links_keep_maximum = \Minz\Configuration::$application['feeds_links_keep_maximum'];
+        /** @var int */
         $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
+
         $feeds_keep_links_date = \Minz\Time::ago($feeds_links_keep_period, 'months');
 
         if ($feeds_links_keep_period === 0 && $feeds_links_keep_maximum === 0) {
@@ -441,12 +460,8 @@ class FeedFetcher
 
     /**
      * Return true if the url is pointing to Youtube
-     *
-     * @param string $url
-     *
-     * @return boolean
      */
-    private function isYoutube($url)
+    private function isYoutube(string $url): bool
     {
         $host = utils\Belt::host($url);
         return str_ends_with($host, 'youtube.com');

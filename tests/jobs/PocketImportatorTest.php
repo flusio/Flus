@@ -13,18 +13,19 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
 
-    public function testQueue()
+    public function testQueue(): void
     {
         $importator_job = new PocketImportator();
 
         $this->assertSame('importators', $importator_job->queue);
     }
 
-    public function testImportPocketItemsImportInBookmarks()
+    public function testImportPocketItemsImportInBookmarks(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
         $bookmarks = $user->bookmarks();
+        /** @var string */
         $url = $this->fake('url');
         $items = [
             [
@@ -51,11 +52,12 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_collection);
     }
 
-    public function testImportPocketItemsDoesNotImportInBookmarksIfOption()
+    public function testImportPocketItemsDoesNotImportInBookmarksIfOption(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
         $bookmarks = $user->bookmarks();
+        /** @var string */
         $url = $this->fake('url');
         $items = [
             [
@@ -82,10 +84,11 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_collection);
     }
 
-    public function testImportPocketItemsImportInFavorite()
+    public function testImportPocketItemsImportInFavorite(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $items = [
             [
@@ -114,10 +117,11 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_collection);
     }
 
-    public function testImportPocketItemsDoesNotKeepFavoriteCollectionIfEmpty()
+    public function testImportPocketItemsDoesNotKeepFavoriteCollectionIfEmpty(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $items = [
             [
@@ -139,10 +143,11 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection);
     }
 
-    public function testImportPocketItemsDoesNotImportInFavoriteIfOption()
+    public function testImportPocketItemsDoesNotImportInFavoriteIfOption(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $items = [
             [
@@ -166,10 +171,11 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection);
     }
 
-    public function testImportPocketItemsImportInDefaultCollection()
+    public function testImportPocketItemsImportInDefaultCollection(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $items = [
             [
@@ -198,10 +204,11 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_collection);
     }
 
-    public function testImportPocketItemsImportDoesNotKeepDefaultCollectionIfEmpty()
+    public function testImportPocketItemsImportDoesNotKeepDefaultCollectionIfEmpty(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $items = [];
         $options = [
@@ -216,11 +223,13 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection);
     }
 
-    public function testImportPocketItemsDoesNotImportTags()
+    public function testImportPocketItemsDoesNotImportTags(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
+        /** @var string */
         $tag = $this->fake('word');
         $items = [
             [
@@ -247,12 +256,15 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection);
     }
 
-    public function testImportPocketItemsImportTagsIfOption()
+    public function testImportPocketItemsImportTagsIfOption(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
+        /** @var string */
         $tag1 = $this->fake('word');
+        /** @var string */
         $tag2 = $this->fake('word');
         $items = [
             [
@@ -292,12 +304,14 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($db_links_to_collection2);
     }
 
-    public function testImportPocketItemsUsesTimeAddedIfItExists()
+    public function testImportPocketItemsUsesTimeAddedIfItExists(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
         $bookmarks = $user->bookmarks();
+        /** @var string */
         $url = $this->fake('url');
+        /** @var \DateTimeImmutable */
         $time_added = $this->fake('dateTime');
         $items = [
             [
@@ -317,15 +331,19 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $url]);
+        $this->assertNotNull($link);
         $link_to_collection = models\LinkToCollection::findBy(['link_id' => $link->id]);
-        $this->assertSame($time_added->getTimestamp(), $link_to_collection->created_at->getTimestamp());
+        $this->assertNotNull($link_to_collection);
+        $this->assertEquals($time_added, $link_to_collection->created_at);
     }
 
-    public function testImportPocketItemsDoesNotDuplicateAGivenUrlAlreadyThere()
+    public function testImportPocketItemsDoesNotDuplicateAGivenUrlAlreadyThere(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $given_url = $this->fakeUnique('url');
+        /** @var string */
         $resolved_url = $this->fakeUnique('url');
         $previous_link = LinkFactory::create([
             'url' => $given_url,
@@ -355,21 +373,24 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $given_url]);
+        $this->assertNotNull($link);
         $this->assertSame($previous_link->id, $link->id);
         $this->assertTrue(models\LinkToCollection::exists($previous_link_to_collection->id));
         $favorite_collection = models\Collection::findBy(['name' => 'Pocket favorite']);
-        $link_to_collection = models\LinkToCollection::findBy([
+        $this->assertNotNull($favorite_collection);
+        $this->assertTrue(models\LinkToCollection::existsBy([
             'link_id' => $link->id,
             'collection_id' => $favorite_collection->id,
-        ]);
-        $this->assertNotNull($link_to_collection);
+        ]));
     }
 
-    public function testImportPocketItemsDoesNotDuplicateAResolvedUrlAlreadyThere()
+    public function testImportPocketItemsDoesNotDuplicateAResolvedUrlAlreadyThere(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $given_url = $this->fakeUnique('url');
+        /** @var string */
         $resolved_url = $this->fakeUnique('url');
         $previous_link = LinkFactory::create([
             'url' => $resolved_url,
@@ -399,21 +420,24 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $resolved_url]);
+        $this->assertNotNull($link);
         $this->assertSame($previous_link->id, $link->id);
         $this->assertTrue(models\LinkToCollection::exists($previous_link_to_collection->id));
         $favorite_collection = models\Collection::findBy(['name' => 'Pocket favorite']);
-        $link_to_collection = models\LinkToCollection::findBy([
+        $this->assertNotNull($favorite_collection);
+        $this->assertTrue(models\LinkToCollection::existsBy([
             'link_id' => $link->id,
             'collection_id' => $favorite_collection->id,
-        ]);
-        $this->assertNotNull($link_to_collection);
+        ]));
     }
 
-    public function testImportPocketItemsSetsResolvedTitle()
+    public function testImportPocketItemsSetsResolvedTitle(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
+        /** @var string */
         $title = $this->fake('sentence');
         $items = [
             [
@@ -433,14 +457,17 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $url]);
+        $this->assertNotNull($link);
         $this->assertSame($title, $link->title);
     }
 
-    public function testImportPocketItemsSetsGivenTitle()
+    public function testImportPocketItemsSetsGivenTitle(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
+        /** @var string */
         $title = $this->fake('sentence');
         $items = [
             [
@@ -460,6 +487,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->importPocketItems($user, $items, $options);
 
         $link = models\Link::findBy(['url' => $url]);
+        $this->assertNotNull($link);
         $this->assertSame($title, $link->title);
     }
 }

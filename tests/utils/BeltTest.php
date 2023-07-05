@@ -4,7 +4,7 @@ namespace flusio\utils;
 
 class BeltTest extends \PHPUnit\Framework\TestCase
 {
-    public function testStripsStart()
+    public function testStripsStart(): void
     {
         $string = 'foobar';
         $substring = 'foo';
@@ -14,7 +14,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('bar', $result);
     }
 
-    public function testStripsStartDoesNotStartWith()
+    public function testStripsStartDoesNotStartWith(): void
     {
         $string = 'foobar';
         $substring = 'bar';
@@ -24,7 +24,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('foobar', $result);
     }
 
-    public function testStripsEnd()
+    public function testStripsEnd(): void
     {
         $string = 'foobar';
         $substring = 'bar';
@@ -34,7 +34,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('foo', $result);
     }
 
-    public function testStripsEndDoesNotEndWith()
+    public function testStripsEndDoesNotEndWith(): void
     {
         $string = 'foobar';
         $substring = 'foo';
@@ -44,7 +44,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('foobar', $result);
     }
 
-    public function testCut()
+    public function testCut(): void
     {
         $string = 'foobarbaz';
         $size = 3;
@@ -54,7 +54,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('foo', $new_string);
     }
 
-    public function testCutHandlesMultiBytesStringCorrectly()
+    public function testCutHandlesMultiBytesStringCorrectly(): void
     {
         // U+0800 is encoded on 3 bytes in UTF-8, usual PHP functions such as
         // substr cannot work properly with it
@@ -66,7 +66,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame("\u{0800}\u{0800}\u{0800}", $new_string);
     }
 
-    public function testCutWithNegativeSize()
+    public function testCutWithNegativeSize(): void
     {
         $string = 'foobarbaz';
         $size = -3;
@@ -76,7 +76,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('foobar', $new_string);
     }
 
-    public function testHost()
+    public function testHost(): void
     {
         $url = 'https://flus.fr';
 
@@ -85,7 +85,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('flus.fr', $host);
     }
 
-    public function testHostDoesNotReturnWwwDot()
+    public function testHostDoesNotReturnWwwDot(): void
     {
         $url = 'https://www.flus.fr';
 
@@ -94,7 +94,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('flus.fr', $host);
     }
 
-    public function testHostConvertsIdnaEncodedToUnicode()
+    public function testHostConvertsIdnaEncodedToUnicode(): void
     {
         $url = 'https://xn--dtour-bsa.studio/';
 
@@ -103,7 +103,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('détour.studio', $host);
     }
 
-    public function testHostReturnsEmptyStringIfEmpty()
+    public function testHostReturnsEmptyStringIfEmpty(): void
     {
         $url = '';
 
@@ -112,7 +112,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $host);
     }
 
-    public function testHostReturnsEmptyStringIfInvalid()
+    public function testHostReturnsEmptyStringIfInvalid(): void
     {
         $url = 'https:///';
 
@@ -121,7 +121,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $host);
     }
 
-    public function testRemoveScheme()
+    public function testRemoveScheme(): void
     {
         $url = 'https://flus.fr';
 
@@ -130,7 +130,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('flus.fr', $without_scheme);
     }
 
-    public function testRemoveSchemeWithHttp()
+    public function testRemoveSchemeWithHttp(): void
     {
         $url = 'http://flus.fr';
 
@@ -139,7 +139,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('flus.fr', $without_scheme);
     }
 
-    public function testRemoveSchemeWithoutScheme()
+    public function testRemoveSchemeWithoutScheme(): void
     {
         $url = 'flus.fr';
 
@@ -148,7 +148,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('flus.fr', $without_scheme);
     }
 
-    public function testRemoveSchemeWithEmptyString()
+    public function testRemoveSchemeWithEmptyString(): void
     {
         $url = '';
 
@@ -157,7 +157,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $without_scheme);
     }
 
-    public function testFilenameToSubpath()
+    public function testFilenameToSubpath(): void
     {
         $filename = 'abcdefghijklmnop.png';
 
@@ -166,7 +166,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('abc/def/ghi', $subpath);
     }
 
-    public function testFilenameToSubpathRemovesDot()
+    public function testFilenameToSubpathRemovesDot(): void
     {
         $filename = 'abcdef.png';
 
@@ -175,7 +175,7 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('abc/def/png', $subpath);
     }
 
-    public function testFilenameToSubpathReturnsEmptyStringWithLessThanNineCharacters()
+    public function testFilenameToSubpathReturnsEmptyStringWithLessThanNineCharacters(): void
     {
         $filename = 'abcde.png';
 

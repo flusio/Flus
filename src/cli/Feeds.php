@@ -2,6 +2,7 @@
 
 namespace flusio\cli;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\jobs;
 use flusio\models;
@@ -19,7 +20,7 @@ class Feeds
      *
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $collections = models\Collection::listBy([
             'type' => 'feed',
@@ -45,12 +46,13 @@ class Feeds
      *     if url param is missing, invalid, or if already added
      * @response 200
      */
-    public function add($request)
+    public function add(Request $request): Response
     {
-        $feed_url = $request->param('url');
+        $feed_url = $request->param('url', '');
         $user = models\User::supportUser();
         $collection = models\Collection::initFeed($user->id, $feed_url);
 
+        /** @var array<string, string> */
         $errors = $collection->validate();
         if ($errors) {
             $errors = implode(' ', $errors);
@@ -90,7 +92,7 @@ class Feeds
      *     if the id doesn't exist
      * @response 200
      */
-    public function sync($request)
+    public function sync(Request $request): Response
     {
         $id = $request->param('id');
         $nocache = $request->paramBoolean('nocache', false);
@@ -115,7 +117,7 @@ class Feeds
      *
      * @response 200
      */
-    public function resetHashes($request)
+    public function resetHashes(Request $request): Response
     {
         models\Collection::resetHashes();
         return Response::text(200, 'Feeds hashes have been reset.');

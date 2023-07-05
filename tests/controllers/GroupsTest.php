@@ -14,9 +14,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testEditRendersCorrectly()
+    public function testEditRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -33,9 +34,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $group_name);
     }
 
-    public function testEditRedirectsIfNotConnected()
+    public function testEditRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -51,10 +53,11 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
-    public function testEditFailsIfGroupIsInaccessible()
+    public function testEditFailsIfGroupIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $group = GroupFactory::create([
             'user_id' => $other_user->id,
@@ -69,9 +72,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfGroupDoesNotExist()
+    public function testEditFailsIfGroupDoesNotExist(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -86,10 +90,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateChangesGroupName()
+    public function testUpdateChangesGroupName(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
+        /** @var string */
         $new_group_name = $this->fakeUnique('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -107,10 +113,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_group_name, $group->name);
     }
 
-    public function testUpdateRedirectsToFrom()
+    public function testUpdateRedirectsToFrom(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
+        /** @var string */
         $new_group_name = $this->fakeUnique('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -127,12 +135,14 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, $from);
     }
 
-    public function testUpdateRedirectsIfNotConnected()
+    public function testUpdateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
+        /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
+        /** @var string */
         $new_group_name = $this->fakeUnique('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -152,11 +162,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_group_name, $group->name);
     }
 
-    public function testUpdateFailsIfGroupIsInaccessible()
+    public function testUpdateFailsIfGroupIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
+        /** @var string */
         $new_group_name = $this->fakeUnique('text', 50);
         $group = GroupFactory::create([
             'user_id' => $other_user->id,
@@ -175,10 +187,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_group_name, $group->name);
     }
 
-    public function testUpdateFailsIfGroupDoesNotExist()
+    public function testUpdateFailsIfGroupDoesNotExist(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
+        /** @var string */
         $new_group_name = $this->fakeUnique('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -197,10 +211,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_group_name, $group->name);
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
+        /** @var string */
         $new_group_name = $this->fakeUnique('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -221,12 +237,14 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_group_name, $group->name);
     }
 
-    public function testUpdateFailsIfNameIsInvalid()
+    public function testUpdateFailsIfNameIsInvalid(): void
     {
         $user = $this->login();
         $name_max_length = models\Group::NAME_MAX_LENGTH;
         $name_length = $name_max_length + 1;
+        /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
+        /** @var string */
         $new_group_name = $this->fakeUnique('regexify', "\w{{$name_length}}");
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -247,9 +265,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_group_name, $group->name);
     }
 
-    public function testUpdateFailsIfNameIsMissing()
+    public function testUpdateFailsIfNameIsMissing(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -269,10 +288,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_group_name, $group->name);
     }
 
-    public function testUpdateFailsIfNameIsAlreadyUsed()
+    public function testUpdateFailsIfNameIsAlreadyUsed(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
+        /** @var string */
         $new_group_name = $this->fakeUnique('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -297,7 +318,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_group_name, $group->name);
     }
 
-    public function testDeleteRemovesGroup()
+    public function testDeleteRemovesGroup(): void
     {
         $user = $this->login();
         $group = GroupFactory::create([
@@ -313,7 +334,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Group::exists($group->id));
     }
 
-    public function testDeleteRedirectsToFrom()
+    public function testDeleteRedirectsToFrom(): void
     {
         $user = $this->login();
         $group = GroupFactory::create([
@@ -329,7 +350,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, $from);
     }
 
-    public function testDeleteRedirectsIfNotConnected()
+    public function testDeleteRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -349,7 +370,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Group::exists($group->id));
     }
 
-    public function testDeleteFailsIfGroupIsInaccessible()
+    public function testDeleteFailsIfGroupIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -367,7 +388,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Group::exists($group->id));
     }
 
-    public function testDeleteFailsIfGroupDoesNotExist()
+    public function testDeleteFailsIfGroupDoesNotExist(): void
     {
         $user = $this->login();
         $group = GroupFactory::create([
@@ -384,7 +405,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Group::exists($group->id));
     }
 
-    public function testDeleteFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $group = GroupFactory::create([

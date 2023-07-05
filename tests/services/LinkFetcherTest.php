@@ -15,15 +15,20 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
-        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $files = glob($cache_path . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
     }
 
-    public function testFetchSavesNewLinkInfo()
+    public function testFetchSavesNewLinkInfo(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/';
@@ -40,7 +45,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $link->fetched_code);
     }
 
-    public function testFetchSavesResponseInCache()
+    public function testFetchSavesResponseInCache(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/';
@@ -53,11 +58,13 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service->fetch($link);
 
         $hash = \SpiderBits\Cache::hash($url);
-        $cache_filepath = \Minz\Configuration::$application['cache_path'] . '/' . $hash;
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_filepath = $cache_path . '/' . $hash;
         $this->assertTrue(file_exists($cache_filepath));
     }
 
-    public function testFetchUsesCache()
+    public function testFetchUsesCache(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://github.com/flusio/flusio';
@@ -65,6 +72,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'title' => $url,
         ]);
+        /** @var string */
         $expected_title = $this->fake('sentence');
         $hash = \SpiderBits\Cache::hash($url);
         $raw_response = <<<TEXT
@@ -77,7 +85,9 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             </head>
         </html>
         TEXT;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 
         $link_fetcher_service->fetch($link);
@@ -86,9 +96,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_title, $link->title);
     }
 
-    public function testFetchHandlesIso8859()
+    public function testFetchHandlesIso8859(): void
     {
         $link_fetcher_service = new LinkFetcher();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'url' => $url,
@@ -96,8 +107,11 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         ]);
         $hash = \SpiderBits\Cache::hash($url);
         $fixtures_path = \Minz\Configuration::$app_path . '/tests/fixtures';
-        $raw_response = file_get_contents($fixtures_path . '/responses/test_iso_8859_1');
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        $raw_response = @file_get_contents($fixtures_path . '/responses/test_iso_8859_1');
+        assert($raw_response !== false);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 
         $link_fetcher_service->fetch($link);
@@ -106,9 +120,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Test ëéàçï', $link->title);
     }
 
-    public function testFetchHandlesBadEncoding()
+    public function testFetchHandlesBadEncoding(): void
     {
         $link_fetcher_service = new LinkFetcher();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'url' => $url,
@@ -117,7 +132,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $hash = \SpiderBits\Cache::hash($url);
         $fixtures_path = \Minz\Configuration::$app_path . '/tests/fixtures';
         $raw_response = file_get_contents($fixtures_path . '/responses/test_bad_encoding');
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        assert($raw_response !== false);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 
         $link_fetcher_service->fetch($link);
@@ -126,7 +144,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(410, $link->fetched_code);
     }
 
-    public function testFetchHandlesMissingContentType()
+    public function testFetchHandlesMissingContentType(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/';
@@ -161,7 +179,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $link->fetched_code);
     }
 
-    public function testFetchDownloadsOpenGraphIllustration()
+    public function testFetchDownloadsOpenGraphIllustration(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/index.html';
@@ -178,6 +196,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link = $link->reload();
         $image_filename = $link->image_filename;
         $this->assertNotEmpty($image_filename);
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
@@ -188,12 +207,13 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
-    public function testFetchChangesTitleIfAlreadySetAndForceSync()
+    public function testFetchChangesTitleIfAlreadySetAndForceSync(): void
     {
         $link_fetcher_service = new LinkFetcher([
             'force_sync' => true,
         ]);
         $url = 'https://flus.fr/carnet/index.html';
+        /** @var string */
         $title = $this->fake('sentence');
         $link = LinkFactory::create([
             'url' => $url,
@@ -207,7 +227,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Carnet de Flus', $link->title);
     }
 
-    public function testFetchChangesReadingTimeIfAlreadySetAndForceSync()
+    public function testFetchChangesReadingTimeIfAlreadySetAndForceSync(): void
     {
         $link_fetcher_service = new LinkFetcher([
             'force_sync' => true,
@@ -226,7 +246,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link->reading_time);
     }
 
-    public function testFetchChangesIllustrationIfAlreadySetAndForceSync()
+    public function testFetchChangesIllustrationIfAlreadySetAndForceSync(): void
     {
         $link_fetcher_service = new LinkFetcher([
             'force_sync' => true,
@@ -244,7 +264,9 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 
         $link = $link->reload();
         $image_filename = $link->image_filename;
+        $this->assertNotNull($image_filename);
         $this->assertNotSame('old.png', $image_filename);
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
@@ -255,7 +277,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
-    public function testFetchDoesNotSaveResponseInCacheIfResponseIsInError()
+    public function testFetchDoesNotSaveResponseInCacheIfResponseIsInError(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/does_not_exist.html';
@@ -274,14 +296,17 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service->fetch($link);
 
         $hash = \SpiderBits\Cache::hash($url);
-        $cache_filepath = \Minz\Configuration::$application['cache_path'] . '/' . $hash;
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_filepath = $cache_path . '/' . $hash;
         $this->assertFalse(file_exists($cache_filepath));
     }
 
-    public function testFetchDoesNotChangeTitleIfAlreadySet()
+    public function testFetchDoesNotChangeTitleIfAlreadySet(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/index.html';
+        /** @var string */
         $title = $this->fake('sentence');
         $link = LinkFactory::create([
             'url' => $url,
@@ -295,7 +320,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($title, $link->title);
     }
 
-    public function testFetchDoesNotChangeTitleIfUnreachable()
+    public function testFetchDoesNotChangeTitleIfUnreachable(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/does_not_exist.html';
@@ -318,7 +343,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(404, $link->fetched_code);
     }
 
-    public function testFetchDoesNotChangeReadingTimeIfAlreadySet()
+    public function testFetchDoesNotChangeReadingTimeIfAlreadySet(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/index.html';
@@ -335,7 +360,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($reading_time, $link->reading_time);
     }
 
-    public function testFetchDoesNotChangeIllustrationIfAlreadySet()
+    public function testFetchDoesNotChangeIllustrationIfAlreadySet(): void
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/index.html';

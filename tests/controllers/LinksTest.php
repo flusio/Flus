@@ -23,28 +23,34 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
     }
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('words', 3, true);
         $group = GroupFactory::create([
             'name' => $group_name,
             'user_id' => $user->id,
         ]);
+        /** @var string */
         $collection_name_1 = $this->fake('words', 3, true);
         CollectionFactory::create([
             'name' => $collection_name_1,
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
+        /** @var string */
         $collection_name_2 = $this->fake('words', 3, true);
         CollectionFactory::create([
             'name' => $collection_name_2,
@@ -64,10 +70,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Your links marked as read');
     }
 
-    public function testIndexRendersResultsWhenQuery()
+    public function testIndexRendersResultsWhenQuery(): void
     {
         $user = $this->login();
+        /** @var string */
         $title_1 = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $title_2 = $this->fakeUnique('words', 3, true);
         $query = $title_1;
         LinkFactory::create([
@@ -87,10 +95,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $title_2);
     }
 
-    public function testIndexRendersCollectionsSharedWithWriteAccess()
+    public function testIndexRendersCollectionsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'name' => $collection_name,
@@ -109,10 +118,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testIndexDoesNotRenderCollectionsSharedWithReadAccess()
+    public function testIndexDoesNotRenderCollectionsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'name' => $collection_name,
@@ -131,17 +141,19 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
-    public function testIndexRedirectsToLoginIfNotConnected()
+    public function testIndexRedirectsToLoginIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/links');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks');
     }
 
-    public function testIndexRedirectsIfPageIsOutOfBound()
+    public function testIndexRedirectsIfPageIsOutOfBound(): void
     {
         $user = $this->login();
+        /** @var string */
         $title_1 = $this->fakeUnique('words', 3, true);
+        /** @var string */
         $title_2 = $this->fakeUnique('words', 3, true);
         $query = $title_1;
         LinkFactory::create([
@@ -157,13 +169,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/links?q={$query_encoded}&page=1");
     }
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
+        /** @var string */
         $title = $this->fake('words', 3, true);
         $user = $this->login();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $title,
         ]);
 
@@ -174,12 +187,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
-    public function testShowDisplaysMessages()
+    public function testShowDisplaysMessages(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
         ]);
         MessageFactory::create([
             'link_id' => $link->id,
@@ -192,11 +205,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, '<strong>foo bar</strong>');
     }
 
-    public function testShowRendersCorrectlyIfNotHiddenAndNotConnected()
+    public function testShowRendersCorrectlyIfNotHiddenAndNotConnected(): void
     {
+        /** @var string */
         $title = $this->fake('words', 3, true);
         $link = LinkFactory::create([
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $title,
             'is_hidden' => false,
         ]);
@@ -208,14 +222,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
-    public function testShowRendersCorrectlyIfNotHiddenAndDoesNotOwnTheLink()
+    public function testShowRendersCorrectlyIfNotHiddenAndDoesNotOwnTheLink(): void
     {
         $this->login();
+        /** @var string */
         $title = $this->fake('words', 3, true);
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $title,
             'is_hidden' => false,
         ]);
@@ -227,14 +242,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
-    public function testShowRendersCorrectlyIfHiddenAndNotOwnedButInOwnedCollection()
+    public function testShowRendersCorrectlyIfHiddenAndNotOwnedButInOwnedCollection(): void
     {
         $current_user = $this->login();
+        /** @var string */
         $title = $this->fake('words', 3, true);
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $title,
             'is_hidden' => true,
         ]);
@@ -253,14 +269,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
-    public function testShowRendersCorrectlyIfHiddenButInSharedCollection()
+    public function testShowRendersCorrectlyIfHiddenButInSharedCollection(): void
     {
         $current_user = $this->login();
+        /** @var string */
         $title = $this->fake('words', 3, true);
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $title,
             'is_hidden' => true,
         ]);
@@ -283,13 +300,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/show.phtml');
     }
 
-    public function testShowRedirectsIfHiddenAndNotConnected()
+    public function testShowRedirectsIfHiddenAndNotConnected(): void
     {
         $user = UserFactory::create();
+        /** @var string */
+        $title = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
-            'title' => $this->fake('words', 3, true),
+            'fetched_at' => \Minz\Time::now(),
+            'title' => $title,
             'is_hidden' => true,
         ]);
 
@@ -298,7 +317,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
     }
 
-    public function testShowFailsIfTheLinkDoesNotExist()
+    public function testShowFailsIfTheLinkDoesNotExist(): void
     {
         $user = $this->login();
 
@@ -307,14 +326,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testShowFailsIfUserDoesNotOwnThePrivateLink()
+    public function testShowFailsIfUserDoesNotOwnThePrivateLink(): void
     {
         $current_user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
+        $title = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'fetched_at' => $this->fake('dateTime'),
-            'title' => $this->fake('words', 3, true),
+            'fetched_at' => \Minz\Time::now(),
+            'title' => $title,
             'is_hidden' => true,
         ]);
 
@@ -323,7 +344,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testNewRendersCorrectly()
+    public function testNewRendersCorrectly(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
@@ -336,17 +357,23 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'New link');
         $this->assertResponsePointer($response, 'links/new.phtml');
-        $variables = $response->output()->variables();
+        $this->assertInstanceOf(\Minz\Response::class, $response);
+        $output = $response->output();
+        $this->assertInstanceOf(\Minz\Output\View::class, $output);
+        /** @var array<string, mixed> */
+        $variables = $output->variables();
+        $this->assertIsArray($variables['collection_ids']);
         $this->assertContains($bookmarks->id, $variables['collection_ids']);
     }
 
-    public function testNewPrefillsUrl()
+    public function testNewPrefillsUrl(): void
     {
         $user = $this->login();
         CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
+        /** @var string */
         $url = $this->fake('url');
         $from = \Minz\Url::for('bookmarks');
 
@@ -359,7 +386,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $url);
     }
 
-    public function testNewPrefillsCollection()
+    public function testNewPrefillsCollection(): void
     {
         $user = $this->login();
         CollectionFactory::create([
@@ -377,11 +404,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'from' => $from,
         ]);
 
-        $variables = $response->output()->variables();
+        $this->assertInstanceOf(\Minz\Response::class, $response);
+        $output = $response->output();
+        $this->assertInstanceOf(\Minz\Output\View::class, $output);
+        /** @var array<string, mixed> */
+        $variables = $output->variables();
+        $this->assertIsArray($variables['collection_ids']);
         $this->assertContains($collection->id, $variables['collection_ids']);
     }
 
-    public function testNewRendersCollectionSharedWithWriteAccess()
+    public function testNewRendersCollectionSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -403,7 +435,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection->id);
     }
 
-    public function testNewDoesNotRenderCollectionSharedWithReadAccess()
+    public function testNewDoesNotRenderCollectionSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -425,7 +457,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection->id);
     }
 
-    public function testNewRedirectsIfNotConnected()
+    public function testNewRedirectsIfNotConnected(): void
     {
         $from = \Minz\Url::for('bookmarks');
 
@@ -437,7 +469,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
-    public function testCreateCreatesLinkAndRedirects()
+    public function testCreateCreatesLinkAndRedirects(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -460,8 +492,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Link::count());
         $this->assertSame(1, models\LinkToCollection::count());
 
-        $link = models\Link::take();
         $this->assertResponseCode($response, 302, $from);
+        $link = models\Link::take();
+        $this->assertNotNull($link);
         $this->assertSame($url, $link->url);
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
@@ -470,7 +503,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link->is_hidden);
     }
 
-    public function testCreateAllowsToCreateHiddenLinks()
+    public function testCreateAllowsToCreateHiddenLinks(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -487,10 +520,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $link = models\Link::take();
+        $this->assertNotNull($link);
         $this->assertTrue($link->is_hidden);
     }
 
-    public function testCreateDoesNotCreateLinkIfItExists()
+    public function testCreateDoesNotCreateLinkIfItExists(): void
     {
         $user = $this->login();
         $url = 'https://github.com/flusio/flusio';
@@ -520,7 +554,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
-    public function testCreateCreatesLinkIfItExistsForAnotherUser()
+    public function testCreateCreatesLinkIfItExistsForAnotherUser(): void
     {
         $user = $this->login();
         $another_user = UserFactory::create();
@@ -548,10 +582,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\LinkToCollection::count());
 
         $link = models\Link::findBy(['user_id' => $user->id]);
+        $this->assertNotNull($link);
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
-    public function testCreateHandlesMultipleCollections()
+    public function testCreateHandlesMultipleCollections(): void
     {
         $user = $this->login();
         $url = 'https://github.com/flusio/flusio';
@@ -590,7 +625,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection_2->id, $collection_ids);
     }
 
-    public function testCreateWorksIfCollectionIsSharedWithWriteAccess()
+    public function testCreateWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -621,12 +656,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, $from);
         $link = models\Link::take();
+        $this->assertNotNull($link);
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
-    public function testCreateCanCreateCollections()
+    public function testCreateCanCreateCollections(): void
     {
         $user = $this->login();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -646,6 +683,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\LinkToCollection::count());
 
         $link = models\Link::take();
+        $this->assertNotNull($link);
         $collection = models\Collection::findBy([
             'user_id' => $user->id,
             'name' => $collection_name,
@@ -655,7 +693,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
-    public function testCreateRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -676,7 +714,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -696,7 +734,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfUrlIsInvalid()
+    public function testCreateFailsIfUrlIsInvalid(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -716,7 +754,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfUrlIsMissing()
+    public function testCreateFailsIfUrlIsMissing(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -735,7 +773,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfCollectionIdsContainsNotOwnedId()
+    public function testCreateFailsIfCollectionIdsContainsNotOwnedId(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -756,7 +794,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfCollectionIsMissing()
+    public function testCreateFailsIfCollectionIsMissing(): void
     {
         $user = $this->login();
         $from = \Minz\Url::for('bookmarks');
@@ -773,7 +811,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfCollectionIsSharedWithReadAccess()
+    public function testCreateFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -802,7 +840,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
-    public function testCreateFailsIfCollectionIsNotShared()
+    public function testCreateFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -826,9 +864,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
-    public function testCreateFailsIfNewCollectionNameIsInvalid()
+    public function testCreateFailsIfNewCollectionNameIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $collection_name = $this->fake('words', 100, true);
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -847,12 +886,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Collection::count()); // this counts the bookmarks collection
     }
 
-    public function testEditRendersCorrectly()
+    public function testEditRendersCorrectly(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
@@ -861,12 +900,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/edit.phtml');
     }
 
-    public function testEditFailsIfNotConnected()
+    public function testEditFailsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
@@ -874,7 +913,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fedit");
     }
 
-    public function testEditFailsIfTheLinkDoesNotExist()
+    public function testEditFailsIfTheLinkDoesNotExist(): void
     {
         $user = $this->login();
 
@@ -883,13 +922,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfUserDoesNotOwnTheLink()
+    public function testEditFailsIfUserDoesNotOwnTheLink(): void
     {
         $current_user = $this->login();
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
@@ -897,16 +936,20 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateChangesTheLinkAndRedirects()
+    public function testUpdateChangesTheLinkAndRedirects(): void
     {
+        /** @var string */
         $old_title = $this->fake('words', 3, true);
+        /** @var string */
         $new_title = $this->fake('words', 5, true);
+        /** @var int */
         $old_reading_time = $this->fakeUnique('numberBetween', 0, 9000);
+        /** @var int */
         $new_reading_time = $this->fakeUnique('numberBetween', 0, 9000);
         $user = $this->login();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $old_title,
             'reading_time' => $old_reading_time,
         ]);
@@ -923,14 +966,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_reading_time, $link->reading_time);
     }
 
-    public function testUpdateRedirectsToFrom()
+    public function testUpdateRedirectsToFrom(): void
     {
+        /** @var string */
         $old_title = $this->fake('words', 3, true);
+        /** @var string */
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $old_title,
         ]);
         $from = \Minz\Url::for('bookmarks');
@@ -946,14 +991,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_title, $link->title);
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
+        /** @var string */
         $old_title = $this->fake('words', 3, true);
+        /** @var string */
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $old_title,
         ]);
 
@@ -969,14 +1016,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_title, $link->title);
     }
 
-    public function testUpdateFailsIfTitleIsInvalid()
+    public function testUpdateFailsIfTitleIsInvalid(): void
     {
+        /** @var string */
         $old_title = $this->fake('words', 3, true);
         $new_title = '';
         $user = $this->login();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $old_title,
         ]);
 
@@ -992,14 +1040,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_title, $link->title);
     }
 
-    public function testUpdateFailsIfNotConnected()
+    public function testUpdateFailsIfNotConnected(): void
     {
+        /** @var string */
         $old_title = $this->fake('words', 3, true);
+        /** @var string */
         $new_title = $this->fake('words', 5, true);
         $user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $old_title,
         ]);
 
@@ -1013,14 +1063,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_title, $link->title);
     }
 
-    public function testUpdateFailsIfLinkDoesNotExist()
+    public function testUpdateFailsIfLinkDoesNotExist(): void
     {
+        /** @var string */
         $old_title = $this->fake('words', 3, true);
+        /** @var string */
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $old_title,
         ]);
 
@@ -1034,15 +1086,17 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_title, $link->title);
     }
 
-    public function testUpdateFailsIfUserDoesNotOwnTheLink()
+    public function testUpdateFailsIfUserDoesNotOwnTheLink(): void
     {
+        /** @var string */
         $old_title = $this->fake('words', 3, true);
+        /** @var string */
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'fetched_at' => $this->fake('dateTime'),
+            'fetched_at' => \Minz\Time::now(),
             'title' => $old_title,
         ]);
 
@@ -1056,7 +1110,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_title, $link->title);
     }
 
-    public function testDeleteDeletesLinkAndRedirects()
+    public function testDeleteDeletesLinkAndRedirects(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
@@ -1072,7 +1126,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Link::exists($link->id));
     }
 
-    public function testDeleteRedirectsToRedirectToIfGiven()
+    public function testDeleteRedirectsToRedirectToIfGiven(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
@@ -1088,7 +1142,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/bookmarks');
     }
 
-    public function testDeleteRedirectsIfNotConnected()
+    public function testDeleteRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -1106,7 +1160,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link->id));
     }
 
-    public function testDeleteFailsIfLinkIsNotOwned()
+    public function testDeleteFailsIfLinkIsNotOwned(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -1123,7 +1177,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link->id));
     }
 
-    public function testDeleteFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([

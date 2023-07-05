@@ -19,7 +19,7 @@ class WellKnown
      *
      * @return \Minz\Response
      */
-    public function changePassword()
+    public function changePassword(): Response
     {
         return Response::redirect('security');
     }

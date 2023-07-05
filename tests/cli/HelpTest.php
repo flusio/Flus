@@ -10,12 +10,12 @@ class HelpTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function loadApplication()
+    public static function loadApplication(): void
     {
         self::$application = new \flusio\cli\Application();
     }
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $response = $this->appRun('CLI', '/');
 

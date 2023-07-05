@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\my;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -18,7 +19,7 @@ class Security
      * @response 200
      *    On success
      */
-    public function show()
+    public function show(): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -28,6 +29,9 @@ class Security
         }
 
         $session = auth\CurrentUser::session();
+
+        assert($session !== null);
+
         if ($session->isPasswordConfirmed()) {
             return Response::ok('my/security/show_confirmed.phtml', [
                 'email' => $user->email,
@@ -52,7 +56,7 @@ class Security
      * @response 302 /my/security
      *    On success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -62,15 +66,18 @@ class Security
         }
 
         $session = auth\CurrentUser::session();
+
+        assert($session !== null);
+
         if (!$session->isPasswordConfirmed()) {
             return Response::badRequest('my/security/show_to_confirm.phtml', [
                 'error' => _('You must confirm your password.'),
             ]);
         }
 
-        $email = $request->param('email');
-        $password = $request->param('password');
-        $csrf = $request->param('csrf');
+        $email = $request->param('email', '');
+        $password = $request->param('password', '');
+        $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('my/security/show_confirmed.phtml', [
@@ -108,9 +115,10 @@ class Security
         if ($user->email !== $old_email || $user->password_hash !== $old_password_hash) {
             // We make sure to clean token and sessions to prevent attacker to take
             // control back on the account
-            models\Token::delete($user->reset_token);
-            $current_session = auth\CurrentUser::session();
-            models\Session::deleteByUserId($user->id, $current_session->id);
+            if ($user->reset_token) {
+                models\Token::delete($user->reset_token);
+            }
+            models\Session::deleteByUserId($user->id, $session->id);
         }
 
         return Response::redirect('security');
@@ -133,7 +141,7 @@ class Security
      * @response 302 /my/security
      *    On success
      */
-    public function confirmPassword($request)
+    public function confirmPassword(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -142,8 +150,8 @@ class Security
             ]);
         }
 
-        $password = $request->param('password');
-        $csrf = $request->param('csrf');
+        $password = $request->param('password', '');
+        $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
@@ -158,6 +166,9 @@ class Security
         }
 
         $session = auth\CurrentUser::session();
+
+        assert($session !== null);
+
         $session->confirmed_password_at = \Minz\Time::now();
         $session->save();
 

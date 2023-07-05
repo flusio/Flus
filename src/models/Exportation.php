@@ -45,7 +45,7 @@ class Exportation
     /**
      * Stop and mark the exportation as finished
      */
-    public function finish(string $filepath)
+    public function finish(string $filepath): void
     {
         $this->status = 'finished';
         $this->filepath = $filepath;
@@ -54,7 +54,7 @@ class Exportation
     /**
      * Stop and mark the exportation as failed
      */
-    public function fail(string $error)
+    public function fail(string $error): void
     {
         $this->status = 'error';
         $this->error = $error;

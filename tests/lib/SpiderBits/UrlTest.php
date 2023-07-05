@@ -7,7 +7,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider absolutizeProvider
      */
-    public function testAbsolutize($base_url, $url, $expected)
+    public function testAbsolutize(string $base_url, string $url, string $expected): void
     {
         $absolutized_url = Url::absolutize($url, $base_url);
 
@@ -17,7 +17,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider sanitizeProvider
      */
-    public function testSanitize($input, $expected)
+    public function testSanitize(string $input, string $expected): void
     {
         $sanitized_url = Url::sanitize($input);
 
@@ -26,8 +26,10 @@ class UrlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider parseAndBuildQueryProvider
+     *
+     * @param array<string, string|null|array<?string>> $expected_parameters
      */
-    public function testParseQuery($query, $expected_parameters)
+    public function testParseQuery(string $query, array $expected_parameters): void
     {
         $parameters = Url::parseQuery($query);
 
@@ -36,15 +38,20 @@ class UrlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider parseAndBuildQueryProvider
+     *
+     * @param array<string, string|null|array<?string>> $parameters
      */
-    public function testBuildQuery($expected_query, $parameters)
+    public function testBuildQuery(string $expected_query, array $parameters): void
     {
         $query = Url::buildQuery($parameters);
 
         $this->assertSame($expected_query, $query);
     }
 
-    public function absolutizeProvider()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public function absolutizeProvider(): array
     {
         return [
             ['https://host', '/path', 'https://host/path'],
@@ -79,7 +86,10 @@ class UrlTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function sanitizeProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function sanitizeProvider(): array
     {
         // This test suite comes from https://developers.google.com/safe-browsing/v4/urls-hashing#canonicalization
         // Minor differences are indicated in comments
@@ -145,7 +155,13 @@ class UrlTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function parseAndBuildQueryProvider()
+    /**
+     * @return array<array{
+     *     string,
+     *     array<string, string|null|array<?string>>
+     * }>
+     */
+    public function parseAndBuildQueryProvider(): array
     {
         return [
             [

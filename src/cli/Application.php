@@ -2,10 +2,14 @@
 
 namespace flusio\cli;
 
+use Minz\Request;
+use Minz\Response;
 use flusio\utils;
 
 /**
  * This is the central class for the CLI. It is called from the cli file.
+ *
+ * @phpstan-import-type ResponseReturnable from Response
  *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -29,18 +33,17 @@ class Application
     /**
      * Execute a request.
      *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @return ResponseReturnable
      */
-    public function run($request)
+    public function run(Request $request): mixed
     {
+        /** @var string */
         $cli_locale = \Minz\Configuration::$application['cli_locale'];
         if ($cli_locale) {
             utils\Locale::setCurrentLocale($cli_locale);
         }
 
-        $bin = $request->param('bin');
+        $bin = $request->param('bin', 'php cli');
         $bin = $bin === 'cli' ? 'php cli' : $bin;
 
         $current_command = $request->path();

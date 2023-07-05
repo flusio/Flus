@@ -118,6 +118,7 @@ class User
 
     public static function supportUser(): self
     {
+        /** @var string */
         $support_email = \Minz\Configuration::$application['support_email'];
         $default_password = \Minz\Random::hex(128);
 
@@ -215,7 +216,11 @@ class User
      * @see Link::listComputedByUserId
      *
      * @param string[] $selected_computed_props
-     * @param array $options
+     * @param array{
+     *     'unshared'?: bool,
+     *     'offset'?: int,
+     *     'limit'?: int|'ALL',
+     * } $options
      *
      * @return Link[]
      */
@@ -234,7 +239,10 @@ class User
      * @see Collection::listComputedByUserId
      *
      * @param string[] $selected_computed_props
-     * @param array $options
+     * @param array{
+     *     'private'?: bool,
+     *     'count_hidden'?: bool,
+     * } $options
      *
      * @return Collection[]
      */
@@ -253,7 +261,9 @@ class User
      * @see Collection::listComputedFollowedByUserId
      *
      * @param string[] $selected_computed_props
-     * @param array $options
+     * @param array{
+     *     'type'?: 'collection'|'feed'|'all',
+     * } $options
      *
      * @return Collection[]
      */
@@ -272,7 +282,9 @@ class User
      * @see Collection::listComputedSharedToUserId
      *
      * @param string[] $selected_computed_props
-     * @param array $options
+     * @param array{
+     *     'access_type'?: 'any'|'read'|'write',
+     * } $options
      *
      * @return Collection[]
      */
@@ -358,17 +370,13 @@ class User
 
     /**
      * Make the current user unfollowing the given collection.
-     *
-     * Be careful to check isFollowing() is returning true before calling this
-     * method.
      */
     public function unfollow(string $collection_id): void
     {
-        $followed_collection = FollowedCollection::findBy([
+        FollowedCollection::deleteBy([
             'user_id' => $this->id,
             'collection_id' => $collection_id,
         ]);
-        $followed_collection->remove();
     }
 
     /**

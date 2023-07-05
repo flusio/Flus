@@ -30,12 +30,18 @@ trait SearchQueries
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
-     * @param array $options
-     *     Custom options to filter links. Possible options are:
-     *     - exclude_never_only (boolean, default to false), whether we should
-     *       exclude links that are only in a "never" collection
-     *     - offset (integer, default to 0), the offset for pagination
-     *     - limit (integer|string, default to 'ALL') the limit for pagination
+     * @param array{
+     *     'exclude_never_only'?: bool,
+     *     'offset'?: int,
+     *     'limit'?: int|'ALL',
+     * } $options
+     *
+     * Description of the options:
+     *
+     * - exclude_never_only (default to false), whether we should exclude links
+     *   that are only in a "never" collection
+     * - offset (default to 0), the offset for pagination
+     * - limit (default to 'ALL') the limit for pagination
      *
      * @return self[]
      */
@@ -127,10 +133,14 @@ trait SearchQueries
      *     The query to search for.
      * @param string $user_id
      *     The user id the links must match.
-     * @param array $options
-     *     Custom options to filter links. Possible option is:
-     *     - exclude_never_only (boolean, default to false), whether we should
-     *       exclude links that are only in a "never" collection
+     * @param array{
+     *     'exclude_never_only'?: bool,
+     * } $options
+     *
+     * Description of the options:
+     *
+     * - exclude_never_only (default to false), whether we should exclude links
+     *   that are only in a "never" collection
      *
      * @return integer
      */

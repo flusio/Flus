@@ -17,14 +17,14 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRedirects()
+    public function testIndexRedirects(): void
     {
         $response = $this->appRun('GET', '/links/an_id/messages');
 
         $this->assertResponseCode($response, 302, '/links/an_id');
     }
 
-    public function testCreateCreatesMessageAndRedirects()
+    public function testCreateCreatesMessageAndRedirects(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
@@ -42,12 +42,13 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
         $this->assertSame(1, models\Message::count());
         $message = models\Message::take();
+        $this->assertNotNull($message);
         $this->assertSame($content, $message->content);
         $this->assertSame($user->id, $message->user_id);
         $this->assertSame($link->id, $message->link_id);
     }
 
-    public function testCreateWorksIfLinkIsInCollectionSharedWithWriteAccess()
+    public function testCreateWorksIfLinkIsInCollectionSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -78,12 +79,13 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
         $this->assertSame(1, models\Message::count());
         $message = models\Message::take();
+        $this->assertNotNull($message);
         $this->assertSame($content, $message->content);
         $this->assertSame($user->id, $message->user_id);
         $this->assertSame($link->id, $message->link_id);
     }
 
-    public function testCreateRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'the token',
@@ -102,7 +104,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
     }
 
-    public function testCreateFailsIfLinkIsNotOwned()
+    public function testCreateFailsIfLinkIsNotOwned(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -122,7 +124,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
     }
 
-    public function testCreateFailsIfLinkIsInCollectionSharedWithReadAccess()
+    public function testCreateFailsIfLinkIsInCollectionSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -154,7 +156,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
@@ -174,7 +176,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
     }
 
-    public function testCreateFailsIfContentIsEmpty()
+    public function testCreateFailsIfContentIsEmpty(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([

@@ -15,12 +15,15 @@ class Database
     /**
      * Return whether the database can be reached or not.
      *
-     * @return \Minz\Response
+     * @response 500
+     *     If connection to the database fails
+     * @response 200
+     *     On success
      */
-    public function status()
+    public function status(): Response
     {
         try {
-            $database = \Minz\Database::get(false);
+            $database = \Minz\Database::get();
             $result = $database->exec('SELECT 1');
             return Response::text(200, 'Database status: OK');
         } catch (\Minz\Errors\DatabaseError $e) {

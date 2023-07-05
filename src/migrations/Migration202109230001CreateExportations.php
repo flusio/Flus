@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202109230001CreateExportations
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -22,7 +22,7 @@ class Migration202109230001CreateExportations
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

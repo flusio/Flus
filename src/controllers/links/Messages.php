@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\links;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -23,9 +24,9 @@ class Messages
      *
      * @return \Minz\Response
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
-        $link_id = $request->param('link_id');
+        $link_id = $request->param('link_id', '');
         return Response::redirect('link', ['id' => $link_id]);
     }
 
@@ -45,12 +46,12 @@ class Messages
      *
      * @return \Minz\Response
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('link_id');
-        $content = $request->param('content');
-        $csrf = $request->param('csrf');
+        $link_id = $request->param('link_id', '');
+        $content = $request->param('content', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', [
@@ -59,7 +60,7 @@ class Messages
         }
 
         $link = models\Link::find($link_id);
-        $can_comment = auth\LinksAccess::canComment($user, $link);
+        $can_comment = $link && auth\LinksAccess::canComment($user, $link);
         if (!$can_comment) {
             return Response::notFound('not_found.phtml');
         }

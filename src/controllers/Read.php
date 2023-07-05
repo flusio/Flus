@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -24,7 +25,7 @@ class Read
      *     if page is invalid
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {

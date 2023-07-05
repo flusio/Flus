@@ -17,9 +17,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -51,9 +52,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/collections/index.phtml');
     }
 
-    public function testIndexRendersCorrectlyWhenMarkAsReadIsSet()
+    public function testIndexRendersCorrectlyWhenMarkAsReadIsSet(): void
     {
         $user = $this->login();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -68,10 +70,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Store the link and mark as read');
     }
 
-    public function testIndexRendersExistingLink()
+    public function testIndexRendersExistingLink(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $link_not_owned = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -109,9 +112,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_not_owned->id);
     }
 
-    public function testIndexRendersCorrectLinkIfDuplicated()
+    public function testIndexRendersCorrectLinkIfDuplicated(): void
     {
         $user = $this->login();
+        /** @var string */
         $url = $this->fake('url');
         $link_1 = LinkFactory::create([
             'user_id' => $user->id,
@@ -132,10 +136,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_1->id);
     }
 
-    public function testIndexRendersIfUrlAddedByAnotherUserInCollectionOwned()
+    public function testIndexRendersIfUrlAddedByAnotherUserInCollectionOwned(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -167,10 +172,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $other_link->id);
     }
 
-    public function testIndexRendersIfUrlAddedByOwnerInCollectionWithWriteAccess()
+    public function testIndexRendersIfUrlAddedByOwnerInCollectionWithWriteAccess(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -202,7 +208,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $owner_link->id);
     }
 
-    public function testIndexRendersCollectionSharedWithWriteAccess()
+    public function testIndexRendersCollectionSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -226,11 +232,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection->id);
     }
 
-    public function testIndexDoesNotCopyNotOwnedAndAccessibleLinks()
+    public function testIndexDoesNotCopyNotOwnedAndAccessibleLinks(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -261,7 +269,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($new_link);
     }
 
-    public function testIndexDoesNotRenderCollectionSharedWithReadAccess()
+    public function testIndexDoesNotRenderCollectionSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -285,9 +293,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection->id);
     }
 
-    public function testIndexRedirectsIfNotConnected()
+    public function testIndexRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -304,10 +313,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
     }
 
-    public function testIndexFailsIfLinkIsNotAccessible()
+    public function testIndexFailsIfLinkIsNotAccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -325,9 +335,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateChangesCollectionsAndRedirects()
+    public function testUpdateChangesCollectionsAndRedirects(): void
     {
         $user = $this->login();
+        /** @var bool */
         $is_hidden = $this->fake('boolean');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -367,7 +378,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($is_hidden, $link->is_hidden);
     }
 
-    public function testUpdateDoesNotRemoveFromBookmarksNewsOrReadList()
+    public function testUpdateDoesNotRemoveFromBookmarksNewsOrReadList(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
@@ -410,7 +421,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\LinkToCollection::exists($link_to_read_list->id));
     }
 
-    public function testUpdateCreatesComment()
+    public function testUpdateCreatesComment(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
@@ -420,6 +431,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
+        /** @var string */
         $comment = $this->fake('sentence');
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
@@ -432,12 +444,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/bookmarks');
         $this->assertSame(1, models\Message::count());
         $message = models\Message::take();
+        $this->assertNotNull($message);
         $this->assertSame($comment, $message->content);
         $this->assertSame($user->id, $message->user_id);
         $this->assertSame($link->id, $message->link_id);
     }
 
-    public function testUpdateCanMarkAsRead()
+    public function testUpdateCanMarkAsRead(): void
     {
         $user = $this->login();
         $read_list = $user->readList();
@@ -478,10 +491,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_read_list);
     }
 
-    public function testUpdateCopiesNotOwnedAndAccessibleLinks()
+    public function testUpdateCopiesNotOwnedAndAccessibleLinks(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -541,7 +555,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($new_link_to_owned_collection);
     }
 
-    public function testUpdateWorksIfCollectionIsSharedWithWriteAccess()
+    public function testUpdateWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -571,9 +585,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_collection);
     }
 
-    public function testUpdateCanCreateCollections()
+    public function testUpdateCanCreateCollections(): void
     {
         $user = $this->login();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -599,7 +614,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
-    public function testUpdateRedirectsIfNotConnected()
+    public function testUpdateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $link = LinkFactory::create([
@@ -637,7 +652,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_collection_2);
     }
 
-    public function testUpdateFailsIfLinkIsNotAccessible()
+    public function testUpdateFailsIfLinkIsNotAccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -677,7 +692,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_collection_2);
     }
 
-    public function testUpdateFailsIfCollectionIdsContainsNotOwnedId()
+    public function testUpdateFailsIfCollectionIdsContainsNotOwnedId(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -700,7 +715,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
-    public function testUpdateFailsIfCollectionIsNotShared()
+    public function testUpdateFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -722,7 +737,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
-    public function testUpdateFailsIfCollectionIsSharedWithReadAccess()
+    public function testUpdateFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -749,9 +764,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
-    public function testUpdateFailsIfNewCollectionNameIsInvalid()
+    public function testUpdateFailsIfNewCollectionNameIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $collection_name = $this->fake('words', 100, true);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -772,7 +788,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([

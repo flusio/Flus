@@ -13,18 +13,14 @@ use flusio\utils;
  */
 class AtomImportator
 {
-    /** @var \SpiderBits\feeds\Feed */
-    private $feed;
+    private \SpiderBits\feeds\Feed $feed;
 
     /**
-     * @param string $feed_filepath
-     *     The path to the Atom file to import
-     *
      * @throws AtomImportatorError
      *     If the file cannot be read, or if it cannot be parsed as an Atom
      *     file.
      */
-    public function __construct($feed_filepath)
+    public function __construct(string $feed_filepath)
     {
         $feed_as_string = @file_get_contents($feed_filepath);
 
@@ -43,10 +39,8 @@ class AtomImportator
 
     /**
      * Perform the importation.
-     *
-     * @param \flusio\models\Collection $collection
      */
-    public function importForCollection($collection)
+    public function importForCollection(models\Collection $collection): void
     {
         $link_ids_by_urls = models\Link::listUrlsToIdsByCollectionId($collection->id);
 

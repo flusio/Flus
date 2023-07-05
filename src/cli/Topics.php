@@ -2,6 +2,7 @@
 
 namespace flusio\cli;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\models;
 use flusio\services;
@@ -17,7 +18,7 @@ class Topics
      *
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $topics = models\Topic::listAll();
         $presented_topics = [];
@@ -37,10 +38,10 @@ class Topics
      * @response 400 if the label is invalid
      * @response 200
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
-        $label = $request->param('label');
-        $image_url = $request->param('image_url');
+        $label = $request->param('label', '');
+        $image_url = $request->param('image_url', '');
         $topic = new models\Topic($label);
 
         if ($image_url) {
@@ -49,6 +50,7 @@ class Topics
             $topic->image_filename = $image_filename;
         }
 
+        /** @var array<string, string> */
         $errors = $topic->validate();
         if ($errors) {
             $errors = implode(' ', $errors);
@@ -71,9 +73,9 @@ class Topics
      * @response 400 if the label is invalid
      * @response 200
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
-        $id = $request->param('id');
+        $id = $request->param('id', '');
         $label = trim($request->param('label', ''));
         $image_url = trim($request->param('image_url', ''));
 
@@ -92,6 +94,7 @@ class Topics
             $topic->image_filename = $image_filename;
         }
 
+        /** @var array<string, string> */
         $errors = $topic->validate();
         if ($errors) {
             $errors = implode(' ', $errors);
@@ -111,9 +114,9 @@ class Topics
      * @response 404 if the id doesn't exist
      * @response 200
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
-        $id = $request->param('id');
+        $id = $request->param('id', '');
 
         $topic = models\Topic::find($id);
         if (!$topic) {

@@ -10,38 +10,31 @@ namespace SpiderBits;
  */
 class Cache
 {
-    /** @var string */
-    private $path;
+    private string $path;
 
     /**
-     * @param string $path
-     *
-     * @throws RuntimeException if the path doesn't exist or if it's not a
-     *                          directory
+     * @throws \RuntimeException
+     *     If the path doesn't exist or if it's not a directory.
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
-        $this->path = realpath($path);
+        $path = realpath($path);
 
-        if ($this->path === false) {
+        if ($path === false) {
             throw new \RuntimeException('The cache path does not exist');
         }
 
-        if (!is_dir($this->path)) {
+        if (!is_dir($path)) {
             throw new \RuntimeException('The cache path is not a directory');
         }
+
+        $this->path = $path;
     }
 
     /**
      * Return text from the cache
-     *
-     * @param string $key
-     * @param integer $validity_interval How many seconds the cache is valid,
-     *                                   default is 1 day
-     *
-     * @return string|null
      */
-    public function get($key, $validity_interval = 24 * 60 * 60)
+    public function get(string $key, int $validity_interval = 24 * 60 * 60): ?string
     {
         $cached_text_path = $this->path . '/' . $key;
         $mtime = @filemtime($cached_text_path);
@@ -64,13 +57,8 @@ class Cache
 
     /**
      * Save text in cache
-     *
-     * @param string $key
-     * @param string $text
-     *
-     * @return boolean
      */
-    public function save($key, $text)
+    public function save(string $key, string $text): bool
     {
         $cached_text_path = $this->path . '/' . $key;
         $compressed_text = @gzencode($text);
@@ -80,12 +68,8 @@ class Cache
 
     /**
      * Clear the cache of the given key.
-     *
-     * @param string $key
-     *
-     * @return boolean Return true on success or false on failure
      */
-    public function remove($key)
+    public function remove(string $key): bool
     {
         $filepath = $this->path . '/' . $key;
         if (file_exists($filepath)) {
@@ -97,25 +81,23 @@ class Cache
 
     /**
      * Returns a hash of the given string.
-     *
-     * @param string $string
-     *
-     * @return string
      */
-    public static function hash($string)
+    public static function hash(string $string): string
     {
         return hash('sha256', $string);
     }
 
     /**
      * Clean the cache
-     *
-     * @param integer $validity_interval
-     *     How many seconds the cache is valid, default is 7 days
      */
-    public function clean($validity_interval = 7 * 24 * 60 * 60)
+    public function clean(int $validity_interval = 7 * 24 * 60 * 60): void
     {
         $files = scandir($this->path);
+
+        if ($files === false) {
+            return;
+        }
+
         foreach ($files as $file) {
             if ($file === '.' || $file === '..' || $file === '.keep') {
                 continue;

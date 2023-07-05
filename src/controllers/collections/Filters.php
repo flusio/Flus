@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\collections;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -19,20 +20,20 @@ class Filters
      * @response 200
      *     On success
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $from = $request->param('from');
+        $from = $request->param('from', '');
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $collection_id = $request->param('id');
+        $collection_id = $request->param('id', '');
         $collection = models\Collection::find($collection_id);
 
-        $can_view = auth\CollectionsAccess::canView($user, $collection);
+        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
         if (!$can_view) {
             return Response::notFound('not_found.phtml');
         }
@@ -67,10 +68,10 @@ class Filters
      * @response 302 :from
      *     On success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $from = $request->param('from');
+        $from = $request->param('from', '');
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
@@ -78,12 +79,12 @@ class Filters
         }
 
         $time_filter = $request->param('time_filter', '');
-        $collection_id = $request->param('id');
-        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id', '');
+        $csrf = $request->param('csrf', '');
 
         $collection = models\Collection::find($collection_id);
 
-        $can_view = auth\CollectionsAccess::canView($user, $collection);
+        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
         if (!$can_view) {
             return Response::notFound('not_found.phtml');
         }

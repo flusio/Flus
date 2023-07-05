@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202010190001MigrateIds
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -22,6 +22,8 @@ class Migration202010190001MigrateIds
                 // the time part as close as possible to the reality represented
                 // by the created_at value.
                 $created_at = date_create_from_format('Y-m-d H:i:sP', $row['created_at']);
+
+                assert($created_at !== false);
 
                 // Since created_at don't contain the milliseconds part, we
                 // fake it with a random value
@@ -45,7 +47,7 @@ class Migration202010190001MigrateIds
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         // do nothing, just keep the new ids if set, we can't find the old ones
         // anyway

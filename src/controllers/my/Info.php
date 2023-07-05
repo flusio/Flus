@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\my;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 
@@ -19,7 +20,7 @@ class Info
      * @response 200
      *    On success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -30,14 +31,11 @@ class Info
 
         $bookmarks = $user->bookmarks();
         $links = $bookmarks->links();
-        $json_output = json_encode([
+
+        return Response::json(200, [
             'csrf' => $user->csrf,
             'bookmarks_id' => $bookmarks->id,
             'bookmarked_urls' => array_column($links, 'url'),
         ]);
-
-        $response = Response::text(200, $json_output);
-        $response->setHeader('Content-Type', 'application/json');
-        return $response;
     }
 }

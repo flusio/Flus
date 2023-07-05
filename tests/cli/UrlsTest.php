@@ -12,7 +12,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function loadApplication()
+    public static function loadApplication(): void
     {
         self::$application = new \flusio\cli\Application();
     }
@@ -20,16 +20,20 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
     }
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
+        /** @var string */
         $url = $this->fake('url');
         $this->mockHttpWithResponse($url, <<<TEXT
             HTTP/2 200
@@ -48,7 +52,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Hello World!');
     }
 
-    public function testShowFailsWithInvalidUrl()
+    public function testShowFailsWithInvalidUrl(): void
     {
         $url = 'not an url';
 
@@ -60,7 +64,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, '`not an url` is not a valid URL.');
     }
 
-    public function testShowFailsWithUnresolvableUrl()
+    public function testShowFailsWithUnresolvableUrl(): void
     {
         $url = 'http://unresolvable-url';
 
@@ -72,10 +76,12 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, 'Could not resolve host: unresolvable-url');
     }
 
-    public function testUncacheClearsCacheOfGivenUrl()
+    public function testUncacheClearsCacheOfGivenUrl(): void
     {
+        /** @var string */
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
+        /** @var string */
         $url = $this->fake('url');
         $url_hash = \SpiderBits\Cache::hash($url);
         $raw_response = <<<TEXT
@@ -97,7 +103,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, "Cache for {$url} ({$url_hash}) has been cleared.");
     }
 
-    public function testUncacheFailsWithInvalidUrl()
+    public function testUncacheFailsWithInvalidUrl(): void
     {
         $url = 'not an url';
 
@@ -109,10 +115,12 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, "`{$url}` is not a valid URL.");
     }
 
-    public function testUncacheFailsIfCachePathCannotBeWritten()
+    public function testUncacheFailsIfCachePathCannotBeWritten(): void
     {
+        /** @var string */
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
+        /** @var string */
         $url = $this->fake('url');
         $url_hash = \SpiderBits\Cache::hash($url);
         $raw_response = <<<TEXT

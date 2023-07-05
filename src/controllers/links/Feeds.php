@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\links;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -22,13 +23,13 @@ class Feeds
      *     if the link doesn't exist or is inaccessible
      * @response 200
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id');
+        $link_id = $request->param('id', '');
         $link = models\Link::find($link_id);
 
-        if (!auth\LinksAccess::canView($user, $link)) {
+        if (!$link || !auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -51,7 +52,7 @@ class Feeds
      *
      * @response 301 /links/:id/feed.atom.xml
      */
-    public function alias($request)
+    public function alias(Request $request): Response
     {
         $link_id = $request->param('id');
         $url = \Minz\Url::for('link feed', ['id' => $link_id]);

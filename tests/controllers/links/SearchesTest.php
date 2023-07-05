@@ -19,17 +19,21 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
     }
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $url = $this->fake('url');
 
         $response = $this->appRun('GET', '/links/search', [
@@ -41,11 +45,13 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'links/searches/show.phtml');
     }
 
-    public function testShowDisplaysDefaultLink()
+    public function testShowDisplaysDefaultLink(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
+        /** @var string */
         $url = $this->fake('url');
+        /** @var string */
         $title = $this->fake('sentence');
         $link = LinkFactory::create([
             'user_id' => $support_user->id,
@@ -62,12 +68,15 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $title);
     }
 
-    public function testShowDisplaysExistingLinkOverDefaultLink()
+    public function testShowDisplaysExistingLinkOverDefaultLink(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
+        /** @var string */
         $url = $this->fake('url');
+        /** @var string */
         $existing_title = $this->fakeUnique('sentence');
+        /** @var string */
         $default_title = $this->fakeUnique('sentence');
         $existing_link = LinkFactory::create([
             'user_id' => $user->id,
@@ -90,11 +99,13 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $default_title);
     }
 
-    public function testShowDisplaysFeedCollections()
+    public function testShowDisplaysFeedCollections(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
+        /** @var string */
         $name = $this->fake('sentence');
+        /** @var string */
         $feed_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'type' => 'feed',
@@ -108,6 +119,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'link_id' => $feed_link->id,
         ]);
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $support_user->id,
@@ -124,12 +136,15 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $name);
     }
 
-    public function testShowHidesDuplicatedFeeds()
+    public function testShowHidesDuplicatedFeeds(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
+        /** @var string */
         $name = $this->fake('sentence');
+        /** @var string */
         $feed_url_rss = $this->fakeUnique('url');
+        /** @var string */
         $feed_url_atom = $this->fakeUnique('url');
         $collection_rss = CollectionFactory::create([
             'type' => 'feed',
@@ -145,6 +160,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'name' => $name,
             'feed_url' => $feed_url_atom,
         ]);
+        /** @var string */
         $link_url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $support_user->id,
@@ -164,11 +180,13 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_atom->id);
     }
 
-    public function testShowDoesNotDisplaysHiddenDefaultLink()
+    public function testShowDoesNotDisplaysHiddenDefaultLink(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
+        /** @var string */
         $url = $this->fake('url');
+        /** @var string */
         $title = $this->fake('sentence');
         $link = LinkFactory::create([
             'user_id' => $support_user->id,
@@ -185,8 +203,9 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $title);
     }
 
-    public function testShowRedirectsIfNotConnected()
+    public function testShowRedirectsIfNotConnected(): void
     {
+        /** @var string */
         $url = $this->fake('url');
 
         $response = $this->appRun('GET', '/links/search', [
@@ -196,7 +215,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks%2Fsearch');
     }
 
-    public function testCreateCreatesALinkAndFetchesIt()
+    public function testCreateCreatesALinkAndFetchesIt(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
@@ -213,13 +232,14 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $encoded_url = urlencode($url);
         $this->assertResponseCode($response, 302, "/links/search?url={$encoded_url}");
         $link = models\Link::findBy(['url' => $url]);
+        $this->assertNotNull($link);
         $this->assertSame($support_user->id, $link->user_id);
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(['https://flus.fr/carnet/feeds/all.atom.xml'], $link->url_feeds);
         $this->assertSame(200, $link->fetched_code);
     }
 
-    public function testCreateCreatesFeedCollections()
+    public function testCreateCreatesFeedCollections(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
@@ -237,6 +257,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Collection::count());
         $collection = models\Collection::findBy(['feed_url' => $url_feed]);
+        $this->assertNotNull($collection);
         $this->assertSame($support_user->id, $collection->user_id);
         $this->assertSame('feed', $collection->type);
         $this->assertSame('Carnet de Flus', $collection->name);
@@ -244,7 +265,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($collection->is_public);
     }
 
-    public function testCreateHandlesFeedUrl()
+    public function testCreateHandlesFeedUrl(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
@@ -257,10 +278,12 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $link = models\Link::findBy(['url' => $url]);
+        $this->assertNotNull($link);
         $this->assertSame($support_user->id, $link->user_id);
         $this->assertSame($url, $link->title);
         $this->assertSame([$url], $link->url_feeds);
         $collection = models\Collection::findBy(['feed_url' => $url]);
+        $this->assertNotNull($collection);
         $this->assertSame($support_user->id, $collection->user_id);
         $this->assertSame('feed', $collection->type);
         $this->assertSame('Carnet de Flus', $collection->name);
@@ -268,7 +291,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($collection->is_public);
     }
 
-    public function testCreateDiscoversYoutubePlaylistFeed()
+    public function testCreateDiscoversYoutubePlaylistFeed(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
@@ -293,6 +316,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $collection = models\Collection::take();
+        $this->assertNotNull($collection);
         $this->assertSame(200, $collection->feed_fetched_code);
         $this->assertSame(
             'https://www.youtube.com/feeds/videos.xml?playlist_id=PLdhqndoLhA_7mQKanRpMGscqEgejpEWaJ',
@@ -300,7 +324,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCreateUpdatesDefaultLinkIfItExists()
+    public function testCreateUpdatesDefaultLinkIfItExists(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
@@ -326,12 +350,13 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $link->fetched_code);
     }
 
-    public function testCreateDoesNotUpdateFeedIfItExists()
+    public function testCreateDoesNotUpdateFeedIfItExists(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
         $url = 'https://flus.fr/carnet/';
         $url_feed = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
         $name = $this->fake('sentence');
         CollectionFactory::create([
             'type' => 'feed',
@@ -349,10 +374,11 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Collection::count());
         $collection = models\Collection::findBy(['feed_url' => $url_feed]);
+        $this->assertNotNull($collection);
         $this->assertSame($name, $collection->name);
     }
 
-    public function testCreateRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected(): void
     {
         $support_user = models\User::supportUser();
         $url = 'https://github.com/flusio/flusio';
@@ -368,7 +394,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
@@ -386,7 +412,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfUrlIsInvalid()
+    public function testCreateFailsIfUrlIsInvalid(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();

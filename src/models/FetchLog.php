@@ -36,7 +36,7 @@ class FetchLog
     /**
      * Create a log in DB for the given URL.
      */
-    public static function log(string $url, string $type, ?string $ip = null)
+    public static function log(string $url, string $type, ?string $ip = null): void
     {
         $fetch_log = new self();
 

@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\links;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -24,7 +25,7 @@ class Searches
      * @response 302 /login?redirect_to=/links/search
      * @response 200
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -81,11 +82,11 @@ class Searches
      * @response 400 if csrf token or the URL is invalid
      * @response 302 /links/search?url=:url
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         $url = $request->param('url', '');
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         $url = \SpiderBits\Url::sanitize($url);
         $support_user = models\User::supportUser();

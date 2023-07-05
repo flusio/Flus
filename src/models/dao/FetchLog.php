@@ -45,7 +45,9 @@ trait FetchLog
 
         $count_by_days = [];
         foreach ($result as $row) {
-            $count_by_days[$row['day']] = intval($row['count']);
+            /** @var string */
+            $day = $row['day'];
+            $count_by_days[$day] = intval($row['count']);
         }
 
         ksort($count_by_days);
@@ -55,13 +57,6 @@ trait FetchLog
 
     /**
      * Return the number of calls to a host since a given time.
-     *
-     * @param string $host
-     * @param \DateTime $since
-     * @param string $type (optional)
-     * @param string $ip (optional)
-     *
-     * @return integer
      */
     public static function countFetchesToHost(
         string $host,

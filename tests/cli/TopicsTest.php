@@ -16,7 +16,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function loadApplication()
+    public static function loadApplication(): void
     {
         self::$application = new \flusio\cli\Application();
     }
@@ -24,17 +24,22 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
     }
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
+        /** @var string */
         $label1 = $this->fake('word');
+        /** @var string */
         $label2 = $this->fake('word');
         TopicFactory::create([
             'label' => $label1,
@@ -50,8 +55,9 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $label2);
     }
 
-    public function testCreateCreatesATopicAndRendersCorrectly()
+    public function testCreateCreatesATopicAndRendersCorrectly(): void
     {
+        /** @var string */
         $label = $this->fake('word');
 
         $this->assertSame(0, models\Topic::count());
@@ -65,8 +71,9 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Topic::count());
     }
 
-    public function testCreateDownloadsImageIfPassed()
+    public function testCreateDownloadsImageIfPassed(): void
     {
+        /** @var string */
         $label = $this->fake('word');
         $image_url = 'https://flus.fr/carnet/card.png';
 
@@ -76,8 +83,10 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $topic = models\Topic::take();
+        $this->assertNotNull($topic);
         $image_filename = $topic->image_filename;
         $this->assertNotNull($image_filename);
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
@@ -88,10 +97,13 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
-    public function testCreateFailsIfLabelIsTooLong()
+    public function testCreateFailsIfLabelIsTooLong(): void
     {
         $label_max_size = models\Topic::LABEL_MAX_SIZE;
-        $size = $label_max_size + $this->fake('randomDigitNotNull');
+        /** @var int */
+        $size = $this->fake('randomDigitNotNull');
+        $size = $size + $label_max_size;
+        /** @var string */
         $label = $this->fake('regexify', "\w{{$size}}");
 
         $response = $this->appRun('CLI', '/topics/create', [
@@ -103,7 +115,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Topic::count());
     }
 
-    public function testCreateFailsIfLabelIsEmpty()
+    public function testCreateFailsIfLabelIsEmpty(): void
     {
         $response = $this->appRun('CLI', '/topics/create', [
             'label' => '',
@@ -114,9 +126,11 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Topic::count());
     }
 
-    public function testUpdateChangesLabelIfPassed()
+    public function testUpdateChangesLabelIfPassed(): void
     {
+        /** @var string */
         $old_label = $this->fakeUnique('word');
+        /** @var string */
         $new_label = $this->fakeUnique('word');
         $topic = TopicFactory::create([
             'label' => $old_label,
@@ -133,9 +147,11 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_label, $topic->label);
     }
 
-    public function testUpdateChangesImageFilenameIfPassed()
+    public function testUpdateChangesImageFilenameIfPassed(): void
     {
-        $old_image_filename = $this->fakeUnique('sha256') . '.jpg';
+        /** @var string */
+        $old_image_filename = $this->fakeUnique('sha256');
+        $old_image_filename = $old_image_filename . '.jpg';
         $image_url = 'https://flus.fr/carnet/card.png';
         $topic = TopicFactory::create([
             'image_filename' => $old_image_filename,
@@ -149,9 +165,11 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'has been updated');
         $topic = $topic->reload();
-        $image_filename = $topic->image_filename;
-        $this->assertNotSame($old_image_filename, $image_filename);
+        $this->assertNotNull($topic->image_filename);
+        $this->assertNotSame($old_image_filename, $topic->image_filename);
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
+        $image_filename = $topic->image_filename;
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
@@ -161,8 +179,9 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
-    public function testUpdateDoesNothingIfLabelIsEmpty()
+    public function testUpdateDoesNothingIfLabelIsEmpty(): void
     {
+        /** @var string */
         $old_label = $this->fakeUnique('word');
         $new_label = '';
         $topic = TopicFactory::create([
@@ -180,9 +199,11 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_label, $topic->label);
     }
 
-    public function testUpdateFailsIfIdIsInvalid()
+    public function testUpdateFailsIfIdIsInvalid(): void
     {
+        /** @var string */
         $old_label = $this->fakeUnique('word');
+        /** @var string */
         $new_label = $this->fakeUnique('word');
         $topic = TopicFactory::create([
             'label' => $old_label,
@@ -199,11 +220,15 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_label, $topic->label);
     }
 
-    public function testUpdateFailsIfLabelIsTooLong()
+    public function testUpdateFailsIfLabelIsTooLong(): void
     {
+        /** @var string */
         $old_label = $this->fakeUnique('word');
         $label_max_size = models\Topic::LABEL_MAX_SIZE;
-        $size = $label_max_size + $this->fake('randomDigitNotNull');
+        /** @var int */
+        $size = $this->fake('randomDigitNotNull');
+        $size = $size + $label_max_size;
+        /** @var string */
         $new_label = $this->fake('regexify', "\w{{$size}}");
         $topic = TopicFactory::create([
             'label' => $old_label,
@@ -220,7 +245,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_label, $topic->label);
     }
 
-    public function testDeleteDeletesTopic()
+    public function testDeleteDeletesTopic(): void
     {
         $topic = TopicFactory::create();
 
@@ -235,7 +260,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Topic::count());
     }
 
-    public function testDeleteFailsIfIdIsInvalid()
+    public function testDeleteFailsIfIdIsInvalid(): void
     {
         $topic = TopicFactory::create();
 

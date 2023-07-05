@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
@@ -19,7 +20,7 @@ class Exportations
      * @response 200
      *     On success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -46,10 +47,10 @@ class Exportations
      * @response 302 /exportations
      *     On success
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
         if (!$user) {
             $redirect_to = \Minz\Url::for('exportation');
             return Response::redirect('login', ['redirect_to' => $redirect_to]);
@@ -91,7 +92,7 @@ class Exportations
      * @response 200
      *     On success
      */
-    public function download($request)
+    public function download(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -109,12 +110,14 @@ class Exportations
         }
 
         $filename_date = $exportation->created_at->format('Y-m-d');
+        /** @var string */
         $filename_brand = \Minz\Configuration::$application['brand'];
         $filename = "{$filename_date}_{$filename_brand}_data.zip";
 
         $file_output = new \Minz\Output\File($exportation->filepath);
         $response = new Response(200, $file_output);
-        $response->setHeader('Content-Length', filesize($exportation->filepath));
+        $filesize = filesize($exportation->filepath);
+        $response->setHeader('Content-Length', (string) $filesize);
         $response->setHeader('Content-Disposition', "filename={$filename}");
         return $response;
     }

@@ -7,14 +7,17 @@ class ClearUrlsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider clearProvider
      */
-    public function testClear($tracked_url, $expected_url)
+    public function testClear(string $tracked_url, string $expected_url): void
     {
         $cleared_url = ClearUrls::clear($tracked_url);
 
         $this->assertSame($expected_url, $cleared_url);
     }
 
-    public function clearProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function clearProvider(): array
     {
         return [
             // utm_* parameters in URL query

@@ -18,7 +18,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function initializeSubscriptionConfiguration()
+    public function initializeSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
     }
@@ -26,16 +26,20 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
     /**
      * @afterClass
      */
-    public static function resetSubscriptionConfiguration()
+    public static function resetSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
     }
 
-    public function testCreateSetsSubscriptionProperties()
+    public function testCreateSetsSubscriptionProperties(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $account_id = $this->fake('uuid');
+        /** @var \DateTimeImmutable */
         $expired_at = $this->fake('dateTime');
         $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
@@ -51,8 +55,8 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         $user = $this->login([
             'email' => $email,
             'subscription_account_id' => null,
-            'subscription_expired_at' => $this->fake('dateTime'),
-            'validated_at' => $this->fake('dateTime'),
+            'subscription_expired_at' => \Minz\Time::now(),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
@@ -65,14 +69,15 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
-    public function testCreateDoesNothingIfUserAlreadyHasAccountId()
+    public function testCreateDoesNothingIfUserAlreadyHasAccountId(): void
     {
+        /** @var string */
         $account_id = $this->fake('regexify', '\w{32}');
-        $expired_at = new \DateTime('1970-01-01');
+        $expired_at = new \DateTimeImmutable('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => $account_id,
             'subscription_expired_at' => $expired_at,
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
@@ -88,14 +93,14 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCreateRedirectsIfUserIsNotConnected()
+    public function testCreateRedirectsIfUserIsNotConnected(): void
     {
-        $expired_at = new \DateTime('1970-01-01');
+        $expired_at = new \DateTimeImmutable('1970-01-01');
         $user = UserFactory::create([
             'csrf' => 'a token',
             'subscription_account_id' => null,
             'subscription_expired_at' => $expired_at,
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
@@ -111,9 +116,9 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCreateFailsIfUserIsNotValidated()
+    public function testCreateFailsIfUserIsNotValidated(): void
     {
-        $expired_at = new \DateTime('1970-01-01');
+        $expired_at = new \DateTimeImmutable('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
             'subscription_expired_at' => $expired_at,
@@ -134,13 +139,13 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $expired_at = new \DateTime('1970-01-01');
+        $expired_at = new \DateTimeImmutable('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
             'subscription_expired_at' => $expired_at,
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
@@ -160,15 +165,16 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCreateFailsIfSecretKeyIsInvalid()
+    public function testCreateFailsIfSecretKeyIsInvalid(): void
     {
+        /** @var string */
         $old_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
         \Minz\Configuration::$application['subscriptions_private_key'] = 'not the key';
-        $expired_at = new \DateTime('1970-01-01');
+        $expired_at = new \DateTimeImmutable('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
             'subscription_expired_at' => $expired_at,
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
@@ -190,14 +196,14 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCreateFailsIfSubscriptionsAreDisabled()
+    public function testCreateFailsIfSubscriptionsAreDisabled(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
-        $expired_at = new \DateTime('1970-01-01');
+        $expired_at = new \DateTimeImmutable('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
             'subscription_expired_at' => $expired_at,
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
@@ -212,10 +218,13 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testRedirectRedirectsToLoginUrl()
+    public function testRedirectRedirectsToLoginUrl(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        /** @var string */
         $account_id = $this->fake('uuid');
+        /** @var string */
         $redirection_url = $this->fake('url');
         $subscription_api_url = "{$subscriptions_host}/api/account/login-url?account_id={$account_id}&service=flusio";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
@@ -236,7 +245,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, $redirection_url);
     }
 
-    public function testRedirectRedirectsIfNotConnected()
+    public function testRedirectRedirectsIfNotConnected(): void
     {
         UserFactory::create([
             // We don't make additional call for a failing test, but this id
@@ -249,7 +258,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
     }
 
-    public function testRedirectFailsIfUserHasNoAccountId()
+    public function testRedirectFailsIfUserHasNoAccountId(): void
     {
         $this->login([
             'subscription_account_id' => null,
@@ -260,7 +269,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
     }
 
-    public function testRedirectFailsIfUserHasInvalidAccountId()
+    public function testRedirectFailsIfUserHasInvalidAccountId(): void
     {
         $this->login([
             'subscription_account_id' => 'not an id',
@@ -272,7 +281,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'please contact the support');
     }
 
-    public function testRedirectFailsIfSubscriptionsAreDisabled()
+    public function testRedirectFailsIfSubscriptionsAreDisabled(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
         $this->login([

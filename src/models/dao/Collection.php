@@ -58,14 +58,17 @@ trait Collection
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
-     * @param array $options
-     *     Custom options to filter collections. Possible options are:
-     *     - private (boolean, default to true), indicates if private
-     *       collections must be included. If private are excluded and
-     *       number_links property is selected, empty public collections are
-     *       not returned either.
-     *     - count_hidden (boolean, default to true), indicates if hidden links
-     *       must be counted
+     * @param array{
+     *     'private'?: bool,
+     *     'count_hidden'?: bool,
+     * } $options
+     *
+     * Description of the options:
+     * - private (default to true), indicates if private collections must be
+     *   included. If private are excluded and number_links property is
+     *   selected, empty public collections are not returned either.
+     * - count_hidden (default to true), indicates if hidden links must be
+     *   counted
      *
      * @return self[]
      */
@@ -159,12 +162,15 @@ trait Collection
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
-     * @param array $options
-     *     Custom options to filter collections. Possible options are:
-     *     - type (string, either 'collection', 'feed' or 'all'), indicates
-     *       what type of Collection must be returned. Count of links is
-     *       optimized for "feed" collections so it may be interesting to call
-     *       this method in two steps.
+     * @param array{
+     *     'type'?: 'collection'|'feed'|'all',
+     * } $options
+     *
+     * Description of the options:
+     *
+     * - type (default is 'all'), indicates what type of Collection must be
+     *   returned. Count of links is optimized for "feed" collections so it may
+     *   be interesting to call this method in two steps.
      *
      * @return self[]
      */
@@ -255,10 +261,14 @@ trait Collection
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
-     * @param array $options
-     *     Custom options to filter collections. Possible options are:
-     *     - access_type (string, either 'any' [default], 'read' or 'write'),
-     *       indicates with which access the collections must have been shared.
+     * @param array{
+     *     'access_type'?: 'any'|'read'|'write',
+     * } $options
+     *
+     * Description of the options:
+     *
+     * - access_type (default is 'any'), indicates with which access the
+     *   collections must have been shared.
      *
      * @return self[]
      */

@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\links;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -26,12 +27,12 @@ class Collections
      * @response 404 if the link is not found
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id');
+        $link_id = $request->param('id', '');
         $mark_as_read = $request->paramBoolean('mark_as_read', false);
-        $from = $request->param('from');
+        $from = $request->param('from', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -39,7 +40,7 @@ class Collections
 
         $link = models\Link::find($link_id);
         $messages = [];
-        if (!auth\LinksAccess::canView($user, $link)) {
+        if (!$link || !auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -63,21 +64,21 @@ class Collections
         }
 
         $groups = models\Group::listBy(['user_id' => $user->id]);
-        utils\Sorter::localeSort($groups, 'name');
+        $groups = utils\Sorter::localeSort($groups, 'name');
 
         $collections = $user->collections();
-        utils\Sorter::localeSort($collections, 'name');
+        $collections = utils\Sorter::localeSort($collections, 'name');
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
         $shared_collections = $user->sharedCollections([], [
             'access_type' => 'write',
         ]);
-        utils\Sorter::localeSort($shared_collections, 'name');
+        $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
         $collections_by_others = models\Collection::listWritableContainingNotOwnedLinkWithUrl(
             $user->id,
             $link->url_lookup,
         );
-        utils\Sorter::localeSort($collections_by_others, 'name');
+        $collections_by_others = utils\Sorter::localeSort($collections_by_others, 'name');
 
         return Response::ok('links/collections/index.phtml', [
             'link' => $link,
@@ -116,24 +117,26 @@ class Collections
      * @response 302 :from
      *     On success.
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id');
+        $link_id = $request->param('id', '');
+        /** @var string[] */
         $new_collection_ids = $request->paramArray('collection_ids', []);
+        /** @var string[] */
         $new_collection_names = $request->paramArray('new_collection_names', []);
         $is_hidden = $request->paramBoolean('is_hidden', false);
         $mark_as_read = $request->paramBoolean('mark_as_read', false);
         $comment = trim($request->param('comment', ''));
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canView($user, $link)) {
+        if (!$link || !auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 

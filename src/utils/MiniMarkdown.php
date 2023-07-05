@@ -36,8 +36,10 @@ class MiniMarkdown extends \Parsedown
 
     /**
      * @see \Parsedown::element
+     *
+     * @param mixed[] $element
      */
-    protected function element($element)
+    protected function element(array $element): string
     {
         $name = $element['name'] ?? '';
         $text = $element['text'] ?? '';

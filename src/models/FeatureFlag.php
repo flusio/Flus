@@ -33,7 +33,13 @@ class FeatureFlag
      */
     public function user(): User
     {
-        return User::find($this->user_id);
+        $user = User::find($this->user_id);
+
+        if (!$user) {
+            throw new \Exception("FeatureFlag #{$this->id} has invalid user.");
+        }
+
+        return $user;
     }
 
     /**

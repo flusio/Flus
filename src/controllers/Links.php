@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -27,7 +28,7 @@ class Links
      *     if the user is not connected
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $user = auth\CurrentUser::get();
 
@@ -76,16 +77,16 @@ class Links
             $read_list = $user->readList();
 
             $groups = models\Group::listBy(['user_id' => $user->id]);
-            utils\Sorter::localeSort($groups, 'name');
+            $groups = utils\Sorter::localeSort($groups, 'name');
 
             $collections = $user->collections(['number_links']);
-            utils\Sorter::localeSort($collections, 'name');
+            $collections = utils\Sorter::localeSort($collections, 'name');
             $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
             $shared_collections = $user->sharedCollections(['number_links'], [
                 'access_type' => 'write',
             ]);
-            utils\Sorter::localeSort($shared_collections, 'name');
+            $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
 
             return Response::ok('links/index.phtml', [
                 'bookmarks' => $bookmarks,
@@ -109,11 +110,15 @@ class Links
      *     if the link doesn't exist or is inaccessible to current user
      * @response 200
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id');
+        $link_id = $request->param('id', '');
         $link = models\Link::find($link_id);
+
+        if (!$link) {
+            return Response::notFound('not_found.phtml');
+        }
 
         $can_view = auth\LinksAccess::canView($user, $link);
         $can_comment = auth\LinksAccess::canComment($user, $link);
@@ -143,7 +148,7 @@ class Links
      * @response 302 /login?redirect_to=:from if not connected
      * @response 200
      */
-    public function new($request)
+    public function new(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         $default_url = $request->param('url', '');
@@ -156,17 +161,17 @@ class Links
         $bookmarks = $user->bookmarks();
 
         $groups = models\Group::listBy(['user_id' => $user->id]);
-        utils\Sorter::localeSort($groups, 'name');
+        $groups = utils\Sorter::localeSort($groups, 'name');
 
         $collections = $user->collections();
-        utils\Sorter::localeSort($collections, 'name');
+        $collections = utils\Sorter::localeSort($collections, 'name');
         $collections = array_merge([$bookmarks], $collections);
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
         $shared_collections = $user->sharedCollections([], [
             'access_type' => 'write',
         ]);
-        utils\Sorter::localeSort($shared_collections, 'name');
+        $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
 
         $default_collection_id = $request->param('collection_id');
         if ($default_collection_id) {
@@ -208,15 +213,17 @@ class Links
      * @response 302 :from
      *     On success.
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         $url = $request->param('url', '');
         $is_hidden = $request->paramBoolean('is_hidden', false);
+        /** @var string[] */
         $collection_ids = $request->paramArray('collection_ids', []);
+        /** @var string[] */
         $new_collection_names = $request->paramArray('new_collection_names', []);
         $from = $request->param('from', \Minz\Url::for('new link', ['url' => $url]));
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -225,17 +232,17 @@ class Links
         $bookmarks = $user->bookmarks();
 
         $groups = models\Group::listBy(['user_id' => $user->id]);
-        utils\Sorter::localeSort($groups, 'name');
+        $groups = utils\Sorter::localeSort($groups, 'name');
 
         $collections = $user->collections();
-        utils\Sorter::localeSort($collections, 'name');
+        $collections = utils\Sorter::localeSort($collections, 'name');
         $collections = array_merge([$bookmarks], $collections);
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
         $shared_collections = $user->sharedCollections([], [
             'access_type' => 'write',
         ]);
-        utils\Sorter::localeSort($shared_collections, 'name');
+        $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('links/new.phtml', [
@@ -355,10 +362,10 @@ class Links
      * @response 404 if the link doesn't exist or not associated to the current user
      * @response 200
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id');
+        $link_id = $request->param('id', '');
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
 
         if (!$user) {
@@ -368,7 +375,7 @@ class Links
         }
 
         $link = models\Link::find($link_id);
-        if (auth\LinksAccess::canUpdate($user, $link)) {
+        if ($link && auth\LinksAccess::canUpdate($user, $link)) {
             return Response::ok('links/edit.phtml', [
                 'link' => $link,
                 'title' => $link->title,
@@ -394,14 +401,14 @@ class Links
      * @response 400 :from if csrf token or title are invalid
      * @response 302 :from
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id');
-        $new_title = $request->param('title');
+        $link_id = $request->param('id', '');
+        $new_title = $request->param('title', '');
         $new_reading_time = $request->paramInteger('reading_time', 0);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', [
@@ -410,7 +417,7 @@ class Links
         }
 
         $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canUpdate($user, $link)) {
+        if (!$link || !auth\LinksAccess::canUpdate($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -459,20 +466,20 @@ class Links
      * @response 302 :from if csrf is invalid
      * @response 302 :redirect_to on success
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id');
+        $link_id = $request->param('id', '');
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $link = models\Link::find($link_id);
-        if (!auth\LinksAccess::canDelete($user, $link)) {
+        if (!$link || !auth\LinksAccess::canDelete($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 

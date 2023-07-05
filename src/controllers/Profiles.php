@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -24,9 +25,9 @@ class Profiles
      * @response 200
      *    On success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
-        $user_id = $request->param('id');
+        $user_id = $request->param('id', '');
         $user = models\User::find($user_id);
         if (!$user || $user->isSupportUser()) {
             return Response::notFound('not_found.phtml');
@@ -45,12 +46,12 @@ class Profiles
             'private' => false,
             'count_hidden' => $is_current_user_profile,
         ]);
-        utils\Sorter::localeSort($collections, 'name');
+        $collections = utils\Sorter::localeSort($collections, 'name');
 
         $shared_collections = [];
         if ($current_user) {
             $shared_collections = $user->sharedCollectionsTo($current_user->id, ['number_links']);
-            utils\Sorter::localeSort($shared_collections, 'name');
+            $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
         }
 
         return Response::ok('profiles/show.phtml', [

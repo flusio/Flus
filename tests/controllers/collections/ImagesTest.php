@@ -17,9 +17,10 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testEditRendersCorrectly()
+    public function testEditRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -37,10 +38,11 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testEditWorksIfCollectionIsSharedWithWriteAccess()
+    public function testEditWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -63,7 +65,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testEditRedirectsIfNotConnected()
+    public function testEditRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -80,7 +82,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
-    public function testEditFailsIfCollectionDoesNotExist()
+    public function testEditFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -96,7 +98,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsNotShared()
+    public function testEditFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -113,7 +115,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsSharedWithReadAccess()
+    public function testEditFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -135,7 +137,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateRedirectsToFrom()
+    public function testUpdateRedirectsToFrom(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -160,7 +162,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, $from);
     }
 
-    public function testUpdateSetsImageFilename()
+    public function testUpdateSetsImageFilename(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -184,6 +186,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
         $collection = $collection->reload();
         $this->assertNotNull($collection->image_filename);
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($collection->image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$collection->image_filename}";
@@ -194,7 +197,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
-    public function testUpdateWorksIfCollectionIsSharedWithWriteAccess()
+    public function testUpdateWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -227,7 +230,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection->image_filename);
     }
 
-    public function testUpdateRedirectsIfNotConnected()
+    public function testUpdateRedirectsIfNotConnected(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -257,7 +260,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->image_filename);
     }
 
-    public function testUpdateFailsIfCollectionDoesNotExist()
+    public function testUpdateFailsIfCollectionDoesNotExist(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -284,7 +287,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->image_filename);
     }
 
-    public function testUpdateFailsIfCollectionIsNotShared()
+    public function testUpdateFailsIfCollectionIsNotShared(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -312,7 +315,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->image_filename);
     }
 
-    public function testUpdateFailsIfCollectionIsSharedWithReadAccess()
+    public function testUpdateFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -345,7 +348,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->image_filename);
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -374,7 +377,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->image_filename);
     }
 
-    public function testUpdateFailsIfFileIsMissing()
+    public function testUpdateFailsIfFileIsMissing(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -396,7 +399,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->image_filename);
     }
 
-    public function testUpdateFailsIfWrongFileType()
+    public function testUpdateFailsIfWrongFileType(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-avatar.svg';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -425,7 +428,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->image_filename);
     }
 
-    public function testUpdateFailsIfIsUploadedFileReturnsFalse()
+    public function testUpdateFailsIfIsUploadedFileReturnsFalse(): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -458,7 +461,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider tooLargeErrorsProvider
      */
-    public function testUpdateFailsIfTooLarge($error)
+    public function testUpdateFailsIfTooLarge(int $error): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -490,7 +493,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider otherFileErrorsProvider
      */
-    public function testUpdateFailsIfFileFailedToUpload($error)
+    public function testUpdateFailsIfFileFailedToUpload(int $error): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
@@ -519,7 +522,10 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->image_filename);
     }
 
-    public function tooLargeErrorsProvider()
+    /**
+     * @return array<array{int}>
+     */
+    public function tooLargeErrorsProvider(): array
     {
         return [
             [UPLOAD_ERR_INI_SIZE],
@@ -527,7 +533,10 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function otherFileErrorsProvider()
+    /**
+     * @return array<array{int}>
+     */
+    public function otherFileErrorsProvider(): array
     {
         return [
             [UPLOAD_ERR_PARTIAL],

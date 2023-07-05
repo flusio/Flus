@@ -12,12 +12,8 @@ class ViaHelper
 {
     /**
      * Set the via_* properties of a link if possible.
-     *
-     * @param \flusio\models\Link $link
-     * @param string $from
-     *     The URL from which the "via" info will be extracted.
      */
-    public static function setLinkVia($link, $from)
+    public static function setLinkVia(models\Link $link, string $from): void
     {
         list($via_type, $via_resource_id) = self::extractFromPath($from);
         if ($via_type) {
@@ -37,11 +33,12 @@ class ViaHelper
      *   returned (if the user exists in db)
      * - For other paths, ['', null] will be returned
      *
-     * @param string $path
-     *
-     * @return string[]
+     * @return array{
+     *     ''|'collection'|'user',
+     *     ?string
+     * }
      */
-    public static function extractFromPath($path)
+    public static function extractFromPath(string $path): array
     {
         $matches = [];
 

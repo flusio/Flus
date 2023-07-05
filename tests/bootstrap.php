@@ -2,16 +2,13 @@
 
 $app_path = realpath(__DIR__ . '/..');
 
+assert($app_path !== false);
+
 include $app_path . '/autoload.php';
 
 \Minz\Configuration::load('test', $app_path);
 
 \Minz\Engine::startSession();
-
-\Minz\Database::reset();
-$schema = @file_get_contents(\Minz\Configuration::$schema_path);
-$database = \Minz\Database::get();
-$database->exec($schema);
 
 $faker = \Faker\Factory::create();
 

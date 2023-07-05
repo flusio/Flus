@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202102090001AddPocketToUsers
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -19,7 +19,7 @@ class Migration202102090001AddPocketToUsers
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

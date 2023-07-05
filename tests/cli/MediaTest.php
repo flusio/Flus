@@ -19,7 +19,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function loadApplication()
+    public static function loadApplication(): void
     {
         self::$application = new \flusio\cli\Application();
     }
@@ -27,8 +27,9 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     /**
      * @after
      */
-    public function clearMediaDirectories()
+    public function clearMediaDirectories(): void
     {
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $file_names = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator(
@@ -38,6 +39,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
             \RecursiveIteratorIterator::CHILD_FIRST
         );
         foreach ($file_names as $file_name) {
+            assert(is_string($file_name));
+
             if (is_dir($file_name)) {
                 rmdir($file_name);
             } else {
@@ -46,7 +49,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCleanDeletesUnusedFiles()
+    public function testCleanDeletesUnusedFiles(): void
     {
         $image_service = new services\Image();
         $image_url = 'https://flus.fr/carnet/card.png';
@@ -55,6 +58,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $subdir_name = substr($image_filename, 0, 3);
 
         $this->assertNotEmpty($image_filename);
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
@@ -64,25 +68,21 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
 
-        $response_generator = $this->appRun('CLI', '/media/clean');
+        $response = $this->appRun('CLI', '/media/clean');
 
-        $response = $response_generator->current();
+        $this->assertInstanceOf(\Generator::class, $response);
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'Scanning the media directories...');
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, " sub-directories found.");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (0%)");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Deleted file {$image_filename}");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, '1 files deleted.');
         $this->assertFalse(file_exists($card_filepath));
@@ -90,7 +90,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(file_exists($large_filepath));
     }
 
-    public function testCleanKeepsFilesUsedByLinks()
+    public function testCleanKeepsFilesUsedByLinks(): void
     {
         $image_service = new services\Image();
         $image_url = 'https://flus.fr/carnet/card.png';
@@ -102,6 +102,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertNotEmpty($image_filename);
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
@@ -111,25 +112,21 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
 
-        $response_generator = $this->appRun('CLI', '/media/clean');
+        $response = $this->appRun('CLI', '/media/clean');
 
-        $response = $response_generator->current();
+        $this->assertInstanceOf(\Generator::class, $response);
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'Scanning the media directories...');
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, " sub-directories found.");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (0%)");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'No files deleted.');
         $this->assertTrue(file_exists($card_filepath));
@@ -137,7 +134,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
-    public function testCleanKeepsFilesUsedByCollections()
+    public function testCleanKeepsFilesUsedByCollections(): void
     {
         $image_service = new services\Image();
         $image_url = 'https://flus.fr/carnet/card.png';
@@ -149,6 +146,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertNotEmpty($image_filename);
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
@@ -158,25 +156,21 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
 
-        $response_generator = $this->appRun('CLI', '/media/clean');
+        $response = $this->appRun('CLI', '/media/clean');
 
-        $response = $response_generator->current();
+        $this->assertInstanceOf(\Generator::class, $response);
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'Scanning the media directories...');
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, " sub-directories found.");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (0%)");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'No files deleted.');
         $this->assertTrue(file_exists($card_filepath));
@@ -184,7 +178,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($large_filepath));
     }
 
-    public function testCleanKeepsFilesUsedByTopics()
+    public function testCleanKeepsFilesUsedByTopics(): void
     {
         $image_service = new services\Image();
         $image_url = 'https://flus.fr/carnet/card.png';
@@ -196,6 +190,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertNotEmpty($image_filename);
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
@@ -205,25 +200,21 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
 
-        $response_generator = $this->appRun('CLI', '/media/clean');
+        $response = $this->appRun('CLI', '/media/clean');
 
-        $response = $response_generator->current();
+        $this->assertInstanceOf(\Generator::class, $response);
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'Scanning the media directories...');
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, " sub-directories found.");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (0%)");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
-        $response_generator->next();
-        $response = $response_generator->current();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'No files deleted.');
         $this->assertTrue(file_exists($card_filepath));

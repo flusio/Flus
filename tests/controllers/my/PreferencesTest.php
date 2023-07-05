@@ -15,7 +15,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testEditRendersCorrectly()
+    public function testEditRendersCorrectly(): void
     {
         $this->login();
 
@@ -25,14 +25,14 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'my/preferences/edit.phtml');
     }
 
-    public function testEditRedirectsToLoginIfUserNotConnected()
+    public function testEditRedirectsToLoginIfUserNotConnected(): void
     {
         $response = $this->appRun('GET', '/my/preferences');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fpreferences');
     }
 
-    public function testUpdateSavesTheUserAndRedirects()
+    public function testUpdateSavesTheUserAndRedirects(): void
     {
         $user = $this->login([
             'locale' => 'en_GB',
@@ -47,13 +47,13 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/my/preferences');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame('fr_FR', $user->locale);
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
         $this->assertTrue($user->option_compact_mode);
     }
 
-    public function testUpdateCanEnableBetaFeatures()
+    public function testUpdateCanEnableBetaFeatures(): void
     {
         $user = $this->login();
 
@@ -70,7 +70,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\FeatureFlag::isEnabled('beta', $user->id));
     }
 
-    public function testUpdateCanDisableBetaFeatures()
+    public function testUpdateCanDisableBetaFeatures(): void
     {
         $user = $this->login();
         models\FeatureFlag::enable('beta', $user->id);
@@ -88,7 +88,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\FeatureFlag::isEnabled('beta', $user->id));
     }
 
-    public function testUpdateRedirectsToLoginIfUserNotConnected()
+    public function testUpdateRedirectsToLoginIfUserNotConnected(): void
     {
         $user = UserFactory::create([
             'locale' => 'en_GB',
@@ -105,7 +105,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en_GB', $user->locale);
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login([
             'locale' => 'en_GB',
@@ -119,11 +119,11 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame('en_GB', $user->locale);
     }
 
-    public function testUpdateFailsIfLocaleIsMissing()
+    public function testUpdateFailsIfLocaleIsMissing(): void
     {
         $user = $this->login([
             'locale' => 'en_GB',
@@ -136,11 +136,11 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The locale is required');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame('en_GB', $user->locale);
     }
 
-    public function testUpdateFailsIfLocaleIsInvalid()
+    public function testUpdateFailsIfLocaleIsInvalid(): void
     {
         $user = $this->login([
             'locale' => 'en_GB',
@@ -154,7 +154,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The locale is invalid');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame('en_GB', $user->locale);
     }
 }

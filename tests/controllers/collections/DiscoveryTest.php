@@ -8,7 +8,7 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRedirects()
+    public function testShowRedirects(): void
     {
         $response = $this->appRun('GET', '/collections/discover');
 

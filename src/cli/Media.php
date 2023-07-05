@@ -7,6 +7,8 @@ use flusio\models;
 use flusio\utils;
 
 /**
+ * @phpstan-import-type ResponseGenerator from Response
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -19,9 +21,12 @@ class Media
      * Responses are yield because it can take a very long time to perform.
      *
      * @response 200
+     *
+     * @return ResponseGenerator
      */
-    public function clean()
+    public function clean(): mixed
     {
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $path_cards = "{$media_path}/cards";
         $path_covers = "{$media_path}/covers";
@@ -31,6 +36,11 @@ class Media
 
         yield Response::text(200, 'Scanning the media directories...');
         $subdir_names_depth_1 = scandir($path_cards, SCANDIR_SORT_NONE);
+
+        if ($subdir_names_depth_1 === false) {
+            throw new \Exception('Cannot read the media directories.');
+        }
+
         $subdir_names_depth_1 = array_filter($subdir_names_depth_1, function ($subdir_name) {
             // Exclude files or dirs starting with a dot.
             return $subdir_name[0] !== '.';
@@ -49,6 +59,12 @@ class Media
             // get the full list of file names under the current subdirectory
             $subdir_path = "{$path_cards}/{$subdir_name}";
             $file_paths_on_fs = glob("{$subdir_path}/???/???/*", GLOB_NOSORT);
+
+            if ($file_paths_on_fs === false) {
+                yield Response::text(500, "Cannot read files under {$subdir_name}/...");
+                continue;
+            }
+
             $file_names_on_fs = array_map('basename', $file_paths_on_fs);
 
             // get the list of file names starting with the same 3 characters

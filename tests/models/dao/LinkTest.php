@@ -14,18 +14,27 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
 
-    public function testBulkInsert()
+    public function testBulkInsert(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $link_url_1 = $this->fake('url');
+        /** @var string */
         $link_url_2 = $this->fake('url');
+        /** @var string */
         $link_url_3 = $this->fake('url');
         $link_1 = new models\Link($link_url_1, $user->id, true);
         $link_2 = new models\Link($link_url_2, $user->id, true);
         $link_3 = new models\Link($link_url_3, $user->id, false);
-        $link_1->created_at = $this->fake('dateTime');
-        $link_2->created_at = $this->fake('dateTime');
-        $link_3->created_at = $this->fake('dateTime');
+        /** @var \DateTimeImmutable */
+        $created_at = $this->fake('dateTime');
+        $link_1->created_at = $created_at;
+        /** @var \DateTimeImmutable */
+        $created_at = $this->fake('dateTime');
+        $link_2->created_at = $created_at;
+        /** @var \DateTimeImmutable */
+        $created_at = $this->fake('dateTime');
+        $link_3->created_at = $created_at;
 
         $this->assertSame(0, models\Link::count());
 
@@ -38,7 +47,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link_3->id));
     }
 
-    public function testListComputedByUserId()
+    public function testListComputedByUserId(): void
     {
         $user = UserFactory::create();
         $link = LinkFactory::create([
@@ -51,9 +60,10 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link->id, $links[0]->id);
     }
 
-    public function testListComputedByUserIdCanReturnPublishedAt()
+    public function testListComputedByUserIdCanReturnPublishedAt(): void
     {
         $user = UserFactory::create();
+        /** @var \DateTimeImmutable */
         $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -66,9 +76,10 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($published_at, $links[0]->published_at);
     }
 
-    public function testListComputedByUserIdConsidersLinkToCollectionPublishedAtWhenUnsharedIsFalse()
+    public function testListComputedByUserIdConsidersLinkToCollectionPublishedAtWhenUnsharedIsFalse(): void
     {
         $user = UserFactory::create();
+        /** @var \DateTimeImmutable */
         $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -92,7 +103,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($published_at, $links[0]->published_at);
     }
 
-    public function testListComputedByUserIdCanReturnNumberComments()
+    public function testListComputedByUserIdCanReturnNumberComments(): void
     {
         $user = UserFactory::create();
         $link = LinkFactory::create([
@@ -107,7 +118,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $links[0]->number_comments);
     }
 
-    public function testListComputedByUserIdCanListSharedOnly()
+    public function testListComputedByUserIdCanListSharedOnly(): void
     {
         $user = UserFactory::create();
         $unshared_link_1 = LinkFactory::create([
@@ -155,7 +166,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shared_link->id, $links[0]->id);
     }
 
-    public function testListComputedByUserIdCanLimitResults()
+    public function testListComputedByUserIdCanLimitResults(): void
     {
         $user = UserFactory::create();
         $link_1 = LinkFactory::create([
@@ -180,7 +191,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_2->id, $links[1]->id);
     }
 
-    public function testListComputedByUserIdCanOffsetResults()
+    public function testListComputedByUserIdCanOffsetResults(): void
     {
         $user = UserFactory::create();
         $link_1 = LinkFactory::create([
@@ -197,7 +208,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $links = models\Link::listComputedByUserId($user->id, [], [
-            'offset' => true,
+            'offset' => 1,
         ]);
 
         $this->assertSame(2, count($links));
@@ -205,7 +216,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_1->id, $links[1]->id);
     }
 
-    public function testListComputedByUserIdDoesNotDuplicateLinks()
+    public function testListComputedByUserIdDoesNotDuplicateLinks(): void
     {
         $user = UserFactory::create();
         $today = \Minz\Time::relative('today');
@@ -241,7 +252,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($today, $links[0]->published_at);
     }
 
-    public function testListComputedByUserIdLimitsResultsAfterDeduplication()
+    public function testListComputedByUserIdLimitsResultsAfterDeduplication(): void
     {
         $user = UserFactory::create();
         $today = \Minz\Time::relative('today');

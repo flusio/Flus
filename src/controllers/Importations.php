@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -24,12 +25,12 @@ class Importations
      * @response 302 :from if csrf is invalid
      * @response 302 /collections on success
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $importation_id = $request->param('id');
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $importation_id = $request->param('id', '');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);

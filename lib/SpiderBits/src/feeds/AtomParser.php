@@ -10,42 +10,44 @@ class AtomParser
 {
     /**
      * Return whether a DOMDocument can be parsed as an Atom feed or not.
-     *
-     * @param \DOMDocument $dom_document
-     *
-     * @return boolean
      */
-    public static function canHandle($dom_document)
+    public static function canHandle(\DOMDocument $dom_document): bool
     {
-        return $dom_document->documentElement->tagName === 'feed';
+        return (
+            $dom_document->documentElement &&
+            $dom_document->documentElement->tagName === 'feed'
+        );
     }
 
     /**
      * Parse a DOMDocument as an Atom feed.
-     *
-     * @param \DOMDocument $dom_document
-     *
-     * @return \SpiderBits\feeds\Feed
      */
-    public static function parse($dom_document)
+    public static function parse(\DOMDocument $dom_document): Feed
     {
         $feed = new Feed();
         $feed->type = 'atom';
+
+        if (!$dom_document->documentElement) {
+            throw new \Exception('Can’t read the DOMDocument');
+        }
 
         foreach ($dom_document->documentElement->childNodes as $node) {
             if (!($node instanceof \DOMElement)) {
                 continue; // @codeCoverageIgnore
             }
 
-            if ($node->tagName === 'title') {
-                $feed->title = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
+            $tagName = $node->tagName;
+            $value = $node->nodeValue ?: '';
+
+            if ($tagName === 'title') {
+                $feed->title = trim(htmlspecialchars_decode($value, ENT_QUOTES));
             }
 
-            if ($node->tagName === 'subtitle') {
-                $feed->description = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
+            if ($tagName === 'subtitle') {
+                $feed->description = trim(htmlspecialchars_decode($value, ENT_QUOTES));
             }
 
-            if ($node->tagName === 'link') {
+            if ($tagName === 'link') {
                 $rel = $node->getAttribute('rel');
                 if (!$rel) {
                     $rel = 'alternate';
@@ -58,7 +60,7 @@ class AtomParser
                 }
             }
 
-            if ($node->tagName === 'category') {
+            if ($tagName === 'category') {
                 $term = $node->getAttribute('term');
                 $label = $node->getAttribute('label');
                 if (!$label) {
@@ -67,7 +69,7 @@ class AtomParser
                 $feed->categories[$term] = $label;
             }
 
-            if ($node->tagName === 'entry') {
+            if ($tagName === 'entry') {
                 $entry = self::parseEntry($node);
                 $feed->entries[] = $entry;
             }
@@ -78,12 +80,8 @@ class AtomParser
 
     /**
      * Parse a DOMElement as an Atom entry.
-     *
-     * @param \DOMElement $dom_element
-     *
-     * @return \flusio\feeds\Entry
      */
-    private static function parseEntry($dom_element)
+    private static function parseEntry(\DOMElement $dom_element): Entry
     {
         $entry = new Entry();
 
@@ -92,25 +90,28 @@ class AtomParser
                 continue; // @codeCoverageIgnore
             }
 
-            if ($node->tagName === 'title') {
-                $entry->title = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
+            $tagName = $node->tagName;
+            $value = $node->nodeValue ?: '';
+
+            if ($tagName === 'title') {
+                $entry->title = trim(htmlspecialchars_decode($value, ENT_QUOTES));
             }
 
-            if ($node->tagName === 'id') {
-                $entry->id = $node->nodeValue;
+            if ($tagName === 'id') {
+                $entry->id = $value;
             }
 
             if (
-                $node->tagName === 'published' ||
-                ($node->tagName === 'updated' && !$entry->published_at)
+                $tagName === 'published' ||
+                ($tagName === 'updated' && !$entry->published_at)
             ) {
-                $published_at = Date::parse($node->nodeValue);
+                $published_at = Date::parse($value);
                 if ($published_at) {
                     $entry->published_at = $published_at;
                 }
             }
 
-            if ($node->tagName === 'link') {
+            if ($tagName === 'link') {
                 $rel = $node->getAttribute('rel');
                 if (!$rel) {
                     $rel = 'alternate';
@@ -123,7 +124,7 @@ class AtomParser
                 }
             }
 
-            if ($node->tagName === 'category') {
+            if ($tagName === 'category') {
                 $term = $node->getAttribute('term');
                 $label = $node->getAttribute('label');
                 if (!$label) {
@@ -132,7 +133,7 @@ class AtomParser
                 $entry->categories[$term] = $label;
             }
 
-            if ($node->tagName === 'content') {
+            if ($tagName === 'content') {
                 $type = $node->getAttribute('type');
                 if ($type) {
                     $entry->content_type = $type;
@@ -140,7 +141,7 @@ class AtomParser
                     $entry->content_type = 'text';
                 }
 
-                $entry->content = $node->nodeValue;
+                $entry->content = $value;
             }
         }
 
