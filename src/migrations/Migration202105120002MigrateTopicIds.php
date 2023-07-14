@@ -16,7 +16,7 @@ class Migration202105120002MigrateTopicIds
 
         foreach ($statement->fetchAll() as $row) {
             // We create a new id for this entry. We don't use
-            // \flusio\utils\Random::timebased() function because we want
+            // \Minz\Random::timebased() function because we want
             // the time part as close as possible to the reality represented
             // by the created_at value.
             $created_at = date_create_from_format('Y-m-d H:i:sP', $row['created_at']);

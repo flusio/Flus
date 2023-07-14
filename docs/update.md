@@ -25,7 +25,7 @@ flusio# chown -R www-data:www-data .
 Then, apply the migrations and load seeds with:
 
 ```console
-flusio$ sudo -u www-data make update NO_DOCKER=true
+flusio$ sudo -u www-data make setup NO_DOCKER=true
 ```
 
 Finally, you might need to restart PHP and the job worker so it detects
@@ -63,8 +63,8 @@ flusio$ git checkout PREVIOUS_TAG
 If something goes really wrong with the database, you can use the joker command:
 
 ```console
-flusio$ sudo -u www-data make reset NO_DOCKER=true
+flusio$ sudo -u www-data make reset FORCE=true
 ```
 
-It will reset the database and reload the schema. **Obviously, you should avoid
-this command in production or you will erase all the data.**
+It will reset the database and reload the schema. **Note this command doesn't
+work in production.**

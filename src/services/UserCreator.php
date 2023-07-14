@@ -29,7 +29,7 @@ class UserCreator
      */
     public static function create($username, $email, $password)
     {
-        $user = models\User::init($username, $email, $password);
+        $user = new models\User($username, $email, $password);
         $user->locale = utils\Locale::currentLocale();
 
         $errors = $user->validate();

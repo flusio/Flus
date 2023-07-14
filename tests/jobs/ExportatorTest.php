@@ -3,20 +3,20 @@
 namespace flusio\jobs;
 
 use flusio\models;
-use flusio\utils;
+use tests\factories\ExportationFactory;
+use tests\factories\UserFactory;
 
 class ExportatorTest extends \PHPUnit\Framework\TestCase
 {
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
 
     /**
      * @beforeClass
      */
-    public static function setRouterToUrl()
+    public static function initEngine()
     {
         $router = \flusio\Router::load();
-        \Minz\Url::setRouter($router);
+        \Minz\Engine::init($router);
     }
 
     /**
@@ -24,7 +24,7 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
      */
     public static function setJobAdapterToDatabase()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
+        \Minz\Configuration::$jobs_adapter = 'database';
     }
 
     /**
@@ -32,7 +32,7 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
      */
     public static function setJobAdapterToTest()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
     }
 
     public function testQueue()
@@ -45,37 +45,35 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
     public function testPerformCreatesAnArchiveAndAcknowledgesTheExportation()
     {
         $job = new Exportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
-        $exportation_id = $this->create('exportation', [
+        $user = UserFactory::create();
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'ongoing',
         ]);
 
-        $job->perform($exportation_id);
+        $job->perform($exportation->id);
 
-        $exportation = models\Exportation::find($exportation_id);
+        $exportation = $exportation->reload();
         $this->assertSame('finished', $exportation->status);
         $this->assertNotEmpty($exportation->filepath);
         $this->assertTrue(file_exists($exportation->filepath));
         $exportations_path = \Minz\Configuration::$data_path . '/exportations';
-        $this->assertTrue(utils\Belt::startsWith($exportation->filepath, $exportations_path));
+        $this->assertTrue(str_starts_with($exportation->filepath, $exportations_path));
     }
 
     public function testPerformDoesNothingIfStatusIsFinished()
     {
         $job = new Exportator();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
-        $exportation_id = $this->create('exportation', [
+        $user = UserFactory::create();
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
             'filepath' => '',
         ]);
 
-        $job->perform($exportation_id);
+        $job->perform($exportation->id);
 
-        $exportation = models\Exportation::find($exportation_id);
+        $exportation = $exportation->reload();
         $this->assertSame('finished', $exportation->status);
         $this->assertSame('', $exportation->filepath);
     }

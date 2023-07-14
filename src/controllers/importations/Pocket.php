@@ -7,7 +7,6 @@ use flusio\auth;
 use flusio\jobs;
 use flusio\models;
 use flusio\services;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -96,7 +95,7 @@ class Pocket
         }
 
         $csrf = $request->param('csrf');
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('importations/pocket/show.phtml', [
                 'importation' => null,
                 'error' => _('A security verification failed.'),
@@ -109,10 +108,10 @@ class Pocket
             'import_favorites' => $request->paramBoolean('import_favorites'),
         ];
 
-        $importation = models\Importation::init('pocket', $user->id, $options);
+        $importation = new models\Importation('pocket', $user->id, $options);
         $importation->save();
         $importator_job = new jobs\PocketImportator();
-        $importator_job->performLater($importation->id);
+        $importator_job->performAsap($importation->id);
 
         return Response::redirect('pocket');
     }
@@ -145,8 +144,8 @@ class Pocket
         }
 
         $csrf = $request->param('csrf');
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('pocket');
         }
 
@@ -164,7 +163,7 @@ class Pocket
         } catch (services\PocketError $e) {
             $user->pocket_error = $e->getCode();
             $user->save();
-            utils\Flash::set('error', $e->getMessage());
+            \Minz\Flash::set('error', $e->getMessage());
             return Response::redirect('pocket');
         }
     }
@@ -236,7 +235,7 @@ class Pocket
         }
 
         $csrf = $request->param('csrf');
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('importations/pocket/authorization.phtml', [
                 'error' => _('A security verification failed.'),
             ]);
@@ -256,7 +255,7 @@ class Pocket
             $user->pocket_request_token = null;
             $user->pocket_error = $e->getCode();
             $user->save();
-            utils\Flash::set('error', $e->getMessage());
+            \Minz\Flash::set('error', $e->getMessage());
         }
 
         return Response::redirect('pocket');

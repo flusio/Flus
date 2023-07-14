@@ -3,6 +3,9 @@
 namespace flusio\controllers\collections;
 
 use flusio\models;
+use tests\factories\UserFactory;
+use tests\factories\CollectionFactory;
+use tests\factories\FollowedCollectionFactory;
 
 class FiltersTest extends \PHPUnit\Framework\TestCase
 {
@@ -10,27 +13,26 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testEditRendersCorrectly()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
             'name' => $collection_name,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/filter", [
             'from' => $from,
         ]);
 
@@ -41,23 +43,22 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
 
     public function testEditRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
-        $other_user_id = $this->create('user');
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
             'name' => $collection_name,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/filter", [
             'from' => $from,
         ]);
 
@@ -68,21 +69,21 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionIsPrivate()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 0,
+            'user_id' => $other_user->id,
+            'is_public' => false,
             'name' => $collection_name,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/filter", [
             'from' => $from,
         ]);
 
@@ -92,17 +93,17 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionIsNotFollowed()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
             'name' => $collection_name,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/filter", [
             'from' => $from,
         ]);
 
@@ -112,56 +113,55 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
     public function testUpdateChangesTimeFilterAndRedirectsCorrectly()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $time_filters = models\FollowedCollection::VALID_TIME_FILTERS;
         shuffle($time_filters);
         $old_time_filter = array_pop($time_filters);
         $new_time_filter = $time_filters[0];
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $followed_collection_id = $this->create('followed_collection', [
+        $followed_collection = FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf' => $user->csrf,
             'from' => $from,
             'time_filter' => $new_time_filter,
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        $followed_collection = models\FollowedCollection::find($followed_collection_id);
+        $followed_collection = $followed_collection->reload();
         $this->assertSame($new_time_filter, $followed_collection->time_filter);
     }
 
     public function testUpdateRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
-        $other_user_id = $this->create('user');
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
         $time_filters = models\FollowedCollection::VALID_TIME_FILTERS;
         shuffle($time_filters);
         $old_time_filter = array_pop($time_filters);
         $new_time_filter = $time_filters[0];
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $followed_collection_id = $this->create('followed_collection', [
+        $followed_collection = FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf' => $user->csrf,
             'from' => $from,
             'time_filter' => $new_time_filter,
@@ -169,57 +169,57 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
 
         $encoded_from = urlencode($from);
         $this->assertResponseCode($response, 302, "/login?redirect_to={$encoded_from}");
-        $followed_collection = models\FollowedCollection::find($followed_collection_id);
+        $followed_collection = $followed_collection->reload();
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 
     public function testUpdateFailsIfCollectionIsPrivate()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $time_filters = models\FollowedCollection::VALID_TIME_FILTERS;
         shuffle($time_filters);
         $old_time_filter = array_pop($time_filters);
         $new_time_filter = $time_filters[0];
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 0,
+            'user_id' => $other_user->id,
+            'is_public' => false,
         ]);
-        $followed_collection_id = $this->create('followed_collection', [
+        $followed_collection = FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf' => $user->csrf,
             'from' => $from,
             'time_filter' => $new_time_filter,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $followed_collection = models\FollowedCollection::find($followed_collection_id);
+        $followed_collection = $followed_collection->reload();
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 
     public function testUpdateFailsIfCollectionIsNotFollowed()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $time_filters = models\FollowedCollection::VALID_TIME_FILTERS;
         shuffle($time_filters);
         $old_time_filter = array_pop($time_filters);
         $new_time_filter = $time_filters[0];
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf' => $user->csrf,
             'from' => $from,
             'time_filter' => $new_time_filter,
@@ -231,24 +231,24 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $time_filters = models\FollowedCollection::VALID_TIME_FILTERS;
         shuffle($time_filters);
         $old_time_filter = array_pop($time_filters);
         $new_time_filter = $time_filters[0];
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $followed_collection_id = $this->create('followed_collection', [
+        $followed_collection = FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf' => 'not the token',
             'from' => $from,
             'time_filter' => $new_time_filter,
@@ -256,31 +256,31 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $followed_collection = models\FollowedCollection::find($followed_collection_id);
+        $followed_collection = $followed_collection->reload();
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 
     public function testUpdateFailsIfTimeFilterIsInvalid()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $time_filters = models\FollowedCollection::VALID_TIME_FILTERS;
         shuffle($time_filters);
         $old_time_filter = array_pop($time_filters);
         $new_time_filter = 'invalid time filter';
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $followed_collection_id = $this->create('followed_collection', [
+        $followed_collection = FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf' => $user->csrf,
             'from' => $from,
             'time_filter' => $new_time_filter,
@@ -288,37 +288,37 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The filter is invalid');
-        $followed_collection = models\FollowedCollection::find($followed_collection_id);
+        $followed_collection = $followed_collection->reload();
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 
     public function testUpdateFailsIfTimeFilterIsMissing()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $time_filters = models\FollowedCollection::VALID_TIME_FILTERS;
         shuffle($time_filters);
         $old_time_filter = array_pop($time_filters);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $followed_collection_id = $this->create('followed_collection', [
+        $followed_collection = FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/filter", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf' => $user->csrf,
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The filter is required');
-        $followed_collection = models\FollowedCollection::find($followed_collection_id);
+        $followed_collection = $followed_collection->reload();
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 }

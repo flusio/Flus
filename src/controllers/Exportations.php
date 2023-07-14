@@ -55,7 +55,7 @@ class Exportations
             return Response::redirect('login', ['redirect_to' => $redirect_to]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('exportations/show.phtml', [
                 'exportation' => null,
                 'error' => _('A security verification failed.'),
@@ -75,10 +75,10 @@ class Exportations
             ]);
         }
 
-        $exportation = models\Exportation::init($user->id);
+        $exportation = new models\Exportation($user->id);
         $exportation->save();
         $exportator_job = new jobs\Exportator();
-        $exportator_job->performLater($exportation->id);
+        $exportator_job->performAsap($exportation->id);
 
         return Response::redirect('exportation');
     }

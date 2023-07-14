@@ -4,6 +4,7 @@ namespace flusio\controllers\my;
 
 use flusio\auth;
 use flusio\models;
+use tests\factories\UserFactory;
 
 class ProfileTest extends \PHPUnit\Framework\TestCase
 {
@@ -11,14 +12,13 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testEditRendersCorrectly()
     {
         $this->login();
 
-        $response = $this->appRun('get', '/my/profile', [
+        $response = $this->appRun('GET', '/my/profile', [
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
@@ -28,7 +28,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
 
     public function testEditRedirectsToLoginIfUserNotConnected()
     {
-        $response = $this->appRun('get', '/my/profile', [
+        $response = $this->appRun('GET', '/my/profile', [
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
@@ -43,7 +43,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'username' => $old_username,
         ]);
 
-        $response = $this->appRun('post', '/my/profile', [
+        $response = $this->appRun('POST', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
             'from' => \Minz\Url::for('edit profile'),
@@ -58,18 +58,18 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
     {
         $old_username = $this->fakeUnique('username');
         $new_username = $this->fakeUnique('username');
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'username' => $old_username,
         ]);
 
-        $response = $this->appRun('post', '/my/profile', [
-            'csrf' => \Minz\CSRF::generate(),
+        $response = $this->appRun('POST', '/my/profile', [
+            'csrf' => \Minz\Csrf::generate(),
             'username' => $new_username,
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertSame($old_username, $user->username);
     }
 
@@ -81,7 +81,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'username' => $old_username,
         ]);
 
-        $response = $this->appRun('post', '/my/profile', [
+        $response = $this->appRun('POST', '/my/profile', [
             'csrf' => 'not the token',
             'username' => $new_username,
             'from' => \Minz\Url::for('edit profile'),
@@ -101,7 +101,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'username' => $old_username,
         ]);
 
-        $response = $this->appRun('post', '/my/profile', [
+        $response = $this->appRun('POST', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
             'from' => \Minz\Url::for('edit profile'),
@@ -121,7 +121,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'username' => $old_username,
         ]);
 
-        $response = $this->appRun('post', '/my/profile', [
+        $response = $this->appRun('POST', '/my/profile', [
             'csrf' => $user->csrf,
             'username' => $new_username,
             'from' => \Minz\Url::for('edit profile'),
@@ -140,7 +140,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'username' => $old_username,
         ]);
 
-        $response = $this->appRun('post', '/my/profile', [
+        $response = $this->appRun('POST', '/my/profile', [
             'csrf' => $user->csrf,
             'from' => \Minz\Url::for('edit profile'),
         ]);

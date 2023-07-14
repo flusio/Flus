@@ -75,7 +75,7 @@ class Onboarding
         $user->locale = trim($locale);
 
         $errors = $user->validate();
-        if (\Minz\CSRF::validate($csrf) && !$errors) {
+        if (\Minz\Csrf::validate($csrf) && !$errors) {
             $user->save();
             utils\Locale::setCurrentLocale($locale);
         }

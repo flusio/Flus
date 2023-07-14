@@ -3,6 +3,9 @@
 namespace flusio\controllers\links;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
 
 class SearchesTest extends \PHPUnit\Framework\TestCase
 {
@@ -11,7 +14,6 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     use \tests\LoginHelper;
     use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -30,7 +32,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $url = $this->fake('url');
 
-        $response = $this->appRun('get', '/links/search', [
+        $response = $this->appRun('GET', '/links/search', [
             'url' => $url,
         ]);
 
@@ -45,14 +47,14 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $url = $this->fake('url');
         $title = $this->fake('sentence');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $support_user->id,
             'url' => $url,
-            'is_hidden' => 0,
+            'is_hidden' => false,
             'title' => $title,
         ]);
 
-        $response = $this->appRun('get', '/links/search', [
+        $response = $this->appRun('GET', '/links/search', [
             'url' => $url,
         ]);
 
@@ -67,19 +69,19 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $url = $this->fake('url');
         $existing_title = $this->fakeUnique('sentence');
         $default_title = $this->fakeUnique('sentence');
-        $existing_link_id = $this->create('link', [
+        $existing_link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $url,
             'title' => $existing_title,
         ]);
-        $default_link_id = $this->create('link', [
+        $default_link = LinkFactory::create([
             'user_id' => $support_user->id,
             'url' => $url,
-            'is_hidden' => 0,
+            'is_hidden' => false,
             'title' => $default_title,
         ]);
 
-        $response = $this->appRun('get', '/links/search', [
+        $response = $this->appRun('GET', '/links/search', [
             'url' => $url,
         ]);
 
@@ -94,27 +96,27 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $name = $this->fake('sentence');
         $feed_url = $this->fake('url');
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'feed',
             'user_id' => $support_user->id,
-            'is_public' => 1,
+            'is_public' => true,
             'name' => $name,
             'feed_url' => $feed_url,
         ]);
-        $feed_link_id = $this->create('link');
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $feed_link_id,
+        $feed_link = LinkFactory::create();
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $feed_link->id,
         ]);
         $url = $this->fake('url');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $support_user->id,
             'url' => $url,
-            'is_hidden' => 0,
-            'url_feeds' => "[\"{$feed_url}\"]",
+            'is_hidden' => false,
+            'url_feeds' => [$feed_url],
         ]);
 
-        $response = $this->appRun('get', '/links/search', [
+        $response = $this->appRun('GET', '/links/search', [
             'url' => $url,
         ]);
 
@@ -129,37 +131,37 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $name = $this->fake('sentence');
         $feed_url_rss = $this->fakeUnique('url');
         $feed_url_atom = $this->fakeUnique('url');
-        $collection_rss_id = $this->create('collection', [
+        $collection_rss = CollectionFactory::create([
             'type' => 'feed',
             'user_id' => $support_user->id,
-            'is_public' => 1,
+            'is_public' => true,
             'name' => $name,
             'feed_url' => $feed_url_rss,
         ]);
-        $collection_atom_id = $this->create('collection', [
+        $collection_atom = CollectionFactory::create([
             'type' => 'feed',
             'user_id' => $support_user->id,
-            'is_public' => 1,
+            'is_public' => true,
             'name' => $name,
             'feed_url' => $feed_url_atom,
         ]);
         $link_url = $this->fake('url');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $support_user->id,
             'url' => $link_url,
-            'is_hidden' => 0,
-            'url_feeds' => "[\"{$feed_url_rss}\", \"{$feed_url_atom}\"]",
+            'is_hidden' => false,
+            'url_feeds' => [$feed_url_rss, $feed_url_atom],
         ]);
 
-        $response = $this->appRun('get', '/links/search', [
+        $response = $this->appRun('GET', '/links/search', [
             'url' => $link_url,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, $collection_rss_id);
+        $this->assertResponseContains($response, $collection_rss->id);
         // Only the first feed is considered if name are the same but feed
         // types differ.
-        $this->assertResponseNotContains($response, $collection_atom_id);
+        $this->assertResponseNotContains($response, $collection_atom->id);
     }
 
     public function testShowDoesNotDisplaysHiddenDefaultLink()
@@ -168,14 +170,14 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $url = $this->fake('url');
         $title = $this->fake('sentence');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $support_user->id,
             'url' => $url,
-            'is_hidden' => 1,
+            'is_hidden' => true,
             'title' => $title,
         ]);
 
-        $response = $this->appRun('get', '/links/search', [
+        $response = $this->appRun('GET', '/links/search', [
             'url' => $url,
         ]);
 
@@ -187,7 +189,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     {
         $url = $this->fake('url');
 
-        $response = $this->appRun('get', '/links/search', [
+        $response = $this->appRun('GET', '/links/search', [
             'url' => $url,
         ]);
 
@@ -203,7 +205,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Link::count());
 
-        $response = $this->appRun('post', '/links/search', [
+        $response = $this->appRun('POST', '/links/search', [
             'csrf' => $user->csrf,
             'url' => $url,
         ]);
@@ -213,7 +215,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::findBy(['url' => $url]);
         $this->assertSame($support_user->id, $link->user_id);
         $this->assertSame('Carnet de Flus', $link->title);
-        $this->assertSame(['https://flus.fr/carnet/feeds/all.atom.xml'], $link->feedUrls());
+        $this->assertSame(['https://flus.fr/carnet/feeds/all.atom.xml'], $link->url_feeds);
         $this->assertSame(200, $link->fetched_code);
     }
 
@@ -228,7 +230,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Collection::count());
 
-        $response = $this->appRun('post', '/links/search', [
+        $response = $this->appRun('POST', '/links/search', [
             'csrf' => $user->csrf,
             'url' => $url,
         ]);
@@ -249,7 +251,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
-        $response = $this->appRun('post', '/links/search', [
+        $response = $this->appRun('POST', '/links/search', [
             'csrf' => $user->csrf,
             'url' => $url,
         ]);
@@ -257,7 +259,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::findBy(['url' => $url]);
         $this->assertSame($support_user->id, $link->user_id);
         $this->assertSame($url, $link->title);
-        $this->assertSame([$url], $link->feedUrls());
+        $this->assertSame([$url], $link->url_feeds);
         $collection = models\Collection::findBy(['feed_url' => $url]);
         $this->assertSame($support_user->id, $collection->user_id);
         $this->assertSame('feed', $collection->type);
@@ -285,7 +287,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             TEXT
         );
 
-        $response = $this->appRun('post', '/links/search', [
+        $response = $this->appRun('POST', '/links/search', [
             'csrf' => $user->csrf,
             'url' => $url,
         ]);
@@ -304,7 +306,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $support_user = models\User::supportUser();
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $support_user->id,
             'url' => $url,
             'title' => $url,
@@ -313,13 +315,13 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Link::count());
 
-        $response = $this->appRun('post', '/links/search', [
+        $response = $this->appRun('POST', '/links/search', [
             'csrf' => $user->csrf,
             'url' => $url,
         ]);
 
         $this->assertSame(1, models\Link::count());
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertStringContainsString('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
     }
@@ -331,7 +333,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $url = 'https://flus.fr/carnet/';
         $url_feed = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $name = $this->fake('sentence');
-        $this->create('collection', [
+        CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $url_feed,
             'user_id' => $support_user->id,
@@ -340,7 +342,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Collection::count());
 
-        $response = $this->appRun('post', '/links/search', [
+        $response = $this->appRun('POST', '/links/search', [
             'csrf' => $user->csrf,
             'url' => $url,
         ]);
@@ -357,7 +359,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Link::count());
 
-        $response = $this->appRun('post', '/links/search', [
+        $response = $this->appRun('POST', '/links/search', [
             'csrf' => 'a token',
             'url' => $url,
         ]);
@@ -374,7 +376,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Link::count());
 
-        $response = $this->appRun('post', '/links/search', [
+        $response = $this->appRun('POST', '/links/search', [
             'csrf' => 'not the token',
             'url' => $url,
         ]);
@@ -392,7 +394,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Link::count());
 
-        $response = $this->appRun('post', '/links/search', [
+        $response = $this->appRun('POST', '/links/search', [
             'csrf' => $user->csrf,
             'url' => $url,
         ]);

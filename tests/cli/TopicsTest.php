@@ -4,13 +4,13 @@ namespace flusio\cli;
 
 use flusio\models;
 use flusio\utils;
+use tests\factories\TopicFactory;
 
 class TopicsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -36,14 +36,14 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     {
         $label1 = $this->fake('word');
         $label2 = $this->fake('word');
-        $this->create('topic', [
+        TopicFactory::create([
             'label' => $label1,
         ]);
-        $this->create('topic', [
+        TopicFactory::create([
             'label' => $label2,
         ]);
 
-        $response = $this->appRun('cli', '/topics');
+        $response = $this->appRun('CLI', '/topics');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $label1);
@@ -56,7 +56,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Topic::count());
 
-        $response = $this->appRun('cli', '/topics/create', [
+        $response = $this->appRun('CLI', '/topics/create', [
             'label' => $label,
         ]);
 
@@ -70,7 +70,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $label = $this->fake('word');
         $image_url = 'https://flus.fr/carnet/card.png';
 
-        $response = $this->appRun('cli', '/topics/create', [
+        $response = $this->appRun('CLI', '/topics/create', [
             'label' => $label,
             'image_url' => $image_url,
         ]);
@@ -94,7 +94,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $size = $label_max_size + $this->fake('randomDigitNotNull');
         $label = $this->fake('regexify', "\w{{$size}}");
 
-        $response = $this->appRun('cli', '/topics/create', [
+        $response = $this->appRun('CLI', '/topics/create', [
             'label' => $label,
         ]);
 
@@ -105,7 +105,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfLabelIsEmpty()
     {
-        $response = $this->appRun('cli', '/topics/create', [
+        $response = $this->appRun('CLI', '/topics/create', [
             'label' => '',
         ]);
 
@@ -118,18 +118,18 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     {
         $old_label = $this->fakeUnique('word');
         $new_label = $this->fakeUnique('word');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $old_label,
         ]);
 
-        $response = $this->appRun('cli', '/topics/update', [
-            'id' => $topic_id,
+        $response = $this->appRun('CLI', '/topics/update', [
+            'id' => $topic->id,
             'label' => $new_label,
         ]);
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'has been updated');
-        $topic = models\Topic::find($topic_id);
+        $topic = $topic->reload();
         $this->assertSame($new_label, $topic->label);
     }
 
@@ -137,18 +137,18 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     {
         $old_image_filename = $this->fakeUnique('sha256') . '.jpg';
         $image_url = 'https://flus.fr/carnet/card.png';
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'image_filename' => $old_image_filename,
         ]);
 
-        $response = $this->appRun('cli', '/topics/update', [
-            'id' => $topic_id,
+        $response = $this->appRun('CLI', '/topics/update', [
+            'id' => $topic->id,
             'image_url' => $image_url,
         ]);
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'has been updated');
-        $topic = models\Topic::find($topic_id);
+        $topic = $topic->reload();
         $image_filename = $topic->image_filename;
         $this->assertNotSame($old_image_filename, $image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
@@ -165,18 +165,18 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     {
         $old_label = $this->fakeUnique('word');
         $new_label = '';
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $old_label,
         ]);
 
-        $response = $this->appRun('cli', '/topics/update', [
-            'id' => $topic_id,
+        $response = $this->appRun('CLI', '/topics/update', [
+            'id' => $topic->id,
             'label' => $new_label,
         ]);
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'has been updated');
-        $topic = models\Topic::find($topic_id);
+        $topic = $topic->reload();
         $this->assertSame($old_label, $topic->label);
     }
 
@@ -184,18 +184,18 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     {
         $old_label = $this->fakeUnique('word');
         $new_label = $this->fakeUnique('word');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $old_label,
         ]);
 
-        $response = $this->appRun('cli', '/topics/update', [
+        $response = $this->appRun('CLI', '/topics/update', [
             'id' => 'not an id',
             'label' => $new_label,
         ]);
 
         $this->assertResponseCode($response, 404);
         $this->assertResponseEquals($response, 'Topic id `not an id` does not exist.');
-        $topic = models\Topic::find($topic_id);
+        $topic = $topic->reload();
         $this->assertSame($old_label, $topic->label);
     }
 
@@ -205,29 +205,29 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $label_max_size = models\Topic::LABEL_MAX_SIZE;
         $size = $label_max_size + $this->fake('randomDigitNotNull');
         $new_label = $this->fake('regexify', "\w{{$size}}");
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $old_label,
         ]);
 
-        $response = $this->appRun('cli', '/topics/update', [
-            'id' => $topic_id,
+        $response = $this->appRun('CLI', '/topics/update', [
+            'id' => $topic->id,
             'label' => $new_label,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, "The label must be less than {$label_max_size} characters.");
-        $topic = models\Topic::find($topic_id);
+        $topic = $topic->reload();
         $this->assertSame($old_label, $topic->label);
     }
 
     public function testDeleteDeletesTopic()
     {
-        $topic_id = $this->create('topic');
+        $topic = TopicFactory::create();
 
         $this->assertSame(1, models\Topic::count());
 
-        $response = $this->appRun('cli', '/topics/delete', [
-            'id' => $topic_id,
+        $response = $this->appRun('CLI', '/topics/delete', [
+            'id' => $topic->id,
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -237,9 +237,9 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfIdIsInvalid()
     {
-        $topic_id = $this->create('topic');
+        $topic = TopicFactory::create();
 
-        $response = $this->appRun('cli', '/topics/delete', [
+        $response = $this->appRun('CLI', '/topics/delete', [
             'id' => 'not an id',
         ]);
 

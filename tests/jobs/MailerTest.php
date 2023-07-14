@@ -2,19 +2,21 @@
 
 namespace flusio\jobs;
 
+use tests\factories\TokenFactory;
+use tests\factories\UserFactory;
+
 class MailerTest extends \PHPUnit\Framework\TestCase
 {
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
-    use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\MailerAsserts;
 
     /**
      * @beforeClass
      */
-    public static function loadApplication()
+    public static function initEngine()
     {
-        self::$application = new \flusio\cli\Application();
+        $router = \flusio\Router::load();
+        \Minz\Engine::init($router);
     }
 
     public function testQueue()
@@ -27,14 +29,14 @@ class MailerTest extends \PHPUnit\Framework\TestCase
     public function testPerform()
     {
         $mailer_job = new Mailer();
-        $token = $this->create('token');
-        $user_id = $this->create('user', [
-            'validation_token' => $token,
+        $token = TokenFactory::create();
+        $user = UserFactory::create([
+            'validation_token' => $token->token,
         ]);
 
         $this->assertEmailsCount(0);
 
-        $mailer_job->perform('Users', 'sendAccountValidationEmail', $user_id);
+        $mailer_job->perform('Users', 'sendAccountValidationEmail', $user->id);
 
         $this->assertEmailsCount(1);
     }

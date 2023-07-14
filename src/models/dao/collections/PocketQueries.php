@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\collections;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the Pocket importation system.
  *
@@ -13,18 +15,17 @@ trait PocketQueries
     /**
      * Return the list of ids indexed by names for the given user.
      *
-     * @param string $user_id
-     *
-     * @return array
+     * @return array<string, string>
      */
-    public function listNamesToIdsByUserId($user_id)
+    public static function listNamesToIdsByUserId(string $user_id)
     {
         $sql = <<<SQL
             SELECT name, id FROM collections
             WHERE user_id = :user_id
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
         ]);

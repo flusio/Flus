@@ -3,38 +3,42 @@
 namespace flusio\controllers;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\CollectionToTopicFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\TopicFactory;
 
 class DiscoveryTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
     {
         $topic_label = $this->fakeUnique('sentence');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $topic_label,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $topic->id,
         ]);
-        $link_id = $this->create('link', [
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', '/discovery');
+        $response = $this->appRun('GET', '/discovery');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $topic_label);
@@ -45,19 +49,19 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
     public function testShowDoesNotCountCollectionIfEmpty()
     {
         $topic_label = $this->fakeUnique('sentence');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $topic_label,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $topic->id,
         ]);
 
-        $response = $this->appRun('get', '/discovery');
+        $response = $this->appRun('GET', '/discovery');
 
         $this->assertResponseContains($response, 'No collections');
         $this->assertResponseNotContains($response, '1 collection');
@@ -66,26 +70,26 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
     public function testShowDoesNotCountCollectionIfOnlyHiddenLink()
     {
         $topic_label = $this->fakeUnique('sentence');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $topic_label,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $topic->id,
         ]);
-        $link_id = $this->create('link', [
-            'is_hidden' => 1,
+        $link = LinkFactory::create([
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', '/discovery');
+        $response = $this->appRun('GET', '/discovery');
 
         $this->assertResponseContains($response, 'No collections');
         $this->assertResponseNotContains($response, '1 collection');
@@ -94,26 +98,26 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
     public function testShowDoesNotCountCollectionIfPrivate()
     {
         $topic_label = $this->fakeUnique('sentence');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $topic_label,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $topic->id,
         ]);
-        $link_id = $this->create('link', [
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', '/discovery');
+        $response = $this->appRun('GET', '/discovery');
 
         $this->assertResponseContains($response, 'No collections');
         $this->assertResponseNotContains($response, '1 collection');

@@ -3,243 +3,230 @@
 namespace flusio\models\dao\links;
 
 use flusio\models;
-use flusio\models\dao;
+use tests\factories\UserFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\MessageFactory;
 
 class SearchQueriesTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
-    use \Minz\Tests\FactoriesHelper;
 
     public function testSearchComputedByUserIdSearchesByTitle()
     {
-        $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
         $query = $title;
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $title,
         ]);
 
-        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, []);
+        $links = models\Link::listComputedByQueryAndUserId($query, $user->id, []);
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id, $db_links[0]['id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
     }
 
     public function testSearchComputedByUserIdSearchesByUrl()
     {
-        $dao = new dao\Link();
         $url = $this->fake('url');
         $query = $url;
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
             'url' => $url,
         ]);
 
-        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, []);
+        $links = models\Link::listComputedByQueryAndUserId($query, $user->id, []);
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id, $db_links[0]['id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
     }
 
     public function testSearchComputedByUserIdSortsByCreatedAt()
     {
-        $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
         $query = $title;
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $created_at_1 = \Minz\Time::ago(1, 'day');
         $created_at_2 = \Minz\Time::ago(2, 'day');
-        $link_id_1 = $this->create('link', [
-            'user_id' => $user_id,
+        $link_1 = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $title,
-            'created_at' => $created_at_1->format(\Minz\Model::DATETIME_FORMAT),
+            'created_at' => $created_at_1,
         ]);
-        $link_id_2 = $this->create('link', [
-            'user_id' => $user_id,
+        $link_2 = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $title,
-            'created_at' => $created_at_2->format(\Minz\Model::DATETIME_FORMAT),
+            'created_at' => $created_at_2,
         ]);
 
-        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, []);
+        $links = models\Link::listComputedByQueryAndUserId($query, $user->id, []);
 
-        $this->assertSame(2, count($db_links));
-        $this->assertSame($link_id_1, $db_links[0]['id']);
-        $this->assertSame($link_id_2, $db_links[1]['id']);
+        $this->assertSame(2, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
+        $this->assertSame($link_2->id, $links[1]->id);
     }
 
     public function testSearchComputedByUserIdCanReturnPublishedAt()
     {
-        $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
         $query = $title;
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $published_at = $this->fake('dateTime');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $title,
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+            'created_at' => $published_at,
         ]);
 
-        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, ['published_at']);
+        $links = models\Link::listComputedByQueryAndUserId($query, $user->id, ['published_at']);
 
-        $this->assertSame(1, count($db_links));
-        $link_published_at = date_create_from_format(
-            \Minz\Model::DATETIME_FORMAT,
-            $db_links[0]['published_at']
-        );
-        $this->assertEquals($published_at, $link_published_at);
+        $this->assertSame(1, count($links));
+        $this->assertEquals($published_at, $links[0]->published_at);
     }
 
     public function testSearchComputedByUserIdCanReturnNumberComments()
     {
-        $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
         $query = $title;
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $title,
         ]);
-        $message_id = $this->create('message', [
-            'link_id' => $link_id,
+        MessageFactory::create([
+            'link_id' => $link->id,
         ]);
 
-        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, ['number_comments']);
+        $links = models\Link::listComputedByQueryAndUserId($query, $user->id, ['number_comments']);
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame(1, $db_links[0]['number_comments']);
+        $this->assertSame(1, count($links));
+        $this->assertSame(1, $links[0]->number_comments);
     }
 
     public function testSearchComputedByUserIdCanLimitResults()
     {
-        $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
         $query = $title;
-        $user_id = $this->create('user');
-        $link_id_1 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(3, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $user = UserFactory::create();
+        $link_1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(3, 'days'),
             'title' => $title,
             'url' => 'https://example.com/foo1', // urls must be of the same lenght
         ]);
-        $link_id_2 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(2, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $link_2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(2, 'days'),
             'title' => $title,
             'url' => 'https://example.com/foo2', // urls must be of the same lenght
         ]);
-        $link_id_3 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(1, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $link_3 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(1, 'days'),
             'title' => $title,
             'url' => 'https://example.com/foo3', // urls must be of the same lenght
         ]);
 
-        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, [], [
+        $links = models\Link::listComputedByQueryAndUserId($query, $user->id, [], [
             'limit' => 2,
         ]);
 
-        $this->assertSame(2, count($db_links));
-        $this->assertSame($link_id_3, $db_links[0]['id']);
-        $this->assertSame($link_id_2, $db_links[1]['id']);
+        $this->assertSame(2, count($links));
+        $this->assertSame($link_3->id, $links[0]->id);
+        $this->assertSame($link_2->id, $links[1]->id);
     }
 
     public function testSearchComputedByUserIdCanOffsetResults()
     {
-        $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
         $query = $title;
-        $user_id = $this->create('user');
-        $link_id_1 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(3, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $user = UserFactory::create();
+        $link_1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(3, 'days'),
             'title' => $title,
             'url' => 'https://example.com/foo1', // urls must be of the same lenght
         ]);
-        $link_id_2 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(2, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $link_2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(2, 'days'),
             'title' => $title,
             'url' => 'https://example.com/foo2', // urls must be of the same lenght
         ]);
-        $link_id_3 = $this->create('link', [
-            'user_id' => $user_id,
-            'created_at' => \Minz\Time::ago(1, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $link_3 = LinkFactory::create([
+            'user_id' => $user->id,
+            'created_at' => \Minz\Time::ago(1, 'days'),
             'title' => $title,
             'url' => 'https://example.com/foo3', // urls must be of the same lenght
         ]);
 
-        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, [], [
+        $links = models\Link::listComputedByQueryAndUserId($query, $user->id, [], [
             'offset' => 1,
         ]);
 
-        $this->assertSame(2, count($db_links));
-        $this->assertSame($link_id_2, $db_links[0]['id']);
-        $this->assertSame($link_id_1, $db_links[1]['id']);
+        $this->assertSame(2, count($links));
+        $this->assertSame($link_2->id, $links[0]->id);
+        $this->assertSame($link_1->id, $links[1]->id);
     }
 
     public function testSearchComputedByUserIdCanExcludeLinksOnlyInNeverCollection()
     {
-        $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
         $query = $title;
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
+        $user = $user->reload();
         $never_list = $user->neverList();
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $title,
         ]);
-        $this->create('link_to_collection', [
+        LinkToCollectionFactory::create([
             'collection_id' => $never_list->id,
-            'link_id' => $link_id,
+            'link_id' => $link->id,
         ]);
 
-        $db_links = $dao->listComputedByQueryAndUserId($query, $user_id, [], [
+        $links = models\Link::listComputedByQueryAndUserId($query, $user->id, [], [
             'exclude_never_only' => true,
         ]);
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testCountByQueryAndUserId()
     {
-        $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
         $query = $title;
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $title,
         ]);
 
-        $count = $dao->countByQueryAndUserId($query, $user_id);
+        $count = models\Link::countByQueryAndUserId($query, $user->id);
 
         $this->assertSame(1, $count);
     }
 
     public function testCountByQueryAndUserIdCanExcludeLinksOnlyInNeverCollection()
     {
-        $dao = new dao\Link();
         $title = $this->fake('sentence', 10, false);
         $query = $title;
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $never_list = $user->neverList();
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $title,
         ]);
-        $this->create('link_to_collection', [
+        LinkToCollectionFactory::create([
             'collection_id' => $never_list->id,
-            'link_id' => $link_id,
+            'link_id' => $link->id,
         ]);
 
-        $count = $dao->countByQueryAndUserId($query, $user_id, [
+        $count = models\Link::countByQueryAndUserId($query, $user->id, [
             'exclude_never_only' => true,
         ]);
 

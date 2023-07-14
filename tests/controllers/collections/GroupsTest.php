@@ -3,13 +3,17 @@
 namespace flusio\controllers\collections;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
+use tests\factories\FollowedCollectionFactory;
+use tests\factories\GroupFactory;
+use tests\factories\UserFactory;
 
 class GroupsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
@@ -17,14 +21,14 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
             'from' => $from,
         ]);
 
@@ -37,18 +41,18 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $group_name = $this->fake('text', 50);
-        $group_id = $this->create('group', [
+        $group = GroupFactory::create([
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
-            'group_id' => $group_id,
+            'group_id' => $group->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
             'from' => $from,
         ]);
 
@@ -58,20 +62,20 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     public function testEditRendersIfCollectionIsFollowed()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'name' => $collection_name,
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
             'from' => $from,
         ]);
 
@@ -83,30 +87,30 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     public function testEditRendersGroupIfAlreadySetAndCollectionIsFollowed()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $group_name = $this->fakeUnique('text', 50);
         $other_group_name = $this->fakeUnique('text', 50);
-        $group_id = $this->create('group', [
+        $group = GroupFactory::create([
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
-        $other_group_id = $this->create('group', [
-            'user_id' => $other_user_id,
+        $other_group = GroupFactory::create([
+            'user_id' => $other_user->id,
             'name' => $other_group_name,
         ]);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'is_public' => 1,
-            'group_id' => $other_group_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
+            'group_id' => $other_group->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
-            'group_id' => $group_id,
+            'collection_id' => $collection->id,
+            'group_id' => $group->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
             'from' => $from,
         ]);
 
@@ -116,14 +120,14 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 
     public function testEditRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $user_id,
+            'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
             'from' => $from,
         ]);
 
@@ -134,13 +138,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionDoesNotExist()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', '/collections/not-an-id/group', [
+        $response = $this->appRun('GET', '/collections/not-an-id/group', [
             'from' => $from,
         ]);
 
@@ -150,15 +154,15 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionIsNotFollowed()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
             'from' => $from,
         ]);
 
@@ -168,19 +172,19 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionIsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
         ]);
-        $this->create('collection_share', [
+        CollectionShareFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
             'from' => $from,
         ]);
 
@@ -191,13 +195,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $group_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $group_name,
@@ -210,16 +214,16 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $group_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'group_id' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $this->assertSame(0, models\Group::count());
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $group_name,
@@ -229,62 +233,62 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $group = models\Group::take();
         $this->assertSame($group_name, $group->name);
         $this->assertSame($user->id, $group->user_id);
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertSame($group->id, $collection->group_id);
     }
 
     public function testUpdateSetsGroupIfCollectionIsFollowed()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $group_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
             'group_id' => null,
         ]);
-        $followed_collection_id = $this->create('followed_collection', [
+        $followed_collection = FollowedCollectionFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'group_id' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $this->assertSame(0, models\Group::count());
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $group_name,
         ]);
 
         $this->assertSame(1, models\Group::count());
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->group_id);
         $group = models\Group::take();
-        $followed_collection = models\FollowedCollection::find($followed_collection_id);
+        $followed_collection = $followed_collection->reload();
         $this->assertSame($group->id, $followed_collection->group_id);
     }
 
     public function testUpdateUnsetsGroupIfNameIsEmpty()
     {
         $user = $this->login();
-        $group_id = $this->create('group');
-        $collection_id = $this->create('collection', [
+        $group = GroupFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
-            'group_id' => $group_id,
+            'group_id' => $group->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => '',
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->group_id);
     }
 
@@ -292,44 +296,44 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $group_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'group_id' => null,
         ]);
-        $group_id = $this->create('group', [
+        $group = GroupFactory::create([
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $this->assertSame(1, models\Group::count());
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $group_name,
         ]);
 
         $this->assertSame(1, models\Group::count());
-        $collection = models\Collection::find($collection_id);
-        $this->assertSame($group_id, $collection->group_id);
+        $collection = $collection->reload();
+        $this->assertSame($group->id, $collection->group_id);
     }
 
     public function testUpdateRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
         $group_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'group_id' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => 'a token',
             'from' => $from,
             'name' => $group_name,
@@ -344,13 +348,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $group_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/not-an-id/group", [
+        $response = $this->appRun('POST', "/collections/not-an-id/group", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $group_name,
@@ -363,16 +367,16 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfCollectionIsNotFollowed()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $group_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $group_name,
@@ -385,21 +389,21 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfCollectionIsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $group_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'group_id' => null,
         ]);
-        $this->create('collection_share', [
+        CollectionShareFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $group_name,
@@ -415,13 +419,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $max_size = models\Group::NAME_MAX_LENGTH;
         $size = $max_size + 1;
         $group_name = $this->fake('regexify', "\w{{$size}}");
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $group_name,
@@ -437,14 +441,14 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $group_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'group_id' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/group", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf' => 'not the token',
             'from' => $from,
             'name' => $group_name,

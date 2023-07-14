@@ -3,6 +3,7 @@
 namespace flusio\controllers;
 
 use flusio\models;
+use tests\factories\UserFactory;
 
 class OnboardingTest extends \PHPUnit\Framework\TestCase
 {
@@ -10,7 +11,6 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
@@ -71,13 +71,13 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/onboarding');
-        $user = models\User::find($user->id);
+        $user = $user->reload();
         $this->assertSame('fr_FR', $user->locale);
     }
 
     public function testUpdateLocaleRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'csrf' => 'a token',
             'locale' => 'en_GB',
         ]);
@@ -88,7 +88,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fonboarding');
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertSame('en_GB', $user->locale);
     }
 
@@ -104,7 +104,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/onboarding');
-        $user = models\User::find($user->id);
+        $user = $user->reload();
         $this->assertSame('en_GB', $user->locale);
     }
 
@@ -120,7 +120,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/onboarding');
-        $user = models\User::find($user->id);
+        $user = $user->reload();
         $this->assertSame('en_GB', $user->locale);
     }
 

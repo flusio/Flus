@@ -3,13 +3,14 @@
 namespace flusio\jobs\scheduled;
 
 use flusio\models;
+use tests\factories\FetchLogFactory;
+use tests\factories\LinkFactory;
 
 class LinksSyncTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
     use \tests\MockHttpHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
     /**
@@ -37,52 +38,47 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job = new LinksSync();
 
-        $this->assertSame(
-            $now->getTimestamp(),
-            $links_fetcher_job->perform_at->getTimestamp()
-        );
         $this->assertSame('+15 seconds', $links_fetcher_job->frequency);
     }
 
     public function testInstallWithJobsToCreate()
     {
         \Minz\Configuration::$application['job_links_sync_count'] = 2;
-        \Minz\Configuration::$application['job_adapter'] = 'database';
+        \Minz\Configuration::$jobs_adapter = 'database';
         $links_fetcher_job = new LinksSync();
-        $job_dao = new models\dao\Job();
 
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
 
         $links_fetcher_job->install();
 
         \Minz\Configuration::$application['job_links_sync_count'] = 1;
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
-        $this->assertSame(2, $job_dao->count());
+        $this->assertSame(2, \Minz\Job::count());
     }
 
     public function testInstallWithJobsToDelete()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
+        \Minz\Configuration::$jobs_adapter = 'database';
         $links_fetcher_job = new LinksSync();
-        $job_dao = new models\dao\Job();
-        $links_fetcher_job->performLater();
-        $links_fetcher_job->performLater();
+        $links_fetcher_job->performAsap();
+        $links_fetcher_job = new LinksSync();
+        $links_fetcher_job->performAsap();
 
-        $this->assertSame(2, $job_dao->count());
+        $this->assertSame(2, \Minz\Job::count());
 
         $links_fetcher_job->install();
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
-        $this->assertSame(1, $job_dao->count());
+        $this->assertSame(1, \Minz\Job::count());
     }
 
     public function testPerform()
     {
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'fetched_at' => null,
@@ -93,7 +89,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertNotNull($link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
@@ -103,7 +99,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformLogsFetch()
     {
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => 'https://github.com/flusio/flusio',
             'title' => 'https://github.com/flusio/flusio',
             'fetched_at' => null,
@@ -124,7 +120,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
     {
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'fetched_at' => null,
@@ -141,7 +137,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
     public function testPerformUsesCache()
     {
         $url = 'https://github.com/flusio/flusio';
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'fetched_at' => null,
@@ -164,7 +160,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($expected_title, $link->title);
     }
 
@@ -177,13 +173,13 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         foreach (range(1, 25) as $i) {
             $seconds = $this->fake('numberBetween', 0, 60);
             $created_at = \Minz\Time::ago($seconds, 'seconds');
-            $this->create('fetch_log', [
-                'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            FetchLogFactory::create([
+                'created_at' => $created_at,
                 'url' => $url,
                 'host' => $host,
             ]);
         }
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'fetched_at' => null,
@@ -192,7 +188,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($url, $link->title);
         $this->assertSame(0, $link->fetched_code);
         $this->assertNull($link->fetched_at);
@@ -208,10 +204,10 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $fetched_at = \Minz\Time::ago($seconds, 'seconds');
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
-            'fetched_at' => $fetched_at->format(\Minz\Model::DATETIME_FORMAT),
+            'fetched_at' => $fetched_at,
             'fetched_code' => 404,
             'fetched_error' => 'not found',
             'fetched_count' => $fetched_count,
@@ -220,7 +216,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertNotEquals($fetched_at, $link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
@@ -236,10 +232,10 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $interval_to_wait = 5 + pow($fetched_count, 4);
         $seconds = $this->fake('numberBetween', $interval_to_wait + 1, $interval_to_wait + 9000);
         $fetched_at = \Minz\Time::ago($seconds, 'seconds');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => 'https://github.com/flusio/flusio',
             'title' => 'https://github.com/flusio/flusio',
-            'fetched_at' => $fetched_at->format(\Minz\Model::DATETIME_FORMAT),
+            'fetched_at' => $fetched_at,
             'fetched_code' => 404,
             'fetched_error' => 'not found',
             'fetched_count' => $fetched_count,
@@ -248,7 +244,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame('https://github.com/flusio/flusio', $link->title);
         $this->assertSame($fetched_at->getTimestamp(), $link->fetched_at->getTimestamp());
         $this->assertSame(404, $link->fetched_code);
@@ -264,10 +260,10 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $interval_to_wait = 5 + pow($fetched_count, 4);
         $seconds = $this->fake('numberBetween', 0, $interval_to_wait);
         $fetched_at = \Minz\Time::ago($seconds, 'seconds');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => 'https://github.com/flusio/flusio',
             'title' => 'https://github.com/flusio/flusio',
-            'fetched_at' => $fetched_at->format(\Minz\Model::DATETIME_FORMAT),
+            'fetched_at' => $fetched_at,
             'fetched_code' => 404,
             'fetched_error' => 'not found',
             'fetched_count' => $fetched_count,
@@ -276,7 +272,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame('https://github.com/flusio/flusio', $link->title);
         $this->assertSame($fetched_at->getTimestamp(), $link->fetched_at->getTimestamp());
         $this->assertSame(404, $link->fetched_code);
@@ -289,13 +285,13 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $minutes = $this->fake('numberBetween', 0, 59);
         $locked_at = \Minz\Time::ago($minutes, 'minutes');
         $url = 'https://github.com/flusio/flusio';
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'fetched_at' => null,
             'fetched_code' => 0,
             'fetched_count' => 0,
-            'locked_at' => $locked_at->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => $locked_at,
         ]);
         $links_fetcher_job = new LinksSync();
         $title = $this->fake('sentence');
@@ -315,7 +311,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertNotSame($title, $link->title);
         $this->assertNull($link->fetched_at);
         $this->assertSame(0, $link->fetched_code);
@@ -329,13 +325,13 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $minutes = $this->fake('numberBetween', 60, 1000);
         $locked_at = \Minz\Time::ago($minutes, 'minutes');
         $url = 'https://github.com/flusio/flusio';
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'fetched_at' => null,
             'fetched_code' => 0,
             'fetched_count' => 0,
-            'locked_at' => $locked_at->format(\Minz\Model::DATETIME_FORMAT),
+            'locked_at' => $locked_at,
         ]);
         $links_fetcher_job = new LinksSync();
         $title = $this->fake('sentence');
@@ -355,7 +351,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($title, $link->title);
         $this->assertNotNull($link->fetched_at);
         $this->assertSame(200, $link->fetched_code);

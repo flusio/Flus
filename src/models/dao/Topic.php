@@ -2,39 +2,31 @@
 
 namespace flusio\models\dao;
 
+use Minz\Database;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Topic extends \Minz\DatabaseModel
+trait Topic
 {
     use MediaQueries;
 
     /**
-     * @throws \Minz\Errors\DatabaseError
-     */
-    public function __construct()
-    {
-        $properties = array_keys(\flusio\models\Topic::PROPERTIES);
-        parent::__construct('topics', 'id', $properties);
-    }
-
-    /**
      * Returns the list of topics attached to the given collection
      *
-     * @param string $collection_id
-     *
-     * @return array
+     * @return self[]
      */
-    public function listByCollectionId($collection_id)
+    public static function listByCollectionId(string $collection_id): array
     {
         $sql = <<<'SQL'
             SELECT t.* FROM topics t, collections_to_topics ct
             WHERE t.id = ct.topic_id AND ct.collection_id = ?;
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([$collection_id]);
-        return $statement->fetchAll();
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 }

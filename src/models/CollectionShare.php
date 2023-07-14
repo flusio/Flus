@@ -3,137 +3,61 @@
 namespace flusio\models;
 
 use flusio\utils;
+use Minz\Database;
+use Minz\Translatable;
+use Minz\Validable;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class CollectionShare extends \Minz\Model
+#[Database\Table(name: 'collection_shares')]
+class CollectionShare
 {
-    use DaoConnector;
+    use dao\CollectionShare;
+    use Database\Recordable;
+    use Validable;
 
     public const VALID_TYPES = ['read', 'write'];
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'integer',
-        ],
+    #[Database\Column]
+    public int $id;
 
-        'created_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'user_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $user_id;
 
-        'collection_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $collection_id;
 
-        'type' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\CollectionShare::validateType',
-        ],
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The type is required.'),
+    )]
+    #[Validable\Inclusion(
+        in: self::VALID_TYPES,
+        message: new Translatable('The type is invalid.'),
+    )]
+    public string $type;
 
-        // used to sort collection shares easily
-        'username' => [
-            'type' => 'string',
-            'computed' => true,
-        ],
-    ];
+    // used to sort collection shares easily
+    #[Database\Column(computed: true)]
+    public ?string $username;
 
-    /**
-     * Initialize the model with default values.
-     *
-     * @param mixed $values
-     */
-    public function __construct($values)
+    public function __construct(string $user_id, string $collection_id, string $type)
     {
-        parent::__construct(array_merge([
-            'type' => 'read',
-        ], $values));
-    }
-
-    /**
-     * @param string $user_id
-     * @param string $collection_id
-     * @param string $type
-     *
-     * @return \flusio\models\CollectionShare
-     */
-    public static function init($user_id, $collection_id, $type)
-    {
-        return new self([
-            'user_id' => $user_id,
-            'collection_id' => $collection_id,
-            'type' => $type,
-        ]);
+        $this->user_id = $user_id;
+        $this->collection_id = $collection_id;
+        $this->type = $type;
     }
 
     /**
      * Return the user attached to the CollectionShare
-     *
-     * @return \flusio\models\User
      */
-    public function user()
+    public function user(): User
     {
         return User::find($this->user_id);
-    }
-
-    /**
-     * @param string $type
-     * @return boolean
-     */
-    public static function validateType($type)
-    {
-        return in_array($type, self::VALID_TYPES);
-    }
-
-    /**
-     * Return a list of errors (if any). The array keys indicated the concerned
-     * property.
-     *
-     * @return string[]
-     */
-    public function validate()
-    {
-        $formatted_errors = [];
-
-        foreach (parent::validate() as $property => $error) {
-            $code = $error['code'];
-
-            if ($property === 'type' && $code === 'required') {
-                $formatted_error = _('The type is required.');
-            } elseif ($property === 'type') {
-                $formatted_error = _('The type is invalid.');
-            } else {
-                $formatted_error = $error['description']; // @codeCoverageIgnore
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-
-        return $formatted_errors;
-    }
-
-    /**
-     * Return the list of declared properties values.
-     *
-     * It doesn't return the id property because it is automatically generated
-     * by the database.
-     *
-     * @see \Minz\Model::toValues
-     *
-     * @return array
-     */
-    public function toValues()
-    {
-        $values = parent::toValues();
-        unset($values['id']);
-        return $values;
     }
 }

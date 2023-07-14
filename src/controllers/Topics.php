@@ -42,8 +42,7 @@ class Topics
             ]);
         }
 
-        $collections = models\Collection::daoToList(
-            'listPublicByTopicIdWithNumberLinks',
+        $collections = models\Collection::listPublicByTopicIdWithNumberLinks(
             $topic->id,
             $pagination->currentOffset(),
             $pagination->numberPerPage()

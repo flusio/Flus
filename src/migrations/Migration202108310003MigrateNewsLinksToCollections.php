@@ -41,7 +41,7 @@ class Migration202108310003MigrateNewsLinksToCollections
             if ($existing_link) {
                 $link = $existing_link;
             } else {
-                $link = models\Link::init($url, $user_id, false);
+                $link = new models\Link($url, $user_id, false);
             }
 
             // Update the new "via_*" info of the link
@@ -73,17 +73,16 @@ class Migration202108310003MigrateNewsLinksToCollections
                 $collection_id = $news_id;
             }
 
-            $links_to_collections_to_create[] = $at;
-            $links_to_collections_to_create[] = $link->id;
-            $links_to_collections_to_create[] = $collection_id;
+            $at = \DateTimeImmutable::createFromFormat(\Minz\Database\Column::DATETIME_FORMAT, $at);
+
+            $link_to_collection = new models\LinkToCollection($link->id, $collection_id);
+            $link_to_collection->created_at = $at;
+
+            $links_to_collections_to_create[] = $link_to_collection;
         }
 
         if ($links_to_collections_to_create) {
-            $links_to_collections_dao = new models\dao\LinkToCollection();
-            $links_to_collections_dao->bulkInsert(
-                ['created_at', 'link_id', 'collection_id'],
-                $links_to_collections_to_create
-            );
+            models\LinkToCollection::bulkInsert($links_to_collections_to_create);
         }
 
         return $database->commit();

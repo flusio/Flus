@@ -4,15 +4,16 @@ namespace flusio\controllers\my;
 
 use flusio\auth;
 use flusio\models;
+use tests\factories\SessionFactory;
+use tests\factories\TokenFactory;
+use tests\factories\UserFactory;
 
 class SecurityTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \tests\FlashAsserts;
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
 
@@ -21,10 +22,10 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->freeze($this->fake('dateTime'));
         $confirmed_at = \Minz\Time::ago($this->fake('numberBetween', 0, 15), 'minutes');
         $this->login([], [], [
-            'confirmed_password_at' => $confirmed_at->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => $confirmed_at,
         ]);
 
-        $response = $this->appRun('get', '/my/security');
+        $response = $this->appRun('GET', '/my/security');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'You can change your login details here');
@@ -37,7 +38,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'confirmed_password_at' => null,
         ]);
 
-        $response = $this->appRun('get', '/my/security');
+        $response = $this->appRun('GET', '/my/security');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'We need you to confirm your password');
@@ -49,10 +50,10 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->freeze($this->fake('dateTime'));
         $confirmed_at = \Minz\Time::ago($this->fake('numberBetween', 16, 9000), 'minutes');
         $this->login([], [], [
-            'confirmed_password_at' => $confirmed_at->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => $confirmed_at,
         ]);
 
-        $response = $this->appRun('get', '/my/security');
+        $response = $this->appRun('GET', '/my/security');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'We need you to confirm your password');
@@ -61,7 +62,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRedirectsIfUserIsNotConnected()
     {
-        $response = $this->appRun('get', '/my/security');
+        $response = $this->appRun('GET', '/my/security');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
     }
@@ -76,10 +77,10 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ], [], [
-            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => $user->csrf,
             'email' => $new_email,
             'password' => $new_password,
@@ -100,10 +101,10 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ], [], [
-            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => $user->csrf,
             'email' => $new_email,
             'password' => '',
@@ -119,16 +120,16 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_email = $this->fakeUnique('email');
         $old_password = $this->fakeUnique('password');
         $new_password = $this->fakeUnique('password');
-        $token = $this->create('token');
+        $token = TokenFactory::create();
         $user = $this->login([
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
-            'reset_token' => $token,
+            'reset_token' => $token->token,
         ], [], [
-            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => $user->csrf,
             'email' => $new_email,
             'password' => $new_password,
@@ -137,7 +138,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/my/security');
         $user = auth\CurrentUser::reload();
         $this->assertNull($user->reset_token);
-        $this->assertFalse(models\Token::exists($token));
+        $this->assertFalse(models\Token::exists($token->token));
     }
 
     public function testUpdateDeletesExistingSessionsExceptCurrentOne()
@@ -150,16 +151,16 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ], [], [
-            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => \Minz\Time::now(),
         ]);
         $current_session = auth\CurrentUser::session();
-        $session_id = $this->create('session', [
+        $session = SessionFactory::create([
             'user_id' => $user->id,
         ]);
 
         $this->assertSame(2, models\Session::count());
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => $user->csrf,
             'email' => $new_email,
             'password' => $new_password,
@@ -168,7 +169,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/my/security');
         $user = auth\CurrentUser::reload();
         $this->assertSame(1, models\Session::count());
-        $this->assertFalse(models\Session::exists($session_id));
+        $this->assertFalse(models\Session::exists($session->id));
         $session = models\Session::take();
         $this->assertSame($current_session->id, $session->id);
     }
@@ -179,22 +180,22 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_email = $this->fake('email');
         $old_password = $this->fake('password');
         $new_password = $this->fake('password');
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'csrf' => 'a token',
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => 'a token',
             'email' => $new_email,
             'password' => $new_password,
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
-        $user = auth\CurrentUser::reload();
-        $this->assertNull($user);
-        $user = models\User::find($user_id);
+        $current_user = auth\CurrentUser::reload();
+        $this->assertNull($current_user);
+        $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
     }
@@ -212,7 +213,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'confirmed_password_at' => null,
         ]);
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => $user->csrf,
             'email' => $new_email,
             'password' => $new_password,
@@ -236,10 +237,10 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ], [], [
-            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => 'not the token',
             'email' => $new_email,
             'password' => $new_password,
@@ -263,13 +264,13 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ], [], [
-            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => \Minz\Time::now(),
         ]);
-        $this->create('user', [
+        UserFactory::create([
             'email' => $new_email,
         ]);
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => $user->csrf,
             'email' => $new_email,
             'password' => $new_password,
@@ -293,10 +294,10 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ], [], [
-            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => $user->csrf,
             'email' => $new_email,
             'password' => $new_password,
@@ -319,10 +320,10 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ], [], [
-            'confirmed_password_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'confirmed_password_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('post', '/my/security', [
+        $response = $this->appRun('POST', '/my/security', [
             'csrf' => $user->csrf,
             'email' => '',
             'password' => $new_password,
@@ -346,7 +347,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'confirmed_password_at' => null,
         ]);
 
-        $response = $this->appRun('post', '/my/security/confirm', [
+        $response = $this->appRun('POST', '/my/security/confirm', [
             'csrf' => $user->csrf,
             'password' => $password,
         ]);
@@ -360,12 +361,12 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
     public function testConfirmPasswordRedirectsIfUserIsNotConnected()
     {
         $password = $this->fake('password');
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'csrf' => 'a token',
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/my/security/confirm', [
+        $response = $this->appRun('POST', '/my/security/confirm', [
             'csrf' => 'a token',
             'password' => $password,
         ]);
@@ -382,13 +383,16 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'confirmed_password_at' => null,
         ]);
 
-        $response = $this->appRun('post', '/my/security/confirm', [
+        $response = $this->appRun('POST', '/my/security/confirm', [
             'csrf' => 'not the token',
             'password' => $password,
         ]);
 
         $this->assertResponseCode($response, 302, '/my/security');
-        $this->assertFlash('error', 'A security verification failed: you should retry to submit the form.');
+        $this->assertSame(
+            'A security verification failed: you should retry to submit the form.',
+            \Minz\Flash::get('error')
+        );
         $session = auth\CurrentUser::session();
         $this->assertNull($session->confirmed_password_at);
     }
@@ -402,15 +406,15 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'confirmed_password_at' => null,
         ]);
 
-        $response = $this->appRun('post', '/my/security/confirm', [
+        $response = $this->appRun('POST', '/my/security/confirm', [
             'csrf' => $user->csrf,
             'password' => 'not the password',
         ]);
 
         $this->assertResponseCode($response, 302, '/my/security');
-        $this->assertFlash('errors', [
+        $this->assertEquals([
             'password_hash' => 'The password is incorrect.',
-        ]);
+        ], \Minz\Flash::get('errors'));
         $session = auth\CurrentUser::session();
         $this->assertNull($session->confirmed_password_at);
     }

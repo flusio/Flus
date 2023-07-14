@@ -4,13 +4,13 @@ namespace flusio\jobs\scheduled;
 
 use flusio\models;
 use flusio\services;
+use tests\factories\UserFactory;
 
 class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
     use \tests\MockHttpHelper;
-    use \Minz\Tests\FactoriesHelper;
 
     /**
      * @before
@@ -44,16 +44,15 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testInstall()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
 
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
 
         SubscriptionsSync::install();
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
-        $this->assertSame(1, $job_dao->count());
+        $this->assertSame(1, \Minz\Job::count());
     }
 
     public function testSyncUpdatesExpiredAt()
@@ -69,18 +68,18 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
             Content-type: application/json
 
             {
-                "{$account_id}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+                "{$account_id}": "{$new_expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
             }
             TEXT
         );
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'subscription_account_id' => $account_id,
-            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_expired_at' => $old_expired_at,
         ]);
 
         $subscriptions_sync_job->perform();
 
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertEquals($new_expired_at, $user->subscription_expired_at);
     }
 
@@ -98,20 +97,20 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
             {
                 "id": "{$account_id}",
-                "expired_at": "{$expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+                "expired_at": "{$expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
             }
             TEXT
         );
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'email' => $email,
             'subscription_account_id' => null,
-            'subscription_expired_at' => $this->fake('iso8601'),
-            'validated_at' => $this->fake('iso8601'),
+            'subscription_expired_at' => $this->fake('dateTime'),
+            'validated_at' => $this->fake('dateTime'),
         ]);
 
         $subscriptions_sync_job->perform();
 
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertSame($account_id, $user->subscription_account_id);
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
@@ -130,15 +129,15 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
             {"error": "can’t get an id"}
             TEXT
         );
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'email' => $email,
             'subscription_account_id' => null,
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_expired_at' => $expired_at,
         ]);
 
         $subscriptions_sync_job->perform();
 
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertNull($user->subscription_account_id);
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
@@ -159,14 +158,14 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
             }
             TEXT
         );
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'subscription_account_id' => $account_id,
-            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_expired_at' => $old_expired_at,
         ]);
 
         $subscriptions_sync_job->perform();
 
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertEquals($old_expired_at, $user->subscription_expired_at);
     }
 
@@ -186,19 +185,19 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
             Content-type: application/json
 
             {
-                "{$account_id_1}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}",
-                "{$account_id_2}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+                "{$account_id_1}": "{$new_expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}",
+                "{$account_id_2}": "{$new_expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
             }
             TEXT
         );
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'subscription_account_id' => $account_id_1,
-            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_expired_at' => $old_expired_at,
         ]);
 
         $subscriptions_sync_job->perform();
 
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertEquals($new_expired_at, $user->subscription_expired_at);
     }
 
@@ -216,20 +215,20 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
             {
                 "id": "{$account_id}",
-                "expired_at": "{$expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+                "expired_at": "{$expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
             }
             TEXT
         );
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'email' => $email,
             'subscription_account_id' => null,
-            'subscription_expired_at' => $this->fake('iso8601'),
+            'subscription_expired_at' => $this->fake('dateTime'),
             'validated_at' => null,
         ]);
 
         $subscriptions_sync_job->perform();
 
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertNull($user->subscription_account_id);
         $this->assertNotEquals($expired_at, $user->subscription_expired_at);
     }
@@ -247,18 +246,18 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
             Content-type: application/json
 
             {
-                "{$account_id}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+                "{$account_id}": "{$new_expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
             }
             TEXT
         );
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'subscription_account_id' => $account_id,
-            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_expired_at' => $old_expired_at,
         ]);
 
         $subscriptions_sync_job->perform();
 
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertEquals($old_expired_at, $user->subscription_expired_at);
     }
 
@@ -277,20 +276,20 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
             Content-type: application/json
 
             {
-                "{$account_id}": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+                "{$account_id}": "{$new_expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
             }
             TEXT
         );
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'subscription_account_id' => $account_id,
-            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_expired_at' => $old_expired_at,
         ]);
 
         $subscriptions_sync_job->perform();
 
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
 
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertEquals($old_expired_at, $user->subscription_expired_at);
     }
 }

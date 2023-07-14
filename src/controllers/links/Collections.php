@@ -62,7 +62,7 @@ class Collections
             $collection_ids = [];
         }
 
-        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        $groups = models\Group::listBy(['user_id' => $user->id]);
         utils\Sorter::localeSort($groups, 'name');
 
         $collections = $user->collections();
@@ -73,8 +73,7 @@ class Collections
             'access_type' => 'write',
         ]);
         utils\Sorter::localeSort($shared_collections, 'name');
-        $collections_by_others = models\Collection::daoToList(
-            'listWritableContainingNotOwnedLinkWithUrl',
+        $collections_by_others = models\Collection::listWritableContainingNotOwnedLinkWithUrl(
             $user->id,
             $link->url_lookup,
         );
@@ -139,12 +138,12 @@ class Collections
         }
 
         if (!$user->canWriteCollections($new_collection_ids)) {
-            utils\Flash::set('error', _('One of the associated collection doesn’t exist.'));
+            \Minz\Flash::set('error', _('One of the associated collection doesn’t exist.'));
             return Response::found($from);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 
@@ -153,7 +152,7 @@ class Collections
 
             $errors = $new_collection->validate();
             if ($errors) {
-                utils\Flash::set('errors', $errors);
+                \Minz\Flash::set('errors', $errors);
                 return Response::found($from);
             }
 
@@ -172,7 +171,7 @@ class Collections
         models\LinkToCollection::setCollections($link->id, $new_collection_ids);
 
         if ($comment) {
-            $message = models\Message::init($user->id, $link->id, $comment);
+            $message = new models\Message($user->id, $link->id, $comment);
             $message->save();
         }
 

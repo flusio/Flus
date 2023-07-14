@@ -8,7 +8,7 @@ namespace flusio\jobs;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Mailer extends Job
+class Mailer extends \Minz\Job
 {
     public function __construct()
     {

@@ -39,8 +39,7 @@ class Links
         $pagination_page = $request->paramInteger('page', 1);
 
         if ($query) {
-            $number_links = models\Link::daoCall(
-                'countByQueryAndUserId',
+            $number_links = models\Link::countByQueryAndUserId(
                 $query,
                 $user->id,
                 [
@@ -56,8 +55,7 @@ class Links
                 ]);
             }
 
-            $links = models\Link::daoToList(
-                'listComputedByQueryAndUserId',
+            $links = models\Link::listComputedByQueryAndUserId(
                 $query,
                 $user->id,
                 ['published_at', 'number_comments'],
@@ -77,7 +75,7 @@ class Links
             $bookmarks = $user->bookmarks();
             $read_list = $user->readList();
 
-            $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+            $groups = models\Group::listBy(['user_id' => $user->id]);
             utils\Sorter::localeSort($groups, 'name');
 
             $collections = $user->collections(['number_links']);
@@ -157,7 +155,7 @@ class Links
 
         $bookmarks = $user->bookmarks();
 
-        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        $groups = models\Group::listBy(['user_id' => $user->id]);
         utils\Sorter::localeSort($groups, 'name');
 
         $collections = $user->collections();
@@ -226,7 +224,7 @@ class Links
 
         $bookmarks = $user->bookmarks();
 
-        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        $groups = models\Group::listBy(['user_id' => $user->id]);
         utils\Sorter::localeSort($groups, 'name');
 
         $collections = $user->collections();
@@ -239,7 +237,7 @@ class Links
         ]);
         utils\Sorter::localeSort($shared_collections, 'name');
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_hidden' => $is_hidden,
@@ -254,7 +252,7 @@ class Links
             ]);
         }
 
-        $link = models\Link::init($url, $user->id, $is_hidden);
+        $link = new models\Link($url, $user->id, $is_hidden);
         $errors = $link->validate();
         if ($errors) {
             return Response::badRequest('links/new.phtml', [
@@ -416,7 +414,7 @@ class Links
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('links/edit.phtml', [
                 'link' => $link,
                 'title' => $new_title,
@@ -478,8 +476,8 @@ class Links
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 

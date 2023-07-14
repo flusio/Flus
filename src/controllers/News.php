@@ -6,7 +6,6 @@ use Minz\Response;
 use flusio\auth;
 use flusio\models;
 use flusio\services;
-use flusio\utils;
 
 /**
  * Handle the requests related to the news.
@@ -36,7 +35,7 @@ class News
         return Response::ok('news/index.phtml', [
             'news' => $news,
             'links' => $news->links(['published_at', 'number_comments']),
-            'no_news' => utils\Flash::pop('no_news'),
+            'no_news' => \Minz\Flash::pop('no_news'),
         ]);
     }
 
@@ -67,7 +66,7 @@ class News
 
         $news = $user->news();
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('news/index.phtml', [
                 'news' => $news,
                 'links' => [],
@@ -96,12 +95,11 @@ class News
         }
 
         $news_picker = new services\NewsPicker($user, $options);
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
         $news = $user->news();
 
-        foreach ($db_links as $db_link) {
-            $news_link = new models\Link($db_link);
+        foreach ($links as $news_link) {
             $link = $user->obtainLink($news_link);
 
             // If the link has already a via info, we want to keep it (it might
@@ -118,8 +116,8 @@ class News
             models\LinkToCollection::attach([$link->id], [$news->id], $news_link->published_at);
         }
 
-        if (!$db_links) {
-            utils\Flash::set('no_news', true);
+        if (!$links) {
+            \Minz\Flash::set('no_news', true);
         }
 
         return Response::redirect('news');

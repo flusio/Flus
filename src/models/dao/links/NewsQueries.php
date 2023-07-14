@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\links;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the News.
  *
@@ -13,14 +15,13 @@ trait NewsQueries
     /**
      * Return links listed in bookmarks of the given user, ordered randomly.
      *
-     * @param string $user_id
-     * @param integer|null $min_duration
-     * @param integer|null $max_duration
-     *
-     * @return array
+     * @return self[]
      */
-    public function listFromBookmarksForNews($user_id, $min_duration, $max_duration)
-    {
+    public static function listFromBookmarksForNews(
+        string $user_id,
+        ?int $min_duration,
+        ?int $max_duration,
+    ): array {
         $where_placeholder = '';
         $values = [
             ':user_id' => $user_id,
@@ -55,9 +56,11 @@ trait NewsQueries
             ORDER BY random()
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($values);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
@@ -65,14 +68,13 @@ trait NewsQueries
      * ordered by publication date. Links with a matching url in bookmarks or
      * read list are not returned.
      *
-     * @param string $user_id
-     * @param integer|null $min_duration
-     * @param integer|null $max_duration
-     *
-     * @return array
+     * @return self[]
      */
-    public function listFromFollowedCollectionsForNews($user_id, $min_duration, $max_duration)
-    {
+    public static function listFromFollowedCollectionsForNews(
+        string $user_id,
+        ?int $min_duration,
+        ?int $max_duration,
+    ): array {
         $where_placeholder = '';
         $values = [
             ':user_id' => $user_id,
@@ -95,8 +97,8 @@ trait NewsQueries
                 (fc.time_filter = 'all' AND lc.created_at >= fc.created_at - INTERVAL '3 days')
             )
         SQL;
-        $values[':until_strict'] = \Minz\Time::ago(1, 'day')->format(\Minz\Model::DATETIME_FORMAT);
-        $values[':until_normal'] = \Minz\Time::ago(3, 'days')->format(\Minz\Model::DATETIME_FORMAT);
+        $values[':until_strict'] = \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT);
+        $values[':until_normal'] = \Minz\Time::ago(3, 'days')->format(Database\Column::DATETIME_FORMAT);
 
         $sql = <<<SQL
             WITH excluded_links AS (
@@ -143,8 +145,10 @@ trait NewsQueries
             LIMIT 30
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($values);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 }

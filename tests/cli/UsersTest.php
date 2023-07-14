@@ -3,7 +3,8 @@
 namespace flusio\cli;
 
 use flusio\models;
-use flusio\utils;
+use tests\factories\TokenFactory;
+use tests\factories\UserFactory;
 
 class UsersTest extends \PHPUnit\Framework\TestCase
 {
@@ -11,7 +12,6 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
 
@@ -28,33 +28,33 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $created_at_1 = $this->fake('dateTime');
         $validated_at_1 = $this->fake('dateTime');
         $email_1 = $this->fake('email');
-        $user_id_1 = $this->create('user', [
-            'created_at' => $created_at_1->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $validated_at_1->format(\Minz\Model::DATETIME_FORMAT),
+        $user_1 = UserFactory::create([
+            'created_at' => $created_at_1,
+            'validated_at' => $validated_at_1,
             'email' => $email_1,
         ]);
         $created_at_2 = clone $created_at_1;
         $created_at_2->modify('+1 hour');
         $email_2 = $this->fake('email');
-        $user_id_2 = $this->create('user', [
-            'created_at' => $created_at_2->format(\Minz\Model::DATETIME_FORMAT),
+        $user_2 = UserFactory::create([
+            'created_at' => $created_at_2,
             'validated_at' => null,
             'email' => $email_2,
         ]);
 
-        $response = $this->appRun('cli', '/users');
+        $response = $this->appRun('CLI', '/users');
 
         $this->assertResponseCode($response, 200);
         $expected_output = <<<TEXT
-        {$user_id_1} {$created_at_1->format('Y-m-d')} {$email_1}
-        {$user_id_2} {$created_at_2->format('Y-m-d')} {$email_2} (not validated)
+        {$user_1->id} {$created_at_1->format('Y-m-d')} {$email_1}
+        {$user_2->id} {$created_at_2->format('Y-m-d')} {$email_2} (not validated)
         TEXT;
         $this->assertResponseEquals($response, $expected_output);
     }
 
     public function testIndexShowsIfNoUsers()
     {
-        $response = $this->appRun('cli', '/users');
+        $response = $this->appRun('CLI', '/users');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'No users');
@@ -68,7 +68,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\User::count());
 
-        $response = $this->appRun('cli', '/users/create', [
+        $response = $this->appRun('CLI', '/users/create', [
             'username' => $username,
             'email' => $email,
             'password' => $password,
@@ -87,7 +87,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame(0, models\Collection::count());
 
-        $response = $this->appRun('cli', '/users/create', [
+        $response = $this->appRun('CLI', '/users/create', [
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -122,7 +122,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         $password = $this->fake('password');
 
-        $response = $this->appRun('cli', '/users/create', [
+        $response = $this->appRun('CLI', '/users/create', [
             'email' => $email,
             'password' => $password,
         ]);
@@ -138,10 +138,10 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $current_path = $tmp_path . '/' . md5(rand());
         @mkdir($current_path, 0777, true);
         @chdir($current_path);
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
 
-        $response = $this->appRun('cli', '/users/export', [
-            'id' => $user_id,
+        $response = $this->appRun('CLI', '/users/export', [
+            'id' => $user->id,
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -158,9 +158,9 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $current_path = $tmp_path . '/' . md5(rand());
         @mkdir($current_path, 0777, true);
         @chdir($current_path);
-        $user_id = utils\Random::hex(32);
+        $user_id = \Minz\Random::hex(32);
 
-        $response = $this->appRun('cli', '/users/export', [
+        $response = $this->appRun('CLI', '/users/export', [
             'id' => $user_id,
         ]);
 
@@ -171,17 +171,17 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     public function testValidateValidatesUser()
     {
         $this->freeze($this->fake('dateTime'));
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'validated_at' => null,
         ]);
 
-        $response = $this->appRun('cli', '/users/validate', [
-            'id' => $user_id,
+        $response = $this->appRun('CLI', '/users/validate', [
+            'id' => $user->id,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "User {$user_id} is now validated.");
-        $user = models\User::find($user_id);
+        $this->assertResponseEquals($response, "User {$user->id} is now validated.");
+        $user = $user->reload();
         $this->assertEquals(\Minz\Time::now(), $user->validated_at);
     }
 
@@ -199,23 +199,23 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
             {
                 "id": "{$account_id}",
-                "expired_at": "{$expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+                "expired_at": "{$expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
             }
             TEXT
         );
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'email' => $email,
             'validated_at' => null,
             'subscription_account_id' => null,
         ]);
 
-        $response = $this->appRun('cli', '/users/validate', [
-            'id' => $user_id,
+        $response = $this->appRun('CLI', '/users/validate', [
+            'id' => $user->id,
         ]);
 
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
 
-        $user = models\User::find($user_id);
+        $user = $user->reload();
         $this->assertSame($account_id, $user->subscription_account_id);
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
@@ -223,27 +223,26 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     public function testValidateDeletesToken()
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 1, 9000), 'minutes');
-        $token_id = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => $expired_at,
         ]);
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'validated_at' => null,
-            'validation_token' => $token_id,
+            'validation_token' => $token->token,
         ]);
 
-        $response = $this->appRun('cli', '/users/validate', [
-            'id' => $user_id,
+        $response = $this->appRun('CLI', '/users/validate', [
+            'id' => $user->id,
         ]);
 
-        $token = models\Token::find($token_id);
-        $user = models\User::find($user_id);
-        $this->assertNull($token);
+        $user = $user->reload();
+        $this->assertFalse(models\Token::exists($token->token));
         $this->assertNull($user->validation_token);
     }
 
     public function testValidateFailsIfUserDoesNotExist()
     {
-        $response = $this->appRun('cli', '/users/validate', [
+        $response = $this->appRun('CLI', '/users/validate', [
             'id' => 'not-an-id',
         ]);
 
@@ -253,15 +252,15 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testValidateFailsIfAlreadyValidated()
     {
-        $user_id = $this->create('user', [
-            'validated_at' => $this->fake('iso8601'),
+        $user = UserFactory::create([
+            'validated_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('cli', '/users/validate', [
-            'id' => $user_id,
+        $response = $this->appRun('CLI', '/users/validate', [
+            'id' => $user->id,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseEquals($response, "User {$user_id} has already been validated.");
+        $this->assertResponseEquals($response, "User {$user->id} has already been validated.");
     }
 }

@@ -3,12 +3,13 @@
 namespace flusio\controllers;
 
 use flusio\models;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
 
 class BookmarksTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -18,16 +19,16 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $link_title = $this->fake('words', 3, true);
         $bookmarks = $user->bookmarks();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
             'collection_id' => $bookmarks->id,
         ]);
 
-        $response = $this->appRun('get', '/bookmarks');
+        $response = $this->appRun('GET', '/bookmarks');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'bookmarks/index.phtml');
@@ -36,7 +37,7 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRedirectsIfNotConnected()
     {
-        $response = $this->appRun('get', '/bookmarks');
+        $response = $this->appRun('GET', '/bookmarks');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
     }
@@ -45,15 +46,15 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
             'collection_id' => $bookmarks->id,
         ]);
 
-        $response = $this->appRun('get', '/bookmarks', [
+        $response = $this->appRun('GET', '/bookmarks', [
             'page' => 0,
         ]);
 

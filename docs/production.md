@@ -84,7 +84,7 @@ flusio# chmod 400 .env
 You must now load the SQL schema to your database. You can do it with:
 
 ```console
-flusio# sudo -u www-data php cli system setup
+flusio# sudo -u www-data php cli migrations setup --seed
 flusio# # OR via make
 flusio# sudo -u www-data make setup NO_DOCKER=true
 ```
@@ -192,7 +192,7 @@ have permission on your server to create a new service. An alternative is to
 setup a cron task:
 
 ```cron
-* * * * * www-data php /var/www/flusio/cli jobs run >/dev/null 2>&1
+* * * * * www-data php /var/www/flusio/cli jobs watch --stop-after=1 >/dev/null 2>&1
 ```
 
 It will find and run a single job every minute. It’s less efficient than a

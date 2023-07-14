@@ -2,14 +2,16 @@
 
 namespace flusio\controllers;
 
+use flusio\jobs;
 use flusio\models;
 use flusio\services;
+use tests\factories\ExportationFactory;
+use tests\factories\UserFactory;
 
 class ExportationsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -19,7 +21,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
      */
     public static function setJobAdapterToDatabase()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
+        \Minz\Configuration::$jobs_adapter = 'database';
     }
 
     /**
@@ -27,14 +29,14 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
      */
     public static function setJobAdapterToTest()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
     }
 
     public function testShowRendersCorrectly()
     {
         $user = $this->login();
 
-        $response = $this->appRun('get', '/exportations');
+        $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'exportations/show.phtml');
@@ -44,12 +46,12 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectlyIfAnExportationIsOngoing()
     {
         $user = $this->login();
-        $exportation_id = $this->create('exportation', [
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'ongoing',
         ]);
 
-        $response = $this->appRun('get', '/exportations');
+        $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'exportations/show.phtml');
@@ -59,12 +61,12 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectlyIfAnExportationIsFinished()
     {
         $user = $this->login();
-        $exportation_id = $this->create('exportation', [
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
         ]);
 
-        $response = $this->appRun('get', '/exportations');
+        $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'exportations/show.phtml');
@@ -75,13 +77,13 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $error = $this->fake('sentence');
-        $exportation_id = $this->create('exportation', [
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'error',
             'error' => $error,
         ]);
 
-        $response = $this->appRun('get', '/exportations');
+        $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'exportations/show.phtml');
@@ -90,21 +92,19 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRedirectsIfUserIsNotConnected()
     {
-        $response = $this->appRun('get', '/exportations');
+        $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fexportations');
     }
 
     public function testCreateCreatesAnExportationAndRedirects()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
         $user = $this->login();
 
         $this->assertSame(0, models\Exportation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
 
-        $response = $this->appRun('post', '/exportations', [
+        $response = $this->appRun('POST', '/exportations', [
             'csrf' => $user->csrf,
         ]);
 
@@ -113,116 +113,106 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $exportation = models\Exportation::take();
         $this->assertSame($user->id, $exportation->user_id);
         $this->assertSame('ongoing', $exportation->status);
-        $this->assertSame(1, $job_dao->count());
-        $db_job = $job_dao->listAll()[0];
-        $handler = json_decode($db_job['handler'], true);
-        $this->assertSame('flusio\\jobs\\Exportator', $handler['job_class']);
-        $this->assertSame([$exportation->id], $handler['job_args']);
+        $this->assertSame(1, \Minz\Job::count());
+        $job = \Minz\Job::take();
+        $this->assertSame(jobs\Exportator::class, $job->name);
+        $this->assertSame([$exportation->id], $job->args);
     }
 
     public function testCreateDeletesExistingExportationAndArchiveIfStatusIsFinished()
     {
-        $job_dao = new models\dao\Job();
         $user = $this->login();
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
-        $exportation_id = $this->create('exportation', [
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
             'filepath' => $filepath,
         ]);
 
         $this->assertSame(1, models\Exportation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
         $this->assertTrue(file_exists($filepath));
 
-        $response = $this->appRun('post', '/exportations', [
+        $response = $this->appRun('POST', '/exportations', [
             'csrf' => $user->csrf,
         ]);
 
         $this->assertResponseCode($response, 302, '/exportations');
         $this->assertSame(1, models\Exportation::count());
-        $exportation = models\Exportation::take();
-        $this->assertNotSame($exportation_id, $exportation->id);
-        $this->assertSame(1, $job_dao->count());
+        $this->assertFalse(models\Exportation::exists($exportation->id));
+        $this->assertSame(1, \Minz\Job::count());
         $this->assertFalse(file_exists($filepath));
     }
 
     public function testCreateDeletesExistingExportationIfStatusIsError()
     {
-        $job_dao = new models\dao\Job();
         $user = $this->login();
-        $exportation_id = $this->create('exportation', [
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'error',
         ]);
 
         $this->assertSame(1, models\Exportation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
 
-        $response = $this->appRun('post', '/exportations', [
+        $response = $this->appRun('POST', '/exportations', [
             'csrf' => $user->csrf,
         ]);
 
         $this->assertResponseCode($response, 302, '/exportations');
         $this->assertSame(1, models\Exportation::count());
-        $exportation = models\Exportation::take();
-        $this->assertNotSame($exportation_id, $exportation->id);
-        $this->assertSame(1, $job_dao->count());
+        $this->assertFalse(models\Exportation::exists($exportation->id));
+        $this->assertSame(1, \Minz\Job::count());
     }
 
     public function testCreateRedirectsIfUserIsNotConnected()
     {
-        $job_dao = new models\dao\Job();
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
 
-        $response = $this->appRun('post', '/exportations', [
+        $response = $this->appRun('POST', '/exportations', [
             'csrf' => $user->csrf,
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fexportations');
         $this->assertSame(0, models\Exportation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     public function testCreateFailsIfAnExportationStatusIsOngoing()
     {
-        $job_dao = new models\dao\Job();
         $user = $this->login();
-        $exportation_id = $this->create('exportation', [
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'ongoing',
         ]);
 
         $this->assertSame(1, models\Exportation::count());
-        $this->assertSame(0, $job_dao->count()); // in real life, a job should exist
+        $this->assertSame(0, \Minz\Job::count()); // in real life, a job should exist
 
-        $response = $this->appRun('post', '/exportations', [
+        $response = $this->appRun('POST', '/exportations', [
             'csrf' => $user->csrf,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'You already have an ongoing exportation');
         $this->assertSame(1, models\Exportation::count());
-        $exportation = models\Exportation::take();
-        $this->assertSame($exportation_id, $exportation->id);
-        $this->assertSame(0, $job_dao->count());
+        $this->assertTrue(models\Exportation::exists($exportation->id));
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid()
     {
-        $job_dao = new models\dao\Job();
         $user = $this->login();
 
-        $response = $this->appRun('post', '/exportations', [
+        $response = $this->appRun('POST', '/exportations', [
             'csrf' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Exportation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     public function testDownloadReturnsTheArchiveFile()
@@ -230,16 +220,16 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
-        $exportation_id = $this->create('exportation', [
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
             'filepath' => $filepath,
         ]);
 
-        $response = $this->appRun('get', '/exportations/download');
+        $response = $this->appRun('GET', '/exportations/download');
 
         $this->assertResponseCode($response, 200);
-        $exportation = models\Exportation::find($exportation_id);
+        $exportation = $exportation->reload();
         $filename_date = $exportation->created_at->format('Y-m-d');
         $filename_brand = \Minz\Configuration::$application['brand'];
         $filename = "{$filename_date}_{$filename_brand}_data.zip";
@@ -252,17 +242,16 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
 
     public function testDownloadRedirectsIfUserIsNotConnected()
     {
-        $user_id = $this->create('user');
-        $user = models\User::find($user_id);
+        $user = UserFactory::create();
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
-        $exportation_id = $this->create('exportation', [
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
             'filepath' => $filepath,
         ]);
 
-        $response = $this->appRun('get', '/exportations/download');
+        $response = $this->appRun('GET', '/exportations/download');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fexportations');
     }
@@ -272,14 +261,14 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
-        $exportation_id = $this->create('exportation', [
+        $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
             'filepath' => $filepath,
         ]);
         unlink($filepath);
 
-        $response = $this->appRun('get', '/exportations/download');
+        $response = $this->appRun('GET', '/exportations/download');
 
         $this->assertResponseCode($response, 404);
     }
@@ -290,7 +279,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
 
-        $response = $this->appRun('get', '/exportations/download');
+        $response = $this->appRun('GET', '/exportations/download');
 
         $this->assertResponseCode($response, 404);
     }

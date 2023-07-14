@@ -2,66 +2,50 @@
 
 namespace flusio\models;
 
+use Minz\Database;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Exportation extends \Minz\Model
+#[Database\Table(name: 'exportations')]
+class Exportation
 {
-    use DaoConnector;
+    use Database\Recordable;
 
     public const VALID_STATUSES = ['ongoing', 'finished', 'error'];
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'integer',
-        ],
+    #[Database\Column]
+    public int $id;
 
-        'created_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'status' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\Exportation::validateStatus',
-        ],
+    /** @var value-of<self::VALID_STATUSES> */
+    #[Database\Column]
+    public string $status;
 
-        'error' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public string $error;
 
-        'filepath' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public string $filepath;
 
-        'user_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-    ];
+    #[Database\Column]
+    public string $user_id;
 
-    /**
-     * @param string $user_id
-     *
-     * @return \flusio\models\Exportation
-     */
-    public static function init($user_id)
+    public function __construct(string $user_id)
     {
-        return new self([
-            'status' => 'ongoing',
-            'error' => '',
-            'filepath' => '',
-            'user_id' => $user_id,
-        ]);
+        $this->status = 'ongoing';
+        $this->error = '';
+        $this->filepath = '';
+        $this->user_id = $user_id;
     }
 
     /**
      * Stop and mark the exportation as finished
-     *
-     * @param string $filepath
      */
-    public function finish($filepath)
+    public function finish(string $filepath)
     {
         $this->status = 'finished';
         $this->filepath = $filepath;
@@ -69,39 +53,10 @@ class Exportation extends \Minz\Model
 
     /**
      * Stop and mark the exportation as failed
-     *
-     * @param string $error
      */
-    public function fail($error)
+    public function fail(string $error)
     {
         $this->status = 'error';
         $this->error = $error;
-    }
-
-    /**
-     * @param string $status
-     *
-     * @return boolean
-     */
-    public static function validateStatus($status)
-    {
-        return in_array($status, self::VALID_STATUSES);
-    }
-
-    /**
-     * Return the list of declared properties values.
-     *
-     * It doesn't return the id property because it is automatically generated
-     * by the database.
-     *
-     * @see \Minz\Model::toValues
-     *
-     * @return array
-     */
-    public function toValues()
-    {
-        $values = parent::toValues();
-        unset($values['id']);
-        return $values;
     }
 }

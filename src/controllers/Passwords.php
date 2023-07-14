@@ -6,7 +6,6 @@ use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
 use flusio\models;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -30,7 +29,7 @@ class Passwords
 
         return Response::ok('passwords/forgot.phtml', [
             'email' => '',
-            'email_sent' => utils\Flash::pop('email_sent'),
+            'email_sent' => \Minz\Flash::pop('email_sent'),
         ]);
     }
 
@@ -57,8 +56,8 @@ class Passwords
         $email = $request->param('email', '');
         $csrf = $request->param('csrf');
 
-        $email = utils\Email::sanitize($email);
-        if (!utils\Email::validate($email)) {
+        $email = \Minz\Email::sanitize($email);
+        if (!\Minz\Email::validate($email)) {
             return Response::badRequest('passwords/forgot.phtml', [
                 'email' => $email,
                 'email_sent' => false,
@@ -81,7 +80,7 @@ class Passwords
             ]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('passwords/forgot.phtml', [
                 'email' => $email,
                 'email_sent' => false,
@@ -89,16 +88,16 @@ class Passwords
             ]);
         }
 
-        $reset_token = models\Token::init(1, 'hour', 16);
+        $reset_token = new models\Token(1, 'hour', 16);
         $reset_token->save();
 
         $user->reset_token = $reset_token->token;
         $user->save();
 
         $mailer_job = new jobs\Mailer();
-        $mailer_job->performLater('Users', 'sendResetPasswordEmail', $user->id);
+        $mailer_job->performAsap('Users', 'sendResetPasswordEmail', $user->id);
 
-        utils\Flash::set('email_sent', true);
+        \Minz\Flash::set('email_sent', true);
 
         return Response::redirect('forgot password');
     }
@@ -184,7 +183,7 @@ class Passwords
             ]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('passwords/edit.phtml', [
                 'token' => $token->token,
                 'email' => $user->email,
@@ -208,20 +207,20 @@ class Passwords
         // We make sure to clean token and sessions to prevent attacker to take
         // control back on the account
         models\Token::delete($user->reset_token);
-        models\Session::daoCall('deleteByUserId', $user->id);
+        models\Session::deleteByUserId($user->id);
 
         // also, the user might be connected with a different account so we
         // make sure to log him in with the current one.
         auth\CurrentUser::reset();
 
-        $session_token = models\Token::init(1, 'month');
+        $session_token = new models\Token(1, 'month');
         $session_token->save();
 
         // $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
         $session_name = '';
         // $ip = $request->header('REMOTE_ADDR', 'unknown');
         $ip = 'unknown';
-        $session = models\Session::init($session_name, $ip);
+        $session = new models\Session($session_name, $ip);
         $session->user_id = $user->id;
         $session->token = $session_token->token;
         $session->save();

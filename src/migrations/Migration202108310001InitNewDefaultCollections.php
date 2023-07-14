@@ -9,49 +9,34 @@ class Migration202108310001InitNewDefaultCollections
 {
     public function migrate()
     {
-        $collections_columns = [];
         $collections_to_create = [];
 
         $support_email = \Minz\Configuration::$application['support_email'];
 
-        $dao_user = new models\dao\User();
-        $db_users = $dao_user->listAll();
-        $db_support_user = $dao_user->findBy([
-            'email' => utils\Email::sanitize($support_email),
+        $users = models\User::listAll();
+        $support_user = models\User::findBy([
+            'email' => \Minz\Email::sanitize($support_email),
         ]);
         $now = \Minz\Time::now();
 
-        foreach ($db_users as $db_user) {
-            if ($db_user['id'] === $db_support_user['id']) {
+        foreach ($users as $user) {
+            if ($user->id === $support_user->id) {
                 continue;
             }
 
-            utils\Locale::setCurrentLocale($db_user['locale']);
+            utils\Locale::setCurrentLocale($user['locale']);
 
-            $news = models\Collection::initNews($db_user['id']);
-            $read_list = models\Collection::initReadList($db_user['id']);
+            $news = models\Collection::initNews($user->id);
+            $read_list = models\Collection::initReadList($user->id);
             $news->created_at = $now;
             $read_list->created_at = $now;
 
-            $db_news = $news->toValues();
-            $db_read_list = $read_list->toValues();
-            $collections_to_create = array_merge(
-                $collections_to_create,
-                array_values($db_news),
-                array_values($db_read_list),
-            );
-
-            if (!$collections_columns) {
-                $collections_columns = array_keys($db_news);
-            }
+            $collections_to_create[] = $news;
+            $collections_to_create[] = $read_list;
         }
 
         if ($collections_to_create) {
-            models\Collection::daoCall(
-                'bulkInsert',
-                $collections_columns,
-                $collections_to_create
-            );
+            models\Collection::bulkInsert($collections_to_create);
         }
 
         return true;

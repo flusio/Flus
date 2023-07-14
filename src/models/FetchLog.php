@@ -2,74 +2,58 @@
 
 namespace flusio\models;
 
+use flusio\utils;
+use Minz\Database;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class FetchLog extends \Minz\Model
+#[Database\Table(name: 'fetch_logs')]
+class FetchLog
 {
-    use DaoConnector;
+    use dao\FetchLog;
+    use Database\Recordable;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'integer',
-        ],
+    #[Database\Column]
+    public int $id;
 
-        'created_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'url' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $url;
 
-        'host' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $host;
 
-        'type' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $type;
 
-        'ip' => [
-            'type' => 'string',
-        ],
-    ];
+    #[Database\Column]
+    public ?string $ip;
 
     /**
      * Create a log in DB for the given URL.
-     *
-     * @param string $url
-     * @param string $type
-     * @param string $ip (optional)
      */
-    public static function log($url, $type, $ip = null)
+    public static function log(string $url, string $type, ?string $ip = null)
     {
-        $host = \flusio\utils\Belt::host($url);
-        $fetch_log = new self([
-            'url' => $url,
-            'host' => $host,
-            'type' => $type,
-            'ip' => $ip,
-        ]);
+        $fetch_log = new self();
+
+        $fetch_log->url = $url;
+        $fetch_log->host = utils\Belt::host($url);
+        $fetch_log->type = $type;
+        $fetch_log->ip = $ip;
+
         $fetch_log->save();
     }
 
     /**
      * Determine if we reached the rate limit for the URL host.
-     *
-     * @param string $url
-     * @param string $type
-     * @param string $ip (optional)
-     *
-     * @return boolean
      */
-    public static function hasReachedRateLimit($url, $type, $ip = null)
+    public static function hasReachedRateLimit(string $url, string $type, ?string $ip = null): bool
     {
-        $host = \flusio\utils\Belt::host($url);
+        $host = utils\Belt::host($url);
         $since = \Minz\Time::ago(1, 'minute');
 
         // Most of the time, we rate limit the requests to 25 requests per
@@ -85,24 +69,8 @@ class FetchLog extends \Minz\Model
             $count_limit = 25;
         }
 
-        $count = self::daoCall('countFetchesToHost', $host, $since, $type, $ip);
-        return $count >= $count_limit;
-    }
+        $count = self::countFetchesToHost($host, $since, $type, $ip);
 
-    /**
-     * Return the list of declared properties values.
-     *
-     * It doesn't return the id property because it is automatically generated
-     * by the database.
-     *
-     * @see \Minz\Model::toValues
-     *
-     * @return array
-     */
-    public function toValues()
-    {
-        $values = parent::toValues();
-        unset($values['id']);
-        return $values;
+        return $count >= $count_limit;
     }
 }

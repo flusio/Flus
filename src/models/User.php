@@ -3,6 +3,9 @@
 namespace flusio\models;
 
 use flusio\utils;
+use Minz\Database;
+use Minz\Translatable;
+use Minz\Validable;
 
 /**
  * Represent a user of flusio.
@@ -10,148 +13,125 @@ use flusio\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class User extends \Minz\Model
+#[Database\Table(name: 'users')]
+class User
 {
-    use DaoConnector;
+    use dao\User;
+    use Database\Recordable;
+    use Validable;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $id;
 
-        'created_at' => 'datetime',
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'validated_at' => 'datetime',
+    #[Database\Column]
+    public ?\DateTimeImmutable $validated_at;
 
-        'validation_token' => 'string',
+    #[Database\Column]
+    public ?string $validation_token;
 
-        'reset_token' => 'string',
+    #[Database\Column]
+    public ?string $reset_token;
 
-        'subscription_account_id' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $subscription_account_id;
 
-        'subscription_expired_at' => [
-            'type' => 'datetime',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $subscription_expired_at;
 
-        'email' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\User::validateEmail',
-        ],
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The address email is required.'),
+    )]
+    #[Validable\Email(
+        message: new Translatable('The address email is invalid.'),
+    )]
+    public string $email;
 
-        'username' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\User::validateUsername',
-        ],
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The username is required.'),
+    )]
+    #[Validable\Length(
+        max: 50,
+        message: new Translatable('The username must be less than {max} characters.'),
+    )]
+    #[Validable\Format(
+        pattern: '/^[^@]*$/',
+        message: new Translatable('The username cannot contain the character ‘@’.'),
+    )]
+    public string $username;
 
-        'password_hash' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The password is required.'),
+    )]
+    public string $password_hash;
 
-        'locale' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\User::validateLocale',
-        ],
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The locale is required.'),
+    )]
+    #[checks\Locale(
+        message: new Translatable('The locale is invalid.'),
+    )]
+    public string $locale;
 
-        'avatar_filename' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $avatar_filename;
 
-        'csrf' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $csrf;
 
-        'autoload_modal' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $autoload_modal;
 
-        'option_compact_mode' => [
-            'type' => 'boolean',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public bool $option_compact_mode;
 
-        'pocket_username' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $pocket_username;
 
-        'pocket_access_token' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $pocket_access_token;
 
-        'pocket_request_token' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $pocket_request_token;
 
-        'pocket_error' => [
-            'type' => 'integer',
-        ],
-    ];
+    #[Database\Column]
+    public ?string $pocket_error;
 
-    /**
-     * Initialize the model with default values.
-     *
-     * @param mixed $values
-     */
-    public function __construct($values)
+    public function __construct(string $username, string $email, string $password)
     {
-        $expired_at = \Minz\Time::fromNow(1, 'month');
-        parent::__construct(array_merge([
-            'id' => utils\Random::timebased(),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'username' => '',
-            'email' => '',
-            'password_hash' => '',
-            'locale' => \flusio\utils\Locale::DEFAULT_LOCALE,
-            'csrf' => utils\Random::hex(64),
-            'autoload_modal' => '',
-            'option_compact_mode' => false,
-        ], $values));
+        $this->id = \Minz\Random::timebased();
+        $this->subscription_expired_at = \Minz\Time::fromNow(1, 'month');
+        $this->username = trim($username);
+        $this->email = \Minz\Email::sanitize($email);
+        $this->password_hash = self::passwordHash($password);
+        $this->locale = utils\Locale::DEFAULT_LOCALE;
+        $this->csrf = \Minz\Random::hex(64);
+        $this->autoload_modal = '';
+        $this->option_compact_mode = false;
     }
 
-    /**
-     * @param string $username
-     * @param string $email
-     * @param string $password
-     *
-     * @return \flusio\models\User
-     */
-    public static function init($username, $email, $password)
-    {
-        return new self([
-            'username' => trim($username),
-            'email' => utils\Email::sanitize($email),
-            'password_hash' => self::passwordHash($password),
-        ]);
-    }
-
-    /**
-     * @return \flusio\models\User
-     */
-    public static function supportUser()
+    public static function supportUser(): self
     {
         $support_email = \Minz\Configuration::$application['support_email'];
-        $default_password = \flusio\utils\Random::hex(128);
+        $default_password = \Minz\Random::hex(128);
+
         return self::findOrCreateBy([
-            'email' => utils\Email::sanitize($support_email),
+            'email' => \Minz\Email::sanitize($support_email),
         ], [
+            'id' => \Minz\Random::timebased(),
             'username' => 'flusio',
             'password_hash' => self::passwordHash($default_password),
             'validated_at' => \Minz\Time::now(),
         ]);
     }
 
-    /**
-     * @return boolean
-     */
-    public function isSupportUser()
+    public function isSupportUser(): bool
     {
         $support_email = \Minz\Configuration::$application['support_email'];
         return $this->email === $support_email;
@@ -159,10 +139,8 @@ class User extends \Minz\Model
 
     /**
      * Return the user' bookmarks collection
-     *
-     * @return \flusio\models\Collection
      */
-    public function bookmarks()
+    public function bookmarks(): Collection
     {
         $bookmarks = Collection::findBy([
             'user_id' => $this->id,
@@ -179,10 +157,8 @@ class User extends \Minz\Model
 
     /**
      * Return the user' news collection
-     *
-     * @return \flusio\models\Collection
      */
-    public function news()
+    public function news(): Collection
     {
         $news = Collection::findBy([
             'user_id' => $this->id,
@@ -199,10 +175,8 @@ class User extends \Minz\Model
 
     /**
      * Return the user' read list collection
-     *
-     * @return \flusio\models\Collection
      */
-    public function readList()
+    public function readList(): Collection
     {
         $read_list = Collection::findBy([
             'user_id' => $this->id,
@@ -219,10 +193,8 @@ class User extends \Minz\Model
 
     /**
      * Return the user' never list collection
-     *
-     * @return \flusio\models\Collection
      */
-    public function neverList()
+    public function neverList(): Collection
     {
         $never_list = Collection::findBy([
             'user_id' => $this->id,
@@ -240,17 +212,16 @@ class User extends \Minz\Model
     /**
      * Return the links of the user.
      *
-     * @see \flusio\models\dao\Link::listComputedByUserId
+     * @see Link::listComputedByUserId
      *
      * @param string[] $selected_computed_props
      * @param array $options
      *
-     * @return \flusio\models\Link[]
+     * @return Link[]
      */
-    public function links($selected_computed_props = [], $options = [])
+    public function links(array $selected_computed_props = [], array $options = []): array
     {
-        return Link::daoToList(
-            'listComputedByUserId',
+        return Link::listComputedByUserId(
             $this->id,
             $selected_computed_props,
             $options
@@ -260,17 +231,16 @@ class User extends \Minz\Model
     /**
      * Return the collections of the user.
      *
-     * @see \flusio\models\dao\Collection::listComputedByUserId
+     * @see Collection::listComputedByUserId
      *
      * @param string[] $selected_computed_props
      * @param array $options
      *
-     * @return \flusio\models\Collection[]
+     * @return Collection[]
      */
-    public function collections($selected_computed_props = [], $options = [])
+    public function collections(array $selected_computed_props = [], array $options = []): array
     {
-        return Collection::daoToList(
-            'listComputedByUserId',
+        return Collection::listComputedByUserId(
             $this->id,
             $selected_computed_props,
             $options
@@ -280,17 +250,16 @@ class User extends \Minz\Model
     /**
      * Return the collections followed by the user.
      *
-     * @see \flusio\models\dao\Collection::listComputedFollowedByUserId
+     * @see Collection::listComputedFollowedByUserId
      *
      * @param string[] $selected_computed_props
      * @param array $options
      *
-     * @return \flusio\models\Collection[]
+     * @return Collection[]
      */
-    public function followedCollections($selected_computed_props = [], $options = [])
+    public function followedCollections(array $selected_computed_props = [], array $options = []): array
     {
-        return Collection::daoToList(
-            'listComputedFollowedByUserId',
+        return Collection::listComputedFollowedByUserId(
             $this->id,
             $selected_computed_props,
             $options
@@ -300,17 +269,16 @@ class User extends \Minz\Model
     /**
      * Return the collections shared to the user.
      *
-     * @see \flusio\models\dao\Collection::listComputedSharedToUserId
+     * @see Collection::listComputedSharedToUserId
      *
      * @param string[] $selected_computed_props
      * @param array $options
      *
-     * @return \flusio\models\Collection[]
+     * @return Collection[]
      */
-    public function sharedCollections($selected_computed_props = [], $options = [])
+    public function sharedCollections(array $selected_computed_props = [], array $options = []): array
     {
-        return Collection::daoToList(
-            'listComputedSharedToUserId',
+        return Collection::listComputedSharedToUserId(
             $this->id,
             $selected_computed_props,
             $options
@@ -320,17 +288,15 @@ class User extends \Minz\Model
     /**
      * Return the collections shared by the user to the given user.
      *
-     * @see \flusio\models\dao\Collection::listComputedSharedByUserIdTo
+     * @see Collection::listComputedSharedByUserIdTo
      *
-     * @param string $to_user_id
      * @param string[] $selected_computed_props
      *
-     * @return \flusio\models\Collection[]
+     * @return Collection[]
      */
-    public function sharedCollectionsTo($to_user_id, $selected_computed_props = [])
+    public function sharedCollectionsTo(string $to_user_id, array $selected_computed_props = []): array
     {
-        return Collection::daoToList(
-            'listComputedSharedByUserIdTo',
+        return Collection::listComputedSharedByUserIdTo(
             $this->id,
             $to_user_id,
             $selected_computed_props
@@ -341,10 +307,8 @@ class User extends \Minz\Model
      * Return whether the user can write to the given collections or not.
      *
      * @param string[] $collection_ids
-     *
-     * @return boolean
      */
-    public function canWriteCollections($collection_ids)
+    public function canWriteCollections(array $collection_ids): bool
     {
         if (empty($collection_ids)) {
             return true;
@@ -367,18 +331,14 @@ class User extends \Minz\Model
     }
 
     /**
-     * @param string $collection_id
-     *
-     * @return boolean
-     *     Return true if the current user is following the given collection.
+     * Return true if the current user is following the given collection.
      */
-    public function isFollowing($collection_id)
+    public function isFollowing(string $collection_id): bool
     {
-        $followed_collection = FollowedCollection::findBy([
+        return FollowedCollection::existsBy([
             'user_id' => $this->id,
             'collection_id' => $collection_id,
         ]);
-        return $followed_collection !== null;
     }
 
     /**
@@ -387,14 +347,13 @@ class User extends \Minz\Model
      * Be careful to check isFollowing() is returning false before calling this
      * method.
      *
-     * @param string $collection_id
-     *
-     * @param integer The id of the create FollowedCollection object in db
+     * Return the id of the created FollowedCollection.
      */
-    public function follow($collection_id)
+    public function follow(string $collection_id): int
     {
-        $followed_collection = FollowedCollection::init($this->id, $collection_id);
-        return $followed_collection->save();
+        $followed_collection = new FollowedCollection($this->id, $collection_id);
+        $followed_collection->save();
+        return $followed_collection->id;
     }
 
     /**
@@ -402,16 +361,14 @@ class User extends \Minz\Model
      *
      * Be careful to check isFollowing() is returning true before calling this
      * method.
-     *
-     * @param string $collection_id
      */
-    public function unfollow($collection_id)
+    public function unfollow(string $collection_id): void
     {
         $followed_collection = FollowedCollection::findBy([
             'user_id' => $this->id,
             'collection_id' => $collection_id,
         ]);
-        FollowedCollection::delete($followed_collection->id);
+        $followed_collection->remove();
     }
 
     /**
@@ -424,11 +381,11 @@ class User extends \Minz\Model
      *
      * Order of links is not preserved!
      *
-     * @param \flusio\models\Link[] $links
+     * @param Link[] $links
      *
-     * @return \flusio\models\Link[]
+     * @return Link[]
      */
-    public function obtainLinks($links)
+    public function obtainLinks(array $links): array
     {
         // First, dispatch the links in two lists: owned and not owned links.
         $owned_links = [];
@@ -477,13 +434,9 @@ class User extends \Minz\Model
     /**
      * Return a link owned by the user with the same URL as the given one.
      *
-     * @see \flusio\models\Link::obtainLinks
-     *
-     * @param \flusio\models\Link $link
-     *
-     * @return \flusio\models\Link $link
+     * @see Link::obtainLinks
      */
-    public function obtainLink($link)
+    public function obtainLink(Link $link): Link
     {
         return $this->obtainLinks([$link])[0];
     }
@@ -492,26 +445,19 @@ class User extends \Minz\Model
      * Set login credentials.
      *
      * The password is not changed if empty.
-     *
-     * @param string $email
-     * @param string $password (default is null)
      */
-    public function setLoginCredentials($email, $password = null)
+    public function setLoginCredentials(string $email, ?string $password = null): void
     {
-        $this->email = utils\Email::sanitize($email);
+        $this->email = \Minz\Email::sanitize($email);
         if ($password) {
             $this->password_hash = self::passwordHash($password);
         }
     }
 
     /**
-     * Compare a password to the stored hash.
-     *
-     * @param string $password
-     *
-     * @return boolean Return true if the password matches the hash, else false
+     * Return true if the password matches the hash, false otherwise.
      */
-    public function verifyPassword($password)
+    public function verifyPassword(string $password): bool
     {
         return password_verify($password, $this->password_hash);
     }
@@ -521,30 +467,24 @@ class User extends \Minz\Model
      *
      * Note she has 1 day to test the application before being forced to
      * validate.
-     *
-     * @return boolean
      */
-    public function mustValidateEmail()
+    public function mustValidateEmail(): bool
     {
         return !$this->validated_at && $this->created_at < \Minz\Time::ago(1, 'day');
     }
 
     /**
      * Return wheter the user has a free subscription or not.
-     *
-     * @return boolean
      */
-    public function isSubscriptionExempted()
+    public function isSubscriptionExempted(): bool
     {
         return $this->subscription_expired_at->getTimestamp() === 0;
     }
 
     /**
      * Return wheter the user subscription is overdue or not.
-     *
-     * @return boolean
      */
-    public function isSubscriptionOverdue()
+    public function isSubscriptionOverdue(): bool
     {
         return (
             !$this->isSubscriptionExempted() &&
@@ -555,10 +495,8 @@ class User extends \Minz\Model
     /**
      * Return whether the user should be blocked or not (email not validated or
      * subscription overdue)
-     *
-     * @return boolean
      */
-    public function isBlocked()
+    public function isBlocked(): bool
     {
         $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
         $must_validate = $this->mustValidateEmail();
@@ -570,10 +508,8 @@ class User extends \Minz\Model
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt
-     *
-     * @return string
      */
-    public function tagUri()
+    public function tagUri(): string
     {
         $host = \Minz\Configuration::$url_options['host'];
         $date = $this->created_at->format('Y-m-d');
@@ -582,84 +518,9 @@ class User extends \Minz\Model
 
     /**
      * Return a password hash. If password is empty, password_hash will be empty as well.
-     *
-     * @param string $password
-     *
-     * @return string
      */
-    public static function passwordHash($password)
+    public static function passwordHash(string $password): string
     {
         return $password ? password_hash($password, PASSWORD_BCRYPT) : '';
-    }
-
-    /**
-     * @param string $email
-     * @return boolean
-     */
-    public static function validateEmail($email)
-    {
-        return utils\Email::validate($email);
-    }
-
-    /**
-     * @param string $username
-     * @return boolean
-     */
-    public static function validateUsername($username)
-    {
-        if (mb_strlen($username) > 50) {
-            return _('The username must be less than 50 characters.');
-        }
-
-        if (utils\Belt::contains($username, '@')) {
-            return _('The username cannot contain the character ‘@’.');
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $locale
-     * @return boolean
-     */
-    public static function validateLocale($locale)
-    {
-        $available_locales = \flusio\utils\Locale::availableLocales();
-        return isset($available_locales[$locale]);
-    }
-
-    /**
-     * Return a list of errors (if any). The array keys indicated the concerned
-     * property.
-     *
-     * @return string[]
-     */
-    public function validate()
-    {
-        $formatted_errors = [];
-
-        foreach (parent::validate() as $property => $error) {
-            $code = $error['code'];
-
-            if ($property === 'username' && $code === 'required') {
-                $formatted_error = _('The username is required.');
-            } elseif ($property === 'email' && $code === 'required') {
-                $formatted_error = _('The address email is required.');
-            } elseif ($property === 'email') {
-                $formatted_error = _('The address email is invalid.');
-            } elseif ($property === 'password_hash') {
-                $formatted_error = _('The password is required.');
-            } elseif ($property === 'locale' && $code === 'required') {
-                $formatted_error = _('The locale is required.');
-            } elseif ($property === 'locale') {
-                $formatted_error = _('The locale is invalid.');
-            } else {
-                $formatted_error = $error['description']; // @codeCoverageIgnore
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-
-        return $formatted_errors;
     }
 }

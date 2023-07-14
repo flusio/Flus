@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\collections;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the Cleaner.
  *
@@ -13,13 +15,8 @@ trait CleanerQueries
     /**
      * Delete not followed collections older than the given date for the given
      * user.
-     *
-     * @param string $user_id
-     * @param \DateTime $date
-     *
-     * @return boolean True on success
      */
-    public function deleteUnfollowedOlderThan($user_id, $date)
+    public static function deleteUnfollowedOlderThan(string $user_id, \DateTimeImmutable $date): bool
     {
         $sql = <<<SQL
             DELETE FROM collections
@@ -35,19 +32,19 @@ trait CleanerQueries
             AND fc.collection_id IS NULL;
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+
         return $statement->execute([
             ':user_id' => $user_id,
-            ':date' => $date->format(\Minz\Model::DATETIME_FORMAT),
+            ':date' => $date->format(Database\Column::DATETIME_FORMAT),
         ]);
     }
 
     /**
      * Set all the feed_last_hash to empty string.
-     *
-     * return boolean True on success
      */
-    public function resetHashes()
+    public static function resetHashes(): bool
     {
         $sql = <<<SQL
             UPDATE collections
@@ -55,6 +52,7 @@ trait CleanerQueries
             WHERE type = 'feed'
         SQL;
 
-        return $this->exec($sql) !== false;
+        $database = Database::get();
+        return $database->exec($sql) !== false;
     }
 }

@@ -64,7 +64,7 @@ class Messages
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
@@ -74,7 +74,7 @@ class Messages
             ]);
         }
 
-        $message = models\Message::init($user->id, $link->id, $content);
+        $message = new models\Message($user->id, $link->id, $content);
         $errors = $message->validate();
         if ($errors) {
             return Response::badRequest('links/show.phtml', [

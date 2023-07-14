@@ -51,7 +51,7 @@ class Groups
             $name = '';
         }
 
-        $groups = models\Group::daoToList('listBy', [
+        $groups = models\Group::listBy([
             'user_id' => $user->id,
         ]);
         utils\Sorter::localeSort($groups, 'name');
@@ -107,12 +107,12 @@ class Groups
             return Response::notFound('not_found.phtml');
         }
 
-        $groups = models\Group::daoToList('listBy', [
+        $groups = models\Group::listBy([
             'user_id' => $user->id,
         ]);
         utils\Sorter::localeSort($groups, 'name');
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/groups/edit.phtml', [
                 'collection' => $collection,
                 'groups' => $groups,
@@ -124,7 +124,7 @@ class Groups
         }
 
         if ($name) {
-            $group = models\Group::init($user->id, $name);
+            $group = new models\Group($user->id, $name);
 
             $errors = $group->validate();
             if ($errors) {

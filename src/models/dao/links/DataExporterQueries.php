@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\links;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the DataExporter.
  *
@@ -13,11 +15,9 @@ trait DataExporterQueries
     /**
      * Return links of the given user which have at least one comment.
      *
-     * @param string $user_id
-     *
-     * @return array
+     * @return self[]
      */
-    public function listByUserIdWithComments($user_id)
+    public static function listByUserIdWithComments(string $user_id): array
     {
         $sql = <<<SQL
             SELECT l.*
@@ -29,10 +29,12 @@ trait DataExporterQueries
             ORDER BY l.created_at DESC, l.id
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
         ]);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 }

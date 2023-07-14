@@ -2,7 +2,9 @@
 
 namespace flusio\controllers\importations;
 
+use flusio\jobs;
 use flusio\models;
+use tests\factories\ImportationFactory;
 
 class OpmlTest extends \PHPUnit\Framework\TestCase
 {
@@ -10,7 +12,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\FilesHelper;
     use \Minz\Tests\ResponseAsserts;
 
@@ -18,7 +19,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
 
-        $response = $this->appRun('get', '/opml');
+        $response = $this->appRun('GET', '/opml');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Importation from an OPML file');
@@ -28,13 +29,13 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersIfImportationIsOngoing()
     {
         $user = $this->login();
-        $this->create('importation', [
+        ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
             'status' => 'ongoing',
         ]);
 
-        $response = $this->appRun('get', '/opml');
+        $response = $this->appRun('GET', '/opml');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'We’re importing your data');
@@ -43,13 +44,13 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersIfImportationIsFinished()
     {
         $user = $this->login();
-        $this->create('importation', [
+        ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
             'status' => 'finished',
         ]);
 
-        $response = $this->appRun('get', '/opml');
+        $response = $this->appRun('GET', '/opml');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'We’ve imported your data from your <abbr>OPML</abbr> file.');
@@ -59,14 +60,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $error = $this->fake('sentence');
-        $this->create('importation', [
+        ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
             'status' => 'error',
             'error' => $error,
         ]);
 
-        $response = $this->appRun('get', '/opml');
+        $response = $this->appRun('GET', '/opml');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $error);
@@ -74,15 +75,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRedirectsToLoginIfNotConnected()
     {
-        $response = $this->appRun('get', '/opml');
+        $response = $this->appRun('GET', '/opml');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fopml');
     }
 
     public function testImportRegistersAnOpmlImportatorJobAndRedirects()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
@@ -92,29 +92,27 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ];
 
         $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
 
-        $response = $this->appRun('post', '/opml', [
+        $response = $this->appRun('POST', '/opml', [
             'csrf' => $user->csrf,
             'opml' => $file,
         ]);
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 302, '/opml');
         $this->assertSame(1, models\Importation::count());
-        $this->assertSame(1, $job_dao->count());
+        $this->assertSame(1, \Minz\Job::count());
         $importation = models\Importation::take();
-        $db_job = $job_dao->listAll()[0];
-        $handler = json_decode($db_job['handler'], true);
-        $this->assertSame('flusio\\jobs\\OpmlImportator', $handler['job_class']);
-        $this->assertSame([$importation->id], $handler['job_args']);
+        $job = \Minz\Job::take();
+        $this->assertSame(jobs\OpmlImportator::class, $job->name);
+        $this->assertSame([$importation->id], $job->args);
     }
 
     public function testImportCopiesFileUnderData()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
@@ -123,12 +121,12 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'error' => UPLOAD_ERR_OK,
         ];
 
-        $response = $this->appRun('post', '/opml', [
+        $response = $this->appRun('POST', '/opml', [
             'csrf' => $user->csrf,
             'opml' => $file,
         ]);
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
         $destination_filepath = \Minz\Configuration::$data_path . "/importations/opml_{$user->id}.xml";
         $this->assertTrue(file_exists($destination_filepath));
@@ -136,8 +134,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
     public function testImportRedirectsToLoginIfNotConnected()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
@@ -145,22 +142,21 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'error' => UPLOAD_ERR_OK,
         ];
 
-        $response = $this->appRun('post', '/opml', [
+        $response = $this->appRun('POST', '/opml', [
             'csrf' => 'a token',
             'opml' => $file,
         ]);
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fopml');
         $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     public function testImportFailsIfAnImportAlreadyExists()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
@@ -168,28 +164,27 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $this->create('importation', [
+        ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('post', '/opml', [
+        $response = $this->appRun('POST', '/opml', [
             'csrf' => $user->csrf,
             'opml' => $file,
         ]);
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'You already have an ongoing OPML importation');
         $this->assertSame(1, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     public function testImportFailsIfCsrfIsInvalid()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
@@ -199,25 +194,24 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ];
 
         $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
 
-        $response = $this->appRun('post', '/opml', [
+        $response = $this->appRun('POST', '/opml', [
             'csrf' => 'not the token',
             'opml' => $file,
         ]);
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     public function testImportFailsIfFileIsNotPassed()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
@@ -227,18 +221,18 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ];
 
         $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
 
-        $response = $this->appRun('post', '/opml', [
+        $response = $this->appRun('POST', '/opml', [
             'csrf' => $user->csrf,
         ]);
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The file is required');
         $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     /**
@@ -246,8 +240,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
      */
     public function testImportFailsIfFileIsTooLarge($error)
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
@@ -256,17 +249,17 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'error' => $error,
         ];
 
-        $response = $this->appRun('post', '/opml', [
+        $response = $this->appRun('POST', '/opml', [
             'csrf' => $user->csrf,
             'opml' => $file,
         ]);
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'This file is too large');
         $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     /**
@@ -274,8 +267,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
      */
     public function testImportFailsIfFileFailedToUpload($error)
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
@@ -284,23 +276,22 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'error' => $error,
         ];
 
-        $response = $this->appRun('post', '/opml', [
+        $response = $this->appRun('POST', '/opml', [
             'csrf' => $user->csrf,
             'opml' => $file,
         ]);
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, "This file cannot be uploaded (error {$error}).");
         $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     public function testImportFailsIfIsUploadedFileReturnsFalse()
     {
-        \Minz\Configuration::$application['job_adapter'] = 'database';
-        $job_dao = new models\dao\Job();
+        \Minz\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $opml_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
@@ -310,17 +301,17 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'is_uploaded_file' => false, // this is possible only during tests!
         ];
 
-        $response = $this->appRun('post', '/opml', [
+        $response = $this->appRun('POST', '/opml', [
             'csrf' => $user->csrf,
             'opml' => $file,
         ]);
 
-        \Minz\Configuration::$application['job_adapter'] = 'test';
+        \Minz\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'This file cannot be uploaded (error -1).');
         $this->assertSame(0, models\Importation::count());
-        $this->assertSame(0, $job_dao->count());
+        $this->assertSame(0, \Minz\Job::count());
     }
 
     public function tooLargeErrorsProvider()

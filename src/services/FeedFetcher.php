@@ -102,8 +102,8 @@ class FeedFetcher
 
         $collection->save();
 
-        $link_ids_by_urls = models\Link::daoCall('listUrlsToIdsByCollectionId', $collection->id);
-        $link_urls_by_entry_ids = models\Link::daoCall('listEntryIdsToUrlsByCollectionId', $collection->id);
+        $link_ids_by_urls = models\Link::listUrlsToIdsByCollectionId($collection->id);
+        $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollectionId($collection->id);
         $initial_links_count = count($link_ids_by_urls);
 
         $links_to_create = [];
@@ -160,12 +160,12 @@ class FeedFetcher
                     'collection_id' => $collection->id,
                 ]);
                 models\LinkToCollection::update($link_to_collection->id, [
-                    'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
+                    'created_at' => $published_at,
                 ]);
             } else {
                 // The URL is not associated to the collection in database yet,
                 // so we create a new link.
-                $link = models\Link::init($url, $collection->user_id, false);
+                $link = new models\Link($url, $collection->user_id, false);
                 $entry_title = trim($entry->title);
                 if ($entry_title) {
                     $link->title = $entry_title;
@@ -174,7 +174,7 @@ class FeedFetcher
                 $link->feed_entry_id = $feed_entry_id;
                 if (isset($entry->links['replies'])) {
                     $url_replies = \SpiderBits\Url::sanitize($entry->links['replies']);
-                    if (models\Link::validateUrl($url_replies) === true) {
+                    if (filter_var($url_replies, FILTER_VALIDATE_URL) !== false) {
                         $link->url_replies = $url_replies;
                     }
                 }
@@ -188,11 +188,9 @@ class FeedFetcher
                 ];
                 $link_id = $link->id;
 
-                $links_to_collections_to_create[] = new models\LinkToCollection([
-                    'created_at' => $published_at,
-                    'link_id' => $link_id,
-                    'collection_id' => $collection->id,
-                ]);
+                $link_to_collection = new models\LinkToCollection($link_id, $collection->id);
+                $link_to_collection->created_at = $published_at;
+                $links_to_collections_to_create[] = $link_to_collection;
             }
         }
 
@@ -228,7 +226,7 @@ class FeedFetcher
             }
 
             $content_type = $response->header('content-type');
-            if (!utils\Belt::contains($content_type, 'text/html')) {
+            if (!str_contains($content_type, 'text/html')) {
                 $collection->image_fetched_at = \Minz\Time::now();
                 $collection->save();
                 return;
@@ -451,6 +449,6 @@ class FeedFetcher
     private function isYoutube($url)
     {
         $host = utils\Belt::host($url);
-        return utils\Belt::endsWith($host, 'youtube.com');
+        return str_ends_with($host, 'youtube.com');
     }
 }

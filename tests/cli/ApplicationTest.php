@@ -9,7 +9,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
     public function testRunDoesntFail()
     {
-        $request = new \Minz\Request('cli', '/');
+        $request = new \Minz\Request('CLI', '/');
 
         $application = new Application();
         $response = $application->run($request);

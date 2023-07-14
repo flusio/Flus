@@ -2,36 +2,29 @@
 
 namespace flusio\models\dao;
 
+use Minz\Database;
+
 /**
  * Connect links to collections
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class LinkToCollection extends \Minz\DatabaseModel
+trait LinkToCollection
 {
     use BulkQueries;
-
-    /**
-     * @throws \Minz\Errors\DatabaseError
-     */
-    public function __construct()
-    {
-        $properties = array_keys(\flusio\models\LinkToCollection::PROPERTIES);
-        parent::__construct('links_to_collections', 'id', $properties);
-    }
 
     /**
      * Attach the collections to the given links.
      *
      * @param string[] $link_ids
      * @param string[] $collection_ids
-     * @param \DateTime $created_at Value to set as created_at, "now" by default
-     *
-     * @return boolean True on success
      */
-    public function attach($link_ids, $collection_ids, $created_at = null)
-    {
+    public static function attach(
+        array $link_ids,
+        array $collection_ids,
+        ?\DateTimeImmutable $created_at = null,
+    ): bool {
         if (!$link_ids || !$collection_ids) {
             // nothing to insert
             return true;
@@ -40,13 +33,14 @@ class LinkToCollection extends \Minz\DatabaseModel
         if (!$created_at) {
             $created_at = \Minz\Time::now();
         }
+
         $values_as_question_marks = [];
         $values = [];
         foreach ($link_ids as $link_id) {
             foreach ($collection_ids as $collection_id) {
                 $values_as_question_marks[] = '(?, ?, ?)';
                 $values = array_merge($values, [
-                    $created_at->format(\Minz\Model::DATETIME_FORMAT),
+                    $created_at->format(Database\Column::DATETIME_FORMAT),
                     $link_id,
                     $collection_id,
                 ]);
@@ -60,9 +54,11 @@ class LinkToCollection extends \Minz\DatabaseModel
             ON CONFLICT DO NOTHING;
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $result = $statement->execute($values);
-        return $this->lastInsertId();
+
+        return $database->lastInsertId();
     }
 
     /**
@@ -70,10 +66,8 @@ class LinkToCollection extends \Minz\DatabaseModel
      *
      * @param string[] $link_ids
      * @param string[] $collection_ids
-     *
-     * @return boolean True on success
      */
-    public function detach($link_ids, $collection_ids)
+    public static function detach(array $link_ids, array $collection_ids): bool
     {
         if (!$link_ids || !$collection_ids) {
             // nothing to delete
@@ -95,7 +89,8 @@ class LinkToCollection extends \Minz\DatabaseModel
             WHERE {$values_placeholder};
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         return $statement->execute($values);
     }
 
@@ -104,10 +99,8 @@ class LinkToCollection extends \Minz\DatabaseModel
      *
      * @param string[] $link_ids
      * @param string[] $collection_ids
-     *
-     * @return boolean True on success
      */
-    public function detachCollections($link_ids, $collection_ids)
+    public static function detachCollections(array $link_ids, array $collection_ids): bool
     {
         if (!$link_ids || !$collection_ids) {
             // nothing to delete
@@ -132,7 +125,8 @@ class LinkToCollection extends \Minz\DatabaseModel
             AND c.type = 'collection'
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         return $statement->execute($values);
     }
 }

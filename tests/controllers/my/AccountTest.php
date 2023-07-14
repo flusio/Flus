@@ -10,7 +10,6 @@ use flusio\utils;
 class AccountTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \tests\FlashAsserts;
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \tests\MockHttpHelper;
@@ -40,7 +39,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'username' => $username,
         ]);
 
-        $response = $this->appRun('get', '/my/account');
+        $response = $this->appRun('GET', '/my/account');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $username);
@@ -52,11 +51,11 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
         $this->login([
             'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
+            'subscription_expired_at' => $expired_at,
+            'validated_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('get', '/my/account');
+        $response = $this->appRun('GET', '/my/account');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Your subscription will expire on');
@@ -67,11 +66,11 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'weeks');
         $this->login([
             'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
+            'subscription_expired_at' => $expired_at,
+            'validated_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('get', '/my/account');
+        $response = $this->appRun('GET', '/my/account');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Your subscription expired on');
@@ -82,11 +81,11 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $expired_at = new \DateTime('1970-01-01');
         $this->login([
             'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
+            'subscription_expired_at' => $expired_at,
+            'validated_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('get', '/my/account');
+        $response = $this->appRun('GET', '/my/account');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'You have a <strong>free subscription</strong>');
@@ -97,11 +96,11 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
         $this->login([
             'subscription_account_id' => null,
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
+            'subscription_expired_at' => $expired_at,
+            'validated_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('get', '/my/account');
+        $response = $this->appRun('GET', '/my/account');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Create your payment account');
@@ -112,12 +111,12 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'weeks');
         $this->login([
             'subscription_account_id' => $this->fake('regexify', '\w{32}'),
-            'subscription_expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'created_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'subscription_expired_at' => $expired_at,
+            'created_at' => \Minz\Time::now(),
             'validated_at' => null,
         ]);
 
-        $response = $this->appRun('get', '/my/account');
+        $response = $this->appRun('GET', '/my/account');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Validate your account');
@@ -135,25 +134,25 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             Content-type: application/json
 
             {
-                "expired_at": "{$new_expired_at->format(\Minz\Model::DATETIME_FORMAT)}"
+                "expired_at": "{$new_expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
             }
             TEXT
         );
         $user = $this->login([
             'subscription_account_id' => $account_id,
-            'subscription_expired_at' => $old_expired_at->format(\Minz\Model::DATETIME_FORMAT),
-            'validated_at' => $this->fake('iso8601'),
+            'subscription_expired_at' => $old_expired_at,
+            'validated_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('get', '/my/account');
+        $response = $this->appRun('GET', '/my/account');
 
-        $user = models\User::find($user->id);
+        $user = $user->reload();
         $this->assertEquals($new_expired_at, $user->subscription_expired_at);
     }
 
     public function testShowRedirectsToLoginIfUserNotConnected()
     {
-        $response = $this->appRun('get', '/my/account');
+        $response = $this->appRun('GET', '/my/account');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
     }
@@ -162,7 +161,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $response = $this->appRun('get', '/my/account/deletion');
+        $response = $this->appRun('GET', '/my/account/deletion');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'my/account/deletion.phtml');
@@ -170,7 +169,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testDeletionRedirectsToLoginIfUserNotConnected()
     {
-        $response = $this->appRun('get', '/my/account/deletion');
+        $response = $this->appRun('GET', '/my/account/deletion');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fdeletion');
     }
@@ -182,13 +181,13 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/my/account/deletion', [
+        $response = $this->appRun('POST', '/my/account/deletion', [
             'csrf' => $user->csrf,
             'password' => $password,
         ]);
 
         $this->assertResponseCode($response, 302, '/login');
-        $this->assertFlash('status', 'user_deleted');
+        $this->assertSame('user_deleted', \Minz\Flash::get('status'));
         $this->assertFalse(models\User::exists($user->id));
         $this->assertNull(auth\CurrentUser::get());
     }
@@ -213,7 +212,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue(file_exists($avatar_filepath));
 
-        $response = $this->appRun('post', '/my/account/deletion', [
+        $response = $this->appRun('POST', '/my/account/deletion', [
             'csrf' => $user->csrf,
             'password' => $password,
         ]);
@@ -223,8 +222,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteRedirectsToLoginIfUserIsNotConnected()
     {
-        $response = $this->appRun('post', '/my/account/deletion', [
-            'csrf' => \Minz\CSRF::generate(),
+        $response = $this->appRun('POST', '/my/account/deletion', [
+            'csrf' => \Minz\Csrf::generate(),
             'password' => $this->fake('password'),
         ]);
 
@@ -240,7 +239,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Session::count());
 
-        $response = $this->appRun('post', '/my/account/deletion', [
+        $response = $this->appRun('POST', '/my/account/deletion', [
             'csrf' => $user->csrf,
             'password' => $password,
         ]);
@@ -255,7 +254,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/my/account/deletion', [
+        $response = $this->appRun('POST', '/my/account/deletion', [
             'csrf' => $user->csrf,
             'password' => 'not the password',
         ]);
@@ -272,7 +271,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/my/account/deletion', [
+        $response = $this->appRun('POST', '/my/account/deletion', [
             'csrf' => 'not the token',
             'password' => $password,
         ]);
@@ -292,7 +291,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        $response = $this->appRun('post', '/my/account/deletion', [
+        $response = $this->appRun('POST', '/my/account/deletion', [
             'csrf' => $user->csrf,
             'password' => $password,
         ]);

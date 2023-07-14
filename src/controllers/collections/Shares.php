@@ -88,7 +88,7 @@ class Shares
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
@@ -142,7 +142,7 @@ class Shares
             ]);
         }
 
-        $collection_share = models\CollectionShare::init($user_id, $collection->id, $type);
+        $collection_share = new models\CollectionShare($user_id, $collection->id, $type);
         $errors = $collection_share->validate();
         if ($errors) {
             return Response::badRequest('collections/shares/index.phtml', [
@@ -201,7 +201,7 @@ class Shares
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
@@ -237,21 +237,18 @@ class Shares
         $url = \SpiderBits\Url::sanitize($string);
         $base_url = \Minz\Url::baseUrl();
 
-        if (!utils\Belt::startsWith($url, $base_url)) {
+        if (!str_starts_with($url, $base_url)) {
             return $string;
         }
 
         $parsed_url = parse_url($url);
         $path = $parsed_url['path'] ?? '/';
 
-        // instead of loading the whole router, we recreate one with only the
-        // profile route.
-        $router = new \Minz\Router();
-        $router->addRoute('get', '/p/:id', 'Profiles#show');
+        $router = \Minz\Engine::router();
 
-        // and try to extract the id if the path match the route.
+        // try to extract the id if the path match the route.
         try {
-            list($action_pointer, $parameters) = $router->match('get', $path);
+            list($action_pointer, $parameters) = $router->match('GET', $path);
             return $parameters['id'];
         } catch (\Minz\Errors\RouteNotFoundError $e) {
             return $string;

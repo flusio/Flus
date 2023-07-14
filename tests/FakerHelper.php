@@ -10,13 +10,12 @@ namespace tests;
  */
 trait FakerHelper
 {
-    /** @var \Faker\Generator */
-    private static $faker;
+    private static \Faker\Generator $faker;
 
     /**
      * @beforeClass
      */
-    public static function initializeFaker()
+    public static function initializeFaker(): void
     {
         self::$faker = \Faker\Factory::create();
     }
@@ -24,31 +23,37 @@ trait FakerHelper
     /**
      * Return the result of faker->$factory_name
      *
-     * @see https://github.com/fzaninotto/Faker#faker
-     *
-     * @param string $factory_name
-     * @param mixed $args,... Parameter to pass to the Faker factory
-     *
-     * @return mixed
+     * @see https://fakerphp.github.io/
      */
-    public function fake($factory_name, ...$args)
+    public function fake(string $factory_name, mixed ...$args): mixed
     {
-        return call_user_func_array([self::$faker, $factory_name], $args);
+        $result = self::$faker->$factory_name(...$args);
+
+        if ($result instanceof \DateTime) {
+            // We always use DateTimeImmutable but faker is only able to
+            // generate DateTime.
+            $result = \DateTimeImmutable::createFromMutable($result);
+        }
+
+        return $result;
     }
 
     /**
      * Return the result of faker->unique()->$factory_name
      *
-     * @see https://github.com/fzaninotto/Faker#faker
-     *
-     * @param string $factory_name
-     * @param mixed $args,... Parameter to pass to the Faker factory
-     *
-     * @return mixed
+     * @see https://fakerphp.github.io/
      */
-    public function fakeUnique($factory_name, ...$args)
+    public function fakeUnique(string $factory_name, mixed ...$args): mixed
     {
         $unique_generator = self::$faker->unique();
-        return call_user_func_array([$unique_generator, $factory_name], $args);
+        $result = $unique_generator->$factory_name(...$args);
+
+        if ($result instanceof \DateTime) {
+            // We always use DateTimeImmutable but faker is only able to
+            // generate DateTime.
+            $result = \DateTimeImmutable::createFromMutable($result);
+        }
+
+        return $result;
     }
 }

@@ -5,7 +5,6 @@ namespace flusio\controllers;
 use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -32,7 +31,7 @@ class Support
         return Response::ok('support/show.phtml', [
             'subject' => '',
             'message' => '',
-            'message_sent' => utils\Flash::pop('message_sent'),
+            'message_sent' => \Minz\Flash::pop('message_sent'),
         ]);
     }
 
@@ -62,7 +61,7 @@ class Support
         $message = trim($request->param('message'));
         $csrf = $request->param('csrf');
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('support/show.phtml', [
                 'subject' => $subject,
                 'message' => $message,
@@ -89,10 +88,12 @@ class Support
         }
 
         $mailer_job = new jobs\Mailer();
-        $mailer_job->performLater('Support', 'sendMessage', $user->id, $subject, $message);
-        $mailer_job->performLater('Support', 'sendNotification', $user->id, $subject);
+        $mailer_job->performAsap('Support', 'sendMessage', $user->id, $subject, $message);
 
-        utils\Flash::set('message_sent', true);
+        $mailer_job = new jobs\Mailer();
+        $mailer_job->performAsap('Support', 'sendNotification', $user->id, $subject);
+
+        \Minz\Flash::set('message_sent', true);
 
         return Response::redirect('support');
     }

@@ -77,7 +77,7 @@ class Filters
             ]);
         }
 
-        $time_filter = $request->param('time_filter');
+        $time_filter = $request->param('time_filter', '');
         $collection_id = $request->param('id');
         $csrf = $request->param('csrf');
 
@@ -96,7 +96,7 @@ class Filters
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/filters/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,

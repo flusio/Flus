@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\links;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the search system.
  *
@@ -35,10 +37,14 @@ trait SearchQueries
      *     - offset (integer, default to 0), the offset for pagination
      *     - limit (integer|string, default to 'ALL') the limit for pagination
      *
-     * @return array
+     * @return self[]
      */
-    public function listComputedByQueryAndUserId($query, $user_id, $selected_computed_props, $options = [])
-    {
+    public static function listComputedByQueryAndUserId(
+        string $query,
+        string $user_id,
+        array $selected_computed_props,
+        array $options = [],
+    ): array {
         $default_options = [
             'exclude_never_only' => false,
             'offset' => 0,
@@ -107,9 +113,11 @@ trait SearchQueries
             {$limit_clause}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($parameters);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
@@ -126,7 +134,7 @@ trait SearchQueries
      *
      * @return integer
      */
-    public function countByQueryAndUserId($query, $user_id, $options = [])
+    public static function countByQueryAndUserId(string $query, string $user_id, array $options = []): int
     {
         $default_options = [
             'exclude_never_only' => false,
@@ -163,8 +171,10 @@ trait SearchQueries
             {$exclude_clause}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($parameters);
+
         return intval($statement->fetchColumn());
     }
 }

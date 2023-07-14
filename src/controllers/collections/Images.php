@@ -106,7 +106,7 @@ class Images
             ]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/images/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,

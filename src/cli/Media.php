@@ -54,9 +54,9 @@ class Media
             // get the list of file names starting with the same 3 characters
             // in database
             $file_names_from_db = array_merge(
-                models\Link::daoCall('listImageFilenamesStartingWith', $subdir_name),
-                models\Collection::daoCall('listImageFilenamesStartingWith', $subdir_name),
-                models\Topic::daoCall('listImageFilenamesStartingWith', $subdir_name),
+                models\Link::listImageFilenamesStartingWith($subdir_name),
+                models\Collection::listImageFilenamesStartingWith($subdir_name),
+                models\Topic::listImageFilenamesStartingWith($subdir_name),
             );
 
             // do the diff between those 2 arrays to get the list of files to

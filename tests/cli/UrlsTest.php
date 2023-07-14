@@ -39,7 +39,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
             TEXT
         );
 
-        $response = $this->appRun('cli', '/urls/show', [
+        $response = $this->appRun('CLI', '/urls/show', [
             'url' => $url,
         ]);
 
@@ -52,7 +52,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
     {
         $url = 'not an url';
 
-        $response = $this->appRun('cli', '/urls/show', [
+        $response = $this->appRun('CLI', '/urls/show', [
             'url' => $url,
         ]);
 
@@ -64,7 +64,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
     {
         $url = 'http://unresolvable-url';
 
-        $response = $this->appRun('cli', '/urls/show', [
+        $response = $this->appRun('CLI', '/urls/show', [
             'url' => $url,
         ]);
 
@@ -88,7 +88,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue(file_exists("{$cache_path}/{$url_hash}"));
 
-        $response = $this->appRun('cli', '/urls/uncache', [
+        $response = $this->appRun('CLI', '/urls/uncache', [
             'url' => $url,
         ]);
 
@@ -101,7 +101,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
     {
         $url = 'not an url';
 
-        $response = $this->appRun('cli', '/urls/uncache', [
+        $response = $this->appRun('CLI', '/urls/uncache', [
             'url' => $url,
         ]);
 
@@ -126,7 +126,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue(file_exists("{$cache_path}/{$url_hash}"));
 
-        $response = $this->appRun('cli', '/urls/uncache', [
+        $response = $this->appRun('CLI', '/urls/uncache', [
             'url' => $url,
         ]);
 

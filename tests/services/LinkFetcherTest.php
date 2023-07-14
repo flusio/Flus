@@ -4,13 +4,13 @@ namespace flusio\services;
 
 use flusio\models;
 use flusio\utils;
+use tests\factories\LinkFactory;
 
 class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
     use \tests\MockHttpHelper;
-    use \Minz\Tests\FactoriesHelper;
 
     /**
      * @before
@@ -28,15 +28,14 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
         ]);
-        $link = models\Link::find($link_id);
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
     }
@@ -46,11 +45,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
         ]);
-        $link = models\Link::find($link_id);
 
         $link_fetcher_service->fetch($link);
 
@@ -63,11 +61,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     {
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://github.com/flusio/flusio';
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
         ]);
-        $link = models\Link::find($link_id);
         $expected_title = $this->fake('sentence');
         $hash = \SpiderBits\Cache::hash($url);
         $raw_response = <<<TEXT
@@ -85,40 +82,18 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($expected_title, $link->title);
-    }
-
-    public function testFetchFetchesTwitterCorrectly()
-    {
-        // This test must not be mocked since we want to test the real response
-        // of Twitter.
-        $link_fetcher_service = new LinkFetcher();
-        $url = 'https://twitter.com/framasoft/status/1626258040595832833';
-        $link_id = $this->create('link', [
-            'url' => $url,
-            'title' => $url,
-        ]);
-        $link = models\Link::find($link_id);
-        $expected_title = 'Aujourd\'hui, les salarié⋅es de Framasoft étaient'
-                        . ' en grève contre le projet de réforme des retraites.';
-
-        $link_fetcher_service->fetch($link);
-
-        $link = models\Link::find($link_id);
-        $this->assertStringContainsString($expected_title, $link->title);
-        $this->assertSame(200, $link->fetched_code);
     }
 
     public function testFetchHandlesIso8859()
     {
         $link_fetcher_service = new LinkFetcher();
         $url = $this->fake('url');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
         ]);
-        $link = models\Link::find($link_id);
         $hash = \SpiderBits\Cache::hash($url);
         $fixtures_path = \Minz\Configuration::$app_path . '/tests/fixtures';
         $raw_response = file_get_contents($fixtures_path . '/responses/test_iso_8859_1');
@@ -127,7 +102,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame('Test ëéàçï', $link->title);
     }
 
@@ -135,11 +110,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     {
         $link_fetcher_service = new LinkFetcher();
         $url = $this->fake('url');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
         ]);
-        $link = models\Link::find($link_id);
         $hash = \SpiderBits\Cache::hash($url);
         $fixtures_path = \Minz\Configuration::$app_path . '/tests/fixtures';
         $raw_response = file_get_contents($fixtures_path . '/responses/test_bad_encoding');
@@ -148,7 +122,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame(410, $link->fetched_code);
     }
 
@@ -175,15 +149,14 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             </html>
             TEXT
         );
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
         ]);
-        $link = models\Link::find($link_id);
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
     }
@@ -195,15 +168,14 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $card_url = 'https://flus.fr/carnet/card.png';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $this->mockHttpWithFile($card_url, 'public/static/og-card.png');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'image_filename' => null,
         ]);
-        $link = models\Link::find($link_id);
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $image_filename = $link->image_filename;
         $this->assertNotEmpty($image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
@@ -223,16 +195,15 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         ]);
         $url = 'https://flus.fr/carnet/index.html';
         $title = $this->fake('sentence');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $title,
         ]);
-        $link = models\Link::find($link_id);
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame('Carnet de Flus', $link->title);
     }
 
@@ -243,16 +214,15 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         ]);
         $url = 'https://flus.fr/carnet/index.html';
         $reading_time = 999999;
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'reading_time' => $reading_time,
         ]);
-        $link = models\Link::find($link_id);
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame(0, $link->reading_time);
     }
 
@@ -265,15 +235,14 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $card_url = 'https://flus.fr/carnet/card.png';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $this->mockHttpWithFile($card_url, 'public/static/og-card.png');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'image_filename' => 'old.png',
         ]);
-        $link = models\Link::find($link_id);
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $image_filename = $link->image_filename;
         $this->assertNotSame('old.png', $image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
@@ -297,11 +266,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             Page not found
             TEXT
         );
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
         ]);
-        $link = models\Link::find($link_id);
 
         $link_fetcher_service->fetch($link);
 
@@ -315,16 +283,15 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/index.html';
         $title = $this->fake('sentence');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $title,
         ]);
-        $link = models\Link::find($link_id);
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($title, $link->title);
     }
 
@@ -339,15 +306,14 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             Page not found
             TEXT
         );
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
         ]);
-        $link = models\Link::find($link_id);
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($url, $link->title);
         $this->assertSame(404, $link->fetched_code);
     }
@@ -357,16 +323,15 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service = new LinkFetcher();
         $url = 'https://flus.fr/carnet/index.html';
         $reading_time = 999999;
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'reading_time' => $reading_time,
         ]);
-        $link = models\Link::find($link_id);
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($reading_time, $link->reading_time);
     }
 
@@ -377,15 +342,14 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $card_url = 'https://flus.fr/carnet/card.png';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $this->mockHttpWithFile($card_url, 'public/static/og-card.png');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $url,
             'image_filename' => 'old.png',
         ]);
-        $link = models\Link::find($link_id);
 
         $link_fetcher_service->fetch($link);
 
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame('old.png', $link->image_filename);
     }
 }

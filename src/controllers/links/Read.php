@@ -41,8 +41,8 @@ class Read
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 
@@ -52,7 +52,7 @@ class Read
         }
 
         $link = $user->obtainLink($link);
-        if (!$link->created_at) {
+        if (!$link->isPersisted()) {
             utils\ViaHelper::setLinkVia($link, $from);
             $link->save();
         }
@@ -90,8 +90,8 @@ class Read
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 
@@ -101,7 +101,7 @@ class Read
         }
 
         $link = $user->obtainLink($link);
-        if (!$link->created_at) {
+        if (!$link->isPersisted()) {
             utils\ViaHelper::setLinkVia($link, $from);
             $link->save();
         }
@@ -139,8 +139,8 @@ class Read
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 
@@ -150,7 +150,7 @@ class Read
         }
 
         $link = $user->obtainLink($link);
-        if (!$link->created_at) {
+        if (!$link->isPersisted()) {
             $link->save();
         }
 
@@ -187,8 +187,8 @@ class Read
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 

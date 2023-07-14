@@ -2,33 +2,36 @@
 
 namespace flusio\controllers\collections;
 
+use tests\factories\CollectionFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
     {
         $link_title = $this->fake('words', 3, true);
         $link_url = $this->fake('url');
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'title' => $link_title,
             'url' => $link_url,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/feed.atom.xml");
+        $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'collections/feeds/show.atom.xml.php');
@@ -37,7 +40,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'X-Content-Type-Options' => 'nosniff',
         ]);
         $feed = \SpiderBits\feeds\Feed::fromText($response->render());
-        $link_alternate = \Minz\Url::absoluteFor('link', ['id' => $link_id]);
+        $link_alternate = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $this->assertSame(1, count($feed->entries));
         $this->assertSame($link_title, $feed->entries[0]->title);
         $this->assertSame($link_alternate, $feed->entries[0]->links['alternate']);
@@ -47,26 +50,26 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersAlternateLinksAsOriginalUrlWithDirectTrue()
     {
         $link_url = $this->fake('url');
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'url' => $link_url,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/feed.atom.xml", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml", [
             'direct' => true,
         ]);
 
         $this->assertResponseCode($response, 200);
         $feed = \SpiderBits\feeds\Feed::fromText($response->render());
-        $link_replies = \Minz\Url::absoluteFor('link', ['id' => $link_id]);
+        $link_replies = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $this->assertSame(1, count($feed->entries));
         $this->assertSame($link_url, $feed->entries[0]->links['alternate']);
         $this->assertSame($link_replies, $feed->entries[0]->links['replies']);
@@ -75,20 +78,20 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testShowDoesNotRenderHiddenLinks()
     {
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'title' => $link_title,
-            'is_hidden' => 1,
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/feed.atom.xml");
+        $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseNotContains($response, $link_title);
@@ -97,13 +100,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testShowRedirectsToOriginIfCollectionIsFeed()
     {
         $feed_url = $this->fake('url');
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'feed',
-            'is_public' => 1,
+            'is_public' => true,
             'feed_url' => $feed_url,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/feed.atom.xml");
+        $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 
         $this->assertResponseCode($response, 301, $feed_url);
     }
@@ -111,41 +114,41 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testShowFailsIfCollectionIsInaccessible()
     {
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'title' => $link_title,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/feed.atom.xml");
+        $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 
         $this->assertResponseCode($response, 404);
     }
 
     public function testAliasRedirectsToShow()
     {
-        $collection_id = $this->create('collection');
+        $collection = CollectionFactory::create();
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/feed");
+        $response = $this->appRun('GET', "/collections/{$collection->id}/feed");
 
-        $this->assertResponseCode($response, 301, "/collections/{$collection_id}/feed.atom.xml");
+        $this->assertResponseCode($response, 301, "/collections/{$collection->id}/feed.atom.xml");
     }
 
     public function testAliasRedirectsWithQuery()
     {
-        $collection_id = $this->create('collection');
+        $collection = CollectionFactory::create();
         $_SERVER['QUERY_STRING'] = 'direct=true';
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/feed");
+        $response = $this->appRun('GET', "/collections/{$collection->id}/feed");
 
         $_SERVER['QUERY_STRING'] = '';
-        $this->assertResponseCode($response, 301, "/collections/{$collection_id}/feed.atom.xml?direct=true");
+        $this->assertResponseCode($response, 301, "/collections/{$collection->id}/feed.atom.xml?direct=true");
     }
 }

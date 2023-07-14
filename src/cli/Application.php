@@ -12,17 +12,18 @@ use flusio\utils;
  */
 class Application
 {
-    /** @var \Minz\Engine **/
-    private $engine;
-
     /**
-     * Setup a Router and declare its routes.
+     * Setup the Engine.
      */
     public function __construct()
     {
         $router = \flusio\Router::loadCli();
-        $this->engine = new \Minz\Engine($router);
-        \Minz\Url::setRouter($router);
+        \Minz\Engine::init($router, [
+            'start_session' => false,
+            'not_found_view_pointer' => 'cli/not_found.txt',
+            'internal_server_error_view_pointer' => 'cli/internal_server_error.txt',
+            'controller_namespace' => '\\flusio\\cli',
+        ]);
     }
 
     /**
@@ -50,10 +51,6 @@ class Application
             'current_command' => $current_command,
         ]);
 
-        return $this->engine->run($request, [
-            'not_found_view_pointer' => 'cli/not_found.txt',
-            'internal_server_error_view_pointer' => 'cli/internal_server_error.txt',
-            'controller_namespace' => '\\flusio\\cli',
-        ]);
+        return \Minz\Engine::run($request);
     }
 }

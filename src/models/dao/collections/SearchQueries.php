@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\collections;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the search system.
  *
@@ -13,12 +15,11 @@ trait SearchQueries
     /**
      * Return the list of feeds of the given user and with the given feed URLs.
      *
-     * @param string $user_id
      * @param string[] $feed_urls
      *
-     * @return array
+     * @return self[]
      */
-    public function listComputedFeedsByFeedUrls($feed_urls, $selected_computed_props)
+    public static function listComputedFeedsByFeedUrls(array $feed_urls, array $selected_computed_props): array
     {
         if (!$feed_urls) {
             return [];
@@ -41,8 +42,10 @@ trait SearchQueries
             GROUP BY c.id
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($feed_urls);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 }

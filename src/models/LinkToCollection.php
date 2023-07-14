@@ -3,52 +3,34 @@
 namespace flusio\models;
 
 use flusio\utils;
+use Minz\Database;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class LinkToCollection extends \Minz\Model
+#[Database\Table(name: 'links_to_collections')]
+class LinkToCollection
 {
-    use DaoConnector;
-    use BulkDaoConnector;
+    use dao\LinkToCollection;
+    use Database\Recordable;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'integer',
-        ],
+    #[Database\Column]
+    public int $id;
 
-        'created_at' => 'datetime',
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'link_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $link_id;
 
-        'collection_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-    ];
+    #[Database\Column]
+    public string $collection_id;
 
-    /**
-     * Attach the collections to the given links.
-     *
-     * Return true if link_ids or collection_ids is empty.
-     *
-     * @param string[] $link_ids
-     * @param string[] $collection_ids
-     * @param \DateTime $created_at Value to set as created_at, "now" by default
-     *
-     * @return boolean True on success
-     */
-    public static function attach($link_ids, $collection_ids, $created_at = null)
+    public function __construct(string $link_id, string $collection_id)
     {
-        if (!$link_ids || !$collection_ids) {
-            return true;
-        }
-
-        return self::daoCall('attach', $link_ids, $collection_ids, $created_at);
+        $this->link_id = $link_id;
+        $this->collection_id = $collection_id;
     }
 
     /**
@@ -60,17 +42,16 @@ class LinkToCollection extends \Minz\Model
      * You MUST be sure the links are owned by the user when you call this
      * method.
      *
-     * @param \flusio\models\User $user
      * @param string[] $link_ids
      */
-    public static function markAsRead($user, $link_ids)
+    public static function markAsRead(User $user, array $link_ids): void
     {
         $read_list = $user->readList();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
 
-        self::daoCall('attach', $link_ids, [$read_list->id]);
-        self::daoCall('detach', $link_ids, [$bookmarks->id, $news->id]);
+        self::attach($link_ids, [$read_list->id]);
+        self::detach($link_ids, [$bookmarks->id, $news->id]);
     }
 
     /**
@@ -82,16 +63,15 @@ class LinkToCollection extends \Minz\Model
      * You MUST be sure the links are owned by the user when you call this
      * method.
      *
-     * @param \flusio\models\User $user
      * @param string[] $link_ids
      */
-    public static function markToReadLater($user, $link_ids)
+    public static function markToReadLater(User $user, array $link_ids): void
     {
         $bookmarks = $user->bookmarks();
         $news = $user->news();
 
-        self::daoCall('attach', $link_ids, [$bookmarks->id]);
-        self::daoCall('detach', $link_ids, [$news->id]);
+        self::attach($link_ids, [$bookmarks->id]);
+        self::detach($link_ids, [$news->id]);
     }
 
     /**
@@ -103,17 +83,16 @@ class LinkToCollection extends \Minz\Model
      * You MUST be sure the links are owned by the user when you call this
      * method.
      *
-     * @param \flusio\models\User $user
      * @param string[] $link_ids
      */
-    public static function markToNeverRead($user, $link_ids)
+    public static function markToNeverRead(User $user, array $link_ids): void
     {
         $bookmarks = $user->bookmarks();
         $news = $user->news();
         $never_list = $user->neverList();
 
-        self::daoCall('attach', $link_ids, [$never_list->id]);
-        self::daoCall('detach', $link_ids, [$bookmarks->id, $news->id]);
+        self::attach($link_ids, [$never_list->id]);
+        self::detach($link_ids, [$bookmarks->id, $news->id]);
     }
 
     /**
@@ -125,14 +104,13 @@ class LinkToCollection extends \Minz\Model
      * You MUST be sure the links are owned by the user when you call this
      * method.
      *
-     * @param \flusio\models\User $user
      * @param string[] $link_ids
      */
-    public static function markAsUnread($user, $link_ids)
+    public static function markAsUnread(User $user, array $link_ids): void
     {
         $read_list = $user->readList();
 
-        self::daoCall('detach', $link_ids, [$read_list->id]);
+        self::detach($link_ids, [$read_list->id]);
     }
 
     /**
@@ -144,12 +122,9 @@ class LinkToCollection extends \Minz\Model
      * appear in the collections selector, when a user changes the collections
      * of a link.
      *
-     * @param string $link_id
      * @param string[] $collection_ids
-     *
-     * @return boolean True on success
      */
-    public static function setCollections($link_id, $collection_ids)
+    public static function setCollections(string $link_id, array $collection_ids): bool
     {
         $previous_attachments = self::listBy(['link_id' => $link_id]);
         $previous_collection_ids = array_column($previous_attachments, 'collection_id');
@@ -160,30 +135,13 @@ class LinkToCollection extends \Minz\Model
         $database->beginTransaction();
 
         if ($ids_to_attach) {
-            self::daoCall('attach', [$link_id], $ids_to_attach);
+            self::attach([$link_id], $ids_to_attach);
         }
 
         if ($ids_to_detach) {
-            self::daoCall('detachCollections', [$link_id], $ids_to_detach);
+            self::detachCollections([$link_id], $ids_to_detach);
         }
 
         return $database->commit();
-    }
-
-    /**
-     * Return the list of declared properties values.
-     *
-     * It doesn't return the id property because it is automatically generated
-     * by the database.
-     *
-     * @see \Minz\Model::toValues
-     *
-     * @return array
-     */
-    public function toValues()
-    {
-        $values = parent::toValues();
-        unset($values['id']);
-        return $values;
     }
 }

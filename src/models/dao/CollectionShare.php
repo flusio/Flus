@@ -2,21 +2,14 @@
 
 namespace flusio\models\dao;
 
+use Minz\Database;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class CollectionShare extends \Minz\DatabaseModel
+trait CollectionShare
 {
-    /**
-     * @throws \Minz\Errors\DatabaseError
-     */
-    public function __construct()
-    {
-        $properties = array_keys(\flusio\models\CollectionShare::PROPERTIES);
-        parent::__construct('collection_shares', 'id', $properties);
-    }
-
     /**
      * Return CollectionShares of the given collection with its computed properties.
      *
@@ -31,10 +24,13 @@ class CollectionShare extends \Minz\DatabaseModel
      *     - access_type (string, either 'any' [default], 'read' or 'write'),
      *       indicates with which access the collections must have been shared.
      *
-     * @return array
+     * @return self[]
      */
-    public function listComputedByCollectionId($collection_id, $selected_computed_props, $options = [])
-    {
+    public static function listComputedByCollectionId(
+        string $collection_id,
+        array $selected_computed_props,
+        array $options = [],
+    ): array {
         $default_options = [
             'access_type' => 'any',
         ];
@@ -72,9 +68,11 @@ class CollectionShare extends \Minz\DatabaseModel
             WHERE cs.collection_id = :collection_id
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($parameters);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
@@ -87,8 +85,11 @@ class CollectionShare extends \Minz\DatabaseModel
      *
      * @return boolean
      */
-    public function existsForUserIdAndLinkId($user_id, $link_id, $access_type = 'any')
-    {
+    public static function existsForUserIdAndLinkId(
+        string $user_id,
+        string $link_id,
+        string $access_type = 'any',
+    ): bool {
         // we don't need the clause if access_type is 'any' (i.e. the type
         // doesn't matter) or 'read' (i.e. read access is included in write
         // access)
@@ -110,11 +111,12 @@ class CollectionShare extends \Minz\DatabaseModel
             )
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
             ':link_id' => $link_id,
         ]);
-        return $statement->fetchColumn();
+        return (bool) $statement->fetchColumn();
     }
 }

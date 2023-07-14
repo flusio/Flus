@@ -3,16 +3,21 @@
 namespace flusio\controllers;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
+use tests\factories\GroupFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\MessageFactory;
+use tests\factories\UserFactory;
 
 class LinksTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \tests\FlashAsserts;
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -30,25 +35,25 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $group_name = $this->fake('words', 3, true);
-        $group_id = $this->create('group', [
+        $group = GroupFactory::create([
             'name' => $group_name,
             'user_id' => $user->id,
         ]);
         $collection_name_1 = $this->fake('words', 3, true);
-        $this->create('collection', [
+        CollectionFactory::create([
             'name' => $collection_name_1,
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
         $collection_name_2 = $this->fake('words', 3, true);
-        $this->create('collection', [
+        CollectionFactory::create([
             'name' => $collection_name_2,
-            'group_id' => $group_id,
+            'group_id' => $group->id,
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
 
-        $response = $this->appRun('get', '/links');
+        $response = $this->appRun('GET', '/links');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'links/index.phtml');
@@ -65,14 +70,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $title_1 = $this->fakeUnique('words', 3, true);
         $title_2 = $this->fakeUnique('words', 3, true);
         $query = $title_1;
-        $this->create('link', [
+        LinkFactory::create([
             'title' => $title_1,
         ]);
-        $this->create('link', [
+        LinkFactory::create([
             'title' => $title_2,
         ]);
 
-        $response = $this->appRun('get', '/links', [
+        $response = $this->appRun('GET', '/links', [
             'q' => $query,
         ]);
 
@@ -85,20 +90,20 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testIndexRendersCollectionsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $collection_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $collection_name,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => 'collection',
         ]);
-        $this->create('collection_share', [
+        CollectionShareFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'type' => 'write',
         ]);
 
-        $response = $this->appRun('get', '/links');
+        $response = $this->appRun('GET', '/links');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $collection_name);
@@ -107,20 +112,20 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testIndexDoesNotRenderCollectionsSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $collection_name = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $collection_name,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => 'collection',
         ]);
-        $this->create('collection_share', [
+        CollectionShareFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'type' => 'read',
         ]);
 
-        $response = $this->appRun('get', '/links');
+        $response = $this->appRun('GET', '/links');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseNotContains($response, $collection_name);
@@ -128,7 +133,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRedirectsToLoginIfNotConnected()
     {
-        $response = $this->appRun('get', '/links');
+        $response = $this->appRun('GET', '/links');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks');
     }
@@ -139,11 +144,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $title_1 = $this->fakeUnique('words', 3, true);
         $title_2 = $this->fakeUnique('words', 3, true);
         $query = $title_1;
-        $this->create('link', [
+        LinkFactory::create([
             'title' => $title_1,
         ]);
 
-        $response = $this->appRun('get', '/links', [
+        $response = $this->appRun('GET', '/links', [
             'q' => $query,
             'page' => 2,
         ]);
@@ -156,13 +161,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $title = $this->fake('words', 3, true);
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('iso8601'),
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $title,
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}");
+        $response = $this->appRun('GET', "/links/{$link->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
@@ -172,16 +177,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testShowDisplaysMessages()
     {
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('iso8601'),
+            'fetched_at' => $this->fake('dateTime'),
         ]);
-        $this->create('message', [
-            'link_id' => $link_id,
+        MessageFactory::create([
+            'link_id' => $link->id,
             'content' => '**foo bar**',
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}");
+        $response = $this->appRun('GET', "/links/{$link->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, '<strong>foo bar</strong>');
@@ -190,13 +195,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectlyIfNotHiddenAndNotConnected()
     {
         $title = $this->fake('words', 3, true);
-        $link_id = $this->create('link', [
-            'fetched_at' => $this->fake('iso8601'),
+        $link = LinkFactory::create([
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $title,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}");
+        $response = $this->appRun('GET', "/links/{$link->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
@@ -207,15 +212,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
         $title = $this->fake('words', 3, true);
-        $other_user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'fetched_at' => $this->fake('iso8601'),
+        $other_user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $title,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}");
+        $response = $this->appRun('GET', "/links/{$link->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
@@ -226,22 +231,22 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $current_user = $this->login();
         $title = $this->fake('words', 3, true);
-        $other_user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'fetched_at' => $this->fake('iso8601'),
+        $other_user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $title,
-            'is_hidden' => 1,
+            'is_hidden' => true,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $current_user->id,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}");
+        $response = $this->appRun('GET', "/links/{$link->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
@@ -252,26 +257,26 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $current_user = $this->login();
         $title = $this->fake('words', 3, true);
-        $other_user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'fetched_at' => $this->fake('iso8601'),
+        $other_user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $title,
-            'is_hidden' => 1,
+            'is_hidden' => true,
         ]);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $current_user->id,
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}");
+        $response = $this->appRun('GET', "/links/{$link->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
@@ -280,24 +285,24 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRedirectsIfHiddenAndNotConnected()
     {
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'fetched_at' => $this->fake('iso8601'),
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $this->fake('words', 3, true),
-            'is_hidden' => 1,
+            'is_hidden' => true,
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}");
+        $response = $this->appRun('GET', "/links/{$link->id}");
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
     }
 
     public function testShowFailsIfTheLinkDoesNotExist()
     {
         $user = $this->login();
 
-        $response = $this->appRun('get', '/links/not-a-valid-id');
+        $response = $this->appRun('GET', '/links/not-a-valid-id');
 
         $this->assertResponseCode($response, 404);
     }
@@ -305,15 +310,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testShowFailsIfUserDoesNotOwnThePrivateLink()
     {
         $current_user = $this->login();
-        $other_user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'fetched_at' => $this->fake('iso8601'),
+        $other_user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $this->fake('words', 3, true),
-            'is_hidden' => 1,
+            'is_hidden' => true,
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}");
+        $response = $this->appRun('GET', "/links/{$link->id}");
 
         $this->assertResponseCode($response, 404);
     }
@@ -321,13 +326,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testNewRendersCorrectly()
     {
         $user = $this->login();
-        $bookmarks_collection_id = $this->create('collection', [
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
+        $bookmarks = $user->bookmarks();
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('get', '/links/new', [
+        $response = $this->appRun('GET', '/links/new', [
             'from' => $from,
         ]);
 
@@ -335,20 +337,20 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'New link');
         $this->assertResponsePointer($response, 'links/new.phtml');
         $variables = $response->output()->variables();
-        $this->assertContains($bookmarks_collection_id, $variables['collection_ids']);
+        $this->assertContains($bookmarks->id, $variables['collection_ids']);
     }
 
     public function testNewPrefillsUrl()
     {
         $user = $this->login();
-        $this->create('collection', [
+        CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
         $url = $this->fake('url');
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('get', '/links/new', [
+        $response = $this->appRun('GET', '/links/new', [
             'url' => $url,
             'from' => $from,
         ]);
@@ -360,74 +362,74 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testNewPrefillsCollection()
     {
         $user = $this->login();
-        $this->create('collection', [
+        CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('get', '/links/new', [
-            'collection_id' => $collection_id,
+        $response = $this->appRun('GET', '/links/new', [
+            'collection_id' => $collection->id,
             'from' => $from,
         ]);
 
         $variables = $response->output()->variables();
-        $this->assertContains($collection_id, $variables['collection_ids']);
+        $this->assertContains($collection->id, $variables['collection_ids']);
     }
 
     public function testNewRendersCollectionSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('get', '/links/new', [
+        $response = $this->appRun('GET', '/links/new', [
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, $collection_id);
+        $this->assertResponseContains($response, $collection->id);
     }
 
     public function testNewDoesNotRenderCollectionSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('get', '/links/new', [
+        $response = $this->appRun('GET', '/links/new', [
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseNotContains($response, $collection_id);
+        $this->assertResponseNotContains($response, $collection->id);
     }
 
     public function testNewRedirectsIfNotConnected()
     {
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('get', '/links/new', [
+        $response = $this->appRun('GET', '/links/new', [
             'from' => $from,
         ]);
 
@@ -438,7 +440,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateCreatesLinkAndRedirects()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
         $url = 'https://flus.fr/carnet/';
@@ -448,10 +450,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
         $this->assertSame(0, models\LinkToCollection::count());
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $url,
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
@@ -464,22 +466,22 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame($user->id, $link->user_id);
-        $this->assertContains($collection_id, array_column($link->collections(), 'id'));
+        $this->assertContains($collection->id, array_column($link->collections(), 'id'));
         $this->assertFalse($link->is_hidden);
     }
 
     public function testCreateAllowsToCreateHiddenLinks()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => 'https://github.com/flusio/flusio',
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'is_hidden' => true,
             'from' => $from,
         ]);
@@ -492,10 +494,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $url = 'https://github.com/flusio/flusio';
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $url,
         ]);
@@ -504,30 +506,30 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Link::count());
         $this->assertSame(0, models\LinkToCollection::count());
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $url,
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
         $this->assertSame(1, models\Link::count());
         $this->assertSame(1, models\LinkToCollection::count());
 
-        $link = models\Link::find($link_id);
-        $this->assertContains($collection_id, array_column($link->collections(), 'id'));
+        $link = $link->reload();
+        $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
     public function testCreateCreatesLinkIfItExistsForAnotherUser()
     {
         $user = $this->login();
-        $another_user_id = $this->create('user');
+        $another_user = UserFactory::create();
         $url = 'https://github.com/flusio/flusio';
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $this->create('link', [
-            'user_id' => $another_user_id,
+        LinkFactory::create([
+            'user_id' => $another_user->id,
             'url' => $url,
         ]);
         $from = \Minz\Url::for('bookmarks');
@@ -535,10 +537,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Link::count());
         $this->assertSame(0, models\LinkToCollection::count());
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $url,
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
@@ -546,56 +548,57 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\LinkToCollection::count());
 
         $link = models\Link::findBy(['user_id' => $user->id]);
-        $this->assertContains($collection_id, array_column($link->collections(), 'id'));
+        $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
     public function testCreateHandlesMultipleCollections()
     {
         $user = $this->login();
         $url = 'https://github.com/flusio/flusio';
-        $collection_id_1 = $this->create('collection', [
+        $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $collection_id_2 = $this->create('collection', [
+        $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $url,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id_1,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection_1->id,
         ]);
         $from = \Minz\Url::for('bookmarks');
 
         $this->assertSame(1, models\Link::count());
         $this->assertSame(1, models\LinkToCollection::count());
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $url,
-            'collection_ids' => [$collection_id_1, $collection_id_2],
+            'collection_ids' => [$collection_1->id, $collection_2->id],
             'from' => $from,
         ]);
 
         $this->assertSame(1, models\Link::count());
         $this->assertSame(2, models\LinkToCollection::count());
 
-        $link = models\Link::find($link_id);
-        $this->assertContains($collection_id_1, array_column($link->collections(), 'id'));
-        $this->assertContains($collection_id_2, array_column($link->collections(), 'id'));
+        $link = $link->reload();
+        $collection_ids = array_column($link->collections(), 'id');
+        $this->assertContains($collection_1->id, $collection_ids);
+        $this->assertContains($collection_2->id, $collection_ids);
     }
 
     public function testCreateWorksIfCollectionIsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
@@ -606,10 +609,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
         $this->assertSame(0, models\LinkToCollection::count());
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $url,
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
@@ -618,7 +621,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, $from);
         $link = models\Link::take();
-        $this->assertContains($collection_id, array_column($link->collections(), 'id'));
+        $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
     public function testCreateCanCreateCollections()
@@ -631,7 +634,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Collection::count());
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $url,
             'new_collection_names' => [$collection_name],
@@ -654,17 +657,17 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
         ]);
         $url = 'https://github.com/flusio/flusio';
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
-            'csrf' => \Minz\CSRF::generate(),
+        $response = $this->appRun('POST', '/links/new', [
+            'csrf' => \Minz\Csrf::generate(),
             'url' => $url,
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
@@ -676,15 +679,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => 'not the token',
             'url' => 'https://github.com/flusio/flusio',
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
@@ -696,34 +699,34 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfUrlIsInvalid()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => 'ftp://' . $this->fake('domainName'),
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Link scheme must be either http or https.');
+        $this->assertResponseContains($response, 'The link is invalid.');
         $this->assertSame(0, models\Link::count());
     }
 
     public function testCreateFailsIfUrlIsMissing()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
@@ -735,16 +738,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCollectionIdsContainsNotOwnedId()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
         ]);
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => 'https://github.com/flusio/flusio',
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
@@ -758,7 +761,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => 'https://github.com/flusio/flusio',
             'collection_ids' => [],
@@ -773,12 +776,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCollectionIsSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
@@ -786,10 +789,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $url,
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
@@ -802,18 +805,18 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
         ]);
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $url,
-            'collection_ids' => [$collection_id],
+            'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
 
@@ -831,7 +834,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', '/links/new', [
+        $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
             'url' => $url,
             'new_collection_names' => [$collection_name],
@@ -847,12 +850,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testEditRendersCorrectly()
     {
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('iso8601'),
+            'fetched_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}/edit");
+        $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'links/edit.phtml');
@@ -860,22 +863,22 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'fetched_at' => $this->fake('iso8601'),
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}/edit");
+        $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fedit");
     }
 
     public function testEditFailsIfTheLinkDoesNotExist()
     {
         $user = $this->login();
 
-        $response = $this->appRun('get', '/links/not-a-valid-id/edit');
+        $response = $this->appRun('GET', '/links/not-a-valid-id/edit');
 
         $this->assertResponseCode($response, 404);
     }
@@ -883,13 +886,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfUserDoesNotOwnTheLink()
     {
         $current_user = $this->login();
-        $other_user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'fetched_at' => $this->fake('iso8601'),
+        $other_user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'fetched_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('get', "/links/{$link_id}/edit");
+        $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
         $this->assertResponseCode($response, 404);
     }
@@ -901,21 +904,21 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $old_reading_time = $this->fakeUnique('numberBetween', 0, 9000);
         $new_reading_time = $this->fakeUnique('numberBetween', 0, 9000);
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('iso8601'),
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $old_title,
             'reading_time' => $old_reading_time,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+        $response = $this->appRun('POST', "/links/{$link->id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
             'reading_time' => $new_reading_time,
         ]);
 
-        $this->assertResponseCode($response, 302, "/links/{$link_id}");
-        $link = models\Link::find($link_id);
+        $this->assertResponseCode($response, 302, "/links/{$link->id}");
+        $link = $link->reload();
         $this->assertSame($new_title, $link->title);
         $this->assertSame($new_reading_time, $link->reading_time);
     }
@@ -925,21 +928,21 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('iso8601'),
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $old_title,
         ]);
         $from = \Minz\Url::for('bookmarks');
 
-        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+        $response = $this->appRun('POST', "/links/{$link->id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($new_title, $link->title);
     }
 
@@ -948,13 +951,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('iso8601'),
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $old_title,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+        $response = $this->appRun('POST', "/links/{$link->id}/edit", [
             'csrf' => 'not the token',
             'title' => $new_title,
         ]);
@@ -962,7 +965,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponsePointer($response, 'links/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($old_title, $link->title);
     }
 
@@ -971,13 +974,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $old_title = $this->fake('words', 3, true);
         $new_title = '';
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('iso8601'),
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $old_title,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+        $response = $this->appRun('POST', "/links/{$link->id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
         ]);
@@ -985,7 +988,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponsePointer($response, 'links/edit.phtml');
         $this->assertResponseContains($response, 'The title is required.');
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($old_title, $link->title);
     }
 
@@ -993,20 +996,20 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
-        $user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
-            'fetched_at' => $this->fake('iso8601'),
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $old_title,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/edit", [
-            'csrf' => \Minz\CSRF::generate(),
+        $response = $this->appRun('POST', "/links/{$link->id}/edit", [
+            'csrf' => \Minz\Csrf::generate(),
             'title' => $new_title,
         ]);
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}%2Fedit");
-        $link = models\Link::find($link_id);
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fedit");
+        $link = $link->reload();
         $this->assertSame($old_title, $link->title);
     }
 
@@ -1015,19 +1018,19 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
-            'fetched_at' => $this->fake('iso8601'),
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $old_title,
         ]);
 
-        $response = $this->appRun('post', '/links/not-the-id/edit', [
+        $response = $this->appRun('POST', '/links/not-the-id/edit', [
             'csrf' => $user->csrf,
             'title' => $new_title,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($old_title, $link->title);
     }
 
@@ -1036,49 +1039,49 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $old_title = $this->fake('words', 3, true);
         $new_title = $this->fake('words', 5, true);
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
-            'fetched_at' => $this->fake('iso8601'),
+        $other_user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'fetched_at' => $this->fake('dateTime'),
             'title' => $old_title,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/edit", [
+        $response = $this->appRun('POST', "/links/{$link->id}/edit", [
             'csrf' => $user->csrf,
             'title' => $new_title,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $link = models\Link::find($link_id);
+        $link = $link->reload();
         $this->assertSame($old_title, $link->title);
     }
 
     public function testDeleteDeletesLinkAndRedirects()
     {
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+        $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf' => $user->csrf,
-            'from' => "/links/{$link_id}",
+            'from' => "/links/{$link->id}",
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse(models\Link::exists($link_id));
+        $this->assertFalse(models\Link::exists($link->id));
     }
 
     public function testDeleteRedirectsToRedirectToIfGiven()
     {
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+        $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf' => $user->csrf,
-            'from' => "/links/{$link_id}",
+            'from' => "/links/{$link->id}",
             'redirect_to' => '/bookmarks',
         ]);
 
@@ -1087,53 +1090,53 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+        $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf' => 'a token',
-            'from' => "/links/{$link_id}",
+            'from' => "/links/{$link->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link_id}");
-        $this->assertTrue(models\Link::exists($link_id));
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
+        $this->assertTrue(models\Link::exists($link->id));
     }
 
     public function testDeleteFailsIfLinkIsNotOwned()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+        $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf' => $user->csrf,
-            'from' => "/links/{$link_id}",
+            'from' => "/links/{$link->id}",
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertTrue(models\Link::exists($link_id));
+        $this->assertTrue(models\Link::exists($link->id));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('post', "/links/{$link_id}/delete", [
+        $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf' => 'not the token',
-            'from' => "/links/{$link_id}",
+            'from' => "/links/{$link->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, "/links/{$link_id}");
-        $this->assertTrue(models\Link::exists($link_id));
-        $this->assertFlash('error', 'A security verification failed.');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}");
+        $this->assertTrue(models\Link::exists($link->id));
+        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
     }
 }

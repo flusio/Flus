@@ -72,8 +72,8 @@ class Sessions
 
         try {
             // Verify that redirect_to matches a real route in the application.
-            $router = \flusio\Router::load();
-            $router->match('get', $redirect_to);
+            $router = \Minz\Engine::router();
+            $router->match('GET', $redirect_to);
         } catch (\Minz\Errors\RouteNotFoundError $e) {
             $redirect_to = \Minz\Url::for('home');
         }
@@ -86,7 +86,7 @@ class Sessions
         $password = $request->param('password');
         $csrf = $request->param('csrf');
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('sessions/new.phtml', [
                 'email' => $email,
                 'password' => $password,
@@ -95,8 +95,8 @@ class Sessions
             ]);
         }
 
-        $email = utils\Email::sanitize($email);
-        if (!utils\Email::validate($email)) {
+        $email = \Minz\Email::sanitize($email);
+        if (!\Minz\Email::validate($email)) {
             return Response::badRequest('sessions/new.phtml', [
                 'email' => $email,
                 'password' => $password,
@@ -143,14 +143,14 @@ class Sessions
 
         // The session cookie will probably expire before, but it's another
         // security barrier.
-        $token = models\Token::init(1, 'month');
+        $token = new models\Token(1, 'month');
         $token->save();
 
         // $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
         $session_name = '';
         // $ip = $request->header('REMOTE_ADDR', 'unknown');
         $ip = 'unknown';
-        $session = models\Session::init($session_name, $ip);
+        $session = new models\Session($session_name, $ip);
         $session->user_id = $user->id;
         $session->token = $token->token;
         $session->save();
@@ -184,7 +184,7 @@ class Sessions
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
         $csrf = $request->param('csrf');
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::found($redirect_to);
         }
 
@@ -219,8 +219,8 @@ class Sessions
         }
 
         $csrf = $request->param('csrf');
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('home');
         }
 

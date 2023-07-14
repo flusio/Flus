@@ -2,16 +2,17 @@
 
 namespace flusio\models\dao;
 
+use Minz\Database;
+
 /**
  * Represent a collection of flusio in database.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Collection extends \Minz\DatabaseModel
+trait Collection
 {
     use BulkQueries;
-    use LockQueries;
     use MediaQueries;
     use collections\CleanerQueries;
     use collections\DiscoveryQueries;
@@ -20,26 +21,16 @@ class Collection extends \Minz\DatabaseModel
     use collections\PocketQueries;
     use collections\SearchQueries;
     use collections\StatisticsQueries;
-
-    /**
-     * @throws \Minz\Errors\DatabaseError
-     */
-    public function __construct()
-    {
-        $properties = array_filter(\flusio\models\Collection::PROPERTIES, function ($declaration) {
-            return !isset($declaration['computed']) || !$declaration['computed'];
-        });
-        parent::__construct('collections', 'id', array_keys($properties));
-    }
+    use Database\Lockable;
 
     /**
      * Return the list of collections attached to the given link.
      *
      * @param string $link_id
      *
-     * @return array
+     * @return self[]
      */
-    public function listByLinkId($link_id)
+    public static function listByLinkId(string $link_id): array
     {
         $sql = <<<'SQL'
             SELECT c.*
@@ -49,11 +40,13 @@ class Collection extends \Minz\DatabaseModel
             AND lc.link_id = :link_id
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':link_id' => $link_id,
         ]);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
@@ -74,10 +67,13 @@ class Collection extends \Minz\DatabaseModel
      *     - count_hidden (boolean, default to true), indicates if hidden links
      *       must be counted
      *
-     * @return array
+     * @return self[]
      */
-    public function listComputedByUserId($user_id, $selected_computed_props, $options = [])
-    {
+    public static function listComputedByUserId(
+        string $user_id,
+        array $selected_computed_props,
+        array $options = [],
+    ): array {
         $default_options = [
             'private' => true,
             'count_hidden' => true,
@@ -143,9 +139,11 @@ class Collection extends \Minz\DatabaseModel
             {$non_empty_clause}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($parameters);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
@@ -168,10 +166,13 @@ class Collection extends \Minz\DatabaseModel
      *       optimized for "feed" collections so it may be interesting to call
      *       this method in two steps.
      *
-     * @return array
+     * @return self[]
      */
-    public function listComputedFollowedByUserId($user_id, $selected_computed_props, $options = [])
-    {
+    public static function listComputedFollowedByUserId(
+        string $user_id,
+        array $selected_computed_props,
+        array $options = []
+    ): array {
         $default_options = [
             'type' => 'all',
         ];
@@ -238,9 +239,11 @@ class Collection extends \Minz\DatabaseModel
             {$group_by_clause}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($parameters);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
@@ -257,10 +260,13 @@ class Collection extends \Minz\DatabaseModel
      *     - access_type (string, either 'any' [default], 'read' or 'write'),
      *       indicates with which access the collections must have been shared.
      *
-     * @return array
+     * @return self[]
      */
-    public function listComputedSharedToUserId($user_id, $selected_computed_props, $options = [])
-    {
+    public static function listComputedSharedToUserId(
+        string $user_id,
+        array $selected_computed_props,
+        array $options = [],
+    ): array {
         $default_options = [
             'access_type' => 'any',
         ];
@@ -302,11 +308,13 @@ class Collection extends \Minz\DatabaseModel
             {$group_by_clause}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
         ]);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
@@ -321,10 +329,13 @@ class Collection extends \Minz\DatabaseModel
      *     select specific properties to avoid computing dispensable
      *     properties.
      *
-     * @return array
+     * @return self[]
      */
-    public function listComputedSharedByUserIdTo($user_id, $to_user_id, $selected_computed_props)
-    {
+    public static function listComputedSharedByUserIdTo(
+        string $user_id,
+        string $to_user_id,
+        array $selected_computed_props,
+    ): array {
         $parameters = [
             ':user_id' => $user_id,
             ':to_user_id' => $to_user_id,
@@ -359,20 +370,17 @@ class Collection extends \Minz\DatabaseModel
             {$group_by_clause}
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute($parameters);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
      * Return whether the link is in a collection owned by the given user or not.
-     *
-     * @param string $user_id
-     * @param string $link_id
-     *
-     * @return boolean
      */
-    public function existsForUserIdAndLinkId($user_id, $link_id)
+    public static function existsForUserIdAndLinkId(string $user_id, string $link_id): bool
     {
         $sql = <<<'SQL'
             SELECT EXISTS (
@@ -385,24 +393,22 @@ class Collection extends \Minz\DatabaseModel
             )
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
             ':link_id' => $link_id,
         ]);
-        return $statement->fetchColumn();
+        return (bool) $statement->fetchColumn();
     }
 
     /**
      * List collections which are writable by the given user, containing a link
      * not owned by the given user and with the given URL.
      *
-     * @param string $user_id
-     * @param string $url_lookup
-     *
-     * @return array
+     * @return self[]
      */
-    public function listWritableContainingNotOwnedLinkWithUrl($user_id, $url_lookup)
+    public static function listWritableContainingNotOwnedLinkWithUrl(string $user_id, string $url_lookup): array
     {
         $sql = <<<'SQL'
             SELECT c.*
@@ -425,11 +431,13 @@ class Collection extends \Minz\DatabaseModel
             )
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
             ':url_lookup' => $url_lookup,
         ]);
-        return $statement->fetchAll();
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 }

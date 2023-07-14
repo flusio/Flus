@@ -2,7 +2,6 @@
 
 namespace flusio\jobs\scheduled;
 
-use flusio\jobs;
 use flusio\models;
 use flusio\services;
 
@@ -12,7 +11,7 @@ use flusio\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class FeedsSync extends jobs\Job
+class FeedsSync extends \Minz\Job
 {
     /**
      * Install the correct number of jobs in database.
@@ -20,21 +19,22 @@ class FeedsSync extends jobs\Job
     public static function install()
     {
         $number_jobs_to_install = \Minz\Configuration::$application['job_feeds_sync_count'];
-        $job_dao = new models\dao\Job();
-        $feeds_sync_job = new FeedsSync();
 
-        $jobs = $job_dao->listBy(['name' => $feeds_sync_job->name]);
+        $jobs = \Minz\Job::listBy([
+            'name' => self::class,
+        ]);
 
         $diff_count = $number_jobs_to_install - count($jobs);
         if ($diff_count > 0) {
             // If positive, we need to install more jobs
             for ($i = 0; $i < $diff_count; $i++) {
-                $feeds_sync_job->performLater();
+                $feeds_sync_job = new self();
+                $feeds_sync_job->performAsap();
             }
         } elseif ($diff_count < 0) {
             // If negative, we need to uninstall some jobs
             for ($i = 0; $i < abs($diff_count); $i++) {
-                $job_dao->delete($jobs[$i]['id']);
+                \Minz\Job::delete($jobs[$i]->id);
             }
         }
     }
@@ -66,13 +66,13 @@ class FeedsSync extends jobs\Job
         $before = \Minz\Time::ago(1, 'hour');
         $strategy_choice = random_int(1, 6);
         if ($strategy_choice < 6) {
-            $collections = models\Collection::daoToList('listActiveFeedsToFetch', $before, 25);
+            $collections = models\Collection::listActiveFeedsToFetch($before, 25);
         } else {
-            $collections = models\Collection::daoToList('listOldestFeedsToFetch', $before, 25);
+            $collections = models\Collection::listOldestFeedsToFetch($before, 25);
         }
 
         foreach ($collections as $collection) {
-            $has_lock = models\Collection::daoCall('lock', $collection->id);
+            $has_lock = $collection->lock();
             if (!$has_lock) {
                 continue;
             }
@@ -83,7 +83,7 @@ class FeedsSync extends jobs\Job
                 \Minz\Log::error("Error while syncing feed {$collection->id}: {$e->getMessage()}");
             }
 
-            models\Collection::daoCall('unlock', $collection->id);
+            $collection->unlock();
         }
     }
 }

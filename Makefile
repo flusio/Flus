@@ -2,6 +2,8 @@
 
 USER = $(shell id -u):$(shell id -g)
 
+DOCKER_COMPOSE = docker-compose -p flusio -f docker/docker-compose.yml
+
 ifdef NO_DOCKER
 	PHP = php
 	COMPOSER = composer
@@ -33,15 +35,15 @@ endif
 .PHONY: docker-start
 docker-start: .env ## Start a development server with Docker
 	@echo "Running webserver on http://localhost:8000"
-	docker-compose -p flusio -f docker/docker-compose.yml up
+	$(DOCKER_COMPOSE) up
 
 .PHONY: docker-clean
 docker-clean: ## Stop and clean Docker server
-	docker-compose -p flusio -f docker/docker-compose.yml down
+	$(DOCKER_COMPOSE) down
 
 .PHONY: docker-build
 docker-build: ## Rebuild the Docker images
-	docker-compose -p flusio -f docker/docker-compose.yml build
+	$(DOCKER_COMPOSE) build
 
 .PHONY: install
 install: ## Install the dependencies
@@ -50,10 +52,7 @@ install: ## Install the dependencies
 
 .PHONY: setup
 setup: .env ## Setup the application system
-	$(CLI) system setup
-
-.PHONY: update
-update: setup ## Update the application
+	$(CLI) migrations setup --seed
 
 .PHONY: rollback
 rollback: ## Reverse the last migration
@@ -65,8 +64,12 @@ endif
 
 .PHONY: reset
 reset: ## Reset the database
-	rm data/migrations_version.txt || true
-	$(CLI) system setup
+ifndef FORCE
+	$(error Please run the operation with FORCE=true)
+endif
+	$(DOCKER_COMPOSE) stop job_worker
+	$(CLI) migrations reset --force --seed
+	$(DOCKER_COMPOSE) start job_worker
 
 .PHONY: icons-build
 icons-build: ## Build the icons asset

@@ -7,7 +7,6 @@ use flusio\auth;
 use flusio\jobs;
 use flusio\models;
 use flusio\services;
-use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -128,8 +127,8 @@ class Validation
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::found($from);
         }
 
@@ -141,7 +140,7 @@ class Validation
         if (!$user->validation_token) {
             // The user has no token? This should not happen, but maybe the
             // admin changed something in DB... who knows?
-            $token = models\Token::init(1, 'day', 16);
+            $token = new models\Token(1, 'day', 16);
             $token->save();
             $user->validation_token = $token->token;
             $user->save();
@@ -150,16 +149,16 @@ class Validation
         $token = models\Token::find($user->validation_token);
         if ($token->expiresIn(30, 'minutes') || $token->isInvalidated()) {
             // the token will expire soon, let's regenerate a new one
-            $token = models\Token::init(1, 'day', 16);
+            $token = new models\Token(1, 'day', 16);
             $token->save();
             $user->validation_token = $token->token;
             $user->save();
         }
 
         $mailer_job = new jobs\Mailer();
-        $mailer_job->performLater('Users', 'sendAccountValidationEmail', $user->id);
+        $mailer_job->performAsap('Users', 'sendAccountValidationEmail', $user->id);
 
-        utils\Flash::set('status', 'validation_email_sent');
+        \Minz\Flash::set('status', 'validation_email_sent');
         return Response::found($from);
     }
 }

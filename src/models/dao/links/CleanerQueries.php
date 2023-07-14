@@ -2,6 +2,8 @@
 
 namespace flusio\models\dao\links;
 
+use Minz\Database;
+
 /**
  * Add methods providing SQL queries specific to the Cleaner.
  *
@@ -13,13 +15,8 @@ trait CleanerQueries
     /**
      * Delete links that are attached to no collections older than the given
      * date for the given user.
-     *
-     * @param string $user_id
-     * @param \DateTime $date
-     *
-     * @return boolean True on success
      */
-    public function deleteNotStoredOlderThan($user_id, $date)
+    public static function deleteNotStoredOlderThan(string $user_id, \DateTimeImmutable $date): bool
     {
         $sql = <<<SQL
             DELETE FROM links
@@ -35,10 +32,11 @@ trait CleanerQueries
             AND lc.link_id IS NULL;
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         return $statement->execute([
             ':user_id' => $user_id,
-            ':date' => $date->format(\Minz\Model::DATETIME_FORMAT),
+            ':date' => $date->format(Database\Column::DATETIME_FORMAT),
         ]);
     }
 
@@ -54,16 +52,13 @@ trait CleanerQueries
      * order to keep a minimum number of links in feeds. Note that this value
      * MUST be smaller or equal to $keep_maximum. Unexpected behaviour may
      * happen otherwise and this method doesn't check the values.
-     *
-     * @param string $user_id
-     * @param integer $keep_period
-     * @param integer $keep_minimum
-     * @param integer $keep_maximum
-     *
-     * @return boolean True on success
      */
-    public function deleteFromFeeds($user_id, $keep_period, $keep_minimum, $keep_maximum)
-    {
+    public static function deleteFromFeeds(
+        string $user_id,
+        int $keep_period,
+        int $keep_minimum,
+        int $keep_maximum
+    ): bool {
         if ($keep_period === 0 && $keep_maximum === 0) {
             // no retention policy, nothing to do
             return true;
@@ -106,7 +101,7 @@ trait CleanerQueries
         $period_clause = '';
         if ($keep_period > 0) {
             $retention_date = \Minz\Time::ago($keep_period, 'months');
-            $parameters[':date'] = $retention_date->format(\Minz\Model::DATETIME_FORMAT);
+            $parameters[':date'] = $retention_date->format(Database\Column::DATETIME_FORMAT);
             $parameters[':minimum'] = $keep_minimum;
             $period_clause = '(tmp.created_at < :date AND tmp.row_number > :minimum)';
         }
@@ -141,7 +136,8 @@ trait CleanerQueries
             )
         SQL;
 
-        $statement = $this->prepare($sql);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
         return $statement->execute($parameters);
     }
 }

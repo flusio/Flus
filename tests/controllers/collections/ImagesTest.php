@@ -4,13 +4,15 @@ namespace flusio\controllers\collections;
 
 use flusio\models;
 use flusio\utils;
+use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
+use tests\factories\UserFactory;
 
 class ImagesTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \tests\FakerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\FilesHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -19,14 +21,14 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
             'from' => $from,
         ]);
 
@@ -38,21 +40,21 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     public function testEditWorksIfCollectionIsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'name' => $collection_name,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
             'from' => $from,
         ]);
 
@@ -63,14 +65,14 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testEditRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $user_id,
+            'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
             'from' => $from,
         ]);
 
@@ -81,13 +83,13 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionDoesNotExist()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', '/collections/not-an-id/image', [
+        $response = $this->appRun('GET', '/collections/not-an-id/image', [
             'from' => $from,
         ]);
 
@@ -97,14 +99,14 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
             'from' => $from,
         ]);
 
@@ -114,19 +116,19 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionIsSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
             'from' => $from,
         ]);
 
@@ -138,7 +140,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
@@ -147,9 +149,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
@@ -163,7 +165,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
@@ -172,15 +174,15 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
         ]);
 
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNotNull($collection->image_filename);
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($collection->image_filename);
@@ -197,14 +199,14 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'image_filename' => null,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
@@ -212,16 +214,16 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNotNull($collection->image_filename);
     }
 
@@ -229,21 +231,21 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'image_filename' => null,
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => 'a token',
             'from' => $from,
             'image' => $file,
@@ -251,7 +253,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
         $from_encoded = urlencode($from);
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 
@@ -260,7 +262,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
@@ -269,16 +271,16 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', '/collections/not-an-id/image', [
+        $response = $this->appRun('POST', '/collections/not-an-id/image', [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 
@@ -287,26 +289,26 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'image_filename' => null,
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 
@@ -315,14 +317,14 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'image_filename' => null,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
@@ -330,16 +332,16 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 
@@ -348,7 +350,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
@@ -357,9 +359,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => 'not the token',
             'from' => $from,
             'image' => $file,
@@ -368,21 +370,21 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponsePointer($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 
     public function testUpdateFailsIfFileIsMissing()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
         ]);
@@ -390,7 +392,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponsePointer($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'The file is required');
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 
@@ -399,7 +401,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-avatar.svg';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
@@ -408,9 +410,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
@@ -419,7 +421,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponsePointer($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>');
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 
@@ -428,7 +430,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
@@ -438,9 +440,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'error' => UPLOAD_ERR_OK,
             'is_uploaded_file' => false, // this is possible only during tests!
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
@@ -449,7 +451,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponsePointer($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'This file cannot be uploaded (error -1).');
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 
@@ -461,7 +463,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
@@ -470,9 +472,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => $error,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
@@ -481,7 +483,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponsePointer($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'This file is too large');
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 
@@ -493,7 +495,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
@@ -502,9 +504,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'tmp_name' => $tmp_filepath,
             'error' => $error,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/image", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf' => $user->csrf,
             'from' => $from,
             'image' => $file,
@@ -513,7 +515,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponsePointer($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, "This file cannot be uploaded (error {$error}).");
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
 

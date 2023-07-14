@@ -59,7 +59,7 @@ class DataExporter
             $files["collections/{$collection->id}.atom.xml"] = $this->generateCollection($collection);
         }
 
-        $links = models\Link::daoToList('listByUserIdWithComments', $user->id);
+        $links = models\Link::listByUserIdWithComments($user->id);
         foreach ($links as $link) {
             $files["messages/{$link->id}.atom.xml"] = $this->generateLink($link);
         }
@@ -101,7 +101,7 @@ class DataExporter
      */
     private function generateOpml($user)
     {
-        $groups = models\Group::daoToList('listBy', ['user_id' => $user->id]);
+        $groups = models\Group::listBy(['user_id' => $user->id]);
         $collections = $user->followedCollections(['time_filter']);
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 

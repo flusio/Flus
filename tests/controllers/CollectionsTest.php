@@ -3,20 +3,25 @@
 namespace flusio\controllers;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
+use tests\factories\CollectionToTopicFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\TopicFactory;
+use tests\factories\UserFactory;
 
 class CollectionsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \tests\FlashAsserts;
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testIndexRedirectsToLinks()
     {
-        $response = $this->appRun('get', '/collections');
+        $response = $this->appRun('GET', '/collections');
 
         $this->assertResponseCode($response, 301, '/links');
     }
@@ -25,7 +30,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
 
-        $response = $this->appRun('get', '/collections/new');
+        $response = $this->appRun('GET', '/collections/new');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'New collection');
@@ -36,11 +41,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $label = $this->fake('word');
-        $this->create('topic', [
+        TopicFactory::create([
             'label' => $label,
         ]);
 
-        $response = $this->appRun('get', '/collections/new');
+        $response = $this->appRun('GET', '/collections/new');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $label);
@@ -48,7 +53,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRedirectsIfNotConnected()
     {
-        $response = $this->appRun('get', '/collections/new');
+        $response = $this->appRun('GET', '/collections/new');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fcollections%2Fnew');
     }
@@ -61,7 +66,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Collection::count());
 
-        $response = $this->appRun('post', '/collections/new', [
+        $response = $this->appRun('POST', '/collections/new', [
             'csrf' => $user->csrf,
             'name' => $name,
             'description' => $description,
@@ -81,7 +86,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
 
-        $response = $this->appRun('post', '/collections/new', [
+        $response = $this->appRun('POST', '/collections/new', [
             'csrf' => $user->csrf,
             'name' => $name,
             'description' => $description,
@@ -97,17 +102,17 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
-        $topic_id = $this->create('topic');
+        $topic = TopicFactory::create();
 
-        $response = $this->appRun('post', '/collections/new', [
+        $response = $this->appRun('POST', '/collections/new', [
             'csrf' => $user->csrf,
             'name' => $name,
             'description' => $description,
-            'topic_ids' => [$topic_id],
+            'topic_ids' => [$topic->id],
         ]);
 
         $collection = models\Collection::take();
-        $this->assertContains($topic_id, array_column($collection->topics(), 'id'));
+        $this->assertContains($topic->id, array_column($collection->topics(), 'id'));
     }
 
     public function testCreateRedirectsIfNotConnected()
@@ -115,8 +120,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
 
-        $response = $this->appRun('post', '/collections/new', [
-            'csrf' => \Minz\CSRF::generate(),
+        $response = $this->appRun('POST', '/collections/new', [
+            'csrf' => \Minz\Csrf::generate(),
             'name' => $name,
             'description' => $description,
         ]);
@@ -131,7 +136,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
 
-        $response = $this->appRun('post', '/collections/new', [
+        $response = $this->appRun('POST', '/collections/new', [
             'csrf' => 'not the token',
             'name' => $name,
             'description' => $description,
@@ -148,7 +153,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $name = $this->fake('words', 100, true);
         $description = $this->fake('sentence');
 
-        $response = $this->appRun('post', '/collections/new', [
+        $response = $this->appRun('POST', '/collections/new', [
             'csrf' => $user->csrf,
             'name' => $name,
             'description' => $description,
@@ -164,7 +169,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $description = $this->fake('sentence');
 
-        $response = $this->appRun('post', '/collections/new', [
+        $response = $this->appRun('POST', '/collections/new', [
             'csrf' => $user->csrf,
             'description' => $description,
         ]);
@@ -179,9 +184,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $name = $this->fake('words', 3, true);
         $description = $this->fake('sentence');
-        $topic_id = $this->create('topic');
+        $topic = TopicFactory::create();
 
-        $response = $this->appRun('post', '/collections/new', [
+        $response = $this->appRun('POST', '/collections/new', [
             'csrf' => $user->csrf,
             'name' => $name,
             'description' => $description,
@@ -197,22 +202,22 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
             'description' => '**foo bar**',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}");
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
@@ -222,24 +227,24 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectlyIfPublicAndNotConnected()
     {
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $link_title,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}");
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
@@ -249,24 +254,24 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink()
     {
         $user = $this->login();
-        $owner_id = $this->create('user');
+        $owner = UserFactory::create();
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $owner_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $owner->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $owner_id,
+        $link = LinkFactory::create([
+            'user_id' => $owner->id,
             'title' => $link_title,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}");
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
@@ -276,28 +281,28 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
             'title' => $link_title,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}");
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
@@ -307,28 +312,28 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
             'title' => $link_title,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}");
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
@@ -337,24 +342,24 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowHidesHiddenLinksInPublicCollections()
     {
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $user_id,
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $link_title,
-            'is_hidden' => 1,
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}");
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
 
         $this->assertResponseNotContains($response, $link_title);
     }
@@ -363,46 +368,46 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $link_title = $this->fake('words', 3, true);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}", [
             'page' => 0,
         ]);
 
-        $this->assertResponseCode($response, 302, "/collections/{$collection_id}?page=1");
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}?page=1");
     }
 
     public function testShowRedirectsIfPrivateAndNotConnected()
     {
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}");
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}");
     }
 
     public function testShowFailsIfCollectionDoesNotExist()
     {
         $this->login();
 
-        $response = $this->appRun('get', '/collections/unknown');
+        $response = $this->appRun('GET', '/collections/unknown');
 
         $this->assertResponseCode($response, 404);
     }
@@ -410,21 +415,21 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testShowFailsIfPrivateAndNoSharedAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $link_id = $this->create('link', [
-            'user_id' => $other_user_id,
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}");
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
 
         $this->assertResponseCode($response, 404);
     }
@@ -432,13 +437,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testEditRendersCorrectly()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/edit", [
             'from' => $from,
         ]);
 
@@ -449,19 +454,19 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testEditRendersCorrectlyIfCollectionIsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/edit", [
             'from' => $from,
         ]);
 
@@ -471,14 +476,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testEditRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/edit", [
             'from' => $from,
         ]);
 
@@ -490,7 +495,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $response = $this->appRun('get', '/collections/unknown/edit', [
+        $response = $this->appRun('GET', '/collections/unknown/edit', [
             'from' => \Minz\Url::for('collections'),
         ]);
 
@@ -500,14 +505,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/edit", [
             'from' => $from,
         ]);
 
@@ -517,19 +522,19 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionIsSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/edit", [
             'from' => $from,
         ]);
 
@@ -539,13 +544,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionIsNotOfCorrectType()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/edit", [
             'from' => $from,
         ]);
 
@@ -559,18 +564,18 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
         $new_description = $this->fakeUnique('sentence');
-        $old_public = 0;
-        $new_public = 1;
-        $collection_id = $this->create('collection', [
+        $old_public = false;
+        $new_public = true;
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
             'is_public' => $old_public,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
@@ -591,51 +596,51 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_name = $this->fakeUnique('words', 3, true);
         $new_description = $this->fakeUnique('sentence');
         $new_public = 1;
-        $old_topic_id = $this->create('topic');
-        $new_topic_id = $this->create('topic');
-        $collection_id = $this->create('collection', [
+        $old_topic = TopicFactory::create();
+        $new_topic = TopicFactory::create();
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $old_topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $old_topic->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
             'is_public' => $new_public,
-            'topic_ids' => [$new_topic_id],
+            'topic_ids' => [$new_topic->id],
             'from' => $from,
         ]);
 
         $collection = models\Collection::take();
         $topic_ids = array_column($collection->topics(), 'id');
-        $this->assertSame([$new_topic_id], $topic_ids);
+        $this->assertSame([$new_topic->id], $topic_ids);
     }
 
     public function testUpdateWorksIfCollectionIsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
             'name' => $old_name,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $new_name,
@@ -648,21 +653,21 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
+        $user = UserFactory::create();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
         $new_description = $this->fakeUnique('sentence');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
-            'csrf' => \Minz\CSRF::generate(),
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
+            'csrf' => \Minz\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'from' => $from,
@@ -682,15 +687,15 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
         $new_description = $this->fakeUnique('sentence');
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => 'not the token',
             'name' => $new_name,
             'description' => $new_description,
@@ -711,15 +716,15 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_name = $this->fakeUnique('words', 100, true);
         $old_description = $this->fakeUnique('sentence');
         $new_description = $this->fakeUnique('sentence');
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
@@ -740,15 +745,15 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_name = '';
         $old_description = $this->fakeUnique('sentence');
         $new_description = $this->fakeUnique('sentence');
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
@@ -768,18 +773,18 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_name = $this->fakeUnique('words', 3, true);
         $new_description = $this->fakeUnique('sentence');
         $new_public = 1;
-        $old_topic_id = $this->create('topic');
-        $collection_id = $this->create('collection', [
+        $old_topic = TopicFactory::create();
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $old_topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $old_topic->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
@@ -790,9 +795,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'One of the associated topic doesn’t exist.');
-        $collection = models\Collection::find($collection_id);
+        $collection = $collection->reload();
         $topic_ids = array_column($collection->topics(), 'id');
-        $this->assertSame([$old_topic_id], $topic_ids);
+        $this->assertSame([$old_topic->id], $topic_ids);
     }
 
     public function testUpdateFailsIfCollectionDoesNotExist()
@@ -801,7 +806,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_name = $this->fakeUnique('words', 3, true);
         $new_description = $this->fakeUnique('sentence');
 
-        $response = $this->appRun('post', '/collections/unknown/edit', [
+        $response = $this->appRun('POST', '/collections/unknown/edit', [
             'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
@@ -814,20 +819,20 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
         $new_description = $this->fakeUnique('sentence');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
@@ -843,22 +848,22 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateFailsIfCollectionIsSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $old_name = $this->fakeUnique('words', 3, true);
         $new_name = $this->fakeUnique('words', 3, true);
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
             'name' => $old_name,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => $user->csrf,
             'from' => $from,
             'name' => $new_name,
@@ -876,15 +881,15 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_name = $this->fakeUnique('words', 3, true);
         $old_description = $this->fakeUnique('sentence');
         $new_description = $this->fakeUnique('sentence');
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'bookmarks',
             'name' => $old_name,
             'description' => $old_description,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/edit", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf' => $user->csrf,
             'name' => $new_name,
             'description' => $new_description,
@@ -900,126 +905,126 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testDeleteDeletesCollectionAndRedirects()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
             'csrf' => $user->csrf,
-            'from' => "/collections/{$collection_id}/edit",
+            'from' => "/collections/{$collection->id}/edit",
         ]);
 
         $this->assertResponseCode($response, 302, '/links');
-        $this->assertFalse(models\Collection::exists($collection_id));
+        $this->assertFalse(models\Collection::exists($collection->id));
     }
 
     public function testDeleteRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $user_id,
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
             'type' => 'collection',
         ]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
-            'csrf' => \Minz\CSRF::generate(),
-            'from' => "/collections/{$collection_id}/edit",
+        $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
+            'csrf' => \Minz\Csrf::generate(),
+            'from' => "/collections/{$collection->id}/edit",
         ]);
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection_id}%2Fedit");
-        $this->assertTrue(models\Collection::exists($collection_id));
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}%2Fedit");
+        $this->assertTrue(models\Collection::exists($collection->id));
     }
 
     public function testDeleteFailsIfCollectionDoesNotExist()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
 
-        $response = $this->appRun('post', '/collections/unknown/delete', [
+        $response = $this->appRun('POST', '/collections/unknown/delete', [
             'csrf' => $user->csrf,
-            'from' => "/collections/{$collection_id}/edit",
+            'from' => "/collections/{$collection->id}/edit",
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertTrue(models\Collection::exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection->id));
     }
 
     public function testDeleteFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
         ]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
             'csrf' => $user->csrf,
-            'from' => "/collections/{$collection_id}/edit",
+            'from' => "/collections/{$collection->id}/edit",
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertTrue(models\Collection::exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection->id));
     }
 
     public function testDeleteFailsIfCollectionIsShared()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
-            'user_id' => $other_user_id,
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
             'type' => 'collection',
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
             'csrf' => $user->csrf,
-            'from' => "/collections/{$collection_id}/edit",
+            'from' => "/collections/{$collection->id}/edit",
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertTrue(models\Collection::exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection->id));
     }
 
     public function testDeleteFailsIfCollectionIsNotOfCorrectType()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'bookmarks',
         ]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
             'csrf' => $user->csrf,
-            'from' => "/collections/{$collection_id}/edit",
+            'from' => "/collections/{$collection->id}/edit",
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertTrue(models\Collection::exists($collection_id));
+        $this->assertTrue(models\Collection::exists($collection->id));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/delete", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
             'csrf' => 'not the token',
-            'from' => "/collections/{$collection_id}/edit",
+            'from' => "/collections/{$collection->id}/edit",
         ]);
 
-        $this->assertResponseCode($response, 302, "/collections/{$collection_id}/edit");
-        $this->assertTrue(models\Collection::exists($collection_id));
-        $this->assertFlash('error', 'A security verification failed.');
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}/edit");
+        $this->assertTrue(models\Collection::exists($collection->id));
+        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
     }
 }

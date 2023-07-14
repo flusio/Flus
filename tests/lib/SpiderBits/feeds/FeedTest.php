@@ -45,7 +45,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('html', $entry->content_type);
         $this->assertSame(1576319400, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
-        $this->assertSame('00f9aa3dd1cedf999f3480b60d57c4662a8539ce05f245ca8698e543fc59ec93', $feed->hash());
+        $this->assertSame('97cb4fc2f008714c8e121583bde89b2c50780cec23ffbec33ef4c22383257d38', $feed->hash());
     }
 
     public function testFromTextWithFramablog()
@@ -81,7 +81,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1615790521, $entry->published_at->getTimestamp());
         $this->assertSame(12, count($entry->categories));
         $this->assertSame('Claviers invités', $entry->categories['Claviers invités']);
-        $this->assertSame('7c03c7e75fcee0c8afe15e71e6a5f8bd1dd091275c4b527c167dfa7c13b9fdb5', $feed->hash());
+        $this->assertSame('81f8ed21807a3b40293bb0c9dc14adf9bc5820370c99a768f2e61d176f0b9c67', $feed->hash());
     }
 
     public function testFromTextWithLaverty()
@@ -121,7 +121,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1614070752, $entry->published_at->getTimestamp());
         $this->assertSame(5, count($entry->categories));
         $this->assertSame('grenoble', $entry->categories['grenoble']);
-        $this->assertSame('58620704546afb2128dadb6a9a7a3c9f0e400cf95c8d48be8fd86ab45da7b165', $feed->hash());
+        $this->assertSame('d4fb468a697843eacd24d83a3e416583f5467b449abf6b2aa87530373563fd25', $feed->hash());
     }
 
     public function testFromTextWithVimeoSudWeb()
@@ -147,7 +147,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('html', $entry->content_type);
         $this->assertSame(1554818042, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
-        $this->assertSame('ec42d965b28efa4710e421be54d9ccabca4160814a579961ad678228ad8aef36', $feed->hash());
+        $this->assertSame('d5e41e5e21c195e35ad9f952775e67817f4485e5acf92de1ec77547f17339f7f', $feed->hash());
     }
 
     public function testFromTextWithOatmeal()
@@ -177,7 +177,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('html', $entry->content_type);
         $this->assertSame(1618335907, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
-        $this->assertSame('4d417e6c0d5101aa223aab83504b267f061abbc43ad5acbd5d5fb65d0b91aefc', $feed->hash());
+        $this->assertSame('38b063cb8e780063ca25310dc24694cf579b6fd74e0b492f2e96db98ee37b148', $feed->hash());
     }
 
     public function testFromTextWithBlogBasilesimon()
@@ -209,7 +209,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('html', $entry->content_type);
         $this->assertSame(1620943200, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
-        $this->assertSame('a92e7df76dcdabe9f70d7eaf2798b2a6190608d1b1a37f41a12897c0e00d2dc0', $feed->hash());
+        $this->assertSame('1f9c0b7063cfc9eb66d3e75cdc90ebc7e8b171c5f02ad6ab758e70efab0585f3', $feed->hash());
     }
 
     public function testFromTextWithNotaBene()
@@ -243,7 +243,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('html', $entry->content_type);
         $this->assertSame(1663407060, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
-        $this->assertSame('7c1c6a388d72505d0ed93b6f58c945f3d022aecc8bddd73f408212c5eb5bd16b', $feed->hash());
+        $this->assertSame('59232c6b8b0d545052a613f5e38a96d46db53e3be69733024ff7684cd6109b42', $feed->hash());
     }
 
     public function testFromTextWithCommitstrip()
@@ -274,7 +274,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('html', $entry->content_type);
         $this->assertSame(1663087290, $entry->published_at->getTimestamp());
         $this->assertSame(1, count($entry->categories));
-        $this->assertSame('e262ccea05151459f8b608953b6f4cad3c47bcaa05a4867830d5b5c431756424', $feed->hash());
+        $this->assertSame('9e5d2601871593c916b93e205cf4c80ebe11aaa08a55a1b220f0f6b634f35a8e', $feed->hash());
     }
 
     public function testFromTextWithDatesWithMilliseconds()

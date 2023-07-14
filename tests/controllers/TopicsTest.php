@@ -3,40 +3,44 @@
 namespace flusio\controllers;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\CollectionToTopicFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\TopicFactory;
 
 class TopicsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly()
     {
         $topic_label = $this->fakeUnique('sentence');
         $collection_name = $this->fakeUnique('sentence');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $topic_label,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $collection_name,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $topic->id,
         ]);
-        $link_id = $this->create('link', [
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/topics/{$topic_id}");
+        $response = $this->appRun('GET', "/topics/{$topic->id}");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $topic_label);
@@ -48,20 +52,20 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     {
         $topic_label = $this->fakeUnique('sentence');
         $collection_name = $this->fakeUnique('sentence');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $topic_label,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $collection_name,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $topic->id,
         ]);
 
-        $response = $this->appRun('get', "/topics/{$topic_id}");
+        $response = $this->appRun('GET', "/topics/{$topic->id}");
 
         $this->assertResponseNotContains($response, $collection_name);
     }
@@ -70,27 +74,27 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     {
         $topic_label = $this->fakeUnique('sentence');
         $collection_name = $this->fakeUnique('sentence');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $topic_label,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $collection_name,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $topic->id,
         ]);
-        $link_id = $this->create('link', [
-            'is_hidden' => 1,
+        $link = LinkFactory::create([
+            'is_hidden' => true,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/topics/{$topic_id}");
+        $response = $this->appRun('GET', "/topics/{$topic->id}");
 
         $this->assertResponseNotContains($response, $collection_name);
     }
@@ -99,27 +103,27 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     {
         $topic_label = $this->fakeUnique('sentence');
         $collection_name = $this->fakeUnique('sentence');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $topic_label,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $collection_name,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $topic->id,
         ]);
-        $link_id = $this->create('link', [
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/topics/{$topic_id}");
+        $response = $this->appRun('GET', "/topics/{$topic->id}");
 
         $this->assertResponseNotContains($response, $collection_name);
     }
@@ -128,36 +132,36 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     {
         $topic_label = $this->fakeUnique('sentence');
         $collection_name = $this->fakeUnique('sentence');
-        $topic_id = $this->create('topic', [
+        $topic = TopicFactory::create([
             'label' => $topic_label,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'name' => $collection_name,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('collection_to_topic', [
-            'collection_id' => $collection_id,
-            'topic_id' => $topic_id,
+        CollectionToTopicFactory::create([
+            'collection_id' => $collection->id,
+            'topic_id' => $topic->id,
         ]);
-        $link_id = $this->create('link', [
-            'is_hidden' => 0,
+        $link = LinkFactory::create([
+            'is_hidden' => false,
         ]);
-        $this->create('link_to_collection', [
-            'link_id' => $link_id,
-            'collection_id' => $collection_id,
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('get', "/topics/{$topic_id}", [
+        $response = $this->appRun('GET', "/topics/{$topic->id}", [
             'page' => 0,
         ]);
 
-        $this->assertResponseCode($response, 302, "/topics/{$topic_id}?page=1");
+        $this->assertResponseCode($response, 302, "/topics/{$topic->id}?page=1");
     }
 
     public function testShowFailsIfTopicDoesNotExist()
     {
-        $response = $this->appRun('get', '/topics/not-an-id');
+        $response = $this->appRun('GET', '/topics/not-an-id');
 
         $this->assertResponseCode($response, 404);
     }

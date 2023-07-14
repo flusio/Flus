@@ -2,101 +2,45 @@
 
 namespace flusio\models;
 
-use flusio\utils;
+use Minz\Database;
+use Minz\Translatable;
+use Minz\Validable;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Group extends \Minz\Model
+#[Database\Table(name: 'groups')]
+class Group
 {
-    use DaoConnector;
+    use Database\Recordable;
+    use Validable;
 
     public const NAME_MAX_LENGTH = 100;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $id;
 
-        'created_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'name' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\Group::validateName',
-        ],
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The name is required.'),
+    )]
+    #[Validable\Length(
+        max: self::NAME_MAX_LENGTH,
+        message: new Translatable('The name must be less than {max} characters.'),
+    )]
+    public string $name;
 
-        'user_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-    ];
+    #[Database\Column]
+    public string $user_id;
 
-    /**
-     * Initialize the model with default values.
-     *
-     * @param mixed $values
-     */
-    public function __construct($values)
+    public function __construct(string $user_id, string $name)
     {
-        parent::__construct(array_merge([
-            'id' => utils\Random::timebased(),
-            'name' => '',
-        ], $values));
-    }
-
-    /**
-     * @param string $user_id
-     * @param string $name
-     */
-    public static function init($user_id, $name)
-    {
-        return new self([
-            'name' => trim($name),
-            'user_id' => $user_id,
-        ]);
-    }
-
-    /**
-     * @param string $name
-     * @return boolean
-     */
-    public static function validateName($name)
-    {
-        return mb_strlen($name) <= self::NAME_MAX_LENGTH;
-    }
-
-    /**
-     * Return a list of errors (if any). The array keys indicated the concerned
-     * property.
-     *
-     * @return string[]
-     */
-    public function validate()
-    {
-        $formatted_errors = [];
-
-        foreach (parent::validate() as $property => $error) {
-            $code = $error['code'];
-
-            if ($property === 'name' && $code === 'required') {
-                $formatted_error = _('The name is required.');
-            } elseif ($property === 'name') {
-                $formatted_error = sprintf(
-                    _('The name must be less than %d characters.'),
-                    self::NAME_MAX_LENGTH
-                );
-            } else {
-                $formatted_error = $error['description']; // @codeCoverageIgnore
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-
-        return $formatted_errors;
+        $this->id = \Minz\Random::timebased();
+        $this->name = trim($name);
+        $this->user_id = $user_id;
     }
 }

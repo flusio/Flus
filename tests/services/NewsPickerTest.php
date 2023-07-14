@@ -3,12 +3,17 @@
 namespace flusio\services;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
+use tests\factories\FollowedCollectionFactory;
+use tests\factories\LinkFactory;
+use tests\factories\LinkToCollectionFactory;
+use tests\factories\UserFactory;
 
 class NewsPickerTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
     private $user;
@@ -19,11 +24,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
      */
     public function setUsers()
     {
-        $user_id = $this->create('user');
-        $this->user = models\User::find($user_id);
-
-        $user_id = $this->create('user');
-        $this->other_user = models\User::find($user_id);
+        $this->user = UserFactory::create();
+        $this->other_user = UserFactory::create();
     }
 
     public function testPickSelectsFromBookmarks()
@@ -31,23 +33,20 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'bookmarks',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->user->id,
         ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $this->user->id,
-            'type' => 'bookmarks',
-        ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $bookmarks_id,
-            'link_id' => $link_id,
+        $bookmarks = $this->user->bookmarks();
+        LinkToCollectionFactory::create([
+            'collection_id' => $bookmarks->id,
+            'link_id' => $link->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('bookmarks', $db_links[0]['via_news_type']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
+        $this->assertSame('bookmarks', $links[0]->via_news_type);
     }
 
     public function testPickSelectsFromFollowed()
@@ -59,31 +58,31 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('collection', $db_links[0]['via_news_type']);
-        $this->assertSame($collection_id, $db_links[0]['via_news_resource_id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
+        $this->assertSame('collection', $links[0]->via_news_type);
+        $this->assertSame($collection->id, $links[0]->via_news_resource_id);
     }
 
     public function testPickSelectsHiddenLinkIfCollectionIsShared()
@@ -95,35 +94,35 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
-            'is_hidden' => 1,
+            'is_hidden' => true,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
-        $this->create('collection_share', [
+        CollectionShareFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('collection', $db_links[0]['via_news_type']);
-        $this->assertSame($collection_id, $db_links[0]['via_news_resource_id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
+        $this->assertSame('collection', $links[0]->via_news_type);
+        $this->assertSame($collection->id, $links[0]->via_news_resource_id);
     }
 
     public function testPickSelectsFromPrivateCollectionIfShared()
@@ -135,35 +134,35 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
-        $this->create('collection_share', [
+        CollectionShareFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('collection', $db_links[0]['via_news_type']);
-        $this->assertSame($collection_id, $db_links[0]['via_news_resource_id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
+        $this->assertSame('collection', $links[0]->via_news_type);
+        $this->assertSame($collection->id, $links[0]->via_news_resource_id);
     }
 
     public function testPickRespectsMinDuration()
@@ -173,31 +172,28 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'from' => 'bookmarks',
             'min_duration' => $duration,
         ]);
-        $link_id_1 = $this->create('link', [
+        $link_1 = LinkFactory::create([
             'user_id' => $this->user->id,
             'reading_time' => $duration,
         ]);
-        $link_id_2 = $this->create('link', [
+        $link_2 = LinkFactory::create([
             'user_id' => $this->user->id,
             'reading_time' => $duration - 1,
         ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $this->user->id,
-            'type' => 'bookmarks',
+        $bookmarks = $this->user->bookmarks();
+        LinkToCollectionFactory::create([
+            'collection_id' => $bookmarks->id,
+            'link_id' => $link_1->id,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $bookmarks_id,
-            'link_id' => $link_id_1,
-        ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $bookmarks_id,
-            'link_id' => $link_id_2,
+        LinkToCollectionFactory::create([
+            'collection_id' => $bookmarks->id,
+            'link_id' => $link_2->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id_1, $db_links[0]['id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
     }
 
     public function testPickRespectsMaxDuration()
@@ -207,31 +203,28 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'from' => 'bookmarks',
             'max_duration' => $duration,
         ]);
-        $link_id_1 = $this->create('link', [
+        $link_1 = LinkFactory::create([
             'user_id' => $this->user->id,
             'reading_time' => $duration,
         ]);
-        $link_id_2 = $this->create('link', [
+        $link_2 = LinkFactory::create([
             'user_id' => $this->user->id,
             'reading_time' => $duration - 1,
         ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $this->user->id,
-            'type' => 'bookmarks',
+        $bookmarks = $this->user->bookmarks();
+        LinkToCollectionFactory::create([
+            'collection_id' => $bookmarks->id,
+            'link_id' => $link_1->id,
         ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $bookmarks_id,
-            'link_id' => $link_id_1,
-        ]);
-        $this->create('link_to_collection', [
-            'collection_id' => $bookmarks_id,
-            'link_id' => $link_id_2,
+        LinkToCollectionFactory::create([
+            'collection_id' => $bookmarks->id,
+            'link_id' => $link_2->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id_2, $db_links[0]['id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_2->id, $links[0]->id);
     }
 
     public function testPickRespectsFromFollowedIfOldLinksButWithTimeFilterAll()
@@ -247,33 +240,33 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
-            'created_at' => $followed_at->format(\Minz\Model::DATETIME_FORMAT),
+        FollowedCollectionFactory::create([
+            'created_at' => $followed_at,
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'time_filter' => 'all',
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(1, count($db_links));
-        $this->assertSame($link_id, $db_links[0]['id']);
-        $this->assertSame('collection', $db_links[0]['via_news_type']);
-        $this->assertSame($collection_id, $db_links[0]['via_news_resource_id']);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
+        $this->assertSame('collection', $links[0]->via_news_type);
+        $this->assertSame($collection->id, $links[0]->via_news_resource_id);
     }
 
     public function testPickDoesNotSelectFromBookmarksIfNotSelected()
@@ -285,22 +278,19 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->user->id,
         ]);
-        $bookmarks_id = $this->create('collection', [
-            'user_id' => $this->user->id,
-            'type' => 'bookmarks',
-        ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $bookmarks_id,
-            'link_id' => $link_id,
+        $bookmarks = $this->user->bookmarks();
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $bookmarks->id,
+            'link_id' => $link->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testPickDoesNotSelectFromFollowedIfNotSelected()
@@ -312,28 +302,28 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'bookmarks',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testPickDoesNotPickFromFollowedIfTooOld()
@@ -345,28 +335,28 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testPickDoesNotSelectFromFollowedIfTooOldWithTimeFilterStrict()
@@ -378,29 +368,29 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'time_filter' => 'strict',
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testPickDoesNotSelectFromFollowedIfLinkIsHidden()
@@ -412,28 +402,28 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
-            'is_hidden' => 1,
+            'is_hidden' => true,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testPickDoesNotSelectFromFollowedIfCollectionIsPrivate()
@@ -445,28 +435,28 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 0,
+            'is_public' => false,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testPickDoesNotSelectFromFollowedIfUrlInBookmarks()
@@ -480,37 +470,37 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         ]);
         $bookmarks = $this->user->bookmarks();
         $url = $this->fake('url');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'url' => $url,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $owned_link_id = $this->create('link', [
+        $owner_link = LinkFactory::create([
             'user_id' => $this->user->id,
             'url' => $url,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('link_to_collection', [
+        LinkToCollectionFactory::create([
             'collection_id' => $bookmarks->id,
-            'link_id' => $owned_link_id,
+            'link_id' => $owner_link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testPickDoesNotSelectFromFollowedIfUrlInReadList()
@@ -524,37 +514,37 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         ]);
         $read_list = $this->user->readList();
         $url = $this->fake('url');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'url' => $url,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $owned_link_id = $this->create('link', [
+        $owner_link = LinkFactory::create([
             'user_id' => $this->user->id,
             'url' => $url,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('link_to_collection', [
+        LinkToCollectionFactory::create([
             'collection_id' => $read_list->id,
-            'link_id' => $owned_link_id,
+            'link_id' => $owner_link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testPickDoesNotSelectFromFollowedIfUrlInNeverList()
@@ -568,37 +558,37 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         ]);
         $never_list = $this->user->neverList();
         $url = $this->fake('url');
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'url' => $url,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $owned_link_id = $this->create('link', [
+        $owner_link = LinkFactory::create([
             'user_id' => $this->user->id,
             'url' => $url,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('link_to_collection', [
+        LinkToCollectionFactory::create([
             'collection_id' => $never_list->id,
-            'link_id' => $owned_link_id,
+            'link_id' => $owner_link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 
     public function testPickDoesNotSelectFromFollowedIfLinkIsOwned()
@@ -615,27 +605,27 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $news_picker = new NewsPicker($this->user, [
             'from' => 'followed',
         ]);
-        $link_id = $this->create('link', [
+        $link = LinkFactory::create([
             'user_id' => $this->user->id,
-            'is_hidden' => 0,
+            'is_hidden' => false,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
-            'is_public' => 1,
+            'is_public' => true,
         ]);
-        $this->create('link_to_collection', [
-            'created_at' => $published_at->format(\Minz\Model::DATETIME_FORMAT),
-            'collection_id' => $collection_id,
-            'link_id' => $link_id,
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
         ]);
-        $this->create('followed_collection', [
+        FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
 
-        $db_links = $news_picker->pick();
+        $links = $news_picker->pick();
 
-        $this->assertSame(0, count($db_links));
+        $this->assertSame(0, count($links));
     }
 }

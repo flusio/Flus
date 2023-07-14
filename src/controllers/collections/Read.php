@@ -54,7 +54,7 @@ class Read
 
             $links_to_create = [];
             foreach ($links as $link) {
-                if (!$link->created_at) {
+                if (!$link->isPersisted()) {
                     $link->created_at = \Minz\Time::now();
                     if ($via_type) {
                         $link->via_type = $via_type;
@@ -68,8 +68,8 @@ class Read
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 
@@ -120,7 +120,7 @@ class Read
 
             $links_to_create = [];
             foreach ($links as $link) {
-                if (!$link->created_at) {
+                if (!$link->isPersisted()) {
                     $link->created_at = \Minz\Time::now();
                     if ($via_type) {
                         $link->via_type = $via_type;
@@ -134,8 +134,8 @@ class Read
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 
@@ -185,7 +185,7 @@ class Read
 
             $links_to_create = [];
             foreach ($links as $link) {
-                if (!$link->created_at) {
+                if (!$link->isPersisted()) {
                     $link->created_at = \Minz\Time::now();
                     $links_to_create[] = $link;
                 }
@@ -195,8 +195,8 @@ class Read
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 

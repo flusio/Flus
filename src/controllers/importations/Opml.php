@@ -72,7 +72,7 @@ class Opml
             ]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('importations/opml/show.phtml', [
                 'importation' => null,
                 'error' => _('A security verification failed.'),
@@ -121,12 +121,12 @@ class Opml
             ]);
         }
 
-        $importation = models\Importation::init('opml', $user->id, [
+        $importation = new models\Importation('opml', $user->id, [
             'opml_filepath' => $opml_filepath,
         ]);
         $importation->save();
         $importator_job = new jobs\OpmlImportator();
-        $importator_job->performLater($importation->id);
+        $importator_job->performAsap($importation->id);
 
         return Response::redirect('opml');
     }

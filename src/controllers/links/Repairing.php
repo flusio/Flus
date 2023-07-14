@@ -88,7 +88,7 @@ class Repairing
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('links/repairing/new.phtml', [
                 'link' => $link,
                 'url' => $url,

@@ -39,22 +39,22 @@ class Avatar
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
-            utils\Flash::set('error', _('A security verification failed.'));
+        if (!\Minz\Csrf::validate($csrf)) {
+            \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 
         if (!$avatar_file) {
-            utils\Flash::set('error', _('The file is required.'));
+            \Minz\Flash::set('error', _('The file is required.'));
             return Response::found($from);
         }
 
         if ($avatar_file->isTooLarge()) {
-            utils\Flash::set('error', _('This file is too large.'));
+            \Minz\Flash::set('error', _('This file is too large.'));
             return Response::found($from);
         } elseif ($avatar_file->error) {
             $error = $avatar_file->error;
-            utils\Flash::set(
+            \Minz\Flash::set(
                 'error',
                 vsprintf(_('This file cannot be uploaded (error %d).'), [$error])
             );
@@ -78,7 +78,7 @@ class Avatar
         }
 
         if ($image_type !== 'png' && $image_type !== 'jpeg') {
-            utils\Flash::set('error', _('The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>.'));
+            \Minz\Flash::set('error', _('The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>.'));
             return Response::found($from);
         }
 

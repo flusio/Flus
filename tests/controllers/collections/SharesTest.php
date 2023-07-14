@@ -3,6 +3,9 @@
 namespace flusio\controllers\collections;
 
 use flusio\models;
+use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
+use tests\factories\UserFactory;
 
 class SharesTest extends \PHPUnit\Framework\TestCase
 {
@@ -10,21 +13,20 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testIndexRendersCorrectly()
     {
         $user = $this->login();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/share", [
             'from' => $from,
         ]);
 
@@ -37,20 +39,20 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $username = $this->fake('username');
-        $other_user_id = $this->create('user', [
+        $other_user = UserFactory::create([
             'username' => $username,
         ]);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/share", [
             'from' => $from,
         ]);
 
@@ -60,21 +62,21 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testIndexWorksIfCollectionIsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
+        $other_user = UserFactory::create();
         $collection_name = $this->fake('text', 50);
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'name' => $collection_name,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/share", [
             'from' => $from,
         ]);
 
@@ -85,14 +87,14 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRedirectsIfNotConnected()
     {
-        $user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $user_id,
+            'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/share", [
             'from' => $from,
         ]);
 
@@ -103,13 +105,13 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testIndexFailsIfCollectionDoesNotExist()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', '/collections/not-an-id/share', [
+        $response = $this->appRun('GET', '/collections/not-an-id/share', [
             'from' => $from,
         ]);
 
@@ -119,14 +121,14 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testIndexFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/share", [
             'from' => $from,
         ]);
 
@@ -136,19 +138,19 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testIndexFailsIfCollectionIsSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('get', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('GET', "/collections/{$collection->id}/share", [
             'from' => $from,
         ]);
 
@@ -158,17 +160,17 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateRendersCorrectly()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => 'read',
         ]);
 
@@ -179,23 +181,23 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateCreatesCollectionShare()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => 'read',
         ]);
 
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
         $this->assertNotNull($collection_share);
     }
@@ -203,23 +205,23 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateAcceptsProfileUrlAsUserId()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => \Minz\Url::absoluteFor('profile', ['id' => $other_user_id]),
+            'user_id' => \Minz\Url::absoluteFor('profile', ['id' => $other_user->id]),
             'type' => 'read',
         ]);
 
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
         $this->assertNotNull($collection_share);
     }
@@ -227,57 +229,57 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateWorksIfCollectionIsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $yet_another_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => $yet_another_user_id,
+            'user_id' => $yet_another_user->id,
             'type' => 'read',
         ]);
 
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $yet_another_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $yet_another_user->id,
         ]);
         $this->assertNotNull($collection_share);
     }
 
     public function testCreateRedirectsToLoginIfNotConnected()
     {
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $user_id,
+            'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => 'a token',
             'from' => $from,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => 'read',
         ]);
 
         $from_encoded = urlencode($from);
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
         $this->assertNull($collection_share);
     }
@@ -285,24 +287,24 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCollectionDoesNotExist()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', '/collections/not-an-id/share', [
+        $response = $this->appRun('POST', '/collections/not-an-id/share', [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => 'read',
         ]);
 
         $this->assertResponseCode($response, 404);
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
         $this->assertNull($collection_share);
     }
@@ -310,17 +312,17 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => 'not the token',
             'from' => $from,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => 'read',
         ]);
 
@@ -328,8 +330,8 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
         $this->assertNull($collection_share);
     }
@@ -337,13 +339,13 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfUserIdIsTheCurrentUserId()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
             'user_id' => $user->id,
@@ -354,7 +356,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'You can’t share access with yourself');
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
         $this->assertNull($collection_share);
@@ -363,13 +365,13 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfUserIdDoesNotExist()
     {
         $user = $this->login();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
             'user_id' => 'not a user id',
@@ -380,7 +382,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'This user doesn’t exist');
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'user_id' => 'not a user id',
         ]);
         $this->assertNull($collection_share);
@@ -390,13 +392,13 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
-        $collection_id = $this->create('collection', [
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
             'user_id' => $support_user->id,
@@ -407,7 +409,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'This user doesn’t exist');
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
             'user_id' => $support_user->id,
         ]);
         $this->assertNull($collection_share);
@@ -416,21 +418,21 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCollectionIsAlreadySharedWithUserId()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => 'read',
         ]);
 
@@ -438,27 +440,27 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'The collection is already shared with this user');
         $collection_shares = models\CollectionShare::listBy([
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
         $this->assertSame(1, count($collection_shares));
-        $this->assertSame($collection_share_id, $collection_shares[0]->id);
+        $this->assertSame($collection_share->id, $collection_shares[0]->id);
     }
 
     public function testCreateFailsIfTypeIsInvalid()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => 'not a type',
         ]);
 
@@ -466,8 +468,8 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'The type is invalid');
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
         $this->assertNull($collection_share);
     }
@@ -475,17 +477,17 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfTypeIsEmpty()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
             'type' => '',
         ]);
 
@@ -493,8 +495,8 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'The type is required');
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
         $this->assertNull($collection_share);
     }
@@ -502,25 +504,25 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCollectionIsNotShared()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $yet_another_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => $yet_another_user_id,
+            'user_id' => $yet_another_user->id,
             'type' => 'read',
         ]);
 
         $this->assertResponseCode($response, 404);
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $yet_another_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $yet_another_user->id,
         ]);
         $this->assertNull($collection_share);
     }
@@ -528,30 +530,30 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCollectionIsSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $yet_another_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
+            'user_id' => $other_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/{$collection_id}/share", [
+        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf' => $user->csrf,
             'from' => $from,
-            'user_id' => $yet_another_user_id,
+            'user_id' => $yet_another_user->id,
             'type' => 'read',
         ]);
 
         $this->assertResponseCode($response, 404);
         $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection_id,
-            'user_id' => $yet_another_user_id,
+            'collection_id' => $collection->id,
+            'user_id' => $yet_another_user->id,
         ]);
         $this->assertNull($collection_share);
     }
@@ -559,71 +561,71 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testDeleteDeletesCollectionShare()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+        $this->assertTrue(models\CollectionShare::exists($collection_share->id));
 
-        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+        $response = $this->appRun('POST', "/collections/shares/{$collection_share->id}/delete", [
             'csrf' => $user->csrf,
             'from' => $from,
         ]);
 
-        $this->assertFalse(models\CollectionShare::exists($collection_share_id));
+        $this->assertFalse(models\CollectionShare::exists($collection_share->id));
     }
 
     public function testDeleteWorksIfCollectionIsSharedWithWriteAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $yet_another_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $yet_another_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $yet_another_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+        $response = $this->appRun('POST', "/collections/shares/{$collection_share->id}/delete", [
             'csrf' => $user->csrf,
             'from' => $from,
         ]);
 
-        $this->assertFalse(models\CollectionShare::exists($collection_share_id));
+        $this->assertFalse(models\CollectionShare::exists($collection_share->id));
     }
 
     public function testDeleteRendersCorrectly()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+        $response = $this->appRun('POST', "/collections/shares/{$collection_share->id}/delete", [
             'csrf' => $user->csrf,
             'from' => $from,
         ]);
@@ -634,123 +636,123 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteRedirectsToLoginIfNotConnected()
     {
-        $user_id = $this->create('user', [
+        $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $user_id,
+            'user_id' => $user->id,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+        $response = $this->appRun('POST', "/collections/shares/{$collection_share->id}/delete", [
             'csrf' => 'a token',
             'from' => $from,
         ]);
 
         $encoded_from = urlencode($from);
         $this->assertResponseCode($response, 302, "/login?redirect_to={$encoded_from}");
-        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+        $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }
 
     public function testDeleteFailsIfCollectionShareDoesNotExist()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', '/collections/shares/not-an-id/delete', [
+        $response = $this->appRun('POST', '/collections/shares/not-an-id/delete', [
             'csrf' => $user->csrf,
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+        $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }
 
     public function testDeleteFailsICollectionIsNotShared()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $yet_another_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $yet_another_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $yet_another_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+        $response = $this->appRun('POST', "/collections/shares/{$collection_share->id}/delete", [
             'csrf' => $user->csrf,
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+        $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }
 
     public function testDeleteFailsIfCollectionIsSharedWithReadAccess()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $yet_another_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
-            'user_id' => $other_user_id,
-            'is_public' => 1,
+            'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $yet_another_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $yet_another_user->id,
         ]);
-        $this->create('collection_share', [
-            'collection_id' => $collection_id,
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
             'user_id' => $user->id,
             'type' => 'read',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+        $response = $this->appRun('POST', "/collections/shares/{$collection_share->id}/delete", [
             'csrf' => $user->csrf,
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+        $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid()
     {
         $user = $this->login();
-        $other_user_id = $this->create('user');
-        $collection_id = $this->create('collection', [
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $collection_share_id = $this->create('collection_share', [
-            'collection_id' => $collection_id,
-            'user_id' => $other_user_id,
+        $collection_share = CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection_id]);
+        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('post', "/collections/shares/{$collection_share_id}/delete", [
+        $response = $this->appRun('POST', "/collections/shares/{$collection_share->id}/delete", [
             'csrf' => 'not the token',
             'from' => $from,
         ]);
@@ -758,6 +760,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400, $from);
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
-        $this->assertTrue(models\CollectionShare::exists($collection_share_id));
+        $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }
 }

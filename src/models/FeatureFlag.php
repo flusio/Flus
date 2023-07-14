@@ -2,54 +2,44 @@
 
 namespace flusio\models;
 
+use Minz\Database;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class FeatureFlag extends \Minz\Model
+#[Database\Table(name: 'feature_flags')]
+class FeatureFlag
 {
-    use DaoConnector;
+    use Database\Recordable;
 
     public const VALID_TYPES = ['beta'];
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'integer',
-        ],
+    #[Database\Column]
+    public int $id;
 
-        'created_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'type' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\flusio\models\FeatureFlag::validateType',
-        ],
+    /** @var value-of<self::VALID_TYPES> */
+    #[Database\Column]
+    public string $type;
 
-        'user_id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-    ];
+    #[Database\Column]
+    public string $user_id;
 
     /**
      * Return the user associated to the feature flag.
-     *
-     * @return \flusio\models\User
      */
-    public function user()
+    public function user(): User
     {
         return User::find($this->user_id);
     }
 
     /**
      * Enable a flag for a user.
-     *
-     * @param string $type
-     * @param string $user_id
      */
-    public static function enable($type, $user_id)
+    public static function enable(string $type, string $user_id): void
     {
         self::findOrCreateBy([
             'type' => $type,
@@ -59,61 +49,27 @@ class FeatureFlag extends \Minz\Model
 
     /**
      * Disable a flag for a user.
-     *
-     * @param string $type
-     * @param string $user_id
      */
-    public static function disable($type, $user_id)
+    public static function disable(string $type, string $user_id): void
     {
         $feature_flag = self::findBy([
             'type' => $type,
             'user_id' => $user_id,
         ]);
+
         if ($feature_flag) {
-            self::delete($feature_flag->id);
+            $feature_flag->remove();
         }
     }
 
     /**
      * Return whether a flag is enabled for the given user
-     *
-     * @param string $type
-     * @param string $user_id
-     *
-     * @return boolean
      */
-    public static function isEnabled($type, $user_id)
+    public static function isEnabled(string $type, string $user_id): bool
     {
-        return self::findBy([
+        return self::existsBy([
             'type' => $type,
             'user_id' => $user_id,
-        ]) !== null;
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return boolean
-     */
-    public static function validateType($type)
-    {
-        return in_array($type, self::VALID_TYPES);
-    }
-
-    /**
-     * Return the list of declared properties values.
-     *
-     * It doesn't return the id property because it is automatically generated
-     * by the database.
-     *
-     * @see \Minz\Model::toValues
-     *
-     * @return array
-     */
-    public function toValues()
-    {
-        $values = parent::toValues();
-        unset($values['id']);
-        return $values;
+        ]);
     }
 }
