@@ -7,7 +7,7 @@ export default class extends Controller {
 
     static values = {
         url: String,
-    }
+    };
 
     change () {
         this.inputTarget.value = this.urlValue;

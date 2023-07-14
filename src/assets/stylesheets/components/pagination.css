@@ -38,7 +38,7 @@
 .pagination__item--current .pagination__link {
     font-weight: bold;
 
-    border-bottom-color: currentColor;
+    border-bottom-color: currentcolor;
 }
 
 .pagination__item--prev .pagination__link {

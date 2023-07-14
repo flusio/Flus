@@ -53,7 +53,7 @@
     text-decoration: none;
 
     background-color: var(--color-turquoise-4);
-    border: var(--width-border) solid currentColor;
+    border: var(--width-border) solid currentcolor;
     border-radius: var(--radius-button);
 }
 

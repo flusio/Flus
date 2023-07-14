@@ -16,7 +16,7 @@ const FOCUSABLE_ELEMENTS = [
 export default class extends Controller {
     static values = {
         autoload: String,
-    }
+    };
 
     static get targets () {
         return ['box', 'body', 'content'];

@@ -1,17 +1,14 @@
 .modal {
     position: fixed;
     z-index: 999;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
 
     visibility: hidden;
     overflow-x: hidden;
     overflow-y: auto;
 
     opacity: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 50%);
 
     transform: scaleX(1.02) scaleY(1.02);
     transition: visibility 0s linear 0.2s, opacity 0.2s 0s, transform 0.2s;
