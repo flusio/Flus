@@ -13,20 +13,20 @@ class MailerTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function initEngine()
+    public static function initEngine(): void
     {
         $router = \flusio\Router::load();
         \Minz\Engine::init($router);
     }
 
-    public function testQueue()
+    public function testQueue(): void
     {
         $mailer_job = new Mailer();
 
         $this->assertSame('mailers', $mailer_job->queue);
     }
 
-    public function testPerform()
+    public function testPerform(): void
     {
         $mailer_job = new Mailer();
         $token = TokenFactory::create();

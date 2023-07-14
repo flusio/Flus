@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\my;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -21,7 +22,7 @@ class Preferences
      * @response 200
      *    On success
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -55,13 +56,13 @@ class Preferences
      * @response 302 :from
      *     On success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $locale = $request->param('locale', '');
         $option_compact_mode = $request->paramBoolean('option_compact_mode', false);
         $beta_enabled = $request->paramBoolean('beta_enabled', false);
-        $csrf = $request->param('csrf');
-        $from = $request->param('from');
+        $csrf = $request->param('csrf', '');
+        $from = $request->param('from', '');
 
         $user = auth\CurrentUser::get();
         if (!$user) {

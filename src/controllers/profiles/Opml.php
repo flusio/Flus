@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\profiles;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\models;
 use flusio\utils;
@@ -23,9 +24,9 @@ class Opml
      * @response 200
      *    On success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
-        $user_id = $request->param('id');
+        $user_id = $request->param('id', '');
         $user = models\User::find($user_id);
 
         if (!$user || $user->isSupportUser()) {
@@ -36,7 +37,7 @@ class Opml
         $collections = $user->collections([], [
             'private' => false,
         ]);
-        utils\Sorter::localeSort($collections, 'name');
+        $collections = utils\Sorter::localeSort($collections, 'name');
 
         return Response::ok('profiles/opml/show.opml.xml.php', [
             'user' => $user,
@@ -52,7 +53,7 @@ class Opml
      *
      * @response 301 /p/:id/opml.xml
      */
-    public function alias($request)
+    public function alias(Request $request): Response
     {
         $user_id = $request->param('id');
         $url = \Minz\Url::for('profile opml', ['id' => $user_id]);

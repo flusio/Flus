@@ -6,13 +6,13 @@ class ViewHelpersTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function loadViewHelpers()
+    public static function loadViewHelpers(): void
     {
         // This is done in the src/Application.php file normally
         include_once(\Minz\Configuration::$app_path . '/src/utils/view_helpers.php');
     }
 
-    public function testLocaleToBcp47TransformsLocale()
+    public function testLocaleToBcp47TransformsLocale(): void
     {
         $locale = 'en_GB';
 
@@ -21,7 +21,7 @@ class ViewHelpersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en-GB', $bcp47);
     }
 
-    public function testLocaleToBcp47TransformsLocaleIfNoUnderscore()
+    public function testLocaleToBcp47TransformsLocaleIfNoUnderscore(): void
     {
         $locale = 'en';
 

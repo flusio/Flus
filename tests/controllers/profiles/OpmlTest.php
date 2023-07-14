@@ -12,9 +12,10 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -33,9 +34,10 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testShowDoesNotRenderPrivateCollections()
+    public function testShowDoesNotRenderPrivateCollections(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -50,14 +52,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
-    public function testShowFailsIfUserDoesNotExist()
+    public function testShowFailsIfUserDoesNotExist(): void
     {
         $response = $this->appRun('GET', '/p/not-an-id/opml.xml');
 
         $this->assertResponseCode($response, 404);
     }
 
-    public function testAliasRedirectsToShow()
+    public function testAliasRedirectsToShow(): void
     {
         $user = UserFactory::create();
 

@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\collections;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -20,20 +21,20 @@ class Groups
      * @response 200
      *     On success
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $from = $request->param('from');
+        $from = $request->param('from', '');
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $collection_id = $request->param('id');
+        $collection_id = $request->param('id', '');
         $collection = models\Collection::find($collection_id);
 
-        $can_view = auth\CollectionsAccess::canView($user, $collection);
+        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
         if (!$can_view) {
             return Response::notFound('not_found.phtml');
         }
@@ -54,7 +55,7 @@ class Groups
         $groups = models\Group::listBy([
             'user_id' => $user->id,
         ]);
-        utils\Sorter::localeSort($groups, 'name');
+        $groups = utils\Sorter::localeSort($groups, 'name');
 
         return Response::ok('collections/groups/edit.phtml', [
             'collection' => $collection,
@@ -80,10 +81,10 @@ class Groups
      * @response 302 :from
      *     On success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $from = $request->param('from');
+        $from = $request->param('from', '');
         if (!$user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
@@ -91,12 +92,12 @@ class Groups
         }
 
         $name = $request->param('name', '');
-        $collection_id = $request->param('id');
-        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id', '');
+        $csrf = $request->param('csrf', '');
 
         $collection = models\Collection::find($collection_id);
 
-        $can_view = auth\CollectionsAccess::canView($user, $collection);
+        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
         if (!$can_view) {
             return Response::notFound('not_found.phtml');
         }
@@ -110,7 +111,7 @@ class Groups
         $groups = models\Group::listBy([
             'user_id' => $user->id,
         ]);
-        utils\Sorter::localeSort($groups, 'name');
+        $groups = utils\Sorter::localeSort($groups, 'name');
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/groups/edit.phtml', [
@@ -158,8 +159,11 @@ class Groups
                 'user_id' => $user->id,
                 'collection_id' => $collection->id,
             ]);
-            $followed_collection->group_id = $group_id;
-            $followed_collection->save();
+
+            if ($followed_collection) {
+                $followed_collection->group_id = $group_id;
+                $followed_collection->save();
+            }
         }
 
         return Response::found($from);

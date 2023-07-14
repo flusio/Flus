@@ -7,7 +7,7 @@ class WellKnownTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testChangePasswordRedirectsToSecurity()
+    public function testChangePasswordRedirectsToSecurity(): void
     {
         $response = $this->appRun('GET', '/.well-known/change-password');
 

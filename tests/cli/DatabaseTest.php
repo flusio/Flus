@@ -2,6 +2,9 @@
 
 namespace flusio\cli;
 
+/**
+ * @phpstan-import-type ConfigurationDatabase from \Minz\Configuration
+ */
 class DatabaseTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
@@ -10,7 +13,7 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function loadApplication()
+    public static function loadApplication(): void
     {
         self::$application = new \flusio\cli\Application();
     }
@@ -18,15 +21,18 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     /**
      * @afterClass
      */
-    public static function recreateDatabase()
+    public static function recreateDatabase(): void
     {
         \Minz\Database::reset();
         $schema = @file_get_contents(\Minz\Configuration::$schema_path);
+
+        assert($schema !== false);
+
         $database = \Minz\Database::get();
         $database->exec($schema);
     }
 
-    public function testStatusCanConnectToTheDatabase()
+    public function testStatusCanConnectToTheDatabase(): void
     {
         $response = $this->appRun('CLI', '/database/status');
 
@@ -34,11 +40,14 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Database status: OK');
     }
 
-    public function testStatusFailsWithWrongCredentials()
+    public function testStatusFailsWithWrongCredentials(): void
     {
         \Minz\Database::drop(); // make sure to reset the singleton instance
         $initial_database_conf = \Minz\Configuration::$database;
-        \Minz\Configuration::$database['username'] = 'not the username';
+        /** @var ConfigurationDatabase */
+        $configuration = \Minz\Configuration::$database;
+        $configuration['username'] = 'not the username';
+        \Minz\Configuration::$database = $configuration;
 
         $response = $this->appRun('CLI', '/database/status');
 

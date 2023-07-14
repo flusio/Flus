@@ -20,23 +20,27 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
     }
 
-    public function testQueue()
+    public function testQueue(): void
     {
         $feeds_sync_job = new FeedsSync();
 
         $this->assertSame('fetchers', $feeds_sync_job->queue);
     }
 
-    public function testSchedule()
+    public function testSchedule(): void
     {
+        /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
 
@@ -45,7 +49,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('+15 seconds', $feeds_sync_job->frequency);
     }
 
-    public function testInstallWithJobsToCreate()
+    public function testInstallWithJobsToCreate(): void
     {
         \Minz\Configuration::$application['job_feeds_sync_count'] = 2;
         \Minz\Configuration::$jobs_adapter = 'database';
@@ -60,7 +64,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, \Minz\Job::count());
     }
 
-    public function testInstallWithJobsToDelete()
+    public function testInstallWithJobsToDelete(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
         $feeds_sync_job = new FeedsSync();
@@ -77,8 +81,10 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, \Minz\Job::count());
     }
 
-    public function testPerform()
+    public function testPerform(): void
     {
+        /** @var string */
+        $old_name = $this->fake('sentence');
         $url = 'https://flus.fr/carnet/';
         $card_url = 'https://flus.fr/carnet/card.png';
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
@@ -87,12 +93,12 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'name' => $this->fake('sentence'),
+            'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -112,17 +118,19 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(3, $links_number);
     }
 
-    public function testPerformLogsFetch()
+    public function testPerformLogsFetch(): void
     {
+        /** @var string */
+        $old_name = $this->fake('sentence');
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'name' => $this->fake('sentence'),
+            'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -136,22 +144,25 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\FetchLog::count());
         $fetch_log = models\FetchLog::take();
+        $this->assertNotNull($fetch_log);
         $this->assertSame($feed_url, $fetch_log->url);
         $this->assertSame('flus.fr', $fetch_log->host);
     }
 
-    public function testPerformSavesResponseInCache()
+    public function testPerformSavesResponseInCache(): void
     {
+        /** @var string */
+        $old_name = $this->fake('sentence');
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'name' => $this->fake('sentence'),
+            'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -162,23 +173,29 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feeds_sync_job->perform();
 
         $hash = \SpiderBits\Cache::hash($feed_url);
-        $cache_filepath = \Minz\Configuration::$application['cache_path'] . '/' . $hash;
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_filepath = $cache_path . '/' . $hash;
         $this->assertTrue(file_exists($cache_filepath));
     }
 
-    public function testPerformUsesCache()
+    public function testPerformUsesCache(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
+        $old_name = $this->fake('sentence');
+        /** @var string */
         $expected_name = $this->fakeUnique('sentence');
+        /** @var string */
         $expected_title = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'name' => $this->fakeUnique('sentence'),
+            'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -207,7 +224,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -219,19 +238,23 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_title, $link->title);
     }
 
-    public function testPerformSavesPublishedDate()
+    public function testPerformSavesPublishedDate(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
+        $old_name = $this->fakeUnique('sentence');
+        /** @var string */
         $expected_name = $this->fakeUnique('sentence');
+        /** @var string */
         $expected_title = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'name' => $this->fakeUnique('sentence'),
+            'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -260,19 +283,23 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
 
         $link_to_collection = models\LinkToCollection::take();
+        $this->assertNotNull($link_to_collection);
         $this->assertSame(1617096360, $link_to_collection->created_at->getTimestamp());
     }
 
-    public function testPerformIgnoresFeedFetchedLastHour()
+    public function testPerformIgnoresFeedFetchedLastHour(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
         $expected_name = $this->fake('sentence');
         $collection = CollectionFactory::create([
             'type' => 'feed',
@@ -281,7 +308,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_fetched_at' => \Minz\Time::ago(59, 'minutes'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -297,9 +324,10 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $links_number);
     }
 
-    public function testPerformIgnoresFeedThatDidNotChange()
+    public function testPerformIgnoresFeedThatDidNotChange(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
         $expected_name = $this->fakeUnique('sentence');
         // The trick of this test is to create the collection with the hash of
         // the feed that will be fetched. In real life, the hash of the
@@ -315,7 +343,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_last_hash' => $feed_hash,
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -344,7 +372,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -355,7 +385,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_name, $collection->name);
     }
 
-    public function testPerformDuplicatesLinkUrlIfNotInCollection()
+    public function testPerformDuplicatesLinkUrlIfNotInCollection(): void
     {
         $support_user = models\User::supportUser();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
@@ -366,7 +396,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -404,7 +434,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -414,16 +446,19 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(2, models\Link::count());
         $link = models\Link::take(1);
+        $this->assertNotNull($link);
         $this->assertNotSame($original_link->id, $link->id);
     }
 
-    public function testPerformSkipsFetchIfReachedRateLimit()
+    public function testPerformSkipsFetchIfReachedRateLimit(): void
     {
+        /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $host = 'flus.fr';
         foreach (range(1, 25) as $i) {
+            /** @var int */
             $seconds = $this->fake('numberBetween', 0, 60);
             $created_at = \Minz\Time::ago($seconds, 'seconds');
             FetchLogFactory::create([
@@ -440,7 +475,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_fetched_code' => 0,
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -456,19 +491,23 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->feed_fetched_at);
     }
 
-    public function testPerformIgnoresEntriesWithNoLink()
+    public function testPerformIgnoresEntriesWithNoLink(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
+        $old_name = $this->fakeUnique('sentence');
+        /** @var string */
         $expected_name = $this->fakeUnique('sentence');
+        /** @var string */
         $expected_title = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'name' => $this->fakeUnique('sentence'),
+            'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -496,7 +535,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -506,7 +547,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEmpty($collection->links());
     }
 
-    public function testPerformIgnoresEntriesIfUrlExistsInCollection()
+    public function testPerformIgnoresEntriesIfUrlExistsInCollection(): void
     {
         $support_user = models\User::supportUser();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
@@ -517,7 +558,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -559,7 +600,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -570,11 +613,13 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($link_published, $link->created_at->format(\DateTimeInterface::ATOM));
     }
 
-    public function testPerformIgnoresEntriesIfOverKeepMaximum()
+    public function testPerformIgnoresEntriesIfOverKeepMaximum(): void
     {
         \Minz\Configuration::$application['feeds_links_keep_maximum'] = 1;
 
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $published_at_1 = \Minz\Time::ago(1, 'months');
         $published_at_2 = \Minz\Time::ago(2, 'months');
@@ -618,7 +663,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -633,11 +680,15 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Les nouveautés de mars 2021', $links[0]->title);
     }
 
-    public function testPerformIgnoresEntriesIfOlderThanKeepPeriod()
+    public function testPerformIgnoresEntriesIfOlderThanKeepPeriod(): void
     {
         \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
-        $this->freeze($this->fake('dateTime'));
+
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var int */
         $months = $this->fake('numberBetween', 7, 100);
         $published_at = \Minz\Time::ago($months, 'months');
         $collection = CollectionFactory::create([
@@ -671,7 +722,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -682,11 +735,15 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testPerformTakesEntriesIfRecentEnoughWhenKeepPeriodIsSet()
+    public function testPerformTakesEntriesIfRecentEnoughWhenKeepPeriodIsSet(): void
     {
         \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
-        $this->freeze($this->fake('dateTime'));
+
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var int */
         $months = $this->fake('numberBetween', 0, 6);
         $published_at = \Minz\Time::ago($months, 'months');
         $collection = CollectionFactory::create([
@@ -720,7 +777,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -735,13 +794,16 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Les nouveautés de mars 2021', $links[0]->title);
     }
 
-    public function testPerformTakesEntriesIfOlderThanKeepPeriodUntilMinimum()
+    public function testPerformTakesEntriesIfOlderThanKeepPeriodUntilMinimum(): void
     {
         \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
         \Minz\Configuration::$application['feeds_links_keep_minimum'] = 1;
 
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var int */
         $months = $this->fake('numberBetween', 7, 100);
         $published_at_old = \Minz\Time::ago($months, 'months');
         $published_at_older = \Minz\Time::ago($months + 1, 'months');
@@ -785,7 +847,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -800,19 +864,23 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Les nouveautés de mars 2021', $links[0]->title);
     }
 
-    public function testPerformForcesEntryIdIfMissing()
+    public function testPerformForcesEntryIdIfMissing(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
+        $old_name = $this->fakeUnique('sentence');
+        /** @var string */
         $expected_name = $this->fakeUnique('sentence');
+        /** @var string */
         $expected_title = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'name' => $this->fakeUnique('sentence'),
+            'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -840,7 +908,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -851,10 +921,12 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link->url, $link->feed_entry_id);
     }
 
-    public function testPerformUpdatesUrlIfEntryIdIsIdentical()
+    public function testPerformUpdatesUrlIfEntryIdIsIdentical(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
         $old_url = $this->fakeUnique('url');
+        /** @var string */
         $new_url = $this->fakeUnique('url');
         $entry_id = 'urn:uuid: ' . $this->fake('uuid');
         $collection = CollectionFactory::create([
@@ -871,7 +943,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -900,7 +972,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -914,7 +988,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1617096360, $link_to_collection->created_at->getTimestamp());
     }
 
-    public function testPerformAbsolutizesLinks()
+    public function testPerformAbsolutizesLinks(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $collection = CollectionFactory::create([
@@ -923,7 +997,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -953,7 +1027,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         </feed>
 
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -965,7 +1041,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://flus.fr/carnet/nouveautes-mars-2021.html', $link->url);
     }
 
-    public function testPerformUsesFeedUrlIfSiteUrlIsMissing()
+    public function testPerformUsesFeedUrlIfSiteUrlIsMissing(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $collection = CollectionFactory::create([
@@ -974,7 +1050,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -1003,7 +1079,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         </feed>
 
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -1013,7 +1091,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($feed_url, $collection->feed_site_url);
     }
 
-    public function testPerformHandlesLongMultiByteFeedTitle()
+    public function testPerformHandlesLongMultiByteFeedTitle(): void
     {
         // In a first version of the code, titles were trimed with `substr`
         // which should be used only on single-byte encodings. Otherwise, it
@@ -1030,7 +1108,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -1051,7 +1129,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         </feed>
 
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -1061,7 +1141,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($title, $collection->name);
     }
 
-    public function testPerformSavesTheLinksUrlReplies()
+    public function testPerformSavesTheLinksUrlReplies(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $collection = CollectionFactory::create([
@@ -1070,7 +1150,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -1101,7 +1181,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         </feed>
 
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -1112,23 +1194,30 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://flus.fr/carnet/nouveautes-mars-2021.html#comments', $link->url_replies);
     }
 
-    public function testPerformDoesNotFetchFeedIfLockedDuringLastHour()
+    public function testPerformDoesNotFetchFeedIfLockedDuringLastHour(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
         $minutes = $this->fake('numberBetween', 0, 59);
         $locked_at = \Minz\Time::ago($minutes, 'minutes');
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
         $name = $this->fakeUnique('sentence');
+        /** @var string */
+        $old_name = $this->fakeUnique('sentence');
+        /** @var string */
         $title = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'name' => $this->fakeUnique('sentence'),
+            'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
             'locked_at' => $locked_at,
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -1157,7 +1246,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
@@ -1168,23 +1259,30 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEmpty($collection->links());
     }
 
-    public function testPerformFetchesFeedIfLockedAfterAnHour()
+    public function testPerformFetchesFeedIfLockedAfterAnHour(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
         $minutes = $this->fake('numberBetween', 60, 1000);
         $locked_at = \Minz\Time::ago($minutes, 'minutes');
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        /** @var string */
+        $old_name = $this->fakeUnique('sentence');
+        /** @var string */
         $expected_name = $this->fakeUnique('sentence');
+        /** @var string */
         $expected_title = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'name' => $this->fakeUnique('sentence'),
+            'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
             'locked_at' => $locked_at,
         ]);
         $user = UserFactory::create([
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -1213,7 +1311,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        $cache = new \SpiderBits\Cache(\Minz\Configuration::$application['cache_path']);
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 

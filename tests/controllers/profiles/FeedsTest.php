@@ -14,10 +14,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
+        /** @var string */
         $link_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -43,6 +45,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'Content-Type' => 'application/xml',
             'X-Content-Type-Options' => 'nosniff',
         ]);
+        $this->assertInstanceOf(\Minz\Response::class, $response);
         $feed = \SpiderBits\feeds\Feed::fromText($response->render());
         $link_alternate = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $this->assertSame(1, count($feed->entries));
@@ -51,9 +54,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_url, $feed->entries[0]->links['via']);
     }
 
-    public function testShowRendersAlternateLinksAsOriginalUrlWithDirectTrue()
+    public function testShowRendersAlternateLinksAsOriginalUrlWithDirectTrue(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $link_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -75,6 +79,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
+        $this->assertInstanceOf(\Minz\Response::class, $response);
         $feed = \SpiderBits\feeds\Feed::fromText($response->render());
         $link_replies = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $this->assertSame(1, count($feed->entries));
@@ -82,9 +87,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_replies, $feed->entries[0]->links['replies']);
     }
 
-    public function testShowDoesNotRenderHiddenLinks()
+    public function testShowDoesNotRenderHiddenLinks(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -107,9 +113,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_title);
     }
 
-    public function testShowDoesNotRenderVisibleLinksInPrivateCollections()
+    public function testShowDoesNotRenderVisibleLinksInPrivateCollections(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -132,9 +139,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_title);
     }
 
-    public function testShowDoesNotRenderVisibleLinksInNoCollections()
+    public function testShowDoesNotRenderVisibleLinksInNoCollections(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -148,14 +156,14 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_title);
     }
 
-    public function testShowFailsIfUserDoesNotExist()
+    public function testShowFailsIfUserDoesNotExist(): void
     {
         $response = $this->appRun('GET', '/p/not-an-id/feed.atom.xml');
 
         $this->assertResponseCode($response, 404);
     }
 
-    public function testAliasRedirectsToShow()
+    public function testAliasRedirectsToShow(): void
     {
         $user = UserFactory::create();
 
@@ -164,7 +172,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 301, "/p/{$user->id}/feed.atom.xml");
     }
 
-    public function testAliasRedirectsWithQuery()
+    public function testAliasRedirectsWithQuery(): void
     {
         $user = UserFactory::create();
         $_SERVER['QUERY_STRING'] = 'direct=true';

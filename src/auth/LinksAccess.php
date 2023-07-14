@@ -2,18 +2,16 @@
 
 namespace flusio\auth;
 
+use flusio\models;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class LinksAccess
 {
-    public static function canView($user, $link)
+    public static function canView(?models\User $user, models\Link $link): bool
     {
-        if (!$link) {
-            return false;
-        }
-
         if (!$link->is_hidden) {
             return true;
         }
@@ -29,17 +27,13 @@ class LinksAccess
         return $link->sharedWith($user);
     }
 
-    public static function canUpdate($user, $link)
+    public static function canUpdate(?models\User $user, models\Link $link): bool
     {
-        return $user && $link && $user->id === $link->user_id;
+        return $user && $user->id === $link->user_id;
     }
 
-    public static function canComment($user, $link)
+    public static function canComment(?models\User $user, models\Link $link): bool
     {
-        if (!$link) {
-            return false;
-        }
-
         if (!$user) {
             return false;
         }
@@ -51,8 +45,8 @@ class LinksAccess
         return $link->sharedWith($user, 'write');
     }
 
-    public static function canDelete($user, $link)
+    public static function canDelete(?models\User $user, models\Link $link): bool
     {
-        return $user && $link && $user->id === $link->user_id;
+        return $user && $user->id === $link->user_id;
     }
 }

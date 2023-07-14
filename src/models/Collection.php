@@ -194,7 +194,13 @@ class Collection
      */
     public function owner(): User
     {
-        return User::find($this->user_id);
+        $user = User::find($this->user_id);
+
+        if (!$user) {
+            throw new \Exception("Collection #{$this->id} has invalid user.");
+        }
+
+        return $user;
     }
 
     /**
@@ -203,7 +209,11 @@ class Collection
      * @see Link::listComputedByCollectionId
      *
      * @param string[] $selected_computed_props
-     * @param array $options
+     * @param array{
+     *     'hidden'?: bool,
+     *     'offset'?: int,
+     *     'limit'?: int|'ALL',
+     * } $options
      *
      * @return Link[]
      */
@@ -238,14 +248,14 @@ class Collection
      */
     public function groupForUser(string $user_id): ?Group
     {
-        if ($this->user_id === $user_id) {
+        if ($this->user_id === $user_id && $this->group_id) {
             return Group::find($this->group_id);
         } else {
             $followed_collection = FollowedCollection::findBy([
                 'user_id' => $user_id,
                 'collection_id' => $this->id,
             ]);
-            if ($followed_collection) {
+            if ($followed_collection && $followed_collection->group_id) {
                 return Group::find($followed_collection->group_id);
             }
         }
@@ -268,7 +278,9 @@ class Collection
      *
      * @see CollectionShare::listComputedByCollectionId
      *
-     * @param array $options
+     * @param array{
+     *     'access_type'?: 'any'|'read'|'write',
+     * } $options
      *
      * @return CollectionShare[]
      */
@@ -279,8 +291,7 @@ class Collection
             ['username'],
             $options,
         );
-        utils\Sorter::localeSort($collection_shares, 'username');
-        return $collection_shares;
+        return utils\Sorter::localeSort($collection_shares, 'username');
     }
 
     /**
@@ -329,8 +340,10 @@ class Collection
     {
         if ($this->feed_site_url) {
             return utils\Belt::host($this->feed_site_url);
-        } else {
+        } elseif ($this->feed_url) {
             return utils\Belt::host($this->feed_url);
+        } else {
+            return '';
         }
     }
 

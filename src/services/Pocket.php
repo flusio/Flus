@@ -10,16 +10,11 @@ class Pocket
 {
     public const HOST = 'https://getpocket.com';
 
-    /** @var string */
-    private $consumer_key;
+    private string $consumer_key;
 
-    /** @var \SpiderBits\Http */
-    private $http;
+    private \SpiderBits\Http $http;
 
-    /**
-     * @param string $consumer_key
-     */
-    public function __construct($consumer_key)
+    public function __construct(string $consumer_key)
     {
         $this->consumer_key = $consumer_key;
 
@@ -28,7 +23,9 @@ class Pocket
             'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF8',
             'X-Accept' => 'application/json',
         ];
-        $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
+        /** @var string */
+        $user_agent = \Minz\Configuration::$application['user_agent'];
+        $this->http->user_agent = $user_agent;
         $this->http->timeout = 20;
     }
 
@@ -38,13 +35,14 @@ class Pocket
      * @see https://getpocket.com/developer/docs/v3/retrieve
      *
      * @param string $access_token
-     * @param array $parameters List of optional parameters to pass in the request
+     * @param array<string, mixed> $parameters
+     *     List of optional parameters to pass in the request
      *
      * @throw \flusio\services\PocketError
      *
-     * @return array
+     * @return array<array<string, mixed>>
      */
-    public function retrieve($access_token, $parameters = [])
+    public function retrieve(string $access_token, array $parameters = []): array
     {
         $endpoint = self::HOST . '/v3/get';
         try {
@@ -57,23 +55,27 @@ class Pocket
         }
 
         if ($response->success) {
+            /** @var ?mixed[] */
             $json = json_decode($response->data, true);
+
+            if (!$json || !is_array($json['list'] ?? null)) {
+                throw new PocketError(42, 'Invalid data');
+            }
+
             return $json['list'];
         } else {
-            throw new PocketError($response->header('X-Error-Code', 42));
+            /** @var string */
+            $error_code = $response->header('X-Error-Code', '42');
+            throw new PocketError($error_code, 'Request failed');
         }
     }
 
     /**
      * Get a request token from Pocket.
      *
-     * @param string $redirect_uri
-     *
-     * @throw \flusio\services\PocketError
-     *
-     * @return string
+     * @throws PocketError
      */
-    public function requestToken($redirect_uri)
+    public function requestToken(string $redirect_uri): string
     {
         $endpoint = self::HOST . '/v3/oauth/request';
         try {
@@ -86,22 +88,25 @@ class Pocket
         }
 
         if ($response->success) {
-            $json = json_decode($response->data);
-            return $json->code;
+            /** @var ?mixed[] */
+            $json = json_decode($response->data, true);
+
+            if (!$json || !is_string($json['code'] ?? null)) {
+                throw new PocketError(42, 'Invalid data');
+            }
+
+            return $json['code'];
         } else {
-            throw new PocketError($response->header('X-Error-Code', 42));
+            /** @var string */
+            $error_code = $response->header('X-Error-Code', '42');
+            throw new PocketError($error_code, 'Request failed');
         }
     }
 
     /**
      * Return the URL to redirect user so it can authorize flusio
-     *
-     * @param string $request_token
-     * @param string $redirect_uri
-     *
-     * @return string
      */
-    public function authorizationUrl($request_token, $redirect_uri)
+    public function authorizationUrl(string $request_token, string $redirect_uri): string
     {
         $url = self::HOST . '/auth/authorize';
         $query = http_build_query([
@@ -114,13 +119,11 @@ class Pocket
     /**
      * Get access token (and username) from a request token
      *
-     * @param string $request_token
+     * @throws \flusio\services\PocketError
      *
-     * @throw \flusio\services\PocketError
-     *
-     * @return string[] First item is token, second item is username
+     * @return array{string, string} First item is token, second item is username
      */
-    public function accessToken($request_token)
+    public function accessToken(string $request_token): array
     {
         $endpoint = self::HOST . '/v3/oauth/authorize';
         try {
@@ -133,10 +136,25 @@ class Pocket
         }
 
         if ($response->success) {
-            $json = json_decode($response->data);
-            return [$json->access_token, $json->username];
+            /** @var ?mixed[] */
+            $json = json_decode($response->data, true);
+
+            if (
+                !$json ||
+                !is_string($json['access_token'] ?? null) ||
+                !is_string($json['username'] ?? null)
+            ) {
+                throw new PocketError(42, 'Invalid data');
+            }
+
+            return [
+                $json['access_token'],
+                $json['username'],
+            ];
         } else {
-            throw new PocketError($response->header('X-Error-Code', 42));
+            /** @var string */
+            $error_code = $response->header('X-Error-Code', '42');
+            throw new PocketError($error_code, 'Request failed');
         }
     }
 }

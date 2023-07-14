@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\my;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
@@ -35,9 +36,10 @@ class Validation
      * @response 200
      *     If token is given and correct (i.e. the account is validated)
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
-        $token = $request->param('t');
+        $token = $request->param('t', '');
+
         $current_user = auth\CurrentUser::get();
         if (!$token) {
             if (!$current_user) {
@@ -82,11 +84,16 @@ class Validation
 
         $user->validated_at = \Minz\Time::now();
 
-        $app_conf = \Minz\Configuration::$application;
-        if ($app_conf['subscriptions_enabled']) {
+        /** @var bool */
+        $sub_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        if ($sub_enabled) {
+            /** @var string */
+            $sub_host = \Minz\Configuration::$application['subscriptions_host'];
+            /** @var string */
+            $sub_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
             $subscriptions_service = new services\Subscriptions(
-                $app_conf['subscriptions_host'],
-                $app_conf['subscriptions_private_key']
+                $sub_host,
+                $sub_private_key,
             );
             $account = $subscriptions_service->account($user->email);
             if ($account) {
@@ -117,10 +124,10 @@ class Validation
      *     If the user is not connected
      * @response 302 :from
      */
-    public function resendEmail($request)
+    public function resendEmail(Request $request): Response
     {
         $from = $request->param('from', \Minz\Url::for('home'));
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
         $user = auth\CurrentUser::get();
 
         if (!$user) {
@@ -137,17 +144,21 @@ class Validation
             return Response::found($from);
         }
 
-        if (!$user->validation_token) {
+        $validation_token = $user->validation_token;
+
+        if (!$validation_token) {
             // The user has no token? This should not happen, but maybe the
             // admin changed something in DB... who knows?
             $token = new models\Token(1, 'day', 16);
             $token->save();
             $user->validation_token = $token->token;
             $user->save();
+
+            $validation_token = $token->token;
         }
 
-        $token = models\Token::find($user->validation_token);
-        if ($token->expiresIn(30, 'minutes') || $token->isInvalidated()) {
+        $token = models\Token::find($validation_token);
+        if (!$token || $token->expiresIn(30, 'minutes') || $token->isInvalidated()) {
             // the token will expire soon, let's regenerate a new one
             $token = new models\Token(1, 'day', 16);
             $token->save();

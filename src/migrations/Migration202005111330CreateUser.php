@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202005111330CreateUser
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -25,7 +25,7 @@ class Migration202005111330CreateUser
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

@@ -16,14 +16,14 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
 
-    public function testNewRendersCorrectly()
+    public function testNewRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/registration');
 
         $this->assertResponseCode($response, 200);
     }
 
-    public function testNewRedirectsToHomeIfConnected()
+    public function testNewRedirectsToHomeIfConnected(): void
     {
         $this->login();
 
@@ -32,7 +32,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
-    public function testNewRedirectsToLoginIfRegistrationsAreClosed()
+    public function testNewRedirectsToLoginIfRegistrationsAreClosed(): void
     {
         \Minz\Configuration::$application['registrations_opened'] = false;
 
@@ -42,7 +42,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login');
     }
 
-    public function testCreateCreatesAUserAndRedirects()
+    public function testCreateCreatesAUserAndRedirects(): void
     {
         $this->assertSame(0, models\User::count());
 
@@ -57,9 +57,9 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/onboarding');
     }
 
-    public function testCreateCreatesARegistrationValidationToken()
+    public function testCreateCreatesARegistrationValidationToken(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        $this->freeze();
 
         $this->assertSame(0, models\Token::count());
 
@@ -74,12 +74,18 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, models\Token::count());
 
         $user = models\User::take();
+        $this->assertNotNull($user);
         $token = models\Token::findBy(['token' => $user->validation_token]);
-        $this->assertEquals(\Minz\Time::fromNow(1, 'day'), $token->expired_at);
+        $this->assertNotNull($token);
+        $this->assertEquals(
+            \Minz\Time::fromNow(1, 'day')->getTimestamp(),
+            $token->expired_at->getTimestamp()
+        );
     }
 
-    public function testCreateSendsAValidationEmail()
+    public function testCreateSendsAValidationEmail(): void
     {
+        /** @var string */
         $email = $this->fake('email');
 
         $this->assertEmailsCount(0);
@@ -94,14 +100,17 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(1);
 
         $token = models\Token::take();
+        $this->assertNotNull($token);
         $email_sent = \Minz\Tests\Mailer::take();
+        $this->assertNotNull($email_sent);
         $this->assertEmailSubject($email_sent, '[flusio] Confirm your account');
         $this->assertEmailContainsTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, $token->token);
     }
 
-    public function testCreateLogsTheUserIn()
+    public function testCreateLogsTheUserIn(): void
     {
+        /** @var string */
         $email = $this->fake('email');
 
         $user = auth\CurrentUser::get();
@@ -116,11 +125,12 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $user = auth\CurrentUser::get();
+        $this->assertNotNull($user);
         $this->assertSame($email, $user->email);
         $this->assertSame(1, models\Session::count());
     }
 
-    public function testCreateReturnsACookie()
+    public function testCreateReturnsACookie(): void
     {
         $response = $this->appRun('POST', '/registration', [
             'csrf' => \Minz\Csrf::generate(),
@@ -130,12 +140,14 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $session = models\Session::take();
+        $this->assertNotNull($session);
+        $this->assertInstanceOf(\Minz\Response::class, $response);
         $cookie = $response->cookies()['flusio_session_token'];
         $this->assertSame($session->token, $cookie['value']);
         $this->assertSame('Lax', $cookie['options']['samesite']);
     }
 
-    public function testCreateTakesAcceptTermsIfExist()
+    public function testCreateTakesAcceptTermsIfExist(): void
     {
         $app_path = \Minz\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
@@ -154,7 +166,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/onboarding');
     }
 
-    public function testCreateAddFollowedCollectionsIfDefaultFeedsExist()
+    public function testCreateAddFollowedCollectionsIfDefaultFeedsExist(): void
     {
         $default_feeds_path = \Minz\Configuration::$data_path . '/default-feeds.opml.xml';
         file_put_contents($default_feeds_path, <<<OPML
@@ -172,6 +184,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             </opml>
             OPML
         );
+        /** @var string */
         $email = $this->fake('email');
 
         $response = $this->appRun('POST', '/registration', [
@@ -192,7 +205,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->isFollowing($feed->id));
     }
 
-    public function testCreateImportsBookmarksIfDefaultBookmarksExist()
+    public function testCreateImportsBookmarksIfDefaultBookmarksExist(): void
     {
         $default_bookmarks_path = \Minz\Configuration::$data_path . '/default-bookmarks.atom.xml';
         file_put_contents($default_bookmarks_path, <<<TXT
@@ -209,6 +222,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             </feed>
             TXT
         );
+        /** @var string */
         $email = $this->fake('email');
 
         $response = $this->appRun('POST', '/registration', [
@@ -229,7 +243,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://flus.fr/carnet/bilan-2021.html', $links[0]->url);
     }
 
-    public function testCreateRedirectsToHomeIfConnected()
+    public function testCreateRedirectsToHomeIfConnected(): void
     {
         $this->login();
 
@@ -246,7 +260,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
-    public function testCreateCreatesDefaultCollections()
+    public function testCreateCreatesDefaultCollections(): void
     {
         $this->assertSame(0, models\Collection::count());
 
@@ -260,6 +274,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/onboarding');
         $this->assertGreaterThan(0, models\Collection::count());
         $user = auth\CurrentUser::get();
+        $this->assertNotNull($user);
         $bookmarks = models\Collection::findBy([
             'user_id' => $user->id,
             'type' => 'bookmarks',
@@ -282,7 +297,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($never_list);
     }
 
-    public function testCreateRedirectsIfRegistrationsAreClosed()
+    public function testCreateRedirectsIfRegistrationsAreClosed(): void
     {
         \Minz\Configuration::$application['registrations_opened'] = false;
 
@@ -298,7 +313,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\User::count());
     }
 
-    public function testCreateFailsIfCsrfIsWrong()
+    public function testCreateFailsIfCsrfIsWrong(): void
     {
         \Minz\Csrf::generate();
 
@@ -314,7 +329,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'A security verification failed');
     }
 
-    public function testCreateFailsIfUsernameIsMissing()
+    public function testCreateFailsIfUsernameIsMissing(): void
     {
         $response = $this->appRun('POST', '/registration', [
             'csrf' => \Minz\Csrf::generate(),
@@ -327,7 +342,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The username is required');
     }
 
-    public function testCreateFailsIfUsernameIsTooLong()
+    public function testCreateFailsIfUsernameIsTooLong(): void
     {
         $response = $this->appRun('POST', '/registration', [
             'csrf' => \Minz\Csrf::generate(),
@@ -341,7 +356,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The username must be less than 50 characters');
     }
 
-    public function testCreateFailsIfUsernameContainsAnAt()
+    public function testCreateFailsIfUsernameContainsAnAt(): void
     {
         $response = $this->appRun('POST', '/registration', [
             'csrf' => \Minz\Csrf::generate(),
@@ -355,7 +370,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The username cannot contain the character ‘@’.');
     }
 
-    public function testCreateFailsIfEmailIsMissing()
+    public function testCreateFailsIfEmailIsMissing(): void
     {
         $response = $this->appRun('POST', '/registration', [
             'csrf' => \Minz\Csrf::generate(),
@@ -367,7 +382,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The address email is required');
     }
 
-    public function testCreateFailsIfEmailIsInvalid()
+    public function testCreateFailsIfEmailIsInvalid(): void
     {
         $response = $this->appRun('POST', '/registration', [
             'csrf' => \Minz\Csrf::generate(),
@@ -381,12 +396,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The address email is invalid');
     }
 
-    public function testCreateFailsIfEmailAlreadyExistsAndValidated()
+    public function testCreateFailsIfEmailAlreadyExistsAndValidated(): void
     {
+        /** @var string */
         $email = $this->fake('email');
         UserFactory::create([
             'email' => $email,
-            'validated_at' => $this->fake('dateTime'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('POST', '/registration', [
@@ -401,7 +417,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'An account already exists with this email address');
     }
 
-    public function testCreateFailsIfPasswordIsMissing()
+    public function testCreateFailsIfPasswordIsMissing(): void
     {
         $response = $this->appRun('POST', '/registration', [
             'csrf' => \Minz\Csrf::generate(),
@@ -414,7 +430,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The password is required');
     }
 
-    public function testCreateFailsIfAcceptTermsIsFalseAndTermsExist()
+    public function testCreateFailsIfAcceptTermsIsFalseAndTermsExist(): void
     {
         $app_path = \Minz\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';

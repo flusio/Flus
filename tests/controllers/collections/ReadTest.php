@@ -18,7 +18,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testCreateMarksLinksAsReadAndRedirects()
+    public function testCreateMarksLinksAsReadAndRedirects(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -46,7 +46,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_read_list, 'The link should be in read list.');
     }
 
-    public function testCreateRemovesFromBookmarks()
+    public function testCreateRemovesFromBookmarks(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -73,11 +73,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($exists_in_bookmarks, 'The link should not be in bookmarks.');
     }
 
-    public function testCreateMarksLinksAsReadFromFollowed()
+    public function testCreateMarksLinksAsReadFromFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $read_list = $user->readList();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -118,11 +119,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_read_list, 'The link should be in read list.');
     }
 
-    public function testCreateMarksHiddenLinksAsReadFromFollowedIfCollectionIsShared()
+    public function testCreateMarksHiddenLinksAsReadFromFollowedIfCollectionIsShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $read_list = $user->readList();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -163,11 +165,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_read_list, 'The link should be in read list.');
     }
 
-    public function testCreateDoesNotMarkHiddenLinksAsReadFromFollowedIfCollectionIsNotShared()
+    public function testCreateDoesNotMarkHiddenLinksAsReadFromFollowedIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $read_list = $user->readList();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -199,7 +202,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($new_link);
     }
 
-    public function testCreateRedirectsToLoginIfNotConnected()
+    public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $news = $user->news();
@@ -227,7 +230,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_read_list, 'The link should not be in read list.');
     }
 
-    public function testCreateFailsIfCollectionIsInaccessible()
+    public function testCreateFailsIfCollectionIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -256,7 +259,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_read_list, 'The link should not be in read list.');
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -285,7 +288,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_read_list, 'The link should not be in read list.');
     }
 
-    public function testLaterMarksNewsLinksToReadLaterAndRedirects()
+    public function testLaterMarksNewsLinksToReadLaterAndRedirects(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
@@ -313,7 +316,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_bookmarks, 'The link should be in bookmarks.');
     }
 
-    public function testLaterJustRemovesFromNewsIfAlreadyBookmarked()
+    public function testLaterJustRemovesFromNewsIfAlreadyBookmarked(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
@@ -342,11 +345,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
     }
 
-    public function testLaterMarksLinksToReadLaterFromFollowed()
+    public function testLaterMarksLinksToReadLaterFromFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $bookmarks = $user->bookmarks();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -387,11 +391,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_bookmarks, 'The link should be in the bookmarks.');
     }
 
-    public function testLaterMarksHiddenLinksToReadLaterFromFollowedIfCollectionIsShared()
+    public function testLaterMarksHiddenLinksToReadLaterFromFollowedIfCollectionIsShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $bookmarks = $user->bookmarks();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -432,11 +437,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_bookmarks, 'The link should be in the bookmarks.');
     }
 
-    public function testLaterDoesNotMarkHiddenLinksToReadLaterFromFollowedIfCollectionIsNotShared()
+    public function testLaterDoesNotMarkHiddenLinksToReadLaterFromFollowedIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $bookmarks = $user->bookmarks();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -468,7 +474,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($new_link);
     }
 
-    public function testLaterRedirectsToLoginIfNotConnected()
+    public function testLaterRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $bookmarks = $user->bookmarks();
@@ -496,7 +502,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_bookmarks, 'The link should not be in bookmarks.');
     }
 
-    public function testLaterFailsIfCollectionIsInaccessible()
+    public function testLaterFailsIfCollectionIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -525,7 +531,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_bookmarks, 'The link should not be in bookmarks.');
     }
 
-    public function testLaterFailsIfCsrfIsInvalid()
+    public function testLaterFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
@@ -554,7 +560,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_bookmarks, 'The link should not be in bookmarks.');
     }
 
-    public function testNeverMarksNewsLinksToNeverReadAndRedirects()
+    public function testNeverMarksNewsLinksToNeverReadAndRedirects(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
@@ -589,11 +595,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_never_list, 'The link should be in the never list.');
     }
 
-    public function testNeverMarksLinksToNeverReadFromFollowed()
+    public function testNeverMarksLinksToNeverReadFromFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $never_list = $user->neverList();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -631,11 +638,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_never_list, 'The link should be in the never list.');
     }
 
-    public function testNeverMarksHiddenLinksToNeverReadFromFollowedIfCollectionIsShared()
+    public function testNeverMarksHiddenLinksToNeverReadFromFollowedIfCollectionIsShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $never_list = $user->neverList();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -676,11 +684,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_never_list, 'The link should be in the never list.');
     }
 
-    public function testNeverDoesNotMarkHiddenLinksToNeverReadFromFollowedIfCollectionIsNotShared()
+    public function testNeverDoesNotMarkHiddenLinksToNeverReadFromFollowedIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         $never_list = $user->neverList();
+        /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -712,7 +721,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($new_link);
     }
 
-    public function testNeverRedirectsToLoginIfNotConnected()
+    public function testNeverRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $bookmarks = $user->bookmarks();
@@ -747,7 +756,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_never_list, 'The link should not be in the never list.');
     }
 
-    public function testNeverFailsIfCollectionIsInaccessible()
+    public function testNeverFailsIfCollectionIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -783,7 +792,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_never_list, 'The link should not be in the never list.');
     }
 
-    public function testNeverFailsIfCsrfIsInvalid()
+    public function testNeverFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();

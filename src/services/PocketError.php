@@ -8,7 +8,7 @@ namespace flusio\services;
  */
 class PocketError extends \RuntimeException
 {
-    public function __construct($code, $message = '')
+    public function __construct(int|string $code, string $message = '')
     {
         $this->code = intval($code);
         if ($this->code === 199) {
@@ -19,6 +19,6 @@ class PocketError extends \RuntimeException
             $message = _('Pocket error: bad configuration, please contact the support (error code %d).');
         }
 
-        parent::__construct(vsprintf($message, [$code]));
+        parent::__construct(vsprintf($message, [$this->code]));
     }
 }

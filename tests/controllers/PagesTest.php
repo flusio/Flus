@@ -10,14 +10,14 @@ class PagesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testHomeRedirectsToLoginIfNotConnected()
+    public function testHomeRedirectsToLoginIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/');
 
         $this->assertResponseCode($response, 302, '/login');
     }
 
-    public function testHomeRedirectsToNewsIfConnected()
+    public function testHomeRedirectsToNewsIfConnected(): void
     {
         $this->login();
 
@@ -26,7 +26,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/news');
     }
 
-    public function testTermsRendersCorrectlyWhenTermsExist()
+    public function testTermsRendersCorrectlyWhenTermsExist(): void
     {
         $app_path = \Minz\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
@@ -39,7 +39,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Terms of service');
     }
 
-    public function testTermsFailsIfTermsDoNotExist()
+    public function testTermsFailsIfTermsDoNotExist(): void
     {
         $app_path = \Minz\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
@@ -50,7 +50,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testAddonsRendersCorrectly()
+    public function testAddonsRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/addons');
 
@@ -59,7 +59,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, ' Keep flusio at hand in your browser');
     }
 
-    public function testAboutRendersCorrectly()
+    public function testAboutRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/about');
 
@@ -68,7 +68,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'About flusio');
     }
 
-    public function testRobotsRendersCorrectlyWhenRegistrationsAreOpened()
+    public function testRobotsRendersCorrectlyWhenRegistrationsAreOpened(): void
     {
         \Minz\Configuration::$application['registrations_opened'] = true;
 
@@ -83,7 +83,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
             TXT);
     }
 
-    public function testRobotsRendersCorrectlyWhenRegistrationsAreClosed()
+    public function testRobotsRendersCorrectlyWhenRegistrationsAreClosed(): void
     {
         \Minz\Configuration::$application['registrations_opened'] = false;
 

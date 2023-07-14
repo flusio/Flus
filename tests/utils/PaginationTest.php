@@ -4,7 +4,7 @@ namespace flusio\utils;
 
 class PaginationTest extends \PHPUnit\Framework\TestCase
 {
-    public function testNumberElements()
+    public function testNumberElements(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -16,7 +16,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(300, $number_elements);
     }
 
-    public function testTotalPage()
+    public function testTotalPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -28,7 +28,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(10, $total_pages);
     }
 
-    public function testTotalPageIsBoundedBy1()
+    public function testTotalPageIsBoundedBy1(): void
     {
         $number_elements = 0;
         $number_per_page = 30;
@@ -40,7 +40,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $total_pages);
     }
 
-    public function testCurrentPage()
+    public function testCurrentPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -52,7 +52,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($initial_current_page, $current_page);
     }
 
-    public function testCurrentPageIsBoundedBy1()
+    public function testCurrentPageIsBoundedBy1(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -64,7 +64,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $current_page);
     }
 
-    public function testCurrentPageIsBoundedByTotalPages()
+    public function testCurrentPageIsBoundedByTotalPages(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -76,7 +76,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(10, $current_page);
     }
 
-    public function testCurrentOffset()
+    public function testCurrentOffset(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -88,7 +88,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(60, $current_offset);
     }
 
-    public function testNumberPerPage()
+    public function testNumberPerPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -100,7 +100,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(30, $number_per_page);
     }
 
-    public function testNumberPerPageIsBoundedBy1()
+    public function testNumberPerPageIsBoundedBy1(): void
     {
         $number_elements = 300;
         $number_per_page = 0;
@@ -112,7 +112,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $number_per_page);
     }
 
-    public function testMustPaginateReturnsTrueIfTotalPagesIsGreaterThan1()
+    public function testMustPaginateReturnsTrueIfTotalPagesIsGreaterThan1(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -124,7 +124,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($must_paginate);
     }
 
-    public function testMustPaginateReturnsFalseIfTotalPagesIsEqualOrLowerThan1()
+    public function testMustPaginateReturnsFalseIfTotalPagesIsEqualOrLowerThan1(): void
     {
         $number_elements = 30;
         $number_per_page = 30;
@@ -136,7 +136,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($must_paginate);
     }
 
-    public function testIsCurrentFirstPageReturnsTrueIfCurrentPageIs1()
+    public function testIsCurrentFirstPageReturnsTrueIfCurrentPageIs1(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -148,7 +148,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($is_first_page);
     }
 
-    public function testIsCurrentFirstPageReturnsFalseIfCurrentPageIsGreaterThan1()
+    public function testIsCurrentFirstPageReturnsFalseIfCurrentPageIsGreaterThan1(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -160,7 +160,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($is_first_page);
     }
 
-    public function testIsCurrentLastPageReturnsTrueIfCurrentPageIsLastPage()
+    public function testIsCurrentLastPageReturnsTrueIfCurrentPageIsLastPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -172,7 +172,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($is_last_page);
     }
 
-    public function testIsCurrentLastPageReturnsFalseIfCurrentPageIsLowerThanLastPage()
+    public function testIsCurrentLastPageReturnsFalseIfCurrentPageIsLowerThanLastPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -184,7 +184,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($is_last_page);
     }
 
-    public function testIsPageCurrentReturnsTrueIfGivenPageIsCurrentPage()
+    public function testIsPageCurrentReturnsTrueIfGivenPageIsCurrentPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -196,7 +196,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($is_current);
     }
 
-    public function testIsPageCurrentReturnsFalseIfGivenPageIsDifferentThanCurrentPage()
+    public function testIsPageCurrentReturnsFalseIfGivenPageIsDifferentThanCurrentPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -208,7 +208,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($is_current);
     }
 
-    public function testPreviousPageNumber()
+    public function testPreviousPageNumber(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -220,7 +220,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, $previous_number);
     }
 
-    public function testPreviousPageNumberReturnsCurrentPageIfFirstPage()
+    public function testPreviousPageNumberReturnsCurrentPageIfFirstPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -232,7 +232,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $previous_number);
     }
 
-    public function testNextPageNumber()
+    public function testNextPageNumber(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -244,7 +244,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(4, $next_number);
     }
 
-    public function testNextPageNumberReturnsCurrentPageIfLastPage()
+    public function testNextPageNumberReturnsCurrentPageIfLastPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -256,7 +256,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(10, $next_number);
     }
 
-    public function testPagesWhenTotalPagesIs5OrLower()
+    public function testPagesWhenTotalPagesIs5OrLower(): void
     {
         $number_elements = 150;
         $number_per_page = 30;
@@ -274,7 +274,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         ], $pages);
     }
 
-    public function testPagesWhenCurrentPageIsFirstPage()
+    public function testPagesWhenCurrentPageIsFirstPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -292,7 +292,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         ], $pages);
     }
 
-    public function testPagesWhenCurrentPageIsSecondPage()
+    public function testPagesWhenCurrentPageIsSecondPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -310,7 +310,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         ], $pages);
     }
 
-    public function testPagesWhenCurrentPageIsThirdPage()
+    public function testPagesWhenCurrentPageIsThirdPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -329,7 +329,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         ], $pages);
     }
 
-    public function testPagesWhenCurrentPageIsInMiddle()
+    public function testPagesWhenCurrentPageIsInMiddle(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -349,7 +349,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         ], $pages);
     }
 
-    public function testPagesWhenCurrentPageIsThirdToLastPage()
+    public function testPagesWhenCurrentPageIsThirdToLastPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -368,7 +368,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         ], $pages);
     }
 
-    public function testPagesWhenCurrentPageIsSecondToLastPage()
+    public function testPagesWhenCurrentPageIsSecondToLastPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;
@@ -386,7 +386,7 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         ], $pages);
     }
 
-    public function testPagesWhenCurrentPageIsLastPage()
+    public function testPagesWhenCurrentPageIsLastPage(): void
     {
         $number_elements = 300;
         $number_per_page = 30;

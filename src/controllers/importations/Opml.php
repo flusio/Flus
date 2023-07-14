@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\importations;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
@@ -20,7 +21,7 @@ class Opml
      *    If the user is not connected
      * @response 200
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -50,10 +51,10 @@ class Opml
      * @response 302 /opml
      *    On success
      */
-    public function import($request)
+    public function import(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', [

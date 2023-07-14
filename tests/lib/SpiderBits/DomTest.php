@@ -4,7 +4,7 @@ namespace SpiderBits;
 
 class DomTest extends \PHPUnit\Framework\TestCase
 {
-    public function testText()
+    public function testText(): void
     {
         $dom = Dom::fromText(<<<HTML
             <title>Hello World!</title>
@@ -15,7 +15,7 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Hello World!', $text);
     }
 
-    public function testTextWithMixOfHtmlEntitiesAndUtf8()
+    public function testTextWithMixOfHtmlEntitiesAndUtf8(): void
     {
         $dom = Dom::fromText(<<<HTML
             <title>Site d&#039;information français</title>
@@ -26,7 +26,7 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertSame("Site d'information français", $text);
     }
 
-    public function testSelect()
+    public function testSelect(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -41,11 +41,12 @@ class DomTest extends \PHPUnit\Framework\TestCase
 
         $title = $dom->select('//title');
 
+        $this->assertNotNull($title);
         $text = $title->text();
         $this->assertSame('Hello World!', $text);
     }
 
-    public function testSelectIsRelative()
+    public function testSelectIsRelative(): void
     {
         $dom = Dom::fromText(<<<HTML
             <div>
@@ -60,13 +61,14 @@ class DomTest extends \PHPUnit\Framework\TestCase
         HTML);
 
         $span = $dom->select('//span');
+        $this->assertNotNull($span);
         $link = $span->select('/a');
-
+        $this->assertNotNull($link);
         $text = $link->text();
         $this->assertSame('a link in a span', $text);
     }
 
-    public function testSelectReturnsNullIfInvalid()
+    public function testSelectReturnsNullIfInvalid(): void
     {
         $dom = Dom::fromText(<<<HTML
             <title>Hello World!</title>
@@ -77,7 +79,7 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($selected);
     }
 
-    public function testSelectReturnsNullIfNoMatchingNodes()
+    public function testSelectReturnsNullIfNoMatchingNodes(): void
     {
         $dom = Dom::fromText(<<<HTML
             <title>Hello World!</title>
@@ -88,7 +90,7 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($selected);
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -104,7 +106,7 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Hello World!', $dom->text());
     }
 
-    public function testRemoveRootNode()
+    public function testRemoveRootNode(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -118,7 +120,7 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $dom->text());
     }
 
-    public function testRemoveDoesNotAlterInitialDomIfSelected()
+    public function testRemoveDoesNotAlterInitialDomIfSelected(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -130,6 +132,7 @@ class DomTest extends \PHPUnit\Framework\TestCase
         HTML);
 
         $body = $dom->select('//body');
+        $this->assertNotNull($body);
         $body->remove('//div');
 
         $this->assertStringContainsString('Hello World!', $dom->text());

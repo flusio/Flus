@@ -6,8 +6,17 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider resizeProvider
+     *
+     * @param array{int, int} $initial_size
+     * @param array{int, int} $destination_size
+     * @param array{
+     *     'x': int,
+     *     'y': int,
+     *     'width': int,
+     *     'height': int,
+     * } $expected_rect
      */
-    public function testResizeRectangle($initial_size, $destination_size, $expected_rect)
+    public function testResizeRectangle(array $initial_size, array $destination_size, array $expected_rect): void
     {
         $src_rect = Image::resizeRectangle($initial_size, $destination_size);
 
@@ -17,7 +26,19 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_rect['height'], $src_rect['height']);
     }
 
-    public function resizeProvider()
+    /**
+     * @return array<array{
+     *     array{int, int},
+     *     array{int, int},
+     *     array{
+     *         'x': int,
+     *         'y': int,
+     *         'width': int,
+     *         'height': int,
+     *     },
+     * }>
+     */
+    public function resizeProvider(): array
     {
         return [
             [

@@ -17,9 +17,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testEditRendersCorrectly()
+    public function testEditRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -37,9 +38,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testEditRendersGroupIfAlreadySet()
+    public function testEditRendersGroupIfAlreadySet(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -59,10 +61,11 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $group_name);
     }
 
-    public function testEditRendersIfCollectionIsFollowed()
+    public function testEditRendersIfCollectionIsFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -84,11 +87,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testEditRendersGroupIfAlreadySetAndCollectionIsFollowed()
+    public function testEditRendersGroupIfAlreadySetAndCollectionIsFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $group_name = $this->fakeUnique('text', 50);
+        /** @var string */
         $other_group_name = $this->fakeUnique('text', 50);
         $group = GroupFactory::create([
             'user_id' => $user->id,
@@ -118,7 +123,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $other_group_name);
     }
 
-    public function testEditRedirectsIfNotConnected()
+    public function testEditRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -135,7 +140,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
-    public function testEditFailsIfCollectionDoesNotExist()
+    public function testEditFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -151,7 +156,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsNotFollowed()
+    public function testEditFailsIfCollectionIsNotFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -169,7 +174,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsSharedWithWriteAccess()
+    public function testEditFailsIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -191,9 +196,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateRedirectsToFrom()
+    public function testUpdateRedirectsToFrom(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -210,9 +216,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, $from);
     }
 
-    public function testUpdateCreatesGroup()
+    public function testUpdateCreatesGroup(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -231,16 +238,18 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Group::count());
         $group = models\Group::take();
+        $this->assertNotNull($group);
         $this->assertSame($group_name, $group->name);
         $this->assertSame($user->id, $group->user_id);
         $collection = $collection->reload();
         $this->assertSame($group->id, $collection->group_id);
     }
 
-    public function testUpdateSetsGroupIfCollectionIsFollowed()
+    public function testUpdateSetsGroupIfCollectionIsFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -266,11 +275,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $collection = $collection->reload();
         $this->assertNull($collection->group_id);
         $group = models\Group::take();
+        $this->assertNotNull($group);
         $followed_collection = $followed_collection->reload();
         $this->assertSame($group->id, $followed_collection->group_id);
     }
 
-    public function testUpdateUnsetsGroupIfNameIsEmpty()
+    public function testUpdateUnsetsGroupIfNameIsEmpty(): void
     {
         $user = $this->login();
         $group = GroupFactory::create();
@@ -292,9 +302,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->group_id);
     }
 
-    public function testUpdateDoesNotCreateGroupIfNameExists()
+    public function testUpdateDoesNotCreateGroupIfNameExists(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -320,11 +331,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($group->id, $collection->group_id);
     }
 
-    public function testUpdateRedirectsIfNotConnected()
+    public function testUpdateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -344,9 +356,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Group::count());
     }
 
-    public function testUpdateFailsIfCollectionDoesNotExist()
+    public function testUpdateFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -364,10 +377,11 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Group::count());
     }
 
-    public function testUpdateFailsIfCollectionIsNotFollowed()
+    public function testUpdateFailsIfCollectionIsNotFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -386,10 +400,11 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Group::count());
     }
 
-    public function testUpdateFailsIfCollectionIsSharedWithWriteAccess()
+    public function testUpdateFailsIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -413,11 +428,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Group::count());
     }
 
-    public function testUpdateFailsIfNameIsInvalid()
+    public function testUpdateFailsIfNameIsInvalid(): void
     {
         $user = $this->login();
         $max_size = models\Group::NAME_MAX_LENGTH;
         $size = $max_size + 1;
+        /** @var string */
         $group_name = $this->fake('regexify', "\w{{$size}}");
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -437,9 +453,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Group::count());
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',

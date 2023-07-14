@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\my;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -28,12 +29,12 @@ class Avatar
      * @response 302 :from
      *     On success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         $avatar_file = $request->paramFile('avatar');
-        $csrf = $request->param('csrf');
-        $from = $request->param('from');
+        $csrf = $request->param('csrf', '');
+        $from = $request->param('from', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -61,6 +62,7 @@ class Avatar
             return Response::found($from);
         }
 
+        /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($user->id);
         $avatars_path = "{$media_path}/avatars";
@@ -70,14 +72,17 @@ class Avatar
         }
 
         $image_data = $avatar_file->content();
-        try {
-            $image = models\Image::fromString($image_data);
-            $image_type = $image->type();
-        } catch (\DomainException $e) {
-            $image_type = null;
+
+        $image = null;
+
+        if ($image_data !== false) {
+            try {
+                $image = models\Image::fromString($image_data);
+            } catch (\DomainException $e) {
+            }
         }
 
-        if ($image_type !== 'png' && $image_type !== 'jpeg') {
+        if (!$image) {
             \Minz\Flash::set('error', _('The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>.'));
             return Response::found($from);
         }
@@ -89,7 +94,7 @@ class Avatar
             @unlink("{$avatars_path}/{$subpath}/{$user->avatar_filename}");
         }
 
-        $image_filename = "{$user->id}.{$image_type}";
+        $image_filename = "{$user->id}.{$image->type()}";
         $image->save("{$avatar_path}/{$image_filename}");
 
         $user->avatar_filename = $image_filename;

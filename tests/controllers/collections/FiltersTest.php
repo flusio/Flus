@@ -15,10 +15,11 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testEditRendersCorrectly()
+    public function testEditRendersCorrectly(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -41,10 +42,11 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testEditRedirectsIfNotConnected()
+    public function testEditRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -66,10 +68,11 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to={$encoded_from}");
     }
 
-    public function testEditFailsIfCollectionIsPrivate()
+    public function testEditFailsIfCollectionIsPrivate(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -90,10 +93,11 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsNotFollowed()
+    public function testEditFailsIfCollectionIsNotFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -110,7 +114,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateChangesTimeFilterAndRedirectsCorrectly()
+    public function testUpdateChangesTimeFilterAndRedirectsCorrectly(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -141,7 +145,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_time_filter, $followed_collection->time_filter);
     }
 
-    public function testUpdateRedirectsIfNotConnected()
+    public function testUpdateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -173,7 +177,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 
-    public function testUpdateFailsIfCollectionIsPrivate()
+    public function testUpdateFailsIfCollectionIsPrivate(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -204,7 +208,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 
-    public function testUpdateFailsIfCollectionIsNotFollowed()
+    public function testUpdateFailsIfCollectionIsNotFollowed(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -228,7 +232,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -260,7 +264,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 
-    public function testUpdateFailsIfTimeFilterIsInvalid()
+    public function testUpdateFailsIfTimeFilterIsInvalid(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -292,7 +296,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 
-    public function testUpdateFailsIfTimeFilterIsMissing()
+    public function testUpdateFailsIfTimeFilterIsMissing(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();

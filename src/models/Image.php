@@ -8,23 +8,19 @@ namespace flusio\models;
  */
 class Image
 {
-    /** @var resource */
-    private $resource;
+    private \GdImage $resource;
 
-    /** @var integer */
-    private $width;
+    private int $width;
 
-    /** @var integer */
-    private $height;
+    private int $height;
 
-    /** @var string */
-    private $type;
+    /** @var 'jpeg'|'png'|'webp' */
+    private string $type;
 
     /**
-     * @param resource $resource The image as GD resource
-     * @param string $type jpeg, png or webp
+     * @param 'jpeg'|'png'|'webp' $type
      */
-    public function __construct($resource, $type)
+    public function __construct(\GdImage $resource, string $type)
     {
         $this->resource = $resource;
         $this->type = $type;
@@ -34,14 +30,16 @@ class Image
 
     /**
      * Initialize an image from a string
-     *
-     * @param string $string_image
-     *
-     * @return \flusio\models\Image
      */
-    public static function fromString($string_image)
+    public static function fromString(string $string_image): self
     {
-        $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $string_image);
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mime = finfo_buffer($finfo, $string_image);
+
+        if ($mime === false) {
+            $mime = '';
+        }
+
         switch (strtolower($mime)) {
             case 'image/jpg':
             case 'image/jpeg':
@@ -80,13 +78,14 @@ class Image
      * Resize the current image to the given size.
      *
      * The image is cropped in the middle to keep the proportion of the image.
-     *
-     * @param integer $width
-     * @param integer $height
      */
-    public function resize($width, $height)
+    public function resize(int $width, int $height): void
     {
         $new_resource = imagecreatetruecolor($width, $height);
+
+        if ($new_resource === false) {
+            throw new \Exception('Cannot create a new true color image');
+        }
 
         // Preserve transparency
         // Code from the Intervention Image library
@@ -94,6 +93,7 @@ class Image
         $transparent_index = imagecolortransparent($this->resource);
         if ($transparent_index !== -1) {
             $rgba = imagecolorsforindex($new_resource, $transparent_index);
+
             $transparent_color = imagecolorallocatealpha(
                 $new_resource,
                 $rgba['red'],
@@ -101,6 +101,11 @@ class Image
                 $rgba['blue'],
                 127
             );
+
+            if ($transparent_color === false) {
+                throw new \Exception('Cannot create a transparent color');
+            }
+
             imagefill($new_resource, 0, 0, $transparent_color);
             imagecolortransparent($new_resource, $transparent_color);
         } else {
@@ -134,10 +139,8 @@ class Image
 
     /**
      * Save the image on disk.
-     *
-     * @param string $filepath
      */
-    public function save($filepath)
+    public function save(string $filepath): void
     {
         switch ($this->type) {
             case 'jpeg':
@@ -160,16 +163,19 @@ class Image
      *
      * @see https://www.php.net/manual/function.imagecopyresampled
      *
-     * @param array $initial_size
+     * @param array{int, int} $initial_size
      *     The size of the initial image (first value is width, second is height)
-     * @param array $destination_size
+     * @param array{int, int} $destination_size
      *     The size of the desired image (first value is width, second is height)
      *
-     * @return array
-     *     The src rectange to use in imagecopyresampled, array indexes are:
-     *     x, y, width and height.
+     * @return array{
+     *     'x': int,
+     *     'y': int,
+     *     'width': int,
+     *     'height': int,
+     * } The src rectange to use in imagecopyresampled.
      */
-    public static function resizeRectangle($initial_size, $destination_size)
+    public static function resizeRectangle(array $initial_size, array $destination_size): array
     {
         list($initial_width, $initial_height) = $initial_size;
         list($destination_width, $destination_height) = $destination_size;

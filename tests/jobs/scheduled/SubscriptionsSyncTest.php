@@ -15,7 +15,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function initializeSubscriptionConfiguration()
+    public function initializeSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
     }
@@ -23,26 +23,26 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
     /**
      * @afterClass
      */
-    public static function resetSubscriptionConfiguration()
+    public static function resetSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
     }
 
-    public function testQueue()
+    public function testQueue(): void
     {
         $subscriptions_sync_job = new SubscriptionsSync();
 
         $this->assertSame('default', $subscriptions_sync_job->queue);
     }
 
-    public function testSchedule()
+    public function testSchedule(): void
     {
         $subscriptions_sync_job = new SubscriptionsSync();
 
         $this->assertSame('+4 hours', $subscriptions_sync_job->frequency);
     }
 
-    public function testInstall()
+    public function testInstall(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
 
@@ -55,12 +55,16 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, \Minz\Job::count());
     }
 
-    public function testSyncUpdatesExpiredAt()
+    public function testSyncUpdatesExpiredAt(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
         $account_id = $this->fake('uuid');
+        /** @var \DateTimeImmutable */
         $old_expired_at = $this->fake('dateTime');
+        /** @var \DateTimeImmutable */
         $new_expired_at = $this->fake('dateTime');
         $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
@@ -83,12 +87,16 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($new_expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncGetsAccountIdIfMissing()
+    public function testSyncGetsAccountIdIfMissing(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $account_id = $this->fake('uuid');
+        /** @var \DateTimeImmutable */
         $expired_at = $this->fake('dateTime');
         $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
@@ -104,8 +112,8 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'subscription_account_id' => null,
-            'subscription_expired_at' => $this->fake('dateTime'),
-            'validated_at' => $this->fake('dateTime'),
+            'subscription_expired_at' => \Minz\Time::now(),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $subscriptions_sync_job->perform();
@@ -115,11 +123,14 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncHandlesIfAccountIdFailsBeingGet()
+    public function testSyncHandlesIfAccountIdFailsBeingGet(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
         $email = $this->fake('email');
+        /** @var \DateTimeImmutable */
         $expired_at = $this->fake('dateTime');
         $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
@@ -142,11 +153,14 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncIgnoresInvalidExpiredAt()
+    public function testSyncIgnoresInvalidExpiredAt(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
         $account_id = $this->fake('uuid');
+        /** @var \DateTimeImmutable */
         $old_expired_at = $this->fake('dateTime');
         $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
@@ -169,15 +183,20 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($old_expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncIgnoresUnexpectedAccountIds()
+    public function testSyncIgnoresUnexpectedAccountIds(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
         $account_id_1 = $this->fake('uuid');
         // this account id is unknown to our system but returned by the API, it
         // should just be ignored.
+        /** @var string */
         $account_id_2 = $this->fake('uuid');
+        /** @var \DateTimeImmutable */
         $old_expired_at = $this->fake('dateTime');
+        /** @var \DateTimeImmutable */
         $new_expired_at = $this->fake('dateTime');
         $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
@@ -201,12 +220,16 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($new_expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncDoesNotGetAccountIdIfNotValidated()
+    public function testSyncDoesNotGetAccountIdIfNotValidated(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $account_id = $this->fake('uuid');
+        /** @var \DateTimeImmutable */
         $expired_at = $this->fake('dateTime');
         $subscription_api_url = "{$subscriptions_host}/api/account?email={$email}";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
@@ -222,7 +245,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'subscription_account_id' => null,
-            'subscription_expired_at' => $this->fake('dateTime'),
+            'subscription_expired_at' => \Minz\Time::now(),
             'validated_at' => null,
         ]);
 
@@ -233,12 +256,16 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEquals($expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncDoesNothingIfHttpIsInError()
+    public function testSyncDoesNothingIfHttpIsInError(): void
     {
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
         $account_id = $this->fake('uuid');
+        /** @var \DateTimeImmutable */
         $old_expired_at = $this->fake('dateTime');
+        /** @var \DateTimeImmutable */
         $new_expired_at = $this->fake('dateTime');
         $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
@@ -261,14 +288,18 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($old_expired_at, $user->subscription_expired_at);
     }
 
-    public function testSyncDoesNothingIfSubscriptionsAreDisabled()
+    public function testSyncDoesNothingIfSubscriptionsAreDisabled(): void
     {
         $subscriptions_sync_job = new SubscriptionsSync();
         \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        /** @var string */
         $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
         $account_id = $this->fake('uuid');
+        /** @var \DateTimeImmutable */
         $old_expired_at = $this->fake('dateTime');
+        /** @var \DateTimeImmutable */
         $new_expired_at = $this->fake('dateTime');
         $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT

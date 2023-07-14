@@ -15,9 +15,10 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -35,9 +36,10 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testIndexRendersExistingShares()
+    public function testIndexRendersExistingShares(): void
     {
         $user = $this->login();
+        /** @var string */
         $username = $this->fake('username');
         $other_user = UserFactory::create([
             'username' => $username,
@@ -59,10 +61,11 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $username);
     }
 
-    public function testIndexWorksIfCollectionIsSharedWithWriteAccess()
+    public function testIndexWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -85,7 +88,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testIndexRedirectsIfNotConnected()
+    public function testIndexRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -102,7 +105,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
-    public function testIndexFailsIfCollectionDoesNotExist()
+    public function testIndexFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -118,7 +121,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testIndexFailsIfCollectionIsNotShared()
+    public function testIndexFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -135,7 +138,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testIndexFailsIfCollectionIsSharedWithReadAccess()
+    public function testIndexFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -157,7 +160,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testCreateRendersCorrectly()
+    public function testCreateRendersCorrectly(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -178,7 +181,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
     }
 
-    public function testCreateCreatesCollectionShare()
+    public function testCreateCreatesCollectionShare(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -202,7 +205,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection_share);
     }
 
-    public function testCreateAcceptsProfileUrlAsUserId()
+    public function testCreateAcceptsProfileUrlAsUserId(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -226,7 +229,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection_share);
     }
 
-    public function testCreateWorksIfCollectionIsSharedWithWriteAccess()
+    public function testCreateWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -256,7 +259,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection_share);
     }
 
-    public function testCreateRedirectsToLoginIfNotConnected()
+    public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -284,7 +287,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfCollectionDoesNotExist()
+    public function testCreateFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -309,7 +312,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -336,7 +339,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfUserIdIsTheCurrentUserId()
+    public function testCreateFailsIfUserIdIsTheCurrentUserId(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -362,7 +365,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfUserIdDoesNotExist()
+    public function testCreateFailsIfUserIdDoesNotExist(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -388,7 +391,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfUserIdIsSupportUserId()
+    public function testCreateFailsIfUserIdIsSupportUserId(): void
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
@@ -415,7 +418,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfCollectionIsAlreadySharedWithUserId()
+    public function testCreateFailsIfCollectionIsAlreadySharedWithUserId(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -447,7 +450,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection_share->id, $collection_shares[0]->id);
     }
 
-    public function testCreateFailsIfTypeIsInvalid()
+    public function testCreateFailsIfTypeIsInvalid(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -474,7 +477,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfTypeIsEmpty()
+    public function testCreateFailsIfTypeIsEmpty(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -501,7 +504,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfCollectionIsNotShared()
+    public function testCreateFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -527,7 +530,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfCollectionIsSharedWithReadAccess()
+    public function testCreateFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -558,7 +561,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testDeleteDeletesCollectionShare()
+    public function testDeleteDeletesCollectionShare(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -582,7 +585,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\CollectionShare::exists($collection_share->id));
     }
 
-    public function testDeleteWorksIfCollectionIsSharedWithWriteAccess()
+    public function testDeleteWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -611,7 +614,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\CollectionShare::exists($collection_share->id));
     }
 
-    public function testDeleteRendersCorrectly()
+    public function testDeleteRendersCorrectly(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -634,7 +637,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'collections/shares/index.phtml');
     }
 
-    public function testDeleteRedirectsToLoginIfNotConnected()
+    public function testDeleteRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -660,7 +663,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }
 
-    public function testDeleteFailsIfCollectionShareDoesNotExist()
+    public function testDeleteFailsIfCollectionShareDoesNotExist(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -683,7 +686,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }
 
-    public function testDeleteFailsICollectionIsNotShared()
+    public function testDeleteFailsICollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -708,7 +711,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }
 
-    public function testDeleteFailsIfCollectionIsSharedWithReadAccess()
+    public function testDeleteFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -738,7 +741,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }
 
-    public function testDeleteFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();

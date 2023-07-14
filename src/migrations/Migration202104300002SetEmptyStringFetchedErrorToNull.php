@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202104300002SetEmptyStringFetchedErrorToNull
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -19,7 +19,7 @@ class Migration202104300002SetEmptyStringFetchedErrorToNull
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         // Do nothing on purpose
         return true;

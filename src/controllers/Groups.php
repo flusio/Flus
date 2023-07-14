@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -23,11 +24,11 @@ class Groups
      * @response 200
      *     on success
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $group_id = $request->param('id');
-        $from = $request->param('from');
+        $group_id = $request->param('id', '');
+        $from = $request->param('from', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -35,7 +36,7 @@ class Groups
 
         $group = models\Group::find($group_id);
 
-        if (auth\GroupsAccess::canUpdate($user, $group)) {
+        if ($group && auth\GroupsAccess::canUpdate($user, $group)) {
             return Response::ok('groups/edit.phtml', [
                 'group' => $group,
                 'name' => $group->name,
@@ -62,13 +63,13 @@ class Groups
      * @response 302 :from
      *     on success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $group_id = $request->param('id');
+        $group_id = $request->param('id', '');
         $name = $request->param('name', '');
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -76,7 +77,7 @@ class Groups
 
         $group = models\Group::find($group_id);
 
-        if (!auth\GroupsAccess::canUpdate($user, $group)) {
+        if (!$group || !auth\GroupsAccess::canUpdate($user, $group)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -139,12 +140,12 @@ class Groups
      * @response 302 :from
      *     on success
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $group_id = $request->param('id');
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $group_id = $request->param('id', '');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -152,7 +153,7 @@ class Groups
 
         $group = models\Group::find($group_id);
 
-        if (!auth\GroupsAccess::canDelete($user, $group)) {
+        if (!$group || !auth\GroupsAccess::canDelete($user, $group)) {
             return Response::notFound('not_found.phtml');
         }
 

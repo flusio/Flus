@@ -14,14 +14,10 @@
  * @see https://www.php.net/manual/class.intldateformatter.php
  * @see https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
  *
- * @param \DateTime $date
- *     The datetime to format
- * @param string $format
- *     The format following ICU Datetime format syntax
- *
- * @return string
+ * @throws \Exception
+ *     If the date cannot be formatted
  */
-function _date($date, $format)
+function _date(\DateTimeInterface $date, string $format): string
 {
     $current_locale = \flusio\utils\Locale::currentLocale();
     $formatter = new IntlDateFormatter(
@@ -32,17 +28,23 @@ function _date($date, $format)
         null,
         $format
     );
-    return $formatter->format($date);
+
+    $formatted_date = $formatter->format($date);
+
+    if ($formatted_date === false) {
+        throw new \Exception(
+            $formatter->getErrorMessage(),
+            $formatter->getErrorCode()
+        );
+    }
+
+    return $formatted_date;
 }
 
 /**
  * Format a DateTime according to current day (designed for Message dates)
- *
- * @param \DateTime $date
- *
- * @return string
  */
-function format_message_date($date)
+function format_message_date(\DateTimeInterface $date): string
 {
     $today = \Minz\Time::relative('today');
     if ($date >= $today) {
@@ -56,16 +58,22 @@ function format_message_date($date)
 
 /**
  * Format a number accordingly to the current locale
- *
- * @param integer|float $number
- *
- * @return string
  */
-function format_number($number)
+function format_number(int|float $number): string
 {
     $locale = \flusio\utils\Locale::currentLocale();
-    $number_formatter = new \NumberFormatter($locale, \NumberFormatter::DEFAULT_STYLE);
-    return $number_formatter->format($number);
+    $formatter = new \NumberFormatter($locale, \NumberFormatter::DEFAULT_STYLE);
+
+    $formatted_number = $formatter->format($number);
+
+    if ($formatted_number === false) {
+        throw new \Exception(
+            $formatter->getErrorMessage(),
+            $formatter->getErrorCode()
+        );
+    }
+
+    return $formatted_number;
 }
 
 /**
@@ -73,18 +81,10 @@ function format_number($number)
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang
  * @see https://www.ietf.org/rfc/bcp/bcp47.txt
- *
- * @param string $locale
- *
- * @return string
  */
-function locale_to_bcp_47($locale)
+function locale_to_bcp_47(string $locale): string
 {
     $splitted_locale = explode('_', $locale, 2);
-    if (!$splitted_locale) {
-        // This is line is virtually inaccessible
-        return $locale; // @codeCoverageIgnore
-    }
 
     if (count($splitted_locale) === 1) {
         return $splitted_locale[0];
@@ -95,12 +95,8 @@ function locale_to_bcp_47($locale)
 
 /**
  * Return the given reading time as a human-readable string.
- *
- * @param integer $reading_time
- *
- * @return integer
  */
-function format_reading_time($reading_time)
+function format_reading_time(int $reading_time): string
 {
     if ($reading_time < 1) {
         return _('< 1 min');
@@ -112,12 +108,8 @@ function format_reading_time($reading_time)
 /**
  * Return the relative URL for an asset file (under public/assets/ or
  * public/dev_assets/ folder)
- *
- * @param string $filename
- *
- * @return string
  */
-function url_asset($filename)
+function url_asset(string $filename): string
 {
     if (\Minz\Configuration::$environment === 'development') {
         $assets_folder = 'dev_assets';
@@ -139,18 +131,15 @@ function url_asset($filename)
 /**
  * Return the relative URL for a media image
  *
- * @param string $type Either 'cards', 'large' or 'avatars'
- * @param string $filename The filename of the image to get
- * @param string $default The default image to return if file doesn't exist
- *
- * @return string
+ * @param 'cards'|'large'|'avatars' $type
  */
-function url_media($type, $filename, $default = 'default-card.png')
+function url_media(string $type, ?string $filename, string $default = 'default-card.png'): string
 {
     if (!$filename) {
         return url_static($default);
     }
 
+    /** @var string */
     $media_path = \Minz\Configuration::$application['media_path'];
     $subpath = \flusio\utils\Belt::filenameToSubpath($filename);
     $filepath = "{$media_path}/{$type}/{$subpath}/{$filename}";
@@ -166,38 +155,25 @@ function url_media($type, $filename, $default = 'default-card.png')
 /**
  * Return the absolute URL for a media image
  *
- * @param string $type Either 'cards', 'large' or 'avatars'
- * @param string $filename The filename of the image to get
- * @param string $default The default image to return if file doesn't exist
- *
- * @return string
+ * @param 'cards'|'large'|'avatars' $type
  */
-function url_media_full($type, $filename)
+function url_media_full(string $type, ?string $filename): string
 {
     return \Minz\Url::baseUrl() . url_media($type, $filename);
 }
 
 /**
  * Return the relative URL of an avatar.
- *
- * @param string $filename The path saved in user->avatar_filename
- *
- * @return string
  */
-function url_avatar($filename)
+function url_avatar(?string $filename): string
 {
     return url_media('avatars', $filename, 'default-avatar.svg');
 }
 
 /**
  * Return a SVG icon.
- *
- * @param string $icon_name
- * @param string $additional_class_names
- *
- * @return string
  */
-function icon($icon_name, $additional_class_names = '')
+function icon(string $icon_name, string $additional_class_names = ''): string
 {
     $class = "icon icon--{$icon_name}";
     if ($additional_class_names) {
@@ -219,12 +195,8 @@ function icon($icon_name, $additional_class_names = '')
  * with $last_separator. Please note that the array is the first parameter.
  *
  * @param string[] $array
- * @param string $separator
- * @param string $last_separator
- *
- * @return string
  */
-function human_implode($array, $separator, $last_separator)
+function human_implode(array $array, string $separator, string $last_separator): string
 {
     $string = '';
     foreach ($array as $index => $item) {
@@ -243,10 +215,8 @@ function human_implode($array, $separator, $last_separator)
 
 /**
  * Return a random sentence to display when there are no news.
- *
- * @return string
  */
-function no_news_sentence()
+function no_news_sentence(): string
 {
     $bookmarks_url = url('bookmarks');
     $sentence = _('There are no relevant links to suggest at this time.') . '<br />';
@@ -265,13 +235,8 @@ function no_news_sentence()
 
 /**
  * Return the list of publishers of a collection.
- *
- * @param \flusio\models\Collection $collection
- * @param \flusio\models\User|null $current_user
- *
- * @return string
  */
-function collection_publishers($collection, $current_user)
+function collection_publishers(\flusio\models\Collection $collection, ?\flusio\models\User $current_user): string
 {
     $owner = $collection->owner();
     $shares = $collection->shares(['access_type' => 'write']);

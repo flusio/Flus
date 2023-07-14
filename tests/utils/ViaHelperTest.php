@@ -10,7 +10,7 @@ class ViaHelperTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
 
-    public function testExtractViaFromPathWithExistingCollection()
+    public function testExtractViaFromPathWithExistingCollection(): void
     {
         $collection = CollectionFactory::create();
         $path = \Minz\Url::for('collection', ['id' => $collection->id]);
@@ -21,7 +21,7 @@ class ViaHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $via_resource_id);
     }
 
-    public function testExtractViaFromPathWithExistingUser()
+    public function testExtractViaFromPathWithExistingUser(): void
     {
         $user = UserFactory::create();
         $path = \Minz\Url::for('profile', ['id' => $user->id]);
@@ -32,7 +32,7 @@ class ViaHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->id, $via_resource_id);
     }
 
-    public function testExtractViaFromPathWithNonExistingCollection()
+    public function testExtractViaFromPathWithNonExistingCollection(): void
     {
         $path = \Minz\Url::for('collection', ['id' => '12345']);
 
@@ -42,7 +42,7 @@ class ViaHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($via_resource_id);
     }
 
-    public function testExtractViaFromPathWithNonExistingUser()
+    public function testExtractViaFromPathWithNonExistingUser(): void
     {
         $path = \Minz\Url::for('profile', ['id' => '12345']);
 
@@ -52,7 +52,7 @@ class ViaHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($via_resource_id);
     }
 
-    public function testExtractViaFromPathWithUnsupportedPath()
+    public function testExtractViaFromPathWithUnsupportedPath(): void
     {
         $path = \Minz\Url::for('bookmarks');
 

@@ -4,28 +4,33 @@ namespace SpiderBits;
 
 class CacheTest extends \PHPUnit\Framework\TestCase
 {
-    private static $cache_path;
+    private static string $cache_path;
 
     /**
      * @beforeClass
      */
-    public static function setCachePath()
+    public static function setCachePath(): void
     {
-        self::$cache_path = \Minz\Configuration::$application['cache_path'];
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        self::$cache_path = $cache_path;
     }
 
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
         $files = glob(self::$cache_path . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
     }
 
-    public function testConstructFailsIfPathDoesNotExist()
+    public function testConstructFailsIfPathDoesNotExist(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('The cache path does not exist');
@@ -33,7 +38,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         new Cache('do not exist');
     }
 
-    public function testConstructFailsIfPathIsNotDirectory()
+    public function testConstructFailsIfPathIsNotDirectory(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('The cache path is not a directory');
@@ -41,7 +46,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         new Cache(__FILE__);
     }
 
-    public function testSave()
+    public function testSave(): void
     {
         $cache = new Cache(self::$cache_path);
 
@@ -51,7 +56,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists(self::$cache_path . '/foo'));
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $cache = new Cache(self::$cache_path);
         $cache->save('foo', 'bar');
@@ -61,7 +66,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('bar', $text);
     }
 
-    public function testGetReturnsNullIfExpired()
+    public function testGetReturnsNullIfExpired(): void
     {
         $cache = new Cache(self::$cache_path);
         $cache->save('foo', 'bar');
@@ -71,7 +76,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($text);
     }
 
-    public function testGetReturnsNullIfFileDoesNotExist()
+    public function testGetReturnsNullIfFileDoesNotExist(): void
     {
         $cache = new Cache(self::$cache_path);
 
@@ -80,7 +85,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($text);
     }
 
-    public function testGetReturnsNullIfFileCannotBeRead()
+    public function testGetReturnsNullIfFileCannotBeRead(): void
     {
         $cache = new Cache(self::$cache_path);
         $cache->save('foo', 'bar');
@@ -91,7 +96,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($text);
     }
 
-    public function testGetReturnsNullIfFileCannotBeDecoded()
+    public function testGetReturnsNullIfFileCannotBeDecoded(): void
     {
         $cache = new Cache(self::$cache_path);
         file_put_contents(self::$cache_path . '/foo', 'not an encoded string');
@@ -101,7 +106,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($text);
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $cache = new Cache(self::$cache_path);
         $cache->save('foo', 'bar');
@@ -114,7 +119,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(file_exists(self::$cache_path . '/foo'));
     }
 
-    public function testRemoveReturnsTrueIfFileDoesNotExist()
+    public function testRemoveReturnsTrueIfFileDoesNotExist(): void
     {
         $cache = new Cache(self::$cache_path);
 
@@ -126,7 +131,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(file_exists(self::$cache_path . '/foo'));
     }
 
-    public function testRemoveReturnsFalseIfFileCannotBeRemoved()
+    public function testRemoveReturnsFalseIfFileCannotBeRemoved(): void
     {
         $cache = new Cache(self::$cache_path);
         $cache->save('foo', 'bar');
@@ -141,7 +146,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists(self::$cache_path . '/foo'));
     }
 
-    public function testHash()
+    public function testHash(): void
     {
         $string = 'Hello World!';
 
@@ -150,7 +155,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069', $hash);
     }
 
-    public function testClean()
+    public function testClean(): void
     {
         $cache = new Cache(self::$cache_path);
         $filepath = self::$cache_path . '/foo';
@@ -165,7 +170,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(file_exists($filepath));
     }
 
-    public function testCleanKeepsFilesWithinValidityInterval()
+    public function testCleanKeepsFilesWithinValidityInterval(): void
     {
         $cache = new Cache(self::$cache_path);
         $filepath = self::$cache_path . '/foo';

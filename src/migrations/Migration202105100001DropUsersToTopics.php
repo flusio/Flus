@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202105100001DropUsersToTopics
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -17,7 +17,7 @@ class Migration202105100001DropUsersToTopics
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

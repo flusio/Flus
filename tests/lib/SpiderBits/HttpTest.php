@@ -7,9 +7,10 @@ class HttpTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\MockHttpHelper;
 
-    public function testGetWithParameters()
+    public function testGetWithParameters(): void
     {
         $http = new Http();
+        /** @var string */
         $url = $this->fake('url');
         $parameters = [
             'foo' => 'bar',
@@ -22,15 +23,18 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
+        $this->assertIsArray($data);
         $this->assertSame($expected_url, $data['url']);
         $this->assertSame($parameters['foo'], $data['args']['foo']);
         $this->assertSame($parameters['baz'], $data['args']['baz']);
     }
 
-    public function testGetWithMixedParameters()
+    public function testGetWithMixedParameters(): void
     {
         $http = new Http();
-        $url = $this->fake('url') . '/get?foo=bar';
+        /** @var string */
+        $url = $this->fake('url');
+        $url = $url . '/get?foo=bar';
         $parameters = [
             'baz' => 'quz',
         ];
@@ -41,14 +45,16 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
+        $this->assertIsArray($data);
         $this->assertSame($expected_url, $data['url']);
     }
 
-    public function testGetWithAuthBasic()
+    public function testGetWithAuthBasic(): void
     {
         $http = new Http();
         $user = 'john';
         $pass = 'secret';
+        /** @var string */
         $url = $this->fake('url');
         $this->mockHttpWithEcho($url);
 
@@ -58,15 +64,17 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
+        $this->assertIsArray($data);
         $this->assertSame($user, $data['user']);
     }
 
-    public function testGetWithSettingHeaders()
+    public function testGetWithSettingHeaders(): void
     {
         $http = new Http();
         $headers = [
             'X-Custom' => 'foo',
         ];
+        /** @var string */
         $url = $this->fake('url');
         $this->mockHttpWithEcho($url);
 
@@ -76,15 +84,17 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
+        $this->assertIsArray($data);
         $this->assertSame('foo', $data['headers']['HTTP_X_CUSTOM']);
     }
 
-    public function testGetWithSettingGlobalHeaders()
+    public function testGetWithSettingGlobalHeaders(): void
     {
         $http = new Http();
         $http->headers = [
             'X-Custom' => 'foo',
         ];
+        /** @var string */
         $url = $this->fake('url');
         $this->mockHttpWithEcho($url);
 
@@ -92,13 +102,16 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
+        $this->assertIsArray($data);
         $this->assertSame('foo', $data['headers']['HTTP_X_CUSTOM']);
     }
 
-    public function testGetWithSettingUserAgent()
+    public function testGetWithSettingUserAgent(): void
     {
         $http = new Http();
+        /** @var string */
         $user_agent = $this->fake('userAgent');
+        /** @var string */
         $url = $this->fake('url');
         $this->mockHttpWithEcho($url);
 
@@ -108,10 +121,11 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
+        $this->assertIsArray($data);
         $this->assertSame($user_agent, $data['headers']['HTTP_USER_AGENT']);
     }
 
-    public function testGetFailing()
+    public function testGetFailing(): void
     {
         $this->expectException(HttpError::class);
         $this->expectExceptionMessage('Could not resolve host: not-a-host');
@@ -121,9 +135,10 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $http->get('not-a-host');
     }
 
-    public function testPostWithParameters()
+    public function testPostWithParameters(): void
     {
         $http = new Http();
+        /** @var string */
         $url = $this->fake('url');
         $parameters = [
             'foo' => 'bar',
@@ -135,6 +150,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
+        $this->assertIsArray($data);
         $this->assertSame($parameters['foo'], $data['form']['foo']);
         $this->assertSame($parameters['baz'], $data['form']['baz']);
     }

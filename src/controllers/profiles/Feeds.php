@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\profiles;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -27,9 +28,9 @@ class Feeds
      * @response 200
      *    On success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
-        $user_id = $request->param('id');
+        $user_id = $request->param('id', '');
         $direct = $request->paramBoolean('direct', false);
 
         $user = models\User::find($user_id);
@@ -60,7 +61,7 @@ class Feeds
      *
      * @response 301 /p/:id/feed.atom.xml
      */
-    public function alias($request)
+    public function alias(Request $request): Response
     {
         $user_id = $request->param('id');
         $url = \Minz\Url::for('profile feed', ['id' => $user_id]);

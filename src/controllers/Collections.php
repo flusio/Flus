@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -23,7 +24,7 @@ class Collections
      *
      * @response 301 /links
      */
-    public function index()
+    public function index(): Response
     {
         $url = \Minz\Url::for('links');
         return Response::movedPermanently($url);
@@ -35,7 +36,7 @@ class Collections
      * @response 302 /login?redirect_to=/collections/new if not connected
      * @response 200
      */
-    public function new()
+    public function new(): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -45,7 +46,7 @@ class Collections
         }
 
         $topics = models\Topic::listAll();
-        utils\Sorter::localeSort($topics, 'label');
+        $topics = utils\Sorter::localeSort($topics, 'label');
 
         return Response::ok('collections/new.phtml', [
             'name' => '',
@@ -70,7 +71,7 @@ class Collections
      * @response 400 if csrf, name or topic_ids are invalid
      * @response 302 /collections/:new
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -81,12 +82,13 @@ class Collections
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');
+        /** @var string[] */
         $topic_ids = $request->paramArray('topic_ids', []);
         $is_public = $request->paramBoolean('is_public', false);
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         $topics = models\Topic::listAll();
-        utils\Sorter::localeSort($topics, 'label');
+        $topics = utils\Sorter::localeSort($topics, 'label');
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/new.phtml', [
@@ -100,7 +102,7 @@ class Collections
             ]);
         }
 
-        if ($topic_ids && !models\Topic::exists($topic_ids)) {
+        if ($topic_ids && !models\Topic::existsBy(['id' => $topic_ids])) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
@@ -148,12 +150,16 @@ class Collections
      *     if the collection doesn’t exist or is inaccessible to the current user
      * @response 200
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->param('id');
+        $collection_id = $request->param('id', '');
         $pagination_page = $request->paramInteger('page', 1);
         $collection = models\Collection::find($collection_id);
+
+        if (!$collection) {
+            return Response::notFound('not_found.phtml');
+        }
 
         $can_view = auth\CollectionsAccess::canView($user, $collection);
         $can_update = auth\CollectionsAccess::canUpdate($user, $collection);
@@ -179,9 +185,9 @@ class Collections
         }
 
         $topics = $collection->topics();
-        utils\Sorter::localeSort($topics, 'label');
+        $topics = utils\Sorter::localeSort($topics, 'label');
 
-        if ($can_update) {
+        if ($user && $can_update) {
             return Response::ok('collections/show.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
@@ -223,20 +229,20 @@ class Collections
      * @response 404 if the collection doesn’t exist or user hasn't access
      * @response 200
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->param('id');
-        $from = $request->param('from');
+        $collection_id = $request->param('id', '');
+        $from = $request->param('from', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collection = models\Collection::find($collection_id);
-        if (auth\CollectionsAccess::canUpdate($user, $collection)) {
+        if ($collection && auth\CollectionsAccess::canUpdate($user, $collection)) {
             $topics = models\Topic::listAll();
-            utils\Sorter::localeSort($topics, 'label');
+            $topics = utils\Sorter::localeSort($topics, 'label');
 
             return Response::ok('collections/edit.phtml', [
                 'collection' => $collection,
@@ -269,29 +275,30 @@ class Collections
      * @response 400 if csrf, name or topic_ids are invalid
      * @response 302 :from
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->param('id');
-        $from = $request->param('from');
+        $collection_id = $request->param('id', '');
+        $from = $request->param('from', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collection = models\Collection::find($collection_id);
-        if (!auth\CollectionsAccess::canUpdate($user, $collection)) {
+        if (!$collection || !auth\CollectionsAccess::canUpdate($user, $collection)) {
             return Response::notFound('not_found.phtml');
         }
 
         $topics = models\Topic::listAll();
-        utils\Sorter::localeSort($topics, 'label');
+        $topics = utils\Sorter::localeSort($topics, 'label');
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');
         $is_public = $request->paramBoolean('is_public', false);
+        /** @var string[] */
         $topic_ids = $request->paramArray('topic_ids', []);
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('collections/edit.phtml', [
@@ -307,7 +314,7 @@ class Collections
             ]);
         }
 
-        if ($topic_ids && !models\Topic::exists($topic_ids)) {
+        if ($topic_ids && !models\Topic::existsBy(['id' => $topic_ids])) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
@@ -359,12 +366,12 @@ class Collections
      * @response 302 :from if csrf is invalid
      * @response 302 /collections
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->param('id');
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $collection_id = $request->param('id', '');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', [
@@ -373,7 +380,7 @@ class Collections
         }
 
         $collection = models\Collection::find($collection_id);
-        if (!auth\CollectionsAccess::canDelete($user, $collection)) {
+        if (!$collection || !auth\CollectionsAccess::canDelete($user, $collection)) {
             return Response::notFound('not_found.phtml');
         }
 

@@ -7,16 +7,13 @@ use flusio\utils;
 
 class Migration202108310001InitNewDefaultCollections
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $collections_to_create = [];
 
-        $support_email = \Minz\Configuration::$application['support_email'];
-
         $users = models\User::listAll();
-        $support_user = models\User::findBy([
-            'email' => \Minz\Email::sanitize($support_email),
-        ]);
+        $support_user = models\User::supportUser();
+
         $now = \Minz\Time::now();
 
         foreach ($users as $user) {
@@ -24,7 +21,7 @@ class Migration202108310001InitNewDefaultCollections
                 continue;
             }
 
-            utils\Locale::setCurrentLocale($user['locale']);
+            utils\Locale::setCurrentLocale($user->locale);
 
             $news = models\Collection::initNews($user->id);
             $read_list = models\Collection::initReadList($user->id);
@@ -42,7 +39,7 @@ class Migration202108310001InitNewDefaultCollections
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

@@ -19,19 +19,32 @@ class System
      *
      * @response 200
      */
-    public function show()
+    public function show(): Response
     {
+        /** @var string */
         $app_name = \Minz\Configuration::$app_name;
+        /** @var string */
         $app_version = \Minz\Configuration::$application['version'];
+        /** @var bool */
         $demo_enabled = \Minz\Configuration::$application['demo'];
+        /** @var bool */
         $registrations_enabled = \Minz\Configuration::$application['registrations_opened'];
+        /** @var bool */
         $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        /** @var bool */
         $pocket_enabled = \Minz\Configuration::$application['pocket_consumer_key'] !== null;
+        /** @var int */
         $job_feeds_sync_count = \Minz\Configuration::$application['job_feeds_sync_count'];
+        /** @var int */
         $job_links_sync_count = \Minz\Configuration::$application['job_links_sync_count'];
-        $server_ips = implode(', ', \Minz\Configuration::$application['server_ips']);
+        /** @var string[] */
+        $server_ips = \Minz\Configuration::$application['server_ips'];
+        $server_ips = implode(', ', $server_ips);
+        /** @var int */
         $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
+        /** @var int */
         $feeds_links_keep_maximum = \Minz\Configuration::$application['feeds_links_keep_maximum'];
+        /** @var int */
         $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
 
         $count_users = models\User::count();
@@ -122,9 +135,9 @@ class System
     /**
      * Output a secured key.
      *
-     * @return \Minz\Response
+     * @response 200
      */
-    public function secret()
+    public function secret(): Response
     {
         $secret = \Minz\Random::hex(128);
         return Response::text(200, $secret);

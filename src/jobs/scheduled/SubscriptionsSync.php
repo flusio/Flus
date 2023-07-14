@@ -17,7 +17,7 @@ class SubscriptionsSync extends \Minz\Job
     /**
      * Install the job in database.
      */
-    public static function install()
+    public static function install(): void
     {
         $subscriptions_sync_job = new self();
 
@@ -32,17 +32,19 @@ class SubscriptionsSync extends \Minz\Job
         $this->frequency = '+4 hours';
     }
 
-    public function perform()
+    public function perform(): void
     {
         $app_conf = \Minz\Configuration::$application;
         if (!$app_conf['subscriptions_enabled']) {
             return;
         }
 
-        $subscriptions_service = new services\Subscriptions(
-            $app_conf['subscriptions_host'],
-            $app_conf['subscriptions_private_key']
-        );
+        /** @var string */
+        $host = $app_conf['subscriptions_host'];
+        /** @var string */
+        $private_key = $app_conf['subscriptions_private_key'];
+
+        $subscriptions_service = new services\Subscriptions($host, $private_key);
 
         // First, make sure all users have a subscription account. It might
         // happen if a previous request failed.

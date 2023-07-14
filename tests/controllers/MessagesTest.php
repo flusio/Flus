@@ -14,9 +14,10 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testEditRendersCorrectly()
+    public function testEditRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $content = $this->fake('sentence');
         $message = MessageFactory::create([
             'user_id' => $user->id,
@@ -33,8 +34,9 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $content);
     }
 
-    public function testEditRedirectsToLoginIfNotConnected()
+    public function testEditRedirectsToLoginIfNotConnected(): void
     {
+        /** @var string */
         $content = $this->fake('sentence');
         $message = MessageFactory::create([
             'content' => $content,
@@ -48,9 +50,10 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
     }
 
-    public function testEditFailsIfMessageDoesNotExist()
+    public function testEditFailsIfMessageDoesNotExist(): void
     {
         $user = $this->login();
+        /** @var string */
         $content = $this->fake('sentence');
         $message = MessageFactory::create([
             'user_id' => $user->id,
@@ -65,10 +68,11 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfUserHasNoAccessToMessage()
+    public function testEditFailsIfUserHasNoAccessToMessage(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $content = $this->fake('sentence');
         $message = MessageFactory::create([
             'user_id' => $other_user->id,
@@ -83,10 +87,12 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateChangesContentAndRedirect()
+    public function testUpdateChangesContentAndRedirect(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_content = $this->fakeUnique('sentence');
+        /** @var string */
         $new_content = $this->fakeUnique('sentence');
         $message = MessageFactory::create([
             'user_id' => $user->id,
@@ -105,12 +111,14 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_content, $message->content);
     }
 
-    public function testUpdateRedirectsToLoginIfNotConnected()
+    public function testUpdateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
+        /** @var string */
         $old_content = $this->fakeUnique('sentence');
+        /** @var string */
         $new_content = $this->fakeUnique('sentence');
         $message = MessageFactory::create([
             'user_id' => $user->id,
@@ -129,10 +137,12 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_content, $message->content);
     }
 
-    public function testUpdateFailsIfMessageDoesNotExist()
+    public function testUpdateFailsIfMessageDoesNotExist(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_content = $this->fakeUnique('sentence');
+        /** @var string */
         $new_content = $this->fakeUnique('sentence');
         $message = MessageFactory::create([
             'user_id' => $user->id,
@@ -151,11 +161,13 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_content, $message->content);
     }
 
-    public function testUpdateFailsIfUserHasNoAccessToMessage()
+    public function testUpdateFailsIfUserHasNoAccessToMessage(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $old_content = $this->fakeUnique('sentence');
+        /** @var string */
         $new_content = $this->fakeUnique('sentence');
         $message = MessageFactory::create([
             'user_id' => $other_user->id,
@@ -174,9 +186,10 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_content, $message->content);
     }
 
-    public function testUpdateFailsIfContentIsEmpty()
+    public function testUpdateFailsIfContentIsEmpty(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_content = $this->fakeUnique('sentence');
         $new_content = '';
         $message = MessageFactory::create([
@@ -199,10 +212,12 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_content, $message->content);
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
+        /** @var string */
         $old_content = $this->fakeUnique('sentence');
+        /** @var string */
         $new_content = $this->fakeUnique('sentence');
         $message = MessageFactory::create([
             'user_id' => $user->id,
@@ -222,7 +237,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_content, $message->content);
     }
 
-    public function testDeleteDeletesMessageAndRedirects()
+    public function testDeleteDeletesMessageAndRedirects(): void
     {
         $user = $this->login();
         $message = MessageFactory::create([
@@ -237,7 +252,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Message::exists($message->id));
     }
 
-    public function testDeleteRedirectsToRedirectToIfGiven()
+    public function testDeleteRedirectsToRedirectToIfGiven(): void
     {
         $user = $this->login();
         $message = MessageFactory::create([
@@ -253,7 +268,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Message::exists($message->id));
     }
 
-    public function testDeleteRedirectsIfNotConnected()
+    public function testDeleteRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -270,7 +285,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Message::exists($message->id));
     }
 
-    public function testDeleteFailsIfMessageIsNotOwned()
+    public function testDeleteFailsIfMessageIsNotOwned(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -286,7 +301,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Message::exists($message->id));
     }
 
-    public function testDeleteFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $message = MessageFactory::create([

@@ -13,7 +13,7 @@ class Date
      *
      * @param string $string_date
      *
-     * @return \DateTimeImmutable|boolean
+     * @return \DateTimeImmutable|false
      *     Return the parsed DateTimeImmutable, or false if the string cannot be parsed.
      */
     public static function parse($string_date)

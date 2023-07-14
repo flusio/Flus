@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 
@@ -21,7 +22,7 @@ class Pages
      *
      * @return \Minz\Response
      */
-    public function home()
+    public function home(): Response
     {
         if (auth\CurrentUser::get()) {
             return Response::redirect('news');
@@ -40,7 +41,7 @@ class Pages
      *
      * @return \Minz\Response
      */
-    public function terms()
+    public function terms(): Response
     {
         $app_path = \Minz\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
@@ -59,7 +60,7 @@ class Pages
      *
      * @response 200
      */
-    public function addons($request)
+    public function addons(Request $request): Response
     {
         return Response::ok('pages/addons.phtml');
     }
@@ -69,7 +70,7 @@ class Pages
      *
      * @response 200
      */
-    public function about()
+    public function about(): Response
     {
         return Response::ok('pages/about.phtml', [
             'version' => \Minz\Configuration::$application['version'],
@@ -81,7 +82,7 @@ class Pages
      *
      * @response 200
      */
-    public function robots()
+    public function robots(): Response
     {
         return Response::ok('pages/robots.txt');
     }
@@ -91,7 +92,7 @@ class Pages
      *
      * @response 200
      */
-    public function webmanifest()
+    public function webmanifest(): Response
     {
         $response = Response::ok('pages/webmanifest.json');
         $response->setHeader('Content-Type', 'application/manifest+json');

@@ -17,8 +17,9 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
+        /** @var string */
         $username = $this->fake('username');
         $user = UserFactory::create([
             'username' => $username,
@@ -31,7 +32,7 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $username);
     }
 
-    public function testShowDisplaysAnEditButtonIfConnectedToItsOwnPage()
+    public function testShowDisplaysAnEditButtonIfConnectedToItsOwnPage(): void
     {
         $user = $this->login();
 
@@ -42,12 +43,14 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Edit');
     }
 
-    public function testShowDisplaysPublicCollectionsWithLinks()
+    public function testShowDisplaysPublicCollectionsWithLinks(): void
     {
+        /** @var string */
         $username = $this->fake('username');
         $user = UserFactory::create([
             'username' => $username,
         ]);
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -69,9 +72,10 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testShowDisplaysLastSharedLinks()
+    public function testShowDisplaysLastSharedLinks(): void
     {
         $user = UserFactory::create();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -93,13 +97,15 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $link_title);
     }
 
-    public function testShowDisplaysSharedCollections()
+    public function testShowDisplaysSharedCollections(): void
     {
         $current_user = $this->login();
+        /** @var string */
         $username = $this->fake('username');
         $user = UserFactory::create([
             'username' => $username,
         ]);
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -125,12 +131,14 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $collection_name);
     }
 
-    public function testShowDoesNotDisplayPublicCollectionsWithOnlyHiddenLinks()
+    public function testShowDoesNotDisplayPublicCollectionsWithOnlyHiddenLinks(): void
     {
+        /** @var string */
         $username = $this->fake('username');
         $user = UserFactory::create([
             'username' => $username,
         ]);
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -152,12 +160,14 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
-    public function testShowDoesNotDisplayPrivateCollectionsWithLinks()
+    public function testShowDoesNotDisplayPrivateCollectionsWithLinks(): void
     {
+        /** @var string */
         $username = $this->fake('username');
         $user = UserFactory::create([
             'username' => $username,
         ]);
+        /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
@@ -179,14 +189,14 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
-    public function testShowFailsIfUserDoesNotExist()
+    public function testShowFailsIfUserDoesNotExist(): void
     {
         $response = $this->appRun('GET', '/p/not-an-id');
 
         $this->assertResponseCode($response, 404);
     }
 
-    public function testShowFailsIfUserIsSupportUser()
+    public function testShowFailsIfUserIsSupportUser(): void
     {
         $support_user = models\User::supportUser();
 

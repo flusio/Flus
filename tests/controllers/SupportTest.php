@@ -14,7 +14,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $user = $this->login();
 
@@ -25,7 +25,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'support/show.phtml');
     }
 
-    public function testShowRendersSuccessParagraphIfMessageSent()
+    public function testShowRendersSuccessParagraphIfMessageSent(): void
     {
         $user = $this->login();
         \Minz\Flash::set('message_sent', true);
@@ -35,18 +35,21 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Your message has been sent');
     }
 
-    public function testShowRedirectsIfNotConnected()
+    public function testShowRedirectsIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/support');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fsupport');
     }
 
-    public function testCreateSendsTwoEmails()
+    public function testCreateSendsTwoEmails(): void
     {
         $support_user = models\User::supportUser();
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $subject = $this->fake('sentence');
+        /** @var string */
         $message = $this->fake('paragraph');
         $user = $this->login([
             'email' => $email,
@@ -62,21 +65,26 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(2);
         $email_1 = \Minz\Tests\Mailer::take(0);
+        $this->assertNotNull($email_1);
         $this->assertEmailSubject($email_1, "[flusio] Contact: {$subject}");
         $this->assertEmailContainsTo($email_1, $support_user->email);
         $this->assertEmailContainsReplyTo($email_1, $email);
         $this->assertEmailContainsBody($email_1, $message);
         $email_2 = \Minz\Tests\Mailer::take(1);
+        $this->assertNotNull($email_2);
         $this->assertEmailSubject($email_2, '[flusio] Your message has been sent');
         $this->assertEmailContainsTo($email_2, $email);
         $this->assertEmailContainsBody($email_2, 'Someone will reply to you as soon as possible');
     }
 
-    public function testCreateRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected(): void
     {
         $support_user = models\User::supportUser();
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $subject = $this->fake('sentence');
+        /** @var string */
         $message = $this->fake('paragraph');
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -94,11 +102,14 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $support_user = models\User::supportUser();
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $subject = $this->fake('sentence');
+        /** @var string */
         $message = $this->fake('paragraph');
         $user = $this->login([
             'email' => $email,
@@ -117,11 +128,13 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testCreateFailsIfSubjectIsEmpty()
+    public function testCreateFailsIfSubjectIsEmpty(): void
     {
         $support_user = models\User::supportUser();
+        /** @var string */
         $email = $this->fake('email');
         $subject = '';
+        /** @var string */
         $message = $this->fake('paragraph');
         $user = $this->login([
             'email' => $email,
@@ -140,10 +153,12 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testCreateFailsIfMessageIsEmpty()
+    public function testCreateFailsIfMessageIsEmpty(): void
     {
         $support_user = models\User::supportUser();
+        /** @var string */
         $email = $this->fake('email');
+        /** @var string */
         $subject = $this->fake('sentence');
         $message = '';
         $user = $this->login([

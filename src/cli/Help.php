@@ -13,7 +13,10 @@ use flusio\models;
  */
 class Help
 {
-    public function show()
+    /**
+     * @response 200
+     */
+    public function show(): Response
     {
         $topic_label_max_size = models\Topic::LABEL_MAX_SIZE;
 

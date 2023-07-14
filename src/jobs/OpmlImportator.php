@@ -19,10 +19,7 @@ class OpmlImportator extends \Minz\Job
         $this->queue = 'importators';
     }
 
-    /**
-     * @param string $importation_id
-     */
-    public function perform($importation_id)
+    public function perform(int $importation_id): void
     {
         $importation = models\Importation::find($importation_id);
         if (!$importation) {
@@ -31,7 +28,12 @@ class OpmlImportator extends \Minz\Job
         }
 
         $opml_filepath = $importation->options['opml_filepath'];
-        $user = models\User::find($importation->user_id);
+
+        if (!is_string($opml_filepath)) {
+            throw new \Exception("Importation #{$importation_id} OPML filepath is invalid");
+        }
+
+        $user = $importation->user();
 
         try {
             $opml_importator_service = new services\OpmlImportator($opml_filepath);

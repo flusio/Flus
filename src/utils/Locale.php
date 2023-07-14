@@ -13,45 +13,42 @@ class Locale
     public const DEFAULT_LOCALE = 'en_GB';
     public const DEFAULT_LOCALE_NAME = 'English';
 
-    /** @var boolean */
-    private static $is_initialized = false;
+    private static bool $is_initialized = false;
 
     /**
      * Return the path to the locales.
-     *
-     * @return string
      */
-    public static function localesPath()
+    public static function localesPath(): string
     {
         return \Minz\Configuration::$app_path . '/locales';
     }
 
     /**
      * Return the current locale.
-     *
-     * @return string
      */
-    public static function currentLocale()
+    public static function currentLocale(): string
     {
         if (!self::$is_initialized) {
             self::init();
         }
 
+        $locale = setlocale(LC_ALL, '0');
+        if ($locale === false) {
+            return self::DEFAULT_LOCALE;
+        }
+
         // we want to remove the '.UTF8' part
-        return substr(setlocale(LC_ALL, 0), 0, -5);
+        return substr($locale, 0, -5);
     }
 
     /**
-     * Set current locale.
+     * Set current locale and return the new locale or false if the locale doesn't exist.
      *
      * The locale must be available on the system.
      *
      * @see https://www.php.net/manual/en/function.setlocale.php
-     *
-     * @param string|boolean $locale Return the new locale or false if the
-     *                               locale doesn't exist.
      */
-    public static function setCurrentLocale($locale)
+    public static function setCurrentLocale(string $locale): string|false
     {
         if (!self::$is_initialized) {
             self::init();
@@ -65,25 +62,41 @@ class Locale
      * folder. Keys are the locales and values are their human-readable
      * translations.
      *
-     * @return string[]
+     * @return array<string, string>
      */
-    public static function availableLocales()
+    public static function availableLocales(): array
     {
         $locales = [
             self::DEFAULT_LOCALE => self::DEFAULT_LOCALE_NAME,
         ];
 
         $locales_path = self::localesPath();
-        foreach (scandir($locales_path) as $locale_dir) {
+        $locales_dirs = scandir($locales_path);
+
+        if ($locales_dirs === false) {
+            return $locales;
+        }
+
+        foreach ($locales_dirs as $locale_dir) {
             if ($locale_dir[0] === '.') {
                 continue;
             }
 
             $locale_metadata_path = $locales_path . '/' . $locale_dir . '/metadata.json';
+
             $raw_metadata = file_get_contents($locale_metadata_path);
-            $metadata = json_decode($raw_metadata);
-            $locales[$locale_dir] = $metadata->name;
+            if ($raw_metadata === false) {
+                continue;
+            }
+
+            /** @var mixed[] */
+            $metadata = json_decode($raw_metadata, true);
+
+            if (isset($metadata['name']) && is_string($metadata['name'])) {
+                $locales[$locale_dir] = $metadata['name'];
+            }
         }
+
         return $locales;
     }
 
@@ -91,13 +104,8 @@ class Locale
      * Return the most adequate locale based on the http Accept-Language header.
      *
      * @see https://tools.ietf.org/html/rfc7231#section-5.3.5
-     *
-     * @param string $http_accept_language an Accept-Language header value as
-     *                                     defined in RFC7231
-     *
-     * @return string
      */
-    public static function best($http_accept_language)
+    public static function best(string $http_accept_language): string
     {
         if (!$http_accept_language) {
             return self::DEFAULT_LOCALE;
@@ -163,7 +171,7 @@ class Locale
     /**
      * Set domain path for localization.
      */
-    private static function init()
+    private static function init(): void
     {
         bindtextdomain('main', self::localesPath());
         textdomain('main');

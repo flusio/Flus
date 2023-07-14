@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\my;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -22,7 +23,7 @@ class Account
      * @response 200
      *    On success
      */
-    public function show()
+    public function show(): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -31,13 +32,18 @@ class Account
             ]);
         }
 
-        $app_conf = \Minz\Configuration::$application;
-        if ($app_conf['subscriptions_enabled'] && $user->isSubscriptionOverdue()) {
-            $service = new services\Subscriptions(
-                $app_conf['subscriptions_host'],
-                $app_conf['subscriptions_private_key']
-            );
+        /** @var bool */
+        $sub_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        if ($sub_enabled && $user->subscription_account_id && $user->isSubscriptionOverdue()) {
+            /** @var string */
+            $sub_host = \Minz\Configuration::$application['subscriptions_host'];
+            /** @var string */
+            $sub_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
+
+            $service = new services\Subscriptions($sub_host, $sub_private_key);
+
             $expired_at = $service->expiredAt($user->subscription_account_id);
+
             if ($expired_at) {
                 $user->subscription_expired_at = $expired_at;
                 $user->save();
@@ -46,9 +52,11 @@ class Account
             }
         }
 
+        $pocket_enabled = isset(\Minz\Configuration::$application['pocket_consumer_key']);
+
         return Response::ok('my/account/show.phtml', [
-            'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
-            'pocket_enabled' => isset($app_conf['pocket_consumer_key']),
+            'subscriptions_enabled' => $sub_enabled,
+            'pocket_enabled' => $pocket_enabled,
         ]);
     }
 
@@ -60,7 +68,7 @@ class Account
      * @response 200
      *     On success
      */
-    public function deletion()
+    public function deletion(): Response
     {
         if (!auth\CurrentUser::get()) {
             return Response::redirect('login', [
@@ -86,11 +94,11 @@ class Account
      * @response 302 /login
      *     On success
      */
-    public function delete($request)
+    public function delete(Request $request): Response
     {
         $current_user = auth\CurrentUser::get();
-        $password = $request->param('password');
-        $csrf = $request->param('csrf');
+        $password = $request->param('password', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$current_user) {
             return Response::redirect('login', [
@@ -120,6 +128,7 @@ class Account
         }
 
         if ($current_user->avatar_filename) {
+            /** @var string */
             $media_path = \Minz\Configuration::$application['media_path'];
             $filename = $current_user->avatar_filename;
             $subpath = utils\Belt::filenameToSubpath($filename);

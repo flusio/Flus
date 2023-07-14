@@ -16,9 +16,11 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
+        /** @var string */
         $topic_label = $this->fakeUnique('sentence');
+        /** @var string */
         $collection_name = $this->fakeUnique('sentence');
         $topic = TopicFactory::create([
             'label' => $topic_label,
@@ -48,9 +50,11 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'topics/show.phtml');
     }
 
-    public function testShowDoesNotListCollectionsIfEmpty()
+    public function testShowDoesNotListCollectionsIfEmpty(): void
     {
+        /** @var string */
         $topic_label = $this->fakeUnique('sentence');
+        /** @var string */
         $collection_name = $this->fakeUnique('sentence');
         $topic = TopicFactory::create([
             'label' => $topic_label,
@@ -70,9 +74,11 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
-    public function testShowDoesNotListCollectionsIfOnlyHiddenLinks()
+    public function testShowDoesNotListCollectionsIfOnlyHiddenLinks(): void
     {
+        /** @var string */
         $topic_label = $this->fakeUnique('sentence');
+        /** @var string */
         $collection_name = $this->fakeUnique('sentence');
         $topic = TopicFactory::create([
             'label' => $topic_label,
@@ -99,9 +105,11 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
-    public function testShowDoesNotListCollectionsIfPrivate()
+    public function testShowDoesNotListCollectionsIfPrivate(): void
     {
+        /** @var string */
         $topic_label = $this->fakeUnique('sentence');
+        /** @var string */
         $collection_name = $this->fakeUnique('sentence');
         $topic = TopicFactory::create([
             'label' => $topic_label,
@@ -128,9 +136,11 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
-    public function testShowRedirectsIfPageIsOutOfBound()
+    public function testShowRedirectsIfPageIsOutOfBound(): void
     {
+        /** @var string */
         $topic_label = $this->fakeUnique('sentence');
+        /** @var string */
         $collection_name = $this->fakeUnique('sentence');
         $topic = TopicFactory::create([
             'label' => $topic_label,
@@ -159,7 +169,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/topics/{$topic->id}?page=1");
     }
 
-    public function testShowFailsIfTopicDoesNotExist()
+    public function testShowFailsIfTopicDoesNotExist(): void
     {
         $response = $this->appRun('GET', '/topics/not-an-id');
 

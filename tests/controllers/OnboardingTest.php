@@ -13,7 +13,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $this->login();
 
@@ -26,7 +26,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider validStepsProvider
      */
-    public function testShowAcceptsAStep($step)
+    public function testShowAcceptsAStep(int $step): void
     {
         $this->login();
 
@@ -38,7 +38,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, "onboarding/step{$step}.phtml");
     }
 
-    public function testShowRedirectsIfNotConnected()
+    public function testShowRedirectsIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/onboarding');
 
@@ -48,7 +48,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider invalidStepsProvider
      */
-    public function testShowFailsIfStepIsOutOfBound($step)
+    public function testShowFailsIfStepIsOutOfBound(int $step): void
     {
         $this->login();
 
@@ -59,7 +59,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testUpdateLocaleChangeLocaleAndRedirect()
+    public function testUpdateLocaleChangeLocaleAndRedirect(): void
     {
         $user = $this->login([
             'locale' => 'en_GB',
@@ -75,7 +75,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fr_FR', $user->locale);
     }
 
-    public function testUpdateLocaleRedirectsIfNotConnected()
+    public function testUpdateLocaleRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -92,7 +92,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en_GB', $user->locale);
     }
 
-    public function testUpdateLocaleRedirectsIfCsrfIsInvalid()
+    public function testUpdateLocaleRedirectsIfCsrfIsInvalid(): void
     {
         $user = $this->login([
             'locale' => 'en_GB',
@@ -108,7 +108,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en_GB', $user->locale);
     }
 
-    public function testUpdateLocaleRedirectsIfLocaleIsInvalid()
+    public function testUpdateLocaleRedirectsIfLocaleIsInvalid(): void
     {
         $user = $this->login([
             'locale' => 'en_GB',
@@ -124,7 +124,10 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en_GB', $user->locale);
     }
 
-    public function validStepsProvider()
+    /**
+     * @return array<array{int}>
+     */
+    public function validStepsProvider(): array
     {
         return [
             [1],
@@ -136,14 +139,21 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function invalidStepsProvider()
+    /**
+     * @return array<array{int}>
+     */
+    public function invalidStepsProvider(): array
     {
         $faker = \Faker\Factory::create();
+        /** @var int */
+        $number_before = $faker->numberBetween(-42, -1);
+        /** @var int */
+        $number_after = $faker->numberBetween(8, 42);
         return [
-            [$faker->numberBetween(-42, -1)],
+            [$number_before],
             [0],
             [7],
-            [$faker->numberBetween(8, 42)],
+            [$number_after],
         ];
     }
 }

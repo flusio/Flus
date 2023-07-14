@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\links;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -26,18 +27,18 @@ class Repairing
      * @response 200
      *     On success.
      */
-    public function new($request)
+    public function new(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id');
-        $from = $request->param('from');
+        $link_id = $request->param('id', '');
+        $from = $request->param('from', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $link = models\Link::find($link_id);
-        $can_update = auth\LinksAccess::canUpdate($user, $link);
+        $can_update = $link && auth\LinksAccess::canUpdate($user, $link);
         if (!$can_update) {
             return Response::notFound('not_found.phtml');
         }
@@ -69,21 +70,21 @@ class Repairing
      * @response 302 :from
      *     On success.
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id');
+        $link_id = $request->param('id', '');
         $url = $request->param('url', '');
         $force_sync = $request->paramBoolean('force_sync', false);
-        $csrf = $request->param('csrf');
-        $from = $request->param('from');
+        $csrf = $request->param('csrf', '');
+        $from = $request->param('from', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $link = models\Link::find($link_id);
-        $can_update = auth\LinksAccess::canUpdate($user, $link);
+        $can_update = $link && auth\LinksAccess::canUpdate($user, $link);
         if (!$can_update) {
             return Response::notFound('not_found.phtml');
         }

@@ -32,9 +32,9 @@ trait CollectionToTopic
 
         $database = Database::get();
         $statement = $database->prepare($sql);
-        $result = $statement->execute($values);
+        $statement->execute($values);
 
-        return $database->lastInsertId();
+        return true;
     }
 
     /**

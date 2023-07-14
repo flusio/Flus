@@ -8,7 +8,7 @@ class AssetsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowReturnsTheAsset()
+    public function testShowReturnsTheAsset(): void
     {
         $response = $this->appRun('GET', '/src/assets/javascripts/application.js');
 
@@ -18,7 +18,7 @@ class AssetsTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testShowReturns404IfFileDoesntExist()
+    public function testShowReturns404IfFileDoesntExist(): void
     {
         $response = $this->appRun('GET', '/src/assets/dont_exist.js');
 
@@ -26,7 +26,7 @@ class AssetsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseEquals($response, 'This file doesn’t exist.');
     }
 
-    public function testShowReturns404IfFileCannotBeAccessed()
+    public function testShowReturns404IfFileCannotBeAccessed(): void
     {
         $response = $this->appRun('GET', '/src/assets/../Application.php');
 

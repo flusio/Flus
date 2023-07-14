@@ -5,36 +5,29 @@ namespace flusio\utils;
 /**
  * Facilitates pagination manipulations.
  *
+ * @phpstan-type PaginationPage array{'type': 'number', 'number': int} | array{'type': 'ellipsis'}
+ *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class Pagination
 {
-    /** @var integer */
-    private $number_elements;
+    private int $number_elements;
 
-    /** @var integer */
-    private $number_per_page;
+    private int $number_per_page;
 
-    /** @var integer */
-    private $total_pages;
+    private int $total_pages;
 
-    /** @var integer */
-    private $current_page;
+    private int $current_page;
 
-    /** @var integer */
-    private $current_offset;
+    private int $current_offset;
 
     /**
      * Initialize a pagination object.
      *
      * current_page is bounded between 1 and total_pages.
-     *
-     * @param integer $number_elements
-     * @param integer $number_per_page
-     * @param integer $current_page
      */
-    public function __construct($number_elements, $number_per_page, $current_page)
+    public function __construct(int $number_elements, int $number_per_page, int $current_page)
     {
         $this->number_elements = $number_elements;
         if ($number_per_page < 1) {
@@ -53,82 +46,64 @@ class Pagination
         $this->current_offset = $this->number_per_page * ($this->current_page - 1);
     }
 
-    /**
-     * @return integer
-     */
-    public function numberElements()
+    public function numberElements(): int
     {
         return $this->number_elements;
     }
 
-    /**
-     * @return integer
-     */
-    public function totalPages()
+    public function totalPages(): int
     {
         return $this->total_pages;
     }
 
-    /**
-     * @return integer
-     */
-    public function currentPage()
+    public function currentPage(): int
     {
         return $this->current_page;
     }
 
-    /**
-     * @return integer
-     */
-    public function currentOffset()
+    public function currentOffset(): int
     {
         return $this->current_offset;
     }
 
-    /**
-     * @return integer
-     */
-    public function numberPerPage()
+    public function numberPerPage(): int
     {
         return $this->number_per_page;
     }
 
     /**
-     * @return boolean True if there is more than one page.
+     * Return true if there is more than one page.
      */
-    public function mustPaginate()
+    public function mustPaginate(): bool
     {
         return $this->total_pages > 1;
     }
 
     /**
-     * @return boolean True if current_page is equal to 1
+     * Return true if current_page is equal to 1
      */
-    public function isCurrentFirstPage()
+    public function isCurrentFirstPage(): bool
     {
         return $this->current_page === 1;
     }
 
     /**
-     * @return boolean True if current_page is equal to total_pages
+     * Return true if current_page is equal to total_pages
      */
-    public function isCurrentLastPage()
+    public function isCurrentLastPage(): bool
     {
         return $this->current_page === $this->total_pages;
     }
 
     /**
-     * @return boolean True if the given page is equal to current_page
+     * Return true if the given page is equal to current_page
      */
-    public function isPageCurrent($page_number)
+    public function isPageCurrent(int $page_number): bool
     {
         return $this->current_page === $page_number;
     }
 
-    /**
-     * @return integer The page before current_page
-     */
-    public function previousPageNumber()
+    public function previousPageNumber(): int
     {
         if ($this->isCurrentFirstPage()) {
             return $this->current_page;
@@ -137,10 +112,7 @@ class Pagination
         }
     }
 
-    /**
-     * @return integer The page after current_page
-     */
-    public function nextPageNumber()
+    public function nextPageNumber(): int
     {
         if ($this->isCurrentLastPage()) {
             return $this->current_page;
@@ -163,19 +135,18 @@ class Pagination
      *
      * For instance, for a total_pages = 7 and current_page = 4:
      *
-     * ```php
-     * [
-     *     ['type' => 'number', 'number' => 1],
-     *     ['type' => 'ellipsis'],
-     *     ['type' => 'number', 'number' => 4],
-     *     ['type' => 'number', 'number' => 5],
-     *     ['type' => 'ellipsis'],
-     *     ['type' => 'number', 'number' => 7],
-     * ]
+     *     [
+     *         ['type' => 'number', 'number' => 1],
+     *         ['type' => 'ellipsis'],
+     *         ['type' => 'number', 'number' => 4],
+     *         ['type' => 'number', 'number' => 5],
+     *         ['type' => 'ellipsis'],
+     *         ['type' => 'number', 'number' => 7],
+     *     ]
      *
-     * @yield array
+     * @return \Generator<int, PaginationPage, void, void>
      */
-    public function pages()
+    public function pages(): \Generator
     {
         if ($this->total_pages <= 5) {
             foreach (range(1, $this->total_pages) as $page_number) {

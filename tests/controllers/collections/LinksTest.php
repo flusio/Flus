@@ -19,15 +19,18 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function emptyCachePath()
+    public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             unlink($file);
         }
     }
 
-    public function testNewRendersCorrectly()
+    public function testNewRendersCorrectly(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -44,7 +47,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'New link');
     }
 
-    public function testNewWorksIfCollectionIsSharedWithWriteAccess()
+    public function testNewWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -67,7 +70,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'New link');
     }
 
-    public function testNewRedirectsIfNotConnected()
+    public function testNewRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -83,7 +86,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
     }
 
-    public function testNewFailsIfCollectionDoesNotExist()
+    public function testNewFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -98,7 +101,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testNewFailsIfCollectionIsNotShared()
+    public function testNewFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -114,7 +117,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testNewFailsIfCollectionIsSharedWithReadAccess()
+    public function testNewFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -135,7 +138,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testCreateCreatesLinkAndRedirects()
+    public function testCreateCreatesLinkAndRedirects(): void
     {
         $user = $this->login();
         $url = 'https://flus.fr/carnet/';
@@ -160,6 +163,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, $from);
         $link = models\Link::take();
+        $this->assertNotNull($link);
         $this->assertSame($url, $link->url);
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
@@ -168,7 +172,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link->is_hidden);
     }
 
-    public function testCreateAllowsToCreateHiddenLinks()
+    public function testCreateAllowsToCreateHiddenLinks(): void
     {
         $user = $this->login();
         $url = 'https://flus.fr/carnet/';
@@ -188,10 +192,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, $from);
         $link = models\Link::take();
+        $this->assertNotNull($link);
         $this->assertTrue($link->is_hidden);
     }
 
-    public function testCreateWorksIfCollectionIsSharedWithWriteAccess()
+    public function testCreateWorksIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -216,12 +221,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, $from);
         $link = models\Link::take();
+        $this->assertNotNull($link);
         $this->assertSame($url, $link->url);
         $this->assertSame($user->id, $link->user_id);
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
-    public function testCreateDoesNotCreateLinkIfItExists()
+    public function testCreateDoesNotCreateLinkIfItExists(): void
     {
         $user = $this->login();
         $url = 'https://flus.fr/carnet/';
@@ -252,7 +258,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
 
-    public function testCreateRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
             'csrf' => 'a token',
@@ -276,7 +282,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $url = 'https://flus.fr/carnet/';
@@ -298,7 +304,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfUrlIsInvalid()
+    public function testCreateFailsIfUrlIsInvalid(): void
     {
         $user = $this->login();
         $url = 'an invalid URL';
@@ -318,7 +324,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfUrlIsMissing()
+    public function testCreateFailsIfUrlIsMissing(): void
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
@@ -336,7 +342,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfCollectionDoesNotExist()
+    public function testCreateFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
         $url = 'https://flus.fr/carnet/';
@@ -357,7 +363,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfCollectionIsNotShared()
+    public function testCreateFailsIfCollectionIsNotShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -379,7 +385,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
     }
 
-    public function testCreateFailsIfCollectionIsSharedWithReadAccess()
+    public function testCreateFailsIfCollectionIsSharedWithReadAccess(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();

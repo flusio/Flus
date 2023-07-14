@@ -16,7 +16,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testCreateMakesUserFollowingAndRedirects()
+    public function testCreateMakesUserFollowingAndRedirects(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
@@ -37,11 +37,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, $from);
         $this->assertSame(1, models\FollowedCollection::count());
         $followed_collection = models\FollowedCollection::take();
+        $this->assertNotNull($followed_collection);
         $this->assertSame($user->id, $followed_collection->user_id);
         $this->assertSame($collection->id, $followed_collection->collection_id);
     }
 
-    public function testCreateWorksIfCollectionIsShared()
+    public function testCreateWorksIfCollectionIsShared(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
@@ -64,11 +65,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, $from);
         $this->assertSame(1, models\FollowedCollection::count());
         $followed_collection = models\FollowedCollection::take();
+        $this->assertNotNull($followed_collection);
         $this->assertSame($user->id, $followed_collection->user_id);
         $this->assertSame($collection->id, $followed_collection->collection_id);
     }
 
-    public function testCreateRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected(): void
     {
         $owner = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -88,7 +90,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
-    public function testCreateFailsIfCollectionDoesNotExist()
+    public function testCreateFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
@@ -108,7 +110,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
-    public function testCreateFailsIfUserHasNoAccess()
+    public function testCreateFailsIfUserHasNoAccess(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
@@ -128,7 +130,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
@@ -152,7 +154,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
-    public function testDeleteMakesUserUnfollowingAndRedirects()
+    public function testDeleteMakesUserUnfollowingAndRedirects(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
@@ -176,7 +178,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
-    public function testDeleteWorksIfCollectionIsShared()
+    public function testDeleteWorksIfCollectionIsShared(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
@@ -204,7 +206,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
-    public function testDeleteWorksIfUserHasNoAccessToTheCollection()
+    public function testDeleteWorksIfUserHasNoAccessToTheCollection(): void
     {
         // This can happen if a user follow a collection, but its owner change
         // the visibility.
@@ -230,7 +232,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
-    public function testDeleteRedirectsIfNotConnected()
+    public function testDeleteRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $owner = UserFactory::create();
@@ -255,7 +257,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\FollowedCollection::count());
     }
 
-    public function testDeleteFailsIfCollectionDoesNotExist()
+    public function testDeleteFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();
@@ -279,7 +281,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\FollowedCollection::count());
     }
 
-    public function testDeleteFailsIfCsrfIsInvalid()
+    public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $owner = UserFactory::create();

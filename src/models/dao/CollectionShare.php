@@ -19,10 +19,14 @@ trait CollectionShare
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
      *     properties.
-     * @param array $options
-     *     Custom options to filter collections. Possible options are:
-     *     - access_type (string, either 'any' [default], 'read' or 'write'),
-     *       indicates with which access the collections must have been shared.
+     * @param array{
+     *     'access_type'?: 'any'|'read'|'write',
+     * } $options
+     *
+     * Description of the options:
+     *
+     * - access_type (default is 'any'): indicates with which access the
+     *   collections must have been shared.
      *
      * @return self[]
      */

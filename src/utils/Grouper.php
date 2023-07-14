@@ -11,12 +11,16 @@ class Grouper
     /**
      * Group objects by the given property.
      *
-     * @param object $items
-     * @param string $property
+     * @template T of object
+     *
+     * @param T[] $items
+     *
+     * @return array<string|int, T[]>
      */
-    public static function groupBy($items, $property)
+    public static function groupBy(array $items, string $property): array
     {
         $grouped_items = [];
+
         foreach ($items as $item) {
             $grouped_items[$item->$property][] = $item;
         }

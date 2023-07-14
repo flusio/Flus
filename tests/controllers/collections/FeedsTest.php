@@ -13,9 +13,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
+        /** @var string */
         $link_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -39,6 +41,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'Content-Type' => 'application/xml',
             'X-Content-Type-Options' => 'nosniff',
         ]);
+        $this->assertInstanceOf(\Minz\Response::class, $response);
         $feed = \SpiderBits\feeds\Feed::fromText($response->render());
         $link_alternate = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $this->assertSame(1, count($feed->entries));
@@ -47,8 +50,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_url, $feed->entries[0]->links['via']);
     }
 
-    public function testShowRendersAlternateLinksAsOriginalUrlWithDirectTrue()
+    public function testShowRendersAlternateLinksAsOriginalUrlWithDirectTrue(): void
     {
+        /** @var string */
         $link_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -68,6 +72,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
+        $this->assertInstanceOf(\Minz\Response::class, $response);
         $feed = \SpiderBits\feeds\Feed::fromText($response->render());
         $link_replies = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $this->assertSame(1, count($feed->entries));
@@ -75,8 +80,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_replies, $feed->entries[0]->links['replies']);
     }
 
-    public function testShowDoesNotRenderHiddenLinks()
+    public function testShowDoesNotRenderHiddenLinks(): void
     {
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -97,8 +103,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_title);
     }
 
-    public function testShowRedirectsToOriginIfCollectionIsFeed()
+    public function testShowRedirectsToOriginIfCollectionIsFeed(): void
     {
+        /** @var string */
         $feed_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'type' => 'feed',
@@ -111,8 +118,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 301, $feed_url);
     }
 
-    public function testShowFailsIfCollectionIsInaccessible()
+    public function testShowFailsIfCollectionIsInaccessible(): void
     {
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'type' => 'collection',
@@ -132,7 +140,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testAliasRedirectsToShow()
+    public function testAliasRedirectsToShow(): void
     {
         $collection = CollectionFactory::create();
 
@@ -141,7 +149,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 301, "/collections/{$collection->id}/feed.atom.xml");
     }
 
-    public function testAliasRedirectsWithQuery()
+    public function testAliasRedirectsWithQuery(): void
     {
         $collection = CollectionFactory::create();
         $_SERVER['QUERY_STRING'] = 'direct=true';

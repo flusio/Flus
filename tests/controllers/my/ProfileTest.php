@@ -14,7 +14,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testEditRendersCorrectly()
+    public function testEditRendersCorrectly(): void
     {
         $this->login();
 
@@ -26,7 +26,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'my/profile/edit.phtml');
     }
 
-    public function testEditRedirectsToLoginIfUserNotConnected()
+    public function testEditRedirectsToLoginIfUserNotConnected(): void
     {
         $response = $this->appRun('GET', '/my/profile', [
             'from' => \Minz\Url::for('edit profile'),
@@ -35,9 +35,11 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
     }
 
-    public function testUpdateSavesTheUserAndRedirects()
+    public function testUpdateSavesTheUserAndRedirects(): void
     {
+        /** @var string */
         $old_username = $this->fakeUnique('username');
+        /** @var string */
         $new_username = $this->fakeUnique('username');
         $user = $this->login([
             'username' => $old_username,
@@ -50,13 +52,15 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/my/profile');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($new_username, $user->username);
     }
 
-    public function testUpdateRedirectsToLoginIfUserNotConnected()
+    public function testUpdateRedirectsToLoginIfUserNotConnected(): void
     {
+        /** @var string */
         $old_username = $this->fakeUnique('username');
+        /** @var string */
         $new_username = $this->fakeUnique('username');
         $user = UserFactory::create([
             'username' => $old_username,
@@ -73,9 +77,11 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_username, $user->username);
     }
 
-    public function testUpdateFailsIfCsrfIsInvalid()
+    public function testUpdateFailsIfCsrfIsInvalid(): void
     {
+        /** @var string */
         $old_username = $this->fakeUnique('username');
+        /** @var string */
         $new_username = $this->fakeUnique('username');
         $user = $this->login([
             'username' => $old_username,
@@ -89,13 +95,15 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($old_username, $user->username);
     }
 
-    public function testUpdateFailsIfUsernameIsTooLong()
+    public function testUpdateFailsIfUsernameIsTooLong(): void
     {
+        /** @var string */
         $old_username = $this->fakeUnique('username');
+        /** @var string */
         $new_username = $this->fake('sentence', 50, false);
         $user = $this->login([
             'username' => $old_username,
@@ -109,13 +117,15 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The username must be less than 50 characters');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($old_username, $user->username);
     }
 
-    public function testUpdateFailsIfUsernameContainsAnAt()
+    public function testUpdateFailsIfUsernameContainsAnAt(): void
     {
+        /** @var string */
         $old_username = $this->fakeUnique('username');
+        /** @var string */
         $new_username = $this->fakeUnique('username') . '@';
         $user = $this->login([
             'username' => $old_username,
@@ -129,12 +139,13 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The username cannot contain the character ‘@’');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($old_username, $user->username);
     }
 
-    public function testUpdateFailsIfUsernameIsMissing()
+    public function testUpdateFailsIfUsernameIsMissing(): void
     {
+        /** @var string */
         $old_username = $this->fakeUnique('username');
         $user = $this->login([
             'username' => $old_username,
@@ -147,7 +158,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The username is required');
-        $user = auth\CurrentUser::reload();
+        $user = $user->reload();
         $this->assertSame($old_username, $user->username);
     }
 }

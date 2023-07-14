@@ -8,23 +8,21 @@ use flusio\utils;
 /**
  * Service to import feeds from an OPML file.
  *
+ * @phpstan-import-type Outline from \SpiderBits\Opml
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class OpmlImportator
 {
-    /** @var \SpiderBits\Opml */
-    private $opml;
+    private \SpiderBits\Opml $opml;
 
     /**
-     * @param string $opml_filepath
-     *     The path to the OPML file to import
-     *
      * @throws OpmlImportatorError
      *     If the file cannot be read, or if it cannot be parsed as an OPML
      *     file.
      */
-    public function __construct($opml_filepath)
+    public function __construct(string $opml_filepath)
     {
         $opml_as_string = @file_get_contents($opml_filepath);
 
@@ -43,10 +41,8 @@ class OpmlImportator
 
     /**
      * Perform the importation.
-     *
-     * @param \flusio\models\User $user
      */
-    public function importForUser($user)
+    public function importForUser(models\User $user): void
     {
         $support_user = models\User::supportUser();
 
@@ -106,12 +102,12 @@ class OpmlImportator
     /**
      * Return the list of xmlUrl by group name of OPML outlines and their children.
      *
-     * @param array $outlines
+     * @param Outline[] $outlines
      * @param string $parent_group_name
      *
-     * @return string[]
+     * @return array<string, string[]>
      */
-    private function loadUrlsFromOutlines($outlines, $parent_group_name)
+    private function loadUrlsFromOutlines(array $outlines, string $parent_group_name): array
     {
         $urls_by_groups = [];
 
@@ -140,31 +136,34 @@ class OpmlImportator
     /**
      * Return the list of xmlUrl of an OPML outline and its children.
      *
-     * @param array $outline
+     * @param Outline $outline
      * @param string $parent_group_name
      *
-     * @return string[]
+     * @return array<string, string[]>
      */
-    private function loadUrlsFromOutline($outline, $parent_group_name)
+    private function loadUrlsFromOutline(array $outline, string $parent_group_name): array
     {
         $urls_by_groups = [];
 
         if ($outline['outlines']) {
             // The outline has children, it's probably a new group
-            if (!empty($outline['text'])) {
-                $group_name = trim($outline['text']);
+            $text = $outline['text'] ?? '';
+            if (is_string($text) && !empty($text)) {
+                $group_name = trim($text);
             } else {
                 $group_name = $parent_group_name;
             }
 
-            $urls_by_groups = $this->loadUrlsFromOutlines($outline['outlines'], $group_name);
+            /** @var Outline[] */
+            $outlines = $outline['outlines'];
+            $urls_by_groups = $this->loadUrlsFromOutlines($outlines, $group_name);
         }
 
         if (!isset($urls_by_groups[$parent_group_name])) {
             $urls_by_groups[$parent_group_name] = [];
         }
 
-        if (isset($outline['xmlUrl'])) {
+        if (is_string($outline['xmlUrl'] ?? null)) {
             // The xmlUrl means it's a feed URL: we add it to the array
             $urls_by_groups[$parent_group_name][] = $outline['xmlUrl'];
         }

@@ -2,19 +2,21 @@
 
 namespace flusio\auth;
 
+use flusio\models;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class GroupsAccess
 {
-    public static function canUpdate($user, $group)
+    public static function canUpdate(?models\User $user, models\Group $group): bool
     {
-        return $user && $group && $user->id === $group->user_id;
+        return $user && $user->id === $group->user_id;
     }
 
-    public static function canDelete($user, $group)
+    public static function canDelete(?models\User $user, models\Group $group): bool
     {
-        return $user && $group && $user->id === $group->user_id;
+        return $user && $user->id === $group->user_id;
     }
 }

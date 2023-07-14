@@ -7,7 +7,7 @@ class LocaleTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider englishAcceptLanguage
      */
-    public function testBestWithEnglish($accept_language)
+    public function testBestWithEnglish(string $accept_language): void
     {
         $locale = Locale::best($accept_language);
 
@@ -17,14 +17,17 @@ class LocaleTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider frenchAcceptLanguage
      */
-    public function testBestWithFrench($accept_language)
+    public function testBestWithFrench(string $accept_language): void
     {
         $locale = Locale::best($accept_language);
 
         $this->assertSame('fr_FR', $locale);
     }
 
-    public function englishAcceptLanguage()
+    /**
+     * @return array<array{string}>
+     */
+    public function englishAcceptLanguage(): array
     {
         return [
             [''],
@@ -37,7 +40,10 @@ class LocaleTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function frenchAcceptLanguage()
+    /**
+     * @return array<array{string}>
+     */
+    public function frenchAcceptLanguage(): array
     {
         return [
             ['fr'],

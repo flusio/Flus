@@ -7,7 +7,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testRunDoesntFail()
+    public function testRunDoesntFail(): void
     {
         $request = new \Minz\Request('CLI', '/');
 

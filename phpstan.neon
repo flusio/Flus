@@ -1,0 +1,15 @@
+parameters:
+    level: 9
+    paths:
+        - lib
+        - public/index.php
+        - src
+        - tests
+
+    excludePaths:
+        analyseAndScan:
+            - src/views/*
+
+        analyse:
+            - lib/Minz/*
+            - lib/Parsedown/*

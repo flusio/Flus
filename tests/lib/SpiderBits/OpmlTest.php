@@ -4,27 +4,30 @@ namespace SpiderBits;
 
 class OpmlTest extends \PHPUnit\Framework\TestCase
 {
-    public static $examples_path;
+    public static string $examples_path;
 
     /**
      * @beforeClass
      */
-    public static function setExamplesPath()
+    public static function setExamplesPath(): void
     {
         $app_path = \Minz\Configuration::$app_path;
         self::$examples_path = $app_path . '/tests/lib/SpiderBits/examples';
     }
 
-    public function testFromTextWithFreshRss()
+    public function testFromTextWithFreshRss(): void
     {
         $opml_as_string = file_get_contents(self::$examples_path . '/freshrss.opml.xml');
+
+        $this->assertNotFalse($opml_as_string);
 
         $opml = Opml::fromText($opml_as_string);
 
         $this->assertSame(1, count($opml->outlines));
         $this->assertSame('Blogs', $opml->outlines[0]['text']);
-        $this->assertSame(3, count($opml->outlines[0]['outlines']));
         $outlines = $opml->outlines[0]['outlines'];
+        $this->assertIsArray($outlines);
+        $this->assertSame(3, count($outlines));
         $this->assertSame('Framablog', $outlines[0]['text']);
         $this->assertSame('rss', $outlines[0]['type']);
         $this->assertSame('https://framablog.org/feed/', $outlines[0]['xmlUrl']);
@@ -44,16 +47,19 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $outlines[2]['description']);
     }
 
-    public function testFromTextWithFeedly()
+    public function testFromTextWithFeedly(): void
     {
         $opml_as_string = file_get_contents(self::$examples_path . '/feedly.opml.xml');
+
+        $this->assertNotFalse($opml_as_string);
 
         $opml = Opml::fromText($opml_as_string);
 
         $this->assertSame(1, count($opml->outlines));
         $this->assertSame('Blogs', $opml->outlines[0]['text']);
-        $this->assertSame(3, count($opml->outlines[0]['outlines']));
         $outlines = $opml->outlines[0]['outlines'];
+        $this->assertIsArray($outlines);
+        $this->assertSame(3, count($outlines));
         $this->assertSame('Framablog', $outlines[0]['text']);
         $this->assertSame('Framablog', $outlines[0]['title']);
         $this->assertSame('rss', $outlines[0]['type']);
@@ -73,7 +79,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://marienfressinaud.fr/', $outlines[2]['htmlUrl']);
     }
 
-    public function testFromTextHandlesMissingHead()
+    public function testFromTextHandlesMissingHead(): void
     {
         $string = <<<OPML
             <?xml version="1.0" encoding="UTF-8"?>
@@ -90,7 +96,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('carnet de flus', $opml->outlines[0]['text']);
     }
 
-    public function testFromTextIgnoresNotOutlineElements()
+    public function testFromTextIgnoresNotOutlineElements(): void
     {
         $string = <<<OPML
             <?xml version="1.0" encoding="UTF-8"?>
@@ -109,7 +115,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertEmpty($opml->outlines);
     }
 
-    public function testFromTextFailsWithEmptyString()
+    public function testFromTextFailsWithEmptyString(): void
     {
         $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('The string must not be empty.');
@@ -117,7 +123,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         Opml::fromText('');
     }
 
-    public function testFromTextFailsWithNotXmlString()
+    public function testFromTextFailsWithNotXmlString(): void
     {
         $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('Can’t parse the given string.');
@@ -125,7 +131,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         Opml::fromText('not xml');
     }
 
-    public function testFromTextFailsWithNotSupportedStandard()
+    public function testFromTextFailsWithNotSupportedStandard(): void
     {
         $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('Given string is not OPML.');

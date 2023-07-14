@@ -14,13 +14,8 @@ class Belt
      * Strip a substring if string starts with.
      *
      * If the string doesn’t start with substring, the string is returned.
-     *
-     * @param string $string The string to look into
-     * @param string $substring The string to strip
-     *
-     * @return string
      */
-    public static function stripsStart($string, $substring)
+    public static function stripsStart(string $string, string $substring): string
     {
         if (str_starts_with($string, $substring)) {
             return substr($string, strlen($substring));
@@ -33,13 +28,8 @@ class Belt
      * Strip a substring if string ends with.
      *
      * If the string doesn’t end with substring, the string is returned.
-     *
-     * @param string $string The string to look into
-     * @param string $substring The string to strip
-     *
-     * @return string
      */
-    public static function stripsEnd($string, $substring)
+    public static function stripsEnd(string $string, string $substring): string
     {
         if (str_ends_with($string, $substring)) {
             return substr($string, 0, -strlen($substring));
@@ -50,13 +40,8 @@ class Belt
 
     /**
      * Keep only the first $size characters of a string.
-     *
-     * @param string $string The string to shorten
-     * @param integer $size The max size of the final string
-     *
-     * @return string
      */
-    public static function cut($string, $size)
+    public static function cut(string $string, int $size): string
     {
         return mb_substr($string, 0, $size);
     }
@@ -64,12 +49,8 @@ class Belt
     /**
      * Extract the host from a URL. If the host starts with "www.", they are
      * removed from the host.
-     *
-     * @param string $url
-     *
-     * @return string
      */
-    public static function host($url)
+    public static function host(string $url): string
     {
         if (!$url) {
             return '';
@@ -81,7 +62,9 @@ class Belt
         }
 
         $host = idn_to_utf8($parsed_url['host'], IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
-        if (str_starts_with($host, 'www.')) {
+        if ($host === false) {
+            return $url;
+        } elseif (str_starts_with($host, 'www.')) {
             return substr($host, 4);
         } else {
             return $host;
@@ -90,18 +73,20 @@ class Belt
 
     /**
      * Remove the scheme (http:// or https://) from a URL.
-     *
-     * @param string $url
-     *
-     * @return string
      */
-    public static function removeScheme($url)
+    public static function removeScheme(string $url): string
     {
         if (!$url) {
             return '';
         }
 
-        return preg_replace('#^https?://(.*)#', '\1', $url);
+        $url_no_scheme = preg_replace('#^https?://(.*)#', '\1', $url);
+
+        if ($url_no_scheme === null) {
+            return $url;
+        }
+
+        return $url_no_scheme;
     }
 
     /**
@@ -109,12 +94,8 @@ class Belt
      *
      * The name must contain at least 9 characters, excluding the dots. The
      * function returns an empty string otherwise.
-     *
-     * @param string $name
-     *
-     * @return string
      */
-    public static function filenameToSubpath($filename)
+    public static function filenameToSubpath(string $filename): string
     {
         $name = str_replace('.', '', $filename);
         if (strlen($name) < 9) {

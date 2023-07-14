@@ -26,7 +26,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function setRouterToUrl()
+    public static function setRouterToUrl(): void
     {
         $router = \flusio\Router::load();
         \Minz\Engine::init($router);
@@ -35,14 +35,14 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     /**
      * @before
      */
-    public function setExportationsPath()
+    public function setExportationsPath(): void
     {
         $tmp_path = \Minz\Configuration::$tmp_path;
-        $this->exportations_path = $tmp_path . '/' . md5(rand());
+        $this->exportations_path = $tmp_path . '/' . md5((string) rand());
         @mkdir($this->exportations_path, 0777, true);
     }
 
-    public function testConstructFailsIfPathDoesNotExist()
+    public function testConstructFailsIfPathDoesNotExist(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('The path does not exist');
@@ -50,21 +50,21 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         new DataExporter('not a path');
     }
 
-    public function testConstructFailsIfPathIsNotADirectory()
+    public function testConstructFailsIfPathIsNotADirectory(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('The path is not a directory');
 
         $tmp_path = \Minz\Configuration::$tmp_path;
-        $path = $tmp_path . '/' . md5(rand());
+        $path = $tmp_path . '/' . md5((string) rand());
         touch($path);
 
         new DataExporter($path);
     }
 
-    public function testExportReturnsTheDataFilepath()
+    public function testExportReturnsTheDataFilepath(): void
     {
-        $this->freeze($this->fake('dateTime'));
+        $this->freeze();
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
 
@@ -75,7 +75,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_filepath, $filepath);
     }
 
-    public function testExportCreatesTheDataFile()
+    public function testExportCreatesTheDataFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
@@ -85,7 +85,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($filepath));
     }
 
-    public function testExportCreatesMetadata()
+    public function testExportCreatesMetadata(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
@@ -94,15 +94,19 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
         $metadata_content = $this->zipGetContents($filepath, 'metadata.json');
         $metadata = json_decode($metadata_content, true);
+        $this->assertIsArray($metadata);
         $this->assertSame(\Minz\Configuration::$application['user_agent'], $metadata['generator']);
     }
 
-    public function testExportCreatesOpmlFile()
+    public function testExportCreatesOpmlFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
+        /** @var string */
         $group_name = $this->fake('sentence');
+        /** @var string */
         $feed_url = $this->fake('url');
+        /** @var string */
         $feed_site_url = $this->fake('url');
         $group = GroupFactory::create([
             'name' => $group_name,
@@ -158,6 +162,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('/flusio/filters/strict', $opml->outlines[1]['category']);
 
         $this->assertSame($group_name, $opml->outlines[2]['text']);
+        $this->assertIsArray($opml->outlines[2]['outlines']);
         $this->assertSame(1, count($opml->outlines[2]['outlines']));
 
         $collection_3_url_feed = \Minz\Url::absoluteFor('collection feed', [
@@ -170,12 +175,14 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection_3_url, $group_outlines[0]['htmlUrl']);
     }
 
-    public function testExportCreatesBookmarksFile()
+    public function testExportCreatesBookmarksFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
         $bookmarks = $user->bookmarks();
+        /** @var string */
         $link_url = $this->fake('url');
+        /** @var \DateTimeImmutable */
         $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -196,15 +203,17 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
-        $this->assertSame($published_at->getTimestamp(), $entry->published_at->getTimestamp());
+        $this->assertEquals($published_at, $entry->published_at);
     }
 
-    public function testExportCreatesNewsFile()
+    public function testExportCreatesNewsFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
         $news = $user->news();
+        /** @var string */
         $link_url = $this->fake('url');
+        /** @var \DateTimeImmutable */
         $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -225,15 +234,17 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
-        $this->assertSame($published_at->getTimestamp(), $entry->published_at->getTimestamp());
+        $this->assertEquals($published_at, $entry->published_at);
     }
 
-    public function testExportCreatesReadFile()
+    public function testExportCreatesReadFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
         $read_list = $user->readList();
+        /** @var string */
         $link_url = $this->fake('url');
+        /** @var \DateTimeImmutable */
         $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -254,15 +265,17 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
-        $this->assertSame($published_at->getTimestamp(), $entry->published_at->getTimestamp());
+        $this->assertEquals($published_at, $entry->published_at);
     }
 
-    public function testExportCreatesNeverFile()
+    public function testExportCreatesNeverFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
         $never_list = $user->neverList();
+        /** @var string */
         $link_url = $this->fake('url');
+        /** @var \DateTimeImmutable */
         $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -283,18 +296,24 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
-        $this->assertSame($published_at->getTimestamp(), $entry->published_at->getTimestamp());
+        $this->assertEquals($published_at, $entry->published_at);
     }
 
-    public function testExportCreatesCollectionsFiles()
+    public function testExportCreatesCollectionsFiles(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
+        /** @var string */
         $topic_label = $this->fake('word');
+        /** @var string */
         $group_name = $this->fake('word');
+        /** @var string */
         $collection_name = $this->fake('sentence');
+        /** @var string */
         $collection_description = $this->fake('sentence');
+        /** @var string */
         $link_url = $this->fake('url');
+        /** @var \DateTimeImmutable */
         $published_at = $this->fake('dateTime');
         $topic = TopicFactory::create([
             'label' => $topic_label,
@@ -341,16 +360,18 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
-        $this->assertSame($published_at->getTimestamp(), $entry->published_at->getTimestamp());
+        $this->assertEquals($published_at, $entry->published_at);
         $this->assertSame(1, count($entry->categories));
         $this->assertSame('flusio:hidden', $entry->categories['flusio:hidden']);
     }
 
-    public function testExportCreatesMessagesFiles()
+    public function testExportCreatesMessagesFiles(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
+        /** @var string */
         $link_url = $this->fake('url');
+        /** @var string */
         $message_content = $this->fake('paragraph');
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -378,7 +399,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($message_content, trim($entry->content));
     }
 
-    public function testExportFailsIfUserDoesNotExist()
+    public function testExportFailsIfUserDoesNotExist(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('The user does not exist');
@@ -388,15 +409,17 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $data_exporter->export('not an id');
     }
 
-    private function zipGetContents($zip_filepath, $filename)
+    private function zipGetContents(string $zip_filepath, string $filename): string
     {
         $zip_archive = new \ZipArchive();
         $zip_archive->open($zip_filepath);
         $zip_archive->extractTo($this->exportations_path);
         $filepath = $this->exportations_path . '/' . $filename;
 
-        $this->assertTrue(file_exists($filepath), "File {$filename} does not exist in the ZIP archive.");
+        $content = @file_get_contents($filepath);
 
-        return @file_get_contents($filepath);
+        $this->assertNotFalse($content, "File {$filename} does not exist in the ZIP archive.");
+
+        return $content;
     }
 }

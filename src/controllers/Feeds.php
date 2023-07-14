@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -21,7 +22,7 @@ class Feeds
      *     if the user is not connected
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $user = auth\CurrentUser::get();
 
@@ -30,7 +31,7 @@ class Feeds
         }
 
         $groups = models\Group::listBy(['user_id' => $user->id]);
-        utils\Sorter::localeSort($groups, 'name');
+        $groups = utils\Sorter::localeSort($groups, 'name');
 
         // Counting links is optimized for feeds, so we list the collections in
         // two steps.
@@ -41,7 +42,7 @@ class Feeds
             'type' => 'collection',
         ]);
         $collections = array_merge($collections, $feeds);
-        utils\Sorter::localeSort($collections, 'name');
+        $collections = utils\Sorter::localeSort($collections, 'name');
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
         return Response::ok('feeds/index.phtml', [
@@ -59,7 +60,7 @@ class Feeds
      * @response 302 /login?redirect_to=:from if not connected
      * @response 200
      */
-    public function new($request)
+    public function new(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         $from = $request->param('from', \Minz\Url::for('feeds'));
@@ -85,12 +86,12 @@ class Feeds
      * @response 400 if CSRF or the url is invalid
      * @response 302 /collections/:id on success
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         $url = $request->param('url', '');
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         $url = \SpiderBits\Url::sanitize($url);
         $support_user = models\User::supportUser();
@@ -169,9 +170,10 @@ class Feeds
      *
      * @response 302 /collections/:id
      */
-    public function whatIsNew()
+    public function whatIsNew(): Response
     {
         $support_user = models\User::supportUser();
+        /** @var string */
         $feed_url = \Minz\Configuration::$application['feed_what_is_new'];
 
         $feed = models\Collection::findBy([
@@ -197,7 +199,7 @@ class Feeds
      *
      * @response 200
      */
-    public function xsl($request)
+    public function xsl(Request $request): Response
     {
         return Response::ok('feeds/feeds.xsl.php');
     }

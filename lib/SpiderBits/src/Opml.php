@@ -5,24 +5,22 @@ namespace SpiderBits;
 /**
  * This class enables to parse OPML content.
  *
+ * @phpstan-type Outline array<string, mixed>
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class Opml
 {
-    /** @var array */
-    public $outlines = [];
+    /** @var Outline[] */
+    public array $outlines = [];
 
     /**
      * Return a new Opml object from text.
      *
-     * @param string $opml_as_string
-     *
      * @throws \DomainException if the string cannot be parsed.
-     *
-     * @return \SpiderBits\Opml
      */
-    public static function fromText($opml_as_string)
+    public static function fromText(string $opml_as_string): self
     {
         $opml_as_string = trim($opml_as_string);
         if (!$opml_as_string) {
@@ -39,9 +37,12 @@ class Opml
             throw new \DomainException('Given string is not OPML.');
         }
 
+        /** @var \DOMElement */
+        $body = $dom_document->getElementsByTagName('body')->item(0);
+
         $opml = new Opml();
 
-        foreach ($dom_document->getElementsByTagName('body')->item(0)->childNodes as $node) {
+        foreach ($body->childNodes as $node) {
             if (!($node instanceof \DOMElement)) {
                 continue; // @codeCoverageIgnore
             }
@@ -58,14 +59,11 @@ class Opml
 
     /**
      * Return whether a DOMDocument can be parsed as OPML or not.
-     *
-     * @param \DOMDocument $dom_document
-     *
-     * @return boolean
      */
-    public static function canHandle($dom_document)
+    public static function canHandle(\DOMDocument $dom_document): bool
     {
         return (
+            $dom_document->documentElement !== null &&
             $dom_document->documentElement->tagName === 'opml' &&
             $dom_document->getElementsByTagName('body')->count() === 1
         );
@@ -77,16 +75,18 @@ class Opml
      * It returns an array containing its attributes, plus a `outlines` entry
      * containing its children outlines if any.
      *
-     * @param \DOMElement $dom_element
-     *
-     * @return array
+     * @return Outline
      */
-    public static function parseOutline($dom_element)
+    public static function parseOutline(\DOMElement $dom_element): array
     {
         $outline = [];
 
         foreach ($dom_element->attributes as $attribute_name => $attribute) {
-            $outline[$attribute_name] = $attribute->value;
+            /** @var string */
+            $attribute_name = $attribute_name;
+            if ($attribute instanceof \DOMAttr) {
+                $outline[$attribute_name] = $attribute->value;
+            }
         }
 
         $outline_nodes = $dom_element->getElementsByTagName('outline');

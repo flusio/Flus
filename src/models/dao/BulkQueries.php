@@ -16,6 +16,8 @@ trait BulkQueries
      * No validation are done on this insert, you must be sure they are valid
      * values. Rows are not inserted (silently) on conflict.
      *
+     * @param object[] $models
+     *
      * @throws \PDOException if an error occurs during the insertion
      */
     public static function bulkInsert(array $models): bool
@@ -28,6 +30,10 @@ trait BulkQueries
         $models_columns = [];
         $models_values = [];
         foreach ($models as $model) {
+            if (!is_callable([$model, 'toDbValues'])) {
+                continue;
+            }
+
             $model_values = $model->toDbValues();
 
             $models_values = array_merge(
@@ -41,6 +47,9 @@ trait BulkQueries
         }
 
         $number_rows = count($models_values) / count($models_columns);
+
+        assert(is_int($number_rows));
+
         $row_as_question_marks = array_fill(0, count($models_columns), '?');
         $row_placeholder = implode(', ', $row_as_question_marks);
         $rows_as_question_marks = array_fill(0, $number_rows, "({$row_placeholder})");

@@ -14,9 +14,10 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
         $user = $this->login();
+        /** @var string */
         $link_title = $this->fake('words', 3, true);
         $bookmarks = $user->bookmarks();
         $link = LinkFactory::create([
@@ -35,14 +36,14 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $link_title);
     }
 
-    public function testIndexRedirectsIfNotConnected()
+    public function testIndexRedirectsIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/bookmarks');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
     }
 
-    public function testIndexRedirectsIfPageIsOutOfBound()
+    public function testIndexRedirectsIfPageIsOutOfBound(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();

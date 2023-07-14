@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\my;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -25,7 +26,7 @@ class Profile
      * @response 200
      *    On success
      */
-    public function edit($request)
+    public function edit(Request $request): Response
     {
         $from = $request->param('from', \Minz\Url::for('edit profile'));
 
@@ -54,11 +55,11 @@ class Profile
      * @response 302 :from
      *     On success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         $username = $request->param('username', '');
-        $csrf = $request->param('csrf');
-        $from = $request->param('from');
+        $csrf = $request->param('csrf', '');
+        $from = $request->param('from', '');
 
         $user = auth\CurrentUser::get();
         if (!$user) {

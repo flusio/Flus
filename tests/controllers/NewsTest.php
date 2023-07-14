@@ -18,10 +18,11 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRendersNewsLinksCorrectly()
+    public function testIndexRendersNewsLinksCorrectly(): void
     {
         $user = $this->login();
         $news = $user->news();
+        /** @var string */
         $title = $this->fakeUnique('sentence');
         $link = LinkFactory::create([
             'title' => $title,
@@ -39,7 +40,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $title);
     }
 
-    public function testIndexRendersIfViaBookmarks()
+    public function testIndexRendersIfViaBookmarks(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -60,13 +61,15 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, "via your <strong>{$bookmarks_anchor}</strong>");
     }
 
-    public function testIndexRendersIfViaFollowedCollections()
+    public function testIndexRendersIfViaFollowedCollections(): void
     {
         $user = $this->login();
+        /** @var string */
         $username = $this->fake('username');
         $other_user = UserFactory::create([
             'username' => $username,
         ]);
+        /** @var string */
         $collection_name = $this->fake('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -94,10 +97,11 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong> by {$profile_anchor}");
     }
 
-    public function testIndexRendersTipsIfNoNewsFlash()
+    public function testIndexRendersTipsIfNoNewsFlash(): void
     {
         $user = $this->login();
         $news = $user->news();
+        /** @var string */
         $title = $this->fakeUnique('sentence');
         $link = LinkFactory::create([
             'title' => $title,
@@ -111,10 +115,11 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'There are no relevant links to suggest at this time.');
     }
 
-    public function testIndexHidesAddToCollectionsIfUserHasNoCollections()
+    public function testIndexHidesAddToCollectionsIfUserHasNoCollections(): void
     {
         $user = $this->login();
         $news = $user->news();
+        /** @var string */
         $title = $this->fakeUnique('sentence');
         $link = LinkFactory::create([
             'title' => $title,
@@ -131,10 +136,11 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, 'Add to collections');
     }
 
-    public function testIndexRedirectsIfNotConnected()
+    public function testIndexRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $news = $user->news();
+        /** @var string */
         $title = $this->fakeUnique('sentence');
         $link = LinkFactory::create([
             'title' => $title,
@@ -150,11 +156,12 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
     }
 
-    public function testCreateSelectsLinksFromBookmarksIfTypeIsShort()
+    public function testCreateSelectsLinksFromBookmarksIfTypeIsShort(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
+        /** @var int */
         $duration = $this->fake('numberBetween', 0, 9);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -182,11 +189,12 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_news);
     }
 
-    public function testCreateSelectsLinksFromBookmarksIfTypeIsLong()
+    public function testCreateSelectsLinksFromBookmarksIfTypeIsLong(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
+        /** @var int */
         $duration = $this->fake('numberBetween', 10, 9000);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -214,13 +222,15 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_news);
     }
 
-    public function testCreateSelectsLinksFromFollowedIfTypeIsNewsfeed()
+    public function testCreateSelectsLinksFromFollowedIfTypeIsNewsfeed(): void
     {
         $user = $this->login();
         $news = $user->news();
         $other_user = UserFactory::create();
+        /** @var int */
         $days = $this->fake('numberBetween', 0, 2);
         $created_at = \Minz\Time::ago($days, 'days');
+        /** @var string */
         $link_url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -262,13 +272,15 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_news);
     }
 
-    public function testCreateMemorizesViaIfAleardySet()
+    public function testCreateMemorizesViaIfAleardySet(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
+        /** @var string */
         $url = $this->fake('url');
         $bookmarks = $user->bookmarks();
         $news = $user->news();
+        /** @var int */
         $duration = $this->fake('numberBetween', 0, 9);
         $via_link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -311,13 +323,15 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_news);
     }
 
-    public function testCreateDoesNotDuplicatesLink()
+    public function testCreateDoesNotDuplicatesLink(): void
     {
         $user = $this->login();
         $news = $user->news();
         $other_user = UserFactory::create();
+        /** @var int */
         $days = $this->fake('numberBetween', 0, 2);
         $created_at = \Minz\Time::ago($days, 'days');
+        /** @var string */
         $link_url = $this->fake('url');
         $owned_link = LinkFactory::create([
             'user_id' => $user->id,
@@ -353,15 +367,15 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $link_url,
         ]);
+        $this->assertNotNull($news_link);
         $this->assertSame($owned_link->id, $news_link->id);
-        $link_to_news = models\LinkToCollection::findBy([
+        $this->assertTrue(models\LinkToCollection::existsBy([
             'link_id' => $owned_link->id,
             'collection_id' => $news->id,
-        ]);
-        $this->assertNotNull($link_to_news);
+        ]));
     }
 
-    public function testCreateSetsFlashNoNewsIfNoSuggestions()
+    public function testCreateSetsFlashNoNewsIfNoSuggestions(): void
     {
         $user = $this->login();
 
@@ -372,11 +386,12 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(\Minz\Flash::get('no_news'));
     }
 
-    public function testCreateRedirectsIfNotConnected()
+    public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
+        /** @var int */
         $duration = $this->fake('numberBetween', 0, 9);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -404,11 +419,12 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link_to_news);
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
+        /** @var int */
         $duration = $this->fake('numberBetween', 0, 9);
         $link = LinkFactory::create([
             'user_id' => $user->id,

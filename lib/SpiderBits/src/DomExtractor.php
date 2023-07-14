@@ -12,12 +12,8 @@ class DomExtractor
 {
     /**
      * Return the title of the DOM document.
-     *
-     * @param \SpiderBits\Dom $dom
-     *
-     * @return string
      */
-    public static function title($dom)
+    public static function title(Dom $dom): string
     {
         $xpath_queries = [
             // Look for OpenGraph title first
@@ -48,12 +44,8 @@ class DomExtractor
 
     /**
      * Return the description of the DOM document.
-     *
-     * @param \SpiderBits\Dom $dom
-     *
-     * @return string
      */
-    public static function description($dom)
+    public static function description(Dom $dom): string
     {
         $xpath_queries = [
             // Look for OpenGraph first
@@ -83,12 +75,8 @@ class DomExtractor
 
     /**
      * Return the illustration URL of the DOM document.
-     *
-     * @param \SpiderBits\Dom $dom
-     *
-     * @return string
      */
-    public static function illustration($dom)
+    public static function illustration(Dom $dom): string
     {
         $xpath_queries = [
             // Look for OpenGraph first
@@ -114,12 +102,8 @@ class DomExtractor
 
     /**
      * Return the main content of the DOM document.
-     *
-     * @param \SpiderBits\Dom $dom
-     *
-     * @return string
      */
-    public static function content($dom)
+    public static function content(Dom $dom): string
     {
         $body = $dom->select('//body');
         if (!$body) {
@@ -143,11 +127,9 @@ class DomExtractor
     /**
      * Return the autodiscovered feeds URLs (RSS and Atom).
      *
-     * @param \SpiderBits\Dom $dom
-     *
      * @return string[]
      */
-    public static function feeds($dom)
+    public static function feeds(Dom $dom): array
     {
         $xpath_query = '//link[@type = "application/rss+xml" or @type = "application/atom+xml"]';
 
@@ -156,10 +138,19 @@ class DomExtractor
             return [];
         }
 
-        $feeds = [];
-        foreach ($nodes->list() as $node) {
-            $feeds[] = $node->getAttribute('href');
+        $nodes = $nodes->list();
+        if ($nodes === null) {
+            return [];
         }
+
+        $feeds = [];
+
+        foreach ($nodes as $node) {
+            if ($node instanceof \DOMElement) {
+                $feeds[] = $node->getAttribute('href');
+            }
+        }
+
         return $feeds;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace flusio\cli;
 
+use Minz\Request;
 use Minz\Response;
 
 /**
@@ -15,7 +16,7 @@ class Jobs extends \Minz\Job\Controller
      *
      * @response 200
      */
-    public function install($request)
+    public function install(Request $request): Response
     {
         $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
 

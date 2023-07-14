@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\importations;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
@@ -23,7 +24,7 @@ class Pocket
      *    If the user is not connected
      * @response 200
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
             return Response::notFound('not_found.phtml');
@@ -63,7 +64,7 @@ class Pocket
      * @response 302 /pocket
      *    On success
      */
-    public function import($request)
+    public function import(Request $request): Response
     {
         if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
             return Response::notFound('not_found.phtml');
@@ -94,7 +95,7 @@ class Pocket
             ]);
         }
 
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('importations/pocket/show.phtml', [
                 'importation' => null,
@@ -130,7 +131,7 @@ class Pocket
      *    If the CSRF token is invalid or if Pocket returns an error
      * @response 302 https://getpocket.com/auth/authorize?request_token=:token&redirect_url=:url
      */
-    public function requestAccess($request)
+    public function requestAccess(Request $request): Response
     {
         if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
             return Response::notFound('not_found.phtml');
@@ -143,12 +144,13 @@ class Pocket
             ]);
         }
 
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('pocket');
         }
 
+        /** @var string */
         $consumer_key = \Minz\Configuration::$application['pocket_consumer_key'];
         $pocket_service = new services\Pocket($consumer_key);
 
@@ -161,7 +163,7 @@ class Pocket
             $auth_url = $pocket_service->authorizationUrl($request_token, $redirect_uri);
             return Response::found($auth_url);
         } catch (services\PocketError $e) {
-            $user->pocket_error = $e->getCode();
+            $user->pocket_error = (string) $e->getCode();
             $user->save();
             \Minz\Flash::set('error', $e->getMessage());
             return Response::redirect('pocket');
@@ -179,7 +181,7 @@ class Pocket
      *    If the user has no request token
      * @response 200
      */
-    public function authorization($request)
+    public function authorization(Request $request): Response
     {
         if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
             return Response::notFound('not_found.phtml');
@@ -217,7 +219,7 @@ class Pocket
      *    If Pocket returns an error
      * @response 302 /pocket
      */
-    public function authorize($request)
+    public function authorize(Request $request): Response
     {
         if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
             return Response::notFound('not_found.phtml');
@@ -234,13 +236,14 @@ class Pocket
             return Response::redirect('pocket');
         }
 
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('importations/pocket/authorization.phtml', [
                 'error' => _('A security verification failed.'),
             ]);
         }
 
+        /** @var string */
         $consumer_key = \Minz\Configuration::$application['pocket_consumer_key'];
         $pocket_service = new services\Pocket($consumer_key);
 
@@ -253,7 +256,7 @@ class Pocket
             $user->save();
         } catch (services\PocketError $e) {
             $user->pocket_request_token = null;
-            $user->pocket_error = $e->getCode();
+            $user->pocket_error = (string) $e->getCode();
             $user->save();
             \Minz\Flash::set('error', $e->getMessage());
         }

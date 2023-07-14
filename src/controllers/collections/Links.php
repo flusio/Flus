@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\collections;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -29,19 +30,19 @@ class Links
      * @response 200
      *     On success
      */
-    public function new($request)
+    public function new(Request $request): Response
     {
         $user = auth\CurrentUser::get();
 
-        $collection_id = $request->param('id');
-        $from = $request->param('from');
+        $collection_id = $request->param('id', '');
+        $from = $request->param('from', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collection = models\Collection::find($collection_id);
-        if (!auth\CollectionsAccess::canAddLinks($user, $collection)) {
+        if (!$collection || !auth\CollectionsAccess::canAddLinks($user, $collection)) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -76,22 +77,22 @@ class Links
      * @response 302 :from
      *     On success
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
 
-        $collection_id = $request->param('id');
+        $collection_id = $request->param('id', '');
         $url = $request->param('url', '');
         $is_hidden = $request->paramBoolean('is_hidden', false);
-        $from = $request->param('from');
-        $csrf = $request->param('csrf');
+        $from = $request->param('from', '');
+        $csrf = $request->param('csrf', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
         $collection = models\Collection::find($collection_id);
-        if (!auth\CollectionsAccess::canAddLinks($user, $collection)) {
+        if (!$collection || !auth\CollectionsAccess::canAddLinks($user, $collection)) {
             return Response::notFound('not_found.phtml');
         }
 

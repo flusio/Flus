@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
@@ -21,7 +22,7 @@ class Showcases
      * @response 404 If the id doesn’t exist
      * @response 200 On success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $id = $request->param('id');
         if ($id === 'navigation') {

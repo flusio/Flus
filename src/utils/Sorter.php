@@ -11,15 +11,26 @@ class Sorter
     /**
      * Sort items by the given property, based on the current locale.
      *
-     * @param object[] $items
-     * @param string $property
+     * @template T of object
+     *
+     * @param T[] $items
+     *
+     * @return T[]
      */
-    public static function localeSort(&$items, $property)
+    public static function localeSort(array $items, string $property): array
     {
         $locale = Locale::currentLocale();
         $collator = new \Collator($locale);
         usort($items, function ($item1, $item2) use ($collator, $property) {
-            return $collator->compare($item1->$property, $item2->$property);
+            $comparison = $collator->compare($item1->$property, $item2->$property);
+
+            if ($comparison === false) {
+                $comparison = 0;
+            }
+
+            return $comparison;
         });
+
+        return $items;
     }
 }

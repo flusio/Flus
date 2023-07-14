@@ -13,24 +13,23 @@ class Users extends \Minz\Mailer
 {
     /**
      * Send an email to given user to validate its account.
-     *
-     * @param string $user_id
      */
-    public function sendAccountValidationEmail($user_id)
+    public function sendAccountValidationEmail(string $user_id): bool
     {
         $user = models\User::find($user_id);
         if (!$user) {
             \Minz\Log::warning("Can’t send validation email to user {$user_id} (not found)");
-            return;
+            return false;
         }
 
         if (!$user->validation_token) {
             \Minz\Log::warning("Can’t send validation email to user {$user_id} (no token)");
-            return;
+            return false;
         }
 
         utils\Locale::setCurrentLocale($user->locale);
 
+        /** @var string */
         $brand = \Minz\Configuration::$application['brand'];
         $subject = sprintf(_('[%s] Confirm your account'), $brand);
         $this->setBody(
@@ -46,24 +45,23 @@ class Users extends \Minz\Mailer
 
     /**
      * Send an email to the given user to reset its password.
-     *
-     * @param string $user_id
      */
-    public function sendResetPasswordEmail($user_id)
+    public function sendResetPasswordEmail(string $user_id): bool
     {
         $user = models\User::find($user_id);
         if (!$user) {
             \Minz\Log::warning("Can’t send reset email to user {$user_id} (not found)");
-            return;
+            return false;
         }
 
         if (!$user->reset_token) {
             \Minz\Log::warning("Can’t send reset email to user {$user_id} (no token)");
-            return;
+            return false;
         }
 
         utils\Locale::setCurrentLocale($user->locale);
 
+        /** @var string */
         $brand = \Minz\Configuration::$application['brand'];
         $subject = sprintf(_('[%s] Reset your password'), $brand);
         $this->setBody(

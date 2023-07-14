@@ -2,6 +2,7 @@
 
 namespace flusio\controllers\my;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
@@ -13,21 +14,21 @@ use flusio\services;
  */
 class Subscription
 {
-    /** @var boolean */
-    private $enabled;
+    private bool $enabled;
 
-    /** @var \flusio\services\Subscriptions */
-    private $service;
+    private services\Subscriptions $service;
 
     public function __construct()
     {
-        $app_conf = \Minz\Configuration::$application;
-        $this->enabled = $app_conf['subscriptions_enabled'];
+        /** @var bool */
+        $sub_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        $this->enabled = $sub_enabled;
         if ($this->enabled) {
-            $this->service = new services\Subscriptions(
-                $app_conf['subscriptions_host'],
-                $app_conf['subscriptions_private_key']
-            );
+            /** @var string */
+            $sub_host = \Minz\Configuration::$application['subscriptions_host'];
+            /** @var string */
+            $sub_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
+            $this->service = new services\Subscriptions($sub_host, $sub_private_key);
         }
     }
 
@@ -47,7 +48,7 @@ class Subscription
      * @response 200
      *     If the user aleady has an account, or on successful creation
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         if (!$this->enabled) {
             return Response::notFound('not_found.phtml');
@@ -68,7 +69,7 @@ class Subscription
             return Response::redirect('account');
         }
 
-        $csrf = $request->param('csrf');
+        $csrf = $request->param('csrf', '');
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::redirect('account');
@@ -104,7 +105,7 @@ class Subscription
      * @response 302 subscriptions_host/account
      *     On success
      */
-    public function redirect($request)
+    public function redirect(Request $request): Response
     {
         if (!$this->enabled) {
             return Response::notFound('not_found.phtml');

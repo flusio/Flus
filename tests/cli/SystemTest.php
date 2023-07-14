@@ -11,30 +11,24 @@ class SystemTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function loadApplication()
+    public static function loadApplication(): void
     {
         self::$application = new \flusio\cli\Application();
     }
 
-    public function testShow()
+    public function testShow(): void
     {
-        // We need to initialize the DB manually because of the uninstall hook
-        // (used for the other tests)
-        \Minz\Database::reset();
-        $database = \Minz\Database::get();
-        $schema = @file_get_contents(\Minz\Configuration::$schema_path);
-        $database->exec($schema);
-
         $response = $this->appRun('CLI', '/system');
 
         $this->assertResponseCode($response, 200);
     }
 
-    public function testSecret()
+    public function testSecret(): void
     {
         $response = $this->appRun('CLI', '/system/secret');
 
         $this->assertResponseCode($response, 200);
+        $this->assertInstanceOf(\Minz\Response::class, $response);
         $output = trim($response->render());
         $this->assertTrue(strlen($output) >= 128);
     }

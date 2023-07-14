@@ -4,20 +4,22 @@ namespace SpiderBits\feeds;
 
 class FeedTest extends \PHPUnit\Framework\TestCase
 {
-    public static $examples_path;
+    public static string $examples_path;
 
     /**
      * @beforeClass
      */
-    public static function setExamplesPath()
+    public static function setExamplesPath(): void
     {
         $app_path = \Minz\Configuration::$app_path;
         self::$examples_path = $app_path . '/tests/lib/SpiderBits/feeds/examples';
     }
 
-    public function testFromTextWithCarnetDeFlus()
+    public function testFromTextWithCarnetDeFlus(): void
     {
-        $feed_as_string = file_get_contents(self::$examples_path . '/carnet_de_flus.atom.xml');
+        $feed_as_string = @file_get_contents(self::$examples_path . '/carnet_de_flus.atom.xml');
+
+        $this->assertNotFalse($feed_as_string);
 
         $feed = Feed::fromText($feed_as_string);
 
@@ -43,14 +45,17 @@ class FeedTest extends \PHPUnit\Framework\TestCase
             $entry->content
         );
         $this->assertSame('html', $entry->content_type);
+        $this->assertNotNull($entry->published_at);
         $this->assertSame(1576319400, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
         $this->assertSame('97cb4fc2f008714c8e121583bde89b2c50780cec23ffbec33ef4c22383257d38', $feed->hash());
     }
 
-    public function testFromTextWithFramablog()
+    public function testFromTextWithFramablog(): void
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/framablog.rss.xml');
+
+        $this->assertNotFalse($feed_as_string);
 
         $feed = Feed::fromText($feed_as_string);
 
@@ -78,15 +83,18 @@ class FeedTest extends \PHPUnit\Framework\TestCase
             'https://framablog.org/2021/03/15/khryspresso-du-lundi-15-mars-2021/#respond',
             $entry->links['replies']
         );
+        $this->assertNotNull($entry->published_at);
         $this->assertSame(1615790521, $entry->published_at->getTimestamp());
         $this->assertSame(12, count($entry->categories));
         $this->assertSame('Claviers invités', $entry->categories['Claviers invités']);
         $this->assertSame('81f8ed21807a3b40293bb0c9dc14adf9bc5820370c99a768f2e61d176f0b9c67', $feed->hash());
     }
 
-    public function testFromTextWithLaverty()
+    public function testFromTextWithLaverty(): void
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/lavertygrenoble.rss.xml');
+
+        $this->assertNotFalse($feed_as_string);
 
         $feed = Feed::fromText($feed_as_string);
 
@@ -118,15 +126,18 @@ class FeedTest extends \PHPUnit\Framework\TestCase
             $entry->content
         );
         $this->assertSame('html', $entry->content_type);
+        $this->assertNotNull($entry->published_at);
         $this->assertSame(1614070752, $entry->published_at->getTimestamp());
         $this->assertSame(5, count($entry->categories));
         $this->assertSame('grenoble', $entry->categories['grenoble']);
         $this->assertSame('d4fb468a697843eacd24d83a3e416583f5467b449abf6b2aa87530373563fd25', $feed->hash());
     }
 
-    public function testFromTextWithVimeoSudWeb()
+    public function testFromTextWithVimeoSudWeb(): void
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/vimeo_sud_web.rss.xml');
+
+        $this->assertNotFalse($feed_as_string);
 
         $feed = Feed::fromText($feed_as_string);
 
@@ -145,14 +156,17 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://vimeo.com/329347268', $entry->link);
         $this->assertSame('', $entry->content);
         $this->assertSame('html', $entry->content_type);
+        $this->assertNotNull($entry->published_at);
         $this->assertSame(1554818042, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
         $this->assertSame('d5e41e5e21c195e35ad9f952775e67817f4485e5acf92de1ec77547f17339f7f', $feed->hash());
     }
 
-    public function testFromTextWithOatmeal()
+    public function testFromTextWithOatmeal(): void
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/oatmeal.rdf.xml');
+
+        $this->assertNotFalse($feed_as_string);
 
         $feed = Feed::fromText($feed_as_string);
 
@@ -175,14 +189,17 @@ class FeedTest extends \PHPUnit\Framework\TestCase
             $entry->content
         );
         $this->assertSame('html', $entry->content_type);
+        $this->assertNotNull($entry->published_at);
         $this->assertSame(1618335907, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
         $this->assertSame('38b063cb8e780063ca25310dc24694cf579b6fd74e0b492f2e96db98ee37b148', $feed->hash());
     }
 
-    public function testFromTextWithBlogBasilesimon()
+    public function testFromTextWithBlogBasilesimon(): void
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/blog_basilesimon.atom.xml');
+
+        $this->assertNotFalse($feed_as_string);
 
         $feed = Feed::fromText($feed_as_string);
 
@@ -207,14 +224,17 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://blog.basilesimon.fr/2021/05/14/weeknotes-33', $entry->id);
         $this->assertSame('', $entry->content);
         $this->assertSame('html', $entry->content_type);
+        $this->assertNotNull($entry->published_at);
         $this->assertSame(1620943200, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
         $this->assertSame('1f9c0b7063cfc9eb66d3e75cdc90ebc7e8b171c5f02ad6ab758e70efab0585f3', $feed->hash());
     }
 
-    public function testFromTextWithNotaBene()
+    public function testFromTextWithNotaBene(): void
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/nota-bene.rss.xml');
+
+        $this->assertNotFalse($feed_as_string);
 
         $feed = Feed::fromText($feed_as_string);
 
@@ -241,14 +261,17 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://nota-bene.org/J-ai-pris-le-large', $entry->id);
         $this->assertSame('', trim($entry->content));
         $this->assertSame('html', $entry->content_type);
+        $this->assertNotNull($entry->published_at);
         $this->assertSame(1663407060, $entry->published_at->getTimestamp());
         $this->assertSame(0, count($entry->categories));
         $this->assertSame('59232c6b8b0d545052a613f5e38a96d46db53e3be69733024ff7684cd6109b42', $feed->hash());
     }
 
-    public function testFromTextWithCommitstrip()
+    public function testFromTextWithCommitstrip(): void
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/commitstrip.rss.xml');
+
+        $this->assertNotFalse($feed_as_string);
 
         $feed = Feed::fromText($feed_as_string);
 
@@ -272,14 +295,17 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://www.commitstrip.com/2022/09/13/once-upon-a-teams-meeting/', $entry->id);
         $this->assertSame('', trim($entry->content));
         $this->assertSame('html', $entry->content_type);
+        $this->assertNotNull($entry->published_at);
         $this->assertSame(1663087290, $entry->published_at->getTimestamp());
         $this->assertSame(1, count($entry->categories));
         $this->assertSame('9e5d2601871593c916b93e205cf4c80ebe11aaa08a55a1b220f0f6b634f35a8e', $feed->hash());
     }
 
-    public function testFromTextWithDatesWithMilliseconds()
+    public function testFromTextWithDatesWithMilliseconds(): void
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/dates-with-milliseconds.atom.xml');
+
+        $this->assertNotFalse($feed_as_string);
 
         $feed = Feed::fromText($feed_as_string);
 
@@ -287,10 +313,11 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('A feed with milliseconds', $feed->title);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
+        $this->assertNotNull($entry->published_at);
         $this->assertSame(1633339200, $entry->published_at->getTimestamp());
     }
 
-    public function testFromTextWithEmptyRss()
+    public function testFromTextWithEmptyRss(): void
     {
         $feed = Feed::fromText('<rss></rss>');
 
@@ -303,7 +330,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('4a022608d595e9000d1f1be22a0a6a0763ad853d2417b1c8ea0ea12bd047bdcd', $feed->hash());
     }
 
-    public function testFromTextRecoversFromWrongEncoding()
+    public function testFromTextRecoversFromWrongEncoding(): void
     {
         // Create a XML string declaring encoding UTF-8
         $xml = <<<XML
@@ -325,7 +352,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('0ca0efc2ed6d8bfab90dbd3f42a473465c505b3d13b4da5975b0deed52c4b231', $feed->hash());
     }
 
-    public function testFromTextFailsWithEmptyString()
+    public function testFromTextFailsWithEmptyString(): void
     {
         $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('The string must not be empty.');
@@ -333,7 +360,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         Feed::fromText('');
     }
 
-    public function testFromTextFailsWithNotXmlString()
+    public function testFromTextFailsWithNotXmlString(): void
     {
         $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('Can’t parse the given string.');
@@ -341,7 +368,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         Feed::fromText('not xml');
     }
 
-    public function testFromTextFailsWithNotSupportedStandard()
+    public function testFromTextFailsWithNotSupportedStandard(): void
     {
         $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('Given string is not a supported standard.');
@@ -349,35 +376,35 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         Feed::fromText('<not><a><standard /></a></not>');
     }
 
-    public function testIsFeedWithRssReturnsTrue()
+    public function testIsFeedWithRssReturnsTrue(): void
     {
         $result = Feed::isFeed('<rss></rss>');
 
         $this->assertTrue($result);
     }
 
-    public function testIsFeedWithAtomReturnsTrue()
+    public function testIsFeedWithAtomReturnsTrue(): void
     {
         $result = Feed::isFeed('<feed></feed>');
 
         $this->assertTrue($result);
     }
 
-    public function testIsFeedWithEmptyStringReturnsFalse()
+    public function testIsFeedWithEmptyStringReturnsFalse(): void
     {
         $result = Feed::isFeed('');
 
         $this->assertFalse($result);
     }
 
-    public function testIsFeedWithNotXmlStringReturnsFalse()
+    public function testIsFeedWithNotXmlStringReturnsFalse(): void
     {
         $result = Feed::isFeed('not xml');
 
         $this->assertFalse($result);
     }
 
-    public function testIsFeedWithNotSupportedStandardReturnsFalse()
+    public function testIsFeedWithNotSupportedStandardReturnsFalse(): void
     {
         $result = Feed::isFeed('<not><a><standard /></a></not>');
 
@@ -387,7 +414,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider validContentType
      */
-    public function testIsFeedContentTypeWithValidContentTypeReturnsTrue($content_type)
+    public function testIsFeedContentTypeWithValidContentTypeReturnsTrue(string $content_type): void
     {
         $result = Feed::isFeedContentType($content_type);
 
@@ -397,14 +424,17 @@ class FeedTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider invalidContentType
      */
-    public function testIsFeedContentTypeWithInvalidContentTypeReturnsTrue($content_type)
+    public function testIsFeedContentTypeWithInvalidContentTypeReturnsTrue(string $content_type): void
     {
         $result = Feed::isFeedContentType($content_type);
 
         $this->assertFalse($result);
     }
 
-    public function validContentType()
+    /**
+     * @return array<array{string}>
+     */
+    public function validContentType(): array
     {
         return [
             ['application/atom+xml'],
@@ -418,7 +448,10 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function invalidContentType()
+    /**
+     * @return array<array{string}>
+     */
+    public function invalidContentType(): array
     {
         return [
             [''],

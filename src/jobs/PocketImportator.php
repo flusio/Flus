@@ -20,10 +20,7 @@ class PocketImportator extends \Minz\Job
         $this->queue = 'importators';
     }
 
-    /**
-     * @param string $importation_id
-     */
-    public function perform($importation_id)
+    public function perform(int $importation_id): void
     {
         $importation = models\Importation::find($importation_id);
         if (!$importation) {
@@ -31,7 +28,7 @@ class PocketImportator extends \Minz\Job
             return;
         }
 
-        $user = models\User::find($importation->user_id);
+        $user = $importation->user();
         utils\Locale::setCurrentLocale($user->locale);
 
         if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
@@ -42,7 +39,9 @@ class PocketImportator extends \Minz\Job
             return;
         }
 
-        if (!$user->pocket_access_token) {
+        $pocket_access_token = $user->pocket_access_token;
+
+        if (!$pocket_access_token) {
             $importation->fail(
                 _('We tried to import from Pocket, but you didn’t authorize us to access your Pocket data.')
             );
@@ -50,6 +49,7 @@ class PocketImportator extends \Minz\Job
             return;
         }
 
+        /** @var string */
         $consumer_key = \Minz\Configuration::$application['pocket_consumer_key'];
         $pocket_service = new services\Pocket($consumer_key);
 
@@ -60,7 +60,7 @@ class PocketImportator extends \Minz\Job
         $exit_loop = false;
         while (!$exit_loop) {
             try {
-                $items = $pocket_service->retrieve($user->pocket_access_token, [
+                $items = $pocket_service->retrieve($pocket_access_token, [
                     'state' => 'all',
                     'detailType' => 'complete',
                     'sort' => 'newest',
@@ -68,14 +68,14 @@ class PocketImportator extends \Minz\Job
                     'offset' => $offset,
                 ]);
             } catch (services\PocketError $e) {
-                $user->pocket_error = $e->getCode();
+                $user->pocket_error = (string) $e->getCode();
                 $user->save();
                 $error = $e->getMessage();
                 break;
             }
 
             try {
-                $this->importPocketItems($user, $items, $importation->options());
+                $this->importPocketItems($user, $items, $importation->pocketOptions());
             } catch (\Exception $e) {
                 $error = $e->getMessage();
                 $dump_filename = \Minz\Configuration::$data_path . "/dump_importation_{$importation->id}.json";
@@ -102,11 +102,14 @@ class PocketImportator extends \Minz\Job
      *
      * @see https://getpocket.com/developer/docs/v3/retrieve
      *
-     * @param \flusio\models\User $user
-     * @param array $items
-     * @param array $options
+     * @param array<array<string, mixed>> $items
+     * @param array{
+     *     'ignore_tags': bool,
+     *     'import_bookmarks': bool,
+     *     'import_favorites': bool,
+     * } $options
      */
-    public function importPocketItems($user, $items, $options)
+    public function importPocketItems(models\User $user, array $items, array $options): void
     {
         $bookmarks_collection = $user->bookmarks();
         $pocket_collection = models\Collection::findOrCreateBy([
@@ -149,7 +152,7 @@ class PocketImportator extends \Minz\Job
                 $collection_ids[] = $bookmarks_collection->id;
             }
 
-            if (isset($item['tags']) && !$options['ignore_tags']) {
+            if (is_array($item['tags'] ?? null) && !$options['ignore_tags']) {
                 // we want to create a collection per tag
                 $tags = array_keys($item['tags']);
                 foreach ($tags as $tag) {
@@ -175,8 +178,14 @@ class PocketImportator extends \Minz\Job
                 }
             }
 
-            $given_url = \SpiderBits\Url::sanitize($item['given_url']);
-            $resolved_url = \SpiderBits\Url::sanitize($item['resolved_url']);
+            /** @var string */
+            $given_url = $item['given_url'];
+            $given_url = \SpiderBits\Url::sanitize($given_url);
+
+            /** @var string */
+            $resolved_url = $item['resolved_url'];
+            $resolved_url = \SpiderBits\Url::sanitize($resolved_url);
+
             if (isset($link_ids_by_urls[$given_url])) {
                 $link_id = $link_ids_by_urls[$given_url];
             } elseif (isset($link_ids_by_urls[$resolved_url])) {
@@ -185,9 +194,10 @@ class PocketImportator extends \Minz\Job
                 // The user didn't added this link yet, so we'll need to create
                 // it. First, initiate a new model
                 $link = new models\Link($given_url, $user->id, false);
-                if (!empty($item['resolved_title'])) {
+
+                if (is_string($item['resolved_title'] ?? null)) {
                     $link->title = $item['resolved_title'];
-                } elseif (!empty($item['given_title'])) {
+                } elseif (is_string($item['given_title'] ?? null)) {
                     $link->title = $item['given_title'];
                 }
 
@@ -205,12 +215,20 @@ class PocketImportator extends \Minz\Job
             // If time_added is set (not documented), we use it to set the date
             // of attachment to the collection in order to keep the order from
             // Pocket. It defaults to now.
-            $published_at = \Minz\Time::now();
+            $published_at = null;
             if (isset($item['time_added'])) {
-                $timestamp = intval($item['time_added']);
-                if ($timestamp > 0) {
+                $timestamp = $item['time_added'];
+                if (is_string($timestamp)) {
+                    $timestamp = intval($timestamp);
+                }
+
+                if (is_int($timestamp) && $timestamp > 0) {
                     $published_at = \DateTimeImmutable::createFromFormat('U', (string) $timestamp);
                 }
+            }
+
+            if (!$published_at) {
+                $published_at = \Minz\Time::now();
             }
 
             // We now have a link_id and a list of collection ids. We store

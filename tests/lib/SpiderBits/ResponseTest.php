@@ -4,7 +4,7 @@ namespace SpiderBits;
 
 class ResponseTest extends \PHPUnit\Framework\TestCase
 {
-    public function testFromText()
+    public function testFromText(): void
     {
         $text = <<<TEXT
         HTTP/2 200 OK\r
@@ -20,7 +20,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Hello World!', $response->data);
     }
 
-    public function testFromTextWithNoContent()
+    public function testFromTextWithNoContent(): void
     {
         $text = <<<TEXT
         HTTP/2 204 No content\r
@@ -35,7 +35,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $response->data);
     }
 
-    public function testFromTextWithNoContentAndNoFinalEmptyLine()
+    public function testFromTextWithNoContentAndNoFinalEmptyLine(): void
     {
         // Even 204 response should contain a final empty line. We just try to
         // be more robust than the norm.
@@ -51,7 +51,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $response->data);
     }
 
-    public function testFromTextWithNoStatusCode()
+    public function testFromTextWithNoStatusCode(): void
     {
         $text = <<<TEXT
         Content-Type: text/plain\r
@@ -66,7 +66,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Hello World!', $response->data);
     }
 
-    public function testFromTextWithOnlyLfEndOfLine()
+    public function testFromTextWithOnlyLfEndOfLine(): void
     {
         // The specs recommends to use CRLF (\r\n), but let’s try to avoid
         // potential issues with bad students.
@@ -85,7 +85,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Hello World!', $response->data);
     }
 
-    public function testFromTextWithEmptyLineInBody()
+    public function testFromTextWithEmptyLineInBody(): void
     {
         $text = <<<TEXT
         HTTP/2 200 OK\r
@@ -103,7 +103,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame("Hello\r\n\r\nWorld!", $response->data);
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $text = <<<TEXT
         HTTP/2 200 OK\r
@@ -118,7 +118,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($text, $response_as_string);
     }
 
-    public function testHeadersWithMultipleValues()
+    public function testHeadersWithMultipleValues(): void
     {
         $text = <<<TEXT
         HTTP/2 200 OK\r
@@ -134,7 +134,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fr; q=1.0, en; q=0.5', $response->headers['accept-language']);
     }
 
-    public function testHeader()
+    public function testHeader(): void
     {
         $text = <<<TEXT
         HTTP/2 200 OK\r
@@ -149,7 +149,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('text/plain', $header);
     }
 
-    public function testHeaderIsCaseInsensitive()
+    public function testHeaderIsCaseInsensitive(): void
     {
         $text = <<<TEXT
         HTTP/2 200 OK\r
@@ -164,7 +164,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('text/plain', $header);
     }
 
-    public function testHeaderReturnsDefaultValueIfMissing()
+    public function testHeaderReturnsDefaultValueIfMissing(): void
     {
         $text = <<<TEXT
         HTTP/2 200 OK\r

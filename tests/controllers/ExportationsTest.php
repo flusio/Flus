@@ -19,7 +19,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     /**
      * @beforeClass
      */
-    public static function setJobAdapterToDatabase()
+    public static function setJobAdapterToDatabase(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
     }
@@ -27,12 +27,12 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     /**
      * @afterClass
      */
-    public static function setJobAdapterToTest()
+    public static function setJobAdapterToTest(): void
     {
         \Minz\Configuration::$jobs_adapter = 'test';
     }
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $user = $this->login();
 
@@ -43,7 +43,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Generate a data archive');
     }
 
-    public function testShowRendersCorrectlyIfAnExportationIsOngoing()
+    public function testShowRendersCorrectlyIfAnExportationIsOngoing(): void
     {
         $user = $this->login();
         $exportation = ExportationFactory::create([
@@ -58,7 +58,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'We’re creating your archive');
     }
 
-    public function testShowRendersCorrectlyIfAnExportationIsFinished()
+    public function testShowRendersCorrectlyIfAnExportationIsFinished(): void
     {
         $user = $this->login();
         $exportation = ExportationFactory::create([
@@ -73,9 +73,10 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Downloading your data');
     }
 
-    public function testShowRendersCorrectlyIfAnExportationIsError()
+    public function testShowRendersCorrectlyIfAnExportationIsError(): void
     {
         $user = $this->login();
+        /** @var string */
         $error = $this->fake('sentence');
         $exportation = ExportationFactory::create([
             'user_id' => $user->id,
@@ -90,14 +91,14 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $error);
     }
 
-    public function testShowRedirectsIfUserIsNotConnected()
+    public function testShowRedirectsIfUserIsNotConnected(): void
     {
         $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fexportations');
     }
 
-    public function testCreateCreatesAnExportationAndRedirects()
+    public function testCreateCreatesAnExportationAndRedirects(): void
     {
         $user = $this->login();
 
@@ -111,15 +112,17 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/exportations');
         $this->assertSame(1, models\Exportation::count());
         $exportation = models\Exportation::take();
+        $this->assertNotNull($exportation);
         $this->assertSame($user->id, $exportation->user_id);
         $this->assertSame('ongoing', $exportation->status);
         $this->assertSame(1, \Minz\Job::count());
         $job = \Minz\Job::take();
+        $this->assertNotNull($job);
         $this->assertSame(jobs\Exportator::class, $job->name);
         $this->assertSame([$exportation->id], $job->args);
     }
 
-    public function testCreateDeletesExistingExportationAndArchiveIfStatusIsFinished()
+    public function testCreateDeletesExistingExportationAndArchiveIfStatusIsFinished(): void
     {
         $user = $this->login();
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
@@ -145,7 +148,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(file_exists($filepath));
     }
 
-    public function testCreateDeletesExistingExportationIfStatusIsError()
+    public function testCreateDeletesExistingExportationIfStatusIsError(): void
     {
         $user = $this->login();
         $exportation = ExportationFactory::create([
@@ -166,7 +169,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, \Minz\Job::count());
     }
 
-    public function testCreateRedirectsIfUserIsNotConnected()
+    public function testCreateRedirectsIfUserIsNotConnected(): void
     {
         $user = UserFactory::create();
 
@@ -179,7 +182,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    public function testCreateFailsIfAnExportationStatusIsOngoing()
+    public function testCreateFailsIfAnExportationStatusIsOngoing(): void
     {
         $user = $this->login();
         $exportation = ExportationFactory::create([
@@ -201,7 +204,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    public function testCreateFailsIfCsrfIsInvalid()
+    public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
 
@@ -215,7 +218,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    public function testDownloadReturnsTheArchiveFile()
+    public function testDownloadReturnsTheArchiveFile(): void
     {
         $user = $this->login();
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
@@ -231,16 +234,19 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $exportation = $exportation->reload();
         $filename_date = $exportation->created_at->format('Y-m-d');
+        /** @var string */
         $filename_brand = \Minz\Configuration::$application['brand'];
         $filename = "{$filename_date}_{$filename_brand}_data.zip";
+        $filesize = filesize($filepath);
+        $this->assertNotFalse($filesize);
         $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/zip',
-            'Content-Length' => filesize($filepath),
+            'Content-Length' => (string) $filesize,
             'Content-Disposition' => "filename={$filename}",
         ]);
     }
 
-    public function testDownloadRedirectsIfUserIsNotConnected()
+    public function testDownloadRedirectsIfUserIsNotConnected(): void
     {
         $user = UserFactory::create();
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
@@ -256,7 +262,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fexportations');
     }
 
-    public function testDownloadFailsIfFileDoesNotExist()
+    public function testDownloadFailsIfFileDoesNotExist(): void
     {
         $user = $this->login();
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
@@ -273,7 +279,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testDownloadFailsIfExportationDoesNotExist()
+    public function testDownloadFailsIfExportationDoesNotExist(): void
     {
         $user = $this->login();
         $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);

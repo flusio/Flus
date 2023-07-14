@@ -9,6 +9,13 @@ use flusio\utils;
  * This service helps to fetch links content. It's a wrapper around the
  * SpiderBits library.
  *
+ * @phpstan-type Options array{
+ *     'timeout': int,
+ *     'rate_limit': bool,
+ *     'cache': bool,
+ *     'force_sync': bool,
+ * }
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -17,13 +24,11 @@ class LinkFetcher
     public const ERROR_RATE_LIMIT = -1;
     public const ERROR_UNKNOWN = 0;
 
-    /** @var \SpiderBits\Cache */
-    private $cache;
+    private \SpiderBits\Cache $cache;
 
-    /** @var \SpiderBits\Http */
-    private $http;
+    private \SpiderBits\Http $http;
 
-    /** @var array */
+    /** @var Options */
     private $options = [
         'timeout' => 10,
         'rate_limit' => true,
@@ -32,31 +37,32 @@ class LinkFetcher
     ];
 
     /**
-     * @param array $options
-     *     A list of options where possible keys are:
-     *     - timeout (integer)
-     *     - rate_limit (boolean)
-     *     - cache (boolean)
-     *     - force_sync (boolean)
+     * @param array{
+     *     'timeout'?: int,
+     *     'rate_limit'?: bool,
+     *     'cache'?: bool,
+     *     'force_sync'?: bool,
+     * } $options
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->options = array_merge($this->options, $options);
 
+        /** @var string */
         $cache_path = \Minz\Configuration::$application['cache_path'];
         $this->cache = new \SpiderBits\Cache($cache_path);
 
         $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
+        /** @var string */
+        $user_agent = \Minz\Configuration::$application['user_agent'];
+        $this->http->user_agent = $user_agent;
         $this->http->timeout = $this->options['timeout'];
     }
 
     /**
      * Fetch a link, set its properties and save it
-     *
-     * @param \flusio\models\Link
      */
-    public function fetch($link)
+    public function fetch(models\Link $link): void
     {
         $info = $this->fetchUrl($link->url);
 
@@ -115,18 +121,20 @@ class LinkFetcher
      *
      * @param string $url
      *
-     * @return array Possible keys are:
-     *     - status (always)
-     *     - error
-     *     - title
-     *     - reading_time
-     *     - url_illustration
-     *     - url_feeds
+     * @return array{
+     *     'status': int,
+     *     'error'?: string,
+     *     'title'?: string,
+     *     'reading_time'?: int,
+     *     'url_illustration'?: string,
+     *     'url_feeds'?: string[],
+     * }
      */
-    public function fetchUrl($url)
+    public function fetchUrl(string $url): array
     {
         // First, we get information about rate limit and IP to select to
         // execute the request (for Youtube).
+        /** @var string[] */
         $server_ips = \Minz\Configuration::$application['server_ips'];
         if (!$this->options['rate_limit']) {
             // rate limit is disabled for this call
@@ -222,7 +230,8 @@ class LinkFetcher
             return $info;
         }
 
-        $content_type = $response->header('content-type');
+        /** @var string */
+        $content_type = $response->header('content-type', '');
         if (
             \SpiderBits\feeds\Feed::isFeedContentType($content_type) &&
             \SpiderBits\feeds\Feed::isFeed($data)
@@ -296,12 +305,8 @@ class LinkFetcher
 
     /**
      * Return true if the url is pointing to Youtube
-     *
-     * @param string $url
-     *
-     * @return boolean
      */
-    private function isYoutube($url)
+    private function isYoutube(string $url): bool
     {
         $host = utils\Belt::host($url);
         return str_ends_with($host, 'youtube.com');
@@ -312,11 +317,9 @@ class LinkFetcher
      *
      * @see https://github.com/kevinpapst/freshrss-youtube/
      *
-     * @param string $url
-     *
-     * @return string
+     * @return string[]
      */
-    private function urlToYoutubeFeeds($url)
+    private function urlToYoutubeFeeds(string $url): array
     {
         $parsed_url = parse_url($url);
         if (!isset($parsed_url['host']) || $parsed_url['host'] !== 'www.youtube.com') {
@@ -348,7 +351,7 @@ class LinkFetcher
         }
 
         // However, Youtube doesn’t display <link> for playlists.
-        if (isset($query['list'])) {
+        if (is_string($query['list'] ?? null)) {
             $feeds[] = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' . $query['list'];
         }
 

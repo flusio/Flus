@@ -11,23 +11,21 @@ namespace flusio\services;
  */
 class Subscriptions
 {
-    /** @var string */
-    private $host;
+    private string $host;
 
-    /** @var string */
-    private $private_key;
+    private string $private_key;
 
-    /**
-     * @param string $host
-     * @param string $private_key
-     */
-    public function __construct($host, $private_key)
+    private \SpiderBits\Http $http;
+
+    public function __construct(string $host, string $private_key)
     {
         $this->host = $host;
         $this->private_key = $private_key;
 
         $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = \Minz\Configuration::$application['user_agent'];
+        /** @var string */
+        $user_agent = \Minz\Configuration::$application['user_agent'];
+        $this->http->user_agent = $user_agent;
         $this->http->timeout = 5;
     }
 
@@ -35,11 +33,12 @@ class Subscriptions
      * Get account information for the given email. Please always make sure the
      * email has been validated first!
      *
-     * @param string $email
-     *
-     * @return array|null
+     * @return ?array{
+     *     'id': string,
+     *     'expired_at': \DateTimeImmutable
+     * }
      */
-    public function account($email)
+    public function account(string $email): ?array
     {
         try {
             $response = $this->http->get($this->host . '/api/account', [
@@ -53,29 +52,50 @@ class Subscriptions
         }
 
         if ($response->success) {
+            /** @var ?mixed[] */
             $data = json_decode($response->data, true);
+
+            $clean_data = [];
+
             if (!$data) {
+                \Minz\Log::error('Error while requesting a subscription account: invalid response');
                 return null;
             }
 
-            $data['expired_at'] = \DateTimeImmutable::createFromFormat(
-                \Minz\Database\Column::DATETIME_FORMAT,
-                $data['expired_at']
-            );
-            return $data;
+            if (isset($data['id']) && is_string($data['id'])) {
+                $clean_data['id'] = $data['id'];
+            } else {
+                \Minz\Log::error('Error while requesting a subscription account: invalid id');
+                return null;
+            }
+
+            if (isset($data['expired_at']) && is_string($data['expired_at'])) {
+                $expired_at = \DateTimeImmutable::createFromFormat(
+                    \Minz\Database\Column::DATETIME_FORMAT,
+                    $data['expired_at']
+                );
+
+                if ($expired_at === false) {
+                    $expired_at = \Minz\Time::now();
+                }
+
+                $clean_data['expired_at'] = $expired_at;
+            } else {
+                \Minz\Log::error('Error while requesting a subscription account: invalid expired_at');
+                return null;
+            }
+
+            return $clean_data;
         } else {
+            \Minz\Log::error('Error while requesting a subscription account: request failed');
             return null;
         }
     }
 
     /**
      * Get a login URL for the given account.
-     *
-     * @param string $account_id
-     *
-     * @return string|null
      */
-    public function loginUrl($account_id)
+    public function loginUrl(string $account_id): ?string
     {
         try {
             $response = $this->http->get($this->host . '/api/account/login-url', [
@@ -90,25 +110,25 @@ class Subscriptions
         }
 
         if ($response->success) {
+            /** @var ?mixed[] */
             $data = json_decode($response->data, true);
-            if (!$data) {
+
+            if (!$data || !isset($data['url']) || !is_string($data['url'])) {
+                \Minz\Log::error('Error while requesting a subscription login URL: invalid url');
                 return null;
             }
 
             return $data['url'];
         } else {
+            \Minz\Log::error('Error while requesting a subscription login URL: request failed');
             return null;
         }
     }
 
     /**
      * Get the expired_at value for the given account.
-     *
-     * @param string $account_id
-     *
-     * @return \DateTime|null
      */
-    public function expiredAt($account_id)
+    public function expiredAt(string $account_id): ?\DateTimeImmutable
     {
         try {
             $response = $this->http->get($this->host . '/api/account/expired-at', [
@@ -122,16 +142,26 @@ class Subscriptions
         }
 
         if ($response->success) {
+            /** @var ?mixed[] */
             $data = json_decode($response->data, true);
-            if (!$data) {
+
+            if (!$data || !isset($data['expired_at']) || !is_string($data['expired_at'])) {
+                \Minz\Log::error('Error while requesting a subscription expiration date: invalid expired_at');
                 return null;
             }
 
-            return \DateTimeImmutable::createFromFormat(
+            $expired_at = \DateTimeImmutable::createFromFormat(
                 \Minz\Database\Column::DATETIME_FORMAT,
                 $data['expired_at']
             );
+
+            if ($expired_at === false) {
+                $expired_at = \Minz\Time::now();
+            }
+
+            return $expired_at;
         } else {
+            \Minz\Log::error('Error while requesting a subscription expiration date: request failed');
             return null;
         }
     }
@@ -141,9 +171,9 @@ class Subscriptions
      *
      * @param string[] $account_ids
      *
-     * @return \DateTime[]|null
+     * @return ?\DateTimeImmutable[]
      */
-    public function sync($account_ids)
+    public function sync(array $account_ids): ?array
     {
         try {
             $response = $this->http->post($this->host . '/api/accounts/sync', [
@@ -161,6 +191,7 @@ class Subscriptions
             return null;
         }
 
+        /** @var ?mixed[] */
         $data = json_decode($response->data, true);
         if (!is_array($data)) {
             \Minz\Log::error("Error while syncing subscriptions: can’t decode data");
@@ -168,7 +199,13 @@ class Subscriptions
         }
 
         $result = [];
+
         foreach ($data as $account_id => $expired_at) {
+            if (!is_string($expired_at)) {
+                \Minz\Log::error('Error while syncing subscriptions: invalid expired_at');
+                continue;
+            }
+
             $expired_at = \DateTimeImmutable::createFromFormat(
                 \Minz\Database\Column::DATETIME_FORMAT,
                 $expired_at
@@ -181,6 +218,7 @@ class Subscriptions
 
             $result[$account_id] = $expired_at;
         }
+
         return $result;
     }
 }

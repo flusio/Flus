@@ -10,29 +10,29 @@ class RssParser
 {
     /**
      * Return whether a DOMDocument can be parsed as a RSS feed or not.
-     *
-     * @param \DOMDocument $dom_document
-     *
-     * @return boolean
      */
-    public static function canHandle($dom_document)
+    public static function canHandle(\DOMDocument $dom_document): bool
     {
-        return $dom_document->documentElement->tagName === 'rss';
+        return (
+            $dom_document->documentElement &&
+            $dom_document->documentElement->tagName === 'rss'
+        );
     }
 
     /**
      * Parse a DOMDocument as a RSS feed.
-     *
-     * @param \DOMDocument $dom_document
-     *
-     * @return \SpiderBits\feeds\Feed
      */
-    public static function parse($dom_document)
+    public static function parse(\DOMDocument $dom_document): Feed
     {
         $feed = new Feed();
         $feed->type = 'rss';
 
         $rss_node = $dom_document->documentElement;
+
+        if (!$rss_node) {
+            throw new \Exception('Can’t read the DOMDocument');
+        }
+
         $channel_node = $rss_node->getElementsByTagName('channel')->item(0);
         if (!$channel_node) {
             return $feed;
@@ -43,20 +43,23 @@ class RssParser
                 continue; // @codeCoverageIgnore
             }
 
-            if ($node->tagName === 'title') {
-                $feed->title = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
+            $tagName = $node->tagName;
+            $value = $node->nodeValue ?: '';
+
+            if ($tagName === 'title') {
+                $feed->title = trim(htmlspecialchars_decode($value, ENT_QUOTES));
             }
 
-            if ($node->tagName === 'description') {
-                $feed->description = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
+            if ($tagName === 'description') {
+                $feed->description = trim(htmlspecialchars_decode($value, ENT_QUOTES));
             }
 
-            if ($node->tagName === 'link') {
-                $feed->link = $node->nodeValue;
-                $feed->links['alternate'] = $node->nodeValue;
+            if ($tagName === 'link') {
+                $feed->link = $value;
+                $feed->links['alternate'] = $value;
             }
 
-            if ($node->tagName === 'atom:link') {
+            if ($tagName === 'atom:link') {
                 $rel = $node->getAttribute('rel');
                 if (!$rel) {
                     $rel = 'alternate';
@@ -66,12 +69,12 @@ class RssParser
                 $feed->links[$rel] = $href;
             }
 
-            if ($node->tagName === 'category') {
-                $category = $node->nodeValue;
+            if ($tagName === 'category') {
+                $category = $value;
                 $feed->categories[$category] = $category;
             }
 
-            if ($node->tagName === 'item') {
+            if ($tagName === 'item') {
                 $entry = self::parseEntry($node);
                 $feed->entries[] = $entry;
             }
@@ -82,12 +85,8 @@ class RssParser
 
     /**
      * Parse a DOMElement as a RSS item.
-     *
-     * @param \DOMElement $dom_element
-     *
-     * @return \flusio\feeds\Entry
      */
-    private static function parseEntry($dom_element)
+    private static function parseEntry(\DOMElement $dom_element): Entry
     {
         $entry = new Entry();
 
@@ -96,41 +95,44 @@ class RssParser
                 continue; // @codeCoverageIgnore
             }
 
-            if ($node->tagName === 'title') {
-                $entry->title = trim(htmlspecialchars_decode($node->nodeValue, ENT_QUOTES));
+            $tagName = $node->tagName;
+            $value = $node->nodeValue ?: '';
+
+            if ($tagName === 'title') {
+                $entry->title = trim(htmlspecialchars_decode($value, ENT_QUOTES));
             }
 
-            if ($node->tagName === 'guid') {
-                $entry->id = $node->nodeValue;
+            if ($tagName === 'guid') {
+                $entry->id = $value;
             }
 
             if (
                 !$entry->published_at && (
-                    $node->tagName === 'pubDate' ||
-                    $node->tagName === 'dc:date' ||
-                    $node->tagName === 'dc:created'
+                    $tagName === 'pubDate' ||
+                    $tagName === 'dc:date' ||
+                    $tagName === 'dc:created'
                 )
             ) {
-                $published_at = Date::parse($node->nodeValue);
+                $published_at = Date::parse($value);
                 if ($published_at) {
                     $entry->published_at = $published_at;
                 }
             }
 
-            if ($node->tagName === 'link') {
-                $entry->link = $node->nodeValue;
-                $entry->links['alternate'] = $node->nodeValue;
+            if ($tagName === 'link') {
+                $entry->link = $value;
+                $entry->links['alternate'] = $value;
             }
 
-            if ($node->tagName === 'comments') {
-                $entry->links['replies'] = $node->nodeValue;
+            if ($tagName === 'comments') {
+                $entry->links['replies'] = $value;
             }
 
-            if ($node->tagName === 'source') {
+            if ($tagName === 'source') {
                 $entry->links['via'] = $node->getAttribute('url');
             }
 
-            if ($node->tagName === 'atom:link') {
+            if ($tagName === 'atom:link') {
                 $rel = $node->getAttribute('rel');
                 if (!$rel) {
                     $rel = 'alternate';
@@ -140,18 +142,18 @@ class RssParser
                 $entry->links[$rel] = $href;
             }
 
-            if ($node->tagName === 'category') {
-                $category = $node->nodeValue;
+            if ($tagName === 'category') {
+                $category = $value;
                 $entry->categories[$category] = $category;
             }
 
-            if ($node->tagName === 'description' && !$entry->content) {
-                $entry->content = $node->nodeValue;
+            if ($tagName === 'description' && !$entry->content) {
+                $entry->content = $value;
                 $entry->content_type = 'html';
             }
 
-            if ($node->tagName === 'content:encoded') {
-                $entry->content = $node->nodeValue;
+            if ($tagName === 'content:encoded') {
+                $entry->content = $value;
                 $entry->content_type = 'html';
             }
         }

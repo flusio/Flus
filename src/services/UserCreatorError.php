@@ -12,15 +12,22 @@ namespace flusio\services;
  */
 class UserCreatorError extends \RuntimeException
 {
-    private $errors;
+    /** @var array<string, string> */
+    private array $errors;
 
-    public function __construct($errors)
+    /**
+     * @param array<string, string> $errors
+     */
+    public function __construct(array $errors)
     {
         parent::__construct('User failed to be created (see $errors)');
         $this->errors = $errors;
     }
 
-    public function errors()
+    /**
+     * @return array<string, string>
+     */
+    public function errors(): array
     {
         return $this->errors;
     }

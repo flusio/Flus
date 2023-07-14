@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\utils;
 
@@ -24,11 +25,11 @@ class Assets
      *               under the src/assets/ folder)
      * @response 200 Return the asset file if it can be served
      *
-     * @param \Minz\Request
+     * @param \Minz\Request $request
      *
      * @return \Minz\Response
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $requested_path = $request->param('*');
         $assets_path = \Minz\Configuration::$app_path . '/src/assets';

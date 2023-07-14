@@ -79,7 +79,9 @@ trait StatisticsQueries
 
         $count_by_hours = [];
         foreach ($result as $row) {
-            $count_by_hours[$row['hour']] = intval($row['count']);
+            /** @var string */
+            $hour = $row['hour'];
+            $count_by_hours[$hour] = intval($row['count']);
         }
 
         ksort($count_by_hours);

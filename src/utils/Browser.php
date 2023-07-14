@@ -15,21 +15,26 @@ class Browser
      * unknown platform”.
      *
      * @see https://www.php.net/manual/function.get-browser.php
-     *
-     * @param string $user_agent
-     *
-     * @return string
      */
-    public static function format($user_agent)
+    public static function format(string $user_agent): string
     {
-        $browser_info = @get_browser($user_agent);
-        if ($browser_info) {
-            $browser = $browser_info->browser;
-            $platform = $browser_info->platform;
-        } else {
+        /** @var array<string, mixed>|false */
+        $browser_info = @get_browser($user_agent, return_array: true);
+
+        $browser = 'Default Browser';
+        $platform = 'unknown';
+
+        if ($browser_info === false) {
             \Minz\Log::notice('browscap seems to not be configured on the system.'); // @codeCoverageIgnore
-            $browser = 'Default Browser'; // @codeCoverageIgnore
-            $platform = 'unknown'; // @codeCoverageIgnore
+        } else {
+            if (isset($browser_info['browser'])) {
+                /** @var string */
+                $browser = $browser_info['browser'];
+            }
+            if (isset($browser_info['platform'])) {
+                /** @var string */
+                $platform = $browser_info['platform'];
+            }
         }
 
         if ($browser === 'Default Browser') {

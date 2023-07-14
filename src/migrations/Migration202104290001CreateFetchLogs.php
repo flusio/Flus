@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202104290001CreateFetchLogs
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -20,7 +20,7 @@ class Migration202104290001CreateFetchLogs
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

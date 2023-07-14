@@ -7,15 +7,12 @@ use flusio\utils;
 
 class DataExporter
 {
-    /** @var string */
-    private $exportations_path;
+    private string $exportations_path;
 
     /**
-     * @param string $exportations_path
-     *
-     * @throws RuntimeException if the path doesn't exist or is not a directory
+     * @throws \RuntimeException if the path doesn't exist or is not a directory
      */
-    public function __construct($exportations_path)
+    public function __construct(string $exportations_path)
     {
         if (!file_exists($exportations_path)) {
             throw new \RuntimeException('The path does not exist');
@@ -29,15 +26,12 @@ class DataExporter
     }
 
     /**
-     * Export data of the given user.
+     * Export data of the given user and return the path to the data file.
      *
-     * @param string $user_id
-     *
-     * @throws RuntimeException if the user doesn't exist
-     *
-     * @return string The path to the data file
+     * @throws \RuntimeException
+     *     If the user doesn't exist, or if an error happens.
      */
-    public function export($user_id)
+    public function export(string $user_id): string
     {
         $user = models\User::find($user_id);
         if (!$user) {
@@ -83,23 +77,26 @@ class DataExporter
     /**
      * Return metadata for the archive.
      *
-     * @return string
+     * @throws \RuntimeException
+     *     If the metadata cannot be generated.
      */
-    private function generateMetadata()
+    private function generateMetadata(): string
     {
-        return json_encode([
+        $metadata = json_encode([
             'generator' => \Minz\Configuration::$application['user_agent'],
         ]);
+
+        if (!$metadata) {
+            throw new \RuntimeException('Cannot generate metada');
+        }
+
+        return $metadata;
     }
 
     /**
      * Return an OPML representation of the followed collections of the given user.
-     *
-     * @param \flusio\models\User $user
-     *
-     * @return string
      */
-    private function generateOpml($user)
+    private function generateOpml(models\User $user): string
     {
         $groups = models\Group::listBy(['user_id' => $user->id]);
         $collections = $user->followedCollections(['time_filter']);
@@ -117,12 +114,8 @@ class DataExporter
 
     /**
      * Return an Atom representation of the given collection.
-     *
-     * @param \flusio\models\Collection $collection
-     *
-     * @return string
      */
-    private function generateCollection($collection)
+    private function generateCollection(models\Collection $collection): string
     {
         $view = new \Minz\Output\View('collections/exportation.atom.xml.php', [
             'brand' => \Minz\Configuration::$application['brand'],
@@ -137,12 +130,8 @@ class DataExporter
 
     /**
      * Return an Atom representation of the given link messages.
-     *
-     * @param \flusio\models\Link $link
-     *
-     * @return string
      */
-    private function generateLink($link)
+    private function generateLink(models\Link $link): string
     {
         $view = new \Minz\Output\View('links/exportation.atom.xml.php', [
             'brand' => \Minz\Configuration::$application['brand'],
@@ -158,12 +147,8 @@ class DataExporter
      * Return a formatted version of a XML string.
      *
      * If an error occurs, the initial XML is returned as is.
-     *
-     * @param string $xml_as_string
-     *
-     * @return string
      */
-    private static function formatXML($xml_as_string)
+    private static function formatXML(string $xml_as_string): string
     {
         $dom_document = new \DOMDocument();
         $dom_document->preserveWhiteSpace = false;

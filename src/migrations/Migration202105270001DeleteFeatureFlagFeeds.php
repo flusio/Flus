@@ -4,7 +4,7 @@ namespace flusio\migrations;
 
 class Migration202105270001DeleteFeatureFlagFeeds
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -15,7 +15,7 @@ class Migration202105270001DeleteFeatureFlagFeeds
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         // do nothing on purpose
         return true;

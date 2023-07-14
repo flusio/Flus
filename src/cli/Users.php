@@ -2,6 +2,7 @@
 
 namespace flusio\cli;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\models;
 use flusio\services;
@@ -20,7 +21,7 @@ class Users
      *
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $users = models\User::listAll();
         usort($users, function ($user1, $user2) {
@@ -58,7 +59,7 @@ class Users
      * @response 400 if one of the param is invalid
      * @response 200
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $username = $request->param('username', '');
         $email = $request->param('email', '');
@@ -89,15 +90,19 @@ class Users
      * @response 200
      *     On sucess
      */
-    public function export($request)
+    public function export(Request $request): Response
     {
-        $user_id = $request->param('id');
+        $user_id = $request->param('id', '');
         $user = models\User::find($user_id);
         if (!$user) {
             return Response::text(404, "User {$user_id} doesn’t exist.");
         }
 
         $exportations_path = getcwd();
+        if ($exportations_path === false) {
+            $exportations_path = \Minz\Configuration::$data_path;
+        }
+
         $data_exporter = new services\DataExporter($exportations_path);
         $data_filepath = $data_exporter->export($user->id);
 
@@ -117,9 +122,9 @@ class Users
      * @response 200
      *     On sucess
      */
-    public function validate($request)
+    public function validate(Request $request): Response
     {
-        $user_id = $request->param('id');
+        $user_id = $request->param('id', '');
         $user = models\User::find($user_id);
         if (!$user) {
             return Response::text(404, "User {$user_id} doesn’t exist.");
@@ -129,20 +134,28 @@ class Users
             return Response::text(400, "User {$user_id} has already been validated.");
         }
 
-        $token = models\Token::find($user->validation_token);
-        if ($token) {
-            models\Token::delete($token->token);
-            $user->validation_token = null;
+        if ($user->validation_token) {
+            $token = models\Token::find($user->validation_token);
+            if ($token) {
+                models\Token::delete($token->token);
+                $user->validation_token = null;
+            }
         }
 
         $user->validated_at = \Minz\Time::now();
 
-        $app_conf = \Minz\Configuration::$application;
-        if ($app_conf['subscriptions_enabled']) {
+        /** @var bool */
+        $sub_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        if ($sub_enabled) {
+            /** @var string */
+            $sub_host = \Minz\Configuration::$application['subscriptions_host'];
+            /** @var string */
+            $sub_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
             $subscriptions_service = new services\Subscriptions(
-                $app_conf['subscriptions_host'],
-                $app_conf['subscriptions_private_key']
+                $sub_host,
+                $sub_private_key,
             );
+
             $account = $subscriptions_service->account($user->email);
             if ($account) {
                 $user->subscription_account_id = $account['id'];

@@ -2,6 +2,7 @@
 
 namespace flusio\controllers;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
@@ -19,7 +20,7 @@ class Support
      *     if not connected
      * @response 200
      */
-    public function show()
+    public function show(): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -48,7 +49,7 @@ class Support
      *     if the csrf, title or message are invalid
      * @response 302 /support
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
         if (!$user) {
@@ -57,9 +58,9 @@ class Support
             ]);
         }
 
-        $subject = trim($request->param('subject'));
-        $message = trim($request->param('message'));
-        $csrf = $request->param('csrf');
+        $subject = trim($request->param('subject', ''));
+        $message = trim($request->param('message', ''));
+        $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('support/show.phtml', [

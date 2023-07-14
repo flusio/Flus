@@ -18,12 +18,8 @@ class Mailer extends \Minz\Job
 
     /**
      * Execute the given mailer action.
-     *
-     * @param string $mailer_class_name The class name of the mailer to execute
-     * @param string $mailer_action_name The action to execute on the given mailer
-     * @param mixed $args,... Parameters to pass to the mailer action
      */
-    public function perform($mailer_class_name, $mailer_action_name, ...$args)
+    public function perform(string $mailer_class_name, string $mailer_action_name, mixed ...$args): void
     {
         $full_class_name = "\\flusio\\mailers\\{$mailer_class_name}";
         $mailer = new $full_class_name();

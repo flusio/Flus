@@ -41,6 +41,7 @@ class Importation
     public string $user_id;
 
     /**
+     * @param value-of<self::VALID_TYPES> $type
      * @param mixed[] $options
      */
     public function __construct(string $type, string $user_id, array $options = [])
@@ -50,6 +51,20 @@ class Importation
         $this->options = $options;
         $this->user_id = $user_id;
         $this->error = '';
+    }
+
+    /**
+     * Return the owner of the link.
+     */
+    public function user(): User
+    {
+        $user = User::find($this->user_id);
+
+        if (!$user) {
+            throw new \Exception("Link #{$this->id} has invalid user.");
+        }
+
+        return $user;
     }
 
     /**
@@ -67,5 +82,39 @@ class Importation
     {
         $this->status = 'error';
         $this->error = $error;
+    }
+
+    /**
+     * @return array{
+     *     'ignore_tags': bool,
+     *     'import_bookmarks': bool,
+     *     'import_favorites': bool,
+     * }
+     */
+    public function pocketOptions(): array
+    {
+        if ($this->type !== 'pocket') {
+            throw new \Exception('This is not a Pocket importation.');
+        }
+
+        $clean_options = [
+            'ignore_tags' => true,
+            'import_bookmarks' => true,
+            'import_favorites' => true,
+        ];
+
+        if (is_bool($this->options['ignore_tags'])) {
+            $clean_options['ignore_tags'] = $this->options['ignore_tags'];
+        }
+
+        if (is_bool($this->options['import_bookmarks'])) {
+            $clean_options['import_bookmarks'] = $this->options['import_bokmarks'];
+        }
+
+        if (is_bool($this->options['import_favorites'])) {
+            $clean_options['import_favorites'] = $this->options['import_favorites'];
+        }
+
+        return $clean_options;
     }
 }
