@@ -42,7 +42,7 @@ a:focus {
     line-height: 1.5;
     text-decoration: none;
 
-    border: 0.1em solid currentColor;
+    border: 0.1em solid currentcolor;
     border-radius: var(--radius-button);
 }
 

@@ -25,6 +25,7 @@
             "functions": "never"
         }],
         "semi": ["error", "always"],
-        "indent": ["error", 4]
+        "indent": ["error", 4],
+        "object-shorthand": ["error", "never"]
     }
 }

@@ -4,7 +4,7 @@ export default class extends Controller {
     static values = {
         mode: String,
         timeout: Number,
-    }
+    };
 
     connect () {
         if (this.modeValue === 'timeout') {

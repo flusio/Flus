@@ -2,11 +2,16 @@
     "extends": "stylelint-config-standard",
 
     "plugins": [
-        "stylelint-order"
+        "stylelint-order",
+        "stylelint-stylistic"
     ],
 
     "rules": {
-        "indentation": 4,
+        "stylistic/indentation": 4,
+
+        "at-rule-no-vendor-prefix": null,
+
+        "color-function-notation": null,
 
         "declaration-empty-line-before": [
             "always",
@@ -17,6 +22,14 @@
         ],
 
         "custom-property-empty-line-before": null,
+
+        "media-feature-range-notation": "prefix",
+
+        "no-irregular-whitespace": null,
+
+        "property-no-vendor-prefix": null,
+
+        "selector-class-pattern": null,
 
         "order/properties-order": [
             {

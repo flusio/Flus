@@ -8,9 +8,9 @@ export default class extends Controller {
         title: String,
         reset: Boolean,
         track: Boolean,
-    }
+    };
 
-    static targets = ['button']
+    static targets = ['button'];
 
     initialize () {
         let backHistory = this.getBackHistory();

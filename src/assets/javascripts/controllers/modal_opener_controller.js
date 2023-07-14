@@ -3,7 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static values = {
         href: String,
-    }
+    };
 
     fetch (event) {
         event.preventDefault();

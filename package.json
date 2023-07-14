@@ -24,17 +24,18 @@
     "js": "./src/assets/javascripts"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.18.2",
-    "eslint": "^7.32.0",
-    "eslint-config-standard": "^14.1.1",
+    "@babel/eslint-parser": "^7.18.0",
+    "eslint": "^8.44.0",
+    "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.3.1",
-    "eslint-plugin-standard": "^4.1.0",
+    "eslint-plugin-promise": "^6.1.0",
+    "eslint-plugin-standard": "^5.0.0",
     "parcel": "^2.7.0",
-    "stylelint": "^13.13.1",
-    "stylelint-config-standard": "^20.0.0",
-    "stylelint-order": "^4.1.0",
+    "stylelint": "^15.10.0",
+    "stylelint-config-standard": "^34.0.0",
+    "stylelint-order": "^6.0.0",
+    "stylelint-stylistic": "^0.4.0",
     "svg-sprite": "^2.0.0"
   },
   "dependencies": {
