@@ -116,19 +116,19 @@ class Link
      */
     public static function copy(self $link, string $user_id): self
     {
-        $link = new self($link->url, $user_id, false);
+        $link_copied = new self($link->url, $user_id, false);
 
-        $link->title = $link->title;
-        $link->url_feeds = $link->url_feeds;
-        $link->url_replies = $link->url_replies;
-        $link->image_filename = $link->image_filename;
-        $link->reading_time = $link->reading_time;
-        $link->fetched_at = $link->fetched_at;
-        $link->fetched_code = $link->fetched_code;
-        $link->fetched_count = $link->fetched_count;
-        $link->via_type = '';
+        $link_copied->title = $link->title;
+        $link_copied->url_feeds = $link->url_feeds;
+        $link_copied->url_replies = $link->url_replies;
+        $link_copied->image_filename = $link->image_filename;
+        $link_copied->reading_time = $link->reading_time;
+        $link_copied->fetched_at = $link->fetched_at;
+        $link_copied->fetched_code = $link->fetched_code;
+        $link_copied->fetched_count = $link->fetched_count;
+        $link_copied->via_type = '';
 
-        return $link;
+        return $link_copied;
     }
 
     /**

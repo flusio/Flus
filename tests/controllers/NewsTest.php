@@ -263,6 +263,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
         ]);
         $this->assertNotNull($news_link);
+        $this->assertSame($link->url, $news_link->url);
+        $this->assertSame($link->title, $news_link->title);
         $this->assertSame('collection', $news_link->via_type);
         $this->assertSame($collection->id, $news_link->via_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
