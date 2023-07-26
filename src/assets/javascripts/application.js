@@ -48,6 +48,14 @@ function adaptLayoutContentBorderRadius () {
 
 document.addEventListener('turbo:load', adaptLayoutContentBorderRadius);
 
+// Make sure to visit the response when receiving the `turbo:frame-missing` event.
+// This happens most of the time on redirection after submitting a form in a modal.
+// Otherwise, "Content missing" would be displayed within the modal.
+document.addEventListener('turbo:frame-missing', (event) => {
+    event.preventDefault();
+    event.detail.visit(event.detail.response);
+});
+
 // Allow to disable scroll on form submission.
 // Submitting forms with a `data-turbo-preserve-scroll` attribute will keep the
 // scroll position at the current position.
