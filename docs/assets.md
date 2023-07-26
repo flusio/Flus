@@ -4,7 +4,7 @@ I use [Parcel](https://parceljs.org/) to bundle the assets. Be aware I use the
 version 2 which is still in beta version. I really like Parcel, but
 unfortunately version 1 is buggy with the setup I want…
 
-Either if you started Parcel via docker-compose or NPM, it will look at two
+Either if you started Parcel via Docker Compose or NPM, it will look at two
 files: [`src/assets/stylesheets/application.css`](/src/assets/stylesheets/application.css)
 and [`src/assets/javascripts/application.js`](/src/assets/javascripts/application.js).
 These files are the entrypoints and load the other CSS and JS files, which are

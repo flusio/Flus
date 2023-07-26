@@ -17,8 +17,7 @@ $ cd flusio
 
 ## With Docker
 
-First, make sure to [install Docker Engine](https://docs.docker.com/engine/install/)
-and [Docker Compose](https://docs.docker.com/compose/install/).
+First, make sure to [install Docker Engine](https://docs.docker.com/engine/install/).
 
 Then, install the dependencies with:
 
@@ -35,7 +34,7 @@ Once this is done, you should start the services:
 $ make docker-start
 ```
 
-This command calls `docker-compose` with the file under the `docker/` folder.
+This command calls `docker compose` with the file under the `docker/` folder.
 The first time you call it, it will download the Docker images and build the
 `php` one with the information from the `docker/Dockerfile.php` file.
 

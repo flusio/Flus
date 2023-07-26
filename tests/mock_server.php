@@ -4,7 +4,7 @@
  * The mock server allows to test HTTP requests without network. It is used
  * with the mockHttpWith* methods from the MockHttpHelper.
  *
- * The mock server is started via the docker-compose file in development and in
+ * The mock server is started via the Docker Compose file in development and in
  * the CI workflow on GitHub Actions with the following command:
  *
  *     php -t . -S 0.0.0.0:8001 ./tests/mock_server.php

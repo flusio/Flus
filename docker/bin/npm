@@ -1,7 +1,7 @@
 #!/bin/bash
 
 flusio-compose () {
-    docker-compose -p flusio -f ./docker/docker-compose.yml "$@"
+    docker compose -p flusio -f ./docker/docker-compose.yml "$@"
 }
 
 if [ -z `flusio-compose ps -q bundler` ] || [ -z `docker ps -q --no-trunc | grep $(flusio-compose ps -q bundler)` ]; then

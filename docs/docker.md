@@ -13,5 +13,5 @@ $ ./docker/bin/cli
 $ ./docker/bin/psql
 ```
 
-They only delegate the commands to their respective containers via `docker-compose`.
+They only delegate the commands to their respective containers via `docker compose`.
 Just take a look at the files to understand!

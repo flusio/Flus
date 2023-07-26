@@ -2,7 +2,7 @@
 
 USER = $(shell id -u):$(shell id -g)
 
-DOCKER_COMPOSE = docker-compose -p flusio -f docker/docker-compose.yml
+DOCKER_COMPOSE = docker compose -p flusio -f docker/docker-compose.yml
 
 ifdef NO_DOCKER
 	PHP = php

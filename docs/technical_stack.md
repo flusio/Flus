@@ -32,7 +32,7 @@ It’s using [PHPUnit 9](https://phpunit.de/) as a testing framework and
 for the PHP files. JS files are linted with [ESLint](https://eslint.org/docs/rules/semi)
 and CSS files with [stylelint](https://stylelint.io/).
 
-The development environment is powered by Docker and docker-compose setting up
+The development environment is powered by Docker and Docker Compose setting up
 4 containers: a PHP development server, a job worker, a PostgreSQL database and
 a Node container running Parcel in watch mode. See the [`docker/` folder](/docker/)
 for more information.
