@@ -4,10 +4,11 @@
  * The mock server allows to test HTTP requests without network. It is used
  * with the mockHttpWith* methods from the MockHttpHelper.
  *
- * The mock server is started via the Docker Compose file in development and in
- * the CI workflow on GitHub Actions with the following command:
+ * The mock server is served by Nginx via the Docker Compose file in
+ * development and in the CI workflow on GitHub Actions with the following
+ * command:
  *
- *     php -t . -S 0.0.0.0:8001 ./tests/mock_server.php
+ *     php -t . -S 0.0.0.0:8001 ./tests/mock_server/index.php
  *
  * The mock host is then declared in the configuration file of the test
  * environment via the MOCK_HOST environment variable. It is passed to the
@@ -60,7 +61,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 
-$app_path = realpath(__DIR__ . '/..');
+$app_path = realpath(__DIR__ . '/../..');
 
 assert($app_path !== false);
 

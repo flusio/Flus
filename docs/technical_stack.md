@@ -33,6 +33,6 @@ for the PHP files. JS files are linted with [ESLint](https://eslint.org/docs/rul
 and CSS files with [stylelint](https://stylelint.io/).
 
 The development environment is powered by Docker and Docker Compose setting up
-4 containers: a PHP development server, a job worker, a PostgreSQL database and
+5 containers: a PHP server, a Nginx server, a job worker, a PostgreSQL database and
 a Node container running Parcel in watch mode. See the [`docker/` folder](/docker/)
 for more information.
