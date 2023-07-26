@@ -23,6 +23,10 @@ class Mailer extends \Minz\Job
     {
         $full_class_name = "\\flusio\\mailers\\{$mailer_class_name}";
         $mailer = new $full_class_name();
-        $mailer->$mailer_action_name(...$args);
+        $result = $mailer->$mailer_action_name(...$args);
+
+        if (!$result) {
+            throw new \Exception("The email {$mailer_class_name}#{$mailer_action_name} cannot be sent.");
+        }
     }
 }
