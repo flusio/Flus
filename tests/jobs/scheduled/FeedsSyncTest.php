@@ -1324,4 +1324,52 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $link = $collection->links()[0];
         $this->assertSame($expected_title, $link->title);
     }
+
+    public function testPerformHandlesWrongEncoding(): void
+    {
+        // Create a XML string declaring encoding UTF-8
+        $xml_feed = <<<XML
+            <?xml version="1.0" encoding="UTF-8"?>
+            <rss version="2.0">
+                <channel>
+                    <title>My feed with an àccent</title>
+                    <link>https://example.com</link>
+                </channel>
+            </rss>
+            XML;
+        // … but its real encoding is ISO-8859-1!
+        $xml_feed = mb_convert_encoding($xml_feed, 'ISO-8859-1', 'UTF-8');
+
+        // Setup the feed
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+        ]);
+        $user = UserFactory::create([
+            'validated_at' => \Minz\Time::now(),
+        ]);
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
+        ]);
+        $hash = \SpiderBits\Cache::hash($feed_url);
+        $raw_response = <<<XML
+        HTTP/2 200 OK
+        Content-Type: application/xml
+
+        {$xml_feed}
+        XML;
+        /** @var string */
+        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
+        $cache->save($hash, $raw_response);
+        $feeds_sync_job = new FeedsSync();
+
+        $feeds_sync_job->perform();
+
+        $collection = $collection->reload();
+        $this->assertSame('My feed with an ?ccent', $collection->name);
+    }
 }

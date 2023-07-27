@@ -249,8 +249,7 @@ class FeedFetcher
                 return;
             }
 
-            $encodings = mb_list_encodings();
-            $data = mb_convert_encoding($response->data, 'UTF-8', $encodings);
+            $data = $response->utf8Data();
 
             $dom = \SpiderBits\Dom::fromText($data);
             $url_illustration = \SpiderBits\DomExtractor::illustration($dom);
@@ -358,10 +357,9 @@ class FeedFetcher
             'status' => $response->status,
         ];
 
-        if (!$response->success) {
-            $encodings = mb_list_encodings();
-            $data = mb_convert_encoding($response->data, 'UTF-8', $encodings);
+        $data = $response->utf8Data();
 
+        if (!$response->success) {
             // Okay, Houston, we've had a problem here. Return early, there's
             // nothing more to do.
             $info['error'] = $data;
@@ -376,7 +374,7 @@ class FeedFetcher
         }
 
         try {
-            $feed = \SpiderBits\feeds\Feed::fromText($response->data);
+            $feed = \SpiderBits\feeds\Feed::fromText($data);
             $info['feed'] = $feed;
         } catch (\Exception $e) {
             $info['error'] = (string)$e;

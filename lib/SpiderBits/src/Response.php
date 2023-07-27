@@ -75,6 +75,70 @@ class Response
     }
 
     /**
+     * Return the encoding of the data.
+     */
+    public function encoding(): string
+    {
+        /** @var string */
+        $content_type = $this->header('content-type', '');
+        $data = mb_substr($this->data, 0, 5000); // look only in the first 5000 characters
+
+        $charset = self::extractCharsetFromContentType($content_type);
+        if ($charset) {
+            // The charset is defined in the Content-Type.
+            return $charset;
+        }
+
+        $result = preg_match(
+            '/^\s*<\?xml\s+(?:(?:.*?)\s)?encoding=[\'"](?P<encoding>.+?)[\'"]/i',
+            $data,
+            $matches
+        );
+
+        if ($result) {
+            // The document declares a XML encoding.
+            return $matches['encoding'];
+        }
+
+        if (!str_contains($content_type, 'text/html')) {
+            // The document isn't declared as HTML, return UTF-8 by default.
+            return 'utf-8';
+        }
+
+        $dom = Dom::fromText($data);
+
+        $node_charset = $dom->select('//meta/attribute::charset');
+        if ($node_charset) {
+            // The HTML document declares a meta charset attribute.
+            return $node_charset->text();
+        }
+
+        $node_http_equiv = $dom->select('//meta[@http-equiv = "Content-Type"]/attribute::content');
+        if ($node_http_equiv) {
+            $charset = self::extractCharsetFromContentType($node_http_equiv->text());
+            if ($charset) {
+                // The HTML document declares a meta http-equiv attribute and a charset.
+                return $charset;
+            }
+        }
+
+        return 'utf-8';
+    }
+
+    /**
+     * Return the data encoded in UTF-8.
+     *
+     * SpiderBits does its best to convert the data to actual utf8. It gets the
+     * encoding from the Content-Type header and/or, for HTML, from the meta
+     * tags.
+     */
+    public function utf8Data(): string
+    {
+        $encoding = $this->encoding();
+        return mb_convert_encoding($this->data, 'utf-8', $encoding);
+    }
+
+    /**
      * Parse the raw headers (i.e. as a string) and return corresponding array
      * where keys are fields names and values are fields contents.
      *
@@ -111,5 +175,21 @@ class Response
         }
 
         return $headers;
+    }
+
+    /**
+     * Return the charset contained in the given content type header, if any.
+     */
+    public static function extractCharsetFromContentType(string $content_type): ?string
+    {
+        $result = preg_match('/charset=(?P<charset>[\w\-\."]+)/i', $content_type, $matches);
+
+        if ($result !== 1) {
+            return null;
+        }
+
+        $charset = $matches['charset'];
+        $charset = trim($charset, '"');
+        return $charset;
     }
 }

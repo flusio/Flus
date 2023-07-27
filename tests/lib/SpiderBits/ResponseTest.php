@@ -177,4 +177,89 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('text/html', $header);
     }
+
+    public function testEncodingWithNoSpecifiedEncoding(): void
+    {
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/plain\r
+        \r
+        Hello World!
+        TEXT;
+        $response = Response::fromText($text);
+
+        $encoding = $response->encoding();
+
+        $this->assertSame('utf-8', $encoding);
+    }
+
+    public function testEncodingWithEncodingInContentType(): void
+    {
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/plain; charset="iso-8859-1"\r
+        \r
+        Hello World!
+        TEXT;
+        $response = Response::fromText($text);
+
+        $encoding = $response->encoding();
+
+        $this->assertSame('iso-8859-1', $encoding);
+    }
+
+    public function testEncodingWithHtmlMetaCharset(): void
+    {
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/html\r
+        \r
+        <html>
+            <head>
+                <meta charset="iso-8859-1" />
+            </head>
+        </html>
+        TEXT;
+        $response = Response::fromText($text);
+
+        $encoding = $response->encoding();
+
+        $this->assertSame('iso-8859-1', $encoding);
+    }
+
+    public function testEncodingWithHtmlMetaHttpEquiv(): void
+    {
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/html\r
+        \r
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+            </head>
+        </html>
+        TEXT;
+        $response = Response::fromText($text);
+
+        $encoding = $response->encoding();
+
+        $this->assertSame('iso-8859-1', $encoding);
+    }
+
+    public function testEncodingWithXmlEncoding(): void
+    {
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/xml\r
+        \r
+        <?xml version="1.0" encoding="iso-8859-1"?>
+        <feed>
+        </feed>
+        TEXT;
+        $response = Response::fromText($text);
+
+        $encoding = $response->encoding();
+
+        $this->assertSame('iso-8859-1', $encoding);
+    }
 }
