@@ -113,7 +113,7 @@ class Http
 
         if (isset($options['max_size'])) {
             $max_size = $options['max_size'];
-            curl_setopt($curl_handle, CURLOPT_BUFFERSIZE, 128);
+            curl_setopt($curl_handle, CURLOPT_BUFFERSIZE, 16 * 1024);
             curl_setopt($curl_handle, CURLOPT_NOPROGRESS, false);
             curl_setopt(
                 $curl_handle,
