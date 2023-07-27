@@ -10,6 +10,14 @@ include $app_path . '/autoload.php';
 
 \Minz\Engine::startSession();
 
+\Minz\Database::reset();
+$schema = @file_get_contents(\Minz\Configuration::$schema_path);
+
+assert($schema !== false);
+
+$database = \Minz\Database::get();
+$database->exec($schema);
+
 $faker = \Faker\Factory::create();
 
 $faker_seed = getenv('SEED');
