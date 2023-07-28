@@ -39,24 +39,36 @@ class Feed
             throw new \DomainException('The string must not be empty.');
         }
 
-        $dom_document = new \DOMDocument();
+        if (str_starts_with($feed_as_string, '{')) {
+            $json_document = json_decode($feed_as_string, true);
 
-        $result = @$dom_document->loadXML($feed_as_string);
+            if (!is_array($json_document)) {
+                throw new \DomainException('Can’t parse the given string.');
+            }
 
-        if (!$result) {
-            throw new \DomainException('Can’t parse the given string.');
-        }
+            if (JsonParser::canHandle($json_document)) {
+                return JsonParser::parse($json_document);
+            }
+        } else {
+            $dom_document = new \DOMDocument();
 
-        if (AtomParser::canHandle($dom_document)) {
-            return AtomParser::parse($dom_document);
-        }
+            $result = @$dom_document->loadXML($feed_as_string);
 
-        if (RssParser::canHandle($dom_document)) {
-            return RssParser::parse($dom_document);
-        }
+            if (!$result) {
+                throw new \DomainException('Can’t parse the given string.');
+            }
 
-        if (RdfParser::canHandle($dom_document)) {
-            return RdfParser::parse($dom_document);
+            if (AtomParser::canHandle($dom_document)) {
+                return AtomParser::parse($dom_document);
+            }
+
+            if (RssParser::canHandle($dom_document)) {
+                return RssParser::parse($dom_document);
+            }
+
+            if (RdfParser::canHandle($dom_document)) {
+                return RdfParser::parse($dom_document);
+            }
         }
 
         throw new \DomainException('Given string is not a supported standard.');
@@ -84,6 +96,8 @@ class Feed
             str_contains($content_type, 'application/atom+xml') ||
             str_contains($content_type, 'application/rss+xml') ||
             str_contains($content_type, 'application/x-rss+xml') ||
+            str_contains($content_type, 'application/feed+json') ||
+            str_contains($content_type, 'application/json') ||
             str_contains($content_type, 'application/rdf+xml') ||
             str_contains($content_type, 'application/xml') ||
             str_contains($content_type, 'text/rss+xml') ||

@@ -301,6 +301,41 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('9e5d2601871593c916b93e205cf4c80ebe11aaa08a55a1b220f0f6b634f35a8e', $feed->hash());
     }
 
+    public function testFromTextWithJsonFeed(): void
+    {
+        $feed_as_string = file_get_contents(self::$examples_path . '/jsonfeed.json');
+
+        $this->assertNotFalse($feed_as_string);
+
+        $feed = Feed::fromText($feed_as_string);
+
+        $this->assertSame('json', $feed->type);
+        $this->assertSame('JSON Feed', $feed->title);
+        $this->assertSame('', $feed->description);
+        $this->assertSame('https://www.jsonfeed.org/', $feed->link);
+        $this->assertSame('https://www.jsonfeed.org/', $feed->links['alternate']);
+        $this->assertSame('https://www.jsonfeed.org/feed.json', $feed->links['self']);
+        $this->assertSame(0, count($feed->categories));
+        $this->assertSame(2, count($feed->entries));
+        $entry = $feed->entries[0];
+        $this->assertSame('JSON Feed version 1.1', $entry->title);
+        $this->assertSame(
+            'https://www.jsonfeed.org/2020/08/07/json-feed-version.html',
+            $entry->link
+        );
+        $this->assertSame(
+            'https://www.jsonfeed.org/2020/08/07/json-feed-version.html',
+            $entry->links['alternate']
+        );
+        $this->assertSame('http://jsonfeed.micro.blog/2020/08/07/json-feed-version.html', $entry->id);
+        $this->assertStringContainsString('We&rsquo;ve updated the spec', $entry->content);
+        $this->assertSame('html', $entry->content_type);
+        $this->assertNotNull($entry->published_at);
+        $this->assertSame(1596818676, $entry->published_at->getTimestamp());
+        $this->assertSame(0, count($entry->categories));
+        $this->assertSame('04a990debeee9eb515c9bb5fdd5b732f692b723a84776842628cb93c39e7d271', $feed->hash());
+    }
+
     public function testFromTextWithDatesWithMilliseconds(): void
     {
         $feed_as_string = file_get_contents(self::$examples_path . '/dates-with-milliseconds.atom.xml');
@@ -418,6 +453,8 @@ class FeedTest extends \PHPUnit\Framework\TestCase
             ['application/atom+xml'],
             ['application/rss+xml'],
             ['application/x-rss+xml'],
+            ['application/feed+json'],
+            ['application/json'],
             ['application/rdf+xml'],
             ['application/xml'],
             ['text/rss+xml'],
