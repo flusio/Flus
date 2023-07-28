@@ -67,7 +67,7 @@
                 </button>
             </div>
         </form>
-    <?php elseif ($current_user->pocket_access_token): ?>
+    <?php elseif ($pocket_account && $pocket_account->access_token): ?>
         <form method="post" action="<?= url('import pocket') ?>">
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
@@ -158,7 +158,7 @@
 
         <p class="paragraph--centered paragraph--secondary">
             <small>
-                <?= _f('connected with account <em>%s</em>', protect($current_user->pocket_username)) ?>
+                <?= _f('connected with account <em>%s</em>', protect($pocket_account->username)) ?>
             </small>
         </p>
     <?php else: ?>

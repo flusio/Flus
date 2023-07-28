@@ -46,12 +46,7 @@ CREATE TABLE users (
     subscription_account_id TEXT,
     subscription_expired_at TIMESTAMPTZ
         NOT NULL
-        DEFAULT date_trunc('second', NOW() + INTERVAL '1 month'),
-
-    pocket_request_token TEXT,
-    pocket_access_token TEXT,
-    pocket_username TEXT,
-    pocket_error INTEGER
+        DEFAULT date_trunc('second', NOW() + INTERVAL '1 month')
 );
 
 CREATE INDEX idx_users_email ON users(email);
@@ -237,3 +232,15 @@ CREATE TABLE collections_to_topics (
 
 CREATE UNIQUE INDEX idx_collections_to_topics ON collections_to_topics(collection_id, topic_id);
 CREATE INDEX idx_collections_to_topics_topic_id ON collections_to_topics(topic_id);
+
+CREATE TABLE pocket_accounts (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+
+    username TEXT,
+    request_token TEXT,
+    access_token TEXT,
+    error INTEGER,
+
+    user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);

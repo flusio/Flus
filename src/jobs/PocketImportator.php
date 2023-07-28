@@ -39,9 +39,11 @@ class PocketImportator extends \Minz\Job
             return;
         }
 
-        $pocket_access_token = $user->pocket_access_token;
+        $pocket_account = models\PocketAccount::findBy([
+            'user_id' => $user->id,
+        ]);
 
-        if (!$pocket_access_token) {
+        if (!$pocket_account || !$pocket_account->access_token) {
             $importation->fail(
                 _('We tried to import from Pocket, but you didn’t authorize us to access your Pocket data.')
             );
@@ -60,7 +62,7 @@ class PocketImportator extends \Minz\Job
         $exit_loop = false;
         while (!$exit_loop) {
             try {
-                $items = $pocket_service->retrieve($pocket_access_token, [
+                $items = $pocket_service->retrieve($pocket_account->access_token, [
                     'state' => 'all',
                     'detailType' => 'complete',
                     'sort' => 'newest',
@@ -68,8 +70,9 @@ class PocketImportator extends \Minz\Job
                     'offset' => $offset,
                 ]);
             } catch (services\PocketError $e) {
-                $user->pocket_error = (string) $e->getCode();
-                $user->save();
+                $pocket_account->error = $e->getCode();
+                $pocket_account->save();
+
                 $error = $e->getMessage();
                 break;
             }

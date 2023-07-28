@@ -91,18 +91,6 @@ class User
     #[Database\Column]
     public bool $option_compact_mode;
 
-    #[Database\Column]
-    public ?string $pocket_username;
-
-    #[Database\Column]
-    public ?string $pocket_access_token;
-
-    #[Database\Column]
-    public ?string $pocket_request_token;
-
-    #[Database\Column]
-    public ?string $pocket_error;
-
     public function __construct(string $username, string $email, string $password)
     {
         $this->id = \Minz\Random::timebased();

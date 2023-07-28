@@ -7,6 +7,7 @@ use flusio\models;
 use flusio\services;
 use flusio\utils;
 use tests\factories\ImportationFactory;
+use tests\factories\PocketAccountFactory;
 use tests\factories\UserFactory;
 
 class PocketTest extends \PHPUnit\Framework\TestCase
@@ -119,8 +120,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     public function testImportRegistersAPocketImportatorJobAndRedirects(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
-        $user = $this->login([
-            'pocket_access_token' => 'some token',
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => 'some token',
         ]);
 
         $this->assertSame(0, models\Importation::count());
@@ -149,7 +152,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$jobs_adapter = 'database';
         $user = UserFactory::create([
             'csrf' => 'some token',
-            'pocket_access_token' => 'some token',
+        ]);
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => 'some token',
         ]);
 
         $response = $this->appRun('POST', '/pocket', [
@@ -167,8 +173,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     {
         \Minz\Configuration::$application['pocket_consumer_key'] = null;
         \Minz\Configuration::$jobs_adapter = 'database';
-        $user = $this->login([
-            'pocket_access_token' => 'some token',
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => 'some token',
         ]);
 
         $response = $this->appRun('POST', '/pocket', [
@@ -185,8 +193,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     public function testImportFailsIfUserHasNoAccessToken(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
-        $user = $this->login([
-            'pocket_access_token' => null,
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => null,
         ]);
 
         $response = $this->appRun('POST', '/pocket', [
@@ -204,8 +214,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     public function testImportFailsIfCsrfIsInvalid(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
-        $user = $this->login([
-            'pocket_access_token' => 'some token',
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => 'some token',
         ]);
 
         $response = $this->appRun('POST', '/pocket', [
@@ -223,8 +235,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     public function testImportFailsIfAnImportAlreadyExists(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
-        $user = $this->login([
-            'pocket_access_token' => 'some token',
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => 'some token',
         ]);
         ImportationFactory::create([
             'type' => 'pocket',
@@ -254,19 +268,20 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             {"code": "{$code}"}
             TEXT
         );
-        $user = $this->login([
-            'pocket_request_token' => null,
-        ]);
+        $user = $this->login();
+
+        $this->assertSame(0, models\PocketAccount::count());
 
         $response = $this->appRun('POST', '/pocket/request', [
             'csrf' => $user->csrf,
         ]);
 
-        $user = $user->reload();
-        $this->assertSame($code, $user->pocket_request_token);
+        $pocket_account = models\PocketAccount::take();
+        $this->assertNotNull($pocket_account);
+        $this->assertSame($code, $pocket_account->request_token);
         $auth_url = urlencode(\Minz\Url::absoluteFor('pocket auth'));
         $expected_url = 'https://getpocket.com/auth/authorize';
-        $expected_url .= "?request_token={$user->pocket_request_token}";
+        $expected_url .= "?request_token={$pocket_account->request_token}";
         $expected_url .= "&redirect_uri={$auth_url}";
         $this->assertResponseCode($response, 302, $expected_url);
     }
@@ -276,20 +291,26 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'request_token' => null,
+        ]);
 
         $response = $this->appRun('POST', '/pocket/request', [
             'csrf' => 'a token',
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket');
-        $user = $user->reload();
-        $this->assertNull($user->pocket_request_token);
+        $pocket_account = $pocket_account->reload();
+        $this->assertNull($pocket_account->request_token);
     }
 
     public function testRequestAccessFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login([
-            'pocket_request_token' => null,
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'request_token' => null,
         ]);
 
         $response = $this->appRun('POST', '/pocket/request', [
@@ -298,15 +319,17 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/pocket');
         $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
-        $user = $user->reload();
-        $this->assertNull($user->pocket_request_token);
+        $pocket_account = $pocket_account->reload();
+        $this->assertNull($pocket_account->request_token);
     }
 
     public function testRequestAccessFailsIfPocketNotConfigured(): void
     {
         \Minz\Configuration::$application['pocket_consumer_key'] = null;
-        $user = $this->login([
-            'pocket_request_token' => null,
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'request_token' => null,
         ]);
 
         $response = $this->appRun('POST', '/pocket/request', [
@@ -314,14 +337,16 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $user = $user->reload();
-        $this->assertNull($user->pocket_request_token);
+        $pocket_account = $pocket_account->reload();
+        $this->assertNull($pocket_account->request_token);
     }
 
     public function testAuthorizationRendersCorrectly(): void
     {
-        $this->login([
-            'pocket_request_token' => 'some token',
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'request_token' => 'some token',
         ]);
 
         $response = $this->appRun('GET', '/pocket/auth');
@@ -340,8 +365,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testAuthorizationRedirectsIfUserHasNoRequestToken(): void
     {
-        $this->login([
-            'pocket_request_token' => null,
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'request_token' => null,
         ]);
 
         $response = $this->appRun('GET', '/pocket/auth');
@@ -352,8 +379,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     public function testAuthorizationFailsIfPocketNotConfigured(): void
     {
         \Minz\Configuration::$application['pocket_consumer_key'] = null;
-        $this->login([
-            'pocket_request_token' => 'some token',
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'request_token' => 'some token',
         ]);
 
         $response = $this->appRun('GET', '/pocket/auth');
@@ -376,8 +405,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testAuthorizeRedirectsIfUserHasNoRequestToken(): void
     {
-        $user = $this->login([
-            'pocket_request_token' => null,
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'request_token' => null,
         ]);
 
         $response = $this->appRun('POST', '/pocket/auth', [
@@ -390,8 +421,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     public function testAuthorizeFailsIfPocketNotConfigured(): void
     {
         \Minz\Configuration::$application['pocket_consumer_key'] = null;
-        $user = $this->login([
-            'pocket_request_token' => 'some token',
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'request_token' => 'some token',
         ]);
 
         $response = $this->appRun('POST', '/pocket/auth', [
@@ -403,8 +436,10 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testAuthorizeFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login([
-            'pocket_request_token' => 'some token',
+        $user = $this->login();
+        $pocket_account = PocketAccountFactory::create([
+            'user_id' => $user->id,
+            'request_token' => 'some token',
         ]);
 
         $response = $this->appRun('POST', '/pocket/auth', [

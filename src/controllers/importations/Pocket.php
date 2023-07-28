@@ -43,6 +43,7 @@ class Pocket
         ]);
         return Response::ok('importations/pocket/show.phtml', [
             'importation' => $importation,
+            'pocket_account' => models\PocketAccount::findBy(['user_id' => $user->id]),
         ]);
     }
 
@@ -77,6 +78,10 @@ class Pocket
             ]);
         }
 
+        $pocket_account = models\PocketAccount::findBy([
+            'user_id' => $user->id,
+        ]);
+
         $importation = models\Importation::findBy([
             'type' => 'pocket',
             'user_id' => $user->id,
@@ -84,13 +89,15 @@ class Pocket
         if ($importation) {
             return Response::badRequest('importations/pocket/show.phtml', [
                 'importation' => $importation,
+                'pocket_account' => $pocket_account,
                 'error' => _('You already have an ongoing Pocket importation.')
             ]);
         }
 
-        if (!$user->pocket_access_token) {
+        if (!$pocket_account || !$pocket_account->access_token) {
             return Response::badRequest('importations/pocket/show.phtml', [
                 'importation' => null,
+                'pocket_account' => $pocket_account,
                 'error' => _('You didn’t authorize us to access your Pocket data.'),
             ]);
         }
@@ -99,6 +106,7 @@ class Pocket
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('importations/pocket/show.phtml', [
                 'importation' => null,
+                'pocket_account' => $pocket_account,
                 'error' => _('A security verification failed.'),
             ]);
         }
@@ -157,14 +165,14 @@ class Pocket
         try {
             $redirect_uri = \Minz\Url::absoluteFor('pocket auth');
             $request_token = $pocket_service->requestToken($redirect_uri);
-            $user->pocket_request_token = $request_token;
-            $user->save();
+
+            $pocket_account = new models\PocketAccount($user->id);
+            $pocket_account->request_token = $request_token;
+            $pocket_account->save();
 
             $auth_url = $pocket_service->authorizationUrl($request_token, $redirect_uri);
             return Response::found($auth_url);
         } catch (services\PocketError $e) {
-            $user->pocket_error = (string) $e->getCode();
-            $user->save();
             \Minz\Flash::set('error', $e->getMessage());
             return Response::redirect('pocket');
         }
@@ -194,7 +202,11 @@ class Pocket
             ]);
         }
 
-        if (!$user->pocket_request_token) {
+        $pocket_account = models\PocketAccount::findBy([
+            'user_id' => $user->id,
+        ]);
+
+        if (!$pocket_account || !$pocket_account->request_token) {
             return Response::redirect('pocket');
         }
 
@@ -232,7 +244,11 @@ class Pocket
             ]);
         }
 
-        if (!$user->pocket_request_token) {
+        $pocket_account = models\PocketAccount::findBy([
+            'user_id' => $user->id,
+        ]);
+
+        if (!$pocket_account || !$pocket_account->request_token) {
             return Response::redirect('pocket');
         }
 
@@ -248,16 +264,16 @@ class Pocket
         $pocket_service = new services\Pocket($consumer_key);
 
         try {
-            list($access_token, $username) = $pocket_service->accessToken($user->pocket_request_token);
+            list($access_token, $username) = $pocket_service->accessToken($pocket_account->request_token);
 
-            $user->pocket_access_token = $access_token;
-            $user->pocket_username = $username;
-            $user->pocket_request_token = null;
-            $user->save();
+            $pocket_account->access_token = $access_token;
+            $pocket_account->username = $username;
+            $pocket_account->request_token = null;
+            $pocket_account->save();
         } catch (services\PocketError $e) {
-            $user->pocket_request_token = null;
-            $user->pocket_error = (string) $e->getCode();
-            $user->save();
+            $pocket_account->request_token = null;
+            $pocket_account->error = $e->getCode();
+            $pocket_account->save();
             \Minz\Flash::set('error', $e->getMessage());
         }
 
