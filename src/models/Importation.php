@@ -108,7 +108,7 @@ class Importation
         }
 
         if (is_bool($this->options['import_bookmarks'])) {
-            $clean_options['import_bookmarks'] = $this->options['import_bokmarks'];
+            $clean_options['import_bookmarks'] = $this->options['import_bookmarks'];
         }
 
         if (is_bool($this->options['import_favorites'])) {
