@@ -50,7 +50,7 @@ return [
         'job_feeds_sync_count' => 1,
         'job_links_sync_count' => 1,
         'server_ips' => [],
-        'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY'),
+        'pocket_consumer_key' => 'some token',
         'cli_locale' => 'en_GB',
         'mock_host' => $dotenv->pop('MOCK_HOST'),
     ],
