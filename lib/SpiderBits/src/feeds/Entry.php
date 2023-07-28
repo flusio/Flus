@@ -10,27 +10,21 @@ namespace SpiderBits\feeds;
  */
 class Entry
 {
-    /** @var string */
-    public $id = '';
+    public string $id = '';
 
-    /** @var string */
-    public $title = '';
+    public string $title = '';
 
-    /** @var string */
-    public $link = '';
+    public string $link = '';
 
     /** @var string[] */
-    public $links = [];
+    public array $links = [];
 
     /** @var string[] */
-    public $categories = [];
+    public array $categories = [];
 
-    /** @var ?\DateTimeImmutable */
-    public $published_at = null;
+    public ?\DateTimeImmutable $published_at = null;
 
-    /** @var string */
-    public $content_type = 'text';
+    public string $content_type = 'text';
 
-    /** @var string */
-    public $content = ''; // Warning: content is not suitable to be displayed, it should be sanitized first!
+    public string $content = ''; // Warning: content is not suitable to be displayed, it should be sanitized first!
 }

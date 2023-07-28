@@ -10,37 +10,29 @@ namespace SpiderBits\feeds;
  */
 class Feed
 {
-    /** @var string */
-    public $type = '';
+    public string $type = '';
 
-    /** @var string */
-    public $title = '';
+    public string $title = '';
 
-    /** @var string */
-    public $description = '';
+    public string $description = '';
 
-    /** @var string */
-    public $link = '';
+    public string $link = '';
 
     /** @var string[] */
-    public $links = [];
+    public array $links = [];
 
     /** @var string[] */
-    public $categories = [];
+    public array $categories = [];
 
     /** @var \SpiderBits\feeds\Entry[] */
-    public $entries = [];
+    public array $entries = [];
 
     /**
      * Return a new Feed object from text.
      *
-     * @param string $feed_as_string
-     *
      * @throws \DomainException if the string cannot be parsed.
-     *
-     * @return \SpiderBits\feeds\Feed
      */
-    public static function fromText($feed_as_string)
+    public static function fromText(string $feed_as_string): self
     {
         $feed_as_string = trim($feed_as_string);
         if (!$feed_as_string) {
@@ -72,12 +64,8 @@ class Feed
 
     /**
      * Returns whether a string is a valid feed.
-     *
-     * @param string $feed_as_string
-     *
-     * @return boolean
      */
-    public static function isFeed($feed_as_string)
+    public static function isFeed(string $feed_as_string): bool
     {
         try {
             self::fromText($feed_as_string);
@@ -89,12 +77,8 @@ class Feed
 
     /**
      * Return whether a string is a valid feed content type.
-     *
-     * @param string $content_type
-     *
-     * @return boolean
      */
-    public static function isFeedContentType($content_type)
+    public static function isFeedContentType(string $content_type): bool
     {
         return (
             strpos($content_type, 'application/atom+xml') !== false ||
@@ -110,10 +94,8 @@ class Feed
 
     /**
      * Return a unique hash of the given feed.
-     *
-     * @return string
      */
-    public function hash()
+    public function hash(): string
     {
         return hash('sha256', serialize([
             $this->title,

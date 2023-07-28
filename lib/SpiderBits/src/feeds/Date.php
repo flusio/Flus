@@ -9,14 +9,10 @@ namespace SpiderBits\feeds;
 class Date
 {
     /**
-     * Parse the given string date
-     *
-     * @param string $string_date
-     *
-     * @return \DateTimeImmutable|false
-     *     Return the parsed DateTimeImmutable, or false if the string cannot be parsed.
+     * Parse the given string date and return a DateTimeImmutable, or false if
+     * the string cannot be parsed.
      */
-    public static function parse($string_date)
+    public static function parse(string $string_date): \DateTimeImmutable|false
     {
         // The list is inspired by feed-io, but the duplicated formats have
         // been removed.
