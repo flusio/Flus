@@ -29,15 +29,32 @@
 
 <div class="section">
     <?php if ($link->image_filename): ?>
-        <img
-            class="section__image"
-            alt=""
-            src="<?= url_media('large', $link->image_filename) ?>"
-        />
+        <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="<?= protect($link->url) ?>"
+            tabindex="-1"
+        >
+            <img
+                class="section__image"
+                alt="<?= protect($link->title) ?>"
+                src="<?= url_media('large', $link->image_filename) ?>"
+            />
+        </a>
     <?php endif; ?>
 
     <div class="section__title">
-        <h1><?= protect($link->title) ?></h1>
+        <h1>
+            <a
+                class="anchor--hidden"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="<?= protect($link->url) ?>"
+                tabindex="-1"
+            >
+                <?= protect($link->title) ?>
+            </a>
+        </h1>
     </div>
 
     <p class="section__intro">
