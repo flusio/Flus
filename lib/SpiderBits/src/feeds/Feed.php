@@ -81,14 +81,14 @@ class Feed
     public static function isFeedContentType(string $content_type): bool
     {
         return (
-            strpos($content_type, 'application/atom+xml') !== false ||
-            strpos($content_type, 'application/rss+xml') !== false ||
-            strpos($content_type, 'application/x-rss+xml') !== false ||
-            strpos($content_type, 'application/rdf+xml') !== false ||
-            strpos($content_type, 'application/xml') !== false ||
-            strpos($content_type, 'text/rss+xml') !== false ||
-            strpos($content_type, 'text/xml') !== false ||
-            strpos($content_type, 'text/plain') !== false
+            str_contains($content_type, 'application/atom+xml') ||
+            str_contains($content_type, 'application/rss+xml') ||
+            str_contains($content_type, 'application/x-rss+xml') ||
+            str_contains($content_type, 'application/rdf+xml') ||
+            str_contains($content_type, 'application/xml') ||
+            str_contains($content_type, 'text/rss+xml') ||
+            str_contains($content_type, 'text/xml') ||
+            str_contains($content_type, 'text/plain')
         );
     }
 
