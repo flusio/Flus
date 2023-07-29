@@ -44,7 +44,7 @@ class AtomParser
             }
 
             if ($tagName === 'subtitle') {
-                $feed->description = trim(htmlspecialchars_decode($value, ENT_QUOTES));
+                $feed->description = $value;
             }
 
             if ($tagName === 'link') {

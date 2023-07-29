@@ -352,7 +352,19 @@ class Collection
      */
     public function descriptionAsHtml(): string
     {
-        $markdown = new utils\MiniMarkdown();
-        return $markdown->text($this->description);
+        if ($this->type === 'collection') {
+            $markdown = new utils\MiniMarkdown();
+            return $markdown->text($this->description);
+        } else {
+            if ($this->feed_site_url) {
+                $site_url = $this->feed_site_url;
+            } elseif ($this->feed_url) {
+                $site_url = $this->feed_url;
+            } else {
+                $site_url = '';
+            }
+
+            return utils\HtmlSanitizer::sanitizeCollectionDescription($this->description, $site_url);
+        }
     }
 }

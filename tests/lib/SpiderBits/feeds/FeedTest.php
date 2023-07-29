@@ -100,7 +100,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('rss', $feed->type);
         $this->assertSame("Stories by L'avertY on Medium", $feed->title);
-        $this->assertSame("Stories by L'avertY on Medium", $feed->description);
+        $this->assertSame("Stories by L&#39;avertY on Medium", $feed->description);
         $this->assertSame('https://medium.com/@lavertygrenoble?source=rss-644186d8e612------2', $feed->link);
         $this->assertSame(
             'https://medium.com/@lavertygrenoble?source=rss-644186d8e612------2',
@@ -130,7 +130,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1614070752, $entry->published_at->getTimestamp());
         $this->assertSame(5, count($entry->categories));
         $this->assertSame('grenoble', $entry->categories['grenoble']);
-        $this->assertSame('d4fb468a697843eacd24d83a3e416583f5467b449abf6b2aa87530373563fd25', $feed->hash());
+        $this->assertSame('00bd4b55adb50cfaa2b8dab14d28df25b3ab23186fe9920103df67c38c208585', $feed->hash());
     }
 
     public function testFromTextWithVimeoSudWeb(): void

@@ -33,7 +33,7 @@ class JsonParser
         $feed->type = 'json';
 
         $feed->title = self::getSecureString($json_document, 'title');
-        $feed->description = self::getSecureString($json_document, 'description');
+        $feed->description = $json_document['description'] ?? '';
 
         $link_url = self::getSecureString($json_document, 'home_page_url');
         if ($link_url) {

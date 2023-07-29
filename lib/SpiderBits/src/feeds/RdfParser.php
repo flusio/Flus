@@ -51,7 +51,7 @@ class RdfParser
             }
 
             if ($tagName === 'description') {
-                $feed->description = trim(htmlspecialchars_decode($value, ENT_QUOTES));
+                $feed->description = $value;
             }
 
             if ($tagName === 'link') {
