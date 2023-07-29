@@ -64,9 +64,7 @@ class Dom
         }
 
         try {
-            /** @var \DOMDocument */
-            $clone_dom = $this->dom->cloneNode(true);
-            return new self($clone_dom, $xpath_query);
+            return new self($this->dom, $xpath_query);
         } catch (\DomainException $e) {
             return null;
         }

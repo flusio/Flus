@@ -150,7 +150,7 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $dom->text());
     }
 
-    public function testRemoveDoesNotAlterInitialDomIfSelected(): void
+    public function testRemoveAltersInitialDomIfSelected(): void
     {
         $dom = Dom::fromText(<<<HTML
             <html>
@@ -165,8 +165,8 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($body);
         $body->remove('//div');
 
-        $this->assertStringContainsString('Hello World!', $dom->text());
-        $this->assertStringContainsString('Hello You!', $dom->text());
         $this->assertSame('Hello World!', $body->text());
+        $this->assertStringContainsString('Hello World!', $dom->text());
+        $this->assertStringNotContainsString('Hello You!', $dom->text());
     }
 }
