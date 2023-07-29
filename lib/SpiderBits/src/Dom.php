@@ -98,11 +98,15 @@ class Dom
     /**
      * Return the selected nodes.
      *
-     * @return \DOMNodeList<\DOMNode>
+     * @return \DOMNodeList<\DOMNode>|array{}
      */
-    public function list(): ?\DOMNodeList
+    public function list(): mixed
     {
-        return $this->nodes_selected;
+        if ($this->nodes_selected) {
+            return $this->nodes_selected;
+        } else {
+            return [];
+        }
     }
 
     /**

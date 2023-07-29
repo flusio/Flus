@@ -139,10 +139,6 @@ class DomExtractor
         }
 
         $nodes = $nodes->list();
-        if ($nodes === null) {
-            return [];
-        }
-
         $feeds = [];
 
         foreach ($nodes as $node) {
