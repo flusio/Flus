@@ -5,7 +5,7 @@ notions in sysadmin. First, make sure you match with the following
 requirements:
 
 - git, Nginx, PHP 8.1+ and PostgreSQL 13+ are installed on your server;
-- PHP requires `intl`, `gettext`, `pcntl`, `gd`, `pdo` and `pdo_pgsql` extensions;
+- PHP requires `intl`, `gettext`, `pcntl`, `gd` (with at least WebP support), `pdo` and `pdo_pgsql` extensions;
 - your PostgreSQL user must have the permission to create a database;
 - flusio must be served over <abbr>HTTPS</abbr>.
 

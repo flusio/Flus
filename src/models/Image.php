@@ -3,6 +3,8 @@
 namespace flusio\models;
 
 /**
+ * Create and manipulate Webp images
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -14,16 +16,9 @@ class Image
 
     private int $height;
 
-    /** @var 'jpeg'|'png'|'webp' */
-    private string $type;
-
-    /**
-     * @param 'jpeg'|'png'|'webp' $type
-     */
-    public function __construct(\GdImage $resource, string $type)
+    public function __construct(\GdImage $resource)
     {
         $this->resource = $resource;
-        $this->type = $type;
         $this->width = imagesx($resource);
         $this->height = imagesy($resource);
     }
@@ -33,45 +28,13 @@ class Image
      */
     public static function fromString(string $string_image): self
     {
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $mime = finfo_buffer($finfo, $string_image);
-
-        if ($mime === false) {
-            $mime = '';
-        }
-
-        switch (strtolower($mime)) {
-            case 'image/jpg':
-            case 'image/jpeg':
-            case 'image/pjpeg':
-                $type = 'jpeg';
-                break;
-            case 'image/png':
-            case 'image/x-png':
-                $type = 'png';
-                break;
-            case 'image/webp':
-            case 'image/x-webp':
-                $type = 'webp';
-                break;
-            default:
-                throw new \DomainException("The given string doesn’t look like a supported image ({$mime})");
-        }
-
         $resource = @imagecreatefromstring($string_image);
+
         if (!$resource) {
             throw new \DomainException('Cannot create an image from the given string');
         }
 
-        return new self($resource, $type);
-    }
-
-    /**
-     * @return string
-     */
-    public function type()
-    {
-        return $this->type;
+        return new self($resource);
     }
 
     /**
@@ -140,19 +103,9 @@ class Image
     /**
      * Save the image on disk.
      */
-    public function save(string $filepath): void
+    public function save(string $filepath): bool
     {
-        switch ($this->type) {
-            case 'jpeg':
-                imagejpeg($this->resource, $filepath);
-                break;
-            case 'png':
-                imagepng($this->resource, $filepath);
-                break;
-            case 'webp':
-                imagewebp($this->resource, $filepath);
-                break;
-        }
+        return imagewebp($this->resource, $filepath);
     }
 
     /**

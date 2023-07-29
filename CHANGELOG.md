@@ -15,6 +15,8 @@ $ php cli jobs watch --stop-after=1
 
 The `run` command now takes a job id to execute a specific job.
 
+WebP support is now required as all the (new) images are now converted to WebP.
+
 ## 2023-04-07 - v0.54
 
 ### Security

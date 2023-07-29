@@ -164,7 +164,7 @@ class Images
             @unlink($large_path . $collection->image_filename);
         }
 
-        $image_filename = "{$collection->id}.{$card_image->type()}";
+        $image_filename = "{$collection->id}.webp";
         $card_image->save($card_path . $image_filename);
         $cover_image->save($cover_path . $image_filename);
         $large_image->save($large_path . $image_filename);

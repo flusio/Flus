@@ -94,7 +94,7 @@ class Avatar
             @unlink("{$avatars_path}/{$subpath}/{$user->avatar_filename}");
         }
 
-        $image_filename = "{$user->id}.{$image->type()}";
+        $image_filename = "{$user->id}.webp";
         $image->save("{$avatar_path}/{$image_filename}");
 
         $user->avatar_filename = $image_filename;

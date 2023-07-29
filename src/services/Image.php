@@ -86,17 +86,17 @@ class Image
             // quality as high as possible
             $card_image = models\Image::fromString($response->data);
             $card_image->resize(300, 150);
-            $card_image->save($card_image_filepath . '.' . $card_image->type());
+            $card_image->save($card_image_filepath . '.webp');
 
             $cover_image = models\Image::fromString($response->data);
             $cover_image->resize(300, 300);
-            $cover_image->save($cover_image_filepath . '.' . $card_image->type());
+            $cover_image->save($cover_image_filepath . '.webp');
 
             $large_image = models\Image::fromString($response->data);
             $large_image->resize(1100, 250);
-            $large_image->save($large_image_filepath . '.' . $large_image->type());
+            $large_image->save($large_image_filepath . '.webp');
 
-            return $url_hash . '.' . $card_image->type();
+            return $url_hash . '.webp';
         } catch (\DomainException $e) {
             \Minz\Log::warning("Can’t save preview image ({$image_url})");
             return '';

@@ -36,7 +36,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/my/profile');
         $user = $user->reload();
-        $this->assertSame($user->id . '.png', $user->avatar_filename);
+        $this->assertSame($user->id . '.webp', $user->avatar_filename);
         /** @var string */
         $media_path = \Minz\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
@@ -75,7 +75,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/my/profile');
         $user = $user->reload();
-        $this->assertSame($user->id . '.png', $user->avatar_filename);
+        $this->assertSame($user->id . '.webp', $user->avatar_filename);
         $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
         $avatar_filepath = "{$media_path}/avatars/{$subpath}/{$user->avatar_filename}";
         $this->assertTrue(file_exists($avatar_filepath));
