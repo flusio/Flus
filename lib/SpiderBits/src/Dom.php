@@ -110,6 +110,28 @@ class Dom
     }
 
     /**
+     * Return the HTML of the current selected node(s) as a string
+     */
+    public function html(): string
+    {
+        if ($this->nodes_selected) {
+            $htmls = [];
+            foreach ($this->nodes_selected as $node) {
+                $htmls[] = $this->dom->saveHTML($node);
+            }
+            return implode("\n", $htmls);
+        } else {
+            $html = $this->dom->saveHTML();
+
+            if ($html === false) {
+                $html = '';
+            }
+
+            return $html;
+        }
+    }
+
+    /**
      * Return the content of the current selected node(s) as a string
      */
     public function text(): string

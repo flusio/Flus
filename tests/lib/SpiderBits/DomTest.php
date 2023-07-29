@@ -26,6 +26,36 @@ class DomTest extends \PHPUnit\Framework\TestCase
         $this->assertSame("Site d'information français", $text);
     }
 
+    public function testHtml(): void
+    {
+        $dom = Dom::fromText(<<<HTML
+            <div>Hello World!</div>
+        HTML, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        $html = $dom->html();
+
+        $this->assertSame("<div>Hello World!</div>\n", $html);
+    }
+
+    public function testHtmlWithSelectedNodes(): void
+    {
+        $dom = Dom::fromText(<<<HTML
+            <div>
+                <p>Hello</p>
+            </div>
+            <div>
+                <p>World!</p>
+            </div>
+        HTML);
+        $p_nodes = $dom->select('//p');
+
+        $this->assertNotNull($p_nodes);
+
+        $html = $p_nodes->html();
+
+        $this->assertSame("<p>Hello</p>\n<p>World!</p>", $html);
+    }
+
     public function testSelect(): void
     {
         $dom = Dom::fromText(<<<HTML
