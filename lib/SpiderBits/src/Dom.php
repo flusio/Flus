@@ -23,7 +23,17 @@ class Dom
     public static function fromText(string $html_as_string): self
     {
         $dom = new \DOMDocument();
-        @$dom->loadHTML(mb_convert_encoding($html_as_string, 'HTML-ENTITIES', 'UTF-8'));
+
+        // Encode special chars (all chars above >0x80, i.e. non-ascii
+        // chars) to HTML entities.
+        $html_as_string = mb_encode_numericentity(
+            $html_as_string,
+            [0x80, 0x10FFFF, 0, -1],
+            'UTF-8'
+        );
+
+        @$dom->loadHTML($html_as_string);
+
         return new self($dom);
     }
 
