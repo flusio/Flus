@@ -20,7 +20,7 @@ class Dom
     /**
      * Return a new Dom object from text.
      */
-    public static function fromText(string $html_as_string): self
+    public static function fromText(string $html_as_string, int $libxml_options = 0): self
     {
         $dom = new \DOMDocument();
 
@@ -32,7 +32,7 @@ class Dom
             'UTF-8'
         );
 
-        @$dom->loadHTML($html_as_string);
+        @$dom->loadHTML($html_as_string, $libxml_options);
 
         return new self($dom);
     }
