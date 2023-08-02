@@ -1,6 +1,6 @@
 # Changelog of flusio
 
-## unreleased
+## 2023-08-02 - v0.55
 
 ### Migration notes
 
@@ -16,6 +16,44 @@ $ php cli jobs watch --stop-after=1
 The `run` command now takes a job id to execute a specific job.
 
 WebP support is now required as all the (new) images are now converted to WebP.
+
+### New
+
+- Support the JSON feed format ([41a7701a](https://github.com/flusio/flusio/commit/41a7701a))
+
+### Improvements
+
+- Display the feeds description as HTML ([28f23088](https://github.com/flusio/flusio/commit/28f23088))
+- Allow to click on the link title to open its URL on the comments page ([0646a3d1](https://github.com/flusio/flusio/commit/0646a3d1))
+
+### Bug fixes
+
+- Make sure to redirect after adding a feed ([3ff109d6](https://github.com/flusio/flusio/commit/3ff109d6))
+- Fix a typo in the French Pocket error message ([14d21628](https://github.com/flusio/flusio/commit/14d21628))
+
+### Technical
+
+- Set minimal version of PHP to 8.1 ([8741c97a](https://github.com/flusio/flusio/commit/8741c97a))
+- Add support for PHP 8.2 ([4eda049f](https://github.com/flusio/flusio/commit/4eda049f))
+- Save all new images to WebP ([cc0acbd6](https://github.com/flusio/flusio/commit/cc0acbd6))
+- Limit size of illustrations to 5 Mo ([ae56a29c](https://github.com/flusio/flusio/commit/ae56a29c))
+- Update the dependencies ([4d3a7af2](https://github.com/flusio/flusio/commit/4d3a7af2))
+
+### Developers
+
+- Upgrade Minz to its last version ([0717a0ac](https://github.com/flusio/flusio/commit/0717a0ac))
+- Setup PHPStan ([afa0bdda](https://github.com/flusio/flusio/commit/afa0bdda))
+- Use Docker Compose v2 ([770ef50f](https://github.com/flusio/flusio/commit/770ef50f))
+- Serve files with Nginx in development ([6d59863f](https://github.com/flusio/flusio/commit/6d59863f))
+- Improve the detection of the Responses encoding ([69b0f271](https://github.com/flusio/flusio/commit/69b0f271))
+- Increase HTTP buffer size when setting max size ([9bfb3738](https://github.com/flusio/flusio/commit/9bfb3738))
+- Provide a SpiderBits\HtmlSanitizer class ([adeff002](https://github.com/flusio/flusio/commit/adeff002))
+- Don't clone DomDocument when using Dom#select ([5c4c1f49](https://github.com/flusio/flusio/commit/5c4c1f49))
+- Accept LibXML options in the Dom::fromText method ([72f0d711](https://github.com/flusio/flusio/commit/72f0d711))
+- Provide a Dom::html method ([a2bd4294](https://github.com/flusio/flusio/commit/a2bd4294))
+- Extract a PocketAccount model from User ([3aacd09a](https://github.com/flusio/flusio/commit/3aacd09a))
+- Don't require real Pocket key during tests ([3e9a4e49](https://github.com/flusio/flusio/commit/3e9a4e49))
+- Fail the Mailer job if the email cannot be sent ([9c4517c0](https://github.com/flusio/flusio/commit/9c4517c0))
 
 ## 2023-04-07 - v0.54
 
