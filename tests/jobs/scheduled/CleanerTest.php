@@ -33,11 +33,6 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job = new Cleaner();
 
-        $expected_perform_at = \Minz\Time::relative('tomorrow 1:00');
-        $this->assertSame(
-            $expected_perform_at->getTimestamp(),
-            $cleaner_job->perform_at->getTimestamp()
-        );
         $this->assertSame('+1 day', $cleaner_job->frequency);
     }
 

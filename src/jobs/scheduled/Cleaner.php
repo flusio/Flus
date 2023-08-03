@@ -22,14 +22,14 @@ class Cleaner extends \Minz\Job
         $cleaner_job = new self();
 
         if (!\Minz\Job::existsBy(['name' => $cleaner_job->name])) {
-            $cleaner_job->performAsap();
+            $perform_at = \Minz\Time::relative('tomorrow 1:00');
+            $cleaner_job->performLater($perform_at);
         }
     }
 
     public function __construct()
     {
         parent::__construct();
-        $this->perform_at = \Minz\Time::relative('tomorrow 1:00');
         $this->frequency = '+1 day';
     }
 
