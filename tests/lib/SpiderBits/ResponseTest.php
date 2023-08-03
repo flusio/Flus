@@ -178,6 +178,44 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('text/html', $header);
     }
 
+    public function testUtf8Data(): void
+    {
+        $content = 'Test ëéàçï';
+        $content = mb_convert_encoding($content, 'ISO-8859-1', 'UTF-8');
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/plain; charset="ISO-8859-1"\r
+        \r
+        {$content}
+        TEXT;
+        $response = Response::fromText($text);
+        $encoding = $response->encoding();
+        $this->assertSame('ISO-8859-1', $encoding);
+
+        $data = $response->utf8Data();
+
+        $this->assertSame('Test ëéàçï', $data);
+    }
+
+    public function testUtf8DataWithUnsupportedEncoding(): void
+    {
+        $content = 'Test ëéàçï';
+        $content = mb_convert_encoding($content, 'ISO-8859-1', 'UTF-8');
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/plain; charset="Bad-Encoding"\r
+        \r
+        {$content}
+        TEXT;
+        $response = Response::fromText($text);
+        $encoding = $response->encoding();
+        $this->assertSame('Bad-Encoding', $encoding);
+
+        $data = $response->utf8Data();
+
+        $this->assertSame('Test ?????', $data);
+    }
+
     public function testEncodingWithNoSpecifiedEncoding(): void
     {
         $text = <<<TEXT

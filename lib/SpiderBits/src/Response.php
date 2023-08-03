@@ -138,8 +138,11 @@ class Response
      */
     public function utf8Data(): string
     {
-        $encoding = $this->encoding();
-        return mb_convert_encoding($this->data, 'utf-8', $encoding);
+        try {
+            return mb_convert_encoding($this->data, 'utf-8', $this->encoding());
+        } catch (\ValueError $exception) {
+            return mb_convert_encoding($this->data, 'utf-8', 'utf-8');
+        }
     }
 
     /**
