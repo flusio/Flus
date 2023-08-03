@@ -421,11 +421,7 @@ class FeedFetcher
 
         // sort the links_to_collections by their publication dates (newest first)
         usort($links_to_collections, function ($lc1, $lc2) {
-            $comparaison = $lc2->created_at <=> $lc1->created_at;
-            if ($comparaison !== 0) {
-                return $comparaison;
-            }
-            return $lc2->id <=> $lc1->id;
+            return $lc2->created_at <=> $lc1->created_at;
         });
 
         $to_create = [];
