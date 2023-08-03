@@ -251,6 +251,10 @@ class FeedFetcher
 
             $data = $response->utf8Data();
 
+            if (!$data) {
+                return;
+            }
+
             $dom = \SpiderBits\Dom::fromText($data);
             $url_illustration = \SpiderBits\DomExtractor::illustration($dom);
             $url_illustration = \SpiderBits\Url::sanitize($url_illustration);
@@ -371,6 +375,11 @@ class FeedFetcher
         if (!\SpiderBits\feeds\Feed::isFeedContentType($content_type)) {
             $info['error'] = "Invalid content type: {$content_type}";
             return $info; // @codeCoverageIgnore
+        }
+
+        if (!$data) {
+            $info['error'] = 'Empty content';
+            return $info;
         }
 
         try {

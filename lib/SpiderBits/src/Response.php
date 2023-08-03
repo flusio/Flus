@@ -89,6 +89,10 @@ class Response
             return $charset;
         }
 
+        if (!$data) {
+            return 'utf-8';
+        }
+
         $result = preg_match(
             '/^\s*<\?xml\s+(?:(?:.*?)\s)?encoding=[\'"](?P<encoding>.+?)[\'"]/i',
             $data,

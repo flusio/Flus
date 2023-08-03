@@ -245,6 +245,10 @@ class LinkFetcher
             return $info; // @codeCoverageIgnore
         }
 
+        if (!$data) {
+            return $info;
+        }
+
         $dom = \SpiderBits\Dom::fromText($data);
 
         // Parse the title from the DOM

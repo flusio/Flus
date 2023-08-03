@@ -19,6 +19,8 @@ class Dom
 
     /**
      * Return a new Dom object from text.
+     *
+     * @param non-empty-string $html_as_string
      */
     public static function fromText(string $html_as_string, int $libxml_options = 0): self
     {
