@@ -38,7 +38,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      *     },
      * }>
      */
-    public function resizeProvider(): array
+    public static function resizeProvider(): array
     {
         return [
             [

@@ -27,7 +27,7 @@ class LocaleTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string}>
      */
-    public function englishAcceptLanguage(): array
+    public static function englishAcceptLanguage(): array
     {
         return [
             [''],
@@ -43,7 +43,7 @@ class LocaleTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string}>
      */
-    public function frenchAcceptLanguage(): array
+    public static function frenchAcceptLanguage(): array
     {
         return [
             ['fr'],

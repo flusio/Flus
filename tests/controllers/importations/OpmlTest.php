@@ -320,7 +320,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{int}>
      */
-    public function tooLargeErrorsProvider(): array
+    public static function tooLargeErrorsProvider(): array
     {
         return [
             [UPLOAD_ERR_INI_SIZE],
@@ -331,7 +331,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{int}>
      */
-    public function otherFileErrorsProvider(): array
+    public static function otherFileErrorsProvider(): array
     {
         return [
             [UPLOAD_ERR_PARTIAL],

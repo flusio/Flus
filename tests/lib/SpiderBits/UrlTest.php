@@ -96,7 +96,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string, string, string}>
      */
-    public function absolutizeProvider(): array
+    public static function absolutizeProvider(): array
     {
         return [
             ['https://host', '/path', 'https://host/path'],
@@ -134,7 +134,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function sanitizeProvider(): array
+    public static function sanitizeProvider(): array
     {
         // This test suite comes from https://developers.google.com/safe-browsing/v4/urls-hashing#canonicalization
         // Minor differences are indicated in comments
@@ -206,7 +206,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
      *     array<string, string|null|array<?string>>
      * }>
      */
-    public function parseAndBuildQueryProvider(): array
+    public static function parseAndBuildQueryProvider(): array
     {
         return [
             [

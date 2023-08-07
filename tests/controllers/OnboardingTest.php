@@ -127,7 +127,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{int}>
      */
-    public function validStepsProvider(): array
+    public static function validStepsProvider(): array
     {
         return [
             [1],
@@ -142,7 +142,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{int}>
      */
-    public function invalidStepsProvider(): array
+    public static function invalidStepsProvider(): array
     {
         $faker = \Faker\Factory::create();
         /** @var int */

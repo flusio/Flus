@@ -78,7 +78,7 @@ icons-build: ## Build the icons asset
 .PHONY: test
 test: ## Run the test suite
 	$(PHP) ./vendor/bin/phpunit \
-		$(COVERAGE) --whitelist ./src --whitelist ./lib/SpiderBits \
+		$(COVERAGE) --coverage-filter ./src --coverage-filter ./lib/SpiderBits \
 		--bootstrap ./tests/bootstrap.php \
 		--testdox \
 		$(PHPUNIT_FILTER) \

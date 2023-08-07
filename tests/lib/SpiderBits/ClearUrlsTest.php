@@ -17,7 +17,7 @@ class ClearUrlsTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function clearProvider(): array
+    public static function clearProvider(): array
     {
         return [
             // utm_* parameters in URL query

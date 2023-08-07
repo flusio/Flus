@@ -447,7 +447,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string}>
      */
-    public function validContentType(): array
+    public static function validContentType(): array
     {
         return [
             ['application/atom+xml'],
@@ -466,7 +466,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string}>
      */
-    public function invalidContentType(): array
+    public static function invalidContentType(): array
     {
         return [
             [''],
