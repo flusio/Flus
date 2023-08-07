@@ -1,5 +1,26 @@
 # Changelog of flusio
 
+## 2023-08-07 - v0.56
+
+### Bug fixes
+
+- Ignore invalid URLs when synchronising Pocket ([f966578c](https://github.com/flusio/flusio/commit/f966578c))
+- Ignore invalid URLs when synchronising feeds ([00214993](https://github.com/flusio/flusio/commit/00214993))
+- Handle Response::utf8Data with unsupported encodings ([a82bb534](https://github.com/flusio/flusio/commit/a82bb534))
+- Make sure to pass non-empty strings to SpiderBits\\Dom ([45d60fd3](https://github.com/flusio/flusio/commit/45d60fd3))
+- Compare LinksToCollections only on created\_at ([487adc41](https://github.com/flusio/flusio/commit/487adc41))
+
+### Technical
+
+- Execute Cleaner job at 01:00 AM ([1f533403](https://github.com/flusio/flusio/commit/1f533403))
+- Update the Composer dependencies ([dff1ccf3](https://github.com/flusio/flusio/commit/dff1ccf3))
+- Update the NPM dependencies ([bd193407](https://github.com/flusio/flusio/commit/bd193407))
+
+### Developers
+
+- Test that migrations and rollbacks can be applied ([7f85b727](https://github.com/flusio/flusio/commit/7f85b727))
+- Upgrade to PHPUnit 10 ([d53c58d6](https://github.com/flusio/flusio/commit/d53c58d6))
+
 ## 2023-08-02 - v0.55
 
 ### Migration notes
