@@ -146,6 +146,14 @@ class PocketImportator extends \Minz\Job
         $links_to_collections_to_create = [];
 
         foreach ($items as $item) {
+            /** @var string */
+            $given_url = $item['given_url'];
+            $given_url = \SpiderBits\Url::sanitize($given_url);
+
+            if (!\SpiderBits\Url::isValid($given_url)) {
+                continue;
+            }
+
             $collection_ids = [];
             $collection_ids[] = $pocket_collection->id;
             if ($item['favorite'] === '1' && $options['import_favorites']) {
@@ -180,10 +188,6 @@ class PocketImportator extends \Minz\Job
                     }
                 }
             }
-
-            /** @var string */
-            $given_url = $item['given_url'];
-            $given_url = \SpiderBits\Url::sanitize($given_url);
 
             /** @var string */
             $resolved_url = $item['resolved_url'];
