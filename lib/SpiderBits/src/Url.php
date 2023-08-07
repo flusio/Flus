@@ -378,4 +378,29 @@ class Url
         }
         return implode('&', $built_parameters);
     }
+
+    /**
+     * Return true if the given URL is valid, false otherwise.
+     *
+     * @param string[] $accepted_schemes
+     */
+    public static function isValid(string $url, array $accepted_schemes = ['http', 'https']): bool
+    {
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return false;
+        }
+
+        $url_components = parse_url($url);
+
+        if (
+            !$url_components ||
+            !isset($url_components['scheme']) ||
+            !isset($url_components['host'])
+        ) {
+            return false;
+        }
+
+        $url_scheme = strtolower($url_components['scheme']);
+        return in_array($url_scheme, $accepted_schemes);
+    }
 }

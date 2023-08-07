@@ -131,6 +131,10 @@ class FeedFetcher
             $url = \SpiderBits\Url::absolutize($entry->link, $feed_url);
             $url = \SpiderBits\Url::sanitize($url);
 
+            if (!\SpiderBits\Url::isValid($url)) {
+                continue;
+            }
+
             if (isset($link_ids_by_urls[$url])) {
                 // The URL is already associated to the collection, we have
                 // nothing more to do.

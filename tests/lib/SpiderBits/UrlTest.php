@@ -48,6 +48,51 @@ class UrlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_query, $query);
     }
 
+    public function testIsValid(): void
+    {
+        $url = 'https://example.com';
+
+        $result = Url::isValid($url);
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsValidFailsWithAnEmptyString(): void
+    {
+        $url = '';
+
+        $result = Url::isValid($url);
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsValidFailsWithAnInvalidUrl(): void
+    {
+        $url = 'https://example com';
+
+        $result = Url::isValid($url);
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsValidFailsWithAMissingScheme(): void
+    {
+        $url = 'example.com';
+
+        $result = Url::isValid($url);
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsValidFailsWithAnInvalidScheme(): void
+    {
+        $url = 'http://example.com';
+
+        $result = Url::isValid($url, ['https']);
+
+        $this->assertFalse($result);
+    }
+
     /**
      * @return array<array{string, string, string}>
      */
