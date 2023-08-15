@@ -204,6 +204,21 @@
                     </div>
                 </div>
 
+                <?php if ($mastodon_configured): ?>
+                    <div class="form-group">
+                        <input
+                            type="checkbox"
+                            id="share-on-mastodon"
+                            name="share_on_mastodon"
+                            <?= $share_on_mastodon ? 'checked' : '' ?>
+                        />
+
+                        <label class="label--checkbox" for="share-on-mastodon">
+                            <?= _('Share on Mastodon') ?>
+                        </label>
+                    </div>
+                <?php endif; ?>
+
                 <div class="form__actions">
                     <button type="submit" class="button--primary">
                         <?= _('Comment') ?>

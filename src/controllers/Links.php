@@ -130,11 +130,23 @@ class Links
             ]);
         }
 
+        $messages = $link->messages();
+
+        if ($user) {
+            $mastodon_configured = models\MastodonAccount::existsBy([
+                'user_id' => $user->id,
+            ]);
+        } else {
+            $mastodon_configured = false;
+        }
+
         return Response::ok('links/show.phtml', [
             'link' => $link,
-            'messages' => $link->messages(),
+            'messages' => $messages,
             'can_comment' => $can_comment,
             'comment' => '',
+            'share_on_mastodon' => count($messages) === 0,
+            'mastodon_configured' => $mastodon_configured,
         ]);
     }
 

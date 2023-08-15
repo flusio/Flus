@@ -5,6 +5,8 @@ namespace flusio\services;
 use flusio\models;
 
 /**
+ * @phpstan-import-type Options from models\MastodonAccount
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -198,5 +200,100 @@ class Mastodon
 
         $hostname = parse_url($host, PHP_URL_HOST);
         return $data['username'] . '@' . $hostname;
+    }
+
+    /**
+     * Post a status to the given account.
+     */
+    public function postStatus(
+        models\MastodonAccount $account,
+        models\Link $link,
+        ?models\Message $message
+    ): bool {
+        $status = self::formatStatus($link, $message, $account->options);
+
+        if ($message) {
+            $idempotency_key = $message->tagUri();
+        } else {
+            $idempotency_key = $link->tagUri();
+        }
+
+        $endpoint = $this->server->host . '/api/v1/statuses';
+        $response = $this->http->post($endpoint, [
+            'visibility' => 'public',
+            'status' => $status,
+        ], [
+            'headers' => [
+                'Authorization' => "Bearer {$account->access_token}",
+                'Idempotency-Key' => $idempotency_key,
+            ]
+        ]);
+
+        return $response->success;
+    }
+
+    /**
+     * @param Options $options
+     */
+    public static function formatStatus(
+        models\Link $link,
+        ?models\Message $message,
+        array $options,
+    ): string {
+        $max_chars = 500;
+        $count_chars = 0;
+
+        $status = self::truncateString($link->title, 250);
+        $count_chars += mb_strlen($status);
+
+        $status .= "\n\n" . $link->url;
+        // Mastodon always considers 23 characters for a URL (also, don’t
+        // forget the new line chars).
+        $count_chars += 2 + 23;
+
+        if (
+            $options['link_to_comment'] === 'always' ||
+            ($options['link_to_comment'] === 'auto' && $message)
+        ) {
+            $url_to_comment = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+            $status .= "\n" . $url_to_comment;
+
+            if (\Minz\Configuration::$url_options['host'] === 'localhost') {
+                // Mastodon doesn't count localhost links as URLs
+                $count_chars += 1 + mb_strlen($url_to_comment);
+            } else {
+                $count_chars += 1 + 23;
+            }
+        }
+
+        $post_scriptum = '';
+        if ($options['post_scriptum']) {
+            $post_scriptum = "\n\n" . $options['post_scriptum'];
+            $count_chars += 2 + mb_strlen($options['post_scriptum']);
+        }
+
+        if ($message) {
+            $content = self::truncateString($message->content, $max_chars - $count_chars - 2);
+            $status = $status . "\n\n" . $content;
+        }
+
+        $status .= $post_scriptum;
+
+        return $status;
+    }
+
+    /**
+     * Truncate a string to a maximum of characters.
+     * "…" is appended at the end of the string.
+     */
+    private static function truncateString(string $string, int $max_chars): string
+    {
+        $string_size = mb_strlen($string);
+
+        if ($string_size < $max_chars) {
+            return $string;
+        }
+
+        return trim(mb_substr($string, 0, $max_chars - 1)) . '…';
     }
 }
