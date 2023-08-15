@@ -1,0 +1,136 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Configure sharing to Mastodon'),
+        'canonical' => url_full('mastodon'),
+        'back_options' => [
+            'track' => false,
+        ],
+        'has_errors' => $error || $errors,
+    ]);
+?>
+
+<div class="section section--small section--longbottom">
+    <div class="section__title">
+        <h1><?= _('Configure sharing to Mastodon') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _f('%s lets you share your links and comments on Mastodon.', $brand) ?>
+    </p>
+
+    <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+
+    <?php if ($mastodon_account): ?>
+        <form method="post" action="<?= url('update mastodon account') ?>">
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+            <div class="form-group">
+                <label for="link-to-comment">
+                    <?= _('When to link to your comments?') ?>
+                </label>
+
+                <select
+                    id="link-to-comment"
+                    name="link_to_comment"
+                    aria-describedby="link-to-comment-desc"
+                 >
+                    <option <?= $link_to_comment === 'auto' ? 'selected' : '' ?> value="auto">
+                        <?= _('Only when you post a comment') ?>
+                    </option>
+
+                    <option <?= $link_to_comment === 'always' ? 'selected' : '' ?> value="always">
+                        <?= _('Always') ?>
+                    </option>
+
+                    <option <?= $link_to_comment === 'never' ? 'selected' : '' ?> value="never">
+                        <?= _('Never') ?>
+                    </option>
+                </select>
+
+                <div id="link-to-comment-desc">
+                    <p class="form-group__caption">
+                        <?= _f('Your Mastodon posts can include a link to your comments on %s.', $brand) ?>
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group <?= isset($errors['post_scriptum']) ? 'form-group--invalid' : '' ?>">
+                <label for="post-scriptum">
+                    <?= _('Always something to add to your posts?') ?>
+                    <span class="label__help">
+                        <?= _f('(max. %d characters)', 100) ?>
+                    </span>
+                </label>
+
+                <input
+                    id="post-scriptum"
+                    name="post_scriptum"
+                    type="text"
+                    value="<?= $post_scriptum ?>"
+                    maxlength="100"
+                    aria-describedby="post-scriptum-desc"
+                />
+
+                <div id="post-scriptum-desc">
+                    <?php if (isset($errors['post_scriptum'])): ?>
+                        <p class="form-group__error">
+                            <span class="sr-only"><?= _('Error') ?></span>
+                            <?= $errors['post_scriptum'] ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Save changes') ?>
+                </button>
+            </div>
+        </form>
+
+        <p class="paragraph--centered paragraph--secondary">
+            <small>
+                <?= _f('connected with account <em>%s</em>', protect($mastodon_account->username)) ?>
+            </small>
+        </p>
+    <?php else: ?>
+        <form method="post" action="<?= url('request mastodon access') ?>" data-turbo="false">
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+            <div class="form-group <?= isset($errors['host']) ? 'form-group--invalid' : '' ?>">
+                <label for="host">
+                    <?= _('What’s the address of your Mastodon server?') ?>
+                </label>
+
+                <input
+                    id="host"
+                    name="host"
+                    type="url"
+                    placeholder="https://…"
+                    required
+                    value="<?= $host ?>"
+                    aria-describedby="host-desc"
+                />
+
+                <div id="host-desc">
+                    <?php if (isset($errors['host'])): ?>
+                        <p class="form-group__error">
+                            <span class="sr-only"><?= _('Error') ?></span>
+                            <?= $errors['host'] ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <p class="form-group__caption">
+                        <?= _('Not using Mastodon yet? <a target="_blank" rel="noopener noreferrer" href="https://joinmastodon.org/servers">Let’s choose a server.</a>') ?>
+                    </p>
+                </div>
+            </div>
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    <?= _('Connect to Mastodon') ?>
+                </button>
+            </div>
+        </form>
+    <?php endif; ?>
+</div>

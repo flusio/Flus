@@ -85,6 +85,13 @@ class Router
         $router->addRoute('GET', '/my/preferences', 'my/Preferences#edit', 'preferences');
         $router->addRoute('POST', '/my/preferences', 'my/Preferences#update', 'update preferences');
 
+        // Mastodon configuration
+        $router->addRoute('GET', '/mastodon', 'Mastodon#show', 'mastodon');
+        $router->addRoute('POST', '/mastodon', 'Mastodon#update', 'update mastodon account');
+        $router->addRoute('POST', '/mastodon/request', 'Mastodon#requestAccess', 'request mastodon access');
+        $router->addRoute('GET', '/mastodon/auth', 'Mastodon#authorization', 'mastodon auth');
+        $router->addRoute('POST', '/mastodon/auth', 'Mastodon#authorize', 'authorize mastodon');
+
         // Importations
         $router->addRoute('POST', '/importations/:id/delete', 'Importations#delete', 'delete importation');
 
