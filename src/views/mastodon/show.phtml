@@ -88,11 +88,25 @@
             </div>
         </form>
 
-        <p class="paragraph--centered paragraph--secondary">
+        <div class="paragraph--centered paragraph--secondary">
             <small>
                 <?= _f('connected with account <em>%s</em>', protect($mastodon_account->username)) ?>
             </small>
-        </p>
+
+            <form
+                method="post"
+                action="<?= url('disconnect mastodon') ?>"
+                data-turbo-confirm="<?= _('Are you sure that you want to disconnect your Mastodon account?') ?>"
+            >
+                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+                <small>
+                    <button type="submit" class="button--ghost button--smaller">
+                        <?= _('disconnect') ?>
+                    </button>
+                </small>
+            </form>
+        </div>
     <?php else: ?>
         <form method="post" action="<?= url('request mastodon access') ?>" data-turbo="false">
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />

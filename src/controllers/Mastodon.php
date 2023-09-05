@@ -318,4 +318,40 @@ class Mastodon
 
         return Response::redirect('mastodon');
     }
+
+    /**
+     * Remove the MastodonAccount of the current user.
+     *
+     * @request_param string csrf
+     *
+     * @response 302 /login?redirect_to=/mastodon
+     *     If the user is not connected.
+     * @response 302 /mastodon
+     *     If the user has no associated MastodonAccount or if the CSRF token
+     *     is invalid.
+     * @response 302 /mastodon
+     *     On success.
+     */
+    public function disconnect(Request $request): Response
+    {
+        $user = auth\CurrentUser::get();
+
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('mastodon'),
+            ]);
+        }
+
+        $csrf = $request->param('csrf', '');
+
+        $mastodon_account = models\MastodonAccount::findBy(['user_id' => $user->id]);
+
+        if (!$mastodon_account || !\Minz\Csrf::validate($csrf)) {
+            return Response::redirect('mastodon');
+        }
+
+        $mastodon_account->remove();
+
+        return Response::redirect('mastodon');
+    }
 }

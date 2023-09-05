@@ -91,6 +91,7 @@ class Router
         $router->addRoute('POST', '/mastodon/request', 'Mastodon#requestAccess', 'request mastodon access');
         $router->addRoute('GET', '/mastodon/auth', 'Mastodon#authorization', 'mastodon auth');
         $router->addRoute('POST', '/mastodon/auth', 'Mastodon#authorize', 'authorize mastodon');
+        $router->addRoute('POST', '/mastodon/disconnect', 'Mastodon#disconnect', 'disconnect mastodon');
 
         // Importations
         $router->addRoute('POST', '/importations/:id/delete', 'Importations#delete', 'delete importation');

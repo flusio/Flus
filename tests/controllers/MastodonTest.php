@@ -655,4 +655,20 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($mastodon_account->options['link_to_comment'], $old_link_to_comment);
         $this->assertSame($mastodon_account->options['post_scriptum'], $old_post_scriptum);
     }
+
+    public function testDisconnectRemovesTheMastodonAccount(): void
+    {
+        $user = $this->login();
+        $mastodon_account = MastodonAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => 'a token',
+        ]);
+
+        $response = $this->appRun('POST', '/mastodon/disconnect', [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/mastodon');
+        $this->assertFalse(models\MastodonAccount::exists($mastodon_account->id));
+    }
 }
