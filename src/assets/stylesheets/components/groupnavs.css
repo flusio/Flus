@@ -79,6 +79,11 @@
     background-image: url("../../icons/credit-card.svg");
 }
 
+.groupnav__item--mastodon .groupnav__anchor {
+    background-image: url("../../icons/mastodon.svg");
+    background-size: 36px 36px;
+}
+
 .groupnav__item--import .groupnav__anchor {
     background-image: url("../../icons/upload.svg");
 }

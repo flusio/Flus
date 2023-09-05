@@ -117,6 +117,21 @@
                             data-action="text-editor#refresh"
                         ><?= $comment ?></textarea>
                     </div>
+
+                    <?php if ($mastodon_configured): ?>
+                        <div class="form-group">
+                            <input
+                                type="checkbox"
+                                id="share-on-mastodon"
+                                name="share_on_mastodon"
+                                <?= $share_on_mastodon ? 'checked' : '' ?>
+                            />
+
+                            <label class="label--checkbox" for="share-on-mastodon">
+                                <?= _('Share on Mastodon') ?>
+                            </label>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </details>
         <?php else: ?>
@@ -135,6 +150,21 @@
                     data-action="text-editor#refresh"
                 ><?= $comment ?></textarea>
             </div>
+
+            <?php if ($mastodon_configured): ?>
+                <div class="form-group">
+                    <input
+                        type="checkbox"
+                        id="share-on-mastodon"
+                        name="share_on_mastodon"
+                        <?= $share_on_mastodon ? 'checked' : '' ?>
+                    />
+
+                    <label class="label--checkbox" for="share-on-mastodon">
+                        <?= _('Share on Mastodon') ?>
+                    </label>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
 
         <div class="form__actions">

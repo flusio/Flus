@@ -5,6 +5,7 @@ namespace flusio\controllers\links;
 use Minz\Request;
 use Minz\Response;
 use flusio\auth;
+use flusio\jobs;
 use flusio\models;
 use flusio\utils;
 
@@ -80,6 +81,10 @@ class Collections
         );
         $collections_by_others = utils\Sorter::localeSort($collections_by_others, 'name');
 
+        $mastodon_configured = models\MastodonAccount::existsBy([
+            'user_id' => $user->id,
+        ]);
+
         return Response::ok('links/collections/index.phtml', [
             'link' => $link,
             'collection_ids' => $collection_ids,
@@ -92,6 +97,8 @@ class Collections
             'mark_as_read' => $mark_as_read,
             'messages' => $messages,
             'comment' => '',
+            'share_on_mastodon' => count($messages) === 0,
+            'mastodon_configured' => $mastodon_configured,
             'from' => $from,
         ]);
     }
@@ -106,6 +113,7 @@ class Collections
      * @request_param boolean is_hidden
      * @request_param boolean mark_as_read
      * @request_param string comment
+     * @request_param string share_on_mastodon
      * @request_param string from
      *
      * @response 302 /login?redirect_to=:from
@@ -128,6 +136,7 @@ class Collections
         $is_hidden = $request->paramBoolean('is_hidden', false);
         $mark_as_read = $request->paramBoolean('mark_as_read', false);
         $comment = trim($request->param('comment', ''));
+        $share_on_mastodon = $request->paramBoolean('share_on_mastodon');
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
@@ -180,6 +189,16 @@ class Collections
 
         if ($mark_as_read) {
             models\LinkToCollection::markAsRead($user, [$link->id]);
+        }
+
+        $mastodon_configured = models\MastodonAccount::existsBy([
+            'user_id' => $user->id,
+        ]);
+
+        if ($mastodon_configured && $share_on_mastodon) {
+            $message_id = isset($message) ? $message->id : null;
+            $share_on_mastodon_job = new jobs\ShareOnMastodon();
+            $share_on_mastodon_job->performAsap($user->id, $link->id, $message_id);
         }
 
         return Response::found($from);
