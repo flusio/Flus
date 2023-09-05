@@ -53,11 +53,13 @@
                 </li>
             <?php endif; ?>
 
-            <li class="groupnav__item groupnav__item--mastodon">
-                <a class="groupnav__anchor" href="<?= url('mastodon') ?>">
-                    <?= _('Configure sharing to Mastodon') ?>
-                </a>
-            </li>
+            <?php if ($beta_enabled): ?>
+                <li class="groupnav__item groupnav__item--mastodon">
+                    <a class="groupnav__anchor" href="<?= url('mastodon') ?>">
+                        <?= _('Configure sharing to Mastodon') ?>
+                    </a>
+                </li>
+            <?php endif; ?>
 
             <?php if ($pocket_enabled && !$current_user->isBlocked()): ?>
                 <li class="groupnav__item groupnav__item--import">
