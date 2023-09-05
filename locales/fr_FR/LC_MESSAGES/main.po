@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2022-10-28 15:45+0200\n"
-"PO-Revision-Date: 2023-07-28 15:54+0200\n"
+"POT-Creation-Date: 2023-09-05 10:44+0200\n"
+"PO-Revision-Date: 2023-09-05 10:45+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -10,9 +10,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-Basepath: ../../../src\n"
-"X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2\n"
+"X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:47
@@ -42,51 +42,51 @@ msgstr "Cacher"
 #: assets/javascripts/controllers/input_password_controller.js:25
 #: views/my/account/deletion.phtml:56 views/my/security/show_confirmed.phtml:74
 #: views/my/security/show_to_confirm.phtml:48 views/passwords/edit.phtml:51
-#: views/registrations/new.phtml:113 views/sessions/new.phtml:81
+#: views/registrations/new.phtml:115 views/sessions/new.phtml:81
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:99 controllers/Collections.php:307
-#: controllers/Feeds.php:106 controllers/Groups.php:90
-#: controllers/Links.php:253 controllers/Links.php:425 controllers/News.php:75
+#: controllers/Collections.php:101 controllers/Collections.php:313
+#: controllers/Feeds.php:107 controllers/Groups.php:90
+#: controllers/Links.php:258 controllers/Links.php:430 controllers/News.php:75
 #: controllers/Passwords.php:88 controllers/Passwords.php:191
-#: controllers/Registrations.php:104 controllers/Sessions.php:94
-#: controllers/Support.php:70 controllers/collections/Filters.php:104
+#: controllers/Registrations.php:105 controllers/Sessions.php:88
+#: controllers/Support.php:70 controllers/collections/Filters.php:105
 #: controllers/collections/Followers.php:49
 #: controllers/collections/Followers.php:93
-#: controllers/collections/Groups.php:122
-#: controllers/collections/Images.php:113 controllers/collections/Links.php:104
-#: controllers/collections/Shares.php:97 controllers/collections/Shares.php:210
-#: controllers/links/Messages.php:73 controllers/links/Repairing.php:98
-#: controllers/links/Searches.php:106 controllers/my/Account.php:103
-#: controllers/my/Preferences.php:77 controllers/my/Profile.php:72
-#: controllers/my/Security.php:79 controllers/my/Security.php:150
-#: controllers/my/Subscription.php:74 controllers/my/Validation.php:132
+#: controllers/collections/Groups.php:123
+#: controllers/collections/Images.php:114 controllers/collections/Links.php:105
+#: controllers/collections/Shares.php:98 controllers/collections/Shares.php:211
+#: controllers/links/Messages.php:74 controllers/links/Repairing.php:99
+#: controllers/links/Searches.php:106 controllers/my/Account.php:111
+#: controllers/my/Preferences.php:78 controllers/my/Profile.php:73
+#: controllers/my/Security.php:85 controllers/my/Security.php:157
+#: controllers/my/Subscription.php:74 controllers/my/Validation.php:138
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:112 controllers/Collections.php:322
+#: controllers/Collections.php:114 controllers/Collections.php:328
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:382 controllers/Exportations.php:61
+#: controllers/Collections.php:388 controllers/Exportations.php:62
 #: controllers/Groups.php:161 controllers/Importations.php:48
-#: controllers/Links.php:482 controllers/Messages.php:93
-#: controllers/Messages.php:141 controllers/Sessions.php:211
-#: controllers/collections/Read.php:72 controllers/collections/Read.php:138
-#: controllers/collections/Read.php:199 controllers/importations/Opml.php:78
-#: controllers/importations/Pocket.php:102
-#: controllers/importations/Pocket.php:149
-#: controllers/importations/Pocket.php:241
-#: controllers/links/Collections.php:147 controllers/links/Read.php:45
-#: controllers/links/Read.php:94 controllers/links/Read.php:143
-#: controllers/links/Read.php:191 controllers/my/Avatar.php:43
+#: controllers/Links.php:487 controllers/Messages.php:93
+#: controllers/Messages.php:141 controllers/Sessions.php:209
+#: controllers/collections/Read.php:73 controllers/collections/Read.php:139
+#: controllers/collections/Read.php:200 controllers/importations/Opml.php:79
+#: controllers/importations/Pocket.php:110
+#: controllers/importations/Pocket.php:157
+#: controllers/importations/Pocket.php:258
+#: controllers/links/Collections.php:149 controllers/links/Read.php:46
+#: controllers/links/Read.php:95 controllers/links/Read.php:144
+#: controllers/links/Read.php:192 controllers/my/Avatar.php:44
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: controllers/Exportations.php:74
+#: controllers/Exportations.php:75
 msgid "You already have an ongoing exportation."
 msgstr "Vous avez déjà une exportation en cours."
 
@@ -98,25 +98,25 @@ msgstr "Aucun flux valide n’a été détecté à cette adresse."
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
-#: controllers/Links.php:286
+#: controllers/Links.php:291
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:303 controllers/links/Collections.php:142
+#: controllers/Links.php:308 controllers/links/Collections.php:144
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Passwords.php:66 models/User.php:649
+#: controllers/Passwords.php:66 controllers/Sessions.php:99 models/User.php:49
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: controllers/Passwords.php:79 controllers/Sessions.php:107
+#: controllers/Passwords.php:79 controllers/Sessions.php:113
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
 #: controllers/Passwords.php:123 controllers/Passwords.php:130
 #: controllers/Passwords.php:170 controllers/Passwords.php:177
-#: controllers/my/Validation.php:58 controllers/my/Validation.php:71
+#: controllers/my/Validation.php:59 controllers/my/Validation.php:72
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
@@ -125,18 +125,18 @@ msgid "The token has expired, you should reset your password again."
 msgstr ""
 "Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
 
-#: controllers/Registrations.php:117
+#: controllers/Registrations.php:118
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
-#: controllers/Sessions.php:117
+#: controllers/Sessions.php:123
 msgid "What are you trying to do? You can’t login to the support account."
 msgstr ""
 "Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
 "support."
 
-#: controllers/Sessions.php:127 controllers/my/Account.php:110
-#: controllers/my/Security.php:156
+#: controllers/Sessions.php:133 controllers/my/Account.php:118
+#: controllers/my/Security.php:163
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -144,67 +144,67 @@ msgstr "Le mot de passe est incorrect."
 msgid "The subject is required."
 msgstr "Le sujet est obligatoire."
 
-#: controllers/Support.php:79 models/Message.php:105
+#: controllers/Support.php:79 models/Message.php:29
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: controllers/collections/Images.php:91 controllers/importations/Opml.php:87
-#: controllers/my/Avatar.php:48
+#: controllers/collections/Images.php:92 controllers/importations/Opml.php:88
+#: controllers/my/Avatar.php:49
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
 
-#: controllers/collections/Images.php:99 controllers/importations/Opml.php:96
-#: controllers/my/Avatar.php:53
+#: controllers/collections/Images.php:100 controllers/importations/Opml.php:97
+#: controllers/my/Avatar.php:54
 msgid "This file is too large."
 msgstr "Ce fichier est trop gros."
 
-#: controllers/collections/Images.php:105 controllers/importations/Opml.php:103
-#: controllers/my/Avatar.php:59
+#: controllers/collections/Images.php:106 controllers/importations/Opml.php:104
+#: controllers/my/Avatar.php:60
 #, php-format
 msgid "This file cannot be uploaded (error %d)."
 msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
 
-#: controllers/collections/Images.php:146 controllers/my/Avatar.php:81
+#: controllers/collections/Images.php:153 controllers/my/Avatar.php:86
 msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
 msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
 
-#: controllers/collections/Shares.php:108
+#: controllers/collections/Shares.php:109
 msgid "You can’t share access with yourself."
 msgstr "Vous ne pouvez pas partager l’accès avec vous-même."
 
-#: controllers/collections/Shares.php:124
+#: controllers/collections/Shares.php:125
 msgid "This user doesn’t exist."
 msgstr "Cet‧te utilisateur‧ice n’existe pas."
 
-#: controllers/collections/Shares.php:140
+#: controllers/collections/Shares.php:141
 msgid "The collection is already shared with this user."
 msgstr "Cette collection est déjà partagée avec cet‧te utilisateur‧ice."
 
-#: controllers/importations/Opml.php:71
+#: controllers/importations/Opml.php:72
 msgid "You already have an ongoing OPML importation."
 msgstr "Vous avez déjà une importation OPML en cours."
 
-#: controllers/importations/Opml.php:119
+#: controllers/importations/Opml.php:120
 msgid "This file cannot be uploaded."
 msgstr "Ce fichier ne peut pas être téléversé."
 
-#: controllers/importations/Pocket.php:87
+#: controllers/importations/Pocket.php:93
 msgid "You already have an ongoing Pocket importation."
 msgstr "Vous avez déjà une importation Pocket en cours."
 
-#: controllers/importations/Pocket.php:94
+#: controllers/importations/Pocket.php:101
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
-#: controllers/my/Account.php:118
+#: controllers/my/Account.php:126
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: controllers/my/Security.php:68
+#: controllers/my/Security.php:74
 msgid "You must confirm your password."
 msgstr "Vous devez confirmer votre mot de passe."
 
-#: controllers/my/Security.php:94 services/UserCreator.php:42
+#: controllers/my/Security.php:100 services/UserCreator.php:43
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
@@ -222,11 +222,11 @@ msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
 
-#: controllers/my/Validation.php:64
+#: controllers/my/Validation.php:65
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: jobs/PocketImportator.php:39
+#: jobs/PocketImportator.php:36
 msgid ""
 "We tried to import from Pocket, but pocket_consumer_key is missing (please "
 "contact the support)."
@@ -234,7 +234,7 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais il manque la clé "
 "pocket_consumer_key (merci de contacter le support)."
 
-#: jobs/PocketImportator.php:47
+#: jobs/PocketImportator.php:48
 msgid ""
 "We tried to import from Pocket, but you didn’t authorize us to access your "
 "Pocket data."
@@ -242,182 +242,166 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais vous n’avez pas autorisé "
 "l’accès à vos données Pocket."
 
-#: jobs/PocketImportator.php:113
+#: jobs/PocketImportator.php:119
 msgid "Pocket links"
 msgstr "Liens Pocket"
 
-#: jobs/PocketImportator.php:116
+#: jobs/PocketImportator.php:123
 msgid "All your links imported from Pocket."
 msgstr "Tous vos liens importés depuis Pocket."
 
-#: jobs/PocketImportator.php:120
+#: jobs/PocketImportator.php:127
 msgid "Pocket favorite"
 msgstr "Favoris Pocket"
 
-#: jobs/PocketImportator.php:123
+#: jobs/PocketImportator.php:131
 msgid "All your favorites imported from Pocket."
 msgstr "Tous vos favoris importés depuis Pocket."
 
-#: mailers/Support.php:28
+#: mailers/Support.php:30
 #, php-format
 msgid "[%s] Contact: %s"
 msgstr "[%s] Contact : %s"
 
-#: mailers/Support.php:55
+#: mailers/Support.php:59
 #, php-format
 msgid "[%s] Your message has been sent"
 msgstr "[%s] Votre message a été envoyé"
 
-#: mailers/Users.php:35
+#: mailers/Users.php:34
 #, php-format
 msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
-#: mailers/Users.php:68
+#: mailers/Users.php:66
 #, php-format
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
-#: models/Collection.php:151 models/Collection.php:227
+#: models/Collection.php:38 models/Group.php:29
+msgid "The name is required."
+msgstr "Le nom est obligatoire."
+
+#: models/Collection.php:42 models/Group.php:33
+msgid "The name must be less than {max} characters."
+msgstr "Le nom ne doit pas faire plus de {max} caractères."
+
+#: models/Collection.php:120 models/Collection.php:182
 #: views/bookmarks/index.phtml:10
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:165 models/Collection.php:229
+#: models/Collection.php:131 models/Collection.php:184
 msgid "Links read"
 msgstr "Liens lus"
 
-#: models/Collection.php:179
+#: models/Collection.php:142
 msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
-#: models/Collection.php:193 models/Collection.php:231
+#: models/Collection.php:153 models/Collection.php:186
 #: views/_layouts/connected.phtml:82 views/news/index.phtml:3
 #: views/news/index.phtml:16
 msgid "News"
 msgstr "Journal"
 
-#: models/Collection.php:448 models/Group.php:87
-msgid "The name is required."
-msgstr "Le nom est obligatoire."
-
-#: models/Collection.php:450
-msgid "The name must be less than 100 characters."
-msgstr "Le nom ne doit pas faire plus de 100 caractères."
-
-#: models/CollectionShare.php:110
+#: models/CollectionShare.php:37
 msgid "The type is required."
 msgstr "Le type est obligatoire."
 
-#: models/CollectionShare.php:112
+#: models/CollectionShare.php:41
 msgid "The type is invalid."
 msgstr "Le type est invalide."
 
-#: models/FollowedCollection.php:97
+#: models/FollowedCollection.php:40
 msgid "The filter is required."
 msgstr "Le filtre est obligatoire."
 
-#: models/FollowedCollection.php:99
+#: models/FollowedCollection.php:44
 msgid "The filter is invalid."
 msgstr "Le filtre est invalide."
 
-#: models/Group.php:90
-#, php-format
-msgid "The name must be less than %d characters."
-msgstr "Le nom ne doit pas faire plus de %d caractères."
-
-#: models/Link.php:372
-msgid "The link is required."
-msgstr "Le lien est obligatoire."
-
-#: models/Link.php:374
+#: models/Link.php:32
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:393
+#: models/Link.php:38
+msgid "The link is required."
+msgstr "Le lien est obligatoire."
+
+#: models/Link.php:41
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:398
-msgid "Link scheme must be either http or https."
-msgstr "Le protocole du lien doit être http ou https."
-
-#: models/Link.php:402
-msgid "The link must not include a password as it’s sensitive data."
-msgstr ""
-"Le lien ne doit pas contenir de mot de passe car il s’agit d’une donnée "
-"sensible."
-
-#: models/Topic.php:94
+#: models/Topic.php:30
 msgid "The label is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Topic.php:97
-#, php-format
-msgid "The label must be less than %d characters."
-msgstr "Le nom doit faire moins de %d caractères."
+#: models/Topic.php:34
+msgid "The label must be less than {max} characters."
+msgstr "Le nom doit faire moins de {max} caractères."
 
-#: models/User.php:611
-msgid "The username must be less than 50 characters."
-msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de 50 caractères."
-
-#: models/User.php:615
-msgid "The username cannot contain the character ‘@’."
-msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
-
-#: models/User.php:645
-msgid "The username is required."
-msgstr "Le nom d’utilisateur·ice est obligatoire."
-
-#: models/User.php:647
+#: models/User.php:46
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:651
+#: models/User.php:55
+msgid "The username is required."
+msgstr "Le nom d’utilisateur·ice est obligatoire."
+
+#: models/User.php:59
+msgid "The username must be less than {max} characters."
+msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de {max} caractères."
+
+#: models/User.php:63
+msgid "The username cannot contain the character ‘@’."
+msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
+
+#: models/User.php:69
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:653
+#: models/User.php:75
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:655
+#: models/User.php:78
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
-#: seeds.php:14
+#: seeds.php:15
 msgid "Business"
 msgstr "Business"
 
-#: seeds.php:15
+#: seeds.php:19
 msgid "Climate"
 msgstr "Climat"
 
-#: seeds.php:16
+#: seeds.php:23
 msgid "Culture"
 msgstr "Culture"
 
-#: seeds.php:17
+#: seeds.php:27
 msgid "Health"
 msgstr "Santé"
 
-#: seeds.php:18
+#: seeds.php:31
 msgid "Politics"
 msgstr "Politique"
 
-#: seeds.php:19
+#: seeds.php:35
 msgid "Science"
 msgstr "Science"
 
-#: seeds.php:20
+#: seeds.php:39
 msgid "Sport"
 msgstr "Sport"
 
-#: seeds.php:21
+#: seeds.php:43
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:258
+#: services/LinkFetcher.php:268
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -442,41 +426,41 @@ msgstr ""
 "Erreur Pocket : mauvaise configuration, merci de contacter le support (code "
 "erreur %d)."
 
-#: services/UserCreator.php:54
+#: services/UserCreator.php:55
 msgid "My favourites"
 msgstr "Mes favoris"
 
-#: services/UserCreator.php:57
+#: services/UserCreator.php:58
 msgid "My shares"
 msgstr "Mes partages"
 
-#: utils/Browser.php:36
+#: utils/Browser.php:41
 msgid "Unknown browser"
 msgstr "Navigateur inconnu"
 
-#: utils/Browser.php:39
+#: utils/Browser.php:44
 msgid "unknown platform"
 msgstr "plateforme inconnue"
 
-#: utils/Browser.php:42 views/profiles/show.phtml:3
+#: utils/Browser.php:47 views/profiles/show.phtml:3
 #, php-format
 msgid "%s on %s"
 msgstr "%s sur %s"
 
-#: utils/view_helpers.php:106
+#: utils/view_helpers.php:102
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:108
+#: utils/view_helpers.php:104
 #, php-format
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:252
+#: utils/view_helpers.php:222
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: utils/view_helpers.php:253
+#: utils/view_helpers.php:223
 #, php-format
 msgid ""
 "You can add links to <a href=\"%s\">your bookmarks</a> to read them later."
@@ -484,7 +468,7 @@ msgstr ""
 "Vous pouvez placer des liens dans <a href=\"%s\">vos signets</a> pour les "
 "lire plus tard."
 
-#: utils/view_helpers.php:287 views/links/show.phtml:56
+#: utils/view_helpers.php:252 views/links/show.phtml:73
 msgid "you"
 msgstr "vous"
 
@@ -633,7 +617,7 @@ msgstr "Rechercher"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:92 views/registrations/new.phtml:158
+#: views/_layouts/not_connected.phtml:92 views/registrations/new.phtml:160
 msgid "Sign up"
 msgstr "S’inscrire"
 
@@ -692,15 +676,15 @@ msgstr "Page suivante"
 #: views/links/collections/index.phtml:37 views/links/edit.phtml:44
 #: views/links/edit.phtml:73 views/links/new.phtml:42 views/links/new.phtml:59
 #: views/links/new.phtml:66 views/links/repairing/new.phtml:50
-#: views/links/searches/show.phtml:55 views/links/show.phtml:183
+#: views/links/searches/show.phtml:55 views/links/show.phtml:200
 #: views/messages/edit.phtml:38 views/my/account/deletion.phtml:63
 #: views/my/preferences/edit.phtml:41 views/my/profile/edit.phtml:55
 #: views/my/profile/edit.phtml:91 views/my/security/show_confirmed.phtml:41
 #: views/my/security/show_confirmed.phtml:81
 #: views/my/security/show_to_confirm.phtml:55 views/passwords/edit.phtml:58
-#: views/passwords/forgot.phtml:48 views/registrations/new.phtml:50
-#: views/registrations/new.phtml:74 views/registrations/new.phtml:120
-#: views/registrations/new.phtml:132 views/sessions/new.phtml:49
+#: views/passwords/forgot.phtml:48 views/registrations/new.phtml:51
+#: views/registrations/new.phtml:76 views/registrations/new.phtml:122
+#: views/registrations/new.phtml:134 views/sessions/new.phtml:49
 #: views/sessions/new.phtml:88 views/support/show.phtml:45
 #: views/support/show.phtml:69
 msgid "Error"
@@ -1090,13 +1074,13 @@ msgstr "Publiée par %s"
 
 #: views/collections/show.phtml:74 views/collections/show_public.phtml:112
 #: views/links/_link.phtml:221 views/links/_link.phtml:225
-#: views/links/show.phtml:104 views/links/show.phtml:108
+#: views/links/show.phtml:121 views/links/show.phtml:125
 msgid "Actions"
 msgstr "Actions"
 
 #: views/collections/show.phtml:104 views/groups/_group.phtml:23
 #: views/groups/_group.phtml:37 views/links/_link.phtml:273
-#: views/links/show.phtml:124 views/profiles/show.phtml:55
+#: views/links/show.phtml:141 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1117,7 +1101,7 @@ msgstr ""
 "les liens qui lui sont attachés."
 
 #: views/collections/show.phtml:152 views/links/_link.phtml:311
-#: views/links/show.phtml:141
+#: views/links/show.phtml:158
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1453,7 +1437,7 @@ msgstr ""
 "Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
 "être respectée si vous cliquez dessus."
 
-#: views/links/_link.phtml:139 views/links/show.phtml:47
+#: views/links/_link.phtml:139 views/links/show.phtml:64
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
@@ -1547,11 +1531,11 @@ msgstr "Collections"
 msgid "You already commented this link."
 msgstr "Vous avez déjà commenté ce lien."
 
-#: views/links/collections/index.phtml:107 views/links/show.phtml:167
+#: views/links/collections/index.phtml:107 views/links/show.phtml:184
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/collections/index.phtml:125 views/links/show.phtml:165
+#: views/links/collections/index.phtml:125 views/links/show.phtml:182
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -1675,28 +1659,28 @@ msgstr "Un lien partagé par %s sur %s."
 msgid "Syndication feed of comments on %s"
 msgstr "Flux de syndication de commentaires sur %s"
 
-#: views/links/show.phtml:57
+#: views/links/show.phtml:74
 #, php-format
 msgid "Added by <a href=\"%s\">%s</a>"
 msgstr "Ajouté par <a href=\"%s\">%s</a>"
 
-#: views/links/show.phtml:68
+#: views/links/show.phtml:85
 msgid "read"
 msgstr "lire"
 
-#: views/links/show.phtml:70
+#: views/links/show.phtml:87
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
-#: views/links/show.phtml:133
+#: views/links/show.phtml:150
 msgid "Are you sure that you want to delete this message?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
 
-#: views/links/show.phtml:192
+#: views/links/show.phtml:209
 msgid "Comment"
 msgstr "Commenter"
 
-#: views/links/show.phtml:199
+#: views/links/show.phtml:216
 msgid "This link being hidden, the comments are private."
 msgstr "Ce lien étant masqué, les commentaires sont privés."
 
@@ -1796,7 +1780,7 @@ msgstr "Votre mot de passe"
 
 #: views/my/account/deletion.phtml:53 views/my/security/show_confirmed.phtml:71
 #: views/my/security/show_to_confirm.phtml:45 views/passwords/edit.phtml:48
-#: views/registrations/new.phtml:110 views/sessions/new.phtml:78
+#: views/registrations/new.phtml:112 views/sessions/new.phtml:78
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
@@ -1925,7 +1909,7 @@ msgstr "Identifiants & sécurité"
 msgid "You can change your login details here."
 msgstr "Vous pouvez changer vos identifiants de connexion ici."
 
-#: views/my/security/show_confirmed.phtml:26 views/registrations/new.phtml:59
+#: views/my/security/show_confirmed.phtml:26 views/registrations/new.phtml:60
 msgid "Your email address"
 msgstr "Votre adresse courriel"
 
@@ -2412,7 +2396,7 @@ msgstr "Vous êtes en train de modifier le mot de passe de %s."
 msgid "Your new password"
 msgstr "Votre nouveau mot de passe"
 
-#: views/passwords/edit.phtml:28 views/registrations/new.phtml:89
+#: views/passwords/edit.phtml:28 views/registrations/new.phtml:91
 msgid "(recommended at least 8 characters)"
 msgstr "(recommandé au moins 8 caractères)"
 
@@ -2504,7 +2488,7 @@ msgstr ""
 msgid "How should we name you?"
 msgstr "Comment devons-nous vous appeler ?"
 
-#: views/registrations/new.phtml:80
+#: views/registrations/new.phtml:82
 msgid ""
 "We only send emails necessary for the operation of the service, or in the "
 "event of a problem with your account."
@@ -2512,11 +2496,11 @@ msgstr ""
 "Nous n’y enverrons que des courriels nécessaires au fonctionnement du "
 "service, ou en cas de problème avec votre compte."
 
-#: views/registrations/new.phtml:87
+#: views/registrations/new.phtml:89
 msgid "And a password"
 msgstr "Et un mot de passe"
 
-#: views/registrations/new.phtml:138
+#: views/registrations/new.phtml:140
 #, php-format
 msgid ""
 "Before going any further, please read <a href=\"%s\" target=\"_blank\">the "
@@ -2526,11 +2510,11 @@ msgstr ""
 "target=\"_blank\">les conditions générales d’utilisation</a> pour vous "
 "assurer que celles-ci vous conviennent."
 
-#: views/registrations/new.phtml:151
+#: views/registrations/new.phtml:153
 msgid "Accept the terms of service"
 msgstr "Accepter les conditions générales d’utilisation"
 
-#: views/registrations/new.phtml:165
+#: views/registrations/new.phtml:167
 msgid "Already an account?"
 msgstr "Déjà un compte ?"
 
