@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2023-09-05 10:44+0200\n"
-"PO-Revision-Date: 2023-09-05 10:45+0200\n"
+"POT-Creation-Date: 2023-09-05 11:03+0200\n"
+"PO-Revision-Date: 2023-09-05 11:03+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -48,16 +48,18 @@ msgstr "Afficher"
 
 #: controllers/Collections.php:101 controllers/Collections.php:313
 #: controllers/Feeds.php:107 controllers/Groups.php:90
-#: controllers/Links.php:258 controllers/Links.php:430 controllers/News.php:75
-#: controllers/Passwords.php:88 controllers/Passwords.php:191
-#: controllers/Registrations.php:105 controllers/Sessions.php:88
-#: controllers/Support.php:70 controllers/collections/Filters.php:105
+#: controllers/Links.php:270 controllers/Links.php:442
+#: controllers/Mastodon.php:211 controllers/Mastodon.php:297
+#: controllers/News.php:75 controllers/Passwords.php:88
+#: controllers/Passwords.php:191 controllers/Registrations.php:105
+#: controllers/Sessions.php:88 controllers/Support.php:70
+#: controllers/collections/Filters.php:105
 #: controllers/collections/Followers.php:49
 #: controllers/collections/Followers.php:93
 #: controllers/collections/Groups.php:123
 #: controllers/collections/Images.php:114 controllers/collections/Links.php:105
 #: controllers/collections/Shares.php:98 controllers/collections/Shares.php:211
-#: controllers/links/Messages.php:74 controllers/links/Repairing.php:99
+#: controllers/links/Messages.php:84 controllers/links/Repairing.php:99
 #: controllers/links/Searches.php:106 controllers/my/Account.php:111
 #: controllers/my/Preferences.php:78 controllers/my/Profile.php:73
 #: controllers/my/Security.php:85 controllers/my/Security.php:157
@@ -73,14 +75,14 @@ msgstr "L’une des thématiques associées n’existe pas."
 
 #: controllers/Collections.php:388 controllers/Exportations.php:62
 #: controllers/Groups.php:161 controllers/Importations.php:48
-#: controllers/Links.php:487 controllers/Messages.php:93
-#: controllers/Messages.php:141 controllers/Sessions.php:209
-#: controllers/collections/Read.php:73 controllers/collections/Read.php:139
-#: controllers/collections/Read.php:200 controllers/importations/Opml.php:79
-#: controllers/importations/Pocket.php:110
+#: controllers/Links.php:499 controllers/Mastodon.php:87
+#: controllers/Messages.php:93 controllers/Messages.php:141
+#: controllers/Sessions.php:209 controllers/collections/Read.php:73
+#: controllers/collections/Read.php:139 controllers/collections/Read.php:200
+#: controllers/importations/Opml.php:79 controllers/importations/Pocket.php:110
 #: controllers/importations/Pocket.php:157
 #: controllers/importations/Pocket.php:258
-#: controllers/links/Collections.php:149 controllers/links/Read.php:46
+#: controllers/links/Collections.php:158 controllers/links/Read.php:46
 #: controllers/links/Read.php:95 controllers/links/Read.php:144
 #: controllers/links/Read.php:192 controllers/my/Avatar.php:44
 msgid "A security verification failed."
@@ -98,13 +100,22 @@ msgstr "Aucun flux valide n’a été détecté à cette adresse."
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
-#: controllers/Links.php:291
+#: controllers/Links.php:303
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:308 controllers/links/Collections.php:144
+#: controllers/Links.php:320 controllers/links/Collections.php:153
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
+
+#: controllers/Mastodon.php:95
+msgid "The URL is invalid."
+msgstr "L’URL est invalide."
+
+#: controllers/Mastodon.php:106 controllers/Mastodon.php:225
+#: controllers/Mastodon.php:239
+msgid "The Mastodon host returned an error, please try later."
+msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 
 #: controllers/Passwords.php:66 controllers/Sessions.php:99 models/User.php:49
 msgid "The address email is invalid."
@@ -677,6 +688,7 @@ msgstr "Page suivante"
 #: views/links/edit.phtml:73 views/links/new.phtml:42 views/links/new.phtml:59
 #: views/links/new.phtml:66 views/links/repairing/new.phtml:50
 #: views/links/searches/show.phtml:55 views/links/show.phtml:200
+#: views/mastodon/show.phtml:77 views/mastodon/show.phtml:132
 #: views/messages/edit.phtml:38 views/my/account/deletion.phtml:63
 #: views/my/preferences/edit.phtml:41 views/my/profile/edit.phtml:55
 #: views/my/profile/edit.phtml:91 views/my/security/show_confirmed.phtml:41
@@ -783,7 +795,7 @@ msgstr "Comment voulez-vous nommer la collection ?"
 
 #: views/collections/_selector.phtml:93 views/collections/edit.phtml:26
 #: views/collections/groups/edit.phtml:39 views/collections/new.phtml:25
-#: views/groups/edit.phtml:25
+#: views/groups/edit.phtml:25 views/mastodon/show.phtml:61
 #, php-format
 msgid "(max. %d characters)"
 msgstr "(max. %d caractères)"
@@ -822,7 +834,7 @@ msgstr "Sa description"
 
 #: views/collections/edit.phtml:55 views/collections/new.phtml:54
 #: views/links/collections/index.phtml:109
-#: views/links/collections/index.phtml:127
+#: views/links/collections/index.phtml:142
 #: views/my/security/show_confirmed.phtml:52
 msgid "(optional)"
 msgstr "(optionnel)"
@@ -837,9 +849,9 @@ msgstr "Afficher la collection publiquement"
 
 #: views/collections/edit.phtml:126 views/collections/filters/edit.phtml:90
 #: views/collections/groups/edit.phtml:105 views/groups/edit.phtml:53
-#: views/links/edit.phtml:82 views/messages/edit.phtml:47
-#: views/my/preferences/edit.phtml:86 views/my/profile/edit.phtml:100
-#: views/my/security/show_confirmed.phtml:94
+#: views/links/edit.phtml:82 views/mastodon/show.phtml:86
+#: views/messages/edit.phtml:47 views/my/preferences/edit.phtml:86
+#: views/my/profile/edit.phtml:100 views/my/security/show_confirmed.phtml:94
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -1300,6 +1312,7 @@ msgid "Pocket authorization"
 msgstr "Autorisation de Pocket"
 
 #: views/importations/pocket/authorization.phtml:20
+#: views/mastodon/authorization.phtml:22
 msgid "Check authorization"
 msgstr "Vérifier l’autorisation"
 
@@ -1389,7 +1402,7 @@ msgstr "%s ne propose pas de système de favoris, ils seront donc ignorés."
 msgid "Start the import"
 msgstr "Démarrer l’importation"
 
-#: views/importations/pocket/show.phtml:161
+#: views/importations/pocket/show.phtml:161 views/mastodon/show.phtml:93
 #, php-format
 msgid "connected with account <em>%s</em>"
 msgstr "connecté‧e avec le compte <em>%s</em>"
@@ -1515,7 +1528,7 @@ msgid "Read later"
 msgstr "Lire plus tard"
 
 #: views/links/_link.phtml:365 views/links/_link.phtml:369
-#: views/links/collections/index.phtml:145
+#: views/links/collections/index.phtml:175
 msgid "Store the link"
 msgstr "Ranger le lien"
 
@@ -1535,11 +1548,16 @@ msgstr "Vous avez déjà commenté ce lien."
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
-#: views/links/collections/index.phtml:125 views/links/show.phtml:182
+#: views/links/collections/index.phtml:131
+#: views/links/collections/index.phtml:164 views/links/show.phtml:217
+msgid "Share on Mastodon"
+msgstr "Partager vers Mastodon"
+
+#: views/links/collections/index.phtml:140 views/links/show.phtml:182
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
-#: views/links/collections/index.phtml:143
+#: views/links/collections/index.phtml:173
 msgid "Store the link and mark as read"
 msgstr "Ranger le lien et marquer comme lu"
 
@@ -1676,11 +1694,11 @@ msgstr "(ouvre une nouvelle fenêtre)"
 msgid "Are you sure that you want to delete this message?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
 
-#: views/links/show.phtml:209
+#: views/links/show.phtml:224
 msgid "Comment"
 msgstr "Commenter"
 
-#: views/links/show.phtml:216
+#: views/links/show.phtml:231
 msgid "This link being hidden, the comments are private."
 msgstr "Ce lien étant masqué, les commentaires sont privés."
 
@@ -1748,6 +1766,75 @@ msgid ""
 msgstr ""
 "P.S. – Si vous n’avez pas demandé à réinitialiser votre mot de passe, vous "
 "pouvez ignorer ce courriel."
+
+#: views/mastodon/authorization.phtml:3 views/mastodon/authorization.phtml:11
+msgid "Mastodon authorization"
+msgstr "Autorisation de Mastodon"
+
+#: views/mastodon/authorization.phtml:27
+msgid "Please wait while we’re verifying access to Mastodon…"
+msgstr "Merci de patienter pendant que nous vérifions l’accès à Mastodon…"
+
+#: views/mastodon/show.phtml:3 views/mastodon/show.phtml:14
+#: views/my/account/show.phtml:59
+msgid "Configure sharing to Mastodon"
+msgstr "Configurer le partage vers Mastodon"
+
+#: views/mastodon/show.phtml:18
+#, php-format
+msgid "%s lets you share your links and comments on Mastodon."
+msgstr "%s vous permet de partager vos liens et commentaires sur Mastodon."
+
+#: views/mastodon/show.phtml:29
+msgid "When to link to your comments?"
+msgstr "Quand ajouter un lien vers vos commentaires ?"
+
+#: views/mastodon/show.phtml:38
+msgid "Only when you post a comment"
+msgstr "Seulement quand vous postez un commentaire"
+
+#: views/mastodon/show.phtml:42
+msgid "Always"
+msgstr "Toujours"
+
+#: views/mastodon/show.phtml:46
+msgid "Never"
+msgstr "Jamais"
+
+#: views/mastodon/show.phtml:52
+#, php-format
+msgid "Your Mastodon posts can include a link to your comments on %s."
+msgstr ""
+"Votre publication Mastodon peut inclure un lien vers vos commentaires sur %s."
+
+#: views/mastodon/show.phtml:59
+msgid "Always something to add to your posts?"
+msgstr "Quelque chose à toujours ajouter à vos publications ?"
+
+#: views/mastodon/show.phtml:99
+msgid "Are you sure that you want to disconnect your Mastodon account?"
+msgstr "Êtes-vous sur·e de vouloir déconnecter votre compte Mastodon ?"
+
+#: views/mastodon/show.phtml:105
+msgid "disconnect"
+msgstr "déconnecter"
+
+#: views/mastodon/show.phtml:116
+msgid "What’s the address of your Mastodon server?"
+msgstr "Quelle est l’adresse de votre serveur Mastodon ?"
+
+#: views/mastodon/show.phtml:138
+msgid ""
+"Not using Mastodon yet? <a target=\"_blank\" rel=\"noopener noreferrer\" "
+"href=\"https://joinmastodon.org/servers\">Let’s choose a server.</a>"
+msgstr ""
+"Vous n’utilisez pas encore Mastodon ? <a target=\"_blank\" rel=\"noopener "
+"noreferrer\" href=\"https://joinmastodon.org/servers\">Choisissez un serveur."
+"</a>"
+
+#: views/mastodon/show.phtml:145
+msgid "Connect to Mastodon"
+msgstr "Se connecter à Mastodon"
 
 #: views/messages/edit.phtml:3 views/messages/edit.phtml:12
 msgid "Message edition"
@@ -1829,23 +1916,23 @@ msgstr "Gérer votre abonnement"
 msgid "Create your payment account"
 msgstr "Créer votre compte de paiement"
 
-#: views/my/account/show.phtml:59
+#: views/my/account/show.phtml:67
 msgid "Import your data from Pocket"
 msgstr "Importer vos données depuis Pocket"
 
-#: views/my/account/show.phtml:67
+#: views/my/account/show.phtml:75
 msgid "Import your data from an <abbr>OPML</abbr> file"
 msgstr "Importer vos données depuis un fichier <abbr>OPML</abbr>"
 
-#: views/my/account/show.phtml:74
+#: views/my/account/show.phtml:82
 msgid "Download your data"
 msgstr "Télécharger vos données"
 
-#: views/my/account/show.phtml:80
+#: views/my/account/show.phtml:88
 msgid "Manage your credentials"
 msgstr "Gérer vos identifiants"
 
-#: views/my/account/show.phtml:86
+#: views/my/account/show.phtml:94
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 
