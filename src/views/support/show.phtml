@@ -16,7 +16,12 @@
         <?= _('If you have a question or if you’re facing an issue, you can contact me via this form.') ?>
     </p>
 
-    <form method="post" action="<?= url('call support') ?>">
+    <form
+        method="post"
+        action="<?= url('call support') ?>"
+        data-controller="autosave"
+        data-action="turbo:submit-start@document->autosave#clear"
+    >
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <?php if ($message_sent): ?>
@@ -37,6 +42,7 @@
                 value="<?= $subject ?>"
                 required
                 aria-describedby="subject-desc"
+                data-action="keyup->autosave#save"
             />
 
             <div id="subject-desc">
@@ -59,7 +65,7 @@
                 name="message"
                 required
                 data-controller="text-editor"
-                data-action="text-editor#refresh"
+                data-action="text-editor#refresh keyup->autosave#save"
                 aria-describedby="message-desc"
             ><?= $message ?></textarea>
 

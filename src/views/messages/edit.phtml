@@ -12,7 +12,13 @@
         <h1 id="modal-title"><?= _('Message edition') ?></h1>
     </div>
 
-    <form data-turbo-preserve-scroll method="post" action="<?= url('update message', ['id' => $message->id]) ?>">
+    <form
+        data-turbo-preserve-scroll
+        method="post"
+        action="<?= url('update message', ['id' => $message->id]) ?>"
+        data-controller="autosave"
+        data-action="turbo:submit-start@document->autosave#clear"
+    >
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
@@ -28,7 +34,7 @@
                 name="content"
                 required
                 data-controller="text-editor"
-                data-action="text-editor#refresh"
+                data-action="text-editor#refresh keyup->autosave#save"
                 aria-describedby="content-desc"
             ><?= $comment ?></textarea>
 

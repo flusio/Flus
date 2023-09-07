@@ -2,6 +2,7 @@ import * as Turbo from '@hotwired/turbo'; // eslint-disable-line no-unused-vars
 import { Application } from '@hotwired/stimulus';
 
 import AutosubmitController from 'js/controllers/autosubmit_controller.js';
+import AutosaveController from 'js/controllers/autosave_controller.js';
 import BackButtonController from 'js/controllers/back_button_controller.js';
 import CaptionSwitcherController from 'js/controllers/caption_switcher_controller.js';
 import CollectionsSelectorController from 'js/controllers/collections_selector_controller.js';
@@ -20,6 +21,7 @@ window.jsConfiguration = JSON.parse(document.getElementById('javascript-configur
 
 const application = Application.start();
 application.register('autosubmit', AutosubmitController);
+application.register('autosave', AutosaveController);
 application.register('back-button', BackButtonController);
 application.register('caption-switcher', CaptionSwitcherController);
 application.register('collections-selector', CollectionsSelectorController);

@@ -13,7 +13,12 @@
         <h1 id="modal-title"><?= _('Collection edition') ?></h1>
     </div>
 
-    <form method="post" action="<?= url('update collection', ['id' => $collection->id]) ?>">
+    <form
+        method="post"
+        action="<?= url('update collection', ['id' => $collection->id]) ?>"
+        data-controller="autosave"
+        data-action="turbo:submit-start@document->autosave#clear"
+    >
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
@@ -36,6 +41,7 @@
                 autofocus
                 maxlength="<?= $name_max_length ?>"
                 aria-describedby="name-desc"
+                data-action="keyup->autosave#save"
             />
 
             <div id="name-desc">
@@ -60,7 +66,7 @@
                 id="description"
                 name="description"
                 data-controller="text-editor"
-                data-action="text-editor#refresh"
+                data-action="text-editor#refresh keyup->autosave#save"
                 aria-describedby="description-desc"
             ><?= $description ?></textarea>
 
