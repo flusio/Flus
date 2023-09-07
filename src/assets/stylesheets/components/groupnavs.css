@@ -3,6 +3,14 @@
     margin-bottom: var(--space-large);
 }
 
+.groupnav__title {
+    max-width: 50ch;
+    margin: 2rem auto;
+
+    font-size: 1em;
+    font-weight: bold;
+}
+
 .groupnav__container {
     max-width: 50ch;
     margin: 0 auto;

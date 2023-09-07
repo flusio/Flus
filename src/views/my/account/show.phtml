@@ -29,38 +29,50 @@
     <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
     <nav class="groupnav">
-        <ul class="groupnav__container">
-            <?php if (!$current_user->validated_at): ?>
-                <li class="groupnav__item groupnav__item--featured groupnav__item--validate">
-                    <a class="groupnav__anchor" href="<?= url('account validation') ?>">
-                        <?= _('Validate your account') ?>
-                    </a>
-                </li>
-            <?php elseif ($subscriptions_enabled && $current_user->subscription_account_id): ?>
-                <li class="groupnav__item groupnav__item--subscription <?= $current_user->isSubscriptionOverdue() ? 'groupnav__item--featured' : '' ?>">
-                    <a class="groupnav__anchor" href="<?= url('subscription') ?>">
-                        <?= _('Manage your subscription') ?>
-                    </a>
-                </li>
-            <?php elseif ($subscriptions_enabled): ?>
-                <li class="groupnav__item groupnav__item--create groupnav__item--featured">
-                    <form method="post" action="<?= url('create subscription account') ?>">
-                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                        <button class="groupnav__button" type="submit">
-                            <?= _('Create your payment account') ?>
-                        </button>
-                    </form>
-                </li>
-            <?php endif; ?>
+        <?php if (!$current_user->validated_at || $subscriptions_enabled): ?>
+            <h2 class="groupnav__title"><?= _('Account') ?></h2>
 
-            <?php if ($beta_enabled): ?>
+            <ul class="groupnav__container">
+                <?php if (!$current_user->validated_at): ?>
+                    <li class="groupnav__item groupnav__item--featured groupnav__item--validate">
+                        <a class="groupnav__anchor" href="<?= url('account validation') ?>">
+                            <?= _('Validate your account') ?>
+                        </a>
+                    </li>
+                <?php elseif ($subscriptions_enabled && $current_user->subscription_account_id): ?>
+                    <li class="groupnav__item groupnav__item--subscription <?= $current_user->isSubscriptionOverdue() ? 'groupnav__item--featured' : '' ?>">
+                        <a class="groupnav__anchor" href="<?= url('subscription') ?>">
+                            <?= _('Manage your subscription') ?>
+                        </a>
+                    </li>
+                <?php elseif ($subscriptions_enabled): ?>
+                    <li class="groupnav__item groupnav__item--create groupnav__item--featured">
+                        <form method="post" action="<?= url('create subscription account') ?>">
+                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                            <button class="groupnav__button" type="submit">
+                                <?= _('Create your payment account') ?>
+                            </button>
+                        </form>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        <?php endif; ?>
+
+        <?php if ($beta_enabled): ?>
+            <h2 class="groupnav__title"><?= _('Sharing') ?></h2>
+
+            <ul class="groupnav__container">
                 <li class="groupnav__item groupnav__item--mastodon">
                     <a class="groupnav__anchor" href="<?= url('mastodon') ?>">
                         <?= _('Configure sharing to Mastodon') ?>
                     </a>
                 </li>
-            <?php endif; ?>
+            </ul>
+        <?php endif; ?>
 
+        <h2 class="groupnav__title"><?= _('Data') ?></h2>
+
+        <ul class="groupnav__container">
             <?php if ($pocket_enabled && !$current_user->isBlocked()): ?>
                 <li class="groupnav__item groupnav__item--import">
                     <a class="groupnav__anchor" href="<?= url('pocket') ?>">
@@ -82,7 +94,11 @@
                     <?= _('Download your data') ?>
                 </a>
             </li>
+        </ul>
 
+        <h2 class="groupnav__title"><?= _('Security') ?></h2>
+
+        <ul class="groupnav__container">
             <li class="groupnav__item groupnav__item--credentials">
                 <a class="groupnav__anchor" href="<?= url('security') ?>">
                     <?= _('Manage your credentials') ?>
