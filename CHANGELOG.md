@@ -1,9 +1,29 @@
 # Changelog of flusio
 
-## unreleased
+## 2023-09-08 - v0.57
 
 Browscap is now used to identify the sessions of the user.
 It is recommended to enable it (and update the browsercap.ini file, see [browscap.org](https://browscap.org/)).
+
+IP and user agent are now processed to help to detect attacks.
+The last bit of the IP is anonymized and only the browser and the platform are used from the user agent.
+You may want to adapt your GDPR files according to these changes.
+
+### New
+
+- Allow to list and manage sessions ([2eb23747](https://github.com/flusio/flusio/commit/2eb23747))
+- (beta) Allow to share to Mastodon ([ad529d4c](https://github.com/flusio/flusio/commit/ad529d4c))
+
+### Improvements
+
+- Reorganize the "Account & data" page ([c93afb83](https://github.com/flusio/flusio/commit/c93afb83))
+- Autosave content of textareas ([facd1be9](https://github.com/flusio/flusio/commit/facd1be9))
+
+### Bug fixes
+
+- Don't render the "new link" page in a modal after a change ([19b63332](https://github.com/flusio/flusio/commit/19b63332))
+- Edit the profile in the modale ([ee452d47](https://github.com/flusio/flusio/commit/ee452d47))
+- Fix the French locale file ([63ba73a9](https://github.com/flusio/flusio/commit/63ba73a9))
 
 ## 2023-08-07 - v0.56
 
