@@ -87,6 +87,7 @@ class Router
         $router->addRoute('POST', '/my/preferences', 'my/Preferences#update', 'update preferences');
 
         $router->addRoute('GET', '/my/sessions', 'my/Sessions#index', 'sessions');
+        $router->addRoute('POST', '/my/sessions/:id/deletion', 'my/Sessions#delete', 'delete session');
 
         // Mastodon configuration
         $router->addRoute('GET', '/mastodon', 'Mastodon#show', 'mastodon');

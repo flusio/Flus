@@ -45,6 +45,18 @@
                     <small class="line__item--extend text--secondary">
                         <?= $session->name ?>
                     </small>
+
+                    <?php if ($session->id !== $current_session->id): ?>
+                        <form method="post" action="<?= url('delete session', ['id' => $session->id]) ?>">
+                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+                            <small>
+                                <button class="button--smaller" type="submit">
+                                    <?= _('disconnect') ?>
+                                </button>
+                            </small>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </li>
         <?php endforeach; ?>

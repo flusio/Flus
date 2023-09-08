@@ -2,6 +2,11 @@
 
 namespace flusio\controllers\my;
 
+use flusio\auth;
+use flusio\models;
+use tests\factories\SessionFactory;
+use tests\factories\UserFactory;
+
 class SessionsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
@@ -52,5 +57,141 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/my/sessions');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsessions');
+    }
+
+    public function testDeleteRemovesTheSessionAndRedirects(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 0, 15);
+        $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
+        $user = $this->login([], [], [
+            'confirmed_password_at' => $confirmed_at,
+        ]);
+        $session = SessionFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/my/sessions');
+        $this->assertFalse(models\Session::exists($session->id));
+        $this->assertFalse(models\Token::exists($session->token));
+    }
+
+    public function testDeleteLogsOutIfGivenSessionIsCurrentSession(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 0, 15);
+        $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
+        $user = $this->login([], [], [
+            'confirmed_password_at' => $confirmed_at,
+        ]);
+        $session = auth\CurrentUser::session();
+
+        $this->assertNotNull($session);
+
+        $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/my/sessions');
+        $this->assertFalse(models\Session::exists($session->id));
+        $this->assertNull(auth\CurrentUser::get());
+        $this->assertInstanceOf(\Minz\Response::class, $response);
+        $cookie = $response->cookies()['flusio_session_token'];
+        $this->assertSame('', $cookie['value']);
+        $this->assertTrue($cookie['options']['expires'] < \Minz\Time::now()->getTimestamp());
+    }
+
+    public function testDeleteDoesNotRemoveSessionIfCsrfIsInvalid(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 0, 15);
+        $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
+        $user = $this->login([], [], [
+            'confirmed_password_at' => $confirmed_at,
+        ]);
+        $session = SessionFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/my/sessions');
+        $this->assertTrue(models\Session::exists($session->id));
+    }
+
+    public function testDeleteRedirectsIfUserIsNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $session = SessionFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsessions');
+        $this->assertTrue(models\Session::exists($session->id));
+    }
+
+    public function testDeleteRedirectsIfPasswordIsNotConfirmed(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 16, 9000);
+        $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
+        $user = $this->login([], [], [
+            'confirmed_password_at' => $confirmed_at,
+        ]);
+        $session = SessionFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/my/security/confirmation?from=%2Fmy%2Fsessions');
+        $this->assertTrue(models\Session::exists($session->id));
+    }
+
+    public function testDeleteFailsIfSessionDoesNotExist(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        /** @var int */
+        $minutes = $this->fake('numberBetween', 0, 15);
+        $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
+        $user = $this->login([], [], [
+            'confirmed_password_at' => $confirmed_at,
+        ]);
+        $session = SessionFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/my/sessions/not-an-id/deletion", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue(models\Session::exists($session->id));
     }
 }
