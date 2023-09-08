@@ -7,6 +7,7 @@ use Minz\Response;
 use flusio\auth;
 use flusio\jobs;
 use flusio\models;
+use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -219,10 +220,12 @@ class Passwords
         $session_token = new models\Token(1, 'month');
         $session_token->save();
 
-        // $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
-        $session_name = '';
-        // $ip = $request->header('REMOTE_ADDR', 'unknown');
-        $ip = 'unknown';
+        /** @var string */
+        $user_agent = $request->header('HTTP_USER_AGENT', '');
+        $session_name = utils\Browser::format($user_agent);
+        /** @var string */
+        $ip = $request->header('REMOTE_ADDR', 'unknown');
+        $ip = utils\Ip::mask($ip);
         $session = new models\Session($session_name, $ip);
         $session->user_id = $user->id;
         $session->token = $session_token->token;

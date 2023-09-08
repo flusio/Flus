@@ -4,6 +4,7 @@ namespace flusio\controllers;
 
 use flusio\auth;
 use flusio\models;
+use flusio\utils;
 use tests\factories\UserFactory;
 
 class SessionsTest extends \PHPUnit\Framework\TestCase
@@ -139,8 +140,8 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $token = models\Token::find($session->token);
         $this->assertNotNull($token);
         $this->assertSame($user->id, $session->user_id);
-        $this->assertSame('', $session->name);
-        $this->assertSame('unknown', $session->ip);
+        $this->assertSame('Firefox on Linux', $session->name);
+        $this->assertSame(utils\Ip::mask($ip), $session->ip);
         $this->assertEquals(
             \Minz\Time::fromNow(1, 'month')->getTimestamp(),
             $token->expired_at->getTimestamp(),
