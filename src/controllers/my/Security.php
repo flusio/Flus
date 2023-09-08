@@ -6,6 +6,7 @@ use Minz\Request;
 use Minz\Response;
 use flusio\auth;
 use flusio\models;
+use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -13,11 +14,15 @@ use flusio\models;
  */
 class Security
 {
+    use utils\InternalPathChecker;
+
     /**
      * @response 302 /login?redirect_to=/my/security
-     *    If the user is not connected
+     *    If the user is not connected.
+     * @response 302 /my/security/confirmation?from=/my/security
+     *    If the password is not confirmed.
      * @response 200
-     *    On success
+     *    On success.
      */
     public function show(): Response
     {
@@ -32,13 +37,15 @@ class Security
 
         assert($session !== null);
 
-        if ($session->isPasswordConfirmed()) {
-            return Response::ok('my/security/show_confirmed.phtml', [
-                'email' => $user->email,
+        if (!$session->isPasswordConfirmed()) {
+            return Response::redirect('password confirmation', [
+                'from' => \Minz\Url::for('security'),
             ]);
-        } else {
-            return Response::ok('my/security/show_to_confirm.phtml');
         }
+
+        return Response::ok('my/security/show.phtml', [
+            'email' => $user->email,
+        ]);
     }
 
     /**
@@ -50,9 +57,10 @@ class Security
      *
      * @response 302 /login?redirect_to=/my/security
      *    If the user is not connected
+     * @response 302 /my/security/confirmation?from=/my/security
+     *    If the password is not confirmed.
      * @response 400
-     *    If CSRF or email is invalid, or if the user didn't confirmed its
-     *    password first
+     *    If the CSRF token or the email is invalid.
      * @response 302 /my/security
      *    On success
      */
@@ -70,8 +78,8 @@ class Security
         assert($session !== null);
 
         if (!$session->isPasswordConfirmed()) {
-            return Response::badRequest('my/security/show_to_confirm.phtml', [
-                'error' => _('You must confirm your password.'),
+            return Response::redirect('password confirmation', [
+                'from' => \Minz\Url::for('security'),
             ]);
         }
 
@@ -80,7 +88,7 @@ class Security
         $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
-            return Response::badRequest('my/security/show_confirmed.phtml', [
+            return Response::badRequest('my/security/show.phtml', [
                 'email' => $email,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
@@ -94,7 +102,7 @@ class Security
         $existing_user = models\User::findBy(['email' => $user->email]);
         $email_exists = $existing_user && $existing_user->id !== $user->id;
         if ($email_exists) {
-            return Response::badRequest('my/security/show_confirmed.phtml', [
+            return Response::badRequest('my/security/show.phtml', [
                 'email' => $email,
                 'errors' => [
                     'email' => _('An account already exists with this email address.'),
@@ -104,7 +112,7 @@ class Security
 
         $errors = $user->validate();
         if ($errors) {
-            return Response::badRequest('my/security/show_confirmed.phtml', [
+            return Response::badRequest('my/security/show.phtml', [
                 'email' => $email,
                 'errors' => $errors,
             ]);
@@ -125,28 +133,70 @@ class Security
     }
 
     /**
-     * Confirm the password is correct for the current session
+     * Show a form to confirm the password of the user. It is required to
+     * perform some sensitive actions.
      *
-     * @request_param string csrf
-     * @request_param string password
+     * @request_param string from
      *
-     * @response 302 /login?redirect_to=/my/security
+     * @response 302 /login?redirect_to=/my/security/confirmation
      *    If the user is not connected
-     * @response 302 /my/security
-     * @flash error
-     *    If CSRF is invalid
-     * @response 302 /my/security
-     * @flash errors
-     *    If password is invalid
-     * @response 302 /my/security
+     * @response 200
      *    On success
      */
-    public function confirmPassword(Request $request): Response
+    public function confirmation(Request $request): Response
     {
+        $from = $request->param('from', \Minz\Url::for('security'));
+
+        if (!$this->isInternalPath($from)) {
+            $from = \Minz\Url::for('security');
+        }
+
         $user = auth\CurrentUser::get();
         if (!$user) {
             return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('security'),
+                'redirect_to' => $from,
+            ]);
+        }
+
+        $session = auth\CurrentUser::session();
+
+        assert($session !== null);
+
+        if ($session->isPasswordConfirmed()) {
+            return Response::found($from);
+        }
+
+        return Response::ok('my/security/confirmation.phtml', [
+            'from' => $from,
+        ]);
+    }
+
+    /**
+     * Confirm the password for the current session.
+     *
+     * @request_param string csrf
+     * @request_param string password
+     * @request_param string from
+     *
+     * @response 302 /login?redirect_to=/my/security/confirmation
+     *    If the user is not connected
+     * @response 400
+     *    If the CSRF token is invalid or if the password is invalid
+     * @response 302 :from
+     *    On success
+     */
+    public function confirm(Request $request): Response
+    {
+        $from = $request->param('from', \Minz\Url::for('security'));
+
+        if (!$this->isInternalPath($from)) {
+            $from = \Minz\Url::for('security');
+        }
+
+        $user = auth\CurrentUser::get();
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => $from,
             ]);
         }
 
@@ -154,15 +204,19 @@ class Security
         $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
-            return Response::redirect('security');
+            return Response::badRequest('my/security/confirmation.phtml', [
+                'from' => $from,
+                'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
         }
 
         if (!$user->verifyPassword($password)) {
-            \Minz\Flash::set('errors', [
-                'password_hash' => _('The password is incorrect.'),
+            return Response::badRequest('my/security/confirmation.phtml', [
+                'from' => $from,
+                'errors' => [
+                    'password_hash' => _('The password is incorrect.'),
+                ],
             ]);
-            return Response::redirect('security');
         }
 
         $session = auth\CurrentUser::session();
@@ -172,6 +226,6 @@ class Security
         $session->confirmed_password_at = \Minz\Time::now();
         $session->save();
 
-        return Response::redirect('security');
+        return Response::found($from);
     }
 }
