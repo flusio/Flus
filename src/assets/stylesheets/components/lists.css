@@ -11,3 +11,16 @@
 .list--spaced .list__item + .list__item {
     margin-top: var(--space-medium);
 }
+
+.list--padded > li {
+    padding: 1.5rem 2rem;
+}
+
+.list--border {
+    border: 2px solid var(--color-grey-2);
+    border-radius: 0.5rem;
+}
+
+.list--border > li + li {
+    border-top: 2px solid var(--color-grey-2);
+}

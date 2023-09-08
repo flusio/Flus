@@ -55,4 +55,20 @@ class Session
 
         return $this->confirmed_password_at >= \Minz\Time::ago(15, 'minutes');
     }
+
+    public function token(): Token
+    {
+        $token = Token::find($this->token);
+
+        if (!$token) {
+            throw new \Exception("Session #{$this->id} has invalid token.");
+        }
+
+        return $token;
+    }
+
+    public function isValid(): bool
+    {
+        return $this->token()->isValid();
+    }
 }
