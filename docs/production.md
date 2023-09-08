@@ -238,9 +238,6 @@ your `.env` file. That’s all!
 
 ## Optional: Configure Browscap
 
-**Note: the UA identification feature is disabled for now because the featue is
-not yet available to the end users. Don’t bother with Browscap!**
-
 We use Browscap to identify the users’ sessions via their user agent. flusio
 can work without Browscap but the sessions will be identified as `Unknown
 browser on unknown platform`.

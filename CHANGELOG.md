@@ -1,5 +1,10 @@
 # Changelog of flusio
 
+## unreleased
+
+Browscap is now used to identify the sessions of the user.
+It is recommended to enable it (and update the browsercap.ini file, see [browscap.org](https://browscap.org/)).
+
 ## 2023-08-07 - v0.56
 
 ### Bug fixes

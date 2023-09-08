@@ -11,6 +11,9 @@ lawfulness: legitimate interest
 purpose: Adapt the interface for the users
 lawfulness: legitimate interest
 
+purpose: Identify illegitimate sessions to prevent attacks
+lawfulness: legitimate interest
+
 purpose: Personalize the users' profiles
 lawfulness: consent
 
@@ -47,6 +50,24 @@ description:
     The username is used to identify users publicly over the service.
 mitigation:
     Users can use a pseudonyme if they don’t want to use their real name.
+
+data: ip
+required: yes
+visibility: private
+description:
+    The IP is used to allow the users and the administrators to identify their
+    sessions, and eventually to detect a login by an attacker.
+mitigation:
+    The last bit of the IP is anonymized.
+
+data: user agent
+required: yes
+visibility: private
+description:
+    The User Agent is used to allow the users and the administrators to
+    identify their sessions, and eventually to detect a login by an attacker.
+mitigation:
+    Only the browser and the platform are stored (e.g. 'Firefox on Linux').
 
 data: locale
 required: yes
