@@ -16,6 +16,8 @@ use flusio\utils;
  */
 class Sessions
 {
+    use utils\InternalPathChecker;
+
     /**
      * Show the login form.
      *
@@ -63,12 +65,7 @@ class Sessions
     {
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
 
-        try {
-            // Verify that redirect_to matches a real route in the application.
-            /** @var \Minz\Router */
-            $router = \Minz\Engine::router();
-            $router->match('GET', $redirect_to);
-        } catch (\Minz\Errors\RouteNotFoundError $e) {
+        if (!$this->isInternalPath($redirect_to)) {
             $redirect_to = \Minz\Url::for('home');
         }
 
