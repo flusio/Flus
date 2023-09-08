@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2023-09-07 16:48+0200\n"
-"PO-Revision-Date: 2023-09-07 16:48+0200\n"
+"POT-Creation-Date: 2023-09-08 16:05+0200\n"
+"PO-Revision-Date: 2023-09-08 16:06+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -40,8 +40,8 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:25
-#: views/my/account/deletion.phtml:56 views/my/security/show_confirmed.phtml:74
-#: views/my/security/show_to_confirm.phtml:48 views/passwords/edit.phtml:51
+#: views/my/account/deletion.phtml:56 views/my/security/confirmation.phtml:52
+#: views/my/security/show.phtml:74 views/passwords/edit.phtml:51
 #: views/registrations/new.phtml:115 views/sessions/new.phtml:81
 msgid "Show"
 msgstr "Afficher"
@@ -50,9 +50,9 @@ msgstr "Afficher"
 #: controllers/Feeds.php:107 controllers/Groups.php:90
 #: controllers/Links.php:270 controllers/Links.php:442
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
-#: controllers/News.php:75 controllers/Passwords.php:88
-#: controllers/Passwords.php:191 controllers/Registrations.php:105
-#: controllers/Sessions.php:88 controllers/Support.php:70
+#: controllers/News.php:75 controllers/Passwords.php:89
+#: controllers/Passwords.php:192 controllers/Registrations.php:105
+#: controllers/Sessions.php:85 controllers/Support.php:70
 #: controllers/collections/Filters.php:105
 #: controllers/collections/Followers.php:49
 #: controllers/collections/Followers.php:93
@@ -62,7 +62,7 @@ msgstr "Afficher"
 #: controllers/links/Messages.php:84 controllers/links/Repairing.php:99
 #: controllers/links/Searches.php:106 controllers/my/Account.php:111
 #: controllers/my/Preferences.php:78 controllers/my/Profile.php:73
-#: controllers/my/Security.php:85 controllers/my/Security.php:157
+#: controllers/my/Security.php:93 controllers/my/Security.php:209
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:138
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -77,7 +77,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:499 controllers/Mastodon.php:87
 #: controllers/Messages.php:93 controllers/Messages.php:141
-#: controllers/Sessions.php:209 controllers/collections/Read.php:73
+#: controllers/Sessions.php:208 controllers/collections/Read.php:73
 #: controllers/collections/Read.php:139 controllers/collections/Read.php:200
 #: controllers/importations/Opml.php:79 controllers/importations/Pocket.php:110
 #: controllers/importations/Pocket.php:157
@@ -117,21 +117,21 @@ msgstr "L’URL est invalide."
 msgid "The Mastodon host returned an error, please try later."
 msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 
-#: controllers/Passwords.php:66 controllers/Sessions.php:99 models/User.php:49
+#: controllers/Passwords.php:67 controllers/Sessions.php:96 models/User.php:49
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: controllers/Passwords.php:79 controllers/Sessions.php:113
+#: controllers/Passwords.php:80 controllers/Sessions.php:110
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: controllers/Passwords.php:123 controllers/Passwords.php:130
-#: controllers/Passwords.php:170 controllers/Passwords.php:177
+#: controllers/Passwords.php:124 controllers/Passwords.php:131
+#: controllers/Passwords.php:171 controllers/Passwords.php:178
 #: controllers/my/Validation.php:59 controllers/my/Validation.php:72
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: controllers/Passwords.php:136 controllers/Passwords.php:183
+#: controllers/Passwords.php:137 controllers/Passwords.php:184
 msgid "The token has expired, you should reset your password again."
 msgstr ""
 "Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
@@ -140,14 +140,14 @@ msgstr ""
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
-#: controllers/Sessions.php:123
+#: controllers/Sessions.php:120
 msgid "What are you trying to do? You can’t login to the support account."
 msgstr ""
 "Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
 "support."
 
-#: controllers/Sessions.php:133 controllers/my/Account.php:118
-#: controllers/my/Security.php:163
+#: controllers/Sessions.php:130 controllers/my/Account.php:118
+#: controllers/my/Security.php:217
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -211,11 +211,7 @@ msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: controllers/my/Security.php:74
-msgid "You must confirm your password."
-msgstr "Vous devez confirmer votre mot de passe."
-
-#: controllers/my/Security.php:100 services/UserCreator.php:43
+#: controllers/my/Security.php:108 services/UserCreator.php:43
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
@@ -691,14 +687,13 @@ msgstr "Page suivante"
 #: views/mastodon/show.phtml:77 views/mastodon/show.phtml:132
 #: views/messages/edit.phtml:44 views/my/account/deletion.phtml:63
 #: views/my/preferences/edit.phtml:41 views/my/profile/edit.phtml:56
-#: views/my/profile/edit.phtml:92 views/my/security/show_confirmed.phtml:41
-#: views/my/security/show_confirmed.phtml:81
-#: views/my/security/show_to_confirm.phtml:55 views/passwords/edit.phtml:58
-#: views/passwords/forgot.phtml:48 views/registrations/new.phtml:51
-#: views/registrations/new.phtml:76 views/registrations/new.phtml:122
-#: views/registrations/new.phtml:134 views/sessions/new.phtml:49
-#: views/sessions/new.phtml:88 views/support/show.phtml:51
-#: views/support/show.phtml:75
+#: views/my/profile/edit.phtml:92 views/my/security/confirmation.phtml:59
+#: views/my/security/show.phtml:41 views/my/security/show.phtml:81
+#: views/passwords/edit.phtml:58 views/passwords/forgot.phtml:48
+#: views/registrations/new.phtml:51 views/registrations/new.phtml:76
+#: views/registrations/new.phtml:122 views/registrations/new.phtml:134
+#: views/sessions/new.phtml:49 views/sessions/new.phtml:88
+#: views/support/show.phtml:51 views/support/show.phtml:75
 msgid "Error"
 msgstr "Erreur"
 
@@ -834,8 +829,7 @@ msgstr "Sa description"
 
 #: views/collections/edit.phtml:61 views/collections/new.phtml:60
 #: views/links/collections/index.phtml:115
-#: views/links/collections/index.phtml:148
-#: views/my/security/show_confirmed.phtml:52
+#: views/links/collections/index.phtml:148 views/my/security/show.phtml:52
 msgid "(optional)"
 msgstr "(optionnel)"
 
@@ -851,7 +845,7 @@ msgstr "Afficher la collection publiquement"
 #: views/collections/groups/edit.phtml:105 views/groups/edit.phtml:53
 #: views/links/edit.phtml:82 views/mastodon/show.phtml:86
 #: views/messages/edit.phtml:53 views/my/preferences/edit.phtml:86
-#: views/my/profile/edit.phtml:101 views/my/security/show_confirmed.phtml:94
+#: views/my/profile/edit.phtml:101 views/my/security/show.phtml:94
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -1815,7 +1809,7 @@ msgstr "Quelque chose à toujours ajouter à vos publications ?"
 msgid "Are you sure that you want to disconnect your Mastodon account?"
 msgstr "Êtes-vous sur·e de vouloir déconnecter votre compte Mastodon ?"
 
-#: views/mastodon/show.phtml:105
+#: views/mastodon/show.phtml:105 views/my/sessions/index.phtml:55
 msgid "disconnect"
 msgstr "déconnecter"
 
@@ -1865,8 +1859,8 @@ msgstr ""
 msgid "Your password"
 msgstr "Votre mot de passe"
 
-#: views/my/account/deletion.phtml:53 views/my/security/show_confirmed.phtml:71
-#: views/my/security/show_to_confirm.phtml:45 views/passwords/edit.phtml:48
+#: views/my/account/deletion.phtml:53 views/my/security/confirmation.phtml:49
+#: views/my/security/show.phtml:71 views/passwords/edit.phtml:48
 #: views/registrations/new.phtml:112 views/sessions/new.phtml:78
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
@@ -1949,6 +1943,10 @@ msgid "Manage your credentials"
 msgstr "Gérer vos identifiants"
 
 #: views/my/account/show.phtml:110
+msgid "Manage your sessions"
+msgstr "Gérer vos sessions"
+
+#: views/my/account/show.phtml:116
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 
@@ -2001,31 +1999,12 @@ msgstr "Votre nom"
 msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
 
-#: views/my/security/show_confirmed.phtml:3
-#: views/my/security/show_confirmed.phtml:12
-#: views/my/security/show_to_confirm.phtml:3
-#: views/my/security/show_to_confirm.phtml:12
-msgid "Login & security"
-msgstr "Identifiants & sécurité"
+#: views/my/security/confirmation.phtml:3
+#: views/my/security/confirmation.phtml:15
+msgid "Password confirmation"
+msgstr "Confirmation du mot de passe"
 
-#: views/my/security/show_confirmed.phtml:16
-msgid "You can change your login details here."
-msgstr "Vous pouvez changer vos identifiants de connexion ici."
-
-#: views/my/security/show_confirmed.phtml:26 views/registrations/new.phtml:60
-msgid "Your email address"
-msgstr "Votre adresse courriel"
-
-#: views/my/security/show_confirmed.phtml:50
-msgid "New password"
-msgstr "Nouveau mot de passe"
-
-#: views/my/security/show_confirmed.phtml:87
-msgid "Leave this field empty if you want to keep your current password."
-msgstr ""
-"Laissez ce champ vide si vous souhaitez conserver votre mot de passe actuel."
-
-#: views/my/security/show_to_confirm.phtml:16
+#: views/my/security/confirmation.phtml:19
 msgid ""
 "We need you to confirm your password before giving you access to sensitive "
 "actions."
@@ -2033,13 +2012,55 @@ msgstr ""
 "Vous devez confirmer votre mot de passe avant de pouvoir effectuer des "
 "actions sensibles."
 
-#: views/my/security/show_to_confirm.phtml:26
+#: views/my/security/confirmation.phtml:30
 msgid "Your current password"
 msgstr "Votre mot de passe actuel"
 
-#: views/my/security/show_to_confirm.phtml:64
+#: views/my/security/confirmation.phtml:68
 msgid "Confirm your password"
 msgstr "Confirmer votre mot de passe"
+
+#: views/my/security/show.phtml:3 views/my/security/show.phtml:12
+msgid "Login & security"
+msgstr "Identifiants & sécurité"
+
+#: views/my/security/show.phtml:16
+msgid "You can change your login details here."
+msgstr "Vous pouvez changer vos identifiants de connexion ici."
+
+#: views/my/security/show.phtml:26 views/registrations/new.phtml:60
+msgid "Your email address"
+msgstr "Votre adresse courriel"
+
+#: views/my/security/show.phtml:50
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: views/my/security/show.phtml:87
+msgid "Leave this field empty if you want to keep your current password."
+msgstr ""
+"Laissez ce champ vide si vous souhaitez conserver votre mot de passe actuel."
+
+#: views/my/sessions/index.phtml:3 views/my/sessions/index.phtml:12
+msgid "Sessions management"
+msgstr "Gestion des sessions"
+
+#: views/my/sessions/index.phtml:16
+msgid "List and manage your login sessions."
+msgstr "Listez et gérez vos sessions de connexion."
+
+#: views/my/sessions/index.phtml:27
+#, php-format
+msgid "connected on %s"
+msgstr "connecté‧e le %s"
+
+#: views/my/sessions/index.phtml:34
+msgid "current session"
+msgstr "session courante"
+
+#: views/my/sessions/index.phtml:38
+msgid "expired"
+msgstr "expirée"
 
 #: views/my/validation/show.phtml:3 views/my/validation/show.phtml:15
 msgid "Account validation"

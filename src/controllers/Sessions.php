@@ -16,6 +16,8 @@ use flusio\utils;
  */
 class Sessions
 {
+    use utils\InternalPathChecker;
+
     /**
      * Show the login form.
      *
@@ -63,12 +65,7 @@ class Sessions
     {
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
 
-        try {
-            // Verify that redirect_to matches a real route in the application.
-            /** @var \Minz\Router */
-            $router = \Minz\Engine::router();
-            $router->match('GET', $redirect_to);
-        } catch (\Minz\Errors\RouteNotFoundError $e) {
+        if (!$this->isInternalPath($redirect_to)) {
             $redirect_to = \Minz\Url::for('home');
         }
 
@@ -140,10 +137,12 @@ class Sessions
         $token = new models\Token(1, 'month');
         $token->save();
 
-        // $session_name = utils\Browser::format($request->header('HTTP_USER_AGENT', ''));
-        $session_name = '';
-        // $ip = $request->header('REMOTE_ADDR', 'unknown');
-        $ip = 'unknown';
+        /** @var string */
+        $user_agent = $request->header('HTTP_USER_AGENT', '');
+        $session_name = utils\Browser::format($user_agent);
+        /** @var string */
+        $ip = $request->header('REMOTE_ADDR', 'unknown');
+        $ip = utils\Ip::mask($ip);
         $session = new models\Session($session_name, $ip);
         $session->user_id = $user->id;
         $session->token = $token->token;

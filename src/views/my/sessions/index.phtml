@@ -1,0 +1,64 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Sessions management'),
+        'canonical' => url_full('sessions'),
+        'current_page' => 'sessions',
+        'has_errors' => $error || $errors,
+    ]);
+?>
+
+<div class="section section--small section--longbottom">
+    <div class="section__title">
+        <h1><?= _('Sessions management') ?></h1>
+    </div>
+
+    <p class="section__intro">
+        <?= _('List and manage your login sessions.') ?>
+    </p>
+
+    <ul class="list--no-style list--border list--padded">
+        <?php foreach ($sessions as $session): ?>
+            <li>
+                <div class="line">
+                    <div class="line__item--extend">
+                        <strong><?= $session->ip ?></strong>
+
+                        <small class="text--secondary">
+                            <?= _f('connected on %s', _d($session->created_at, 'd MMM YYYY')) ?>
+                        </small>
+                    </div>
+
+                    <div class="line__item">
+                        <?php if ($session->id === $current_session->id): ?>
+                            <span class="sticker">
+                                <?= _('current session') ?>
+                            </span>
+                        <?php elseif (!$session->isValid()): ?>
+                            <span class="sticker">
+                                <?= _('expired') ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="line">
+                    <small class="line__item--extend text--secondary">
+                        <?= $session->name ?>
+                    </small>
+
+                    <?php if ($session->id !== $current_session->id): ?>
+                        <form method="post" action="<?= url('delete session', ['id' => $session->id]) ?>">
+                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+                            <small>
+                                <button class="button--smaller" type="submit">
+                                    <?= _('disconnect') ?>
+                                </button>
+                            </small>
+                        </form>
+                    <?php endif; ?>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</div>

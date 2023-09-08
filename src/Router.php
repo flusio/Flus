@@ -66,7 +66,8 @@ class Router
 
         $router->addRoute('GET', '/my/security', 'my/Security#show', 'security');
         $router->addRoute('POST', '/my/security', 'my/Security#update', 'update security');
-        $router->addRoute('POST', '/my/security/confirm', 'my/Security#confirmPassword', 'confirm password');
+        $router->addRoute('GET', '/my/security/confirmation', 'my/Security#confirmation', 'password confirmation');
+        $router->addRoute('POST', '/my/security/confirmation', 'my/Security#confirm', 'confirm password');
 
         $router->addRoute('GET', '/my/account', 'my/Account#show', 'account');
         $router->addRoute('GET', '/my/account/validation', 'my/Validation#show', 'account validation');
@@ -84,6 +85,9 @@ class Router
 
         $router->addRoute('GET', '/my/preferences', 'my/Preferences#edit', 'preferences');
         $router->addRoute('POST', '/my/preferences', 'my/Preferences#update', 'update preferences');
+
+        $router->addRoute('GET', '/my/sessions', 'my/Sessions#index', 'sessions');
+        $router->addRoute('POST', '/my/sessions/:id/deletion', 'my/Sessions#delete', 'delete session');
 
         // Mastodon configuration
         $router->addRoute('GET', '/mastodon', 'Mastodon#show', 'mastodon');
