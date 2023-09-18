@@ -222,11 +222,9 @@ class Passwords
 
         /** @var string */
         $user_agent = $request->header('HTTP_USER_AGENT', '');
-        $session_name = utils\Browser::format($user_agent);
         /** @var string */
         $ip = $request->header('REMOTE_ADDR', 'unknown');
-        $ip = utils\Ip::mask($ip);
-        $session = new models\Session($session_name, $ip);
+        $session = new models\Session($user_agent, $ip);
         $session->user_id = $user->id;
         $session->token = $session_token->token;
         $session->save();

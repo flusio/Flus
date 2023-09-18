@@ -3,6 +3,7 @@
 namespace flusio\models;
 
 use Minz\Database;
+use flusio\utils;
 
 /**
  * Represent a user login session.
@@ -37,11 +38,15 @@ class Session
     #[Database\Column]
     public string $token;
 
-    public function __construct(string $name, string $ip)
+    public function __construct(string $user_agent, string $ip)
     {
         $this->id = \Minz\Random::hex(32);
-        $this->name = trim($name);
-        $this->ip = trim($ip);
+        $this->name = utils\Browser::format($user_agent);
+        if (\Minz\Configuration::$application['demo']) {
+            $this->ip = 'unknown';
+        } else {
+            $this->ip = utils\Ip::mask($ip);
+        }
     }
 
     /**
