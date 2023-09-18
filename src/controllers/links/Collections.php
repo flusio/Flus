@@ -97,7 +97,7 @@ class Collections
             'mark_as_read' => $mark_as_read,
             'messages' => $messages,
             'comment' => '',
-            'share_on_mastodon' => count($messages) === 0,
+            'share_on_mastodon' => false,
             'mastodon_configured' => $mastodon_configured,
             'from' => $from,
         ]);

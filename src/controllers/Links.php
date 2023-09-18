@@ -145,7 +145,7 @@ class Links
             'messages' => $messages,
             'can_comment' => $can_comment,
             'comment' => '',
-            'share_on_mastodon' => count($messages) === 0,
+            'share_on_mastodon' => false,
             'mastodon_configured' => $mastodon_configured,
         ]);
     }
