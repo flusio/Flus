@@ -197,6 +197,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
             ["http:///example.com", ''],
             ["http://:80", ''],
             ["http://user@:80", ''],
+            ['HTTPS://host.com', 'https://host.com/'],
         ];
     }
 

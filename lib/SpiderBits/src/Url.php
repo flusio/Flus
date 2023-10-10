@@ -109,7 +109,7 @@ class Url
 
         // Get the scheme (default is http)
         if (isset($parsed_url['scheme'])) {
-            $scheme = self::fullPercentDecode($parsed_url['scheme']);
+            $scheme = mb_strtolower(self::fullPercentDecode($parsed_url['scheme']));
         } else {
             $scheme = 'http';
         }
