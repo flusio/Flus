@@ -93,6 +93,14 @@ class Media
             if (!$file_names_to_delete) {
                 yield Response::text(200, "Nothing to delete under {$subdir_name}/.");
             }
+
+            yield Response::text(200, "Cleaning empty dirs under {$subdir_name}/...");
+
+            $this->cleanTreeEmptyDirectories("{$path_cards}/{$subdir_name}");
+            $this->cleanTreeEmptyDirectories("{$path_covers}/{$subdir_name}");
+            $this->cleanTreeEmptyDirectories("{$path_large}/{$subdir_name}");
+
+            yield Response::text(200, "Cleaned empty dirs under {$subdir_name}/.");
         }
 
         if ($count_deleted > 0) {
@@ -100,5 +108,38 @@ class Media
         } else {
             yield Response::text(200, 'No files deleted.');
         }
+    }
+
+    private function cleanTreeEmptyDirectories(string $directory): bool
+    {
+        if (!is_dir($directory)) {
+            return false;
+        }
+
+        $files = scandir($directory);
+
+        if ($files === false) {
+            return false;
+        }
+
+        $files = array_diff($files, ['.', '..']);
+
+        foreach ($files as $file) {
+            $filepath = "{$directory}/{$file}";
+
+            if (is_dir($filepath)) {
+                $can_delete_dir = $this->cleanTreeEmptyDirectories($filepath);
+            } else {
+                $can_delete_dir = false;
+            }
+
+            if (!$can_delete_dir) {
+                return false;
+            }
+        }
+
+        rmdir($directory);
+
+        return true;
     }
 }

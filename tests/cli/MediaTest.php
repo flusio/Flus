@@ -83,11 +83,16 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Deleted file {$image_filename}");
         $response->next();
+        $response->next();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, '1 files deleted.');
         $this->assertFalse(file_exists($card_filepath));
         $this->assertFalse(file_exists($cover_filepath));
         $this->assertFalse(file_exists($large_filepath));
+        $this->assertFalse(file_exists(dirname($card_filepath)));
+        $this->assertFalse(file_exists(dirname($cover_filepath)));
+        $this->assertFalse(file_exists(dirname($large_filepath)));
     }
 
     public function testCleanKeepsFilesUsedByLinks(): void
@@ -126,6 +131,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
+        $response->next();
+        $response->next();
         $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'No files deleted.');
@@ -171,6 +178,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
         $response->next();
+        $response->next();
+        $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'No files deleted.');
         $this->assertTrue(file_exists($card_filepath));
@@ -214,6 +223,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
+        $response->next();
+        $response->next();
         $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'No files deleted.');
