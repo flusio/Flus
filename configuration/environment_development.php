@@ -7,7 +7,7 @@ $db_name = 'flusio_development';
 $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 
 $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-dev';
-$user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio)";
+$user_agent = "flusio/{$flusio_version}";
 
 $feeds_links_keep_minimum = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_MINIMUM', '0')));
 $feeds_links_keep_maximum = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_MAXIMUM', '0')));
