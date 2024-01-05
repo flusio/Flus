@@ -14,7 +14,7 @@ $media_directory = $temporary_directory . '/media';
 @mkdir($media_directory, 0777, true);
 
 $flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-test';
-$user_agent = "flusio/{$flusio_version} (https://github.com/flusio/flusio)";
+$user_agent = "flusio/{$flusio_version}";
 
 return [
     'app_name' => 'flusio',
