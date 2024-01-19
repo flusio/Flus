@@ -64,6 +64,7 @@ return [
         'server_ips' => $server_ips,
         'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY'),
         'cli_locale' => $dotenv->pop('CLI_LOCALE'),
+        'plausible_url' => $dotenv->pop('APP_PLAUSIBLE_URL'),
     ],
 
     'database' => [

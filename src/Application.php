@@ -160,16 +160,25 @@ class Application
             'modal_requested' => $request->header('HTTP_TURBO_FRAME') === 'modal-content',
             'demo' => $app_conf['demo'],
             'registrations_opened' => $app_conf['registrations_opened'],
+            'plausible_url' => $app_conf['plausible_url'],
+            'current_host' => \Minz\Configuration::$url_options['host'],
         ]);
 
         $response = \Minz\Engine::run($request);
 
         if ($response instanceof \Minz\Response) {
-            $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
             $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
             $response->setHeader('Referrer-Policy', 'same-origin');
             $response->setHeader('X-Content-Type-Options', 'nosniff');
             $response->setHeader('X-Frame-Options', 'deny');
+            $response->addContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
+
+            if ($app_conf['plausible_url']) {
+                /** @var string */
+                $plausible_url = $app_conf['plausible_url'];
+                $response->addContentSecurityPolicy('connect-src', "'self' {$plausible_url}");
+                $response->addContentSecurityPolicy('script-src', "'self' {$plausible_url}");
+            }
         }
 
         if (

@@ -8,6 +8,10 @@
         <meta name="robots" content="noindex">
 
         <link rel="stylesheet" href="<?= url_asset('stylesheets/application.css') ?>" data-turbo-track="reload">
+
+        <?php if ($plausible_url): ?>
+            <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
+        <?php endif; ?>
     </head>
 
     <body>

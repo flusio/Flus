@@ -52,6 +52,7 @@ return [
         'server_ips' => [],
         'pocket_consumer_key' => 'some token',
         'cli_locale' => 'en_GB',
+        'plausible_url' => null,
         'mock_host' => $dotenv->pop('MOCK_HOST'),
     ],
 
