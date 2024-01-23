@@ -84,32 +84,64 @@ class System
     /**
      * Show statistics of the system.
      *
+     * @request_param string format
+     *     The output format, either `plain` (default) or `csv`.
+     * @request_param integer year
+     *     The year to display (only for `csv` format), default is current year.
+     *
      * @response 200
      */
     public function stats(Request $request): Response
     {
-        $count_users = models\User::count();
-        $count_users_validated = models\User::countValidated();
-        $percent_users_validated = intval($count_users_validated * 100 / max(1, $count_users));
+        $format = $request->param('format', 'plain');
 
-        return Response::ok('cli/system/stats.txt', [
-            'count_users' => $count_users,
-            'percent_users_validated' => $percent_users_validated,
-            'count_users_week' => models\User::countSince(\Minz\Time::ago(1, 'week')),
-            'count_users_month' => models\User::countSince(\Minz\Time::ago(1, 'month')),
-            'count_users_active_month' => models\Session::countUsersActiveSince(\Minz\Time::ago(1, 'month')),
-            'count_links' => models\Link::countEstimated(),
-            'count_links_to_fetch' => models\Link::countToFetch(),
-            'count_collections' => models\Collection::countCollections(),
-            'count_collections_public' => models\Collection::countCollectionsPublic(),
-            'count_feeds' => models\Collection::countFeeds(),
-            'count_feeds_by_hours' => models\Collection::countFeedsByHours(),
-            'count_requests' => models\FetchLog::countEstimated(),
-            'count_requests_feeds' => models\FetchLog::countByType('feed'),
-            'count_requests_links' => models\FetchLog::countByType('link'),
-            'count_requests_images' => models\FetchLog::countByType('image'),
-            'count_requests_by_days' => models\FetchLog::countByDays(),
-        ]);
+        if ($format === 'csv') {
+            $current_year = intval(\Minz\Time::now()->format('Y'));
+            $year = $request->paramInteger('year', $current_year);
+
+            $registrations_per_date = models\User::countPerMonth($year);
+            $active_per_date = models\User::countActivePerMonth($year);
+
+            $dates = array_keys(array_merge($registrations_per_date, $active_per_date));
+
+            $stats_per_date = [];
+            foreach ($dates as $date) {
+                $count_registrations = $registrations_per_date[$date] ?? 0;
+                $count_active = $active_per_date[$date] ?? 0;
+
+                $stats_per_date[$date] = [
+                    'registrations' => $count_registrations,
+                    'active' => $count_active,
+                ];
+            }
+
+            return Response::ok('cli/system/stats.csv.txt', [
+                'stats_per_date' => $stats_per_date,
+            ]);
+        } else {
+            $count_users = models\User::count();
+            $count_users_validated = models\User::countValidated();
+            $percent_users_validated = intval($count_users_validated * 100 / max(1, $count_users));
+
+            return Response::ok('cli/system/stats.txt', [
+                'count_users' => $count_users,
+                'percent_users_validated' => $percent_users_validated,
+                'count_users_week' => models\User::countSince(\Minz\Time::ago(1, 'week')),
+                'count_users_month' => models\User::countSince(\Minz\Time::ago(1, 'month')),
+                'count_users_active_month' => models\Session::countUsersActiveSince(\Minz\Time::ago(1, 'month')),
+                'count_links' => models\Link::countEstimated(),
+                'count_links_to_fetch' => models\Link::countToFetch(),
+                'count_collections' => models\Collection::countCollections(),
+                'count_collections_public' => models\Collection::countCollectionsPublic(),
+                'count_feeds' => models\Collection::countFeeds(),
+                'count_feeds_by_hours' => models\Collection::countFeedsByHours(),
+                'count_requests' => models\FetchLog::countEstimated(),
+                'count_requests_feeds' => models\FetchLog::countByType('feed'),
+                'count_requests_links' => models\FetchLog::countByType('link'),
+                'count_requests_images' => models\FetchLog::countByType('image'),
+                'count_requests_by_days' => models\FetchLog::countByDays(),
+            ]);
+        }
     }
 
     /**

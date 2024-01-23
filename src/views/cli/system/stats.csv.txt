@@ -1,0 +1,6 @@
+<?php foreach ($stats_per_date as $date => $stats): ?>
+<?= $date . '-01;' ?>
+<?= $stats['registrations'] . ';' ?>
+<?= $stats['active'] . ';' ?>
+
+<?php endforeach; ?>

@@ -2,6 +2,7 @@
 
 namespace flusio\models\dao;
 
+use flusio\models;
 use Minz\Database;
 
 /**
@@ -44,6 +45,74 @@ trait User
         ]);
 
         return intval($statement->fetchColumn());
+    }
+
+    /**
+     * Return the number of new users per month for the given year.
+     *
+     * @return array<string, int>
+     */
+    public static function countPerMonth(int $year): array
+    {
+        $sql = <<<'SQL'
+            SELECT to_char(created_at, 'YYYY-MM') AS date, COUNT(*) FROM users
+            WHERE id != :support_user_id
+            AND created_at >= :since
+            AND created_at <= :until
+            GROUP BY date
+        SQL;
+
+        $since = new \DateTimeImmutable();
+        $since = $since->setDate($year, 1, 1);
+        $since = $since->setTime(0, 0, 0);
+
+        $until = $since->setDate($year, 12, 31);
+        $until = $until->setTime(23, 59, 59);
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':support_user_id' => models\User::supportUser()->id,
+            ':since' => $since->format(Database\Column::DATETIME_FORMAT),
+            ':until' => $until->format(Database\Column::DATETIME_FORMAT),
+        ]);
+
+        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+    }
+
+    /**
+     * Return the number of active users per month for the given year.
+     *
+     * An active user is a user that created a link during a given month.
+     *
+     * @return array<string, int>
+     */
+    public static function countActivePerMonth(int $year): array
+    {
+        $sql = <<<'SQL'
+            SELECT to_char(created_at, 'YYYY-MM') AS date, COUNT(DISTINCT user_id) FROM links
+            WHERE user_id != :support_user_id
+            AND created_at >= :since
+            AND created_at <= :until
+            GROUP BY date
+        SQL;
+
+        $since = new \DateTimeImmutable();
+        $since = $since->setDate($year, 1, 1);
+        $since = $since->setTime(0, 0, 0);
+
+        $until = $since->setDate($year, 12, 31);
+        $until = $until->setTime(23, 59, 59);
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':support_user_id' => models\User::supportUser()->id,
+            ':since' => $since->format(Database\Column::DATETIME_FORMAT),
+            ':until' => $until->format(Database\Column::DATETIME_FORMAT),
+        ]);
+
+        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 
     /**
