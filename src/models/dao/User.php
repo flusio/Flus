@@ -50,6 +50,8 @@ trait User
     /**
      * Return the number of new users per month for the given year.
      *
+     * It excludes users that are not validated.
+     *
      * @return array<string, int>
      */
     public static function countPerMonth(int $year): array
@@ -59,6 +61,7 @@ trait User
             WHERE id != :support_user_id
             AND created_at >= :since
             AND created_at <= :until
+            AND validated_at IS NOT NULL
             GROUP BY date
         SQL;
 
@@ -84,6 +87,7 @@ trait User
      * Return the number of active users per month for the given year.
      *
      * An active user is a user that created a link during a given month.
+     * It excludes users that are not validated.
      *
      * @return array<string, int>
      */
@@ -91,7 +95,11 @@ trait User
     {
         $sql = <<<'SQL'
             SELECT to_char(created_at, 'YYYY-MM') AS date, COUNT(DISTINCT user_id) FROM links
-            WHERE user_id != :support_user_id
+            WHERE user_id IN (
+                SELECT id FROM users
+                WHERE id != :support_user_id
+                AND validated_at IS NOT NULL
+            )
             AND created_at >= :since
             AND created_at <= :until
             GROUP BY date

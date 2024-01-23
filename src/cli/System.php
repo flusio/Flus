@@ -115,6 +115,8 @@ class System
                 ];
             }
 
+            ksort($stats_per_date);
+
             return Response::ok('cli/system/stats.csv.txt', [
                 'stats_per_date' => $stats_per_date,
             ]);

@@ -71,6 +71,9 @@ class Help
         $usage .= "\n";
         $usage .= "  system                   Show information about the system\n";
         $usage .= "  system secret            Generate a secure key to be used as APP_SECRET_KEY\n";
+        $usage .= "  system stats             Show statistics about the system\n";
+        $usage .= "      [--format=TEXT]      where TEXT is either `csv` or `plain` (default)\n";
+        $usage .= "      [--year=INT]         where INT is the year to output (only for CSV format)\n";
         $usage .= "\n";
         $usage .= "  topics                   List the topics\n";
         $usage .= "  topics create            Create a topic\n";
