@@ -23,6 +23,13 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
     }
 
+    public function testStats(): void
+    {
+        $response = $this->appRun('CLI', '/system/stats');
+
+        $this->assertResponseCode($response, 200);
+    }
+
     public function testSecret(): void
     {
         $response = $this->appRun('CLI', '/system/secret');

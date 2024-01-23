@@ -2,6 +2,7 @@
 
 namespace flusio\cli;
 
+use Minz\Request;
 use Minz\Response;
 use flusio\models;
 use flusio\utils;
@@ -47,28 +48,6 @@ class System
         /** @var int */
         $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
 
-        $count_users = models\User::count();
-        $count_users_validated = models\User::countValidated();
-        $percent_users_validated = intval($count_users_validated * 100 / max(1, $count_users));
-        $count_users_week = models\User::countSince(\Minz\Time::ago(1, 'week'));
-        $count_users_month = models\User::countSince(\Minz\Time::ago(1, 'month'));
-        $count_users_active_month = models\Session::countUsersActiveSince(\Minz\Time::ago(1, 'month'));
-
-        $count_links = models\Link::countEstimated();
-        $count_links_to_fetch = models\Link::countToFetch();
-
-        $count_collections = models\Collection::countCollections();
-        $count_collections_public = models\Collection::countCollectionsPublic();
-
-        $count_feeds = models\Collection::countFeeds();
-        $count_feeds_by_hours = models\Collection::countFeedsByHours();
-
-        $count_requests = models\FetchLog::countEstimated();
-        $count_requests_feeds = models\FetchLog::countByType('feed');
-        $count_requests_links = models\FetchLog::countByType('link');
-        $count_requests_images = models\FetchLog::countByType('image');
-        $count_requests_by_days = models\FetchLog::countByDays();
-
         $info =  "{$app_name} v{$app_version}\n";
         $info .= "\n";
 
@@ -98,38 +77,39 @@ class System
         } else {
             $info .= "disabled\n";
         }
-        $info .= "\n";
-
-        $info .= "{$count_users} users\n";
-        $info .= "→ {$count_users_month} this month\n";
-        $info .= "→ {$count_users_week} this week\n";
-        $info .= "→ {$percent_users_validated}% validated\n";
-        $info .= "→ {$count_users_active_month} active this month\n";
-        $info .= "\n";
-
-        $info .= "{$count_links} links (estimated)\n";
-        $info .= "→ {$count_links_to_fetch} to synchronize\n";
-        $info .= "\n";
-
-        $info .= "{$count_collections} collections\n";
-        $info .= "→ {$count_collections_public} public\n";
-        $info .= "\n";
-
-        $info .= "{$count_feeds} feeds\n";
-        foreach ($count_feeds_by_hours as $hour => $count) {
-            $info .= "→ {$count} synchronized at {$hour}h\n";
-        }
-        $info .= "\n";
-
-        $info .= "{$count_requests} HTTP requests (last 3 - 4 days)\n";
-        $info .= "→ {$count_requests_feeds} to fetch feeds\n";
-        $info .= "→ {$count_requests_links} to fetch links\n";
-        $info .= "→ {$count_requests_images} to fetch images\n";
-        foreach ($count_requests_by_days as $day => $count) {
-            $info .= "→ {$count} on {$day}\n";
-        }
 
         return Response::text(200, $info);
+    }
+
+    /**
+     * Show statistics of the system.
+     *
+     * @response 200
+     */
+    public function stats(Request $request): Response
+    {
+        $count_users = models\User::count();
+        $count_users_validated = models\User::countValidated();
+        $percent_users_validated = intval($count_users_validated * 100 / max(1, $count_users));
+
+        return Response::ok('cli/system/stats.txt', [
+            'count_users' => $count_users,
+            'percent_users_validated' => $percent_users_validated,
+            'count_users_week' => models\User::countSince(\Minz\Time::ago(1, 'week')),
+            'count_users_month' => models\User::countSince(\Minz\Time::ago(1, 'month')),
+            'count_users_active_month' => models\Session::countUsersActiveSince(\Minz\Time::ago(1, 'month')),
+            'count_links' => models\Link::countEstimated(),
+            'count_links_to_fetch' => models\Link::countToFetch(),
+            'count_collections' => models\Collection::countCollections(),
+            'count_collections_public' => models\Collection::countCollectionsPublic(),
+            'count_feeds' => models\Collection::countFeeds(),
+            'count_feeds_by_hours' => models\Collection::countFeedsByHours(),
+            'count_requests' => models\FetchLog::countEstimated(),
+            'count_requests_feeds' => models\FetchLog::countByType('feed'),
+            'count_requests_links' => models\FetchLog::countByType('link'),
+            'count_requests_images' => models\FetchLog::countByType('image'),
+            'count_requests_by_days' => models\FetchLog::countByDays(),
+        ]);
     }
 
     /**

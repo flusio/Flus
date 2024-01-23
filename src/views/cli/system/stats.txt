@@ -1,0 +1,24 @@
+<?= "{$count_users} users\n" ?>
+<?= "→ {$count_users_month} this month\n" ?>
+<?= "→ {$count_users_week} this week\n" ?>
+<?= "→ {$percent_users_validated}% validated\n" ?>
+<?= "→ {$count_users_active_month} active this month\n" ?>
+
+<?= "{$count_links} links (estimated)\n" ?>
+<?= "→ {$count_links_to_fetch} to synchronize\n" ?>
+
+<?= "{$count_collections} collections\n" ?>
+<?= "→ {$count_collections_public} public\n" ?>
+
+<?= "{$count_feeds} feeds\n" ?>
+<?php foreach ($count_feeds_by_hours as $hour => $count): ?>
+<?= "→ {$count} synchronized at {$hour}h\n" ?>
+<?php endforeach; ?>
+
+<?= "{$count_requests} HTTP requests (last 3 - 4 days)\n" ?>
+<?= "→ {$count_requests_feeds} to fetch feeds\n" ?>
+<?= "→ {$count_requests_links} to fetch links\n" ?>
+<?= "→ {$count_requests_images} to fetch images\n" ?>
+<?php foreach ($count_requests_by_days as $day => $count): ?>
+<?= "→ {$count} on {$day}\n" ?>
+<?php endforeach; ?>

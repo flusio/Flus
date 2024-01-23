@@ -10,10 +10,8 @@ class Router
 {
     /**
      * Return the application router (doesn't contain CLI routes)
-     *
-     * @return \Minz\Router
      */
-    public static function load()
+    public static function load(): \Minz\Router
     {
         $router = new \Minz\Router();
 
@@ -209,10 +207,8 @@ class Router
 
     /**
      * Return the CLI router (containing app routes)
-     *
-     * @return \Minz\Router
      */
-    public static function loadCli()
+    public static function loadCli(): \Minz\Router
     {
         $router = self::load();
 
@@ -220,6 +216,7 @@ class Router
         $router->addRoute('CLI', '/help', 'Help#show');
 
         $router->addRoute('CLI', '/system', 'System#show');
+        $router->addRoute('CLI', '/system/stats', 'System#stats');
         $router->addRoute('CLI', '/system/secret', 'System#secret');
         $router->addRoute('CLI', '/database/status', 'Database#status');
 
