@@ -236,13 +236,20 @@ class Url
     /**
      * Percent-decode a value.
      *
-     * It applies rawurldecode() on the value as long as a percent-encoded
-     * character is detected.
+     * It applies rawurldecode() (or urldecode based on the raw parameter) on
+     * the value as long as a percent-encoded character is detected.
      */
-    private static function fullPercentDecode(string $value): string
+    private static function fullPercentDecode(string $value, bool $raw = true): string
     {
-        while (preg_match('/%[0-9A-Fa-f]{2}/', $value) === 1) {
-            $value = rawurldecode($value);
+        while (
+            (preg_match('/%[0-9A-Fa-f]{2}/', $value) === 1) ||
+            (!$raw && str_contains($value, '+'))
+        ) {
+            if ($raw) {
+                $value = rawurldecode($value);
+            } else {
+                $value = urldecode($value);
+            }
         }
 
         return $value;
@@ -280,17 +287,17 @@ class Url
         $decoded_parameters = [];
         $parameters = self::parseQuery($query);
         foreach ($parameters as $name => $value) {
-            $name = rawurlencode(self::fullPercentDecode($name));
+            $name = urlencode(self::fullPercentDecode($name, raw: false));
             if (is_array($value)) {
                 $value = array_map(function ($partial_value) {
                     if ($partial_value === null) {
                         return null;
                     } else {
-                        return rawurlencode(self::fullPercentDecode($partial_value));
+                        return urlencode(self::fullPercentDecode($partial_value, raw: false));
                     }
                 }, $value);
             } elseif ($value !== null) {
-                $value = rawurlencode(self::fullPercentDecode($value));
+                $value = urlencode(self::fullPercentDecode($value, raw: false));
             }
             $decoded_parameters[$name] = $value;
         }
