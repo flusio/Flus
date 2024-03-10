@@ -38,6 +38,8 @@ Description=A job worker for flusio (queue %i)
 ExecStart=php /var/www/flusio/cli jobs watch --queue=%i
 User=www-data
 Group=www-data
+Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

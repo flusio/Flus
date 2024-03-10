@@ -174,6 +174,8 @@ Description=A job worker for flusio
 ExecStart=php /var/www/flusio/cli jobs watch
 User=www-data
 Group=www-data
+Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target
