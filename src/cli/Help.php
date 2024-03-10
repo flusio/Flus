@@ -92,6 +92,7 @@ class Help
         $usage .= "      --url=TEXT           where TEXT is an external URL\n";
         $usage .= "\n";
         $usage .= "  users                    List all the users\n";
+        $usage .= "      [--to-contact=BOOL]  list only the users who accepted to be contacted (default: false)\n";
         $usage .= "  users create             Create a user\n";
         $usage .= "      --email=EMAIL\n";
         $usage .= "      --password=PASSWORD\n";

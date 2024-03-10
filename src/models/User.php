@@ -91,6 +91,9 @@ class User
     #[Database\Column]
     public bool $option_compact_mode;
 
+    #[Database\Column]
+    public bool $accept_contact;
+
     public function __construct(string $username, string $email, string $password)
     {
         $this->id = \Minz\Random::timebased();

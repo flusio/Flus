@@ -19,11 +19,20 @@ class Users
     /**
      * List all the users ordered by created_at.
      *
+     * @request_param bool to-contact
+     *
      * @response 200
      */
     public function index(Request $request): Response
     {
-        $users = models\User::listAll();
+        $to_contact = $request->paramBoolean('to-contact');
+
+        if ($to_contact) {
+            $users = models\User::listBy(['accept_contact' => true]);
+        } else {
+            $users = models\User::listAll();
+        }
+
         usort($users, function ($user1, $user2) {
             if ($user1->created_at == $user2->created_at) {
                 return 0;

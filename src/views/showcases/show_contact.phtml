@@ -1,0 +1,31 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('You can help to improve the service'),
+        'canonical' => url_full('showcase', ['id' => 'contact']),
+        'modal_enabled' => true,
+    ]);
+?>
+
+<div class="section section--small">
+    <div class="section__title">
+        <h1><?= _('You can help to improve the service') ?></h1>
+    </div>
+
+    <p>
+        <?= _f('To help us improve %s, you can now accept to be contacted by email.', $brand) ?>
+    </p>
+
+    <p class="text--centered">
+        <a href="<?= url('preferences') ?>" class="anchor--action" data-turbo-frame="_top">
+            <?= _('Go to your preferences') ?>
+        </a>
+    </p>
+
+    <form method="get" action="" data-turbo-frame="_top">
+        <div class="form__actions">
+            <button type="submit" class="button--ghost">
+                <?= _('No thanks!') ?>
+            </button>
+        </div>
+    </form>
+</div>

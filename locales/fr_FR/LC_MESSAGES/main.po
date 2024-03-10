@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2023-09-08 16:05+0200\n"
-"PO-Revision-Date: 2023-09-08 16:06+0200\n"
+"POT-Creation-Date: 2024-03-10 18:30+0100\n"
+"PO-Revision-Date: 2024-03-10 18:38+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -10,15 +10,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-Basepath: ../../../src\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:47
-#: views/_layouts/connected.phtml:221
-#: views/_layouts/connected_blocked.phtml:180
-#: views/_layouts/not_connected.phtml:147
+#: views/_layouts/connected.phtml:225
+#: views/_layouts/connected_blocked.phtml:184
+#: views/_layouts/not_connected.phtml:151
 msgid "Back"
 msgstr "Retour"
 
@@ -51,7 +51,7 @@ msgstr "Afficher"
 #: controllers/Links.php:270 controllers/Links.php:442
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
 #: controllers/News.php:75 controllers/Passwords.php:89
-#: controllers/Passwords.php:192 controllers/Registrations.php:105
+#: controllers/Passwords.php:192 controllers/Registrations.php:103
 #: controllers/Sessions.php:85 controllers/Support.php:70
 #: controllers/collections/Filters.php:105
 #: controllers/collections/Followers.php:49
@@ -61,7 +61,7 @@ msgstr "Afficher"
 #: controllers/collections/Shares.php:98 controllers/collections/Shares.php:211
 #: controllers/links/Messages.php:84 controllers/links/Repairing.php:99
 #: controllers/links/Searches.php:106 controllers/my/Account.php:111
-#: controllers/my/Preferences.php:78 controllers/my/Profile.php:73
+#: controllers/my/Preferences.php:82 controllers/my/Profile.php:73
 #: controllers/my/Security.php:93 controllers/my/Security.php:209
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:138
 msgid "A security verification failed: you should retry to submit the form."
@@ -77,7 +77,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:499 controllers/Mastodon.php:87
 #: controllers/Messages.php:93 controllers/Messages.php:141
-#: controllers/Sessions.php:208 controllers/collections/Read.php:73
+#: controllers/Sessions.php:206 controllers/collections/Read.php:73
 #: controllers/collections/Read.php:139 controllers/collections/Read.php:200
 #: controllers/importations/Opml.php:79 controllers/importations/Pocket.php:110
 #: controllers/importations/Pocket.php:157
@@ -136,7 +136,7 @@ msgid "The token has expired, you should reset your password again."
 msgstr ""
 "Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
 
-#: controllers/Registrations.php:118
+#: controllers/Registrations.php:116
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
@@ -307,7 +307,7 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:153 models/Collection.php:186
-#: views/_layouts/connected.phtml:82 views/news/index.phtml:3
+#: views/_layouts/connected.phtml:86 views/news/index.phtml:3
 #: views/news/index.phtml:16
 msgid "News"
 msgstr "Journal"
@@ -530,128 +530,128 @@ msgstr "Commentaires sur %s"
 msgid "Error: "
 msgstr "Erreur : "
 
-#: views/_layouts/connected.phtml:43 views/_layouts/connected_blocked.phtml:39
-#: views/_layouts/not_connected.phtml:57 views/_layouts/onboarding.phtml:39
+#: views/_layouts/connected.phtml:47 views/_layouts/connected_blocked.phtml:43
+#: views/_layouts/not_connected.phtml:61 views/_layouts/onboarding.phtml:43
 msgid "Skip to main content"
 msgstr "Accéder au contenu principal"
 
-#: views/_layouts/connected.phtml:50 views/_layouts/connected_blocked.phtml:46
-#: views/_layouts/not_connected.phtml:64 views/_layouts/onboarding.phtml:46
+#: views/_layouts/connected.phtml:54 views/_layouts/connected_blocked.phtml:50
+#: views/_layouts/not_connected.phtml:68 views/_layouts/onboarding.phtml:50
 #, php-format
 msgid "You need to activate JavaScript in order to use %s."
 msgstr "Vous devez activer JavaScript pour utiliser %s."
 
-#: views/_layouts/connected.phtml:58 views/_layouts/connected_blocked.phtml:54
-#: views/_layouts/not_connected.phtml:72
+#: views/_layouts/connected.phtml:62 views/_layouts/connected_blocked.phtml:58
+#: views/_layouts/not_connected.phtml:76
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
 msgstr ""
 "Vous utilisez une version de démo de %s, les données sont réinitialisées "
 "chaque nuit."
 
-#: views/_layouts/connected.phtml:66 views/_layouts/connected_blocked.phtml:62
+#: views/_layouts/connected.phtml:70 views/_layouts/connected_blocked.phtml:66
 msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
-#: views/_layouts/connected.phtml:93 views/links/index.phtml:3
+#: views/_layouts/connected.phtml:97 views/links/index.phtml:3
 #: views/links/index.phtml:19
 msgid "My links"
 msgstr "Mes liens"
 
-#: views/_layouts/connected.phtml:104 views/feeds/index.phtml:3
+#: views/_layouts/connected.phtml:108 views/feeds/index.phtml:3
 #: views/feeds/index.phtml:15
 msgid "Feeds"
 msgstr "Flux"
 
-#: views/_layouts/connected.phtml:117 views/collections/_selector.phtml:83
+#: views/_layouts/connected.phtml:121 views/collections/_selector.phtml:83
 #: views/collections/groups/edit.phtml:88 views/links/searches/show.phtml:9
 #: views/links/searches/show.phtml:21
 msgid "New"
 msgstr "Nouveau"
 
-#: views/_layouts/connected.phtml:126 views/_layouts/connected.phtml:129
-#: views/_layouts/connected_blocked.phtml:85
-#: views/_layouts/connected_blocked.phtml:88
+#: views/_layouts/connected.phtml:130 views/_layouts/connected.phtml:133
+#: views/_layouts/connected_blocked.phtml:89
+#: views/_layouts/connected_blocked.phtml:92
 #, php-format
 msgid "Menu of %s"
 msgstr "Menu de %s"
 
-#: views/_layouts/connected.phtml:147
-#: views/_layouts/connected_blocked.phtml:106 views/my/profile/edit.phtml:3
+#: views/_layouts/connected.phtml:151
+#: views/_layouts/connected_blocked.phtml:110 views/my/profile/edit.phtml:3
 #: views/my/profile/edit.phtml:14
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:157
-#: views/_layouts/connected_blocked.phtml:116 views/my/preferences/edit.phtml:3
+#: views/_layouts/connected.phtml:161
+#: views/_layouts/connected_blocked.phtml:120 views/my/preferences/edit.phtml:3
 #: views/my/preferences/edit.phtml:12
 msgid "Preferences"
 msgstr "Préférences"
 
-#: views/_layouts/connected.phtml:167
-#: views/_layouts/connected_blocked.phtml:126 views/my/account/show.phtml:3
+#: views/_layouts/connected.phtml:171
+#: views/_layouts/connected_blocked.phtml:130 views/my/account/show.phtml:3
 #: views/my/account/show.phtml:11
 msgid "Account & data"
 msgstr "Compte & données"
 
-#: views/_layouts/connected.phtml:179
-#: views/_layouts/connected_blocked.phtml:138 views/pages/addons.phtml:3
+#: views/_layouts/connected.phtml:183
+#: views/_layouts/connected_blocked.phtml:142 views/pages/addons.phtml:3
 #: views/pages/addons.phtml:11
 msgid "Add-ons"
 msgstr "Extensions"
 
-#: views/_layouts/connected.phtml:189
-#: views/_layouts/connected_blocked.phtml:148 views/support/show.phtml:3
+#: views/_layouts/connected.phtml:193
+#: views/_layouts/connected_blocked.phtml:152 views/support/show.phtml:3
 #: views/support/show.phtml:12
 msgid "Help & support"
 msgstr "Aide & support"
 
-#: views/_layouts/connected.phtml:198
-#: views/_layouts/connected_blocked.phtml:157
+#: views/_layouts/connected.phtml:202
+#: views/_layouts/connected_blocked.phtml:161
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:232 views/_layouts/connected.phtml:233
+#: views/_layouts/connected.phtml:236 views/_layouts/connected.phtml:237
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:241 views/links/searches/show.phtml:47
+#: views/_layouts/connected.phtml:245 views/links/searches/show.phtml:47
 #: views/links/searches/show.phtml:63
 msgid "Search"
 msgstr "Rechercher"
 
-#: views/_layouts/error.phtml:18
+#: views/_layouts/error.phtml:22
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:92 views/registrations/new.phtml:160
+#: views/_layouts/not_connected.phtml:96 views/registrations/new.phtml:172
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:96 views/sessions/new.phtml:97
+#: views/_layouts/not_connected.phtml:100 views/sessions/new.phtml:97
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/_layouts/not_connected.phtml:110 views/onboarding/step1.phtml:26
+#: views/_layouts/not_connected.phtml:114 views/onboarding/step1.phtml:26
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:160 views/pages/about.phtml:3
+#: views/_layouts/not_connected.phtml:164 views/pages/about.phtml:3
 #: views/pages/about.phtml:11 views/support/show.phtml:115
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
 
-#: views/_layouts/onboarding.phtml:65
+#: views/_layouts/onboarding.phtml:69
 #, php-format
 msgid "Step %d on %d"
 msgstr "Étape %d sur %d"
 
-#: views/_layouts/onboarding.phtml:67
+#: views/_layouts/onboarding.phtml:71
 msgid "skip"
 msgstr "passer"
 
-#: views/_layouts/onboarding.phtml:69
+#: views/_layouts/onboarding.phtml:73
 msgid "finished"
 msgstr "terminé"
 
@@ -691,7 +691,7 @@ msgstr "Page suivante"
 #: views/my/security/show.phtml:41 views/my/security/show.phtml:81
 #: views/passwords/edit.phtml:58 views/passwords/forgot.phtml:48
 #: views/registrations/new.phtml:51 views/registrations/new.phtml:76
-#: views/registrations/new.phtml:122 views/registrations/new.phtml:134
+#: views/registrations/new.phtml:122 views/registrations/new.phtml:146
 #: views/sessions/new.phtml:49 views/sessions/new.phtml:88
 #: views/support/show.phtml:51 views/support/show.phtml:75
 msgid "Error"
@@ -844,7 +844,7 @@ msgstr "Afficher la collection publiquement"
 #: views/collections/edit.phtml:132 views/collections/filters/edit.phtml:90
 #: views/collections/groups/edit.phtml:105 views/groups/edit.phtml:53
 #: views/links/edit.phtml:82 views/mastodon/show.phtml:86
-#: views/messages/edit.phtml:53 views/my/preferences/edit.phtml:86
+#: views/messages/edit.phtml:53 views/my/preferences/edit.phtml:99
 #: views/my/profile/edit.phtml:101 views/my/security/show.phtml:94
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -1966,11 +1966,17 @@ msgstr ""
 "En mode compact, vous voyez plus de liens en un coup d’œil, mais vous "
 "pourriez vous sentir submergé par la quantité d’informations."
 
-#: views/my/preferences/edit.phtml:76
+#: views/my/preferences/edit.phtml:75 views/registrations/new.phtml:137
+msgid "Accept to be contacted by email to help improve the service (optional)."
+msgstr ""
+"Accepter d’être contacté‧e par courriel pour aider à améliorer le service "
+"(facultatif)."
+
+#: views/my/preferences/edit.phtml:89
 msgid "Enable beta features"
 msgstr "Activer les fonctionnalités bêta"
 
-#: views/my/preferences/edit.phtml:80
+#: views/my/preferences/edit.phtml:93
 msgid ""
 "With beta features you test some features before everyone else, but you "
 "enter a turbulent zone."
@@ -2624,7 +2630,7 @@ msgstr ""
 msgid "And a password"
 msgstr "Et un mot de passe"
 
-#: views/registrations/new.phtml:140
+#: views/registrations/new.phtml:152
 #, php-format
 msgid ""
 "Before going any further, please read <a href=\"%s\" target=\"_blank\">the "
@@ -2634,11 +2640,11 @@ msgstr ""
 "target=\"_blank\">les conditions générales d’utilisation</a> pour vous "
 "assurer que celles-ci vous conviennent."
 
-#: views/registrations/new.phtml:153
+#: views/registrations/new.phtml:165
 msgid "Accept the terms of service"
 msgstr "Accepter les conditions générales d’utilisation"
 
-#: views/registrations/new.phtml:167
+#: views/registrations/new.phtml:179
 msgid "Already an account?"
 msgstr "Déjà un compte ?"
 
@@ -2662,15 +2668,34 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
-#: views/showcases/show_link.phtml:3 views/showcases/show_link.phtml:10
+#: views/showcases/show_contact.phtml:3 views/showcases/show_contact.phtml:11
+msgid "You can help to improve the service"
+msgstr "Vous pouvez aider à améliorer le service"
+
+#: views/showcases/show_contact.phtml:15
+#, php-format
+msgid "To help us improve %s, you can now accept to be contacted by email."
+msgstr ""
+"Afin de nous aider à améliorer %s, vous pouvez désormais accepter d’être "
+"contacté‧e par courriel."
+
+#: views/showcases/show_contact.phtml:20
+msgid "Go to your preferences"
+msgstr "Rendez-vous dans vos préférences"
+
+#: views/showcases/show_contact.phtml:27
+msgid "No thanks!"
+msgstr "Non merci !"
+
+#: views/showcases/show_link.phtml:3 views/showcases/show_link.phtml:11
 msgid "Links have been improved"
 msgstr "Les liens ont été améliorés"
 
-#: views/showcases/show_link.phtml:14 views/showcases/show_navigation.phtml:14
+#: views/showcases/show_link.phtml:15 views/showcases/show_navigation.phtml:15
 msgid "Something has changed!"
 msgstr "Quelque chose a changé !"
 
-#: views/showcases/show_link.phtml:18
+#: views/showcases/show_link.phtml:19
 msgid ""
 "<strong>The link interface is now more consistent and practical.</strong> "
 "You can mark a link as read, or add it to your bookmarks in one click. The "
@@ -2682,7 +2707,7 @@ msgstr ""
 "un clic. Le lien « lire » a été enlevé, mais ne vous inquiétez pas : vous "
 "pouvez toujours cliquer sur les titres pour lire vos liens !"
 
-#: views/showcases/show_link.phtml:23
+#: views/showcases/show_link.phtml:24
 msgid ""
 "The screenshot of a link card. The actions at its bottom allow to mark as "
 "read, add to bookmarks and store the link."
@@ -2690,12 +2715,12 @@ msgstr ""
 "La capture d’écran d’un lien. Les actions en-dessous du lien permettent de "
 "le marquer comme lu, de l’ajouter aux signets et de le ranger."
 
-#: views/showcases/show_link.phtml:28
+#: views/showcases/show_link.phtml:29
 msgid "The look of the links on mobile has also been improved to save space."
 msgstr ""
 "Les liens ont également été améliorés sur mobile pour gagner de la place."
 
-#: views/showcases/show_link.phtml:32 views/showcases/show_navigation.phtml:32
+#: views/showcases/show_link.phtml:33 views/showcases/show_navigation.phtml:33
 msgid ""
 "Don’t hesitate <strong>to give feedback</strong> from the “Help & support” "
 "menu!"
@@ -2703,16 +2728,16 @@ msgstr ""
 "N’hésitez pas <strong>à faire des retours</strong> depuis le menu « Aide & "
 "support » !"
 
-#: views/showcases/show_link.phtml:38 views/showcases/show_navigation.phtml:38
+#: views/showcases/show_link.phtml:39 views/showcases/show_navigation.phtml:39
 msgid "Got it!"
 msgstr "C’est noté !"
 
 #: views/showcases/show_navigation.phtml:3
-#: views/showcases/show_navigation.phtml:10
+#: views/showcases/show_navigation.phtml:11
 msgid "A new navigation is available"
 msgstr "Une nouvelle navigation est disponible"
 
-#: views/showcases/show_navigation.phtml:18
+#: views/showcases/show_navigation.phtml:19
 msgid ""
 "<strong>The navigation has been revised to make it more intuitive.</strong> "
 "The things you own are now separated from the things you follow."
@@ -2721,12 +2746,12 @@ msgstr ""
 "Les choses que vous possédez sont désormais séparées des choses que vous "
 "suivez."
 
-#: views/showcases/show_navigation.phtml:23
+#: views/showcases/show_navigation.phtml:24
 msgid "The navigation bar showing three tabs: News, My links and Feeds"
 msgstr ""
 "La barre de navigation qui montre trois onglets : Journal, Mes liens et Flux"
 
-#: views/showcases/show_navigation.phtml:28
+#: views/showcases/show_navigation.phtml:29
 msgid ""
 "Your bookmarks, read links and your own collections are now under the “My "
 "links” tab. Followed collections and feeds are only one concept and can be "

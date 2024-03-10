@@ -59,7 +59,8 @@ class Registrations
      * @request_param string email
      * @request_param string username
      * @request_param string password
-     * @request_param string accept_terms
+     * @request_param bool accept_terms
+     * @request_param bool accept_contact
      *
      * @response 302 / if already connected
      * @response 302 /login if registrations are closed
@@ -68,10 +69,6 @@ class Registrations
      * @response 400 if the service has terms of service and accept_terms is false
      * @response 400 if email already exists
      * @response 302 /onboarding
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function create(Request $request): Response
     {
@@ -91,7 +88,8 @@ class Registrations
         $username = $request->param('username', '');
         $email = $request->param('email', '');
         $password = $request->param('password', '');
-        $accept_terms = $request->param('accept_terms', false);
+        $accept_terms = $request->paramBoolean('accept_terms');
+        $accept_contact = $request->paramBoolean('accept_contact');
         $csrf = $request->param('csrf', '');
 
         if (!\Minz\Csrf::validate($csrf)) {
@@ -133,6 +131,8 @@ class Registrations
                 'errors' => $e->errors(),
             ]);
         }
+
+        $user->accept_contact = $accept_contact;
 
         // Initialize the validation token
         $validation_token = new models\Token(1, 'day', 16);
