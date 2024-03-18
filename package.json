@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.0",
+    "@stylistic/stylelint-plugin": "^2",
     "eslint": "^8.44.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.26.0",
@@ -32,10 +33,9 @@
     "eslint-plugin-promise": "^6.1.0",
     "eslint-plugin-standard": "^5.0.0",
     "parcel": "^2.7.0",
-    "stylelint": "^15.10.0",
-    "stylelint-config-standard": "^34.0.0",
+    "stylelint": "^16",
+    "stylelint-config-standard": "^36",
     "stylelint-order": "^6.0.0",
-    "stylelint-stylistic": "^0.4.0",
     "svg-sprite": "^2.0.0"
   },
   "dependencies": {

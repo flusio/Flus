@@ -4,8 +4,7 @@
     inset: 0;
 
     visibility: hidden;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden auto;
 
     opacity: 0;
     background-color: rgba(0, 0, 0, 50%);
