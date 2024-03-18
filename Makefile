@@ -78,9 +78,8 @@ icons-build: ## Build the icons asset
 .PHONY: test
 test: ## Run the test suite
 	$(PHP) ./vendor/bin/phpunit \
-		$(COVERAGE) --coverage-filter ./src --coverage-filter ./lib/SpiderBits \
-		--bootstrap ./tests/bootstrap.php \
-		--testdox \
+		-c .phpunit.xml \
+		$(COVERAGE) \
 		$(PHPUNIT_FILTER) \
 		$(PHPUNIT_FILE)
 
