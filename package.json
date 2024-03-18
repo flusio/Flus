@@ -31,7 +31,6 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.0",
-    "eslint-plugin-standard": "^5.0.0",
     "parcel": "^2.7.0",
     "stylelint": "^16",
     "stylelint-config-standard": "^36",
