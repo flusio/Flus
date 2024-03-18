@@ -40,6 +40,6 @@
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.1.0",
-    "@hotwired/turbo": "^7.2.4"
+    "@hotwired/turbo": "^8"
   }
 }
