@@ -1,5 +1,41 @@
 # Changelog of flusio
 
+## 2024-03-18 - v0.58
+
+### New
+
+- Allow users to accept to be contacted ([53fac741](https://github.com/flusio/flusio/commit/53fac741))
+
+### Improvements
+
+- Improve the look of multilines checkboxes ([60066866](https://github.com/flusio/flusio/commit/60066866))
+- Display sessions names before IPs ([a212ae90](https://github.com/flusio/flusio/commit/a212ae90))
+- Don't share to Mastodon by default (beta) ([d7a798e8](https://github.com/flusio/flusio/commit/d7a798e8))
+- Completely anonymize IPs in demo mode ([4d72e2ee](https://github.com/flusio/flusio/commit/4d72e2ee))
+
+### Bug fixes
+
+- Fix broken modal/menu when going back in browser history ([441053a2](https://github.com/flusio/flusio/commit/441053a2))
+- Sanitize URL queries containing spaces correctly ([49c324f8](https://github.com/flusio/flusio/commit/49c324f8))
+- Lowercase the scheme in URLs during sanitizing ([220832d2](https://github.com/flusio/flusio/commit/220832d2))
+- Remove the GitHub URL from UA in prod and test ([6377f42e](https://github.com/flusio/flusio/commit/6377f42e))
+- Allow showcase pages to be loaded in a modal ([bbbc5cbc](https://github.com/flusio/flusio/commit/bbbc5cbc))
+
+### Technical
+
+- Update dependencies ([e76943af](https://github.com/flusio/flusio/commit/e76943af), [2cf08968](https://github.com/flusio/flusio/commit/2cf08968), [e8e56694](https://github.com/flusio/flusio/commit/e8e56694), [bf97bee3](https://github.com/flusio/flusio/commit/bf97bee3), [b2f7e374](https://github.com/flusio/flusio/commit/b2f7e374), [f219c589](https://github.com/flusio/flusio/commit/f219c589))
+- Allow to configure Plausible ([f35878ee](https://github.com/flusio/flusio/commit/f35878ee))
+- Clean empty directories when cleaning media ([87346a90](https://github.com/flusio/flusio/commit/87346a90))
+- Improve output of the system stats command ([244278dc](https://github.com/flusio/flusio/commit/244278dc))
+- Extract statistics in a dedicated CLI command ([8361c898](https://github.com/flusio/flusio/commit/8361c898))
+- Provide statistics as CSV ([578a8489](https://github.com/flusio/flusio/commit/578a8489))
+- Add a link to the about page in the user agent ([dfd97a7c](https://github.com/flusio/flusio/commit/dfd97a7c))
+- Improve requirements declaration in Composer ([eadf05b4](https://github.com/flusio/flusio/commit/eadf05b4))
+
+### Documentation
+
+- Document "restart on-failure" in the production doc ([6767ed72](https://github.com/flusio/flusio/commit/6767ed72))
+
 ## 2023-09-08 - v0.57
 
 Browscap is now used to identify the sessions of the user.
