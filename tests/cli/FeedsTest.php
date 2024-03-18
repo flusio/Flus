@@ -120,7 +120,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Invalid content type: text/html');
+        $this->assertResponseContains($response, 'Can’t parse the given string');
         $this->assertSame(1, models\Collection::count());
         $this->assertSame(0, models\Link::count());
         $collection = models\Collection::take();
@@ -129,7 +129,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://flus.fr/carnet/', $collection->feed_url);
         $this->assertSame(200, $collection->feed_fetched_code);
         $this->assertNotNull($collection->feed_fetched_error);
-        $this->assertStringContainsString('Invalid content type: text/html', $collection->feed_fetched_error);
+        $this->assertStringContainsString('Can’t parse the given string', $collection->feed_fetched_error);
     }
 
     public function testAddCreatesCollectionButFailsIfUrlIsNotSuccessful(): void

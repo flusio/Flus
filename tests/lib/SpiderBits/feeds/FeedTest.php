@@ -457,6 +457,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
             ['application/json'],
             ['application/rdf+xml'],
             ['application/xml'],
+            ['text/html'],
             ['text/rss+xml'],
             ['text/xml'],
             ['text/plain'],
@@ -471,7 +472,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         return [
             [''],
             ['some text'],
-            ['text/html'],
+            ['text/csv'],
         ];
     }
 }

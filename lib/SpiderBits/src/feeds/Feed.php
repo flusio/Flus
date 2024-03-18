@@ -100,6 +100,7 @@ class Feed
             str_contains($content_type, 'application/json') ||
             str_contains($content_type, 'application/rdf+xml') ||
             str_contains($content_type, 'application/xml') ||
+            str_contains($content_type, 'text/html') ||
             str_contains($content_type, 'text/rss+xml') ||
             str_contains($content_type, 'text/xml') ||
             str_contains($content_type, 'text/plain')
