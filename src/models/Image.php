@@ -54,7 +54,7 @@ class Image
         // Code from the Intervention Image library
         // @see https://github.com/Intervention/image/blob/8ee5f346ce8c6dcbdc7dec443486bd5f6ad924ff/src/Intervention/Image/Gd/Commands/ResizeCommand.php
         $transparent_index = imagecolortransparent($this->resource);
-        if ($transparent_index !== -1) {
+        if ($transparent_index >= 0) {
             $rgba = imagecolorsforindex($new_resource, $transparent_index);
 
             $transparent_color = imagecolorallocatealpha(
