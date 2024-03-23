@@ -16,45 +16,45 @@
     ]);
 ?>
 
-    <div class="section__title">
-        <h1><?= protect($collection->name()) ?></h1>
+<div class="section__title">
+    <h1><?= protect($collection->name()) ?></h1>
+</div>
+
+<p class="section__intro">
+    <?= _('Find here all the links you’ve marked as read.') ?>
+</p>
+
+<?php if ($pagination->numberElements() > 0): ?>
+    <div class="collection__number-links">
+        <?= _nf('%s link', '%s links', $pagination->numberElements(), format_number($pagination->numberElements())) ?>
     </div>
+<?php endif; ?>
 
-    <p class="section__intro">
-        <?= _('Find here all the links you’ve marked as read.') ?>
-    </p>
+<div class="cards">
+    <?php foreach ($links as $link): ?>
+        <?= $this->include('links/_link.phtml', [
+            'link' => $link,
+            'from' => \Minz\Url::for('read list', $current_url_params),
+            'display_via' => $link->via_type !== 'bookmarks',
+            'display_comments' => true,
+            'display_edit' => true,
+            'display_repair' => true,
+            'display_delete' => true,
+            'display_read_later' => 'auto',
+            'display_mark_as_unread' => true,
+        ]); ?>
+    <?php endforeach; ?>
 
-    <?php if ($pagination->numberElements() > 0): ?>
-        <div class="collection__number-links">
-            <?= _nf('%s link', '%s links', $pagination->numberElements(), format_number($pagination->numberElements())) ?>
-        </div>
-    <?php endif; ?>
+    <?php for ($i = 0; $i < max(3, (3 - (count($links) % 3))); $i++): ?>
+        <div class="card card--shadow no-mobile"></div>
+    <?php endfor; ?>
+</div>
 
-    <div class="cards">
-        <?php foreach ($links as $link): ?>
-            <?= $this->include('links/_link.phtml', [
-                'link' => $link,
-                'from' => \Minz\Url::for('read list', $current_url_params),
-                'display_via' => $link->via_type !== 'bookmarks',
-                'display_comments' => true,
-                'display_edit' => true,
-                'display_repair' => true,
-                'display_delete' => true,
-                'display_read_later' => 'auto',
-                'display_mark_as_unread' => true,
-            ]); ?>
-        <?php endforeach; ?>
+<?= $this->include('_pagination.phtml', ['pagination' => $pagination, 'url' => url('read list')]) ?>
 
-        <?php for ($i = 0; $i < max(3, (3 - (count($links) % 3))); $i++): ?>
-            <div class="card card--shadow no-mobile"></div>
-        <?php endfor; ?>
-    </div>
-
-    <?= $this->include('_pagination.phtml', ['pagination' => $pagination, 'url' => url('read list')]) ?>
-
-    <img
-        class="illustration illustration--centered"
-        alt=""
-        src="<?= url_static('illustrations/collecting.svg') ?>"
-        height="250"
-    />
+<img
+    class="illustration illustration--centered"
+    alt=""
+    src="<?= url_static('illustrations/collecting.svg') ?>"
+    height="250"
+/>
