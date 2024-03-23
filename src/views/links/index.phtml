@@ -23,33 +23,35 @@
         <?= _('Organize your links in your bookmarks and your collections.') ?>
     </p>
 
-    <section class="group">
-        <div class="cards cards--centered">
-            <div class="card card--illustrated card--illustrated-alt" style="background-image: url('<?= url_static('bookmarks-card.png') ?>');">
-                <a class="card__body card__body--large" href="<?= url('bookmarks') ?>">
-                    <div class="card__title card__title-ellipsis">
-                        <?= protect($bookmarks->name()) ?>
-                    </div>
+    <?php if (!$beta_enabled): ?>
+        <section class="group">
+            <div class="cards cards--centered">
+                <div class="card card--illustrated card--illustrated-alt" style="background-image: url('<?= url_static('bookmarks-card.png') ?>');">
+                    <a class="card__body card__body--large" href="<?= url('bookmarks') ?>">
+                        <div class="card__title card__title-ellipsis">
+                            <?= protect($bookmarks->name()) ?>
+                        </div>
 
-                    <p class="card__text">
-                        <?= _('Your links to read later') ?>
-                    </p>
-                </a>
+                        <p class="card__text">
+                            <?= _('Your links to read later') ?>
+                        </p>
+                    </a>
+                </div>
+
+                <div class="card card--illustrated card--illustrated-alt" style="background-image: url('<?= url_static('read-card.png') ?>');">
+                    <a class="card__body card__body--large" href="<?= url('read list') ?>">
+                        <div class="card__title card__title-ellipsis">
+                            <?= protect($read_list->name()) ?>
+                        </div>
+
+                        <p class="card__text">
+                            <?= _('Your links marked as read') ?>
+                        </p>
+                    </a>
+                </div>
             </div>
-
-            <div class="card card--illustrated card--illustrated-alt" style="background-image: url('<?= url_static('read-card.png') ?>');">
-                <a class="card__body card__body--large" href="<?= url('read list') ?>">
-                    <div class="card__title card__title-ellipsis">
-                        <?= protect($read_list->name()) ?>
-                    </div>
-
-                    <p class="card__text">
-                        <?= _('Your links marked as read') ?>
-                    </p>
-                </a>
-            </div>
-        </div>
-    </section>
+        </section>
+    <?php endif; ?>
 
     <section class="group">
         <div class="cards">

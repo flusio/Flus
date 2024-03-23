@@ -6,15 +6,15 @@
         ];
     }
 
-    $this->layout('base.phtml', [
+    $this->layout('reading.phtml', [
         'title' => _('Bookmarks'),
         'canonical' => url_full('bookmarks', $current_url_params),
-        'current_tab' => 'links',
+        'current_tab' => $beta_enabled ? 'reading' : 'links',
         'current_page' => 'bookmarks',
+        'reset_back_options' => $beta_enabled,
     ]);
 ?>
 
-<div class="section">
     <div class="section__title">
         <h1><?= protect($collection->name()) ?></h1>
     </div>
@@ -70,4 +70,3 @@
         src="<?= url_static('illustrations/save_to_bookmarks.svg') ?>"
         height="250"
     />
-</div>

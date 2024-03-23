@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2024-03-10 18:30+0100\n"
-"PO-Revision-Date: 2024-03-10 18:38+0100\n"
+"POT-Creation-Date: 2024-03-23 11:19+0100\n"
+"PO-Revision-Date: 2024-03-23 11:20+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:47
-#: views/_layouts/connected.phtml:225
-#: views/_layouts/connected_blocked.phtml:184
+#: views/_layouts/connected.phtml:229
+#: views/_layouts/connected_blocked.phtml:183
 #: views/_layouts/not_connected.phtml:151
 msgid "Back"
 msgstr "Retour"
@@ -294,11 +294,12 @@ msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:120 models/Collection.php:182
-#: views/bookmarks/index.phtml:10
+#: views/_layouts/reading.phtml:33 views/bookmarks/index.phtml:10
 msgid "Bookmarks"
 msgstr "Signets"
 
 #: models/Collection.php:131 models/Collection.php:184
+#: views/_layouts/reading.phtml:43
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -307,8 +308,8 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:153 models/Collection.php:186
-#: views/_layouts/connected.phtml:86 views/news/index.phtml:3
-#: views/news/index.phtml:16
+#: views/_layouts/connected.phtml:90 views/_layouts/reading.phtml:23
+#: views/news/index.phtml:3 views/news/index.phtml:12
 msgid "News"
 msgstr "Journal"
 
@@ -553,69 +554,73 @@ msgstr ""
 msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
-#: views/_layouts/connected.phtml:97 views/links/index.phtml:3
+#: views/_layouts/connected.phtml:88
+msgid "Reading"
+msgstr "Lecture"
+
+#: views/_layouts/connected.phtml:102 views/links/index.phtml:3
 #: views/links/index.phtml:19
 msgid "My links"
 msgstr "Mes liens"
 
-#: views/_layouts/connected.phtml:108 views/feeds/index.phtml:3
+#: views/_layouts/connected.phtml:113 views/feeds/index.phtml:3
 #: views/feeds/index.phtml:15
 msgid "Feeds"
 msgstr "Flux"
 
-#: views/_layouts/connected.phtml:121 views/collections/_selector.phtml:83
+#: views/_layouts/connected.phtml:126 views/collections/_selector.phtml:83
 #: views/collections/groups/edit.phtml:88 views/links/searches/show.phtml:9
 #: views/links/searches/show.phtml:21
 msgid "New"
 msgstr "Nouveau"
 
-#: views/_layouts/connected.phtml:130 views/_layouts/connected.phtml:133
+#: views/_layouts/connected.phtml:135 views/_layouts/connected.phtml:138
 #: views/_layouts/connected_blocked.phtml:89
 #: views/_layouts/connected_blocked.phtml:92
 #, php-format
 msgid "Menu of %s"
 msgstr "Menu de %s"
 
-#: views/_layouts/connected.phtml:151
-#: views/_layouts/connected_blocked.phtml:110 views/my/profile/edit.phtml:3
+#: views/_layouts/connected.phtml:155
+#: views/_layouts/connected_blocked.phtml:109 views/my/profile/edit.phtml:3
 #: views/my/profile/edit.phtml:14
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:161
-#: views/_layouts/connected_blocked.phtml:120 views/my/preferences/edit.phtml:3
+#: views/_layouts/connected.phtml:165
+#: views/_layouts/connected_blocked.phtml:119 views/my/preferences/edit.phtml:3
 #: views/my/preferences/edit.phtml:12
 msgid "Preferences"
 msgstr "Préférences"
 
-#: views/_layouts/connected.phtml:171
-#: views/_layouts/connected_blocked.phtml:130 views/my/account/show.phtml:3
+#: views/_layouts/connected.phtml:175
+#: views/_layouts/connected_blocked.phtml:129 views/my/account/show.phtml:3
 #: views/my/account/show.phtml:11
 msgid "Account & data"
 msgstr "Compte & données"
 
-#: views/_layouts/connected.phtml:183
-#: views/_layouts/connected_blocked.phtml:142 views/pages/addons.phtml:3
+#: views/_layouts/connected.phtml:187
+#: views/_layouts/connected_blocked.phtml:141 views/pages/addons.phtml:3
 #: views/pages/addons.phtml:11
 msgid "Add-ons"
 msgstr "Extensions"
 
-#: views/_layouts/connected.phtml:193
-#: views/_layouts/connected_blocked.phtml:152 views/support/show.phtml:3
+#: views/_layouts/connected.phtml:197
+#: views/_layouts/connected_blocked.phtml:151 views/support/show.phtml:3
 #: views/support/show.phtml:12
 msgid "Help & support"
 msgstr "Aide & support"
 
-#: views/_layouts/connected.phtml:202
-#: views/_layouts/connected_blocked.phtml:161
+#: views/_layouts/connected.phtml:206
+#: views/_layouts/connected_blocked.phtml:160
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:236 views/_layouts/connected.phtml:237
+#: views/_layouts/connected.phtml:240 views/_layouts/connected.phtml:241
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:245 views/links/searches/show.phtml:47
+#: views/_layouts/connected.phtml:249 views/links/searches/show.phtml:47
 #: views/links/searches/show.phtml:63
 msgid "Search"
 msgstr "Rechercher"
@@ -655,11 +660,11 @@ msgstr "passer"
 msgid "finished"
 msgstr "terminé"
 
-#: views/_modal.phtml:26
+#: views/_modal.phtml:25
 msgid "Close"
 msgstr "Fermer"
 
-#: views/_modal.phtml:27
+#: views/_modal.phtml:26
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
@@ -776,7 +781,7 @@ msgid ""
 msgstr ""
 "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong> (partagée par %s)."
 
-#: views/collections/_selector.phtml:41 views/links/index.phtml:107
+#: views/collections/_selector.phtml:41 views/links/index.phtml:109
 msgid "Shared with me"
 msgstr "Partagées avec moi"
 
@@ -1138,7 +1143,7 @@ msgstr "Régler pour le journal"
 msgid "Copy the link"
 msgstr "Copier le lien"
 
-#: views/collections/show_public.phtml:165 views/news/index.phtml:56
+#: views/collections/show_public.phtml:165 views/news/index.phtml:52
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
@@ -1575,15 +1580,15 @@ msgstr "minutes pour le consulter."
 msgid "Organize your links in your bookmarks and your collections."
 msgstr "Organisez vos liens dans vos signets et vos collections."
 
-#: views/links/index.phtml:35
+#: views/links/index.phtml:36
 msgid "Your links to read later"
 msgstr "Vos liens à lire plus tard"
 
-#: views/links/index.phtml:47
+#: views/links/index.phtml:48
 msgid "Your links marked as read"
 msgstr "Vos liens marqués comme lu"
 
-#: views/links/index.phtml:66
+#: views/links/index.phtml:68
 msgid "Create a collection"
 msgstr "Créer une collection"
 
@@ -2105,15 +2110,15 @@ msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
-#: views/news/index.phtml:45
+#: views/news/index.phtml:41
 msgid "Empty the news"
 msgstr "Vider le journal"
 
-#: views/news/index.phtml:66
+#: views/news/index.phtml:62
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/index.phtml:75
+#: views/news/index.phtml:71
 msgid ""
 "You’ll remove all the news links, this action cannot be canceled. Are you "
 "sure?"
@@ -2121,31 +2126,35 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.phtml:83
+#: views/news/index.phtml:79
 msgid "Never see the links again"
 msgstr "Ne plus revoir les liens"
 
-#: views/news/index.phtml:91
+#: views/news/index.phtml:88
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/index.phtml:114
+#: views/news/index.phtml:105
+msgid "Refresh the news"
+msgstr "Rafraichir le journal"
+
+#: views/news/index.phtml:118
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/index.phtml:115
+#: views/news/index.phtml:119
 msgid "from your followed feeds"
 msgstr "depuis vos flux suivis"
 
-#: views/news/index.phtml:130
+#: views/news/index.phtml:134
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
-#: views/news/index.phtml:131 views/news/index.phtml:147
+#: views/news/index.phtml:135 views/news/index.phtml:151
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/index.phtml:146
+#: views/news/index.phtml:150
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 

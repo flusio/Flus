@@ -1,17 +1,13 @@
 <?php
-    $this->layout('base.phtml', [
+    $this->layout('reading.phtml', [
         'title' => _('News'),
         'canonical' => url_full('news'),
-        'current_tab' => 'news',
+        'current_tab' => 'reading',
         'current_page' => 'news',
-        'back_options' => [
-            'reset' => true,
-        ],
-        'has_errors' => $error || $errors,
+        'reset_back_options' => true,
     ]);
 ?>
 
-<div class="section section--longbottom">
     <div class="section__title">
         <h1><?= _('News') ?></h1>
     </div>
@@ -87,12 +83,14 @@
             </details>
         </div>
     <?php else: ?>
-        <p class="section__intro">
-            <?= _('Fill the news with…') ?>
-        </p>
+        <?php if (!$beta_enabled): ?>
+            <p class="section__intro">
+                <?= _('Fill the news with…') ?>
+            </p>
+        <?php endif; ?>
 
         <?php if ($no_news): ?>
-            <?= $this->include('alerts/_info.phtml', ['message' => no_news_sentence()]) ?>
+            <?= $this->include('alerts/_info.phtml', ['message' => no_news_sentence($beta_enabled)]) ?>
         <?php endif; ?>
 
         <form method="post" action="<?= url('fill news') ?>">
@@ -101,54 +99,69 @@
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
             <div class="cards cards--centered">
-                <div class="card card--action">
-                    <button class="card__button news-selection__button" name="type" value="newsfeed">
-                        <img
-                            class="card__image news-selection__image"
-                            alt=""
-                            src="<?= url_static('illustrations/newspaper.svg') ?>"
-                            height="200"
-                        />
-
-                        <div class="news-selection__description">
-                            <strong class="news-selection__title"><?= _('the latest publications') ?></strong>
-                            <small class="text--secondary"><?= _('from your followed feeds') ?></small>
-                        </div>
+                <?php if ($beta_enabled): ?>
+                    <button class="button--primary" name="type" value="newsfeed">
+                        <?= icon('sync') ?>
+                        <?= _('Refresh the news') ?>
                     </button>
-                </div>
+                <?php else: ?>
+                    <div class="card card--action">
+                        <button class="card__button news-selection__button" name="type" value="newsfeed">
+                            <img
+                                class="card__image news-selection__image"
+                                alt=""
+                                src="<?= url_static('illustrations/newspaper.svg') ?>"
+                                height="200"
+                            />
 
-                <div class="card card--action">
-                    <button class="card__button news-selection__button" name="type" value="short">
-                        <img
-                            class="card__image news-selection__image"
-                            alt=""
-                            src="<?= url_static('illustrations/reading.svg') ?>"
-                            height="200"
-                        />
+                            <div class="news-selection__description">
+                                <strong class="news-selection__title"><?= _('the latest publications') ?></strong>
+                                <small class="text--secondary"><?= _('from your followed feeds') ?></small>
+                            </div>
+                        </button>
+                    </div>
 
-                        <div class="news-selection__description">
-                            <strong class="news-selection__title"><?= _('3 links of -10 minutes') ?></strong>
-                            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
-                        </div>
-                    </button>
-                </div>
+                    <div class="card card--action">
+                        <button class="card__button news-selection__button" name="type" value="short">
+                            <img
+                                class="card__image news-selection__image"
+                                alt=""
+                                src="<?= url_static('illustrations/reading.svg') ?>"
+                                height="200"
+                            />
 
-                <div class="card card--action">
-                    <button class="card__button news-selection__button" name="type" value="long">
-                        <img
-                            class="card__image news-selection__image"
-                            alt=""
-                            src="<?= url_static('illustrations/cup-of-tea.svg') ?>"
-                            height="200"
-                        />
+                            <div class="news-selection__description">
+                                <strong class="news-selection__title"><?= _('3 links of -10 minutes') ?></strong>
+                                <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+                            </div>
+                        </button>
+                    </div>
 
-                        <div class="news-selection__description">
-                            <strong class="news-selection__title"><?= _('1 link of +10 minutes') ?></strong>
-                            <small class="text--secondary"><?= _('from your bookmarks') ?></small>
-                        </div>
-                    </button>
-                </div>
+                    <div class="card card--action">
+                        <button class="card__button news-selection__button" name="type" value="long">
+                            <img
+                                class="card__image news-selection__image"
+                                alt=""
+                                src="<?= url_static('illustrations/cup-of-tea.svg') ?>"
+                                height="200"
+                            />
+
+                            <div class="news-selection__description">
+                                <strong class="news-selection__title"><?= _('1 link of +10 minutes') ?></strong>
+                                <small class="text--secondary"><?= _('from your bookmarks') ?></small>
+                            </div>
+                        </button>
+                    </div>
+                <?php endif; ?>
             </div>
         </form>
+
+        <?php if ($beta_enabled): ?>
+            <img
+                class="illustration illustration--centered"
+                alt=""
+                src="<?= url_static('illustrations/newspaper.svg') ?>"
+                height="250"
+            />
+        <?php endif; ?>
     <?php endif; ?>
-</div>
