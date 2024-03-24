@@ -10,7 +10,7 @@
     ]);
 ?>
 
-<div class="section section--longbottom">
+<div class="section <?= $beta_enabled ? '' : 'section--longbottom' ?>">
     <?php if ($beta_enabled): ?>
         <nav class="reading-nav">
             <ul class="reading-nav__container">
