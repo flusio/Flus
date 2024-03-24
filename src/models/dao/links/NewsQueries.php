@@ -106,7 +106,12 @@ trait NewsQueries
                 FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
 
                 WHERE c_exclude.user_id = :user_id
-                AND (c_exclude.type = 'bookmarks' OR c_exclude.type = 'read' OR c_exclude.type = 'never')
+                AND (
+                    c_exclude.type = 'news'
+                    OR c_exclude.type = 'bookmarks'
+                    OR c_exclude.type = 'read'
+                    OR c_exclude.type = 'never'
+                )
 
                 AND lc_exclude.link_id = l_exclude.id
                 AND lc_exclude.collection_id = c_exclude.id
@@ -142,7 +147,7 @@ trait NewsQueries
             GROUP BY l.id, lc.created_at, c.id
 
             ORDER BY lc.created_at DESC, l.id
-            LIMIT 30
+            LIMIT 100
         SQL;
 
         $database = Database::get();
