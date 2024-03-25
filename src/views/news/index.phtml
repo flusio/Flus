@@ -12,22 +12,40 @@
     <h1><?= _('News') ?></h1>
 </div>
 
-<?php if ($links): ?>
-    <div class="cards cards--centered">
-        <?php foreach ($links as $link): ?>
-            <?= $this->include('links/_link.phtml', [
-                'link' => $link,
-                'from' => \Minz\Url::for('news'),
-                'display_edit' => true,
-                'display_repair' => true,
-                'display_via' => true,
-                'display_read_later' => true,
-                'display_mark_as_read' => true,
-                'display_never' => true,
-                'storing_must_mark_as_read' => true,
-            ]); ?>
-        <?php endforeach; ?>
-    </div>
+<?php if (!$links_timeline->empty()): ?>
+    <?php foreach ($links_timeline->datesGroups() as $date_group): ?>
+        <section class="group">
+            <header class="group__header">
+                <h2 class="group__title">
+                    <?= _date($date_group->date, 'dd MMMM') ?>
+
+                    <?php if ($date_group->isToday()): ?>
+                        <small class="text--secondary">⋅ <?= _('today') ?></small>
+                    <?php elseif ($date_group->isYesterday()): ?>
+                        <small class="text--secondary">⋅ <?= _('yesterday') ?></small>
+                    <?php endif; ?>
+                </h2>
+
+                <div class="group__separator"></div>
+            </header>
+
+            <div class="cards">
+                <?php foreach ($date_group->links as $link): ?>
+                    <?= $this->include('links/_link.phtml', [
+                        'link' => $link,
+                        'from' => \Minz\Url::for('news'),
+                        'display_edit' => true,
+                        'display_repair' => true,
+                        'display_via' => true,
+                        'display_read_later' => true,
+                        'display_mark_as_read' => true,
+                        'display_never' => true,
+                        'storing_must_mark_as_read' => true,
+                    ]); ?>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    <?php endforeach; ?>
 
     <div class="news__postpone">
         <details

@@ -7,6 +7,7 @@ use Minz\Response;
 use flusio\auth;
 use flusio\models;
 use flusio\services;
+use flusio\utils;
 
 /**
  * Handle the requests related to the news.
@@ -33,9 +34,12 @@ class News
         }
 
         $news = $user->news();
+        $links = $news->links(['published_at', 'number_comments']);
+        $links_timeline = new utils\LinksTimeline($links);
+
         return Response::ok('news/index.phtml', [
             'news' => $news,
-            'links' => $news->links(['published_at', 'number_comments']),
+            'links_timeline' => $links_timeline,
             'no_news' => \Minz\Flash::pop('no_news'),
         ]);
     }
@@ -70,7 +74,7 @@ class News
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('news/index.phtml', [
                 'news' => $news,
-                'links' => [],
+                'links_timeline' => new utils\LinksTimeline([]),
                 'no_news' => false,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);

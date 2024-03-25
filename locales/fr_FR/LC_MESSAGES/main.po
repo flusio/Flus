@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2024-03-24 20:14+0100\n"
-"PO-Revision-Date: 2024-03-24 20:14+0100\n"
+"POT-Creation-Date: 2024-03-25 15:41+0100\n"
+"PO-Revision-Date: 2024-03-25 15:41+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -50,7 +50,7 @@ msgstr "Afficher"
 #: controllers/Feeds.php:107 controllers/Groups.php:90
 #: controllers/Links.php:270 controllers/Links.php:442
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
-#: controllers/News.php:75 controllers/Passwords.php:89
+#: controllers/News.php:79 controllers/Passwords.php:89
 #: controllers/Passwords.php:192 controllers/Registrations.php:103
 #: controllers/Sessions.php:85 controllers/Support.php:70
 #: controllers/collections/Filters.php:105
@@ -455,20 +455,20 @@ msgstr "plateforme inconnue"
 msgid "%s on %s"
 msgstr "%s sur %s"
 
-#: utils/view_helpers.php:102
+#: utils/view_helpers.php:81
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:104
+#: utils/view_helpers.php:83
 #, php-format
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:222
+#: utils/view_helpers.php:201
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: utils/view_helpers.php:224
+#: utils/view_helpers.php:203
 #, php-format
 msgid ""
 "You can add links to <a href=\"%s\">your bookmarks</a> to read them later."
@@ -476,7 +476,7 @@ msgstr ""
 "Vous pouvez placer des liens dans <a href=\"%s\">vos signets</a> pour les "
 "lire plus tard."
 
-#: utils/view_helpers.php:254 views/links/show.phtml:73
+#: utils/view_helpers.php:233 views/links/show.phtml:73
 msgid "you"
 msgstr "vous"
 
@@ -1143,7 +1143,7 @@ msgstr "Régler pour le journal"
 msgid "Copy the link"
 msgstr "Copier le lien"
 
-#: views/collections/show_public.phtml:165 views/news/index.phtml:52
+#: views/collections/show_public.phtml:165 views/news/index.phtml:70
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
@@ -2110,15 +2110,23 @@ msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
-#: views/news/index.phtml:41
+#: views/news/index.phtml:23 views/read/index.phtml:40
+msgid "today"
+msgstr "aujourd’hui"
+
+#: views/news/index.phtml:25 views/read/index.phtml:42
+msgid "yesterday"
+msgstr "hier"
+
+#: views/news/index.phtml:59
 msgid "Empty the news"
 msgstr "Vider le journal"
 
-#: views/news/index.phtml:62
+#: views/news/index.phtml:80
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/index.phtml:71
+#: views/news/index.phtml:89
 msgid ""
 "You’ll remove all the news links, this action cannot be canceled. Are you "
 "sure?"
@@ -2126,41 +2134,41 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.phtml:79
+#: views/news/index.phtml:97
 msgid "Never see the links again"
 msgstr "Ne plus revoir les liens"
 
-#: views/news/index.phtml:87
+#: views/news/index.phtml:105
 msgid ""
 "Fill your news feed with the content published by the feeds that you follow."
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
-#: views/news/index.phtml:101
+#: views/news/index.phtml:119
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
 
-#: views/news/index.phtml:106
+#: views/news/index.phtml:124
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/index.phtml:129
+#: views/news/index.phtml:147
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/index.phtml:130
+#: views/news/index.phtml:148
 msgid "from your followed feeds"
 msgstr "depuis vos flux suivis"
 
-#: views/news/index.phtml:145
+#: views/news/index.phtml:163
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
-#: views/news/index.phtml:146 views/news/index.phtml:162
+#: views/news/index.phtml:164 views/news/index.phtml:180
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/index.phtml:161
+#: views/news/index.phtml:179
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 
