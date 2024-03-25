@@ -216,6 +216,7 @@ trait Link
      *     select specific properties to avoid computing dispensable
      *     properties.
      * @param array{
+     *     'published_date'?: ?\DateTimeImmutable,
      *     'hidden'?: bool,
      *     'offset'?: int,
      *     'limit'?: int|'ALL',
@@ -223,6 +224,7 @@ trait Link
      *
      * Description of the options:
      *
+     * - published_date (default to null), limits the selection to the given publication date
      * - hidden (default to true), indicates if hidden links must be included
      * - offset (default to 0), the offset for pagination
      * - limit (default to 'ALL') the limit for pagination
@@ -235,6 +237,7 @@ trait Link
         array $options = [],
     ): array {
         $default_options = [
+            'published_date' => null,
             'hidden' => true,
             'offset' => 0,
             'limit' => 'ALL',
@@ -263,6 +266,12 @@ trait Link
             SQL;
         }
 
+        $date_clause = '';
+        if ($options['published_date'] !== null) {
+            $date_clause = "AND date_trunc('day', lc.created_at) = :published_date";
+            $parameters[':published_date'] = $options['published_date']->format('Y-m-d');
+        }
+
         $visibility_clause = '';
         if (!$options['hidden']) {
             $visibility_clause = 'AND l.is_hidden = false';
@@ -283,7 +292,7 @@ trait Link
 
             WHERE l.id = lc.link_id
             AND lc.collection_id = :collection_id
-
+            {$date_clause}
             {$visibility_clause}
 
             {$order_by_clause}

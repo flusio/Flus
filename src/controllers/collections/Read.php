@@ -20,6 +20,7 @@ class Read
      * @request_param string id
      * @request_param string csrf
      * @request_param string from
+     * @request_param date date
      *
      * @response 302 /login?redirect_to=:from
      *     if not connected
@@ -37,6 +38,7 @@ class Read
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
         $collection_id = $request->param('id', '');
+        $date = $request->paramDatetime('date', format: 'Y-m-d');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -44,12 +46,17 @@ class Read
 
         $collection = models\Collection::find($collection_id);
         $links = [];
+
+        $options = [];
+        if ($date) {
+            $options['published_date'] = $date;
+        }
+
         if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links();
+            $links = $collection->links(options: $options);
         } elseif ($collection && $user->isFollowing($collection->id)) {
-            $collection_links = $collection->links([], [
-                'hidden' => $collection->sharedWith($user),
-            ]);
+            $options['hidden'] = $collection->sharedWith($user);
+            $collection_links = $collection->links(options: $options);
             $links = $user->obtainLinks($collection_links);
             list($via_type, $via_resource_id) = utils\ViaHelper::extractFromPath($from);
 
@@ -86,6 +93,7 @@ class Read
      * @request_param string id
      * @request_param string csrf
      * @request_param string from
+     * @request_param date date
      *
      * @response 302 /login?redirect_to=:from
      *     if not connected
@@ -103,6 +111,7 @@ class Read
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
         $collection_id = $request->param('id', '');
+        $date = $request->paramDatetime('date', format: 'Y-m-d');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -110,13 +119,19 @@ class Read
 
         $collection = models\Collection::find($collection_id);
         $links = [];
+
+        $options = [];
+        if ($date) {
+            $options['published_date'] = $date;
+        }
+
         if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links();
+            $links = $collection->links(options: $options);
         } elseif ($collection && $user->isFollowing($collection->id)) {
-            $collection_links = $collection->links([], [
-                'hidden' => $collection->sharedWith($user),
-            ]);
+            $options['hidden'] = $collection->sharedWith($user);
+            $collection_links = $collection->links(options: $options);
             $links = $user->obtainLinks($collection_links);
+
             list($via_type, $via_resource_id) = utils\ViaHelper::extractFromPath($from);
 
             $links_to_create = [];
@@ -152,6 +167,7 @@ class Read
      * @request_param string id
      * @request_param string csrf
      * @request_param string from
+     * @request_param date date
      *
      * @response 302 /login?redirect_to=:from
      *     if not connected
@@ -169,6 +185,7 @@ class Read
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
         $collection_id = $request->param('id', '');
+        $date = $request->paramDatetime('date', format: 'Y-m-d');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -176,12 +193,17 @@ class Read
 
         $collection = models\Collection::find($collection_id);
         $links = [];
+
+        $options = [];
+        if ($date) {
+            $options['published_date'] = $date;
+        }
+
         if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links();
+            $links = $collection->links(options: $options);
         } elseif ($collection && $user->isFollowing($collection->id)) {
-            $collection_links = $collection->links([], [
-                'hidden' => $collection->sharedWith($user),
-            ]);
+            $options['hidden'] = $collection->sharedWith($user);
+            $collection_links = $collection->links(options: $options);
             $links = $user->obtainLinks($collection_links);
 
             $links_to_create = [];

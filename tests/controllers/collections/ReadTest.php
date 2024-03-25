@@ -202,6 +202,38 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($new_link);
     }
 
+    public function testCreateMarksLinksAsReadForSpecificDate(): void
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $link1 = LinkFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $link_to_news1 = LinkToCollectionFactory::create([
+            'link_id' => $link1->id,
+            'collection_id' => $news->id,
+            'created_at' => new \DateTimeImmutable('2024-03-25'),
+        ]);
+        $link2 = LinkFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $link_to_news2 = LinkToCollectionFactory::create([
+            'link_id' => $link2->id,
+            'collection_id' => $news->id,
+            'created_at' => new \DateTimeImmutable('2024-03-26'),
+        ]);
+
+        $response = $this->appRun('POST', "/collections/{$news->id}/read", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('news'),
+            'date' => '2024-03-25',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+    }
+
     public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
@@ -474,6 +506,39 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($new_link);
     }
 
+    public function testLaterMarksNewsLinksToReadLaterForSpecificDate(): void
+    {
+        $user = $this->login();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $link1 = LinkFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $link_to_news1 = LinkToCollectionFactory::create([
+            'link_id' => $link1->id,
+            'collection_id' => $news->id,
+            'created_at' => new \DateTimeImmutable('2024-03-25'),
+        ]);
+        $link2 = LinkFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $link_to_news2 = LinkToCollectionFactory::create([
+            'link_id' => $link2->id,
+            'collection_id' => $news->id,
+            'created_at' => new \DateTimeImmutable('2024-03-26'),
+        ]);
+
+        $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('news'),
+            'date' => '2024-03-25',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+    }
+
     public function testLaterRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
@@ -719,6 +784,38 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNull($new_link);
+    }
+
+    public function testNeverMarksNewsLinksToNeverReadForSpecificDate(): void
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $link1 = LinkFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $link_to_news1 = LinkToCollectionFactory::create([
+            'link_id' => $link1->id,
+            'collection_id' => $news->id,
+            'created_at' => new \DateTimeImmutable('2024-03-25'),
+        ]);
+        $link2 = LinkFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $link_to_news2 = LinkToCollectionFactory::create([
+            'link_id' => $link2->id,
+            'collection_id' => $news->id,
+            'created_at' => new \DateTimeImmutable('2024-03-26'),
+        ]);
+
+        $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('news'),
+            'date' => '2024-03-25',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
     }
 
     public function testNeverRedirectsToLoginIfNotConnected(): void

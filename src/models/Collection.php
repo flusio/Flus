@@ -210,6 +210,7 @@ class Collection
      *
      * @param string[] $selected_computed_props
      * @param array{
+     *     'published_date'?: ?\DateTimeImmutable,
      *     'hidden'?: bool,
      *     'offset'?: int,
      *     'limit'?: int|'ALL',
