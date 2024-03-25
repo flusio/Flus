@@ -9,36 +9,15 @@
  */
 
 /**
- * Format a datetime.
+ * Format a datetime in the current locale.
  *
  * @see https://www.php.net/manual/class.intldateformatter.php
  * @see https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
- *
- * @throws \Exception
- *     If the date cannot be formatted
  */
 function _date(\DateTimeInterface $date, string $format): string
 {
     $current_locale = \flusio\utils\Locale::currentLocale();
-    $formatter = new IntlDateFormatter(
-        $current_locale,
-        IntlDateFormatter::FULL,
-        IntlDateFormatter::FULL,
-        null,
-        null,
-        $format
-    );
-
-    $formatted_date = $formatter->format($date);
-
-    if ($formatted_date === false) {
-        throw new \Exception(
-            $formatter->getErrorMessage(),
-            $formatter->getErrorCode()
-        );
-    }
-
-    return $formatted_date;
+    return \Minz\Output\ViewHelpers::formatDate($date, $format, $current_locale);
 }
 
 /**
