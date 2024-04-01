@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2024-03-25 19:05+0100\n"
-"PO-Revision-Date: 2024-03-25 19:05+0100\n"
+"POT-Creation-Date: 2024-04-01 18:20+0200\n"
+"PO-Revision-Date: 2024-04-01 18:20+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2111,11 +2111,11 @@ msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
-#: views/news/index.phtml:23 views/read/index.phtml:40
+#: views/news/index.phtml:23
 msgid "today"
 msgstr "aujourd’hui"
 
-#: views/news/index.phtml:25 views/read/index.phtml:42
+#: views/news/index.phtml:25
 msgid "yesterday"
 msgstr "hier"
 

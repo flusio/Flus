@@ -53,11 +53,10 @@ class Read
                 'context_user_id' => $user->id,
             ]
         );
-        $links_timeline = new utils\LinksTimeline($links);
 
         return Response::ok('read/index.phtml', [
             'collection' => $read_list,
-            'links_timeline' => $links_timeline,
+            'links' => $links,
             'pagination' => $pagination,
         ]);
     }
