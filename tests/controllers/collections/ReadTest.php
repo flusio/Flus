@@ -110,8 +110,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $this->assertSame('collection', $new_link->via_type);
-        $this->assertSame($collection->id, $new_link->via_resource_id);
+        $this->assertSame('collection', $new_link->source_type);
+        $this->assertSame($collection->id, $new_link->source_resource_id);
         $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $read_list->id,
@@ -414,8 +414,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $this->assertSame('collection', $new_link->via_type);
-        $this->assertSame($collection->id, $new_link->via_resource_id);
+        $this->assertSame('collection', $new_link->source_type);
+        $this->assertSame($collection->id, $new_link->source_resource_id);
         $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $bookmarks->id,

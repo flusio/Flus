@@ -49,7 +49,7 @@ class LinkFactory extends Database\Factory
                 return UserFactory::create()->id;
             },
 
-            'via_type' => '',
+            'source_type' => '',
         ];
     }
 }

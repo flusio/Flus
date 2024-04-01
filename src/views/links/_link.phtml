@@ -16,14 +16,14 @@
     $display_mark_as_read = $display_mark_as_read ?? false;
     $display_mark_as_unread = $display_mark_as_unread ?? false;
     $display_never = $display_never ?? false;
-    $display_via = $display_via ?? false;
-    if ($display_via && !$link->via_type) {
-        $display_via = false;
+    $display_source = $display_source ?? false;
+    if ($display_source && !$link->source_type) {
+        $display_source = false;
     }
     $storing_must_mark_as_read = $storing_must_mark_as_read ?? false;
 
-    $via_collection = $display_via ? $link->viaCollection() : null;
-    $via_user = $display_via ? $link->viaUser() : null;
+    $source_collection = $display_source ? $link->sourceCollection() : null;
+    $source_user = $display_source ? $link->sourceUser() : null;
 
     $is_current_user_owner = $current_user && $current_user->id === $link->user_id;
     $in_error = $link->inError();
@@ -151,32 +151,32 @@
                 <?php endif; ?>
             </p>
 
-            <?php if ($display_via): ?>
-                <p class="link__text news__via">
-                    <?php if ($link->via_type === 'bookmarks'): ?>
+            <?php if ($display_source): ?>
+                <p class="link__text news__source">
+                    <?php if ($link->source_type === 'bookmarks'): ?>
                         <?= _f('via your <strong><a class="anchor--hidden" href="%s">bookmarks</a></strong>', url('bookmarks')) ?>
-                    <?php elseif ($via_collection): ?>
-                        <?php if ($via_collection->type === 'collection'): ?>
-                            <?php $owner = $via_collection->owner(); ?>
+                    <?php elseif ($source_collection): ?>
+                        <?php if ($source_collection->type === 'collection'): ?>
+                            <?php $owner = $source_collection->owner(); ?>
                             <?= _f(
                                 'via <strong><a class="anchor--hidden" href="%s">%s</a></strong> by <a class="anchor--hidden" href="%s">%s</a>',
-                                url('collection', ['id' => $via_collection->id]),
-                                protect($via_collection->name()),
+                                url('collection', ['id' => $source_collection->id]),
+                                protect($source_collection->name()),
                                 url('profile', ['id' => $owner->id]),
                                 protect($owner->username)
                             ) ?>
                         <?php else: ?>
                             <?= _f(
                                 'via <strong><a class="anchor--hidden" href="%s">%s</a></strong>',
-                                url('collection', ['id' => $via_collection->id]),
-                                protect($via_collection->name())
+                                url('collection', ['id' => $source_collection->id]),
+                                protect($source_collection->name())
                             ) ?>
                         <?php endif; ?>
-                    <?php elseif ($via_user): ?>
+                    <?php elseif ($source_user): ?>
                         <?= _f(
                             'via <strong><a class="anchor--hidden" href="%s">%s</a></strong>',
-                            url('profile', ['id' => $via_user->id]),
-                            protect($via_user->username)
+                            url('profile', ['id' => $source_user->id]),
+                            protect($source_user->username)
                         ) ?>
                     <?php endif; ?>
                 </p>

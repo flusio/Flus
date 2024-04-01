@@ -58,15 +58,15 @@ class Read
             $options['hidden'] = $collection->sharedWith($user);
             $collection_links = $collection->links(options: $options);
             $links = $user->obtainLinks($collection_links);
-            list($via_type, $via_resource_id) = utils\ViaHelper::extractFromPath($from);
+            list($source_type, $source_resource_id) = utils\SourceHelper::extractFromPath($from);
 
             $links_to_create = [];
             foreach ($links as $link) {
                 if (!$link->isPersisted()) {
                     $link->created_at = \Minz\Time::now();
-                    if ($via_type) {
-                        $link->via_type = $via_type;
-                        $link->via_resource_id = $via_resource_id;
+                    if ($source_type) {
+                        $link->source_type = $source_type;
+                        $link->source_resource_id = $source_resource_id;
                     }
                     $links_to_create[] = $link;
                 }
@@ -132,15 +132,15 @@ class Read
             $collection_links = $collection->links(options: $options);
             $links = $user->obtainLinks($collection_links);
 
-            list($via_type, $via_resource_id) = utils\ViaHelper::extractFromPath($from);
+            list($source_type, $source_resource_id) = utils\SourceHelper::extractFromPath($from);
 
             $links_to_create = [];
             foreach ($links as $link) {
                 if (!$link->isPersisted()) {
                     $link->created_at = \Minz\Time::now();
-                    if ($via_type) {
-                        $link->via_type = $via_type;
-                        $link->via_resource_id = $via_resource_id;
+                    if ($source_type) {
+                        $link->source_type = $source_type;
+                        $link->source_resource_id = $source_resource_id;
                     }
                     $links_to_create[] = $link;
                 }

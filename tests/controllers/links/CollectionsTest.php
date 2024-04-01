@@ -541,8 +541,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $this->assertSame('collection', $new_link->via_type);
-        $this->assertSame($other_collection->id, $new_link->via_resource_id);
+        $this->assertSame('collection', $new_link->source_type);
+        $this->assertSame($other_collection->id, $new_link->source_resource_id);
         $new_link_to_other_collection = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $other_collection->id,

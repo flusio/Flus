@@ -46,7 +46,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
-        $this->assertSame('bookmarks', $links[0]->via_news_type);
+        $this->assertSame('bookmarks', $links[0]->source_news_type);
     }
 
     public function testPickSelectsFromFollowed(): void
@@ -83,8 +83,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
-        $this->assertSame('collection', $links[0]->via_news_type);
-        $this->assertSame($collection->id, $links[0]->via_news_resource_id);
+        $this->assertSame('collection', $links[0]->source_news_type);
+        $this->assertSame($collection->id, $links[0]->source_news_resource_id);
     }
 
     public function testPickSelectsHiddenLinkIfCollectionIsShared(): void
@@ -125,8 +125,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
-        $this->assertSame('collection', $links[0]->via_news_type);
-        $this->assertSame($collection->id, $links[0]->via_news_resource_id);
+        $this->assertSame('collection', $links[0]->source_news_type);
+        $this->assertSame($collection->id, $links[0]->source_news_resource_id);
     }
 
     public function testPickSelectsFromPrivateCollectionIfShared(): void
@@ -167,8 +167,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
-        $this->assertSame('collection', $links[0]->via_news_type);
-        $this->assertSame($collection->id, $links[0]->via_news_resource_id);
+        $this->assertSame('collection', $links[0]->source_news_type);
+        $this->assertSame($collection->id, $links[0]->source_news_resource_id);
     }
 
     public function testPickRespectsMinDuration(): void
@@ -275,8 +275,8 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
-        $this->assertSame('collection', $links[0]->via_news_type);
-        $this->assertSame($collection->id, $links[0]->via_news_resource_id);
+        $this->assertSame('collection', $links[0]->source_news_type);
+        $this->assertSame($collection->id, $links[0]->source_news_resource_id);
     }
 
     public function testPickDoesNotSelectFromBookmarksIfNotSelected(): void

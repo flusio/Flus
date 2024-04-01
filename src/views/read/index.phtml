@@ -51,7 +51,7 @@
                 <?= $this->include('links/_link.phtml', [
                     'link' => $link,
                     'from' => \Minz\Url::for('read list', $current_url_params),
-                    'display_via' => $link->via_type !== 'bookmarks',
+                    'display_source' => $link->source_type !== 'bookmarks',
                     'display_comments' => true,
                     'display_edit' => true,
                     'display_repair' => true,

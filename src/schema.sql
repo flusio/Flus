@@ -159,8 +159,8 @@ CREATE TABLE links (
 
     feed_entry_id TEXT,
 
-    via_type TEXT NOT NULL DEFAULT '',
-    via_resource_id TEXT,
+    source_type TEXT NOT NULL DEFAULT '',
+    source_resource_id TEXT,
 
     search_index TSVECTOR GENERATED ALWAYS AS (to_tsvector('french', title || ' ' || url)) STORED,
     url_lookup TEXT GENERATED ALWAYS AS (simplify_url(url)) STORED,

@@ -46,7 +46,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $news = $user->news();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'via_type' => 'bookmarks',
+            'source_type' => 'bookmarks',
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -79,8 +79,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $news = $user->news();
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'via_type' => 'collection',
-            'via_resource_id' => $collection->id,
+            'source_type' => 'collection',
+            'source_resource_id' => $collection->id,
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -166,7 +166,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'reading_time' => $duration,
-            'via_type' => '',
+            'source_type' => '',
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -180,8 +180,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/news');
         $link = $link->reload();
-        $this->assertSame('bookmarks', $link->via_type);
-        $this->assertNull($link->via_resource_id);
+        $this->assertSame('bookmarks', $link->source_type);
+        $this->assertNull($link->source_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $news->id,
@@ -199,7 +199,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'reading_time' => $duration,
-            'via_type' => '',
+            'source_type' => '',
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -213,8 +213,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/news');
         $link = $link->reload();
-        $this->assertSame('bookmarks', $link->via_type);
-        $this->assertNull($link->via_resource_id);
+        $this->assertSame('bookmarks', $link->source_type);
+        $this->assertNull($link->source_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $news->id,
@@ -265,8 +265,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($news_link);
         $this->assertSame($link->url, $news_link->url);
         $this->assertSame($link->title, $news_link->title);
-        $this->assertSame('collection', $news_link->via_type);
-        $this->assertSame($collection->id, $news_link->via_resource_id);
+        $this->assertSame('collection', $news_link->source_type);
+        $this->assertSame($collection->id, $news_link->source_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $news_link->id,
             'collection_id' => $news->id,
@@ -284,25 +284,25 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $news = $user->news();
         /** @var int */
         $duration = $this->fake('numberBetween', 0, 9);
-        $via_link = LinkFactory::create([
+        $source_link = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => false,
             'url' => $url,
         ]);
-        $via_collection = CollectionFactory::create([
+        $source_collection = CollectionFactory::create([
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
         LinkToCollectionFactory::create([
-            'link_id' => $via_link->id,
-            'collection_id' => $via_collection->id,
+            'link_id' => $source_link->id,
+            'collection_id' => $source_collection->id,
         ]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'reading_time' => $duration,
             'url' => $url,
-            'via_type' => 'collection',
-            'via_resource_id' => $via_collection->id,
+            'source_type' => 'collection',
+            'source_resource_id' => $source_collection->id,
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -316,8 +316,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/news');
         $link = $link->reload();
-        $this->assertSame('collection', $link->via_type);
-        $this->assertSame($via_collection->id, $link->via_resource_id);
+        $this->assertSame('collection', $link->source_type);
+        $this->assertSame($source_collection->id, $link->source_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $news->id,
@@ -398,7 +398,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'reading_time' => $duration,
-            'via_type' => '',
+            'source_type' => '',
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -412,8 +412,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
         $link = $link->reload();
-        $this->assertSame('', $link->via_type);
-        $this->assertNull($link->via_resource_id);
+        $this->assertSame('', $link->source_type);
+        $this->assertNull($link->source_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $news->id,
@@ -431,7 +431,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'reading_time' => $duration,
-            'via_type' => '',
+            'source_type' => '',
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -446,8 +446,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
         $link = $link->reload();
-        $this->assertSame('', $link->via_type);
-        $this->assertNull($link->via_resource_id);
+        $this->assertSame('', $link->source_type);
+        $this->assertNull($link->source_resource_id);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $news->id,

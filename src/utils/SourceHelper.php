@@ -8,22 +8,22 @@ use flusio\models;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class ViaHelper
+class SourceHelper
 {
     /**
-     * Set the via_* properties of a link if possible.
+     * Set the source_* properties of a link if possible.
      */
-    public static function setLinkVia(models\Link $link, string $from): void
+    public static function setLinkSource(models\Link $link, string $from): void
     {
-        list($via_type, $via_resource_id) = self::extractFromPath($from);
-        if ($via_type) {
-            $link->via_type = $via_type;
-            $link->via_resource_id = $via_resource_id;
+        list($source_type, $source_resource_id) = self::extractFromPath($from);
+        if ($source_type) {
+            $link->source_type = $source_type;
+            $link->source_resource_id = $source_resource_id;
         }
     }
 
     /**
-     * Return the via type and resource id from a path.
+     * Return the source type and resource id from a path.
      *
      * For instance:
      *

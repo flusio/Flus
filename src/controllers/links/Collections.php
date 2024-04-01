@@ -174,7 +174,7 @@ class Collections
 
         if (!auth\LinksAccess::canUpdate($user, $link)) {
             $link = $user->obtainLink($link);
-            utils\ViaHelper::setLinkVia($link, $from);
+            utils\SourceHelper::setLinkSource($link, $from);
         }
 
         $link->is_hidden = $is_hidden;

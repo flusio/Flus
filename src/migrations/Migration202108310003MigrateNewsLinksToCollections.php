@@ -48,12 +48,12 @@ class Migration202108310003MigrateNewsLinksToCollections
             }
 
             // Update the new "via_*" info of the link
-            $link->via_type = $db_news_link['via_type'];
-            $resource_id = $db_news_link['link_id'];
-            if (!$resource_id) {
-                $resource_id = $db_news_link['via_collection_id'];
-            }
-            $link->via_resource_id = $resource_id;
+            // $link->via_type = $db_news_link['via_type'];
+            // $resource_id = $db_news_link['link_id'];
+            // if (!$resource_id) {
+            //     $resource_id = $db_news_link['via_collection_id'];
+            // }
+            // $link->via_resource_id = $resource_id;
             $link->save();
 
             // And attach the link to the corresponding collection:

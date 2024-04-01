@@ -54,7 +54,7 @@ class Read
 
         $link = $user->obtainLink($link);
         if (!$link->isPersisted()) {
-            utils\ViaHelper::setLinkVia($link, $from);
+            utils\SourceHelper::setLinkSource($link, $from);
             $link->save();
         }
 
@@ -103,7 +103,7 @@ class Read
 
         $link = $user->obtainLink($link);
         if (!$link->isPersisted()) {
-            utils\ViaHelper::setLinkVia($link, $from);
+            utils\SourceHelper::setLinkSource($link, $from);
             $link->save();
         }
 

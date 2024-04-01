@@ -98,7 +98,7 @@
 
                         <p class="card__text card__text--oneline">
                             <?php
-                                $via = _f('Feed %s', protect($feed->feedWebsite()));
+                                $source = _f('Feed %s', protect($feed->feedWebsite()));
 
                                 if ($feed->number_links === 0):
                                     $number_links = _('no links');
@@ -107,7 +107,7 @@
                                 endif;
                             ?>
 
-                            <span class="card__ellipsis"><?= $via ?></span>&nbsp;·&nbsp;<?= $number_links ?>
+                            <span class="card__ellipsis"><?= $source ?></span>&nbsp;·&nbsp;<?= $number_links ?>
                         </p>
                     </a>
 

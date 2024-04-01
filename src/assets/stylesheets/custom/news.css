@@ -22,7 +22,7 @@
     margin-bottom: var(--space-small);
 }
 
-.news__via {
+.news__source {
     font-style: italic;
 }
 

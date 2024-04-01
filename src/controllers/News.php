@@ -109,12 +109,12 @@ class News
         foreach ($links as $news_link) {
             $link = $user->obtainLink($news_link);
 
-            // If the link has already a via info, we want to keep it (it might
-            // have been get via a followed collection, and put in the
+            // If the link has already a source info, we want to keep it (it
+            // might have been get via a followed collection, and put in the
             // bookmarks then)
-            if (!$link->via_type && $news_link->via_news_type !== null) {
-                $link->via_type = $news_link->via_news_type;
-                $link->via_resource_id = $news_link->via_news_resource_id;
+            if (!$link->source_type && $news_link->source_news_type !== null) {
+                $link->source_type = $news_link->source_news_type;
+                $link->source_resource_id = $news_link->source_news_resource_id;
             }
 
             $link->save();

@@ -77,16 +77,16 @@ class Link
     public ?string $feed_entry_id = null;
 
     #[Database\Column]
-    public string $via_type = '';
+    public string $source_type = '';
 
     #[Database\Column]
-    public ?string $via_resource_id = null;
+    public ?string $source_resource_id = null;
 
     #[Database\Column(computed: true)]
-    public ?string $via_news_type = null;
+    public ?string $source_news_type = null;
 
     #[Database\Column(computed: true)]
-    public ?string $via_news_resource_id = null;
+    public ?string $source_news_resource_id = null;
 
     #[Database\Column(computed: true)]
     public ?\DateTimeImmutable $published_at = null;
@@ -126,7 +126,7 @@ class Link
         $link_copied->fetched_at = $link->fetched_at;
         $link_copied->fetched_code = $link->fetched_code;
         $link_copied->fetched_count = $link->fetched_count;
-        $link_copied->via_type = '';
+        $link_copied->source_type = '';
 
         return $link_copied;
     }
@@ -165,31 +165,28 @@ class Link
         return Message::listByLink($this->id);
     }
 
-    public function viaCollection(): ?Collection
+    public function sourceCollection(): ?Collection
     {
         if (
-            $this->via_type !== 'collection' ||
-            !$this->via_resource_id
+            $this->source_type !== 'collection' ||
+            !$this->source_resource_id
         ) {
             return null;
         }
 
-        return Collection::find($this->via_resource_id);
+        return Collection::find($this->source_resource_id);
     }
 
-    /**
-     * @return \flusio\models\User|null
-     */
-    public function viaUser(): ?User
+    public function sourceUser(): ?User
     {
         if (
-            $this->via_type !== 'user' ||
-            !$this->via_resource_id
+            $this->source_type !== 'user' ||
+            !$this->source_resource_id
         ) {
             return null;
         }
 
-        return User::find($this->via_resource_id);
+        return User::find($this->source_resource_id);
     }
 
     /**
