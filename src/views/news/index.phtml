@@ -102,6 +102,34 @@
                     ]); ?>
                 <?php endforeach; ?>
             </div>
+
+            <?php foreach ($date_group->sourceGroups() as $source_group): ?>
+                <div class="news__source-group">
+                    <h3 class="news__source-title">
+                        <?= protect($source_group->title) ?>
+
+                        <small class="text--secondary">
+                            ⋅ <?= _nf('%s link', '%s links', count($source_group->links), count($source_group->links)) ?>
+                        </small>
+                    </h3>
+
+                    <div class="cards">
+                        <?php foreach ($source_group->links as $link): ?>
+                            <?= $this->include('links/_link.phtml', [
+                                'link' => $link,
+                                'from' => \Minz\Url::for('news'),
+                                'display_edit' => true,
+                                'display_repair' => true,
+                                'display_source' => true,
+                                'display_read_later' => true,
+                                'display_mark_as_read' => true,
+                                'display_never' => true,
+                                'storing_must_mark_as_read' => true,
+                            ]); ?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </section>
     <?php endforeach; ?>
 <?php elseif ($beta_enabled): ?>

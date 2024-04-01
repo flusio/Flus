@@ -274,6 +274,62 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link_to_news);
     }
 
+    public function testCreateGroupsLinksBySourcesGroups(): void
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $other_user = UserFactory::create();
+        $link1 = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'is_hidden' => false,
+        ]);
+        $link2 = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'is_hidden' => false,
+        ]);
+        $link3 = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'is_hidden' => false,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        LinkToCollectionFactory::create([
+            'created_at' => \Minz\Time::ago(1, 'day'),
+            'link_id' => $link1->id,
+            'collection_id' => $collection->id,
+        ]);
+        LinkToCollectionFactory::create([
+            'created_at' => \Minz\Time::ago(1, 'day'),
+            'link_id' => $link2->id,
+            'collection_id' => $collection->id,
+        ]);
+        LinkToCollectionFactory::create([
+            'created_at' => \Minz\Time::ago(2, 'days'),
+            'link_id' => $link3->id,
+            'collection_id' => $collection->id,
+        ]);
+        FollowedCollectionFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection->id,
+        ]);
+
+        $response = $this->appRun('POST', '/news', [
+            'csrf' => $user->csrf,
+            'type' => 'newsfeed',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $news_links = $news->links(['published_at']);
+        $this->assertSame(3, count($news_links));
+        $this->assertTrue($news_links[0]->group_by_source);
+        $this->assertTrue($news_links[1]->group_by_source);
+        // This one is published a different day, so it's not grouped.
+        $this->assertFalse($news_links[2]->group_by_source);
+    }
+
     public function testCreateMemorizesViaIfAleardySet(): void
     {
         $user = $this->login();

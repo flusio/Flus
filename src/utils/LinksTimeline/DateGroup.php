@@ -3,6 +3,7 @@
 namespace flusio\utils\LinksTimeline;
 
 use flusio\models;
+use flusio\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -15,9 +16,36 @@ class DateGroup
     /** @var models\Link[] */
     public array $links = [];
 
+    /** @var array<string, SourceGroup> */
+    public array $source_groups = [];
+
     public function __construct(\DateTimeImmutable $date)
     {
         $this->date = $date;
+    }
+
+    public function addLink(models\Link $link): void
+    {
+        if ($link->group_by_source) {
+            $source_key = $link->source_type . '#' . $link->source_resource_id;
+            if (isset($this->source_groups[$source_key])) {
+                $source_group = $this->source_groups[$source_key];
+            } else {
+                $source = $link->source();
+
+                if (!$source) {
+                    $this->links[] = $link;
+                    return;
+                }
+
+                $source_group = new SourceGroup($source);
+                $this->source_groups[$source_key] = $source_group;
+            }
+
+            $source_group->links[] = $link;
+        } else {
+            $this->links[] = $link;
+        }
     }
 
     public function isToday(): bool
@@ -30,5 +58,15 @@ class DateGroup
     {
         $yesterday = \Minz\Time::ago(1, 'day');
         return $this->date->format('Y-m-d') === $yesterday->format('Y-m-d');
+    }
+
+    /**
+     * Return the source groups sorted by titles.
+     *
+     * @return SourceGroup[]
+     */
+    public function sourceGroups(): array
+    {
+        return utils\Sorter::localeSort($this->source_groups, 'title');
     }
 }

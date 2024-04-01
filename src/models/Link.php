@@ -82,6 +82,9 @@ class Link
     #[Database\Column]
     public ?string $source_resource_id = null;
 
+    #[Database\Column]
+    public bool $group_by_source = false;
+
     #[Database\Column(computed: true)]
     public ?string $source_news_type = null;
 
@@ -187,6 +190,17 @@ class Link
         }
 
         return User::find($this->source_resource_id);
+    }
+
+    public function source(): User|Collection|null
+    {
+        if ($this->source_type == 'user') {
+            return $this->sourceUser();
+        } elseif ($this->source_type == 'collection') {
+            return $this->sourceCollection();
+        } else {
+            return null;
+        }
     }
 
     /**

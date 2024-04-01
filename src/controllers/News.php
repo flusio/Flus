@@ -117,11 +117,17 @@ class News
                 $link->source_resource_id = $news_link->source_news_resource_id;
             }
 
+            // Make sure to reset this value: it will be set to true later with
+            // Link::groupLinksBySources
+            $link->group_by_source = false;
+
             $link->save();
 
             // And don't forget to add the link to the news collection!
             models\LinkToCollection::attach([$link->id], [$news->id], $news_link->published_at);
         }
+
+        models\Link::groupLinksBySources($news->id);
 
         if (!$links) {
             \Minz\Flash::set('no_news', true);

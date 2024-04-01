@@ -156,4 +156,59 @@ trait NewsQueries
 
         return self::fromDatabaseRows($statement->fetchAll());
     }
+
+    /**
+     * Mark the relevant links to be grouped by sources in the given collection.
+     *
+     * Links are grouped if there are several links in the given collection
+     * corresponding to the same source and the same day.
+     *
+     * The passed collection_id must correspond to a "news" collection. For
+     * now, it's passed this way to improve performance and to simplify a bit
+     * the SQL request.
+     */
+    public static function groupLinksBySources(string $collection_id): bool
+    {
+        $sql = <<<SQL
+            UPDATE links
+            SET group_by_source = true
+            WHERE links.id IN (
+                -- Create a "temporary table" to select the available sources
+                -- from the given collection (e.g. sources that are
+                -- referenced by more than 1 link).
+                WITH sources AS (
+                    SELECT date_trunc('day', slc.created_at) AS published_day,
+                           sl.source_type,
+                           sl.source_resource_id
+                    FROM links sl, links_to_collections slc
+
+                    WHERE sl.id = slc.link_id
+                    AND slc.collection_id = :collection_id
+
+                    GROUP BY published_day, sl.source_type, sl.source_resource_id
+                    HAVING COUNT(sl.id) > 1
+                )
+
+                -- Select the ids of links which have a source corresponding to
+                -- one of the selected sources.
+                SELECT l.id
+                FROM links l, links_to_collections lc, sources s
+
+                WHERE l.id = lc.link_id
+                AND lc.collection_id = :collection_id
+
+                AND l.source_type = s.source_type
+                AND l.source_resource_id = s.source_resource_id
+                AND date_trunc('day', lc.created_at) = s.published_day
+            );
+        SQL;
+
+        $parameters = [
+            ':collection_id' => $collection_id,
+        ];
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        return $statement->execute($parameters);
+    }
 }

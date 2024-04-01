@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2024-04-01 18:20+0200\n"
-"PO-Revision-Date: 2024-04-01 18:20+0200\n"
+"POT-Creation-Date: 2024-04-01 20:59+0200\n"
+"PO-Revision-Date: 2024-04-01 20:59+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2135,37 +2135,37 @@ msgstr ""
 msgid "Never see the links again"
 msgstr "Ne plus revoir les liens"
 
-#: views/news/index.phtml:109
+#: views/news/index.phtml:137
 msgid ""
 "Fill your news feed with the content published by the feeds that you follow."
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
-#: views/news/index.phtml:123
+#: views/news/index.phtml:151
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
 
-#: views/news/index.phtml:128
+#: views/news/index.phtml:156
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/index.phtml:151
+#: views/news/index.phtml:179
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/index.phtml:152
+#: views/news/index.phtml:180
 msgid "from your followed feeds"
 msgstr "depuis vos flux suivis"
 
-#: views/news/index.phtml:167
+#: views/news/index.phtml:195
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
-#: views/news/index.phtml:168 views/news/index.phtml:184
+#: views/news/index.phtml:196 views/news/index.phtml:212
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/index.phtml:183
+#: views/news/index.phtml:211
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 

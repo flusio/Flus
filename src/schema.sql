@@ -161,6 +161,7 @@ CREATE TABLE links (
 
     source_type TEXT NOT NULL DEFAULT '',
     source_resource_id TEXT,
+    group_by_source BOOLEAN NOT NULL DEFAULT false,
 
     search_index TSVECTOR GENERATED ALWAYS AS (to_tsvector('french', title || ' ' || url)) STORED,
     url_lookup TEXT GENERATED ALWAYS AS (simplify_url(url)) STORED,

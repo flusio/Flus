@@ -1,0 +1,34 @@
+<?php
+
+namespace flusio\utils\LinksTimeline;
+
+use flusio\models;
+
+/**
+ * @author  Marien Fressinaud <dev@marienfressinaud.fr>
+ * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
+ */
+class SourceGroup
+{
+    /** @var models\Collection|models\User */
+    public mixed $source;
+
+    public string $title;
+
+    /** @var models\Link[] */
+    public array $links = [];
+
+    /**
+     * @param models\Collection|models\User $source
+     **/
+    public function __construct(mixed $source)
+    {
+        $this->source = $source;
+
+        if ($this->source instanceof models\Collection) {
+            $this->title = $this->source->name();
+        } else {
+            $this->title = $this->source->username;
+        }
+    }
+}
