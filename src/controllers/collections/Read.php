@@ -21,6 +21,7 @@ class Read
      * @request_param string csrf
      * @request_param string from
      * @request_param date date
+     * @request_param string source
      *
      * @response 302 /login?redirect_to=:from
      *     if not connected
@@ -39,6 +40,7 @@ class Read
         $csrf = $request->param('csrf', '');
         $collection_id = $request->param('id', '');
         $date = $request->paramDatetime('date', format: 'Y-m-d');
+        $source = $request->param('source', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -48,8 +50,13 @@ class Read
         $links = [];
 
         $options = [];
+
         if ($date) {
             $options['published_date'] = $date;
+        }
+
+        if ($source) {
+            $options['source'] = $source;
         }
 
         if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
@@ -94,6 +101,7 @@ class Read
      * @request_param string csrf
      * @request_param string from
      * @request_param date date
+     * @request_param string source
      *
      * @response 302 /login?redirect_to=:from
      *     if not connected
@@ -112,6 +120,7 @@ class Read
         $csrf = $request->param('csrf', '');
         $collection_id = $request->param('id', '');
         $date = $request->paramDatetime('date', format: 'Y-m-d');
+        $source = $request->param('source', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -121,8 +130,13 @@ class Read
         $links = [];
 
         $options = [];
+
         if ($date) {
             $options['published_date'] = $date;
+        }
+
+        if ($source) {
+            $options['source'] = $source;
         }
 
         if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
@@ -168,6 +182,7 @@ class Read
      * @request_param string csrf
      * @request_param string from
      * @request_param date date
+     * @request_param string source
      *
      * @response 302 /login?redirect_to=:from
      *     if not connected
@@ -186,6 +201,7 @@ class Read
         $csrf = $request->param('csrf', '');
         $collection_id = $request->param('id', '');
         $date = $request->paramDatetime('date', format: 'Y-m-d');
+        $source = $request->param('source', '');
 
         if (!$user) {
             return Response::redirect('login', ['redirect_to' => $from]);
@@ -195,8 +211,13 @@ class Read
         $links = [];
 
         $options = [];
+
         if ($date) {
             $options['published_date'] = $date;
+        }
+
+        if ($source) {
+            $options['source'] = $source;
         }
 
         if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {

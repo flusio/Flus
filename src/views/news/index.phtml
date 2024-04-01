@@ -44,7 +44,9 @@
                     </summary>
 
                     <nav class="popup__container popup__container--left" role="menu">
-                        <form method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
+                        <div class="popup__title"><?= _('Actions on the day') ?></div>
+
+                        <form data-turbo-preserve-scroll method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
                             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                             <input type="hidden" name="from" value="<?= url('news') ?>" />
                             <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
@@ -55,7 +57,7 @@
                             </button>
                         </form>
 
-                        <form method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>" role="menuitem">
+                        <form data-turbo-preserve-scroll method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>" role="menuitem">
                             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                             <input type="hidden" name="from" value="<?= url('news') ?>" />
                             <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
@@ -69,6 +71,7 @@
                         <div class="popup__separator"></div>
 
                         <form
+                            data-turbo-preserve-scroll
                             method="post"
                             action="<?= url('never read collection', ['id' => $news->id]) ?>"
                             data-turbo-confirm="<?= _('You’ll remove all the news links, this action cannot be canceled. Are you sure?') ?>"
@@ -105,13 +108,79 @@
 
             <?php foreach ($date_group->sourceGroups() as $source_group): ?>
                 <div class="news__source-group">
-                    <h3 class="news__source-title">
-                        <?= protect($source_group->title) ?>
+                    <div class="line">
+                        <h3 class="news__source-title">
+                            <?= protect($source_group->title) ?>
 
-                        <small class="text--secondary">
-                            ⋅ <?= _nf('%s link', '%s links', count($source_group->links), count($source_group->links)) ?>
-                        </small>
-                    </h3>
+                            <small class="text--secondary">
+                                ⋅ <?= _nf('%s link', '%s links', count($source_group->links), count($source_group->links)) ?>
+                            </small>
+                        </h3>
+
+                        <details
+                            class="popup"
+                            data-controller="popup"
+                            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                        >
+                            <summary class="popup__opener">
+                                <span class="button button--smaller button--ghost">
+                                    <?= icon('menu') ?>
+
+                                    <span class="sr-only">
+                                        <?= _('Actions') ?>
+                                    </span>
+                                </span>
+                            </summary>
+
+                            <nav class="popup__container popup__container--left" role="menu">
+                                <div class="popup__title"><?= _('Actions on the source') ?></div>
+
+                                <form data-turbo-preserve-scroll method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
+                                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                    <input type="hidden" name="from" value="<?= url('news') ?>" />
+                                    <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
+                                    <input type="hidden" name="source" value="<?= $source_group->reference ?>" />
+
+                                    <button class="popup__item popup__item--button">
+                                        <?= icon('check') ?>
+                                        <?= _('Mark all as read') ?>
+                                    </button>
+                                </form>
+
+                                <form data-turbo-preserve-scroll method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>" role="menuitem">
+                                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                    <input type="hidden" name="from" value="<?= url('news') ?>" />
+                                    <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
+                                    <input type="hidden" name="source" value="<?= $source_group->reference ?>" />
+
+                                    <button class="popup__item popup__item--button">
+                                        <?= icon('bookmark') ?>
+                                        <?= _('Read the links later') ?>
+                                    </button>
+                                </form>
+
+                                <div class="popup__separator"></div>
+
+                                <form
+                                    data-turbo-preserve-scroll
+                                    method="post"
+                                    action="<?= url('never read collection', ['id' => $news->id]) ?>"
+                                    data-turbo-confirm="<?= _('You’ll remove all the news links, this action cannot be canceled. Are you sure?') ?>"
+                                    role="menuitem"
+                                >
+                                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                    <input type="hidden" name="from" value="<?= url('news') ?>" />
+                                    <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
+                                    <input type="hidden" name="source" value="<?= $source_group->reference ?>" />
+
+                                    <button class="popup__item popup__item--button">
+                                        <?= icon('times') ?>
+                                        <?= _('Never see the links again') ?>
+                                    </button>
+                                </form>
+                            </nav>
+                        </details>
+                    </div>
 
                     <div class="cards">
                         <?php foreach ($source_group->links as $link): ?>

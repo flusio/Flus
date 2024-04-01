@@ -234,6 +234,42 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
     }
 
+    public function testCreateMarksLinksAsReadForSpecificSource(): void
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $source1 = CollectionFactory::create();
+        $source2 = CollectionFactory::create();
+        $link1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'source_type' => 'collection',
+            'source_resource_id' => $source1->id,
+        ]);
+        $link_to_news1 = LinkToCollectionFactory::create([
+            'link_id' => $link1->id,
+            'collection_id' => $news->id,
+        ]);
+        $link2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'source_type' => 'collection',
+            'source_resource_id' => $source2->id,
+        ]);
+        $link_to_news2 = LinkToCollectionFactory::create([
+            'link_id' => $link2->id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('POST', "/collections/{$news->id}/read", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('news'),
+            'source' => "collection#{$source1->id}",
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+    }
+
     public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
@@ -539,6 +575,43 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
     }
 
+    public function testLaterMarksNewsLinksToReadLaterForSpecificSource(): void
+    {
+        $user = $this->login();
+        $bookmarks = $user->bookmarks();
+        $news = $user->news();
+        $source1 = CollectionFactory::create();
+        $source2 = CollectionFactory::create();
+        $link1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'source_type' => 'collection',
+            'source_resource_id' => $source1->id,
+        ]);
+        $link_to_news1 = LinkToCollectionFactory::create([
+            'link_id' => $link1->id,
+            'collection_id' => $news->id,
+        ]);
+        $link2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'source_type' => 'collection',
+            'source_resource_id' => $source2->id,
+        ]);
+        $link_to_news2 = LinkToCollectionFactory::create([
+            'link_id' => $link2->id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('news'),
+            'source' => "collection#{$source1->id}",
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+    }
+
     public function testLaterRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
@@ -811,6 +884,42 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
             'from' => \Minz\Url::for('news'),
             'date' => '2024-03-25',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
+        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+    }
+
+    public function testNeverMarksNewsLinksToNeverReadForSpecificSource(): void
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $source1 = CollectionFactory::create();
+        $source2 = CollectionFactory::create();
+        $link1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'source_type' => 'collection',
+            'source_resource_id' => $source1->id,
+        ]);
+        $link_to_news1 = LinkToCollectionFactory::create([
+            'link_id' => $link1->id,
+            'collection_id' => $news->id,
+        ]);
+        $link2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'source_type' => 'collection',
+            'source_resource_id' => $source2->id,
+        ]);
+        $link_to_news2 = LinkToCollectionFactory::create([
+            'link_id' => $link2->id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('news'),
+            'source' => "collection#{$source1->id}",
         ]);
 
         $this->assertResponseCode($response, 302, '/news');

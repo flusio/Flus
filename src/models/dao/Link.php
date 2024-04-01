@@ -217,6 +217,7 @@ trait Link
      *     properties.
      * @param array{
      *     'published_date'?: ?\DateTimeImmutable,
+     *     'source'?: ?string,
      *     'hidden'?: bool,
      *     'offset'?: int,
      *     'limit'?: int|'ALL',
@@ -225,6 +226,7 @@ trait Link
      * Description of the options:
      *
      * - published_date (default to null), limits the selection to the given publication date
+     * - source (default to null), limits the selection to the given source (e.g. collection#1234567890)
      * - hidden (default to true), indicates if hidden links must be included
      * - offset (default to 0), the offset for pagination
      * - limit (default to 'ALL') the limit for pagination
@@ -238,6 +240,7 @@ trait Link
     ): array {
         $default_options = [
             'published_date' => null,
+            'source' => null,
             'hidden' => true,
             'offset' => 0,
             'limit' => 'ALL',
@@ -272,6 +275,15 @@ trait Link
             $parameters[':published_date'] = $options['published_date']->format('Y-m-d');
         }
 
+        $source = $options['source'];
+        $source_clause = '';
+        if ($source && str_contains($source, '#')) {
+            list($source_type, $source_id) = explode('#', $source, 2);
+            $source_clause = 'AND source_type = :source_type AND source_resource_id = :source_id';
+            $parameters[':source_type'] = $source_type;
+            $parameters[':source_id'] = $source_id;
+        }
+
         $visibility_clause = '';
         if (!$options['hidden']) {
             $visibility_clause = 'AND l.is_hidden = false';
@@ -293,6 +305,7 @@ trait Link
             WHERE l.id = lc.link_id
             AND lc.collection_id = :collection_id
             {$date_clause}
+            {$source_clause}
             {$visibility_clause}
 
             {$order_by_clause}

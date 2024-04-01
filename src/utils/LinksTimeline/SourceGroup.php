@@ -15,6 +15,8 @@ class SourceGroup
 
     public string $title;
 
+    public string $reference;
+
     /** @var models\Link[] */
     public array $links = [];
 
@@ -27,8 +29,10 @@ class SourceGroup
 
         if ($this->source instanceof models\Collection) {
             $this->title = $this->source->name();
+            $this->reference = "collection#{$this->source->id}";
         } else {
             $this->title = $this->source->username;
+            $this->reference = "user#{$this->source->id}";
         }
     }
 }
