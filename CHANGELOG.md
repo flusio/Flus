@@ -1,5 +1,32 @@
 # Changelog of flusio
 
+## 2024-04-02 - v0.59
+
+### New
+
+- Improve the overall "News" experience:
+    - Display links grouped by dates in news ([a1ec6c29](https://github.com/flusio/flusio/commit/a1ec6c29), [7b5cb20b](https://github.com/flusio/flusio/commit/7b5cb20b))
+    - Display links grouped by sources in news ([f9835613](https://github.com/flusio/flusio/commit/f9835613), [0952ee13](https://github.com/flusio/flusio/commit/0952ee13))
+    - (beta) Change the "news" tab by a "reading" tab ([4d02e91c](https://github.com/flusio/flusio/commit/4d02e91c))
+    - (beta) Load more links in the news from followed feeds ([f8acb421](https://github.com/flusio/flusio/commit/f8acb421), [d58c7938](https://github.com/flusio/flusio/commit/d58c7938))
+    - (beta) Mark bookmarks as read when storing them ([84c870ab](https://github.com/flusio/flusio/commit/84c870ab))
+
+### Bug fixes
+
+- Fix the resizing of images with invalid transparency ([4953b107](https://github.com/flusio/flusio/commit/4953b107))
+- Format the sessions dates with the correct locale ([63609b18](https://github.com/flusio/flusio/commit/63609b18))
+
+### Technical
+
+- Update Minz ([a0ee2b83](https://github.com/flusio/flusio/commit/a0ee2b83))
+
+### Developers
+
+- Update the dependencies ([74c84454](https://github.com/flusio/flusio/commit/74c84454), [774d75d5](https://github.com/flusio/flusio/commit/774d75d5))
+- Remove the warning about docker-compose.yml version ([e6717742](https://github.com/flusio/flusio/commit/e6717742))
+- Refactor the `_date` helper function ([28620cbc](https://github.com/flusio/flusio/commit/28620cbc))
+- Rename the Link "via" fields to "source" ([e3902683](https://github.com/flusio/flusio/commit/e3902683))
+
 ## 2024-03-18 - v0.58
 
 ### New
