@@ -133,7 +133,7 @@
                             </summary>
 
                             <nav class="popup__container popup__container--left" role="menu">
-                                <div class="popup__title"><?= _('Actions on the source') ?></div>
+                                <div class="popup__title"><?= _('Actions on the feed') ?></div>
 
                                 <form data-turbo-preserve-scroll method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
                                     <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />

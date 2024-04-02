@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: flusio\n"
-"POT-Creation-Date: 2024-04-02 11:08+0200\n"
-"PO-Revision-Date: 2024-04-02 11:08+0200\n"
+"POT-Creation-Date: 2024-04-02 11:25+0200\n"
+"PO-Revision-Date: 2024-04-02 11:25+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2142,8 +2142,8 @@ msgid "Never see the links again"
 msgstr "Ne plus revoir les liens"
 
 #: views/news/index.phtml:136
-msgid "Actions on the source"
-msgstr "Actions pour la source"
+msgid "Actions on the feed"
+msgstr "Actions pour le flux"
 
 #: views/news/index.phtml:206
 msgid ""
