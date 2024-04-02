@@ -84,7 +84,7 @@ class News
             $beta_enabled = models\FeatureFlag::isEnabled('beta', $user->id);
 
             $options = [
-                'number_links' => $beta_enabled ? 30 : 9,
+                'number_links' => $beta_enabled ? 50 : 9,
                 'from' => 'followed',
             ];
         } elseif ($type === 'short') {
