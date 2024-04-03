@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\controllers\collections;
+namespace App\controllers\collections;
 
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\UserFactory;

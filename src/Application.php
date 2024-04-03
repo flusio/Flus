@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio;
+namespace App;
 
 /**
  * This is the central class of the application. It declares routes and
@@ -12,7 +12,7 @@ namespace flusio;
  * Example:
  *
  * $request = new \Minz\Request('get', '/');
- * $application = new \flusio\Application();
+ * $application = new \App\Application();
  * $response = $application->run($request);
  * echo $response->render();
  *
@@ -37,7 +37,7 @@ class Application
             'start_session' => true,
             'not_found_view_pointer' => 'not_found.phtml',
             'internal_server_error_view_pointer' => 'internal_server_error.phtml',
-            'controller_namespace' => '\\flusio\\controllers',
+            'controller_namespace' => '\\App\\controllers',
         ]);
 
         // Automatically declare content types for these views files extensions
@@ -51,7 +51,7 @@ class Application
         if (\Minz\Configuration::$environment === 'production') {
             $about_url = \Minz\Url::absoluteFor('about');
         } else {
-            $about_url = 'https://github.com/flusio/flusio';
+            $about_url = 'https://github.com/flusio/Flus';
         }
         \Minz\Configuration::$application['user_agent'] = "{$user_agent} ({$about_url})";
     }
@@ -64,7 +64,12 @@ class Application
     public function run(\Minz\Request $request): mixed
     {
         /** @var ?string */
-        $session_token = $request->cookie('flusio_session_token');
+        $session_token = $request->cookie('session_token');
+
+        if (!$session_token) {
+            /** @var ?string */
+            $session_token = $request->cookie('flusio_session_token');
+        }
 
         if (
             !$session_token &&
@@ -111,6 +116,7 @@ class Application
                 auth\CurrentUser::reset();
 
                 $response = \Minz\Response::redirect('login');
+                $response->removeCookie('session_token');
                 $response->removeCookie('flusio_session_token');
                 return $response;
             }
@@ -201,7 +207,7 @@ class Application
      * validated after its first day).
      *
      * @param \Minz\Request $request
-     * @param \flusio\models\User $user
+     * @param \App\models\User $user
      *
      * @return boolean
      */
@@ -230,7 +236,7 @@ class Application
      * Return true if the user must renew its subscription
      *
      * @param \Minz\Request $request
-     * @param \flusio\models\User $user
+     * @param \App\models\User $user
      *
      * @return boolean
      */

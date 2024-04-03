@@ -20,7 +20,7 @@ include $app_path . '/autoload.php';
 $request = \Minz\Request::initFromCli($argv);
 
 // Initialize the Application and execute the request to get a Response
-$application = new \flusio\cli\Application();
+$application = new \App\cli\Application();
 $response = $application->run($request);
 
 \Minz\Response::sendToCli($response);

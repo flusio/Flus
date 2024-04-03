@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\utils;
+namespace App\utils;
 
 /**
  * Facilitates pagination manipulations.

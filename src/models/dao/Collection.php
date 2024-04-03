@@ -1,11 +1,11 @@
 <?php
 
-namespace flusio\models\dao;
+namespace App\models\dao;
 
 use Minz\Database;
 
 /**
- * Represent a collection of flusio in database.
+ * Represent a collection of Flus in database.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL

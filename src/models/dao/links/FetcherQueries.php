@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\models\dao\links;
+namespace App\models\dao\links;
 
 use Minz\Database;
 

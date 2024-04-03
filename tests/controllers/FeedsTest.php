@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
-use flusio\models;
+use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\GroupFactory;
 use tests\factories\FollowedCollectionFactory;
@@ -281,7 +281,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testWhatIsNewRedirectsToCollection(): void
     {
         $support_user = models\User::supportUser();
-        $feed_url = 'https://github.com/flusio/flusio/releases.atom';
+        $feed_url = 'https://github.com/flusio/Flus/releases.atom';
         $collection = CollectionFactory::create([
             'user_id' => $support_user->id,
             'type' => 'feed',
@@ -296,7 +296,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testWhatIsNewCreatesFeedIfItDoesNotExist(): void
     {
         $support_user = models\User::supportUser();
-        $feed_url = 'https://github.com/flusio/flusio/releases.atom';
+        $feed_url = 'https://github.com/flusio/Flus/releases.atom';
         $this->mockHttpWithFixture(
             $feed_url,
             'responses/flus.fr_carnet_feeds_all.atom.xml'

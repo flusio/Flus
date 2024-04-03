@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\migrations;
+namespace App\migrations;
 
 class Migration202007100001AddDescriptionToCollections
 {

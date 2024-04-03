@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionToTopicFactory;
 use tests\factories\FollowedCollectionFactory;
@@ -28,7 +28,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
      */
     public static function setRouterToUrl(): void
     {
-        $router = \flusio\Router::load();
+        $router = \App\Router::load();
         \Minz\Engine::init($router);
     }
 
@@ -155,11 +155,11 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $collection_1_url = \Minz\Url::absoluteFor('collection', ['id' => $collection_1->id]);
         $this->assertSame($collection_1_url_feed, $opml->outlines[0]['xmlUrl']);
         $this->assertSame($collection_1_url, $opml->outlines[0]['htmlUrl']);
-        $this->assertSame('/flusio/filters/all', $opml->outlines[0]['category']);
+        $this->assertSame('/Flus/filters/all', $opml->outlines[0]['category']);
 
         $this->assertSame($feed_url, $opml->outlines[1]['xmlUrl']);
         $this->assertSame($feed_site_url, $opml->outlines[1]['htmlUrl']);
-        $this->assertSame('/flusio/filters/strict', $opml->outlines[1]['category']);
+        $this->assertSame('/Flus/filters/strict', $opml->outlines[1]['category']);
 
         $this->assertSame($group_name, $opml->outlines[2]['text']);
         $this->assertIsArray($opml->outlines[2]['outlines']);
@@ -199,7 +199,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $feed_content = $this->zipGetContents($filepath, 'bookmarks.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
         $this->assertSame(1, count($feed->categories));
-        $this->assertSame('flusio:type:bookmarks', $feed->categories['flusio:type:bookmarks']);
+        $this->assertSame('Flus:type:bookmarks', $feed->categories['Flus:type:bookmarks']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
@@ -230,7 +230,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $feed_content = $this->zipGetContents($filepath, 'news.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
         $this->assertSame(1, count($feed->categories));
-        $this->assertSame('flusio:type:news', $feed->categories['flusio:type:news']);
+        $this->assertSame('Flus:type:news', $feed->categories['Flus:type:news']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
@@ -261,7 +261,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $feed_content = $this->zipGetContents($filepath, 'read.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
         $this->assertSame(1, count($feed->categories));
-        $this->assertSame('flusio:type:read', $feed->categories['flusio:type:read']);
+        $this->assertSame('Flus:type:read', $feed->categories['Flus:type:read']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
@@ -292,7 +292,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $feed_content = $this->zipGetContents($filepath, 'never.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
         $this->assertSame(1, count($feed->categories));
-        $this->assertSame('flusio:type:never', $feed->categories['flusio:type:never']);
+        $this->assertSame('Flus:type:never', $feed->categories['Flus:type:never']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
@@ -354,15 +354,15 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(\Minz\Url::absoluteFor('collection', ['id' => $collection->id]), $feed->link);
         $this->assertSame(4, count($feed->categories));
         $this->assertSame($topic_label, $feed->categories[$topic_label]);
-        $this->assertSame('flusio:public', $feed->categories['flusio:public']);
-        $this->assertSame('flusio:type:collection', $feed->categories['flusio:type:collection']);
-        $this->assertSame($group_name, $feed->categories['flusio:group']);
+        $this->assertSame('Flus:public', $feed->categories['Flus:public']);
+        $this->assertSame('Flus:type:collection', $feed->categories['Flus:type:collection']);
+        $this->assertSame($group_name, $feed->categories['Flus:group']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
         $this->assertEquals($published_at, $entry->published_at);
         $this->assertSame(1, count($entry->categories));
-        $this->assertSame('flusio:hidden', $entry->categories['flusio:hidden']);
+        $this->assertSame('Flus:hidden', $entry->categories['Flus:hidden']);
     }
 
     public function testExportCreatesMessagesFiles(): void
@@ -391,7 +391,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(\Minz\Url::absoluteFor('link', ['id' => $link->id]), $feed->link);
         $this->assertSame($link_url, $feed->links['via']);
         $this->assertSame(1, count($feed->categories));
-        $this->assertSame('flusio:hidden', $feed->categories['flusio:hidden']);
+        $this->assertSame('Flus:hidden', $feed->categories['Flus:hidden']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $expected_link = \Minz\Url::absoluteFor('link', ['id' => $link->id]) . "#message-{$message->id}";

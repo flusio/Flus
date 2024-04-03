@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 class ApplicationTest extends \PHPUnit\Framework\TestCase
 {

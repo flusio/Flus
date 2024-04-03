@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
-use flusio\models;
-use flusio\services;
-use flusio\utils;
+use App\models;
+use App\services;
+use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\TopicFactory;
@@ -21,7 +21,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
      */
     public static function loadApplication(): void
     {
-        self::$application = new \flusio\cli\Application();
+        self::$application = new \App\cli\Application();
     }
 
     /**

@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 use tests\factories\LinkFactory;
 
 class LinkFetcherTest extends \PHPUnit\Framework\TestCase
@@ -67,7 +67,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     public function testFetchUsesCache(): void
     {
         $link_fetcher_service = new LinkFetcher();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,

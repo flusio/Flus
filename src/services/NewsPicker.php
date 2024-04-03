@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
-use flusio\models;
+use App\models;
 
 /**
  * The NewsPicker service is a sort of basic artificial intelligence. Its

@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\controllers\links;
+namespace App\controllers\links;
 
-use flusio\models;
+use App\models;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;

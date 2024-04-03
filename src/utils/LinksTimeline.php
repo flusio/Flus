@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\utils;
+namespace App\utils;
 
-use flusio\models;
+use App\models;
 
 /**
  * A class to organise a list of links in a timeline (i.e. grouped by dates).

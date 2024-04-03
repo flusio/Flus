@@ -2,14 +2,15 @@
 
 namespace App\migrations;
 
-class Migration202209220001SetAutoloadModalToShowcaseLink
+class Migration202404180001RenameJobsNamespaceFromFlusioToApp
 {
     public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
         $database->exec(<<<'SQL'
-            UPDATE users SET autoload_modal = 'showcase link';
+            UPDATE jobs
+            SET name = REPLACE(name, 'flusio\', 'App\')
         SQL);
 
         return true;
@@ -20,7 +21,8 @@ class Migration202209220001SetAutoloadModalToShowcaseLink
         $database = \Minz\Database::get();
 
         $database->exec(<<<'SQL'
-            UPDATE users SET autoload_modal = '';
+            UPDATE jobs
+            SET name = REPLACE(name, 'App\', 'flusio\')
         SQL);
 
         return true;

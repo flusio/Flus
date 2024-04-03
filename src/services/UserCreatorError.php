@@ -1,11 +1,11 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
 /**
  * Exception raised by the UserCreator service.
  *
- * @see \flusio\services\UserCreator
+ * @see \App\services\UserCreator
  *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL

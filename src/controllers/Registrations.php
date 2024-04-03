@@ -1,14 +1,14 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\auth;
-use flusio\jobs;
-use flusio\models;
-use flusio\services;
-use flusio\utils;
+use App\auth;
+use App\jobs;
+use App\models;
+use App\services;
+use App\utils;
 
 /**
  * Handle the requests related to the registrations.
@@ -160,7 +160,7 @@ class Registrations
         $mailer_job->performAsap('Users', 'sendAccountValidationEmail', $user->id);
 
         $response = Response::redirect('onboarding');
-        $response->setCookie('flusio_session_token', $session_token->token, [
+        $response->setCookie('session_token', $session_token->token, [
             'expires' => $session_token->expired_at->getTimestamp(),
             'samesite' => 'Lax',
         ]);

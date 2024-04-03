@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\controllers\my;
+namespace App\controllers\my;
 
-use flusio\models;
-use flusio\services;
+use App\models;
+use App\services;
 use tests\factories\UserFactory;
 
 class SubscriptionTest extends \PHPUnit\Framework\TestCase
@@ -226,7 +226,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         $account_id = $this->fake('uuid');
         /** @var string */
         $redirection_url = $this->fake('url');
-        $subscription_api_url = "{$subscriptions_host}/api/account/login-url?account_id={$account_id}&service=flusio";
+        $subscription_api_url = "{$subscriptions_host}/api/account/login-url?account_id={$account_id}&service=Flus";
         $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
             HTTP/2 200
             Content-type: application/json

@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\models;
+namespace App\models;
 
 class ImageTest extends \PHPUnit\Framework\TestCase
 {

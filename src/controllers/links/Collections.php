@@ -1,13 +1,13 @@
 <?php
 
-namespace flusio\controllers\links;
+namespace App\controllers\links;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\auth;
-use flusio\jobs;
-use flusio\models;
-use flusio\utils;
+use App\auth;
+use App\jobs;
+use App\models;
+use App\utils;
 
 /**
  * Handle the requests related to the links collections.

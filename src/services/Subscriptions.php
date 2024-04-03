@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
 /**
  * The Subscriptions service allows to get information about a user
@@ -100,7 +100,7 @@ class Subscriptions
         try {
             $response = $this->http->get($this->host . '/api/account/login-url', [
                 'account_id' => $account_id,
-                'service' => 'flusio',
+                'service' => 'Flus',
             ], [
                 'auth_basic' => $this->private_key . ':',
             ]);

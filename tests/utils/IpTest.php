@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\utils;
+namespace App\utils;
 
 class IpTest extends \PHPUnit\Framework\TestCase
 {

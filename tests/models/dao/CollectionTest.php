@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\models\dao;
+namespace App\models\dao;
 
-use flusio\models;
+use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;

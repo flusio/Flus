@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\jobs;
+namespace App\jobs;
 
 /**
  * Job to send emails asynchronously.
@@ -21,7 +21,7 @@ class Mailer extends \Minz\Job
      */
     public function perform(string $mailer_class_name, string $mailer_action_name, mixed ...$args): void
     {
-        $full_class_name = "\\flusio\\mailers\\{$mailer_class_name}";
+        $full_class_name = "\\App\\mailers\\{$mailer_class_name}";
         $mailer = new $full_class_name();
         $result = $mailer->$mailer_action_name(...$args);
 

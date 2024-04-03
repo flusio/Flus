@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\models\dao;
+namespace App\models\dao;
 
 use Minz\Database;
 

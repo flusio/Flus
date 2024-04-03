@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers\my;
+namespace App\controllers\my;
 
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;

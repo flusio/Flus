@@ -1,13 +1,13 @@
 # Deploy in production
 
-Installing flusio on your own server is quite simple but still requires basic
+Installing Flus on your own server is quite simple but still requires basic
 notions in sysadmin. First, make sure you match with the following
 requirements:
 
 - git, Nginx, PHP 8.1+ and PostgreSQL 13+ are installed on your server;
 - PHP requires `intl`, `gettext`, `pcntl`, `gd` (with at least WebP support), `pdo` and `pdo_pgsql` extensions;
 - your PostgreSQL user must have the permission to create a database;
-- flusio must be served over <abbr>HTTPS</abbr>.
+- Flus must be served over <abbr>HTTPS</abbr>.
 
 **Other configurations might work but aren’t officialy supported.**
 
@@ -23,13 +23,13 @@ as the `root` user):
 
 ```console
 # cd /var/www/
-# git clone --recurse-submodules https://github.com/flusio/flusio.git
-# cd flusio
-flusio# git checkout TAG
+# git clone --recurse-submodules https://github.com/flusio/Flus.git
+# cd Flus
+flus# git checkout TAG
 ```
 
 You must replace the `TAG` argument with the latest version that you can find
-on the [GitHub releases page](https://github.com/flusio/flusio/releases).
+on the [GitHub releases page](https://github.com/flusio/Flus/releases).
 
 Contrary to development, there’re nothing more to install: all the dependencies
 are already here (at least if you didn’t forget the `--recurse-submodules`
@@ -42,8 +42,8 @@ version tag).
 You must now configure the environment by creating the `.env` file:
 
 ```console
-flusio# cp env.sample .env
-flusio# vim .env # or edit with nano or whatever editor you prefer
+flus# cp env.sample .env
+flus# vim .env # or edit with nano or whatever editor you prefer
 ```
 
 The environment file is commented so it should not be too complicated to setup
@@ -52,7 +52,7 @@ correctly.
 You can check the database is correctly configured with:
 
 ```console
-flusio# sudu -u www-data php cli database status
+flus# sudu -u www-data php cli database status
 Database status: OK
 ```
 
@@ -69,14 +69,14 @@ You should set the owner of the files to the user that runs Nginx. This is
 often `www-data`:
 
 ```console
-flusio# chown -R www-data:www-data .
+flus# chown -R www-data:www-data .
 ```
 
 You should also change the permissions on the `.env` file to limit the risks of
 credentials being stolen. The `www-data` user only needs `read` permission:
 
 ```console
-flusio# chmod 400 .env
+flus# chmod 400 .env
 ```
 
 ## Setup the database
@@ -84,9 +84,9 @@ flusio# chmod 400 .env
 You must now load the SQL schema to your database. You can do it with:
 
 ```console
-flusio# sudo -u www-data php cli migrations setup --seed
-flusio# # OR via make
-flusio# sudo -u www-data make setup NO_DOCKER=true
+flus# sudo -u www-data php cli migrations setup --seed
+flus# # OR via make
+flus# sudo -u www-data make setup NO_DOCKER=true
 ```
 
 If the permissions are correct, you should have a message to tell you the
@@ -122,8 +122,8 @@ server {
     server_name localhost;
 
     # Please note that we serve the public/ folder, it **must not** be set
-    # directly to the flusio root folder!
-    root /var/www/flusio/public;
+    # directly to the Flus root folder!
+    root /var/www/flus/public;
     index index.html index.php;
 
     error_log  /var/log/nginx/error.log;
@@ -156,22 +156,22 @@ think that you might need of.
 Let’s check that your configuration is valid with `nginx -t` and reload Nginx
 with `systemctl reload nginx`.
 
-If you’ve done everything right, you should now be able to access flusio at the
+If you’ve done everything right, you should now be able to access Flus at the
 address you’ve configured, congratulations!
 
 ## Setup the job worker
 
-A last step is required to install flusio on your server though. Some long
+A last step is required to install Flus on your server though. Some long
 tasks (e.g. sending emails) are run in background via a job system. You’ll need
 to start a worker to process them. For instance, you can create a systemd
-service by creating a `/etc/systemd/system/flusio-worker.service` file.
+service by creating a `/etc/systemd/system/flus-worker.service` file.
 
 ```systemd
 [Unit]
-Description=A job worker for flusio
+Description=A job worker for Flus
 
 [Service]
-ExecStart=php /var/www/flusio/cli jobs watch
+ExecStart=php /var/www/flus/cli jobs watch
 User=www-data
 Group=www-data
 Restart=on-failure
@@ -185,8 +185,8 @@ Then, reload the systemd daemon and start the service:
 
 ```console
 # systemctl daemon-reload
-# systemctl enable flusio-worker
-# systemctl start flusio-worker
+# systemctl enable flus-worker
+# systemctl start flus-worker
 ```
 
 You should obviously adapt the service files to your needs. Also, you might not
@@ -194,7 +194,7 @@ have permission on your server to create a new service. An alternative is to
 setup a cron task:
 
 ```cron
-* * * * * www-data php /var/www/flusio/cli jobs watch --stop-after=1 >/dev/null 2>&1
+* * * * * www-data php /var/www/flus/cli jobs watch --stop-after=1 >/dev/null 2>&1
 ```
 
 It will find and run a single job every minute. It’s less efficient than a
@@ -206,41 +206,41 @@ Topics are used to categorize collections. They only can be created by the
 administrator with the CLI for now:
 
 ```console
-flusio# sudo -u www-data php cli topics create --label=LABEL
+flus# sudo -u www-data php cli topics create --label=LABEL
 ```
 
 You must change `LABEL` by the name of your topic (e.g. economics, politics,
 health). You can pass an `image_url` param to set an illustration:
 
 ```console
-flusio# sudo -u www-data php cli topics create --label=LABEL --image_url=https://flus.fr/carnet/card.png
+flus# sudo -u www-data php cli topics create --label=LABEL --image_url=https://flus.fr/carnet/card.png
 ```
 
 If you’ve made a mistake, you can update or delete a topic with:
 
 ```console
-flusio# sudo -u www-data php cli topics update --id=ID --label=NEW_LABEL
-flusio# # OR to delete
-flusio# sudo -u www-data php cli topics delete --id=ID
+flus# sudo -u www-data php cli topics update --id=ID --label=NEW_LABEL
+flus# # OR to delete
+flus# sudo -u www-data php cli topics delete --id=ID
 ```
 
 You must change `ID` by the id of an existing topic. You can find topic ids by
 listing them:
 
 ```console
-flusio# sudo -u www-data php cli topics
+flus# sudo -u www-data php cli topics
 ```
 
 ## Optional: Configure Pocket
 
-flusio allows users to import their data from Pocket. First, you have to
+Flus allows users to import their data from Pocket. First, you have to
 [create a Pocket app](https://getpocket.com/developer/apps/new). It will give
 you a "consumer key". Set this key in the `APP_POCKET_CONSUMER_KEY` variable of
 your `.env` file. That’s all!
 
 ## Optional: Configure Browscap
 
-We use Browscap to identify the users’ sessions via their user agent. flusio
+We use Browscap to identify the users’ sessions via their user agent. Flus
 can work without Browscap but the sessions will be identified as `Unknown
 browser on unknown platform`.
 
@@ -268,7 +268,7 @@ You can find more information on Browscap at [php.net/browscap](https://php.net/
 
 ## Optional: Set a brand name
 
-The generic brand name is “flusio”, but you might want to change it to
+The generic brand name is “Flus”, but you might want to change it to
 distinguish your instance from the other ones. This is pretty simple: uncomment
 the `APP_BRAND` variable in your `.env` file, and set the name of your choice.
 It’s recommended to choose a short name.
@@ -297,14 +297,14 @@ the feeds and add bookmarks. Then, export your data via “Account & data”,
 
 ## Optional: Set a retention policy for the links in feeds
 
-Over the time, the number of links in database will increase. flusio can handle
+Over the time, the number of links in database will increase. Flus can handle
 a lot of links, but you may want to keep the size of your DB under control. For
 this, you have two (non-exclusive) options.
 
 The most effective is to set the `FEEDS_LINKS_KEEP_MAXIMUM` variable in your
 `.env` file. It takes a number greater or equal to 1. If set, the `Cleaner` job
 will remove the links in excess every night (by removing the older ones). Note
-that during the journey, flusio may create more links than the limit.
+that during the journey, Flus may create more links than the limit.
 
 The second option is to purge the old links by setting the `FEEDS_LINKS_KEEP_PERIOD`
 variable in your `.env` file. It takes a number of months, greater or equal to 1.
@@ -319,7 +319,7 @@ Anytime you change these options, you should also consider to execute the
 following command:
 
 ```console
-flusio# sudo -u www-data php cli feeds reset-hashes
+flus# sudo -u www-data php cli feeds reset-hashes
 ```
 
 This allows to force the synchronization of feeds that are unchanged to get
@@ -327,24 +327,24 @@ their old links in case you have loosened the retention policy.
 
 ## Optional: Close the registrations
 
-You might want to setup a private instance of flusio. The registrations can be
+You might want to setup a private instance of Flus. The registrations can be
 closed by setting the environment variable `APP_OPEN_REGISTRATIONS` to `false`.
 Thus, anonymous users will not be able to register. If you want to invite
 friends or family on your instance, you’ll have to create their account via the
 CLI:
 
 ```console
-flusio# sudo -u www-data php cli users create --username=Abby --email=email@example.com --password=secret
+flus# sudo -u www-data php cli users create --username=Abby --email=email@example.com --password=secret
 ```
 
 ## Optional: Change the “What’s new?” feed
 
 In the “Help & support” page, there’s a link named “What’s new?”. It
-automatically redirects to the feed of the [flusio releases](https://github.com/flusio/flusio/releases)
+automatically redirects to the feed of the [Flus releases](https://github.com/flusio/Flus/releases)
 on GitHub.
 
 You can set a custom feed in your `.env` file (if you offer a service based on
-flusio for instance, and that you have a blog explaining the latest changes):
+Flus for instance, and that you have a blog explaining the latest changes):
 
 ```dotenv
 APP_FEED_WHAT_IS_NEW=https://example.com/your/feed.xml
@@ -368,7 +368,7 @@ If you need to configure a demo server (this is probably NOT the case), you can
 simply set the `APP_DEMO` variable to `true` in the `.env` file. It will add a
 banner at the top of the screen to warn users that data are reset every night.
 It will also consider the account with the `demo@flus.io` email as the demo
-account. The reset is done through a scheduled job managed by flusio.
+account. The reset is done through a scheduled job managed by Flus.
 
 ## Optional: Enable subscriptions
 

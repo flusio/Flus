@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\jobs;
+namespace App\jobs;
 
-use flusio\models;
-use flusio\services;
+use App\models;
+use App\services;
 
 /**
  * Job that import feeds from an OPML file

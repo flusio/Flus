@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\jobs\scheduled;
+namespace App\jobs\scheduled;
 
-use flusio\models;
+use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\FetchLogFactory;
 use tests\factories\FollowedCollectionFactory;

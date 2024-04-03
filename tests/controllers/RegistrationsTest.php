@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
-use flusio\auth;
-use flusio\models;
+use App\auth;
+use App\models;
 use tests\factories\UserFactory;
 
 class RegistrationsTest extends \PHPUnit\Framework\TestCase
@@ -103,7 +103,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($token);
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertNotNull($email_sent);
-        $this->assertEmailSubject($email_sent, '[flusio] Confirm your account');
+        $this->assertEmailSubject($email_sent, '[Flus] Confirm your account');
         $this->assertEmailContainsTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, $token->token);
     }
@@ -142,7 +142,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $session = models\Session::take();
         $this->assertNotNull($session);
         $this->assertInstanceOf(\Minz\Response::class, $response);
-        $cookie = $response->cookies()['flusio_session_token'];
+        $cookie = $response->cookies()['session_token'];
         $this->assertSame($session->token, $cookie['value']);
         $this->assertSame('Lax', $cookie['options']['samesite']);
     }

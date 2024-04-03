@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\utils\LinksTimeline;
+namespace App\utils\LinksTimeline;
 
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

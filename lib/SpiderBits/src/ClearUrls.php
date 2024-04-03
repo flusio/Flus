@@ -87,7 +87,7 @@ class ClearUrls
             }
 
             // If the provider is "completeProvider", the URL should be blocked
-            // (i.e. an empty string in flusio context).
+            // (i.e. an empty string in Flus context).
             if ($provider['completeProvider']) {
                 return '';
             }

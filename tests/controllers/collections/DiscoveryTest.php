@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers\collections;
+namespace App\controllers\collections;
 
 class DiscoveryTest extends \PHPUnit\Framework\TestCase
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
-use flusio\utils;
-use flusio\models;
+use App\utils;
+use App\models;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

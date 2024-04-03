@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
-use flusio\models;
+use App\models;
 use tests\factories\UserFactory;
 
 class SupportTest extends \PHPUnit\Framework\TestCase
@@ -66,13 +66,13 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(2);
         $email_1 = \Minz\Tests\Mailer::take(0);
         $this->assertNotNull($email_1);
-        $this->assertEmailSubject($email_1, "[flusio] Contact: {$subject}");
+        $this->assertEmailSubject($email_1, "[Flus] Contact: {$subject}");
         $this->assertEmailContainsTo($email_1, $support_user->email);
         $this->assertEmailContainsReplyTo($email_1, $email);
         $this->assertEmailContainsBody($email_1, $message);
         $email_2 = \Minz\Tests\Mailer::take(1);
         $this->assertNotNull($email_2);
-        $this->assertEmailSubject($email_2, '[flusio] Your message has been sent');
+        $this->assertEmailSubject($email_2, '[Flus] Your message has been sent');
         $this->assertEmailContainsTo($email_2, $email);
         $this->assertEmailContainsBody($email_2, 'Someone will reply to you as soon as possible');
     }

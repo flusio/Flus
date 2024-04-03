@@ -6,7 +6,7 @@
     <link href="<?= protect($link->url) ?>" rel="via" type="text/html" />
 
     <?php if ($link->is_hidden): ?>
-        <category term="flusio:hidden" />
+        <category term="Flus:hidden" />
     <?php endif; ?>
 
     <id><?= $link->tagUri() ?></id>

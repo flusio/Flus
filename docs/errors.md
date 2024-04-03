@@ -3,7 +3,7 @@
 It’s a well-known fact: we cannot rely on users’ input. An input can be
 improperly completed, or an attacker could try to find a security breach.
 Consequently, we must be very careful when verifying requests parameters. This
-document is intended to standardize how the errors are handled in flusio.
+document is intended to standardize how the errors are handled in Flus.
 
 ## Overview
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\utils;
+namespace App\utils;
 
 use tests\factories\CollectionFactory;
 use tests\factories\UserFactory;

@@ -1,11 +1,11 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 
 /**
  * Manipulate the system to setup the application.

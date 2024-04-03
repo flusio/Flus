@@ -2,7 +2,7 @@
 
 namespace tests;
 
-use flusio\models;
+use App\models;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>

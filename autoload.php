@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Configure the autoload of the flusio application and its dependencies.
+ * Configure the autoload of the Flus application and its dependencies.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -9,7 +9,7 @@
 
 spl_autoload_register(
     function ($class_name) {
-        $app_namespace = 'flusio';
+        $app_namespace = 'App';
         $app_path = __DIR__;
         $lib_path = $app_path . '/lib';
         $tests_namespace = 'tests';

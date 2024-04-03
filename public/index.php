@@ -18,7 +18,7 @@ $request = \Minz\Request::initFromGlobals();
 
 // Initialize the Application and execute the request to get a Response
 try {
-    $application = new \flusio\Application();
+    $application = new \App\Application();
     $response = $application->run($request);
 } catch (\Exception $e) {
     $response = \Minz\Response::internalServerError('internal_server_error.phtml', [

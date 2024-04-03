@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\migrations;
+namespace App\migrations;
 
 class Migration202201140001MigrateUsersIds
 {

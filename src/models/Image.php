@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\models;
+namespace App\models;
 
 /**
  * Create and manipulate Webp images

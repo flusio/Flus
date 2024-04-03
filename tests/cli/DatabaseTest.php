@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 /**
  * @phpstan-import-type ConfigurationDatabase from \Minz\Configuration
@@ -15,7 +15,7 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
      */
     public static function loadApplication(): void
     {
-        self::$application = new \flusio\cli\Application();
+        self::$application = new \App\cli\Application();
     }
 
     /**

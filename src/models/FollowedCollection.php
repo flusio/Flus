@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\models;
+namespace App\models;
 
-use flusio\utils;
+use App\utils;
 use Minz\Database;
 use Minz\Translatable;
 use Minz\Validable;

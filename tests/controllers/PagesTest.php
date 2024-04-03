@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 class PagesTest extends \PHPUnit\Framework\TestCase
 {
@@ -56,7 +56,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'pages/addons.phtml');
-        $this->assertResponseContains($response, ' Keep flusio at hand in your browser');
+        $this->assertResponseContains($response, ' Keep Flus at hand in your browser');
     }
 
     public function testAboutRendersCorrectly(): void
@@ -65,7 +65,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'pages/about.phtml');
-        $this->assertResponseContains($response, 'About flusio');
+        $this->assertResponseContains($response, 'About Flus');
     }
 
     public function testRobotsRendersCorrectlyWhenRegistrationsAreOpened(): void

@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\utils;
+use App\utils;
 
 /**
  * This is the central class for the CLI. It is called from the cli file.
@@ -21,12 +21,12 @@ class Application
      */
     public function __construct()
     {
-        $router = \flusio\Router::loadCli();
+        $router = \App\Router::loadCli();
         \Minz\Engine::init($router, [
             'start_session' => false,
             'not_found_view_pointer' => 'cli/not_found.txt',
             'internal_server_error_view_pointer' => 'cli/internal_server_error.txt',
-            'controller_namespace' => '\\flusio\\cli',
+            'controller_namespace' => '\\App\\cli',
         ]);
     }
 

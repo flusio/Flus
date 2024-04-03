@@ -2,9 +2,9 @@
 
 $db_host = $dotenv->pop('DB_HOST');
 $db_port = intval($dotenv->pop('DB_PORT', '5432'));
-$db_name = 'flusio_test';
+$db_name = 'flus_test';
 
-$temporary_directory = sys_get_temp_dir() . '/flusio/' . \Minz\Random::hex(10);
+$temporary_directory = sys_get_temp_dir() . '/flus/' . \Minz\Random::hex(10);
 $data_directory = $temporary_directory . '/data';
 $cache_directory = $temporary_directory . '/cache';
 $media_directory = $temporary_directory . '/media';
@@ -13,11 +13,11 @@ $media_directory = $temporary_directory . '/media';
 @mkdir($cache_directory, 0777, true);
 @mkdir($media_directory, 0777, true);
 
-$flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-test';
-$user_agent = "flusio/{$flusio_version}";
+$flus_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-test';
+$user_agent = "flus/{$flus_version}";
 
 return [
-    'app_name' => 'flusio',
+    'app_name' => 'App',
 
     'secret_key' => $dotenv->pop('APP_SECRET_KEY'),
 
@@ -30,8 +30,8 @@ return [
 
     'application' => [
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
-        'brand' => 'flusio',
-        'version' => $flusio_version,
+        'brand' => 'Flus',
+        'version' => $flus_version,
         'user_agent' => $user_agent,
         'cache_path' => $cache_directory,
         'media_path' => $media_directory,
@@ -39,7 +39,7 @@ return [
         'registrations_opened' => true,
         'feed_what_is_new' => $dotenv->pop(
             'APP_FEED_WHAT_IS_NEW',
-            'https://github.com/flusio/flusio/releases.atom'
+            'https://github.com/flusio/Flus/releases.atom'
         ),
         'subscriptions_enabled' => false, // should be enable on a case-by-case basis
         'subscriptions_host' => 'https://flus.example.com',

@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\jobs;
+namespace App\jobs;
 
-use flusio\models;
-use flusio\services;
-use flusio\utils;
+use App\models;
+use App\services;
+use App\utils;
 
 /**
  * Job that import Pocket links

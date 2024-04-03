@@ -3,7 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     connect () {
         // We add the csrf token with JavaScript to hopefully block bots which
-        // spam registration. Since JS is required to use flusio, it should be
+        // spam registration. Since JS is required to use Flus, it should be
         // transparent for users.
         const csrfName = document.querySelector('meta[name="csrf-param"]').content;
         const csrfValue = document.querySelector('meta[name="csrf-token"]').content;

@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\controllers\my;
+namespace App\controllers\my;
 
-use flusio\auth;
-use flusio\models;
+use App\auth;
+use App\models;
 use tests\factories\UserFactory;
 
 class ProfileTest extends \PHPUnit\Framework\TestCase

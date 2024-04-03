@@ -1,12 +1,12 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\auth;
-use flusio\models;
-use flusio\utils;
+use App\auth;
+use App\models;
+use App\utils;
 
 /**
  * Handle the requests related to the collections.

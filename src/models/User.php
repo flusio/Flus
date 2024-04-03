@@ -1,14 +1,14 @@
 <?php
 
-namespace flusio\models;
+namespace App\models;
 
-use flusio\utils;
+use App\utils;
 use Minz\Database;
 use Minz\Translatable;
 use Minz\Validable;
 
 /**
- * Represent a user of flusio.
+ * Represent a user of Flus.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -117,7 +117,7 @@ class User
             'email' => \Minz\Email::sanitize($support_email),
         ], [
             'id' => \Minz\Random::timebased(),
-            'username' => 'flusio',
+            'username' => 'Flus',
             'password_hash' => self::passwordHash($default_password),
             'validated_at' => \Minz\Time::now(),
         ]);
@@ -405,7 +405,7 @@ class User
         // Complete the owned_links list with links owned by the user, from the
         // database.
         $urls = array_column($not_owned_links, 'url');
-        $urls_lookup = array_map(['\flusio\utils\Belt', 'removeScheme'], $urls);
+        $urls_lookup = array_map(['\App\utils\Belt', 'removeScheme'], $urls);
         $related_links = Link::listBy([
             'user_id' => $this->id,
             'url_lookup' => $urls_lookup,

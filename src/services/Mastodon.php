@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
-use flusio\models;
+use App\models;
 
 /**
  * @phpstan-import-type Options from models\MastodonAccount
@@ -107,7 +107,7 @@ class Mastodon
     }
 
     /**
-     * Return the URL to redirect the user so it can authorize flusio.
+     * Return the URL to redirect the user so it can authorize Flus.
      */
     public function authorizationUrl(): string
     {

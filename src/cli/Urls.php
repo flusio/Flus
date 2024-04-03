@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 use Minz\Request;
 use Minz\Response;

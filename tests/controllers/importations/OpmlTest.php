@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\controllers\importations;
+namespace App\controllers\importations;
 
-use flusio\jobs;
-use flusio\models;
+use App\jobs;
+use App\models;
 use tests\factories\ImportationFactory;
 
 class OpmlTest extends \PHPUnit\Framework\TestCase

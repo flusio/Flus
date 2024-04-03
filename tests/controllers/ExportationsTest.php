@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
-use flusio\jobs;
-use flusio\models;
-use flusio\services;
+use App\jobs;
+use App\models;
+use App\services;
 use tests\factories\ExportationFactory;
 use tests\factories\UserFactory;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio;
+namespace App;
 
 use tests\factories\SessionFactory;
 use tests\factories\TokenFactory;
@@ -70,7 +70,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
         $request = new \Minz\Request('GET', '/', [], [
             'COOKIE' => [
-                'flusio_session_token' => $token->token,
+                'session_token' => $token->token,
             ],
         ]);
         $application = new Application();

@@ -1,11 +1,11 @@
 <?php
 
-namespace flusio\controllers\importations;
+namespace App\controllers\importations;
 
-use flusio\jobs;
-use flusio\models;
-use flusio\services;
-use flusio\utils;
+use App\jobs;
+use App\models;
+use App\services;
+use App\utils;
 use tests\factories\ImportationFactory;
 use tests\factories\PocketAccountFactory;
 use tests\factories\UserFactory;

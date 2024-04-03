@@ -23,19 +23,19 @@ service so you can start several workers dedicated to different queues.
 First, make sure to stop the actual service:
 
 ```console
-# systemctl stop flusio-worker
-# systemctl disable flusio-worker
+# systemctl stop flus-worker
+# systemctl disable flus-worker
 ```
 
-Then, rename the systemd service file into `/etc/systemd/system/flusio-worker@.service`
+Then, rename the systemd service file into `/etc/systemd/system/flus-worker@.service`
 (the `@` is important!) Finally, change the file itself:
 
 ```systemd
 [Unit]
-Description=A job worker for flusio (queue %i)
+Description=A job worker for Flus (queue %i)
 
 [Service]
-ExecStart=php /var/www/flusio/cli jobs watch --queue=%i
+ExecStart=php /var/www/flus/cli jobs watch --queue=%i
 User=www-data
 Group=www-data
 Restart=on-failure
@@ -49,8 +49,8 @@ You can now start multiple workers, each dedicated to a specific queue:
 
 ```console
 # systemctl daemon-reload
-# systemctl enable flusio-worker@default flusio-worker@mailers flusio-worker@importators flusio-worker@fetchers1 flusio-worker@all
-# systemctl start flusio-worker@default flusio-worker@mailers flusio-worker@importators flusio-worker@fetchers1 flusio-worker@all
+# systemctl enable flus-worker@default flus-worker@mailers flus-worker@importators flus-worker@fetchers1 flus-worker@all
+# systemctl start flus-worker@default flus-worker@mailers flus-worker@importators flus-worker@fetchers1 flus-worker@all
 ```
 
 You may have noticed the `%i` parameter in the systemd file: it is replaced by
@@ -67,7 +67,7 @@ the values of the `JOB_FEEDS_SYNC_COUNT` and `JOB_LINKS_SYNC_COUNT` environment
 variables in your `.env` file. Apply the change by (re-)installing the jobs:
 
 ```console
-flusio$ sudo -u www-data php cli jobs install
+flus$ sudo -u www-data php cli jobs install
 ```
 
 It should tell you that the jobs have been installed. Now, you must start more
@@ -77,24 +77,24 @@ example, if you’ve chosen 2 and 2 jobs, you should start 3 more services (for 
 total of 4):
 
 ```console
-# systemctl enable flusio-worker@fetchers2 flusio-worker@fetchers3 flusio-worker@fetchers4
-# systemctl start flusio-worker@fetchers2 flusio-worker@fetchers3 flusio-worker@fetchers4
+# systemctl enable flus-worker@fetchers2 flus-worker@fetchers3 flus-worker@fetchers4
+# systemctl start flus-worker@fetchers2 flus-worker@fetchers3 flus-worker@fetchers4
 ```
 
 Don’t forget to monitor your CPU and memory, the impact can be counterproductive!
 It is recommended to increase the values one by one and check how your system
 reacts.
 
-To finish: a small tip. When you update flusio, you’ll need to restart the
+To finish: a small tip. When you update Flus, you’ll need to restart the
 services. Instead of doing it one by one, you can settle for:
 
 ```console
-flusio$ sudo systemctl restart flusio-worker@*
+flus$ sudo systemctl restart flus-worker@*
 ```
 
 ## Increase rate limit of requests against Youtube domain
 
-In order to not DDoS external servers, flusio limits the number of requests to
+In order to not DDoS external servers, Flus limits the number of requests to
 25 per minute and domain. However, to avoid being blocked by Youtube, this
 limit is set to 1 request per minute against the domain `youtube.com`. This is
 very low. For instance, for 3000 links to synchronize, it will take at least 50
@@ -125,7 +125,7 @@ APP_SERVER_IPS=172.16.254.1,2001:db8:0:85a3::ac1f:8001
 Finally, restart your workers so they consider the new variable:
 
 ```console
-flusio$ sudo systemctl restart flusio-worker@*
+flus$ sudo systemctl restart flus-worker@*
 ```
 
-flusio will soon request Youtube servers with those two addresses.
+Flus will soon request Youtube servers with those two addresses.

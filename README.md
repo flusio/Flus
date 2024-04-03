@@ -1,4 +1,4 @@
-<h1 align="center">flusio</h1>
+<h1 align="center">Flus</h1>
 
 <p align="center">
     <strong>Aggregate, save and share links from all over the Web.</strong>
@@ -6,7 +6,7 @@
 
 ---
 
-flusio brings together news feed aggregation and social bookmarking in a modern
+Flus brings together news feed aggregation and social bookmarking in a modern
 way. It is designed as a simple, yet complete tool for organising the links you
 gather around the Web. It comes with four main features:
 
@@ -17,20 +17,20 @@ gather around the Web. It comes with four main features:
 - the **news** to keep control over your newsfeed;
 - the **profile** to share links with others.
 
-You can try flusio for free at [demo.flus.fr](https://demo.flus.fr/).
+You can try Flus for free at [demo.flus.fr](https://demo.flus.fr/).
 
 It’s [free/libre software](https://en.wikipedia.org/wiki/Free_software)
 (politically speaking) while being supported by a micro-enterprise to ensure
 its viability. The main service is available to French people at [flus.fr](https://flus.fr).
 You can help to fund the development by taking a subscription to the service.
 
-flusio is licensed under [AGPL 3](/LICENSE.txt).
+Flus is licensed under [AGPL 3](/LICENSE.txt).
 
 ![Screenshot of the news page with 3 links](/public/static/screenshot.webp)
 
 ## Credits and dependencies
 
-flusio is built upon the work of many other people:
+Flus is built upon the work of many other people:
 
 - the user experience and interface have been designed with the help of [Maiwann](https://www.maiwann.net/);
 - the logo has been made by [Clara Chambon](https://www.clara-chambon.fr/);
@@ -55,7 +55,7 @@ It’s also based on other projects:
 - [PHPUnit](https://phpunit.de/), a testing framework for PHP;
 - [Stimulus](https://stimulus.hotwired.dev/), a modest JavaScript framework;
 - [Turbo](https://turbo.hotwired.dev/) to bring speed of single-page
-  applications to flusio.
+  applications to Flus.
 
 ## How to contribute?
 
@@ -63,7 +63,7 @@ I sincerely appreciate if you want to contribute. Here’s a few things you can
 do:
 
 - taking a subscription at [flus.fr](https://flus.fr) (French);
-- reporting bugs or make feature requests [in issues](https://github.com/flusio/flusio/issues);
+- reporting bugs or make feature requests [in issues](https://github.com/flusio/Flus/issues);
 - writing blog posts to speak about the project.
 
 I don’t accept Pull Requests on this project. A code contribution requires a
@@ -74,10 +74,10 @@ If you have any question, feel free to [send me a message](https://flus.fr/conta
 
 ## Administrator guide
 
-This guide is intended to people who want to install flusio on their own server.
+This guide is intended to people who want to install Flus on their own server.
 
 1. [Deploy in production](/docs/production.md)
-1. [How to update flusio](/docs/update.md)
+1. [How to update Flus](/docs/update.md)
 1. [How to improve performance](/docs/performance.md)
 1. [Enable experimental features](/docs/feature_flags.md)
 1. [CHANGELOG](/CHANGELOG.md)
@@ -90,11 +90,11 @@ You also might be interested by the following:
 ## Developer guide
 
 If you plan to take a look at the code, these guides should be helpful to
-understand how flusio is developed.
+understand how Flus is developed.
 
 1. [Technical stack overview](/docs/technical_stack.md)
 1. [Setup the development environment](/docs/development.md)
-1. [How to update flusio](/docs/update.md)
+1. [How to update Flus](/docs/update.md)
 1. [Getting started](/docs/getting_started.md)
 1. [Working with Docker](/docs/docker.md)
 1. [How are the users’ errors managed](/docs/errors.md)
@@ -105,6 +105,6 @@ understand how flusio is developed.
 
 ## Maintainer guide
 
-This guide is intended to myself, as a maintainer of flusio.
+This guide is intended to myself, as a maintainer of Flus.
 
 1. [How to release a new version](/docs/release.md)

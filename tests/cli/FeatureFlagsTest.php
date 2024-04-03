@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
-use flusio\models;
+use App\models;
 use tests\factories\UserFactory;
 use tests\factories\FeatureFlagFactory;
 
@@ -18,7 +18,7 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
      */
     public static function loadApplication(): void
     {
-        self::$application = new \flusio\cli\Application();
+        self::$application = new \App\cli\Application();
     }
 
     public function testIndexRendersCorrectly(): void

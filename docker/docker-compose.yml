@@ -1,6 +1,6 @@
 services:
     php:
-        image: flusio_php:dev
+        image: flus_php:dev
         build:
             context: .
             dockerfile: Dockerfile.php
@@ -14,7 +14,7 @@ services:
         user: $USER
 
     job_worker:
-        image: flusio_php:dev
+        image: flus_php:dev
         build:
             context: .
             dockerfile: Dockerfile.php
@@ -45,7 +45,7 @@ services:
             - "5432:5432"
 
     bundler:
-        image: flusio_node:dev
+        image: flus_node:dev
         build:
             context: .
             dockerfile: Dockerfile.node

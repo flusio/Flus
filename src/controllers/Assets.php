@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\utils;
+use App\utils;
 
 /**
  * Manipulate the assets of the app (under src/assets/)

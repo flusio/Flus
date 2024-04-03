@@ -8,11 +8,11 @@ If you don’t want to use Docker, I provide some information below to help you
 to get started, but please don’t expect I’ll be able to help you: you know your
 own setup better than me.
 
-In both cases, you’ll need to download flusio with Git:
+In both cases, you’ll need to download Flus with Git:
 
 ```console
-$ git clone --recurse-submodules https://github.com/flusio/flusio.git
-$ cd flusio
+$ git clone --recurse-submodules https://github.com/flusio/Flus.git
+$ cd Flus
 ```
 
 ## With Docker
@@ -44,12 +44,12 @@ The last step is to setup the environment with:
 $ make setup
 ```
 
-It will copy the `env.sample` file to `.env` and call the flusio CLI to
+It will copy the `env.sample` file to `.env` and call the Flus CLI to
 configure the database. If you need to, you can change the environment
 variables in the `.env` file. The `SMTP_` variables should be set to be used
 with an existing email account.
 
-Now, you should be able to access flusio at [localhost:8000](http://localhost:8000).
+Now, you should be able to access Flus at [localhost:8000](http://localhost:8000).
 
 The containers can be stopped and cleaned with:
 
@@ -120,7 +120,7 @@ And Parcel in another console:
 $ npm run watch
 ```
 
-You can finally access flusio at [localhost:8000](http://localhost:8000).
+You can finally access Flus at [localhost:8000](http://localhost:8000).
 
 Please note that some tests require the [mock\_server](/tests/mock_server.php)
 to run:

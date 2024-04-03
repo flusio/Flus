@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
-use flusio\models;
+use App\models;
 use tests\factories\TokenFactory;
 use tests\factories\UserFactory;
 
@@ -20,7 +20,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
      */
     public static function loadApplication(): void
     {
-        self::$application = new \flusio\cli\Application();
+        self::$application = new \App\cli\Application();
     }
 
     public function testIndexListsUsers(): void

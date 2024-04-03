@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
-use flusio\models;
+use App\models;
 use tests\factories\LinkFactory;
 use tests\factories\MessageFactory;
 
@@ -16,7 +16,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
      */
     public static function initEngine(): void
     {
-        $router = \flusio\Router::load();
+        $router = \App\Router::load();
         \Minz\Engine::init($router);
     }
 

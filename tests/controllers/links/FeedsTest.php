@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers\links;
+namespace App\controllers\links;
 
 use tests\factories\LinkFactory;
 use tests\factories\MessageFactory;

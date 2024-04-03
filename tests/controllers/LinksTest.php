@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
-use flusio\models;
+use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\GroupFactory;
@@ -513,7 +513,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
-            'url' => 'https://github.com/flusio/flusio',
+            'url' => 'https://github.com/flusio/Flus',
             'collection_ids' => [$collection->id],
             'is_hidden' => true,
             'from' => $from,
@@ -527,7 +527,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateDoesNotCreateLinkIfItExists(): void
     {
         $user = $this->login();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
@@ -558,7 +558,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $another_user = UserFactory::create();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
@@ -589,7 +589,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateHandlesMultipleCollections(): void
     {
         $user = $this->login();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
@@ -699,7 +699,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', '/links/new', [
@@ -724,7 +724,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf' => 'not the token',
-            'url' => 'https://github.com/flusio/flusio',
+            'url' => 'https://github.com/flusio/Flus',
             'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
@@ -784,7 +784,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
-            'url' => 'https://github.com/flusio/flusio',
+            'url' => 'https://github.com/flusio/Flus',
             'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
@@ -801,7 +801,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
-            'url' => 'https://github.com/flusio/flusio',
+            'url' => 'https://github.com/flusio/Flus',
             'collection_ids' => [],
             'from' => $from,
         ]);

@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
-use flusio\jobs;
-use flusio\models;
-use flusio\utils;
+use App\jobs;
+use App\models;
+use App\utils;
 
 /**
  * This service helps to create users with default data.
@@ -21,11 +21,11 @@ class UserCreator
      * @param string $email
      * @param string $password
      *
-     * @throws \flusio\services\UserCreatorError
+     * @throws UserCreatorError
      *     If username, email or password is invalid, or if a user already
      *     exists with this email.
      *
-     * @return \flusio\models\User
+     * @return models\User
      */
     public static function create($username, $email, $password)
     {

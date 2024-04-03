@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 use Minz\Request;
 use Minz\Response;
@@ -20,11 +20,11 @@ class Jobs extends \Minz\Job\Controller
     {
         $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
 
-        \flusio\jobs\scheduled\FeedsSync::install();
-        \flusio\jobs\scheduled\LinksSync::install();
-        \flusio\jobs\scheduled\Cleaner::install();
+        \App\jobs\scheduled\FeedsSync::install();
+        \App\jobs\scheduled\LinksSync::install();
+        \App\jobs\scheduled\Cleaner::install();
         if ($subscriptions_enabled) {
-            \flusio\jobs\scheduled\SubscriptionsSync::install();
+            \App\jobs\scheduled\SubscriptionsSync::install();
         }
 
         return Response::text(200, 'Jobs installed.');

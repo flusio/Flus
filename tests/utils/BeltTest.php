@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\utils;
+namespace App\utils;
 
 class BeltTest extends \PHPUnit\Framework\TestCase
 {

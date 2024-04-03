@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
-use flusio\auth;
-use flusio\models;
+use App\auth;
+use App\models;
 use tests\factories\SessionFactory;
 use tests\factories\TokenFactory;
 use tests\factories\UserFactory;
@@ -121,7 +121,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($email_sent);
         $user = $user->reload();
         $this->assertNotNull($user->reset_token);
-        $this->assertEmailSubject($email_sent, '[flusio] Reset your password');
+        $this->assertEmailSubject($email_sent, '[Flus] Reset your password');
         $this->assertEmailContainsTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, $user->reset_token);
     }

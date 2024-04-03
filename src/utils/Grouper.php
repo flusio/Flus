@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\utils;
+namespace App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

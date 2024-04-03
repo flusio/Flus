@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\jobs;
+namespace App\jobs;
 
-use flusio\models;
+use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;

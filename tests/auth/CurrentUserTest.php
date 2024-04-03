@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\auth;
+namespace App\auth;
 
-use flusio\models;
+use App\models;
 use tests\factories\SessionFactory;
 use tests\factories\TokenFactory;
 use tests\factories\UserFactory;

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-USER=$(id -u):$(id -g) docker compose -p flusio -f ./docker/docker-compose.yml exec database psql -d flusio_development -U postgres "$@"
+USER=$(id -u):$(id -g) docker compose -p flus -f ./docker/docker-compose.yml exec database psql -d flus_development -U postgres "$@"

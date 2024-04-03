@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\auth;
+use App\auth;
 
 /**
  * Handle the requests to the static pages of the application.

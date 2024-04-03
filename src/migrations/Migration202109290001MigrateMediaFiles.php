@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\migrations;
+namespace App\migrations;
 
-use flusio\utils;
+use App\utils;
 
 class Migration202109290001MigrateMediaFiles
 {
@@ -29,7 +29,7 @@ class Migration202109290001MigrateMediaFiles
             foreach ($filenames as $filename) {
                 $current_filepath = "{$media_folder_path}/{$filename}";
                 if (is_dir($current_filepath)) {
-                    // flusio might already fetched images with the new
+                    // Flus might already fetched images with the new
                     // organization, we need to skip them
                     continue;
                 }

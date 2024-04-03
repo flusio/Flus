@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\utils;
+namespace App\utils;
 
 /**
  * The Belt is a collection of useful snippets to reuse within the application.

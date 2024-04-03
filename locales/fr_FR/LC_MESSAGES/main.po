@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: flusio\n"
+"Project-Id-Version: Flus\n"
 "POT-Creation-Date: 2024-04-02 11:25+0200\n"
 "PO-Revision-Date: 2024-04-02 11:25+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
@@ -2386,8 +2386,8 @@ msgstr "Le logo de %s"
 
 #: views/pages/about.phtml:27
 #, php-format
-msgid "%s is an instance of flusio."
-msgstr "%s est une instance de flusio."
+msgid "%s is an instance of Flus."
+msgstr "%s est une instance de Flus."
 
 #: views/pages/about.phtml:31
 msgid "Website (in French)"
@@ -2480,10 +2480,10 @@ msgstr ""
 #: views/pages/about.phtml:69
 msgid ""
 "And a huge thanks to the people who subscribe to the official service, talk "
-"about flusio around them, share their opinion and ideas, or report bugs!"
+"about Flus around them, share their opinion and ideas, or report bugs!"
 msgstr ""
 "Et un énorme merci aux personnes qui s’abonnent au service officiel, parlent "
-"de flusio autour d’elleux, partagent leur opinion et leurs idées, ou "
+"de Flus autour d’elleux, partagent leur opinion et leurs idées, ou "
 "remontent des bugs !"
 
 #: views/pages/addons.phtml:16

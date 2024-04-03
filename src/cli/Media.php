@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 use Minz\Response;
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 
 /**
  * @phpstan-import-type ResponseGenerator from Response

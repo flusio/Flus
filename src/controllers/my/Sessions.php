@@ -1,11 +1,11 @@
 <?php
 
-namespace flusio\controllers\my;
+namespace App\controllers\my;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\auth;
-use flusio\models;
+use App\auth;
+use App\models;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -107,6 +107,7 @@ class Sessions
 
             if ($session->id === $current_session->id) {
                 auth\CurrentUser::reset();
+                $response->removeCookie('session_token');
                 $response->removeCookie('flusio_session_token');
             }
         }

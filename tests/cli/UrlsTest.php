@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 class UrlsTest extends \PHPUnit\Framework\TestCase
 {
@@ -14,7 +14,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
      */
     public static function loadApplication(): void
     {
-        self::$application = new \flusio\cli\Application();
+        self::$application = new \App\cli\Application();
     }
 
     /**

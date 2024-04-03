@@ -24,14 +24,14 @@
         <category term="<?= protect($topic->label) ?>" />
     <?php endforeach; ?>
 
-    <category term="flusio:type:<?= $collection->type ?>" />
+    <category term="Flus:type:<?= $collection->type ?>" />
 
     <?php if ($collection->is_public): ?>
-        <category term="flusio:public" />
+        <category term="Flus:public" />
     <?php endif; ?>
 
     <?php if ($collection->group_id): ?>
-        <category term="flusio:group" label="<?= protect($collection->groupForUser($collection->user_id)->name) ?>" />
+        <category term="Flus:group" label="<?= protect($collection->groupForUser($collection->user_id)->name) ?>" />
     <?php endif; ?>
 
     <?php foreach ($links as $link): ?>
@@ -43,7 +43,7 @@
             <link href="<?= url_full('link', ['id' => $link->id]) ?>" rel="replies" type="text/html" />
 
             <?php if ($link->is_hidden): ?>
-                <category term="flusio:hidden" />
+                <category term="Flus:hidden" />
             <?php endif; ?>
 
             <published><?= $link->published_at->format(\DateTimeInterface::ATOM) ?></published>

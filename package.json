@@ -1,7 +1,7 @@
 {
-  "name": "flusio",
+  "name": "Flus",
   "license": "AGPL-3.0-or-later",
-  "repository": "github:flusio/flusio",
+  "repository": "github:flusio/Flus",
   "scripts": {
     "watch": "parcel watch --no-hmr --dist-dir public/dev_assets src/assets/*/application.*",
     "build": "parcel build --dist-dir public/assets src/assets/*/application.*",

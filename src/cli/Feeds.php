@@ -1,13 +1,13 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\jobs;
-use flusio\models;
-use flusio\services;
-use flusio\utils;
+use App\jobs;
+use App\models;
+use App\services;
+use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

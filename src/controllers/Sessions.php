@@ -1,12 +1,12 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\auth;
-use flusio\models;
-use flusio\utils;
+use App\auth;
+use App\models;
+use App\utils;
 
 /**
  * Handle the requests related to the current session.
@@ -149,7 +149,7 @@ class Sessions
         auth\CurrentUser::setSessionToken($token->token);
 
         $response = Response::found($redirect_to);
-        $response->setCookie('flusio_session_token', $token->token, [
+        $response->setCookie('session_token', $token->token, [
             'expires' => $token->expired_at->getTimestamp(),
             'samesite' => 'Lax',
         ]);
@@ -215,6 +215,7 @@ class Sessions
         auth\CurrentUser::reset();
 
         $response = Response::redirect('home');
+        $response->removeCookie('session_token');
         $response->removeCookie('flusio_session_token');
         return $response;
     }

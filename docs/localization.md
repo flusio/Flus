@@ -1,12 +1,12 @@
 # How is the localization managed
 
-To localize flusio, I use the “old-but-still-good” [`gettext()` function](https://www.php.net/manual/function.gettext)
+To localize Flus, I use the “old-but-still-good” [`gettext()` function](https://www.php.net/manual/function.gettext)
 which is aliased by `_()` (you might have seen it from time to time).
 
 Gettext allows me to write the code in full English (instead of some sort of
 key string). It means that I can write directly, for instance `<?= _('Login') ?>`
 instead of `<?= _('loginPage.form.submit') ?>` for a submit button in a login
-form. It also means English is the default language of flusio.
+form. It also means English is the default language of Flus.
 
 For the other languages (only French at the moment), the locale files are
 placed under the [`locales/` folder](/locales/). Each language defines at

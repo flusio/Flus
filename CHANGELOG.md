@@ -1,67 +1,67 @@
-# Changelog of flusio
+# Changelog of Flus
 
 ## 2024-04-02 - v0.59
 
 ### New
 
 - Improve the overall "News" experience:
-    - Display links grouped by dates in news ([a1ec6c29](https://github.com/flusio/flusio/commit/a1ec6c29), [7b5cb20b](https://github.com/flusio/flusio/commit/7b5cb20b))
-    - Display links grouped by sources in news ([f9835613](https://github.com/flusio/flusio/commit/f9835613), [0952ee13](https://github.com/flusio/flusio/commit/0952ee13))
-    - (beta) Change the "news" tab by a "reading" tab ([4d02e91c](https://github.com/flusio/flusio/commit/4d02e91c))
-    - (beta) Load more links in the news from followed feeds ([f8acb421](https://github.com/flusio/flusio/commit/f8acb421), [d58c7938](https://github.com/flusio/flusio/commit/d58c7938))
-    - (beta) Mark bookmarks as read when storing them ([84c870ab](https://github.com/flusio/flusio/commit/84c870ab))
+    - Display links grouped by dates in news ([a1ec6c29](https://github.com/flusio/Flus/commit/a1ec6c29), [7b5cb20b](https://github.com/flusio/Flus/commit/7b5cb20b))
+    - Display links grouped by sources in news ([f9835613](https://github.com/flusio/Flus/commit/f9835613), [0952ee13](https://github.com/flusio/Flus/commit/0952ee13))
+    - (beta) Change the "news" tab by a "reading" tab ([4d02e91c](https://github.com/flusio/Flus/commit/4d02e91c))
+    - (beta) Load more links in the news from followed feeds ([f8acb421](https://github.com/flusio/Flus/commit/f8acb421), [d58c7938](https://github.com/flusio/Flus/commit/d58c7938))
+    - (beta) Mark bookmarks as read when storing them ([84c870ab](https://github.com/flusio/Flus/commit/84c870ab))
 
 ### Bug fixes
 
-- Fix the resizing of images with invalid transparency ([4953b107](https://github.com/flusio/flusio/commit/4953b107))
-- Format the sessions dates with the correct locale ([63609b18](https://github.com/flusio/flusio/commit/63609b18))
+- Fix the resizing of images with invalid transparency ([4953b107](https://github.com/flusio/Flus/commit/4953b107))
+- Format the sessions dates with the correct locale ([63609b18](https://github.com/flusio/Flus/commit/63609b18))
 
 ### Technical
 
-- Update Minz ([a0ee2b83](https://github.com/flusio/flusio/commit/a0ee2b83))
+- Update Minz ([a0ee2b83](https://github.com/flusio/Flus/commit/a0ee2b83))
 
 ### Developers
 
-- Update the dependencies ([74c84454](https://github.com/flusio/flusio/commit/74c84454), [774d75d5](https://github.com/flusio/flusio/commit/774d75d5))
-- Remove the warning about docker-compose.yml version ([e6717742](https://github.com/flusio/flusio/commit/e6717742))
-- Refactor the `_date` helper function ([28620cbc](https://github.com/flusio/flusio/commit/28620cbc))
-- Rename the Link "via" fields to "source" ([e3902683](https://github.com/flusio/flusio/commit/e3902683))
+- Update the dependencies ([74c84454](https://github.com/flusio/Flus/commit/74c84454), [774d75d5](https://github.com/flusio/Flus/commit/774d75d5))
+- Remove the warning about docker-compose.yml version ([e6717742](https://github.com/flusio/Flus/commit/e6717742))
+- Refactor the `_date` helper function ([28620cbc](https://github.com/flusio/Flus/commit/28620cbc))
+- Rename the Link "via" fields to "source" ([e3902683](https://github.com/flusio/Flus/commit/e3902683))
 
 ## 2024-03-18 - v0.58
 
 ### New
 
-- Allow users to accept to be contacted ([53fac741](https://github.com/flusio/flusio/commit/53fac741))
+- Allow users to accept to be contacted ([53fac741](https://github.com/flusio/Flus/commit/53fac741))
 
 ### Improvements
 
-- Improve the look of multilines checkboxes ([60066866](https://github.com/flusio/flusio/commit/60066866))
-- Display sessions names before IPs ([a212ae90](https://github.com/flusio/flusio/commit/a212ae90))
-- Don't share to Mastodon by default (beta) ([d7a798e8](https://github.com/flusio/flusio/commit/d7a798e8))
-- Completely anonymize IPs in demo mode ([4d72e2ee](https://github.com/flusio/flusio/commit/4d72e2ee))
+- Improve the look of multilines checkboxes ([60066866](https://github.com/flusio/Flus/commit/60066866))
+- Display sessions names before IPs ([a212ae90](https://github.com/flusio/Flus/commit/a212ae90))
+- Don't share to Mastodon by default (beta) ([d7a798e8](https://github.com/flusio/Flus/commit/d7a798e8))
+- Completely anonymize IPs in demo mode ([4d72e2ee](https://github.com/flusio/Flus/commit/4d72e2ee))
 
 ### Bug fixes
 
-- Fix broken modal/menu when going back in browser history ([441053a2](https://github.com/flusio/flusio/commit/441053a2))
-- Sanitize URL queries containing spaces correctly ([49c324f8](https://github.com/flusio/flusio/commit/49c324f8))
-- Lowercase the scheme in URLs during sanitizing ([220832d2](https://github.com/flusio/flusio/commit/220832d2))
-- Remove the GitHub URL from UA in prod and test ([6377f42e](https://github.com/flusio/flusio/commit/6377f42e))
-- Allow showcase pages to be loaded in a modal ([bbbc5cbc](https://github.com/flusio/flusio/commit/bbbc5cbc))
+- Fix broken modal/menu when going back in browser history ([441053a2](https://github.com/flusio/Flus/commit/441053a2))
+- Sanitize URL queries containing spaces correctly ([49c324f8](https://github.com/flusio/Flus/commit/49c324f8))
+- Lowercase the scheme in URLs during sanitizing ([220832d2](https://github.com/flusio/Flus/commit/220832d2))
+- Remove the GitHub URL from UA in prod and test ([6377f42e](https://github.com/flusio/Flus/commit/6377f42e))
+- Allow showcase pages to be loaded in a modal ([bbbc5cbc](https://github.com/flusio/Flus/commit/bbbc5cbc))
 
 ### Technical
 
-- Update dependencies ([e76943af](https://github.com/flusio/flusio/commit/e76943af), [2cf08968](https://github.com/flusio/flusio/commit/2cf08968), [e8e56694](https://github.com/flusio/flusio/commit/e8e56694), [bf97bee3](https://github.com/flusio/flusio/commit/bf97bee3), [b2f7e374](https://github.com/flusio/flusio/commit/b2f7e374), [f219c589](https://github.com/flusio/flusio/commit/f219c589))
-- Allow to configure Plausible ([f35878ee](https://github.com/flusio/flusio/commit/f35878ee))
-- Clean empty directories when cleaning media ([87346a90](https://github.com/flusio/flusio/commit/87346a90))
-- Improve output of the system stats command ([244278dc](https://github.com/flusio/flusio/commit/244278dc))
-- Extract statistics in a dedicated CLI command ([8361c898](https://github.com/flusio/flusio/commit/8361c898))
-- Provide statistics as CSV ([578a8489](https://github.com/flusio/flusio/commit/578a8489))
-- Add a link to the about page in the user agent ([dfd97a7c](https://github.com/flusio/flusio/commit/dfd97a7c))
-- Improve requirements declaration in Composer ([eadf05b4](https://github.com/flusio/flusio/commit/eadf05b4))
+- Update dependencies ([e76943af](https://github.com/flusio/Flus/commit/e76943af), [2cf08968](https://github.com/flusio/Flus/commit/2cf08968), [e8e56694](https://github.com/flusio/Flus/commit/e8e56694), [bf97bee3](https://github.com/flusio/Flus/commit/bf97bee3), [b2f7e374](https://github.com/flusio/Flus/commit/b2f7e374), [f219c589](https://github.com/flusio/Flus/commit/f219c589))
+- Allow to configure Plausible ([f35878ee](https://github.com/flusio/Flus/commit/f35878ee))
+- Clean empty directories when cleaning media ([87346a90](https://github.com/flusio/Flus/commit/87346a90))
+- Improve output of the system stats command ([244278dc](https://github.com/flusio/Flus/commit/244278dc))
+- Extract statistics in a dedicated CLI command ([8361c898](https://github.com/flusio/Flus/commit/8361c898))
+- Provide statistics as CSV ([578a8489](https://github.com/flusio/Flus/commit/578a8489))
+- Add a link to the about page in the user agent ([dfd97a7c](https://github.com/flusio/Flus/commit/dfd97a7c))
+- Improve requirements declaration in Composer ([eadf05b4](https://github.com/flusio/Flus/commit/eadf05b4))
 
 ### Documentation
 
-- Document "restart on-failure" in the production doc ([6767ed72](https://github.com/flusio/flusio/commit/6767ed72))
+- Document "restart on-failure" in the production doc ([6767ed72](https://github.com/flusio/Flus/commit/6767ed72))
 
 ## 2023-09-08 - v0.57
 
@@ -74,40 +74,40 @@ You may want to adapt your GDPR files according to these changes.
 
 ### New
 
-- Allow to list and manage sessions ([2eb23747](https://github.com/flusio/flusio/commit/2eb23747))
-- (beta) Allow to share to Mastodon ([ad529d4c](https://github.com/flusio/flusio/commit/ad529d4c))
+- Allow to list and manage sessions ([2eb23747](https://github.com/flusio/Flus/commit/2eb23747))
+- (beta) Allow to share to Mastodon ([ad529d4c](https://github.com/flusio/Flus/commit/ad529d4c))
 
 ### Improvements
 
-- Reorganize the "Account & data" page ([c93afb83](https://github.com/flusio/flusio/commit/c93afb83))
-- Autosave content of textareas ([facd1be9](https://github.com/flusio/flusio/commit/facd1be9))
+- Reorganize the "Account & data" page ([c93afb83](https://github.com/flusio/Flus/commit/c93afb83))
+- Autosave content of textareas ([facd1be9](https://github.com/flusio/Flus/commit/facd1be9))
 
 ### Bug fixes
 
-- Don't render the "new link" page in a modal after a change ([19b63332](https://github.com/flusio/flusio/commit/19b63332))
-- Edit the profile in the modale ([ee452d47](https://github.com/flusio/flusio/commit/ee452d47))
-- Fix the French locale file ([63ba73a9](https://github.com/flusio/flusio/commit/63ba73a9))
+- Don't render the "new link" page in a modal after a change ([19b63332](https://github.com/flusio/Flus/commit/19b63332))
+- Edit the profile in the modale ([ee452d47](https://github.com/flusio/Flus/commit/ee452d47))
+- Fix the French locale file ([63ba73a9](https://github.com/flusio/Flus/commit/63ba73a9))
 
 ## 2023-08-07 - v0.56
 
 ### Bug fixes
 
-- Ignore invalid URLs when synchronising Pocket ([f966578c](https://github.com/flusio/flusio/commit/f966578c))
-- Ignore invalid URLs when synchronising feeds ([00214993](https://github.com/flusio/flusio/commit/00214993))
-- Handle Response::utf8Data with unsupported encodings ([a82bb534](https://github.com/flusio/flusio/commit/a82bb534))
-- Make sure to pass non-empty strings to SpiderBits\\Dom ([45d60fd3](https://github.com/flusio/flusio/commit/45d60fd3))
-- Compare LinksToCollections only on created\_at ([487adc41](https://github.com/flusio/flusio/commit/487adc41))
+- Ignore invalid URLs when synchronising Pocket ([f966578c](https://github.com/flusio/Flus/commit/f966578c))
+- Ignore invalid URLs when synchronising feeds ([00214993](https://github.com/flusio/Flus/commit/00214993))
+- Handle Response::utf8Data with unsupported encodings ([a82bb534](https://github.com/flusio/Flus/commit/a82bb534))
+- Make sure to pass non-empty strings to SpiderBits\\Dom ([45d60fd3](https://github.com/flusio/Flus/commit/45d60fd3))
+- Compare LinksToCollections only on created\_at ([487adc41](https://github.com/flusio/Flus/commit/487adc41))
 
 ### Technical
 
-- Execute Cleaner job at 01:00 AM ([1f533403](https://github.com/flusio/flusio/commit/1f533403))
-- Update the Composer dependencies ([dff1ccf3](https://github.com/flusio/flusio/commit/dff1ccf3))
-- Update the NPM dependencies ([bd193407](https://github.com/flusio/flusio/commit/bd193407))
+- Execute Cleaner job at 01:00 AM ([1f533403](https://github.com/flusio/Flus/commit/1f533403))
+- Update the Composer dependencies ([dff1ccf3](https://github.com/flusio/Flus/commit/dff1ccf3))
+- Update the NPM dependencies ([bd193407](https://github.com/flusio/Flus/commit/bd193407))
 
 ### Developers
 
-- Test that migrations and rollbacks can be applied ([7f85b727](https://github.com/flusio/flusio/commit/7f85b727))
-- Upgrade to PHPUnit 10 ([d53c58d6](https://github.com/flusio/flusio/commit/d53c58d6))
+- Test that migrations and rollbacks can be applied ([7f85b727](https://github.com/flusio/Flus/commit/7f85b727))
+- Upgrade to PHPUnit 10 ([d53c58d6](https://github.com/flusio/Flus/commit/d53c58d6))
 
 ## 2023-08-02 - v0.55
 
@@ -128,90 +128,90 @@ WebP support is now required as all the (new) images are now converted to WebP.
 
 ### New
 
-- Support the JSON feed format ([41a7701a](https://github.com/flusio/flusio/commit/41a7701a))
+- Support the JSON feed format ([41a7701a](https://github.com/flusio/Flus/commit/41a7701a))
 
 ### Improvements
 
-- Display the feeds description as HTML ([28f23088](https://github.com/flusio/flusio/commit/28f23088))
-- Allow to click on the link title to open its URL on the comments page ([0646a3d1](https://github.com/flusio/flusio/commit/0646a3d1))
+- Display the feeds description as HTML ([28f23088](https://github.com/flusio/Flus/commit/28f23088))
+- Allow to click on the link title to open its URL on the comments page ([0646a3d1](https://github.com/flusio/Flus/commit/0646a3d1))
 
 ### Bug fixes
 
-- Make sure to redirect after adding a feed ([3ff109d6](https://github.com/flusio/flusio/commit/3ff109d6))
-- Fix a typo in the French Pocket error message ([14d21628](https://github.com/flusio/flusio/commit/14d21628))
+- Make sure to redirect after adding a feed ([3ff109d6](https://github.com/flusio/Flus/commit/3ff109d6))
+- Fix a typo in the French Pocket error message ([14d21628](https://github.com/flusio/Flus/commit/14d21628))
 
 ### Technical
 
-- Set minimal version of PHP to 8.1 ([8741c97a](https://github.com/flusio/flusio/commit/8741c97a))
-- Add support for PHP 8.2 ([4eda049f](https://github.com/flusio/flusio/commit/4eda049f))
-- Save all new images to WebP ([cc0acbd6](https://github.com/flusio/flusio/commit/cc0acbd6))
-- Limit size of illustrations to 5 Mo ([ae56a29c](https://github.com/flusio/flusio/commit/ae56a29c))
-- Update the dependencies ([4d3a7af2](https://github.com/flusio/flusio/commit/4d3a7af2))
+- Set minimal version of PHP to 8.1 ([8741c97a](https://github.com/flusio/Flus/commit/8741c97a))
+- Add support for PHP 8.2 ([4eda049f](https://github.com/flusio/Flus/commit/4eda049f))
+- Save all new images to WebP ([cc0acbd6](https://github.com/flusio/Flus/commit/cc0acbd6))
+- Limit size of illustrations to 5 Mo ([ae56a29c](https://github.com/flusio/Flus/commit/ae56a29c))
+- Update the dependencies ([4d3a7af2](https://github.com/flusio/Flus/commit/4d3a7af2))
 
 ### Developers
 
-- Upgrade Minz to its last version ([0717a0ac](https://github.com/flusio/flusio/commit/0717a0ac))
-- Setup PHPStan ([afa0bdda](https://github.com/flusio/flusio/commit/afa0bdda))
-- Use Docker Compose v2 ([770ef50f](https://github.com/flusio/flusio/commit/770ef50f))
-- Serve files with Nginx in development ([6d59863f](https://github.com/flusio/flusio/commit/6d59863f))
-- Improve the detection of the Responses encoding ([69b0f271](https://github.com/flusio/flusio/commit/69b0f271))
-- Increase HTTP buffer size when setting max size ([9bfb3738](https://github.com/flusio/flusio/commit/9bfb3738))
-- Provide a SpiderBits\HtmlSanitizer class ([adeff002](https://github.com/flusio/flusio/commit/adeff002))
-- Don't clone DomDocument when using Dom#select ([5c4c1f49](https://github.com/flusio/flusio/commit/5c4c1f49))
-- Accept LibXML options in the Dom::fromText method ([72f0d711](https://github.com/flusio/flusio/commit/72f0d711))
-- Provide a Dom::html method ([a2bd4294](https://github.com/flusio/flusio/commit/a2bd4294))
-- Extract a PocketAccount model from User ([3aacd09a](https://github.com/flusio/flusio/commit/3aacd09a))
-- Don't require real Pocket key during tests ([3e9a4e49](https://github.com/flusio/flusio/commit/3e9a4e49))
-- Fail the Mailer job if the email cannot be sent ([9c4517c0](https://github.com/flusio/flusio/commit/9c4517c0))
+- Upgrade Minz to its last version ([0717a0ac](https://github.com/flusio/Flus/commit/0717a0ac))
+- Setup PHPStan ([afa0bdda](https://github.com/flusio/Flus/commit/afa0bdda))
+- Use Docker Compose v2 ([770ef50f](https://github.com/flusio/Flus/commit/770ef50f))
+- Serve files with Nginx in development ([6d59863f](https://github.com/flusio/Flus/commit/6d59863f))
+- Improve the detection of the Responses encoding ([69b0f271](https://github.com/flusio/Flus/commit/69b0f271))
+- Increase HTTP buffer size when setting max size ([9bfb3738](https://github.com/flusio/Flus/commit/9bfb3738))
+- Provide a SpiderBits\HtmlSanitizer class ([adeff002](https://github.com/flusio/Flus/commit/adeff002))
+- Don't clone DomDocument when using Dom#select ([5c4c1f49](https://github.com/flusio/Flus/commit/5c4c1f49))
+- Accept LibXML options in the Dom::fromText method ([72f0d711](https://github.com/flusio/Flus/commit/72f0d711))
+- Provide a Dom::html method ([a2bd4294](https://github.com/flusio/Flus/commit/a2bd4294))
+- Extract a PocketAccount model from User ([3aacd09a](https://github.com/flusio/Flus/commit/3aacd09a))
+- Don't require real Pocket key during tests ([3e9a4e49](https://github.com/flusio/Flus/commit/3e9a4e49))
+- Fail the Mailer job if the email cannot be sent ([9c4517c0](https://github.com/flusio/Flus/commit/9c4517c0))
 
 ## 2023-04-07 - v0.54
 
 ### Security
 
-- Reset the session if it exists but the token is not in the cookies ([0f537541](https://github.com/flusio/flusio/commit/0f537541))
+- Reset the session if it exists but the token is not in the cookies ([0f537541](https://github.com/flusio/Flus/commit/0f537541))
 
 ### Bug fixes
 
-- Absolutize correctly the URLs relatively to the $base\_url document ([8609c787](https://github.com/flusio/flusio/commit/8609c787))
-- Absolutize correctly the URLs starting with a hash ([7bf78bcc](https://github.com/flusio/flusio/commit/7bf78bcc))
-- Validate replies URL correctly ([db3103c3](https://github.com/flusio/flusio/commit/db3103c3))
-- Take next job with the oldest perform\_at ([ebc484a8](https://github.com/flusio/flusio/commit/ebc484a8))
-- Reschedule jobs considering Daylight Saving Time ([49b25c6f](https://github.com/flusio/flusio/commit/49b25c6f))
-- Fix mapping of entries ids in FeedFetcher ([cbe374bf](https://github.com/flusio/flusio/commit/cbe374bf))
+- Absolutize correctly the URLs relatively to the $base\_url document ([8609c787](https://github.com/flusio/Flus/commit/8609c787))
+- Absolutize correctly the URLs starting with a hash ([7bf78bcc](https://github.com/flusio/Flus/commit/7bf78bcc))
+- Validate replies URL correctly ([db3103c3](https://github.com/flusio/Flus/commit/db3103c3))
+- Take next job with the oldest perform\_at ([ebc484a8](https://github.com/flusio/Flus/commit/ebc484a8))
+- Reschedule jobs considering Daylight Saving Time ([49b25c6f](https://github.com/flusio/Flus/commit/49b25c6f))
+- Fix mapping of entries ids in FeedFetcher ([cbe374bf](https://github.com/flusio/Flus/commit/cbe374bf))
 
 ### Misc
 
-- Force the xdebug version in the Dockerfile ([6effdf05](https://github.com/flusio/flusio/commit/6effdf05))
+- Force the xdebug version in the Dockerfile ([6effdf05](https://github.com/flusio/Flus/commit/6effdf05))
 
 ## 2022-10-28 - v0.53
 
 ### Improvements
 
-- Improve the selector of collections ([02b12c70](https://github.com/flusio/flusio/commit/02b12c70))
-- Improve outline of header links ([f0cd2db3](https://github.com/flusio/flusio/commit/f0cd2db3))
-- Improve error message when email is invalid during login ([ef4a9bca](https://github.com/flusio/flusio/commit/ef4a9bca))
-- Improve compatibility with passwords managers ([54f4c013](https://github.com/flusio/flusio/commit/54f4c013))
-- Rename label of read links card ([9130e6c7](https://github.com/flusio/flusio/commit/9130e6c7))
-- Remove user menu and alerts from Turbo cache ([9f2534ca](https://github.com/flusio/flusio/commit/9f2534ca))
+- Improve the selector of collections ([02b12c70](https://github.com/flusio/Flus/commit/02b12c70))
+- Improve outline of header links ([f0cd2db3](https://github.com/flusio/Flus/commit/f0cd2db3))
+- Improve error message when email is invalid during login ([ef4a9bca](https://github.com/flusio/Flus/commit/ef4a9bca))
+- Improve compatibility with passwords managers ([54f4c013](https://github.com/flusio/Flus/commit/54f4c013))
+- Rename label of read links card ([9130e6c7](https://github.com/flusio/Flus/commit/9130e6c7))
+- Remove user menu and alerts from Turbo cache ([9f2534ca](https://github.com/flusio/Flus/commit/9f2534ca))
 
 ### Bug fixes
 
-- Display the correct link when URL is duplicated ([16a41d51](https://github.com/flusio/flusio/commit/16a41d51))
-- Exclude links only in the never list from the search ([b80eb736](https://github.com/flusio/flusio/commit/b80eb736))
-- Render links update errors in the edit form ([649c0f36](https://github.com/flusio/flusio/commit/649c0f36))
-- Show the collection delete button only if it's owned ([06875bf4](https://github.com/flusio/flusio/commit/06875bf4))
-- Don’t warn about tracking when repairing form has errors ([5773763b](https://github.com/flusio/flusio/commit/5773763b))
-- Hide links actions to unconnected users ([75c1b059](https://github.com/flusio/flusio/commit/75c1b059))
+- Display the correct link when URL is duplicated ([16a41d51](https://github.com/flusio/Flus/commit/16a41d51))
+- Exclude links only in the never list from the search ([b80eb736](https://github.com/flusio/Flus/commit/b80eb736))
+- Render links update errors in the edit form ([649c0f36](https://github.com/flusio/Flus/commit/649c0f36))
+- Show the collection delete button only if it's owned ([06875bf4](https://github.com/flusio/Flus/commit/06875bf4))
+- Don’t warn about tracking when repairing form has errors ([5773763b](https://github.com/flusio/Flus/commit/5773763b))
+- Hide links actions to unconnected users ([75c1b059](https://github.com/flusio/Flus/commit/75c1b059))
 
 ### Misc
 
-- Change how modals are rendered ([fcabfbe7](https://github.com/flusio/flusio/commit/fcabfbe7))
+- Change how modals are rendered ([fcabfbe7](https://github.com/flusio/Flus/commit/fcabfbe7))
 - Update dependencies:
-    - Update Minz lib ([5a1a09bd](https://github.com/flusio/flusio/commit/5a1a09bd))
-    - Update Turbo to 7.2.4 ([e3eaf68a](https://github.com/flusio/flusio/commit/e3eaf68a))
-    - Update Stimulus to 3.1.0 ([be301915](https://github.com/flusio/flusio/commit/be301915))
-    - Update parcel to 2.7.0 ([81283df7](https://github.com/flusio/flusio/commit/81283df7))
-    - Update with audit fix ([cb516879](https://github.com/flusio/flusio/commit/cb516879))
+    - Update Minz lib ([5a1a09bd](https://github.com/flusio/Flus/commit/5a1a09bd))
+    - Update Turbo to 7.2.4 ([e3eaf68a](https://github.com/flusio/Flus/commit/e3eaf68a))
+    - Update Stimulus to 3.1.0 ([be301915](https://github.com/flusio/Flus/commit/be301915))
+    - Update parcel to 2.7.0 ([81283df7](https://github.com/flusio/Flus/commit/81283df7))
+    - Update with audit fix ([cb516879](https://github.com/flusio/Flus/commit/cb516879))
 
 ## 2022-10-07 - v0.52
 
@@ -226,61 +226,61 @@ feed served by the “What’s new?” link (in “Help & support”).
 
 ### New
 
-- Provide a compact mode for links ([6bfd55a6](https://github.com/flusio/flusio/commit/6bfd55a6))
-- Provide a “Preferences” page to change locale and enable beta features ([b13d4999](https://github.com/flusio/flusio/commit/b13d4999))
-- Provide a “What's new?” page ([14ffb40e](https://github.com/flusio/flusio/commit/14ffb40e))
-- Add anchors to external comments on links from feeds ([63343e06](https://github.com/flusio/flusio/commit/63343e06))
+- Provide a compact mode for links ([6bfd55a6](https://github.com/flusio/Flus/commit/6bfd55a6))
+- Provide a “Preferences” page to change locale and enable beta features ([b13d4999](https://github.com/flusio/Flus/commit/b13d4999))
+- Provide a “What's new?” page ([14ffb40e](https://github.com/flusio/Flus/commit/14ffb40e))
+- Add anchors to external comments on links from feeds ([63343e06](https://github.com/flusio/Flus/commit/63343e06))
 
 ### Improvements
 
-- Track “via” info on mark as read and read later ([7795570d](https://github.com/flusio/flusio/commit/7795570d))
-- Move “Login & security” in “Account & data” ([16590954](https://github.com/flusio/flusio/commit/16590954))
-- Add more purple to buttons in links footers ([c4dc24f5](https://github.com/flusio/flusio/commit/c4dc24f5))
-- Improve the look of buttons at the bottom of feeds cards ([6603ef9b](https://github.com/flusio/flusio/commit/6603ef9b))
-- Improve the look of the current item in pagination ([277f19a3](https://github.com/flusio/flusio/commit/277f19a3))
-- Export collections feeds with `direct=true` in OPMLs ([6160516a](https://github.com/flusio/flusio/commit/6160516a))
+- Track “via” info on mark as read and read later ([7795570d](https://github.com/flusio/Flus/commit/7795570d))
+- Move “Login & security” in “Account & data” ([16590954](https://github.com/flusio/Flus/commit/16590954))
+- Add more purple to buttons in links footers ([c4dc24f5](https://github.com/flusio/Flus/commit/c4dc24f5))
+- Improve the look of buttons at the bottom of feeds cards ([6603ef9b](https://github.com/flusio/Flus/commit/6603ef9b))
+- Improve the look of the current item in pagination ([277f19a3](https://github.com/flusio/Flus/commit/277f19a3))
+- Export collections feeds with `direct=true` in OPMLs ([6160516a](https://github.com/flusio/Flus/commit/6160516a))
 
 ### Bug fixes
 
-- Allow to click on the top of links images ([90fa04f5](https://github.com/flusio/flusio/commit/90fa04f5))
-- Fix various outlines style ([33fe6284](https://github.com/flusio/flusio/commit/33fe6284))
-- Try to fix a bug on links actions ([c9ecbd10](https://github.com/flusio/flusio/commit/c9ecbd10))
+- Allow to click on the top of links images ([90fa04f5](https://github.com/flusio/Flus/commit/90fa04f5))
+- Fix various outlines style ([33fe6284](https://github.com/flusio/Flus/commit/33fe6284))
+- Try to fix a bug on links actions ([c9ecbd10](https://github.com/flusio/Flus/commit/c9ecbd10))
 
 ### Misc
 
-- Support more DateTime formats in feeds parser ([9fc53d5d](https://github.com/flusio/flusio/commit/9fc53d5d))
-- (dev) Use ubuntu-22.04 on the CI ([bdb935b5](https://github.com/flusio/flusio/commit/bdb935b5))
-- (dev) Update svg-sprite to 2.0.0 ([09362b93](https://github.com/flusio/flusio/commit/09362b93))
-- (dev) Update Node and NPM in the Docker image ([8d473217](https://github.com/flusio/flusio/commit/8d473217))
-- (dev) Add a command to rebuild Docker images ([448ec722](https://github.com/flusio/flusio/commit/448ec722))
-- (dev) Prepend start and stop make targets with docker ([f86e1fe0](https://github.com/flusio/flusio/commit/f86e1fe0))
+- Support more DateTime formats in feeds parser ([9fc53d5d](https://github.com/flusio/Flus/commit/9fc53d5d))
+- (dev) Use ubuntu-22.04 on the CI ([bdb935b5](https://github.com/flusio/Flus/commit/bdb935b5))
+- (dev) Update svg-sprite to 2.0.0 ([09362b93](https://github.com/flusio/Flus/commit/09362b93))
+- (dev) Update Node and NPM in the Docker image ([8d473217](https://github.com/flusio/Flus/commit/8d473217))
+- (dev) Add a command to rebuild Docker images ([448ec722](https://github.com/flusio/Flus/commit/448ec722))
+- (dev) Prepend start and stop make targets with docker ([f86e1fe0](https://github.com/flusio/Flus/commit/f86e1fe0))
 
 ## 2022-09-23 - v0.51
 
 ### Improvements
 
-- Preserve scroll on links actions ([7124f456](https://github.com/flusio/flusio/commit/7124f456))
+- Preserve scroll on links actions ([7124f456](https://github.com/flusio/Flus/commit/7124f456))
 - Improve the links UX:
-    - Reorganize links actions ([933815de](https://github.com/flusio/flusio/commit/933815de))
-    - Move the delete action to the "Actions" menus ([612d318a](https://github.com/flusio/flusio/commit/612d318a))
-    - Homogeneize links collections management ([161677a5](https://github.com/flusio/flusio/commit/161677a5))
-    - Improve the look of links on mobile ([6d2e7ada](https://github.com/flusio/flusio/commit/6d2e7ada))
-    - Autoload a modal to explain recent changes to the links ([72fc4405](https://github.com/flusio/flusio/commit/72fc4405))
-- Improve pagination ([cd1bc184](https://github.com/flusio/flusio/commit/cd1bc184))
-- Fix and homogeneize focus outlines ([d1d3bf02](https://github.com/flusio/flusio/commit/d1d3bf02) and [c40ca054](https://github.com/flusio/flusio/commit/c40ca054))
-- Add the link title to the illustrations alt ([be6974b4](https://github.com/flusio/flusio/commit/be6974b4))
-- Improve the look of the "More help" section ([df8c1237](https://github.com/flusio/flusio/commit/df8c1237))
+    - Reorganize links actions ([933815de](https://github.com/flusio/Flus/commit/933815de))
+    - Move the delete action to the "Actions" menus ([612d318a](https://github.com/flusio/Flus/commit/612d318a))
+    - Homogeneize links collections management ([161677a5](https://github.com/flusio/Flus/commit/161677a5))
+    - Improve the look of links on mobile ([6d2e7ada](https://github.com/flusio/Flus/commit/6d2e7ada))
+    - Autoload a modal to explain recent changes to the links ([72fc4405](https://github.com/flusio/Flus/commit/72fc4405))
+- Improve pagination ([cd1bc184](https://github.com/flusio/Flus/commit/cd1bc184))
+- Fix and homogeneize focus outlines ([d1d3bf02](https://github.com/flusio/Flus/commit/d1d3bf02) and [c40ca054](https://github.com/flusio/Flus/commit/c40ca054))
+- Add the link title to the illustrations alt ([be6974b4](https://github.com/flusio/Flus/commit/be6974b4))
+- Improve the look of the "More help" section ([df8c1237](https://github.com/flusio/Flus/commit/df8c1237))
 
 ### Bug fixes
 
-- Avoid repaired links to reappear in the news ([55fad70a](https://github.com/flusio/flusio/commit/55fad70a))
-- Fix invalid prefix in feeds XSL file ([7a63d9a0](https://github.com/flusio/flusio/commit/7a63d9a0))
-- Fix canonical links with several parameters ([25f95e92](https://github.com/flusio/flusio/commit/25f95e92))
+- Avoid repaired links to reappear in the news ([55fad70a](https://github.com/flusio/Flus/commit/55fad70a))
+- Fix invalid prefix in feeds XSL file ([7a63d9a0](https://github.com/flusio/Flus/commit/7a63d9a0))
+- Fix canonical links with several parameters ([25f95e92](https://github.com/flusio/Flus/commit/25f95e92))
 
 ### Misc
 
-- Remove unused icons ([c4b57982](https://github.com/flusio/flusio/commit/c4b57982))
-- Accept `dc:date` and `dc:created` in RSS feeds ([3578a811](https://github.com/flusio/flusio/commit/3578a811))
+- Remove unused icons ([c4b57982](https://github.com/flusio/Flus/commit/c4b57982))
+- Accept `dc:date` and `dc:created` in RSS feeds ([3578a811](https://github.com/flusio/Flus/commit/3578a811))
 
 ## 2022-09-10 - v0.50
 
@@ -297,53 +297,53 @@ more intuitive.
 
 ### New
 
-- Display the number of links in collections ([f1e8f3b4](https://github.com/flusio/flusio/commit/f1e8f3b4))
-- Paginate the bookmarks ([ba84a1fb](https://github.com/flusio/flusio/commit/ba84a1fb))
-- Create an Add-ons page ([a709c586](https://github.com/flusio/flusio/commit/a709c586))
+- Display the number of links in collections ([f1e8f3b4](https://github.com/flusio/Flus/commit/f1e8f3b4))
+- Paginate the bookmarks ([ba84a1fb](https://github.com/flusio/Flus/commit/ba84a1fb))
+- Create an Add-ons page ([a709c586](https://github.com/flusio/Flus/commit/a709c586))
 
 ### Security
 
-- Force the login redirection on the current instance ([2f087f2f](https://github.com/flusio/flusio/commit/2f087f2f))
+- Force the login redirection on the current instance ([2f087f2f](https://github.com/flusio/Flus/commit/2f087f2f))
 
 ### Improvements
 
-- Move "About" menu item in "Help & support" ([ab89479e](https://github.com/flusio/flusio/commit/ab89479e))
-- Enlarge the avatar menu popup container ([f3fdf68a](https://github.com/flusio/flusio/commit/f3fdf68a))
+- Move "About" menu item in "Help & support" ([ab89479e](https://github.com/flusio/Flus/commit/ab89479e))
+- Enlarge the avatar menu popup container ([f3fdf68a](https://github.com/flusio/Flus/commit/f3fdf68a))
 
 ### Misc
 
-- Handle feeds declaring a wrong encoding ([0cb9840e](https://github.com/flusio/flusio/commit/0cb9840e))
-- Add Referrer-Policy and X-Content-Type-Options headers ([fe2e227d](https://github.com/flusio/flusio/commit/fe2e227d))
-- Display icons with svg symbols ([99388f10](https://github.com/flusio/flusio/commit/99388f10))
-- Provide a robots.txt file ([13bb3694](https://github.com/flusio/flusio/commit/13bb3694))
-- Don't create too old links in FeedFetcher ([53a10c0a](https://github.com/flusio/flusio/commit/53a10c0a))
-- (admin) Allow to limit the number of links in feeds ([26f1de9d](https://github.com/flusio/flusio/commit/26f1de9d))
-- (admin) Add a /jobs/install command ([469f49ad](https://github.com/flusio/flusio/commit/469f49ad))
-- (admin) Add more info to the /system command ([e936b400](https://github.com/flusio/flusio/commit/e936b400))
-- (dev) Provide a command to create an icon sprite ([961c26f2](https://github.com/flusio/flusio/commit/961c26f2))
+- Handle feeds declaring a wrong encoding ([0cb9840e](https://github.com/flusio/Flus/commit/0cb9840e))
+- Add Referrer-Policy and X-Content-Type-Options headers ([fe2e227d](https://github.com/flusio/Flus/commit/fe2e227d))
+- Display icons with svg symbols ([99388f10](https://github.com/flusio/Flus/commit/99388f10))
+- Provide a robots.txt file ([13bb3694](https://github.com/flusio/Flus/commit/13bb3694))
+- Don't create too old links in FeedFetcher ([53a10c0a](https://github.com/flusio/Flus/commit/53a10c0a))
+- (admin) Allow to limit the number of links in feeds ([26f1de9d](https://github.com/flusio/Flus/commit/26f1de9d))
+- (admin) Add a /jobs/install command ([469f49ad](https://github.com/flusio/Flus/commit/469f49ad))
+- (admin) Add more info to the /system command ([e936b400](https://github.com/flusio/Flus/commit/e936b400))
+- (dev) Provide a command to create an icon sprite ([961c26f2](https://github.com/flusio/Flus/commit/961c26f2))
 
 ## 2022-08-15 - v0.49
 
 ### Improvements
 
-- Allow to repair links directly by clicking on warning ([1efc4c10](https://github.com/flusio/flusio/commit/1efc4c10))
-- Improve links warnings visibility ([d211533f](https://github.com/flusio/flusio/commit/d211533f))
-- Change "ask sync" by "force sync" ([a3c19380](https://github.com/flusio/flusio/commit/a3c19380))
-- Suggest to delete link when cleared url is empty ([221616c9](https://github.com/flusio/flusio/commit/221616c9))
-- Remove the separator above the unread link button ([83f26f89](https://github.com/flusio/flusio/commit/83f26f89))
-- (admin) Indicate that links count is estimated in /system command ([8315c9e9](https://github.com/flusio/flusio/commit/8315c9e9))
+- Allow to repair links directly by clicking on warning ([1efc4c10](https://github.com/flusio/Flus/commit/1efc4c10))
+- Improve links warnings visibility ([d211533f](https://github.com/flusio/Flus/commit/d211533f))
+- Change "ask sync" by "force sync" ([a3c19380](https://github.com/flusio/Flus/commit/a3c19380))
+- Suggest to delete link when cleared url is empty ([221616c9](https://github.com/flusio/Flus/commit/221616c9))
+- Remove the separator above the unread link button ([83f26f89](https://github.com/flusio/Flus/commit/83f26f89))
+- (admin) Indicate that links count is estimated in /system command ([8315c9e9](https://github.com/flusio/Flus/commit/8315c9e9))
 
 ### Bug fixes
 
-- Allow to submit the repair form with enter ([22caafee](https://github.com/flusio/flusio/commit/22caafee))
-- Get newest feeds links when `keep_period` is set ([9cd437ae](https://github.com/flusio/flusio/commit/9cd437ae))
-- Fix the `Url::percentRecodeQuery()` method ([23be6a62](https://github.com/flusio/flusio/commit/23be6a62))
-- Handle URLs with "&" correctly ([85935bbf](https://github.com/flusio/flusio/commit/85935bbf))
-- Consider unfetched links to not be in error ([f81136c0](https://github.com/flusio/flusio/commit/f81136c0))
+- Allow to submit the repair form with enter ([22caafee](https://github.com/flusio/Flus/commit/22caafee))
+- Get newest feeds links when `keep_period` is set ([9cd437ae](https://github.com/flusio/Flus/commit/9cd437ae))
+- Fix the `Url::percentRecodeQuery()` method ([23be6a62](https://github.com/flusio/Flus/commit/23be6a62))
+- Handle URLs with "&" correctly ([85935bbf](https://github.com/flusio/Flus/commit/85935bbf))
+- Consider unfetched links to not be in error ([f81136c0](https://github.com/flusio/Flus/commit/f81136c0))
 
 ### Misc
 
-- Provide ClearURLs rules README and license ([8869bfc0](https://github.com/flusio/flusio/commit/8869bfc0))
+- Provide ClearURLs rules README and license ([8869bfc0](https://github.com/flusio/Flus/commit/8869bfc0))
 
 ## 2022-08-12 - v0.48
 
@@ -357,30 +357,30 @@ the old unchanged feeds can be synchronized again to get old links.
 
 ### New
 
-- Warn about trackers in URLs ([172fa8be](https://github.com/flusio/flusio/commit/172fa8be))
-- Allow to repair links ([2d68e25d](https://github.com/flusio/flusio/commit/2d68e25d))
-- Allow to edit links reading time ([d1aa62a3](https://github.com/flusio/flusio/commit/d1aa62a3))
-- Allow to edit messages ([2cf523db](https://github.com/flusio/flusio/commit/2cf523db))
+- Warn about trackers in URLs ([172fa8be](https://github.com/flusio/Flus/commit/172fa8be))
+- Allow to repair links ([2d68e25d](https://github.com/flusio/Flus/commit/2d68e25d))
+- Allow to edit links reading time ([d1aa62a3](https://github.com/flusio/Flus/commit/d1aa62a3))
+- Allow to edit messages ([2cf523db](https://github.com/flusio/Flus/commit/2cf523db))
 
 ### Improvements
 
-- Show an icon on links in error ([8f668e43](https://github.com/flusio/flusio/commit/8f668e43))
-- Show who added a link on the comments page ([65e9584d](https://github.com/flusio/flusio/commit/65e9584d))
-- Move links edit button at the end of the menu ([b60e8351](https://github.com/flusio/flusio/commit/b60e8351))
-- Lighten the background of blockquotes ([eb56e0f0](https://github.com/flusio/flusio/commit/eb56e0f0))
-- Allow to set feeds `<link rel="alternate">` to original links ([bc0d8acb](https://github.com/flusio/flusio/commit/bc0d8acb))
-- Improve perf when displaying link collections ([0a474ba9](https://github.com/flusio/flusio/commit/0a474ba9))
-- (admin) Allow to keep a minimum number of links in feeds ([71e20731](https://github.com/flusio/flusio/commit/71e20731))
-- (admin) Make /cli/clean command more verbose ([666c2903](https://github.com/flusio/flusio/commit/666c2903))
+- Show an icon on links in error ([8f668e43](https://github.com/flusio/Flus/commit/8f668e43))
+- Show who added a link on the comments page ([65e9584d](https://github.com/flusio/Flus/commit/65e9584d))
+- Move links edit button at the end of the menu ([b60e8351](https://github.com/flusio/Flus/commit/b60e8351))
+- Lighten the background of blockquotes ([eb56e0f0](https://github.com/flusio/Flus/commit/eb56e0f0))
+- Allow to set feeds `<link rel="alternate">` to original links ([bc0d8acb](https://github.com/flusio/Flus/commit/bc0d8acb))
+- Improve perf when displaying link collections ([0a474ba9](https://github.com/flusio/Flus/commit/0a474ba9))
+- (admin) Allow to keep a minimum number of links in feeds ([71e20731](https://github.com/flusio/Flus/commit/71e20731))
+- (admin) Make /cli/clean command more verbose ([666c2903](https://github.com/flusio/Flus/commit/666c2903))
 
 ### Bug fixes
 
-- Fix the strategy to sanitize URLs ([c41afda2](https://github.com/flusio/flusio/commit/c41afda2))
-- Redirect unlogged users to login when posting messages ([84176df3](https://github.com/flusio/flusio/commit/84176df3))
+- Fix the strategy to sanitize URLs ([c41afda2](https://github.com/flusio/Flus/commit/c41afda2))
+- Redirect unlogged users to login when posting messages ([84176df3](https://github.com/flusio/Flus/commit/84176df3))
 
 ### Misc
 
-- Add credits to dependencies in the README ([a25277e6](https://github.com/flusio/flusio/commit/a25277e6))
+- Add credits to dependencies in the README ([a25277e6](https://github.com/flusio/Flus/commit/a25277e6))
 
 ## 2022-07-27 - v0.47
 
@@ -392,34 +392,34 @@ have to set the variable in your `.env` file and restart your jobs workers.
 
 ### New
 
-- Allow to share read and write access to collections ([2c20d924](https://github.com/flusio/flusio/commit/2c20d924) and [2516bb56](https://github.com/flusio/flusio/commit/2516bb56))
-- Allow to purge old feeds links ([889754cd](https://github.com/flusio/flusio/commit/889754cd))
+- Allow to share read and write access to collections ([2c20d924](https://github.com/flusio/Flus/commit/2c20d924) and [2516bb56](https://github.com/flusio/Flus/commit/2516bb56))
+- Allow to purge old feeds links ([889754cd](https://github.com/flusio/Flus/commit/889754cd))
 
 ### Improvements
 
-- Improve performance when getting news from followed collections ([f706d416](https://github.com/flusio/flusio/commit/f706d416))
-- Improve performance when listing links ([e65d0237](https://github.com/flusio/flusio/commit/e65d0237))
-- Allow to unset all collections of a link ([849bfa09](https://github.com/flusio/flusio/commit/849bfa09))
-- Move the link visibility checkbox to the collections modal ([233acd0c](https://github.com/flusio/flusio/commit/233acd0c))
-- Format numbers accordingly to the current locale ([9ad383b9](https://github.com/flusio/flusio/commit/9ad383b9))
-- Add style to blockquotes and code in messages ([49b77190](https://github.com/flusio/flusio/commit/49b77190))
-- Remove the trailing space in visibility badge ([0c3dbc01](https://github.com/flusio/flusio/commit/0c3dbc01))
+- Improve performance when getting news from followed collections ([f706d416](https://github.com/flusio/Flus/commit/f706d416))
+- Improve performance when listing links ([e65d0237](https://github.com/flusio/Flus/commit/e65d0237))
+- Allow to unset all collections of a link ([849bfa09](https://github.com/flusio/Flus/commit/849bfa09))
+- Move the link visibility checkbox to the collections modal ([233acd0c](https://github.com/flusio/Flus/commit/233acd0c))
+- Format numbers accordingly to the current locale ([9ad383b9](https://github.com/flusio/Flus/commit/9ad383b9))
+- Add style to blockquotes and code in messages ([49b77190](https://github.com/flusio/Flus/commit/49b77190))
+- Remove the trailing space in visibility badge ([0c3dbc01](https://github.com/flusio/Flus/commit/0c3dbc01))
 
 ### Bug fixes
 
-- Handle errors in `Application::run` correctly ([a6aaa0c2](https://github.com/flusio/flusio/commit/a6aaa0c2))
-- Fix changing collections when passing by a not owned link ([93b817ec](https://github.com/flusio/flusio/commit/93b817ec))
-- Declare `links.search_index` as a normal property ([7532d61b](https://github.com/flusio/flusio/commit/7532d61b))
-- Handle bulk methods with no values ([12d22824](https://github.com/flusio/flusio/commit/12d22824))
-- Fix Node Dockerfile ([1af3d480](https://github.com/flusio/flusio/commit/1af3d480))
+- Handle errors in `Application::run` correctly ([a6aaa0c2](https://github.com/flusio/Flus/commit/a6aaa0c2))
+- Fix changing collections when passing by a not owned link ([93b817ec](https://github.com/flusio/Flus/commit/93b817ec))
+- Declare `links.search_index` as a normal property ([7532d61b](https://github.com/flusio/Flus/commit/7532d61b))
+- Handle bulk methods with no values ([12d22824](https://github.com/flusio/Flus/commit/12d22824))
+- Fix Node Dockerfile ([1af3d480](https://github.com/flusio/Flus/commit/1af3d480))
 
 ### Misc
 
-- Add a command to clean the media files ([fec39a8c](https://github.com/flusio/flusio/commit/fec39a8c))
-- Add a `.gitattributes` file ([2f1621ee](https://github.com/flusio/flusio/commit/2f1621ee))
-- Fix documentation of the `Sorter` class ([fe387dea](https://github.com/flusio/flusio/commit/fe387dea))
-- Reorganize the `env.sample` file ([0d08ef1d](https://github.com/flusio/flusio/commit/0d08ef1d))
-- Fix link to Docker Engine installation guide ([26a4c007](https://github.com/flusio/flusio/commit/26a4c007))
+- Add a command to clean the media files ([fec39a8c](https://github.com/flusio/Flus/commit/fec39a8c))
+- Add a `.gitattributes` file ([2f1621ee](https://github.com/flusio/Flus/commit/2f1621ee))
+- Fix documentation of the `Sorter` class ([fe387dea](https://github.com/flusio/Flus/commit/fe387dea))
+- Reorganize the `env.sample` file ([0d08ef1d](https://github.com/flusio/Flus/commit/0d08ef1d))
+- Fix link to Docker Engine installation guide ([26a4c007](https://github.com/flusio/Flus/commit/26a4c007))
 
 ## 2022-05-31 - v0.46
 
@@ -1288,7 +1288,7 @@ A small release for the “grand opening”!
 Make sure that the GD PHP extension is installed with support of PNG, JPEG and
 WEBP images.
 
-You might need to reset some ids due to the bug fixed by [`df29d41`](https://github.com/flusio/flusio/commit/df29d413260cffa2d9f433139891c574ddcb504f).
+You might need to reset some ids due to the bug fixed by [`df29d41`](https://github.com/flusio/Flus/commit/df29d413260cffa2d9f433139891c574ddcb504f).
 
 (optional) flusio now supports Open Graph and Twitter Cards images. For oldest
 links, you can refresh their image by running the following command:

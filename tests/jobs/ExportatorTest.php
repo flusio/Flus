@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\jobs;
+namespace App\jobs;
 
-use flusio\models;
+use App\models;
 use tests\factories\ExportationFactory;
 use tests\factories\UserFactory;
 
@@ -15,7 +15,7 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
      */
     public static function initEngine(): void
     {
-        $router = \flusio\Router::load();
+        $router = \App\Router::load();
         \Minz\Engine::init($router);
     }
 

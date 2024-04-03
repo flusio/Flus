@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\models;
+namespace App\models;
 
 use Minz\Database;
-use flusio\utils;
+use App\utils;
 
 /**
  * Represent a user login session.

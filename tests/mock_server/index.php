@@ -71,7 +71,7 @@ include $app_path . '/autoload.php';
 
 $http_parameters = array_merge($_GET, $_POST);
 
-$mocks_path = sys_get_temp_dir() . '/flusio/mocks';
+$mocks_path = sys_get_temp_dir() . '/Flus/mocks';
 @mkdir($mocks_path, 0777, true);
 
 $url = urldecode($http_parameters['url'] ?? '');

@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\migrations;
+namespace App\migrations;
 
-use flusio\models;
+use App\models;
 
 class Migration202108310002AddViaColumnsToLinks
 {

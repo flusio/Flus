@@ -44,5 +44,5 @@ $ make lint-fix
 ```
 
 The test suite is automatically executed on pull requests with [GitHub
-Actions](https://github.com/flusio/flusio/actions). You can learn more by
+Actions](https://github.com/flusio/Flus/actions). You can learn more by
 having a look at the [workflow file](/.github/workflows/ci.yml).

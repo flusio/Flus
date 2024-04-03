@@ -1,11 +1,11 @@
 <?php
 
-namespace flusio\controllers\collections;
+namespace App\controllers\collections;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\auth;
-use flusio\models;
+use App\auth;
+use App\models;
 
 class Filters
 {

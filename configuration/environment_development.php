@@ -2,12 +2,12 @@
 
 $db_host = $dotenv->pop('DB_HOST');
 $db_port = intval($dotenv->pop('DB_PORT', '5432'));
-$db_name = 'flusio_development';
+$db_name = 'flus_development';
 
 $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 
-$flusio_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-dev';
-$user_agent = "flusio/{$flusio_version}";
+$flus_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-dev';
+$user_agent = "flus/{$flus_version}";
 
 $feeds_links_keep_minimum = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_MINIMUM', '0')));
 $feeds_links_keep_maximum = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_MAXIMUM', '0')));
@@ -25,7 +25,7 @@ $job_links_sync_count = max(1, intval($dotenv->pop('JOB_LINKS_SYNC_COUNT', '1'))
 $server_ips = array_map('trim', explode(',', $dotenv->pop('APP_SERVER_IPS', '')));
 
 return [
-    'app_name' => 'flusio',
+    'app_name' => 'App',
 
     'secret_key' => $dotenv->pop('APP_SECRET_KEY'),
 
@@ -39,8 +39,8 @@ return [
 
     'application' => [
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
-        'brand' => $dotenv->pop('APP_BRAND', 'flusio'),
-        'version' => $flusio_version,
+        'brand' => $dotenv->pop('APP_BRAND', 'Flus'),
+        'version' => $flus_version,
         'user_agent' => $user_agent,
         'cache_path' => $dotenv->pop('APP_CACHE_PATH', $app_path . '/cache'),
         'media_path' => $dotenv->pop('APP_MEDIA_PATH', $app_path . '/public/media'),
@@ -48,7 +48,7 @@ return [
         'registrations_opened' => filter_var($dotenv->pop('APP_OPEN_REGISTRATIONS', true), FILTER_VALIDATE_BOOLEAN),
         'feed_what_is_new' => $dotenv->pop(
             'APP_FEED_WHAT_IS_NEW',
-            'https://github.com/flusio/flusio/releases.atom'
+            'https://github.com/flusio/Flus/releases.atom'
         ),
         'subscriptions_enabled' => $subscriptions_host !== null,
         'subscriptions_host' => $subscriptions_host,

@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\jobs\scheduled;
+namespace App\jobs\scheduled;
 
-use flusio\models;
-use flusio\services;
+use App\models;
+use App\services;
 
 /**
  * Job to synchronize the feeds

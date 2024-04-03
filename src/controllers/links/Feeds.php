@@ -1,12 +1,12 @@
 <?php
 
-namespace flusio\controllers\links;
+namespace App\controllers\links;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\auth;
-use flusio\models;
-use flusio\utils;
+use App\auth;
+use App\models;
+use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

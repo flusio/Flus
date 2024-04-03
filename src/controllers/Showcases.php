@@ -1,12 +1,12 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\auth;
-use flusio\jobs;
-use flusio\utils;
+use App\auth;
+use App\jobs;
+use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

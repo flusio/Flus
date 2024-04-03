@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\controllers\my;
+namespace App\controllers\my;
 
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 use tests\factories\UserFactory;
 use tests\factories\TokenFactory;
 
@@ -346,7 +346,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('validation_email_sent', \Minz\Flash::get('status'));
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertNotNull($email_sent);
-        $this->assertEmailSubject($email_sent, '[flusio] Confirm your account');
+        $this->assertEmailSubject($email_sent, '[Flus] Confirm your account');
         $this->assertEmailContainsTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, $token->token);
     }

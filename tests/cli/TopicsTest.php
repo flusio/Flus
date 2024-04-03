@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 use tests\factories\TopicFactory;
 
 class TopicsTest extends \PHPUnit\Framework\TestCase
@@ -18,7 +18,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
      */
     public static function loadApplication(): void
     {
-        self::$application = new \flusio\cli\Application();
+        self::$application = new \App\cli\Application();
     }
 
     /**

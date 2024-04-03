@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\migrations;
+namespace App\migrations;
 
-use flusio\models;
+use App\models;
 
 class Migration202007150001AddCsrfToUsers
 {

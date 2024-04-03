@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers\profiles;
+namespace App\controllers\profiles;
 
 use tests\factories\CollectionFactory;
 use tests\factories\UserFactory;

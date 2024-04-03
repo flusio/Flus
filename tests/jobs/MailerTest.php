@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\jobs;
+namespace App\jobs;
 
 use tests\factories\TokenFactory;
 use tests\factories\UserFactory;
@@ -15,7 +15,7 @@ class MailerTest extends \PHPUnit\Framework\TestCase
      */
     public static function initEngine(): void
     {
-        $router = \flusio\Router::load();
+        $router = \App\Router::load();
         \Minz\Engine::init($router);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 class WellKnownTest extends \PHPUnit\Framework\TestCase
 {

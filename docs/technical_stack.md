@@ -1,6 +1,6 @@
 # Technical stack overview
 
-flusio is using [PHP](https://www.php.net/) 8.1+. The version isn’t strongly
+Flus is using [PHP](https://www.php.net/) 8.1+. The version isn’t strongly
 fixed and can change. While I’ll do my best to keep things simple, remember
 that easy installation is not my main priority. The minimal PHP version is
 usually following the version of the production server which run on Debian.

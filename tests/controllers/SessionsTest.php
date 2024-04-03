@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
-use flusio\auth;
-use flusio\models;
-use flusio\utils;
+use App\auth;
+use App\models;
+use App\utils;
 use tests\factories\UserFactory;
 
 class SessionsTest extends \PHPUnit\Framework\TestCase
@@ -102,7 +102,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\Minz\Response::class, $response);
         $session = models\Session::take();
         $this->assertNotNull($session);
-        $cookie = $response->cookies()['flusio_session_token'];
+        $cookie = $response->cookies()['session_token'];
         $this->assertSame($session->token, $cookie['value']);
         $this->assertSame('Lax', $cookie['options']['samesite']);
     }
@@ -377,7 +377,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertInstanceOf(\Minz\Response::class, $response);
-        $cookie = $response->cookies()['flusio_session_token'];
+        $cookie = $response->cookies()['session_token'];
         $this->assertSame('', $cookie['value']);
         $this->assertTrue($cookie['options']['expires'] < \Minz\Time::now()->getTimestamp());
     }

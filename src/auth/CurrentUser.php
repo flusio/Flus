@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\auth;
+namespace App\auth;
 
-use flusio\models;
+use App\models;
 
 /**
  * An utility class to help to manipulate the current user (i.e. the one who is

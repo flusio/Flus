@@ -1,11 +1,11 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
 /**
  * Exception raised by the OpmlImportator service.
  *
- * @see \flusio\services\OpmlImportator
+ * @see \App\services\OpmlImportator
  *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL

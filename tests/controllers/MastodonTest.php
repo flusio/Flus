@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
-use flusio\models;
-use flusio\services;
+use App\models;
+use App\services;
 use tests\factories\MastodonAccountFactory;
 use tests\factories\MastodonServerFactory;
 use tests\factories\UserFactory;

@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
-use flusio\auth;
-use flusio\models;
-use flusio\services;
+use App\auth;
+use App\models;
+use App\services;
 use Minz\Request;
 use Minz\Response;
 

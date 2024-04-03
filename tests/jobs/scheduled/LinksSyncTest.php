@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\jobs\scheduled;
+namespace App\jobs\scheduled;
 
-use flusio\models;
+use App\models;
 use tests\factories\FetchLogFactory;
 use tests\factories\LinkFactory;
 
@@ -104,8 +104,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
     public function testPerformLogsFetch(): void
     {
         $link = LinkFactory::create([
-            'url' => 'https://github.com/flusio/flusio',
-            'title' => 'https://github.com/flusio/flusio',
+            'url' => 'https://github.com/flusio/Flus',
+            'title' => 'https://github.com/flusio/Flus',
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -117,7 +117,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertGreaterThanOrEqual(1, models\FetchLog::count());
         $fetch_log = models\FetchLog::take();
         $this->assertNotNull($fetch_log);
-        $this->assertSame('https://github.com/flusio/flusio', $fetch_log->url);
+        $this->assertSame('https://github.com/flusio/Flus', $fetch_log->url);
         $this->assertSame('github.com', $fetch_log->host);
     }
 
@@ -143,7 +143,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformUsesCache(): void
     {
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
@@ -179,7 +179,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
         $host = 'github.com';
         foreach (range(1, 25) as $i) {
             /** @var int */
@@ -251,8 +251,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $seconds = $this->fake('numberBetween', $interval_to_wait + 1, $interval_to_wait + 9000);
         $fetched_at = \Minz\Time::ago($seconds, 'seconds');
         $link = LinkFactory::create([
-            'url' => 'https://github.com/flusio/flusio',
-            'title' => 'https://github.com/flusio/flusio',
+            'url' => 'https://github.com/flusio/Flus',
+            'title' => 'https://github.com/flusio/Flus',
             'fetched_at' => $fetched_at,
             'fetched_code' => 404,
             'fetched_error' => 'not found',
@@ -263,7 +263,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $links_fetcher_job->perform();
 
         $link = $link->reload();
-        $this->assertSame('https://github.com/flusio/flusio', $link->title);
+        $this->assertSame('https://github.com/flusio/Flus', $link->title);
         $this->assertEquals($fetched_at, $link->fetched_at);
         $this->assertSame(404, $link->fetched_code);
         $this->assertSame($fetched_count, $link->fetched_count);
@@ -283,8 +283,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $seconds = $this->fake('numberBetween', 0, $interval_to_wait);
         $fetched_at = \Minz\Time::ago($seconds, 'seconds');
         $link = LinkFactory::create([
-            'url' => 'https://github.com/flusio/flusio',
-            'title' => 'https://github.com/flusio/flusio',
+            'url' => 'https://github.com/flusio/Flus',
+            'title' => 'https://github.com/flusio/Flus',
             'fetched_at' => $fetched_at,
             'fetched_code' => 404,
             'fetched_error' => 'not found',
@@ -295,7 +295,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $links_fetcher_job->perform();
 
         $link = $link->reload();
-        $this->assertSame('https://github.com/flusio/flusio', $link->title);
+        $this->assertSame('https://github.com/flusio/Flus', $link->title);
         $this->assertEquals($fetched_at, $link->fetched_at);
         $this->assertSame(404, $link->fetched_code);
         $this->assertSame($fetched_count, $link->fetched_count);
@@ -309,7 +309,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 0, 59);
         $locked_at = \Minz\Time::ago($minutes, 'minutes');
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
@@ -355,7 +355,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 60, 1000);
         $locked_at = \Minz\Time::ago($minutes, 'minutes');
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,

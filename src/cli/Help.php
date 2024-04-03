@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 use Minz\Response;
-use flusio\models;
+use App\models;
 
 /**
  * Display help message.

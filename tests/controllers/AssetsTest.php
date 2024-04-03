@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 class AssetsTest extends \PHPUnit\Framework\TestCase
 {

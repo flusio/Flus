@@ -1,11 +1,11 @@
 #!/bin/bash
 
-flusio-compose () {
-    docker compose -p flusio -f ./docker/docker-compose.yml "$@"
+flus-compose () {
+    docker compose -p flus -f ./docker/docker-compose.yml "$@"
 }
 
-if [ -z `flusio-compose ps -q php` ] || [ -z `docker ps -q --no-trunc | grep $(flusio-compose ps -q php)` ]; then
-    USER=$(id -u):$(id -g) flusio-compose run --rm --no-deps php php "$@"
+if [ -z `flus-compose ps -q php` ] || [ -z `docker ps -q --no-trunc | grep $(flus-compose ps -q php)` ]; then
+    USER=$(id -u):$(id -g) flus-compose run --rm --no-deps php php "$@"
 else
-    USER=$(id -u):$(id -g) flusio-compose exec php php "$@"
+    USER=$(id -u):$(id -g) flus-compose exec php php "$@"
 fi

@@ -1,10 +1,10 @@
 <?php
 
-namespace flusio\jobs\scheduled;
+namespace App\jobs\scheduled;
 
-use flusio\models;
-use flusio\services;
-use flusio\utils;
+use App\models;
+use App\services;
+use App\utils;
 
 /**
  * Synchronize links that weren't fetched yet.

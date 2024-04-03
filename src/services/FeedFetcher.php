@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 
 /**
  * @phpstan-type Options array{

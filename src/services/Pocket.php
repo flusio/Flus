@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\services;
+namespace App\services;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -38,7 +38,7 @@ class Pocket
      * @param array<string, mixed> $parameters
      *     List of optional parameters to pass in the request
      *
-     * @throw \flusio\services\PocketError
+     * @throw PocketError
      *
      * @return array<array<string, mixed>>
      */
@@ -104,7 +104,7 @@ class Pocket
     }
 
     /**
-     * Return the URL to redirect user so it can authorize flusio
+     * Return the URL to redirect user so it can authorize Flus
      */
     public function authorizationUrl(string $request_token, string $redirect_uri): string
     {
@@ -119,7 +119,7 @@ class Pocket
     /**
      * Get access token (and username) from a request token
      *
-     * @throws \flusio\services\PocketError
+     * @throws PocketError
      *
      * @return array{string, string} First item is token, second item is username
      */

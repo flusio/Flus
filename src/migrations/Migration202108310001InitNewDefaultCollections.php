@@ -1,9 +1,9 @@
 <?php
 
-namespace flusio\migrations;
+namespace App\migrations;
 
-use flusio\models;
-use flusio\utils;
+use App\models;
+use App\utils;
 
 class Migration202108310001InitNewDefaultCollections
 {

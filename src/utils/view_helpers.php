@@ -16,7 +16,7 @@
  */
 function _date(\DateTimeInterface $date, string $format): string
 {
-    $current_locale = \flusio\utils\Locale::currentLocale();
+    $current_locale = \App\utils\Locale::currentLocale();
     return \Minz\Output\ViewHelpers::formatDate($date, $format, $current_locale);
 }
 
@@ -40,7 +40,7 @@ function format_message_date(\DateTimeInterface $date): string
  */
 function format_number(int|float $number): string
 {
-    $locale = \flusio\utils\Locale::currentLocale();
+    $locale = \App\utils\Locale::currentLocale();
     $formatter = new \NumberFormatter($locale, \NumberFormatter::DEFAULT_STYLE);
 
     $formatted_number = $formatter->format($number);
@@ -120,7 +120,7 @@ function url_media(string $type, ?string $filename, string $default = 'default-c
 
     /** @var string */
     $media_path = \Minz\Configuration::$application['media_path'];
-    $subpath = \flusio\utils\Belt::filenameToSubpath($filename);
+    $subpath = \App\utils\Belt::filenameToSubpath($filename);
     $filepath = "{$media_path}/{$type}/{$subpath}/{$filename}";
     $modification_time = @filemtime($filepath);
     $file_url = \Minz\Url::path() . "/media/{$type}/{$subpath}/{$filename}";
@@ -217,7 +217,7 @@ function no_news_sentence(bool $beta_enabled): string
 /**
  * Return the list of publishers of a collection.
  */
-function collection_publishers(\flusio\models\Collection $collection, ?\flusio\models\User $current_user): string
+function collection_publishers(\App\models\Collection $collection, ?\App\models\User $current_user): string
 {
     $owner = $collection->owner();
     $shares = $collection->shares(['access_type' => 'write']);

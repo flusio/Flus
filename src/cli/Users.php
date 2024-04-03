@@ -1,12 +1,12 @@
 <?php
 
-namespace flusio\cli;
+namespace App\cli;
 
 use Minz\Request;
 use Minz\Response;
-use flusio\models;
-use flusio\services;
-use flusio\utils;
+use App\models;
+use App\services;
+use App\utils;
 
 /**
  * Manipulate the Users of the application from the CLI.

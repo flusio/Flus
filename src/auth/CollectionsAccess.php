@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\auth;
+namespace App\auth;
 
-use flusio\models;
+use App\models;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

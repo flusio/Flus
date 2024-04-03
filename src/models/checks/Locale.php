@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\models\checks;
+namespace App\models\checks;
 
-use flusio\utils;
+use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

@@ -1,6 +1,6 @@
 <?php
 
-namespace flusio\controllers;
+namespace App\controllers;
 
 use Minz\Response;
 

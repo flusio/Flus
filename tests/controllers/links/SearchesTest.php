@@ -1,8 +1,8 @@
 <?php
 
-namespace flusio\controllers\links;
+namespace App\controllers\links;
 
-use flusio\models;
+use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
@@ -381,7 +381,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     public function testCreateRedirectsIfNotConnected(): void
     {
         $support_user = models\User::supportUser();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
 
         $this->assertSame(0, models\Link::count());
 
@@ -398,7 +398,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $support_user = models\User::supportUser();
-        $url = 'https://github.com/flusio/flusio';
+        $url = 'https://github.com/flusio/Flus';
 
         $this->assertSame(0, models\Link::count());
 

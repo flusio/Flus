@@ -1,7 +1,7 @@
-# This file lists processing purposes and the personal data gathered by flusio.
+# This file lists processing purposes and the personal data gathered by Flus.
 # It is intended to hosting providers who want to provide a service based on
-# flusio, to help them to comply to GDPR requirements. Note that the services
-# powered by flusio may collect more data, HTTP logs in particular. As a
+# Flus, to help them to comply to GDPR requirements. Note that the services
+# powered by Flus may collect more data, HTTP logs in particular. As a
 # hosting provider, you must inform your users of their rights and how their
 # data are used and protected.
 
@@ -93,5 +93,5 @@ description:
     The email used on https://getpocket.com, in order to connect to the service
     and import data from it.
 mitigation:
-    flusio can access this data only if the user explicitely allows it on
+    Flus can access this data only if the user explicitely allows it on
     Pocket. The feature can be disabled by the hosting provider.

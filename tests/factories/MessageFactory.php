@@ -2,7 +2,7 @@
 
 namespace tests\factories;
 
-use flusio\models;
+use App\models;
 use Minz\Database;
 
 /**
