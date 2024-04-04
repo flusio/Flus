@@ -135,4 +135,25 @@ class News
 
         return Response::redirect('news');
     }
+
+    public function showAvailable(Request $request): Response
+    {
+        $user = auth\CurrentUser::get();
+
+        if (!$user) {
+            return Response::redirect('login', [
+                'redirect_to' => \Minz\Url::for('news'),
+            ]);
+        }
+
+        $news_picker = new services\NewsPicker($user, [
+            'number_links' => 1,
+            'from' => 'followed',
+        ]);
+        $links = $news_picker->pick();
+
+        return Response::json(200, [
+            'available' => count($links) > 0,
+        ]);
+    }
 }

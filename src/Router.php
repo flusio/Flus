@@ -115,6 +115,7 @@ class Router
         // News page
         $router->addRoute('GET', '/news', 'News#index', 'news');
         $router->addRoute('POST', '/news', 'News#create', 'fill news');
+        $router->addRoute('GET', '/news/available.json', 'News#showAvailable', 'news available');
 
         // Collections
         $router->addRoute('GET', '/collections', 'Collections#index', 'collections');

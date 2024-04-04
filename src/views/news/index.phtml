@@ -210,12 +210,23 @@
         <?= $this->include('alerts/_info.phtml', ['message' => no_news_sentence($beta_enabled)]) ?>
     <?php endif; ?>
 
-    <form class="text--centered" method="post" action="<?= url('fill news') ?>">
+    <form
+        class="text--centered"
+        method="post"
+        action="<?= url('fill news') ?>"
+        data-controller="news-refresher"
+        data-news-refresher-url-value="<?= url('news available') ?>"
+    >
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
-        <button class="button--primary" name="type" value="newsfeed">
+        <button
+            class="news__refresh-button"
+            name="type"
+            value="newsfeed"
+            data-news-refresher-target="button"
+        >
             <?= icon('sync') ?>
             <?= _('Refresh the news') ?>
         </button>

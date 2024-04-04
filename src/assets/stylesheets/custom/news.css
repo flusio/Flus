@@ -1,3 +1,7 @@
+.news__refresh-button[disabled] .icon {
+    animation: icon-spin 5s linear infinite;
+}
+
 @media (max-width: 799px) {
     .news-selection__button {
         display: flex;

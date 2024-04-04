@@ -14,6 +14,7 @@ import InputPasswordController from 'js/controllers/input_password_controller.js
 import LinkSuggestionController from 'js/controllers/link_suggestion_controller.js';
 import ModalController from 'js/controllers/modal_controller.js';
 import ModalOpenerController from 'js/controllers/modal_opener_controller.js';
+import NewsRefresherController from 'js/controllers/news_refresher_controller.js';
 import PopupController from 'js/controllers/popup_controller.js';
 import TextEditorController from 'js/controllers/text_editor_controller.js';
 
@@ -33,6 +34,7 @@ application.register('input-password', InputPasswordController);
 application.register('link-suggestion', LinkSuggestionController);
 application.register('modal', ModalController);
 application.register('modal-opener', ModalOpenerController);
+application.register('news-refresher', NewsRefresherController);
 application.register('popup', PopupController);
 application.register('text-editor', TextEditorController);
 
