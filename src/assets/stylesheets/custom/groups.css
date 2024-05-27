@@ -4,7 +4,6 @@
 
 .group__header {
     position: sticky;
-    z-index: 1;
     top: 0;
 
     display: flex;
@@ -15,6 +14,55 @@
 
     background-color: var(--color-white);
     box-shadow: 0 2px 2px var(--color-white);
+}
+
+/**
+ * This is a hack to create a descending z-index priority over the
+ * group__headers. This is because if a group__header has a popup menu in it,
+ * the stacking context (created because of the sticky property) makes it
+ * appear below the next group__header. This is the case in the news for
+ * instance.
+ * The hack only works for 10 elements, but hopefully, this should be enough
+ * most of the time.
+ */
+.group:nth-child(1) .group__header {
+    z-index: 20;
+}
+
+.group:nth-child(2) .group__header {
+    z-index: 19;
+}
+
+.group:nth-child(3) .group__header {
+    z-index: 18;
+}
+
+.group:nth-child(4) .group__header {
+    z-index: 17;
+}
+
+.group:nth-child(5) .group__header {
+    z-index: 16;
+}
+
+.group:nth-child(6) .group__header {
+    z-index: 15;
+}
+
+.group:nth-child(7) .group__header {
+    z-index: 14;
+}
+
+.group:nth-child(8) .group__header {
+    z-index: 13;
+}
+
+.group:nth-child(9) .group__header {
+    z-index: 12;
+}
+
+.group:nth-child(10) .group__header {
+    z-index: 11;
 }
 
 .group__icon {
