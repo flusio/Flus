@@ -1,5 +1,6 @@
 svg {
     pointer-events: none;
+    user-select: none;
 }
 
 .icon {
