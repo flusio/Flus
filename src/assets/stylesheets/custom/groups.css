@@ -17,10 +17,6 @@
     box-shadow: 0 2px 2px var(--color-white);
 }
 
-.group__header .icon {
-    width: 1.3em;
-}
-
 .group__icon {
     margin-right: var(--space-smaller);
 }
@@ -28,6 +24,10 @@
 .group__icon,
 .group__header button {
     flex-shrink: 0;
+}
+
+.group__icon .icon {
+    width: 1.3em;
 }
 
 .group__title {
