@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-04-02 11:25+0200\n"
-"PO-Revision-Date: 2024-04-02 11:25+0200\n"
+"POT-Creation-Date: 2024-05-27 17:33+0200\n"
+"PO-Revision-Date: 2024-05-27 17:33+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 "X-Poedit-Basepath: ../../../src\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -734,7 +734,7 @@ msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
 #: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:31
 #: views/collections/show.phtml:169 views/collections/show_public.phtml:214
-#: views/links/searches/show.phtml:106 views/news/index.phtml:116
+#: views/links/searches/show.phtml:106 views/news/index.phtml:115
 #: views/read/index.phtml:29
 #, php-format
 msgid "%s link"
@@ -1087,7 +1087,8 @@ msgstr "Publiée par %s"
 #: views/collections/show.phtml:74 views/collections/show_public.phtml:112
 #: views/links/_link.phtml:221 views/links/_link.phtml:225
 #: views/links/show.phtml:121 views/links/show.phtml:125
-#: views/news/index.phtml:41 views/news/index.phtml:130
+#: views/news/index.phtml:41 views/news/index.phtml:129
+#: views/news/index.phtml:213
 msgid "Actions"
 msgstr "Actions"
 
@@ -1146,7 +1147,7 @@ msgid "Copy the link"
 msgstr "Copier le lien"
 
 #: views/collections/show_public.phtml:165 views/news/index.phtml:56
-#: views/news/index.phtml:146
+#: views/news/index.phtml:145 views/news/index.phtml:226
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
@@ -2125,11 +2126,13 @@ msgstr "hier"
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
-#: views/news/index.phtml:67 views/news/index.phtml:158
+#: views/news/index.phtml:67 views/news/index.phtml:157
+#: views/news/index.phtml:236
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/index.phtml:77 views/news/index.phtml:168
+#: views/news/index.phtml:76 views/news/index.phtml:167
+#: views/news/index.phtml:245
 msgid ""
 "You’ll remove all the news links, this action cannot be canceled. Are you "
 "sure?"
@@ -2137,45 +2140,50 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.phtml:86 views/news/index.phtml:178
+#: views/news/index.phtml:85 views/news/index.phtml:177
+#: views/news/index.phtml:253
 msgid "Never see the links again"
 msgstr "Ne plus revoir les liens"
 
-#: views/news/index.phtml:136
+#: views/news/index.phtml:135
 msgid "Actions on the feed"
 msgstr "Actions pour le flux"
 
-#: views/news/index.phtml:206
+#: views/news/index.phtml:218
+msgid "Empty the news"
+msgstr "Vider le journal"
+
+#: views/news/index.phtml:261
 msgid ""
 "Fill your news feed with the content published by the feeds that you follow."
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
-#: views/news/index.phtml:220
+#: views/news/index.phtml:286
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
 
-#: views/news/index.phtml:225
+#: views/news/index.phtml:291
 msgid "Fill the news with…"
 msgstr "Remplissez votre journal avec…"
 
-#: views/news/index.phtml:248
+#: views/news/index.phtml:314
 msgid "the latest publications"
 msgstr "les dernières publications"
 
-#: views/news/index.phtml:249
+#: views/news/index.phtml:315
 msgid "from your followed feeds"
 msgstr "depuis vos flux suivis"
 
-#: views/news/index.phtml:264
+#: views/news/index.phtml:330
 msgid "3 links of -10 minutes"
 msgstr "3 liens de -10 minutes"
 
-#: views/news/index.phtml:265 views/news/index.phtml:281
+#: views/news/index.phtml:331 views/news/index.phtml:347
 msgid "from your bookmarks"
 msgstr "depuis vos signets"
 
-#: views/news/index.phtml:280
+#: views/news/index.phtml:346
 msgid "1 link of +10 minutes"
 msgstr "1 lien de +10 minutes"
 
@@ -2483,8 +2491,8 @@ msgid ""
 "about Flus around them, share their opinion and ideas, or report bugs!"
 msgstr ""
 "Et un énorme merci aux personnes qui s’abonnent au service officiel, parlent "
-"de Flus autour d’elleux, partagent leur opinion et leurs idées, ou "
-"remontent des bugs !"
+"de Flus autour d’elleux, partagent leur opinion et leurs idées, ou remontent "
+"des bugs !"
 
 #: views/pages/addons.phtml:16
 #, php-format
