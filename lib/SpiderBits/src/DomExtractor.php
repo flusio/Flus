@@ -125,6 +125,46 @@ class DomExtractor
     }
 
     /**
+     * Return the duration in minutes of the element in the DOM.
+     *
+     * If the DOM declares an element with itemprop="duration", return the
+     * corresponding duration. Otherwise, estimate the duration from the
+     * content itself by counting the number of words in the content and divide
+     * by an average reading speed (i.e. 200 words per minute).
+     */
+    public static function duration(Dom $dom): int
+    {
+        // Search for a node having the attribute itemprop="duration
+        // @see https://schema.org/docs/gs.html
+        $duration_node = $dom->select('//*[@itemprop = "duration"]/attribute::content');
+
+        if ($duration_node) {
+            try {
+                $interval = new \DateInterval($duration_node->text());
+                // Convert the interval to minutes
+                $duration = $interval->y * 12 * 30 * 24 * 60;
+                $duration += $interval->m * 30 * 24 * 60;
+                $duration += $interval->d * 24 * 60;
+                $duration += $interval->h * 60;
+                $duration += $interval->i;
+                if ($interval->s >= 30) {
+                    $duration += 1;
+                }
+                return $duration;
+            } catch (\Exception $e) {
+                // Do nothing and fallback to the other mode
+            }
+        }
+
+        // If there is no duration node (or if its content can't be parsed),
+        // roughly estimate the duration from the DOM content.
+        $content = self::content($dom);
+        $words = array_filter(explode(' ', $content));
+        $average_reading_speed = 200;
+        return intval(count($words) / $average_reading_speed);
+    }
+
+    /**
      * Return the autodiscovered feeds URLs (RSS and Atom).
      *
      * @return string[]

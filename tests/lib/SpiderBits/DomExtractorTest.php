@@ -4,6 +4,8 @@ namespace SpiderBits;
 
 class DomExtractorTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
+
     public function testTitle(): void
     {
         $dom = Dom::fromText(<<<HTML
@@ -278,6 +280,67 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $content = DomExtractor::content($dom);
 
         $this->assertSame('This is main', $content);
+    }
+
+    public function testDuration(): void
+    {
+        /** @var string */
+        $content = $this->fake('words', 400, true);
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                    <main>
+                        {$content}
+                    </main>
+                </body>
+            </html>
+        HTML);
+
+        $duration = DomExtractor::duration($dom);
+
+        $this->assertSame(2, $duration);
+    }
+
+    public function testDurationWithItempropAttribute(): void
+    {
+        /** @var string */
+        $content = $this->fake('words', 400, true);
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                    <meta itemprop="duration" content="PT41M35S" />
+
+                    <main>
+                        {$content}
+                    </main>
+                </body>
+            </html>
+        HTML);
+
+        $duration = DomExtractor::duration($dom);
+
+        $this->assertSame(42, $duration);
+    }
+
+    public function testDurationWithInvalidItempropAttribute(): void
+    {
+        /** @var string */
+        $content = $this->fake('words', 400, true);
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                    <meta itemprop="duration" content="NotIso8601" />
+
+                    <main>
+                        {$content}
+                    </main>
+                </body>
+            </html>
+        HTML);
+
+        $duration = DomExtractor::duration($dom);
+
+        $this->assertSame(2, $duration);
     }
 
     public function testFeeds(): void

@@ -269,10 +269,7 @@ class LinkFetcher
             }
         }
 
-        // And roughly estimate the reading time
-        $content = \SpiderBits\DomExtractor::content($dom);
-        $words = array_filter(explode(' ', $content));
-        $info['reading_time'] = intval(count($words) / 200);
+        $info['reading_time'] = \SpiderBits\DomExtractor::duration($dom);
 
         // Get the illustration URL if any
         $url_illustration = \SpiderBits\DomExtractor::illustration($dom);
