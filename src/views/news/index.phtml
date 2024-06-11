@@ -262,7 +262,9 @@
     </p>
 
     <?php if ($no_news): ?>
-        <?= $this->include('alerts/_info.phtml', ['message' => no_news_sentence()]) ?>
+        <?= $this->include('alerts/_info.phtml', [
+            'message' => _('There are no relevant links to suggest at this time.'),
+        ]) ?>
     <?php endif; ?>
 
     <form
