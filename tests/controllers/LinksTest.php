@@ -66,8 +66,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $group_name);
         $this->assertResponseContains($response, $collection_name_1);
         $this->assertResponseContains($response, $collection_name_2);
-        $this->assertResponseContains($response, 'Your links to read later');
-        $this->assertResponseContains($response, 'Your links marked as read');
     }
 
     public function testIndexRendersResultsWhenQuery(): void

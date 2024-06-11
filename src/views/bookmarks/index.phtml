@@ -9,9 +9,9 @@
     $this->layout('reading.phtml', [
         'title' => _('Bookmarks'),
         'canonical' => url_full('bookmarks', $current_url_params),
-        'current_tab' => $beta_enabled ? 'reading' : 'links',
+        'current_tab' => 'reading',
         'current_page' => 'bookmarks',
-        'reset_back_options' => $beta_enabled,
+        'reset_back_options' => true,
     ]);
 ?>
 

@@ -156,73 +156,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
     }
 
-    public function testCreateSelectsLinksFromBookmarksIfTypeIsShort(): void
-    {
-        $user = $this->login();
-        $bookmarks = $user->bookmarks();
-        $news = $user->news();
-        /** @var int */
-        $duration = $this->fake('numberBetween', 0, 9);
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'reading_time' => $duration,
-            'source_type' => '',
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-
-        $response = $this->appRun('POST', '/news', [
-            'csrf' => $user->csrf,
-            'type' => 'short',
-        ]);
-
-        $this->assertResponseCode($response, 302, '/news');
-        $link = $link->reload();
-        $this->assertSame('bookmarks', $link->source_type);
-        $this->assertNull($link->source_resource_id);
-        $link_to_news = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $this->assertNotNull($link_to_news);
-    }
-
-    public function testCreateSelectsLinksFromBookmarksIfTypeIsLong(): void
-    {
-        $user = $this->login();
-        $bookmarks = $user->bookmarks();
-        $news = $user->news();
-        /** @var int */
-        $duration = $this->fake('numberBetween', 10, 9000);
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'reading_time' => $duration,
-            'source_type' => '',
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-
-        $response = $this->appRun('POST', '/news', [
-            'csrf' => $user->csrf,
-            'type' => 'long',
-        ]);
-
-        $this->assertResponseCode($response, 302, '/news');
-        $link = $link->reload();
-        $this->assertSame('bookmarks', $link->source_type);
-        $this->assertNull($link->source_resource_id);
-        $link_to_news = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $this->assertNotNull($link_to_news);
-    }
-
-    public function testCreateSelectsLinksFromFollowedIfTypeIsNewsfeed(): void
+    public function testCreateSelectsLinksFromFollowed(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -254,7 +188,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/news', [
             'csrf' => $user->csrf,
-            'type' => 'newsfeed',
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
@@ -318,7 +251,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/news', [
             'csrf' => $user->csrf,
-            'type' => 'newsfeed',
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
@@ -328,57 +260,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($news_links[1]->group_by_source);
         // This one is published a different day, so it's not grouped.
         $this->assertFalse($news_links[2]->group_by_source);
-    }
-
-    public function testCreateMemorizesViaIfAleardySet(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        /** @var string */
-        $url = $this->fake('url');
-        $bookmarks = $user->bookmarks();
-        $news = $user->news();
-        /** @var int */
-        $duration = $this->fake('numberBetween', 0, 9);
-        $source_link = LinkFactory::create([
-            'user_id' => $other_user->id,
-            'is_hidden' => false,
-            'url' => $url,
-        ]);
-        $source_collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-            'is_public' => true,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $source_link->id,
-            'collection_id' => $source_collection->id,
-        ]);
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'reading_time' => $duration,
-            'url' => $url,
-            'source_type' => 'collection',
-            'source_resource_id' => $source_collection->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-
-        $response = $this->appRun('POST', '/news', [
-            'csrf' => $user->csrf,
-            'type' => 'short',
-        ]);
-
-        $this->assertResponseCode($response, 302, '/news');
-        $link = $link->reload();
-        $this->assertSame('collection', $link->source_type);
-        $this->assertSame($source_collection->id, $link->source_resource_id);
-        $link_to_news = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $this->assertNotNull($link_to_news);
     }
 
     public function testCreateDoesNotDuplicatesLink(): void
@@ -417,7 +298,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/news', [
             'csrf' => $user->csrf,
-            'type' => 'newsfeed',
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
@@ -447,67 +327,83 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
+        $other_user = UserFactory::create();
         /** @var int */
-        $duration = $this->fake('numberBetween', 0, 9);
+        $days = $this->fake('numberBetween', 0, 2);
+        $created_at = \Minz\Time::ago($days, 'days');
+        /** @var string */
+        $link_url = $this->fake('url');
         $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'reading_time' => $duration,
-            'source_type' => '',
+            'user_id' => $other_user->id,
+            'url' => $link_url,
+            'is_hidden' => false,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'type' => 'collection',
+            'is_public' => true,
         ]);
         LinkToCollectionFactory::create([
+            'created_at' => $created_at,
             'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
+            'collection_id' => $collection->id,
+        ]);
+        FollowedCollectionFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection->id,
         ]);
 
         $response = $this->appRun('POST', '/news', [
             'csrf' => $user->csrf,
-            'type' => 'short',
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
-        $link = $link->reload();
-        $this->assertSame('', $link->source_type);
-        $this->assertNull($link->source_resource_id);
-        $link_to_news = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $this->assertNull($link_to_news);
+        $this->assertFalse(models\Link::existsBy([
+            'user_id' => $user->id,
+            'url' => $link_url,
+        ]));
     }
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
+        $other_user = UserFactory::create();
         /** @var int */
-        $duration = $this->fake('numberBetween', 0, 9);
+        $days = $this->fake('numberBetween', 0, 2);
+        $created_at = \Minz\Time::ago($days, 'days');
+        /** @var string */
+        $link_url = $this->fake('url');
         $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'reading_time' => $duration,
-            'source_type' => '',
+            'user_id' => $other_user->id,
+            'url' => $link_url,
+            'is_hidden' => false,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'type' => 'collection',
+            'is_public' => true,
         ]);
         LinkToCollectionFactory::create([
+            'created_at' => $created_at,
             'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
+            'collection_id' => $collection->id,
+        ]);
+        FollowedCollectionFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection->id,
         ]);
 
         $response = $this->appRun('POST', '/news', [
             'csrf' => 'not the token',
-            'type' => 'short',
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $link = $link->reload();
-        $this->assertSame('', $link->source_type);
-        $this->assertNull($link->source_resource_id);
-        $link_to_news = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $this->assertNull($link_to_news);
+        $this->assertFalse(models\Link::existsBy([
+            'user_id' => $user->id,
+            'url' => $link_url,
+        ]));
     }
 }

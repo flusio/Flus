@@ -195,13 +195,10 @@ function human_implode(array $array, string $separator, string $last_separator):
 /**
  * Return a random sentence to display when there are no news.
  */
-function no_news_sentence(bool $beta_enabled): string
+function no_news_sentence(): string
 {
     $bookmarks_url = url('bookmarks');
     $sentence = _('There are no relevant links to suggest at this time.') . '<br />';
-    if (!$beta_enabled) {
-        $sentence .= _f('You can add links to <a href="%s">your bookmarks</a> to read them later.', $bookmarks_url);
-    }
 
     if (rand(0, 100) === 0) {
         if (rand(0, 10) === 0) {
