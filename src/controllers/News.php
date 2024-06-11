@@ -49,7 +49,6 @@ class News
      * collections)
      *
      * @request_param string csrf
-     * @request_param string type
      *
      * @response 302 /login?redirect_to=/news
      *     if not connected
@@ -81,7 +80,6 @@ class News
 
         $news_picker = new services\NewsPicker($user, [
             'number_links' => 50,
-            'from' => 'followed',
         ]);
         $links = $news_picker->pick();
 
