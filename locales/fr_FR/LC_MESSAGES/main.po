@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-05-27 17:33+0200\n"
-"PO-Revision-Date: 2024-05-27 17:33+0200\n"
+"POT-Creation-Date: 2024-06-11 18:06+0200\n"
+"PO-Revision-Date: 2024-06-11 18:06+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:47
-#: views/_layouts/connected.phtml:229
+#: views/_layouts/connected.phtml:225
 #: views/_layouts/connected_blocked.phtml:183
 #: views/_layouts/not_connected.phtml:151
 msgid "Back"
@@ -50,7 +50,7 @@ msgstr "Afficher"
 #: controllers/Feeds.php:107 controllers/Groups.php:90
 #: controllers/Links.php:270 controllers/Links.php:442
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
-#: controllers/News.php:79 controllers/Passwords.php:89
+#: controllers/News.php:78 controllers/Passwords.php:89
 #: controllers/Passwords.php:192 controllers/Registrations.php:103
 #: controllers/Sessions.php:85 controllers/Support.php:70
 #: controllers/collections/Filters.php:105
@@ -294,12 +294,12 @@ msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:120 models/Collection.php:182
-#: views/_layouts/reading.phtml:33 views/bookmarks/index.phtml:10
+#: views/_layouts/reading.phtml:32 views/bookmarks/index.phtml:10
 msgid "Bookmarks"
 msgstr "Signets"
 
 #: models/Collection.php:131 models/Collection.php:184
-#: views/_layouts/reading.phtml:43
+#: views/_layouts/reading.phtml:42
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -308,8 +308,8 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:153 models/Collection.php:186
-#: views/_layouts/connected.phtml:90 views/_layouts/reading.phtml:23
-#: views/news/index.phtml:3 views/news/index.phtml:12
+#: views/_layouts/reading.phtml:22 views/news/index.phtml:3
+#: views/news/index.phtml:12
 msgid "News"
 msgstr "Journal"
 
@@ -464,19 +464,7 @@ msgstr "< 1 min"
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:201
-msgid "There are no relevant links to suggest at this time."
-msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
-
-#: utils/view_helpers.php:203
-#, php-format
-msgid ""
-"You can add links to <a href=\"%s\">your bookmarks</a> to read them later."
-msgstr ""
-"Vous pouvez placer des liens dans <a href=\"%s\">vos signets</a> pour les "
-"lire plus tard."
-
-#: utils/view_helpers.php:233 views/links/show.phtml:73
+#: utils/view_helpers.php:211 views/links/show.phtml:73
 msgid "you"
 msgstr "vous"
 
@@ -554,73 +542,73 @@ msgstr ""
 msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
-#: views/_layouts/connected.phtml:88
+#: views/_layouts/connected.phtml:87
 msgid "Reading"
 msgstr "Lecture"
 
-#: views/_layouts/connected.phtml:102 views/links/index.phtml:3
+#: views/_layouts/connected.phtml:98 views/links/index.phtml:3
 #: views/links/index.phtml:19
 msgid "My links"
 msgstr "Mes liens"
 
-#: views/_layouts/connected.phtml:113 views/feeds/index.phtml:3
+#: views/_layouts/connected.phtml:109 views/feeds/index.phtml:3
 #: views/feeds/index.phtml:15
 msgid "Feeds"
 msgstr "Flux"
 
-#: views/_layouts/connected.phtml:126 views/collections/_selector.phtml:83
+#: views/_layouts/connected.phtml:122 views/collections/_selector.phtml:83
 #: views/collections/groups/edit.phtml:88 views/links/searches/show.phtml:9
 #: views/links/searches/show.phtml:21
 msgid "New"
 msgstr "Nouveau"
 
-#: views/_layouts/connected.phtml:135 views/_layouts/connected.phtml:138
+#: views/_layouts/connected.phtml:131 views/_layouts/connected.phtml:134
 #: views/_layouts/connected_blocked.phtml:89
 #: views/_layouts/connected_blocked.phtml:92
 #, php-format
 msgid "Menu of %s"
 msgstr "Menu de %s"
 
-#: views/_layouts/connected.phtml:155
+#: views/_layouts/connected.phtml:151
 #: views/_layouts/connected_blocked.phtml:109 views/my/profile/edit.phtml:3
 #: views/my/profile/edit.phtml:14
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:165
+#: views/_layouts/connected.phtml:161
 #: views/_layouts/connected_blocked.phtml:119 views/my/preferences/edit.phtml:3
 #: views/my/preferences/edit.phtml:12
 msgid "Preferences"
 msgstr "Préférences"
 
-#: views/_layouts/connected.phtml:175
+#: views/_layouts/connected.phtml:171
 #: views/_layouts/connected_blocked.phtml:129 views/my/account/show.phtml:3
 #: views/my/account/show.phtml:11
 msgid "Account & data"
 msgstr "Compte & données"
 
-#: views/_layouts/connected.phtml:187
+#: views/_layouts/connected.phtml:183
 #: views/_layouts/connected_blocked.phtml:141 views/pages/addons.phtml:3
 #: views/pages/addons.phtml:11
 msgid "Add-ons"
 msgstr "Extensions"
 
-#: views/_layouts/connected.phtml:197
+#: views/_layouts/connected.phtml:193
 #: views/_layouts/connected_blocked.phtml:151 views/support/show.phtml:3
 #: views/support/show.phtml:12
 msgid "Help & support"
 msgstr "Aide & support"
 
-#: views/_layouts/connected.phtml:206
+#: views/_layouts/connected.phtml:202
 #: views/_layouts/connected_blocked.phtml:160
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:240 views/_layouts/connected.phtml:241
+#: views/_layouts/connected.phtml:236 views/_layouts/connected.phtml:237
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:249 views/links/searches/show.phtml:47
+#: views/_layouts/connected.phtml:245 views/links/searches/show.phtml:47
 #: views/links/searches/show.phtml:63
 msgid "Search"
 msgstr "Rechercher"
@@ -782,7 +770,7 @@ msgid ""
 msgstr ""
 "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong> (partagée par %s)."
 
-#: views/collections/_selector.phtml:41 views/links/index.phtml:109
+#: views/collections/_selector.phtml:41 views/links/index.phtml:79
 msgid "Shared with me"
 msgstr "Partagées avec moi"
 
@@ -1584,15 +1572,7 @@ msgstr "minutes pour le consulter."
 msgid "Organize your links in your bookmarks and your collections."
 msgstr "Organisez vos liens dans vos signets et vos collections."
 
-#: views/links/index.phtml:36
-msgid "Your links to read later"
-msgstr "Vos liens à lire plus tard"
-
-#: views/links/index.phtml:48
-msgid "Your links marked as read"
-msgstr "Vos liens marqués comme lu"
-
-#: views/links/index.phtml:68
+#: views/links/index.phtml:38
 msgid "Create a collection"
 msgstr "Créer une collection"
 
@@ -2159,33 +2139,13 @@ msgid ""
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
+#: views/news/index.phtml:266
+msgid "There are no relevant links to suggest at this time."
+msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
+
 #: views/news/index.phtml:286
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
-
-#: views/news/index.phtml:291
-msgid "Fill the news with…"
-msgstr "Remplissez votre journal avec…"
-
-#: views/news/index.phtml:314
-msgid "the latest publications"
-msgstr "les dernières publications"
-
-#: views/news/index.phtml:315
-msgid "from your followed feeds"
-msgstr "depuis vos flux suivis"
-
-#: views/news/index.phtml:330
-msgid "3 links of -10 minutes"
-msgstr "3 liens de -10 minutes"
-
-#: views/news/index.phtml:331 views/news/index.phtml:347
-msgid "from your bookmarks"
-msgstr "depuis vos signets"
-
-#: views/news/index.phtml:346
-msgid "1 link of +10 minutes"
-msgstr "1 lien de +10 minutes"
 
 #: views/not_found.phtml:3
 msgid "Page not found"
@@ -2206,10 +2166,10 @@ msgstr "Bienvenue %s !"
 
 #: views/onboarding/step1.phtml:49
 #, php-format
-msgid "The few next screens will explain you the 4 main features of %s."
+msgid "The few next screens will explain you some main features of %s."
 msgstr ""
-"Les écrans qui suivent vous expliqueront les 4 principales fonctionnalités "
-"de %s."
+"Les écrans qui suivent vous expliqueront quelques-unes des principales "
+"fonctionnalités de %s."
 
 #: views/onboarding/step1.phtml:53
 #, php-format
@@ -2220,7 +2180,7 @@ msgstr ""
 "Il n’y a pas grand-chose à savoir avant de pouvoir utiliser %s. Cette "
 "introduction devrait vous prendre moins de 3 minutes à parcourir."
 
-#: views/onboarding/step1.phtml:58 views/onboarding/step2.phtml:29
+#: views/onboarding/step1.phtml:58 views/onboarding/step2.phtml:39
 #: views/onboarding/step3.phtml:29 views/onboarding/step4.phtml:29
 #: views/onboarding/step5.phtml:29
 msgid "Continue"
@@ -2231,58 +2191,71 @@ msgid "or skip the onboarding"
 msgstr "ou passer l’introduction"
 
 #: views/onboarding/step2.phtml:3 views/onboarding/step2.phtml:11
-msgid "Stay informed with the news"
-msgstr "Restez informé‧e avec le journal"
+msgid "Read at your own pace"
+msgstr "Lisez à votre rythme"
 
 #: views/onboarding/step2.phtml:16
-msgid "The <strong>News</strong> is where you get suggestions of what to read."
+msgid "The <strong>Reading</strong> tab helps you organise your reading list."
 msgstr ""
-"Le <strong>Journal</strong> est l’endroit où vous obtenez des suggestions de "
+"L’onglet <strong>Lecture</strong> vous aide à organiser votre liste de "
 "lecture."
 
-#: views/onboarding/step2.phtml:20
+#: views/onboarding/step2.phtml:21
 msgid ""
-"It suggests you things to read from your bookmarks or from the feeds that "
-"you follow. It is volontarily limited in time and size <strong>to keep "
-"information overload away from you.</strong>"
+"The screenshot of the Reading menu. It shows three elements: News, Bookmarks "
+"and Links read."
 msgstr ""
-"Il vous suggère des choses à lire depuis vos signets et les flux que vous "
-"suivez. Il est volontairement limité en temps et en taille <strong>pour vous "
-"tenir éloigné‧e de la surcharge d’informations.</strong>"
+"La capture d’écran du menu Lecture. Il montre trois éléments : Journal, "
+"Signets et Liens lus."
 
-#: views/onboarding/step2.phtml:24
+#: views/onboarding/step2.phtml:26
 msgid ""
-"The news is the equivalent of a newsfeed on other social networks, except "
-"that it’s not infinite."
+"“News” gives you suggestions of what to read from the websites that you "
+"follow."
 msgstr ""
-"Le journal est l’équivalent des fils d’actualités sur les autres réseaux "
-"sociaux, à la différence qu’il n’est pas infini."
+"Le « Journal » vous suggère des choses à lire depuis les sites que vous "
+"suivez."
+
+#: views/onboarding/step2.phtml:30
+msgid ""
+"Short on time? “Bookmark” links to read later and find them in one click."
+msgstr ""
+"Vous manquez de temps ? Placez vos liens dans les « Signets » pour les lire "
+"plus tard et les retrouver en un clic."
+
+#: views/onboarding/step2.phtml:34
+msgid ""
+"Finally, keep track of the links you have already read in the “Links read” "
+"section."
+msgstr ""
+"Enfin, gardez une trace des liens que vous avez déjà lus depuis la section "
+"« Liens lus »."
 
 #: views/onboarding/step3.phtml:3 views/onboarding/step3.phtml:11
 msgid "Store your links"
 msgstr "Stockez vos liens"
 
 #: views/onboarding/step3.phtml:16
-msgid "<strong>My links</strong> regroup your links organized in collections."
-msgstr ""
-"<strong>Mes liens</strong> regroupent vos liens organisés en collections."
+msgid "<strong>My links</strong> organises your links into collections."
+msgstr "<strong>Mes liens</strong> organisent vos liens en collections."
 
 #: views/onboarding/step3.phtml:20
 msgid ""
-"By default, you start with 4 collections: <strong>“Bookmarks”, “Links read”, "
-"“My favorites” and “My shares”.</strong> Obviously, you can create as many "
-"collections as you want!"
+"All the links you want to be able to find easily have their place in the "
+"collections."
 msgstr ""
-"Par défaut, vous démarrez avec 4 collections : <strong>« Signets », « Liens "
-"lus », « Mes favoris » et « Mes partages ».</strong> Vous pouvez évidemment "
-"créer autant de collections que vous voulez !"
+"Tous les liens que vous souhaitez retrouver facilement plus tard ont leur "
+"place dans les collections."
 
 #: views/onboarding/step3.phtml:24
 msgid ""
-"All the links you want to find later have their place in the collections."
+"By default, you start with 2 collections: <strong>“My favorites” and “My "
+"shares”.</strong> Obviously, you can create as many thematic collections as "
+"you want!"
 msgstr ""
-"Tous les liens que vous souhaitez retrouver plus tard ont leur place dans "
-"les collections."
+"Par défaut, vous démarrez avec 2 collections : <strong>« Mes favoris » et "
+"« Mes partages ».</strong> Vous pouvez évidemment créer autant de "
+"collections thématiques que vous voulez !"
 
 #: views/onboarding/step4.phtml:3 views/onboarding/step4.phtml:11
 msgid "Follow content from Internet"
@@ -2298,20 +2271,20 @@ msgstr ""
 #: views/onboarding/step4.phtml:20
 #, php-format
 msgid ""
-"A lot of sites can be followed in %s <strong>as long as they offer a "
-"<abbr>RSS</abbr> feed</strong>: most news sites, blogs, podcasts… Even "
-"YouTube channels!"
+"A lot of websites can be followed in %s <strong>as long as they offer a Web "
+"feed</strong>: most news sites, blogs, podcasts… Even YouTube channels!"
 msgstr ""
 "Beaucoup de sites peuvent être suivis dans %s <strong>tant qu’ils proposent "
-"un flux <abbr>RSS</abbr></strong> : la plupart des sites d’actualités, les "
-"blogs, les podcasts… Même les chaînes YouTube !"
+"un flux Web</strong> : la plupart des sites d’actualités, les blogs, les "
+"podcasts… Même les chaînes YouTube !"
 
 #: views/onboarding/step4.phtml:24
 msgid ""
-"What if you could follow everything happening on Internet from one place?"
+"This is perfect if you want to be notified when new content is published "
+"without wasting time checking each website individually."
 msgstr ""
-"Et si vous pouviez suivre tout ce qu’il se passe sur Internet depuis un seul "
-"endroit ?"
+"C’est parfait si vous souhaitez être averti⋅e lorsque de nouveaux contenus "
+"sont publiés sans perdre de temps à vérifier chaque site un par un."
 
 #: views/onboarding/step5.phtml:3 views/onboarding/step5.phtml:11
 msgid "Share with the rest of Internet"
