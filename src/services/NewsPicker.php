@@ -10,9 +10,6 @@ use App\models;
  *
  * @phpstan-type Options array{
  *     'number_links': int,
- *     'min_duration': ?int,
- *     'max_duration': ?int,
- *     'from': string,
  * }
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -22,9 +19,6 @@ class NewsPicker
 {
     private const DEFAULT_OPTIONS = [
         'number_links' => 9,
-        'min_duration' => null,
-        'max_duration' => null,
-        'from' => 'bookmarks',
     ];
 
     private models\User $user;
@@ -35,12 +29,9 @@ class NewsPicker
     /**
      * @param array{
      *     'number_links'?: int,
-     *     'min_duration'?: ?int,
-     *     'max_duration'?: ?int,
-     *     'from'?: string,
      * } $options
      */
-    public function __construct(models\User $user, array $options)
+    public function __construct(models\User $user, array $options = [])
     {
         $this->user = $user;
         $this->options = array_merge(self::DEFAULT_OPTIONS, $options);
@@ -53,20 +44,7 @@ class NewsPicker
      */
     public function pick(): array
     {
-        if ($this->options['from'] === 'bookmarks') {
-            $links = models\Link::listFromBookmarksForNews(
-                $this->user->id,
-                $this->options['min_duration'],
-                $this->options['max_duration'],
-            );
-        } else {
-            $links = models\Link::listFromFollowedCollectionsForNews(
-                $this->user->id,
-                $this->options['min_duration'],
-                $this->options['max_duration'],
-            );
-        }
-
+        $links = models\Link::listFromFollowedCollectionsForNews($this->user->id);
         $links = $this->mergeByUrl($links);
         return array_slice($links, 0, $this->options['number_links']);
     }

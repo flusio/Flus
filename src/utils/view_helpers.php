@@ -193,28 +193,6 @@ function human_implode(array $array, string $separator, string $last_separator):
 }
 
 /**
- * Return a random sentence to display when there are no news.
- */
-function no_news_sentence(bool $beta_enabled): string
-{
-    $bookmarks_url = url('bookmarks');
-    $sentence = _('There are no relevant links to suggest at this time.') . '<br />';
-    if (!$beta_enabled) {
-        $sentence .= _f('You can add links to <a href="%s">your bookmarks</a> to read them later.', $bookmarks_url);
-    }
-
-    if (rand(0, 100) === 0) {
-        if (rand(0, 10) === 0) {
-            $sentence .= '<span class="easter-egg">🦔</span>';
-        } else {
-            $sentence .= '<span class="easter-egg">🐾</span>';
-        }
-    }
-
-    return $sentence;
-}
-
-/**
  * Return the list of publishers of a collection.
  */
 function collection_publishers(\App\models\Collection $collection, ?\App\models\User $current_user): string

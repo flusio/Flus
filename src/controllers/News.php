@@ -49,7 +49,6 @@ class News
      * collections)
      *
      * @request_param string csrf
-     * @request_param string type
      *
      * @response 302 /login?redirect_to=/news
      *     if not connected
@@ -66,7 +65,6 @@ class News
             ]);
         }
 
-        $type = $request->param('type', '');
         $csrf = $request->param('csrf', '');
 
         $news = $user->news();
@@ -80,28 +78,9 @@ class News
             ]);
         }
 
-        if ($type === 'newsfeed') {
-            $beta_enabled = models\FeatureFlag::isEnabled('beta', $user->id);
-
-            $options = [
-                'number_links' => $beta_enabled ? 50 : 9,
-                'from' => 'followed',
-            ];
-        } elseif ($type === 'short') {
-            $options = [
-                'number_links' => 3,
-                'max_duration' => 10,
-                'from' => 'bookmarks',
-            ];
-        } else {
-            $options = [
-                'number_links' => 1,
-                'min_duration' => 10,
-                'from' => 'bookmarks',
-            ];
-        }
-
-        $news_picker = new services\NewsPicker($user, $options);
+        $news_picker = new services\NewsPicker($user, [
+            'number_links' => 50,
+        ]);
         $links = $news_picker->pick();
 
         $news = $user->news();

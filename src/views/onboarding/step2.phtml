@@ -1,6 +1,6 @@
 <?php
     $this->layout('onboarding.phtml', [
-        'title' => _('Stay informed with the news'),
+        'title' => _('Read at your own pace'),
         'canonical' => url_full('onboarding', ['step' => 2]),
         'current_step' => 2,
     ]);
@@ -8,20 +8,30 @@
 
 <div class="section section--longbottom">
     <div class="section__title">
-        <h1><?= _('Stay informed with the news') ?></h1>
+        <h1><?= _('Read at your own pace') ?></h1>
     </div>
 
     <p class="section__intro">
-        <?= icon('news') ?>
-        <?= _('The <strong>News</strong> is where you get suggestions of what to read.') ?>
+        <?= icon('reading') ?>
+        <?= _('The <strong>Reading</strong> tab helps you organise your reading list.') ?>
+    </p>
+
+    <img
+        class="illustration illustration--centered"
+        alt="<?= _('The screenshot of the Reading menu. It shows three elements: News, Bookmarks and Links read.') ?>"
+        src="<?= url_static("onboarding/reading_menu.{$current_locale}.webp") ?>"
+    />
+
+    <p class="paragraph--centered">
+        <?= _('“News” gives you suggestions of what to read from the websites that you follow.') ?>
     </p>
 
     <p class="paragraph--centered">
-        <?= _('It suggests you things to read from your bookmarks or from the feeds that you follow. It is volontarily limited in time and size <strong>to keep information overload away from you.</strong>') ?>
+        <?= _('Short on time? “Bookmark” links to read later and find them in one click.') ?>
     </p>
 
     <p class="paragraph--centered">
-        <?= _('The news is the equivalent of a newsfeed on other social networks, except that it’s not infinite.') ?>
+        <?= _('Finally, keep track of the links you have already read in the “Links read” section.') ?>
     </p>
 
     <p class="paragraph--centered">

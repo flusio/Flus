@@ -124,7 +124,3 @@ hr {
 
     background: linear-gradient(to right, var(--color-turquoise-5), var(--color-purple-5));
 }
-
-.easter-egg {
-    float: right;
-}

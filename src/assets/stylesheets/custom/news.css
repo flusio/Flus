@@ -2,30 +2,6 @@
     animation: icon-spin 5s linear infinite;
 }
 
-@media (max-width: 799px) {
-    .news-selection__button {
-        display: flex;
-
-        align-items: center;
-    }
-
-    .news-selection__image {
-        width: auto;
-        height: 125px;
-        min-height: auto;
-    }
-
-    .news-selection__description {
-        flex: 1;
-    }
-}
-
-.news-selection__title {
-    display: block;
-    margin-top: var(--space-small);
-    margin-bottom: var(--space-small);
-}
-
 .news__source {
     font-style: italic;
 }

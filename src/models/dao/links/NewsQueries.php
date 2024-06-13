@@ -13,82 +13,18 @@ use Minz\Database;
 trait NewsQueries
 {
     /**
-     * Return links listed in bookmarks of the given user, ordered randomly.
-     *
-     * @return self[]
-     */
-    public static function listFromBookmarksForNews(
-        string $user_id,
-        ?int $min_duration,
-        ?int $max_duration,
-    ): array {
-        $where_placeholder = '';
-        $values = [
-            ':user_id' => $user_id,
-        ];
-
-        if ($min_duration !== null) {
-            $where_placeholder .= 'AND l.reading_time >= :min_duration ';
-            $values[':min_duration'] = $min_duration;
-        }
-
-        if ($max_duration !== null) {
-            $where_placeholder .= 'AND l.reading_time < :max_duration ';
-            $values[':max_duration'] = $max_duration;
-        }
-
-        $sql = <<<SQL
-            SELECT l.*, lc.created_at AS published_at, 'bookmarks' AS source_news_type
-            FROM links l, collections c, links_to_collections lc
-
-            WHERE lc.link_id = l.id
-            AND lc.collection_id = c.id
-
-            AND c.user_id = :user_id
-            AND l.user_id = :user_id
-
-            AND c.type = 'bookmarks'
-
-            {$where_placeholder}
-
-            GROUP BY l.id, lc.created_at
-
-            ORDER BY random()
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($values);
-
-        return self::fromDatabaseRows($statement->fetchAll());
-    }
-
-    /**
      * Return public links listed in followed collections of the given user,
      * ordered by publication date. Links with a matching url in bookmarks or
      * read list are not returned.
      *
      * @return self[]
      */
-    public static function listFromFollowedCollectionsForNews(
-        string $user_id,
-        ?int $min_duration,
-        ?int $max_duration,
-    ): array {
+    public static function listFromFollowedCollectionsForNews(string $user_id): array
+    {
         $where_placeholder = '';
         $values = [
             ':user_id' => $user_id,
         ];
-
-        if ($min_duration !== null) {
-            $where_placeholder .= 'AND l.reading_time >= :min_duration ';
-            $values[':min_duration'] = $min_duration;
-        }
-
-        if ($max_duration !== null) {
-            $where_placeholder .= 'AND l.reading_time < :max_duration ';
-            $values[':max_duration'] = $max_duration;
-        }
 
         $where_placeholder .= <<<'SQL'
             AND (

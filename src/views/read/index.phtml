@@ -10,9 +10,9 @@
     $this->layout('reading.phtml', [
         'title' => $collection->name(),
         'canonical' => url_full('read list', $current_url_params),
-        'current_tab' => $beta_enabled ? 'reading' : 'links',
+        'current_tab' => 'reading',
         'current_page' => 'read',
-        'reset_back_options' => $beta_enabled,
+        'reset_back_options' => true,
     ]);
 ?>
 
