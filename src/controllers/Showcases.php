@@ -31,6 +31,8 @@ class Showcases
             return Response::ok('showcases/show_link.phtml');
         } elseif ($id === 'contact') {
             return Response::ok('showcases/show_contact.phtml');
+        } elseif ($id === 'reading') {
+            return Response::ok('showcases/show_reading.phtml');
         } else {
             return Response::notFound('not_found.phtml');
         }

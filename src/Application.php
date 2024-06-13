@@ -140,6 +140,8 @@ class Application
                 $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'link']);
             } elseif ($current_user->autoload_modal === 'showcase contact') {
                 $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'contact']);
+            } elseif ($current_user->autoload_modal === 'showcase reading') {
+                $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'reading']);
             }
 
             // Force CSRF token to avoid weird issues when user did nothing for a while

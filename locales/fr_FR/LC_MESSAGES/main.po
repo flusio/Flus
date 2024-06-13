@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-06-11 18:06+0200\n"
-"PO-Revision-Date: 2024-06-11 18:06+0200\n"
+"POT-Creation-Date: 2024-06-13 15:29+0200\n"
+"PO-Revision-Date: 2024-06-13 15:29+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2200,7 +2200,7 @@ msgstr ""
 "L’onglet <strong>Lecture</strong> vous aide à organiser votre liste de "
 "lecture."
 
-#: views/onboarding/step2.phtml:21
+#: views/onboarding/step2.phtml:21 views/showcases/show_reading.phtml:24
 msgid ""
 "The screenshot of the Reading menu. It shows three elements: News, Bookmarks "
 "and Links read."
@@ -2703,6 +2703,7 @@ msgid "Links have been improved"
 msgstr "Les liens ont été améliorés"
 
 #: views/showcases/show_link.phtml:15 views/showcases/show_navigation.phtml:15
+#: views/showcases/show_reading.phtml:15
 msgid "Something has changed!"
 msgstr "Quelque chose a changé !"
 
@@ -2732,6 +2733,7 @@ msgstr ""
 "Les liens ont également été améliorés sur mobile pour gagner de la place."
 
 #: views/showcases/show_link.phtml:33 views/showcases/show_navigation.phtml:33
+#: views/showcases/show_reading.phtml:29
 msgid ""
 "Don’t hesitate <strong>to give feedback</strong> from the “Help & support” "
 "menu!"
@@ -2740,6 +2742,7 @@ msgstr ""
 "support » !"
 
 #: views/showcases/show_link.phtml:39 views/showcases/show_navigation.phtml:39
+#: views/showcases/show_reading.phtml:35
 msgid "Got it!"
 msgstr "C’est noté !"
 
@@ -2771,6 +2774,21 @@ msgstr ""
 "Vos signets, liens lus et vos propres collections se trouvent maintenant "
 "dans l’onglet « Mes liens ». Les collections et les flux suivis ne sont plus "
 "qu’un seul concept et peuvent être retrouvés dans l’onglet « Flux »."
+
+#: views/showcases/show_reading.phtml:3 views/showcases/show_reading.phtml:11
+msgid "Organise your reading list more easily"
+msgstr "Organisez votre liste de lecture plus facilement"
+
+#: views/showcases/show_reading.phtml:19
+msgid ""
+"<strong>A new “Reading” tab is now available in the main navigation menu.</"
+"strong> It brings together all the features related to reading: “News”, "
+"“Bookmarks” and “Links read” are accessible in one click."
+msgstr ""
+"<strong>Un nouvel onglet « Lecture » est désormais disponible dans le menu "
+"de navigation principal.</strong> Il regroupe toutes les fonctionnalités "
+"liées à la lecture : le « Journal », les « Signets » et les « Liens lus » "
+"sont accessibles en un clic."
 
 #: views/support/show.phtml:16
 msgid ""
