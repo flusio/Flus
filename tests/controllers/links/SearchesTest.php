@@ -16,9 +16,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');

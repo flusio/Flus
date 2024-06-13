@@ -9,7 +9,7 @@ export default class extends Controller {
         }
     }
 
-    update (e) {
+    update () {
         const summaryElement = this.element.querySelector('summary');
         if (summaryElement) {
             summaryElement.setAttribute('aria-expanded', this.element.open);
@@ -29,7 +29,7 @@ export default class extends Controller {
         this.element.open = false;
     }
 
-    closeOnEscape (e) {
+    closeOnEscape (event) {
         if (event.key !== 'Escape') {
             return;
         }

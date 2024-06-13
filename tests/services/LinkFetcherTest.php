@@ -12,9 +12,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \tests\MockHttpHelper;
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
         /** @var string */

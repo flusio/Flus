@@ -23,9 +23,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'onboarding/step1.phtml');
     }
 
-    /**
-     * @dataProvider validStepsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('validStepsProvider')]
     public function testShowAcceptsAStep(int $step): void
     {
         $this->login();
@@ -45,9 +43,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fonboarding');
     }
 
-    /**
-     * @dataProvider invalidStepsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidStepsProvider')]
     public function testShowFailsIfStepIsOutOfBound(int $step): void
     {
         $this->login();

@@ -4,9 +4,7 @@ namespace SpiderBits;
 
 class ClearUrlsTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @dataProvider clearProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('clearProvider')]
     public function testClear(string $tracked_url, string $expected_url): void
     {
         $cleared_url = ClearUrls::clear($tracked_url);

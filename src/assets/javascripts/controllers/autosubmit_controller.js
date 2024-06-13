@@ -21,7 +21,7 @@ export default class extends Controller {
         }
     }
 
-    submit (event) {
+    submit () {
         this.element.submit();
     }
 };

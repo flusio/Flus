@@ -23,18 +23,14 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     /** @var string */
     private $exportations_path;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setRouterToUrl(): void
     {
         $router = \App\Router::load();
         \Minz\Engine::init($router);
     }
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function setExportationsPath(): void
     {
         $tmp_path = \Minz\Configuration::$tmp_path;

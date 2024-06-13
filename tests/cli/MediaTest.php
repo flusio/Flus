@@ -16,17 +16,13 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void
     {
         self::$application = new \App\cli\Application();
     }
 
-    /**
-     * @after
-     */
+    #[\PHPUnit\Framework\Attributes\After]
     public function clearMediaDirectories(): void
     {
         /** @var string */

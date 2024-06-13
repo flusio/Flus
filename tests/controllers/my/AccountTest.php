@@ -16,17 +16,13 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function initializeSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
     }
 
-    /**
-     * @afterClass
-     */
+    #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function resetSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;

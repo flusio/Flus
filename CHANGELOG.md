@@ -1,5 +1,11 @@
 # Changelog of Flus
 
+## unreleased
+
+### Migration notes
+
+PHP 8.2+ is now required.
+
 ## 2024-04-02 - v0.59
 
 ### New

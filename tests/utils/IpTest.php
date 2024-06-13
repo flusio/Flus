@@ -4,9 +4,7 @@ namespace App\utils;
 
 class IpTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @dataProvider maskProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('maskProvider')]
     public function testMask(string $ip, string $masked): void
     {
         $result = Ip::mask($ip);

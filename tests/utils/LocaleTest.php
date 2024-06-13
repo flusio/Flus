@@ -4,9 +4,7 @@ namespace App\utils;
 
 class LocaleTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @dataProvider englishAcceptLanguage
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('englishAcceptLanguage')]
     public function testBestWithEnglish(string $accept_language): void
     {
         $locale = Locale::best($accept_language);
@@ -14,9 +12,7 @@ class LocaleTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('en_GB', $locale);
     }
 
-    /**
-     * @dataProvider frenchAcceptLanguage
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('frenchAcceptLanguage')]
     public function testBestWithFrench(string $accept_language): void
     {
         $locale = Locale::best($accept_language);

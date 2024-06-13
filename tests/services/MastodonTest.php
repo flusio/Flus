@@ -11,9 +11,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function initEngine(): void
     {
         $router = \App\Router::load();

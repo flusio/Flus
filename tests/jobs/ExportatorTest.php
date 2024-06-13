@@ -10,26 +10,20 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\InitializerHelper;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function initEngine(): void
     {
         $router = \App\Router::load();
         \Minz\Engine::init($router);
     }
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setJobAdapterToDatabase(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
     }
 
-    /**
-     * @afterClass
-     */
+    #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function setJobAdapterToTest(): void
     {
         \Minz\Configuration::$jobs_adapter = 'test';

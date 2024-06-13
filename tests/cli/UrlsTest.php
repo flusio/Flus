@@ -9,17 +9,13 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void
     {
         self::$application = new \App\cli\Application();
     }
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');

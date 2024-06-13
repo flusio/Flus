@@ -15,9 +15,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void
     {
         self::$application = new \App\cli\Application();

@@ -6,9 +6,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 {
     public static string $examples_path;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setExamplesPath(): void
     {
         $app_path = \Minz\Configuration::$app_path;

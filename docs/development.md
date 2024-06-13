@@ -64,7 +64,7 @@ and containers aren’t deleted this way).
 
 Here are some indicators if you’re not using Docker.
 
-First, make sure you have PHP 8.1+, Node 14 and a running PostgreSQL 13 with a
+First, make sure you have PHP 8.2+, Node 14 and a running PostgreSQL 13 with a
 user being able to create and drop a database. You also must install [the PHP
 `composer` dependency manager](https://getcomposer.org/).
 

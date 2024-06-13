@@ -196,9 +196,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->avatar_filename);
     }
 
-    /**
-     * @dataProvider tooLargeErrorsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('tooLargeErrorsProvider')]
     public function testUpdateFailsIfTooLarge(int $error): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
@@ -223,9 +221,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->avatar_filename);
     }
 
-    /**
-     * @dataProvider otherFileErrorsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('otherFileErrorsProvider')]
     public function testUpdateFailsIfFileFailedToUpload(int $error): void
     {
         $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';

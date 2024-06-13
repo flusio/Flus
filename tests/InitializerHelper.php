@@ -14,9 +14,8 @@ trait InitializerHelper
 
     /**
      * Start a new transaction for the test
-     *
-     * @before
      */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function truncateTables(): void
     {
         $database = \Minz\Database::get();
@@ -36,17 +35,13 @@ trait InitializerHelper
         SQL);
     }
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function resetSession(): void
     {
         session_unset();
     }
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function resetTestMailer(): void
     {
         \Minz\Tests\Mailer::clear();
