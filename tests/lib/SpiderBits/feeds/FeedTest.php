@@ -6,9 +6,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
 {
     public static string $examples_path;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setExamplesPath(): void
     {
         $app_path = \Minz\Configuration::$app_path;
@@ -424,9 +422,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider validContentType
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('validContentType')]
     public function testIsFeedContentTypeWithValidContentTypeReturnsTrue(string $content_type): void
     {
         $result = Feed::isFeedContentType($content_type);
@@ -434,9 +430,7 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($result);
     }
 
-    /**
-     * @dataProvider invalidContentType
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidContentType')]
     public function testIsFeedContentTypeWithInvalidContentTypeReturnsTrue(string $content_type): void
     {
         $result = Feed::isFeedContentType($content_type);

@@ -10,9 +10,7 @@ class MailerTest extends \PHPUnit\Framework\TestCase
     use \tests\InitializerHelper;
     use \Minz\Tests\MailerAsserts;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function initEngine(): void
     {
         $router = \App\Router::load();

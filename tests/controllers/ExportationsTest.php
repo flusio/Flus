@@ -16,17 +16,13 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setJobAdapterToDatabase(): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
     }
 
-    /**
-     * @afterClass
-     */
+    #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function setJobAdapterToTest(): void
     {
         \Minz\Configuration::$jobs_adapter = 'test';

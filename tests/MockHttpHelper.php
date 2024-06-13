@@ -10,9 +10,8 @@ trait MockHttpHelper
 {
     /**
      * Clear mocks after each test if it has been enabled.
-     *
-     * @after
      */
+    #[\PHPUnit\Framework\Attributes\After]
     public function clearMockHttp(): void
     {
         if (\SpiderBits\Http::$mock_host) {

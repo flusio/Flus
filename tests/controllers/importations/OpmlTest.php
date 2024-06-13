@@ -238,9 +238,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    /**
-     * @dataProvider tooLargeErrorsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('tooLargeErrorsProvider')]
     public function testImportFailsIfFileIsTooLarge(int $error): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';
@@ -265,9 +263,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
     }
 
-    /**
-     * @dataProvider otherFileErrorsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('otherFileErrorsProvider')]
     public function testImportFailsIfFileFailedToUpload(int $error): void
     {
         \Minz\Configuration::$jobs_adapter = 'database';

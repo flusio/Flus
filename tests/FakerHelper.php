@@ -12,9 +12,7 @@ trait FakerHelper
 {
     private static \Faker\Generator $faker;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function initializeFaker(): void
     {
         self::$faker = \Faker\Factory::create();

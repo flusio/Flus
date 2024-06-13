@@ -12,9 +12,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\InitializerHelper;
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function resetCurrentUser(): void
     {
         CurrentUser::reset();

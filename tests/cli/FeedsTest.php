@@ -13,17 +13,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void
     {
         self::$application = new \App\cli\Application();
     }
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function changeJobAdapterToDatabase(): void
     {
         // Adding a feed will fetch its links one by one via a job.
@@ -32,9 +28,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         \Minz\Configuration::$jobs_adapter = 'database';
     }
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
         $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
@@ -46,9 +40,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @afterClass
-     */
+    #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function changeJobAdapterToTest(): void
     {
         \Minz\Configuration::$jobs_adapter = 'test';

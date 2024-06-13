@@ -3,9 +3,7 @@
 // phpcs:ignore PSR1.Classes.ClassDeclaration.MissingNamespace
 class ViewHelpersTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadViewHelpers(): void
     {
         // This is done in the src/Application.php file normally

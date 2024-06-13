@@ -19,9 +19,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
     private models\User $user;
     private models\User $other_user;
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function setUsers(): void
     {
         $this->user = UserFactory::create();

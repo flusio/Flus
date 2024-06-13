@@ -10,17 +10,13 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void
     {
         self::$application = new \App\cli\Application();
     }
 
-    /**
-     * @afterClass
-     */
+    #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function recreateDatabase(): void
     {
         \Minz\Database::reset();

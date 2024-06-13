@@ -4,9 +4,7 @@ namespace SpiderBits;
 
 class UrlTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @dataProvider absolutizeProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('absolutizeProvider')]
     public function testAbsolutize(string $base_url, string $url, string $expected): void
     {
         $absolutized_url = Url::absolutize($url, $base_url);
@@ -14,9 +12,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected, $absolutized_url);
     }
 
-    /**
-     * @dataProvider sanitizeProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('sanitizeProvider')]
     public function testSanitize(string $input, string $expected): void
     {
         $sanitized_url = Url::sanitize($input);
@@ -25,10 +21,9 @@ class UrlTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider parseAndBuildQueryProvider
-     *
      * @param array<string, string|null|array<?string>> $expected_parameters
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('parseAndBuildQueryProvider')]
     public function testParseQuery(string $query, array $expected_parameters): void
     {
         $parameters = Url::parseQuery($query);
@@ -37,10 +32,9 @@ class UrlTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider parseAndBuildQueryProvider
-     *
      * @param array<string, string|null|array<?string>> $parameters
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('parseAndBuildQueryProvider')]
     public function testBuildQuery(string $expected_query, array $parameters): void
     {
         $query = Url::buildQuery($parameters);

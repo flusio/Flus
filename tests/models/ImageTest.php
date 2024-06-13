@@ -5,8 +5,6 @@ namespace App\models;
 class ImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @dataProvider resizeProvider
-     *
      * @param array{int, int} $initial_size
      * @param array{int, int} $destination_size
      * @param array{
@@ -16,6 +14,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      *     'height': int,
      * } $expected_rect
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('resizeProvider')]
     public function testResizeRectangle(array $initial_size, array $destination_size, array $expected_rect): void
     {
         $src_rect = Image::resizeRectangle($initial_size, $destination_size);

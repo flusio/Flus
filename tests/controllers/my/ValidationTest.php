@@ -18,17 +18,13 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function initializeSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = true;
     }
 
-    /**
-     * @afterClass
-     */
+    #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function resetSubscriptionConfiguration(): void
     {
         \Minz\Configuration::$application['subscriptions_enabled'] = false;

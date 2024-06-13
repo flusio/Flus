@@ -6,9 +6,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
 {
     private static string $cache_path;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setCachePath(): void
     {
         /** @var string */
@@ -16,9 +14,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         self::$cache_path = $cache_path;
     }
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
         $files = glob(self::$cache_path . '/*');

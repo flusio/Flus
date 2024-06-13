@@ -22,9 +22,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     /** @var string */
     private static $pocket_consumer_key;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function savePocketConsumerKey(): void
     {
         /** @var string */
@@ -32,9 +30,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         self::$pocket_consumer_key = $pocket_consumer_key;
     }
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function forcePocketConsumerKey(): void
     {
         // because some tests disable Pocket to test 404 pages

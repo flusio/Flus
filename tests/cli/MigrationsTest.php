@@ -7,17 +7,13 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void
     {
         self::$application = new \App\cli\Application();
     }
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function uninstall(): void
     {
         $migration_file = \Minz\Configuration::$data_path . '/migrations_version.txt';
@@ -25,9 +21,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
         \Minz\Database::drop();
     }
 
-    /**
-     * @afterClass
-     */
+    #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function recreateDatabase(): void
     {
         \Minz\Database::reset();
