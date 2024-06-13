@@ -1,4 +1,4 @@
-import * as Turbo from '@hotwired/turbo'; // eslint-disable-line no-unused-vars
+import * as Turbo from '@hotwired/turbo';
 import { Application } from '@hotwired/stimulus';
 
 import AutosubmitController from 'js/controllers/autosubmit_controller.js';
@@ -71,7 +71,7 @@ document.addEventListener('turbo:submit-start', (event) => {
     }
 });
 
-document.addEventListener('turbo:before-render', (event) => {
+document.addEventListener('turbo:before-render', () => {
     if (disableScroll) {
         // As explained on GitHub, `Turbo.navigator.currentVisit.scrolled`
         // is internal and private attribute: we should NOT access it.

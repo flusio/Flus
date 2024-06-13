@@ -5,7 +5,7 @@ export default class extends Controller {
         return ['file'];
     }
 
-    openFile (event) {
+    openFile () {
         this.fileTarget.click();
     }
 }

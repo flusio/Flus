@@ -8,7 +8,7 @@ export default class extends Controller {
         return ['copyable', 'feedback'];
     }
 
-    copy (event) {
+    copy () {
         let text;
         if (this.copyableTarget.hasAttribute('value')) {
             text = this.copyableTarget.getAttribute('value').trim();

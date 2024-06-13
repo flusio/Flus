@@ -2,12 +2,13 @@
   "name": "Flus",
   "license": "AGPL-3.0-or-later",
   "repository": "github:flusio/Flus",
+  "type": "module",
   "scripts": {
     "watch": "parcel watch --no-hmr --dist-dir public/dev_assets src/assets/*/application.*",
     "build": "parcel build --dist-dir public/assets src/assets/*/application.*",
     "build:icons": "svg-sprite --symbol --symbol-dest=. --symbol-sprite=icons.svg --dest=public/static src/assets/icons/*",
-    "lint-js": "eslint src/assets/javascripts/",
-    "lint-js-fix": "eslint --fix src/assets/javascripts/",
+    "lint-js": "eslint -c .eslint.config.js src/assets/javascripts/",
+    "lint-js-fix": "eslint -c .eslint.config.js --fix src/assets/javascripts/",
     "lint-css": "stylelint src/assets/stylesheets/**/*.css",
     "lint-css-fix": "stylelint --fix src/assets/stylesheets/**/*.css"
   },
@@ -24,13 +25,9 @@
     "js": "./src/assets/javascripts"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.18.0",
     "@stylistic/stylelint-plugin": "^2",
-    "eslint": "^8.44.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.0",
+    "eslint": "^9.4.0",
+    "globals": "^15.4.0",
     "parcel": "^2.7.0",
     "stylelint": "^16",
     "stylelint-config-standard": "^36",

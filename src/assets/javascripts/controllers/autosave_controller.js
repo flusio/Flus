@@ -34,7 +34,7 @@ export default class extends Controller {
         let data = {};
         try {
             data = JSON.parse(rawData);
-        } catch (e) {
+        } catch {
             return {};
         }
 
@@ -49,7 +49,7 @@ export default class extends Controller {
         return data;
     }
 
-    clear (event) {
+    clear () {
         window.localStorage.removeItem(this.namespace);
     }
 };
