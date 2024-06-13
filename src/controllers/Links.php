@@ -347,7 +347,7 @@ class Links
 
         $existing_link = models\Link::findBy([
             'user_id' => $user->id,
-            'url_lookup' => utils\Belt::removeScheme($link->url),
+            'url_hash' => models\Link::hashUrl($link->url),
         ]);
         if ($existing_link) {
             $link = $existing_link;

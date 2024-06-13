@@ -3,6 +3,7 @@
 namespace App\models\dao;
 
 use Minz\Database;
+use App\models;
 
 /**
  * Represent a link in database.
@@ -375,7 +376,7 @@ trait Link
             FROM links l, collections c, links_to_collections lc
 
             WHERE l.user_id = :user_id
-            AND l.url_lookup = simplify_url(:url)
+            AND l.url_hash = :url_hash
 
             AND c.type = 'bookmarks'
 
@@ -387,7 +388,7 @@ trait Link
         $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
-            ':url' => $url,
+            ':url_hash' => models\Link::hashUrl($url),
         ]);
 
         return (bool) $statement->fetchColumn();
@@ -403,7 +404,7 @@ trait Link
             FROM links l, collections c, links_to_collections lc
 
             WHERE l.user_id = :user_id
-            AND l.url_lookup = simplify_url(:url)
+            AND l.url_hash = :url_hash
 
             AND c.type = 'read'
 
@@ -415,7 +416,7 @@ trait Link
         $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
-            ':url' => $url,
+            ':url_hash' => models\Link::hashUrl($url),
         ]);
 
         return (bool) $statement->fetchColumn();
@@ -427,7 +428,7 @@ trait Link
     public static function findNotOwnedByCollectionIdAndUrl(
         string $user_id,
         string $collection_id,
-        string $url_lookup,
+        string $url_hash,
     ): ?self {
         $sql = <<<SQL
             SELECT l.*
@@ -436,7 +437,7 @@ trait Link
             WHERE lc.link_id = l.id
             AND lc.collection_id = :collection_id
 
-            AND l.url_lookup = :url_lookup
+            AND l.url_hash = :url_hash
             AND l.user_id != :user_id
         SQL;
 
@@ -445,7 +446,7 @@ trait Link
         $statement->execute([
             ':user_id' => $user_id,
             ':collection_id' => $collection_id,
-            ':url_lookup' => $url_lookup,
+            ':url_hash' => $url_hash,
         ]);
 
         $result = $statement->fetch();

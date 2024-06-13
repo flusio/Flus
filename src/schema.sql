@@ -1,9 +1,4 @@
-CREATE FUNCTION simplify_url(url TEXT)
-RETURNS TEXT
-IMMUTABLE
-RETURNS NULL ON NULL INPUT
-AS $$ SELECT substring(url from 'https?://(.+)') $$
-LANGUAGE SQL;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE jobs (
     id SERIAL PRIMARY KEY,
@@ -164,13 +159,13 @@ CREATE TABLE links (
     group_by_source BOOLEAN NOT NULL DEFAULT false,
 
     search_index TSVECTOR GENERATED ALWAYS AS (to_tsvector('french', title || ' ' || url)) STORED,
-    url_lookup TEXT GENERATED ALWAYS AS (simplify_url(url)) STORED,
+    url_hash TEXT GENERATED ALWAYS AS (encode(digest(url, 'sha256'), 'hex')) STORED,
 
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE INDEX idx_links_user_id_url ON links(user_id, url_lookup);
-CREATE INDEX idx_links_url ON links(url_lookup);
+CREATE INDEX idx_links_user_id_url_hash ON links USING btree(user_id, url_hash);
+CREATE INDEX idx_links_url_hash ON links USING hash(url_hash);
 CREATE INDEX idx_links_fetched_at ON links(fetched_at) WHERE fetched_at IS NULL;
 CREATE INDEX idx_links_fetched_code ON links(fetched_code) WHERE fetched_code < 200 OR fetched_code >= 300;
 CREATE INDEX idx_links_image_filename ON links(image_filename) WHERE image_filename IS NOT NULL;

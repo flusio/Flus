@@ -101,7 +101,7 @@ class Link
     public string $search_index;
 
     #[Database\Column(computed: true)]
-    public string $url_lookup;
+    public string $url_hash;
 
     public function __construct(string $url, string $user_id, bool $is_hidden)
     {
@@ -290,5 +290,10 @@ class Link
         $host = \Minz\Configuration::$url_options['host'];
         $date = $this->created_at->format('Y-m-d');
         return "tag:{$host},{$date}:links/{$this->id}";
+    }
+
+    public static function hashUrl(string $url): string
+    {
+        return hash('sha256', $url);
     }
 }

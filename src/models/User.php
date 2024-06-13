@@ -405,10 +405,10 @@ class User
         // Complete the owned_links list with links owned by the user, from the
         // database.
         $urls = array_column($not_owned_links, 'url');
-        $urls_lookup = array_map(['\App\utils\Belt', 'removeScheme'], $urls);
+        $urls_hashes = array_map(['\App\models\Link', 'hashUrl'], $urls);
         $related_links = Link::listBy([
             'user_id' => $this->id,
-            'url_lookup' => $urls_lookup,
+            'url_hash' => $urls_hashes,
         ]);
         $owned_links = array_merge($owned_links, $related_links);
 

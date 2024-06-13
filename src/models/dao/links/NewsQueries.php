@@ -38,7 +38,7 @@ trait NewsQueries
 
         $sql = <<<SQL
             WITH excluded_links AS (
-                SELECT l_exclude.id, l_exclude.url_lookup
+                SELECT l_exclude.id, l_exclude.url_hash
                 FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
 
                 WHERE c_exclude.user_id = :user_id
@@ -57,7 +57,7 @@ trait NewsQueries
             FROM collections c, links_to_collections lc, followed_collections fc, links l
 
             LEFT JOIN excluded_links
-            ON excluded_links.url_lookup = l.url_lookup
+            ON excluded_links.url_hash = l.url_hash
 
             WHERE fc.user_id = :user_id
             AND fc.collection_id = lc.collection_id

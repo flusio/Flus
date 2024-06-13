@@ -121,42 +121,6 @@ class BeltTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $host);
     }
 
-    public function testRemoveScheme(): void
-    {
-        $url = 'https://flus.fr';
-
-        $without_scheme = Belt::removeScheme($url);
-
-        $this->assertSame('flus.fr', $without_scheme);
-    }
-
-    public function testRemoveSchemeWithHttp(): void
-    {
-        $url = 'http://flus.fr';
-
-        $without_scheme = Belt::removeScheme($url);
-
-        $this->assertSame('flus.fr', $without_scheme);
-    }
-
-    public function testRemoveSchemeWithoutScheme(): void
-    {
-        $url = 'flus.fr';
-
-        $without_scheme = Belt::removeScheme($url);
-
-        $this->assertSame('flus.fr', $without_scheme);
-    }
-
-    public function testRemoveSchemeWithEmptyString(): void
-    {
-        $url = '';
-
-        $without_scheme = Belt::removeScheme($url);
-
-        $this->assertSame('', $without_scheme);
-    }
-
     public function testFilenameToSubpath(): void
     {
         $filename = 'abcdefghijklmnop.png';

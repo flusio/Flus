@@ -418,7 +418,7 @@ trait Collection
      *
      * @return self[]
      */
-    public static function listWritableContainingNotOwnedLinkWithUrl(string $user_id, string $url_lookup): array
+    public static function listWritableContainingNotOwnedLinkWithUrl(string $user_id, string $url_hash): array
     {
         $sql = <<<'SQL'
             SELECT c.*
@@ -428,7 +428,7 @@ trait Collection
             AND lc.link_id = l.id
 
             AND l.user_id != :user_id
-            AND l.url_lookup = :url_lookup
+            AND l.url_hash = :url_hash
 
             AND (
                 c.user_id = :user_id OR EXISTS (
@@ -445,7 +445,7 @@ trait Collection
         $statement = $database->prepare($sql);
         $statement->execute([
             ':user_id' => $user_id,
-            ':url_lookup' => $url_lookup,
+            ':url_hash' => $url_hash,
         ]);
 
         return self::fromDatabaseRows($statement->fetchAll());

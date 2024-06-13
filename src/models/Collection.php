@@ -232,12 +232,12 @@ class Collection
      * Return a link from this collection with the given URL and not owned by
      * the given user.
      */
-    public function linkNotOwnedByUrl(string $user_id, string $url_lookup): ?Link
+    public function linkNotOwnedByUrl(string $user_id, string $url_hash): ?Link
     {
         return Link::findNotOwnedByCollectionIdAndUrl(
             $user_id,
             $this->id,
-            $url_lookup,
+            $url_hash,
         );
     }
 

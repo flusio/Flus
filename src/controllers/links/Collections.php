@@ -50,7 +50,7 @@ class Collections
         } else {
             $existing_link = models\Link::findBy([
                 'user_id' => $user->id,
-                'url_lookup' => utils\Belt::removeScheme($link->url),
+                'url_hash' => models\Link::hashUrl($link->url),
             ]);
             if ($existing_link) {
                 $link = $existing_link;
@@ -77,7 +77,7 @@ class Collections
         $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
         $collections_by_others = models\Collection::listWritableContainingNotOwnedLinkWithUrl(
             $user->id,
-            $link->url_lookup,
+            $link->url_hash,
         );
         $collections_by_others = utils\Sorter::localeSort($collections_by_others, 'name');
 

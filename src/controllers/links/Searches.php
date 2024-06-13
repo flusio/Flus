@@ -41,11 +41,11 @@ class Searches
 
         $existing_link = models\Link::findComputedBy([
             'user_id' => $user->id,
-            'url_lookup' => utils\Belt::removeScheme($url),
+            'url_hash' => models\Link::hashUrl($url),
         ], ['number_comments']);
         $default_link = models\Link::findBy([
             'user_id' => $support_user->id,
-            'url_lookup' => utils\Belt::removeScheme($url),
+            'url_hash' => models\Link::hashUrl($url),
             'is_hidden' => 0,
         ]);
 
@@ -109,7 +109,7 @@ class Searches
 
         $default_link = models\Link::findBy([
             'user_id' => $support_user->id,
-            'url_lookup' => utils\Belt::removeScheme($url),
+            'url_hash' => models\Link::hashUrl($url),
         ]);
         if (!$default_link) {
             $default_link = new models\Link($url, $support_user->id, false);

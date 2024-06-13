@@ -120,9 +120,9 @@ class Links
 
         $existing_link = models\Link::findBy([
             'user_id' => $user->id,
-            // Can't use $link->url_lookup since it's a calculated property,
-            // generated in database (and the link is not yet saved).
-            'url_lookup' => utils\Belt::removeScheme($link->url),
+            // Can't use $link->url_hash directly since it's a calculated
+            // property, generated in database (and the link is not yet saved).
+            'url_hash' => models\Link::hashUrl($link->url),
         ]);
 
         if ($existing_link) {
