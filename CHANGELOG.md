@@ -1,10 +1,35 @@
 # Changelog of Flus
 
-## unreleased
+## 2024-06-14 - v0.60
 
 ### Migration notes
 
 PHP 8.2+ is now required.
+
+Depending on the number of links you store in the database, the last migration may take a very long time to end.
+Consider to shutdown the service and warn your users before executing the migrations.
+
+### Improvements
+
+- Get the correct duration of Youtube videos ([e132baa3](https://github.com/flusio/Flus/commit/e132baa3))
+- Enable the “Reading” tab for all ([c45d8bde](https://github.com/flusio/Flus/commit/c45d8bde))
+- Bring back the global actions on the news ([bf0fdb61](https://github.com/flusio/Flus/commit/bf0fdb61))
+- Reset the scroll when doing a "day" action in the news ([be6111bc](https://github.com/flusio/Flus/commit/be6111bc))
+- Improve the feedback of the news button ([890b9324](https://github.com/flusio/Flus/commit/890b9324))
+
+### Bug fixes
+
+- Make the svg icons unselectable ([afdb1d97](https://github.com/flusio/Flus/commit/afdb1d97))
+- Show the popup menu on top of the following dates groups ([4e0363e3](https://github.com/flusio/Flus/commit/4e0363e3), [58f12f90](https://github.com/flusio/Flus/commit/58f12f90))
+- Align correctly the icons of date groups in the news ([d3f2bd8d](https://github.com/flusio/Flus/commit/d3f2bd8d))
+
+### Technical
+
+- Require PHP 8.2+ ([7283bdfa](https://github.com/flusio/Flus/commit/7283bdfa))
+- Add support for PHP 8.3 ([3e490209](https://github.com/flusio/Flus/commit/3e490209))
+- Replace `Link.url_lookup` by `url_hash` ([fd1fe711](https://github.com/flusio/Flus/commit/fd1fe711))
+- Rename the software from flusio to Flus ([4e7e981c](https://github.com/flusio/Flus/commit/4e7e981c))
+- Upgrade dependencies ([1f3c2fb9](https://github.com/flusio/Flus/commit/1f3c2fb9))
 
 ## 2024-04-02 - v0.59
 
