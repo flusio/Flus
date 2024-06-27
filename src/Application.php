@@ -66,11 +66,6 @@ class Application
         /** @var ?string */
         $session_token = $request->cookie('session_token');
 
-        if (!$session_token) {
-            /** @var ?string */
-            $session_token = $request->cookie('flusio_session_token');
-        }
-
         if (
             !$session_token &&
             auth\CurrentUser::sessionToken() &&
@@ -117,7 +112,6 @@ class Application
 
                 $response = \Minz\Response::redirect('login');
                 $response->removeCookie('session_token');
-                $response->removeCookie('flusio_session_token');
                 return $response;
             }
 

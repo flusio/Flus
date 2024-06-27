@@ -216,7 +216,6 @@ class Sessions
 
         $response = Response::redirect('home');
         $response->removeCookie('session_token');
-        $response->removeCookie('flusio_session_token');
         return $response;
     }
 }
