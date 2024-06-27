@@ -30,11 +30,11 @@ trait NewsQueries
             AND (
                 (fc.time_filter = 'strict' AND lc.created_at >= :until_strict) OR
                 (fc.time_filter = 'normal' AND lc.created_at >= :until_normal) OR
-                (fc.time_filter = 'all' AND lc.created_at >= fc.created_at - INTERVAL '3 days')
+                (fc.time_filter = 'all' AND lc.created_at >= fc.created_at - INTERVAL '1 week')
             )
         SQL;
         $values[':until_strict'] = \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT);
-        $values[':until_normal'] = \Minz\Time::ago(3, 'days')->format(Database\Column::DATETIME_FORMAT);
+        $values[':until_normal'] = \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT);
 
         $sql = <<<SQL
             WITH excluded_links AS (

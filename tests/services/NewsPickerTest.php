@@ -32,7 +32,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 3);
+        $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
@@ -68,7 +68,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 3);
+        $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
@@ -108,7 +108,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 3);
+        $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
@@ -148,11 +148,11 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 9999);
+        $days_ago = $this->fake('numberBetween', 8, 9999);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        // time_filter 'all' will search links until 3 days before the date
+        // time_filter 'all' will search links until 7 days before the date
         // when the user started to follow the collection
-        $delta_followed_days = $this->fake('numberBetween', 0, 3);
+        $delta_followed_days = $this->fake('numberBetween', 0, 7);
         $followed_at = \Minz\Time::ago($days_ago - $delta_followed_days, 'days');
         $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
@@ -190,7 +190,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 4, 9999);
+        $days_ago = $this->fake('numberBetween', 8, 9999);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
@@ -257,7 +257,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 3);
+        $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
@@ -290,7 +290,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 3);
+        $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
@@ -323,7 +323,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 3);
+        $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $bookmarks = $this->user->bookmarks();
@@ -368,7 +368,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 3);
+        $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $read_list = $this->user->readList();
@@ -413,7 +413,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 3);
+        $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $never_list = $this->user->neverList();
@@ -463,7 +463,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 3);
+        $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([

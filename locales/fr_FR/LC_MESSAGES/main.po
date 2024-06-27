@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-06-13 15:29+0200\n"
-"PO-Revision-Date: 2024-06-13 15:29+0200\n"
+"POT-Creation-Date: 2024-06-27 14:28+0200\n"
+"PO-Revision-Date: 2024-06-27 14:28+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -50,7 +50,7 @@ msgstr "Afficher"
 #: controllers/Feeds.php:107 controllers/Groups.php:90
 #: controllers/Links.php:270 controllers/Links.php:442
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
-#: controllers/News.php:78 controllers/Passwords.php:89
+#: controllers/News.php:77 controllers/Passwords.php:89
 #: controllers/Passwords.php:192 controllers/Registrations.php:103
 #: controllers/Sessions.php:85 controllers/Support.php:70
 #: controllers/collections/Filters.php:105
@@ -870,11 +870,11 @@ msgstr "Normal"
 
 #: views/collections/filters/edit.phtml:64
 msgid ""
-"You’ll receive the links published during the last 3 days (recommended for "
-"most of the feeds)."
+"You’ll receive the links published over the past week (recommended for most "
+"of the feeds)."
 msgstr ""
-"Vous recevrez les liens publiés durant les 3 derniers jours (recommandé pour "
-"la plupart des flux)."
+"Vous recevrez les liens publiés au cours de la semaine passée (recommandé "
+"pour la plupart des flux)."
 
 #: views/collections/filters/edit.phtml:79
 msgid "All"
