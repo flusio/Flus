@@ -18,6 +18,7 @@ class Date
         // been removed.
         // @see https://github.com/alexdebril/feed-io/blob/main/src/FeedIo/Rule/DateTimeBuilder.php
         $date_formats = [
+            'D, d M y H:i:s O', // RSS with year in 2-digits
             \DateTimeInterface::RFC2822, // RSS
             \DateTimeInterface::RFC3339, // Atom
             \DateTimeInterface::RFC3339_EXTENDED,

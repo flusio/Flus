@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>A feed with years in 2-digits</title>
+        <pubDate>Sat, 20 Jul 24 10:32:04 +0200</pubDate>
+        <link>https://example.org</link>
+        <atom:link rel="self" type="application/rss+xml" href="https://example.org/feed.rss"/>
+        <item>
+            <title>My article</title>
+            <description></description>
+            <pubDate>Sat, 20 Jul 24 08:55:36 +0200</pubDate>
+            <link>https://example.org/my-article</link>
+            <guid>https://example.org/my-article</guid>
+        </item>
+    </channel>
+</rss>

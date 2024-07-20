@@ -350,6 +350,22 @@ class FeedTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1633339200, $entry->published_at->getTimestamp());
     }
 
+    public function testFromTextWithYearsInTwoDigits(): void
+    {
+        $feed_as_string = file_get_contents(self::$examples_path . '/years-in-two-digits.rss.xml');
+
+        $this->assertNotFalse($feed_as_string);
+
+        $feed = Feed::fromText($feed_as_string);
+
+        $this->assertSame('rss', $feed->type);
+        $this->assertSame('A feed with years in 2-digits', $feed->title);
+        $this->assertSame(1, count($feed->entries));
+        $entry = $feed->entries[0];
+        $this->assertNotNull($entry->published_at);
+        $this->assertSame(1721458536, $entry->published_at->getTimestamp());
+    }
+
     public function testFromTextWithEmptyRss(): void
     {
         $feed = Feed::fromText('<rss></rss>');
