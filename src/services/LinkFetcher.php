@@ -179,11 +179,15 @@ class LinkFetcher
             $options = [
                 'max_size' => 20 * 1024 * 1024,
             ];
+
+            // If we fetch Twitter or Youtube, we need to alter our user agent
+            // to get server-side rendered content.
             if ($this->isTwitter($url)) {
-                // If we fetch Twitter, we need to alter our user agent to get
-                // server-side rendered content.
                 // @see https://stackoverflow.com/a/64332370
                 $options['user_agent'] = $this->http->user_agent . ' (compatible; bot)';
+            } elseif ($this->isYoutube($url)) {
+                // @see https://stackoverflow.com/a/46616889
+                $options['user_agent'] = $this->http->user_agent . ' (compatible; facebookexternalhit/1.1)';
             }
 
             if ($selected_ip) {
