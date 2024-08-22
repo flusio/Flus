@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-06-27 14:28+0200\n"
-"PO-Revision-Date: 2024-06-27 14:28+0200\n"
+"POT-Creation-Date: 2024-08-22 14:36+0200\n"
+"PO-Revision-Date: 2024-08-22 14:36+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -409,7 +409,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:268
+#: services/LinkFetcher.php:272
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -1569,8 +1569,8 @@ msgid "minutes to consult."
 msgstr "minutes pour le consulter."
 
 #: views/links/index.phtml:23
-msgid "Organize your links in your bookmarks and your collections."
-msgstr "Organisez vos liens dans vos signets et vos collections."
+msgid "Organize your links in your thematic collections."
+msgstr "Organisez vos liens dans vos collections thématiques."
 
 #: views/links/index.phtml:38
 msgid "Create a collection"
