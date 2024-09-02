@@ -1,5 +1,19 @@
 # Changelog of Flus
 
+## 2024-09-02 - v1.0.0
+
+🎉
+
+### Improvements
+
+- Increase the default news period to 1 week ([cb54aba0](https://github.com/flusio/Flus/commit/cb54aba0))
+
+### Bug fixes
+
+- Fix "My links" page description ([ea9074dc](https://github.com/flusio/Flus/commit/ea9074dc))
+- Fetch correct information from Youtube URLs ([252e0994](https://github.com/flusio/Flus/commit/252e0994))
+- Support RSS feeds with dates in two-digits ([01f87f24](https://github.com/flusio/Flus/commit/01f87f24))
+
 ## 2024-06-14 - v0.60
 
 ### Migration notes
