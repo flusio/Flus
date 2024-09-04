@@ -471,6 +471,9 @@ class FeedFetcher
     private function isYoutube(string $url): bool
     {
         $host = utils\Belt::host($url);
-        return str_ends_with($host, 'youtube.com');
+        return (
+            str_ends_with($host, 'youtube.com') ||
+            str_ends_with($host, 'youtu.be')
+        );
     }
 }
