@@ -1,5 +1,23 @@
 # Changelog of Flus
 
+## 2024-09-19 - v1.0.1
+
+### Improvements
+
+- Improve the performance when refreshing the news ([4cf99396](https://github.com/flusio/Flus/commit/4cf99396))
+- Add a button to never see collections links ([d6b4e1bf](https://github.com/flusio/Flus/commit/d6b4e1bf))
+- Improve the label of the terms of services ([f2c3f1ce](https://github.com/flusio/Flus/commit/f2c3f1ce))
+
+### Bug fixes
+
+- Allow to fetch information from youtu.be ([e67fa439](https://github.com/flusio/Flus/commit/e67fa439))
+- Fix a typo in French translation ([88528d3c](https://github.com/flusio/Flus/commit/88528d3c))
+
+### Technical
+
+- Improve the performance of database reset ([eba02290](https://github.com/flusio/Flus/commit/eba02290))
+- Split tests and linters actions on the CI ([b136a7e1](https://github.com/flusio/Flus/commit/b136a7e1))
+
 ## 2024-09-02 - v1.0.0
 
 🎉
