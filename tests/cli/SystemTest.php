@@ -4,8 +4,8 @@ namespace App\cli;
 
 class SystemTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]

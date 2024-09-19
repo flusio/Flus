@@ -7,11 +7,11 @@ use tests\factories\CollectionFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
-    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \tests\FakerHelper;
+    use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void

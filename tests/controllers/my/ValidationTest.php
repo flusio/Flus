@@ -9,14 +9,14 @@ use tests\factories\TokenFactory;
 
 class ValidationTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
-    use \tests\LoginHelper;
-    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\MailerAsserts;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
+    use \tests\FakerHelper;
+    use \tests\LoginHelper;
+    use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\Before]
     public function initializeSubscriptionConfiguration(): void

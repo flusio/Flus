@@ -8,13 +8,13 @@ use tests\factories\UserFactory;
 
 class RegistrationsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
-    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\MailerAsserts;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
+    use \tests\FakerHelper;
+    use \tests\LoginHelper;
 
     public function testNewRendersCorrectly(): void
     {

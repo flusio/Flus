@@ -7,7 +7,7 @@ use tests\factories\UserFactory;
 
 class MailerTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\MailerAsserts;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]

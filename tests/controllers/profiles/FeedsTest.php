@@ -9,10 +9,10 @@ use tests\factories\UserFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \tests\FakerHelper;
 
     public function testShowRendersCorrectly(): void
     {

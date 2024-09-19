@@ -16,9 +16,9 @@ use tests\factories\UserFactory;
 
 class DataExporterTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
+    use \tests\FakerHelper;
 
     /** @var string */
     private $exportations_path;

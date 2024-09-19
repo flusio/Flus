@@ -12,9 +12,9 @@ use tests\factories\UserFactory;
 
 class NewsPickerTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
+    use \tests\FakerHelper;
 
     private models\User $user;
     private models\User $other_user;

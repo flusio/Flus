@@ -10,11 +10,11 @@ use tests\factories\UserFactory;
 
 class ExportationsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \tests\FakerHelper;
+    use \tests\LoginHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setJobAdapterToDatabase(): void

@@ -8,8 +8,8 @@ use tests\factories\UserFactory;
 
 class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
     use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\Before]

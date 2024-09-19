@@ -8,12 +8,12 @@ use tests\factories\UserFactory;
 
 class UsersTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
-    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
+    use \tests\FakerHelper;
+    use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void

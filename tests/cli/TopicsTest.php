@@ -8,10 +8,10 @@ use tests\factories\TopicFactory;
 
 class TopicsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \tests\FakerHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void

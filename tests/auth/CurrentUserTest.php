@@ -9,8 +9,8 @@ use tests\factories\UserFactory;
 
 class CurrentUserTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
 
     #[\PHPUnit\Framework\Attributes\Before]
     public function resetCurrentUser(): void

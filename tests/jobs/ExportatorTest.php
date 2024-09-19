@@ -8,7 +8,7 @@ use tests\factories\UserFactory;
 
 class ExportatorTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
+    use \Minz\Tests\InitializerHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function initEngine(): void

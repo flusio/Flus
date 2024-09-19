@@ -8,8 +8,8 @@ use tests\factories\LinkFactory;
 
 class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
     use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\Before]

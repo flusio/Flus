@@ -7,8 +7,8 @@ use tests\factories\UserFactory;
 
 class SourceHelperTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
 
     public function testExtractSourceFromPathWithExistingCollection(): void
     {
