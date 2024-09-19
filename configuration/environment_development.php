@@ -79,7 +79,7 @@ return [
             'domain' => $dotenv->pop('SMTP_DOMAIN'),
             'host' => $dotenv->pop('SMTP_HOST'),
             'port' => intval($dotenv->pop('SMTP_PORT')),
-            'auth' => filter_var($dotenv->pop('SMTP_AUTH'), FILTER_VALIDATE_BOOLEAN),
+            'auth' => filter_var($dotenv->pop('SMTP_AUTH', 'false'), FILTER_VALIDATE_BOOLEAN),
             'auth_type' => $dotenv->pop('SMTP_AUTH_TYPE', ''),
             'username' => $dotenv->pop('SMTP_USERNAME'),
             'password' => $dotenv->pop('SMTP_PASSWORD'),

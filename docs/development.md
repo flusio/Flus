@@ -46,10 +46,12 @@ $ make setup
 
 It will copy the `env.sample` file to `.env` and call the Flus CLI to
 configure the database. If you need to, you can change the environment
-variables in the `.env` file. The `SMTP_` variables should be set to be used
-with an existing email account.
+variables in the `.env` file.
 
 Now, you should be able to access Flus at [localhost:8000](http://localhost:8000).
+
+Mailpit is configured to catch all the outgoing emails.
+You can access its interface at [localhost:8025](http://localhost:8025).
 
 The containers can be stopped and cleaned with:
 
