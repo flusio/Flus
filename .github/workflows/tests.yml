@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Tests
 
 on:
     push:
@@ -14,8 +14,6 @@ env:
     DB_PASSWORD: postgres
     COVERAGE: --coverage-text
     MOCK_HOST: "http://127.0.0.1:8001"
-    APP_SUBSCRIPTIONS_HOST: ${{ secrets.APP_SUBSCRIPTIONS_HOST }}
-    APP_SUBSCRIPTIONS_PRIVATE_KEY: ${{ secrets.APP_SUBSCRIPTIONS_PRIVATE_KEY }}
 
 jobs:
     build:
@@ -67,23 +65,13 @@ jobs:
               key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
               restore-keys: ${{ runner.os }}-composer-
 
-        - name: Cache node dependencies
-          uses: actions/cache@v2
-          with:
-              path: ~/.npm
-              key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-              restore-keys: ${{ runner.os }}-node-
-
         - name: Install dependencies
-          run: make install
+          run: composer install
 
         - name: Setup the application
           run: make setup
           env:
               DB_PORT: ${{ job.services.postgres.ports[5432] }}
-
-        - name: Run the linters
-          run: make lint
 
         - name: Run mock_server (background)
           run: php -t ${{ github.workspace }} -S 127.0.0.1:8001 ${{ github.workspace }}/tests/mock_server/index.php &
