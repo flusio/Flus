@@ -14,9 +14,9 @@ use tests\factories\UserFactory;
 
 class CleanerTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
+    use \tests\FakerHelper;
 
     public function testQueue(): void
     {

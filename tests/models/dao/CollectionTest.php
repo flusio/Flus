@@ -11,8 +11,8 @@ use tests\factories\UserFactory;
 
 class CollectionTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
 
     public function testListComputedByUserId(): void
     {

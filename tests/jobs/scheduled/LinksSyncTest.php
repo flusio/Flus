@@ -8,10 +8,10 @@ use tests\factories\LinkFactory;
 
 class LinksSyncTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
-    use \tests\MockHttpHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
+    use \tests\FakerHelper;
+    use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void

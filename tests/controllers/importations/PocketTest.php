@@ -12,12 +12,12 @@ use tests\factories\UserFactory;
 
 class PocketTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \tests\MockHttpHelper;
-    use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\ResponseAsserts;
 
     /** @var string */
     private static $pocket_consumer_key;

@@ -11,11 +11,11 @@ use tests\factories\UserFactory;
 
 class GroupsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
-    use \tests\FakerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \tests\InitializerHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \tests\FakerHelper;
+    use \tests\LoginHelper;
 
     public function testEditRendersCorrectly(): void
     {

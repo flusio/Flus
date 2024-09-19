@@ -4,10 +4,10 @@ namespace App\cli;
 
 class UrlsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \tests\FakerHelper;
+    use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void

@@ -11,8 +11,8 @@ use tests\factories\UserFactory;
 
 class LinkTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
 
     public function testBulkInsert(): void
     {

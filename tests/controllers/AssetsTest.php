@@ -4,8 +4,8 @@ namespace App\controllers;
 
 class AssetsTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowReturnsTheAsset(): void

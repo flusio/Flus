@@ -4,7 +4,7 @@ namespace App\cli;
 
 class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testRunDoesntFail(): void

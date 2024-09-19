@@ -8,8 +8,8 @@ use tests\factories\MessageFactory;
 
 class MastodonTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function initEngine(): void

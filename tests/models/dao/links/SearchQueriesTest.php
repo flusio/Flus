@@ -10,8 +10,8 @@ use tests\factories\MessageFactory;
 
 class SearchQueriesTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
 
     public function testSearchComputedByUserIdSearchesByTitle(): void
     {

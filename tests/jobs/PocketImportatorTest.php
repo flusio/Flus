@@ -10,8 +10,8 @@ use tests\factories\UserFactory;
 
 class PocketImportatorTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
 
     public function testQueue(): void
     {

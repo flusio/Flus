@@ -10,11 +10,11 @@ use tests\factories\UserFactory;
 
 class LinksTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ResponseAsserts;
     use \tests\LoginHelper;
     use \tests\MockHttpHelper;
-    use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\ResponseAsserts;
 
     #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void

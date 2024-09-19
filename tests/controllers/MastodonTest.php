@@ -10,12 +10,12 @@ use tests\factories\UserFactory;
 
 class MastodonTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
-    use \tests\InitializerHelper;
     use \tests\LoginHelper;
     use \tests\MockHttpHelper;
-    use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\ResponseAsserts;
 
     public function testShowRendersCorrectly(): void
     {

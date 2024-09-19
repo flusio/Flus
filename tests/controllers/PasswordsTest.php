@@ -10,13 +10,13 @@ use tests\factories\UserFactory;
 
 class PasswordsTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\MailerAsserts;
+    use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
     use \tests\LoginHelper;
-    use \tests\InitializerHelper;
-    use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\TimeHelper;
-    use \Minz\Tests\ResponseAsserts;
-    use \Minz\Tests\MailerAsserts;
 
     public function testForgotRendersCorrectly(): void
     {

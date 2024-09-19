@@ -7,12 +7,12 @@ use tests\factories\UserFactory;
 
 class SupportTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\LoginHelper;
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\MailerAsserts;
+    use \Minz\Tests\ResponseAsserts;
+    use \tests\FakerHelper;
+    use \tests\LoginHelper;
 
     public function testShowRendersCorrectly(): void
     {

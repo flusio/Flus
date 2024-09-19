@@ -11,10 +11,10 @@ use tests\factories\TopicFactory;
 
 class MediaTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
-    use \tests\MockHttpHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void

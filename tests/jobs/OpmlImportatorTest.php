@@ -9,9 +9,9 @@ use tests\factories\UserFactory;
 
 class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
     use \Minz\Tests\FilesHelper;
-    use \tests\InitializerHelper;
+    use \Minz\Tests\InitializerHelper;
+    use \tests\FakerHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setJobAdapterToDatabase(): void

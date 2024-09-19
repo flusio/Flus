@@ -6,7 +6,7 @@ use tests\factories\LinkFactory;
 
 class LinksTimelineTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\InitializerHelper;
+    use \Minz\Tests\InitializerHelper;
 
     public function testConstructGroupsLinksByDates(): void
     {

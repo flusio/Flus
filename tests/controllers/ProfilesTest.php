@@ -11,11 +11,11 @@ use tests\factories\UserFactory;
 
 class ProfilesTest extends \PHPUnit\Framework\TestCase
 {
-    use \tests\FakerHelper;
-    use \tests\InitializerHelper;
-    use \tests\LoginHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \tests\FakerHelper;
+    use \tests\LoginHelper;
 
     public function testShowRendersCorrectly(): void
     {
