@@ -14,50 +14,21 @@ trait NewsQueries
 {
     /**
      * Return public links listed in followed collections of the given user,
-     * ordered by publication date. Links with a matching url in bookmarks or
-     * read list are not returned.
+     * ordered by publication date.
      *
      * @return self[]
      */
-    public static function listFromFollowedCollectionsForNews(string $user_id): array
+    public static function listFromFollowedCollections(string $user_id): array
     {
-        $where_placeholder = '';
         $values = [
             ':user_id' => $user_id,
+            ':until_strict' => \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT),
+            ':until_normal' => \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT),
         ];
 
-        $where_placeholder .= <<<'SQL'
-            AND (
-                (fc.time_filter = 'strict' AND lc.created_at >= :until_strict) OR
-                (fc.time_filter = 'normal' AND lc.created_at >= :until_normal) OR
-                (fc.time_filter = 'all' AND lc.created_at >= fc.created_at - INTERVAL '1 week')
-            )
-        SQL;
-        $values[':until_strict'] = \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT);
-        $values[':until_normal'] = \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT);
-
         $sql = <<<SQL
-            WITH excluded_links AS (
-                SELECT l_exclude.id, l_exclude.url_hash
-                FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
-
-                WHERE c_exclude.user_id = :user_id
-                AND (
-                    c_exclude.type = 'news'
-                    OR c_exclude.type = 'bookmarks'
-                    OR c_exclude.type = 'read'
-                    OR c_exclude.type = 'never'
-                )
-
-                AND lc_exclude.link_id = l_exclude.id
-                AND lc_exclude.collection_id = c_exclude.id
-            )
-
             SELECT l.*, lc.created_at AS published_at, 'collection' AS source_news_type, c.id AS source_news_resource_id
             FROM collections c, links_to_collections lc, followed_collections fc, links l
-
-            LEFT JOIN excluded_links
-            ON excluded_links.url_hash = l.url_hash
 
             WHERE fc.user_id = :user_id
             AND fc.collection_id = lc.collection_id
@@ -76,14 +47,13 @@ trait NewsQueries
 
             AND l.user_id != :user_id
 
-            AND excluded_links.id IS NULL
+            AND (
+                (fc.time_filter = 'strict' AND lc.created_at >= :until_strict) OR
+                (fc.time_filter = 'normal' AND lc.created_at >= :until_normal) OR
+                (fc.time_filter = 'all' AND lc.created_at >= fc.created_at - INTERVAL '1 week')
+            )
 
-            {$where_placeholder}
-
-            GROUP BY l.id, lc.created_at, c.id
-
-            ORDER BY lc.created_at DESC, l.id
-            LIMIT 100
+            ORDER BY published_at DESC, l.id
         SQL;
 
         $database = Database::get();
@@ -91,6 +61,40 @@ trait NewsQueries
         $statement->execute($values);
 
         return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Return hashes of links that are in news, bookmarks, never or read lists.
+     *
+     * @return array<string, bool>
+     */
+    public static function listHashesExcludedFromNews(string $user_id): array
+    {
+        $values = [
+            ':user_id' => $user_id,
+        ];
+
+        $sql = <<<SQL
+            SELECT l.url_hash, true
+            FROM links l, collections c, links_to_collections lc
+
+            WHERE c.user_id = :user_id
+            AND (
+                c.type = 'news'
+                OR c.type = 'bookmarks'
+                OR c.type = 'read'
+                OR c.type = 'never'
+            )
+
+            AND lc.link_id = l.id
+            AND lc.collection_id = c.id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($values);
+
+        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 
     /**

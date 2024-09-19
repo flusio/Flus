@@ -44,24 +44,25 @@ class NewsPicker
      */
     public function pick(): array
     {
-        $links = models\Link::listFromFollowedCollectionsForNews($this->user->id);
-        $links = $this->mergeByUrl($links);
-        return array_slice($links, 0, $this->options['number_links']);
-    }
+        $excluded_hashes = models\Link::listHashesExcludedFromNews($this->user->id);
+        $links_from_followed = models\Link::listFromFollowedCollections($this->user->id);
 
-    /**
-     * Removes duplicated links urls.
-     *
-     * @param models\Link[] $links
-     *
-     * @return models\Link[]
-     */
-    private function mergeByUrl(array $links): array
-    {
-        $by_url = [];
-        foreach ($links as $link) {
-            $by_url[$link->url] = $link;
+        $links = [];
+
+        foreach ($links_from_followed as $link) {
+            $hash = $link->url_hash;
+
+            if (isset($excluded_hashes[$hash])) {
+                continue;
+            }
+
+            $links[$hash] = $link;
+
+            if (count($links) >= $this->options['number_links']) {
+                break;
+            }
         }
-        return array_values($by_url);
+
+        return array_values($links);
     }
 }
