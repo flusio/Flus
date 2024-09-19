@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-09-19 14:39+0200\n"
-"PO-Revision-Date: 2024-09-19 14:39+0200\n"
+"POT-Creation-Date: 2024-09-19 15:03+0200\n"
+"PO-Revision-Date: 2024-09-19 15:03+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -721,7 +721,7 @@ msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
 #: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:31
-#: views/collections/show.phtml:169 views/collections/show_public.phtml:214
+#: views/collections/show.phtml:169 views/collections/show_public.phtml:226
 #: views/links/searches/show.phtml:106 views/news/index.phtml:115
 #: views/read/index.phtml:29
 #, php-format
@@ -1139,16 +1139,21 @@ msgstr "Copier le lien"
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/collections/show_public.phtml:175 views/links/searches/show.phtml:121
+#: views/collections/show_public.phtml:175 views/news/index.phtml:85
+#: views/news/index.phtml:177 views/news/index.phtml:253
+msgid "Never see the links again"
+msgstr "Ne plus revoir les liens"
+
+#: views/collections/show_public.phtml:187 views/links/searches/show.phtml:121
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/show_public.phtml:186
-#: views/collections/show_public.phtml:200 views/links/searches/show.phtml:130
+#: views/collections/show_public.phtml:198
+#: views/collections/show_public.phtml:212 views/links/searches/show.phtml:130
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/show_public.phtml:236
+#: views/collections/show_public.phtml:248
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -2119,11 +2124,6 @@ msgid ""
 msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
-
-#: views/news/index.phtml:85 views/news/index.phtml:177
-#: views/news/index.phtml:253
-msgid "Never see the links again"
-msgstr "Ne plus revoir les liens"
 
 #: views/news/index.phtml:135
 msgid "Actions on the feed"
