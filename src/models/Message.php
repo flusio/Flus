@@ -59,6 +59,20 @@ class Message
     }
 
     /**
+     * Return the link of the message
+     */
+    public function link(): Link
+    {
+        $link = Link::find($this->link_id);
+
+        if (!$link) {
+            throw new \Exception("Message #{$this->id} has invalid link.");
+        }
+
+        return $link;
+    }
+
+    /**
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt

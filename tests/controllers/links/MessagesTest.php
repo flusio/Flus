@@ -48,6 +48,27 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link->id, $message->link_id);
     }
 
+    public function testCreateChangesLinkTags(): void
+    {
+        $user = $this->login();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'tags' => [],
+        ]);
+        $content = '#foo #bar';
+
+        $this->assertSame(0, models\Message::count());
+
+        $response = $this->appRun('POST', "/links/{$link->id}/messages", [
+            'csrf' => $user->csrf,
+            'content' => $content,
+        ]);
+
+        $this->assertResponseCode($response, 302, "/links/{$link->id}");
+        $link = $link->reload();
+        $this->assertEquals(['foo', 'bar'], $link->tags);
+    }
+
     public function testCreateWorksIfLinkIsInCollectionSharedWithWriteAccess(): void
     {
         $user = $this->login();

@@ -85,6 +85,10 @@ class Link
     #[Database\Column]
     public bool $group_by_source = false;
 
+    /** @var string[] */
+    #[Database\Column]
+    public array $tags = [];
+
     #[Database\Column(computed: true)]
     public ?string $source_news_type = null;
 

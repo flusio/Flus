@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\models;
+use tests\factories\LinkFactory;
 use tests\factories\MessageFactory;
 use tests\factories\UserFactory;
 
@@ -109,6 +110,34 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, $from);
         $message = $message->reload();
         $this->assertSame($new_content, $message->content);
+    }
+
+    public function testUpdateChangesLinkTags(): void
+    {
+        $user = $this->login();
+        $link = LinkFactory::create([
+            'tags' => ['foo'],
+        ]);
+        $old_content = '#foo';
+        $new_content = '#bar';
+        $message = MessageFactory::create([
+            'user_id' => $user->id,
+            'link_id' => $link->id,
+            'content' => $old_content,
+        ]);
+        $from = \Minz\Url::for('home');
+
+        $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
+            'content' => $new_content,
+            'csrf' => $user->csrf,
+            'from' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $message = $message->reload();
+        $this->assertSame($new_content, $message->content);
+        $link = $link->reload();
+        $this->assertEquals(['bar'], $link->tags);
     }
 
     public function testUpdateRedirectsToLoginIfNotConnected(): void
@@ -250,6 +279,28 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\Message::exists($message->id));
+    }
+
+    public function testDeleteChangesLinkTags(): void
+    {
+        $user = $this->login();
+        $link = LinkFactory::create([
+            'tags' => ['foo'],
+        ]);
+        $message = MessageFactory::create([
+            'user_id' => $user->id,
+            'link_id' => $link->id,
+            'content' => '#foo',
+        ]);
+
+        $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
+            'csrf' => $user->csrf,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse(models\Message::exists($message->id));
+        $link = $link->reload();
+        $this->assertEquals([], $link->tags);
     }
 
     public function testDeleteRedirectsToRedirectToIfGiven(): void

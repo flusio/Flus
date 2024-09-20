@@ -146,6 +146,7 @@ CREATE TABLE links (
     url_replies TEXT NOT NULL DEFAULT '',
     reading_time INTEGER NOT NULL DEFAULT 0,
     image_filename TEXT,
+    tags JSON NOT NULL DEFAULT '[]',
 
     fetched_at TIMESTAMPTZ,
     fetched_code INTEGER NOT NULL DEFAULT 0,

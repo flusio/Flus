@@ -101,6 +101,8 @@ class Messages
 
         $message->save();
 
+        services\LinkTags::refresh($link);
+
         if ($mastodon_configured && $share_on_mastodon) {
             $share_on_mastodon_job = new jobs\ShareOnMastodon();
             $share_on_mastodon_job->performAsap($user->id, $link->id, $message->id);

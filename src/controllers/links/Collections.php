@@ -7,6 +7,7 @@ use Minz\Response;
 use App\auth;
 use App\jobs;
 use App\models;
+use App\services;
 use App\utils;
 
 /**
@@ -190,6 +191,8 @@ class Collections
         if ($mark_as_read) {
             models\LinkToCollection::markAsRead($user, [$link->id]);
         }
+
+        services\LinkTags::refresh($link);
 
         $mastodon_configured = models\MastodonAccount::existsBy([
             'user_id' => $user->id,

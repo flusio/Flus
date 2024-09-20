@@ -450,6 +450,30 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link->id, $message->link_id);
     }
 
+    public function testUpdateChangesTags(): void
+    {
+        $user = $this->login();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'tags' => [],
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $comment = '#foo #bar';
+
+        $response = $this->appRun('POST', "/links/{$link->id}/collections", [
+            'csrf' => $user->csrf,
+            'from' => \Minz\Url::for('bookmarks'),
+            'collection_ids' => [$collection->id],
+            'comment' => $comment,
+        ]);
+
+        $link = $link->reload();
+        $this->assertEquals(['foo', 'bar'], $link->tags);
+    }
+
     public function testUpdateCanMarkAsRead(): void
     {
         $user = $this->login();

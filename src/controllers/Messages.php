@@ -6,6 +6,7 @@ use Minz\Request;
 use Minz\Response;
 use App\auth;
 use App\models;
+use App\services;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -104,6 +105,8 @@ class Messages
 
         $message->save();
 
+        services\LinkTags::refresh($message->link());
+
         return Response::found($from);
     }
 
@@ -133,6 +136,7 @@ class Messages
             'id' => $message_id,
             'user_id' => $user->id,
         ]);
+
         if (!$message) {
             return Response::notFound('not_found.phtml');
         }
@@ -143,6 +147,8 @@ class Messages
         }
 
         models\Message::delete($message->id);
+
+        services\LinkTags::refresh($message->link());
 
         return Response::found($redirect_to);
     }

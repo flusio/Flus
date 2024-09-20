@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-09-19 15:03+0200\n"
-"PO-Revision-Date: 2024-09-19 15:03+0200\n"
+"POT-Creation-Date: 2024-09-20 15:22+0200\n"
+"PO-Revision-Date: 2024-09-20 15:22+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -76,13 +76,13 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Collections.php:388 controllers/Exportations.php:62
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:499 controllers/Mastodon.php:87
-#: controllers/Messages.php:93 controllers/Messages.php:141
+#: controllers/Messages.php:94 controllers/Messages.php:145
 #: controllers/Sessions.php:206 controllers/collections/Read.php:87
 #: controllers/collections/Read.php:168 controllers/collections/Read.php:243
 #: controllers/importations/Opml.php:79 controllers/importations/Pocket.php:110
 #: controllers/importations/Pocket.php:157
 #: controllers/importations/Pocket.php:258
-#: controllers/links/Collections.php:158 controllers/links/Read.php:46
+#: controllers/links/Collections.php:159 controllers/links/Read.php:46
 #: controllers/links/Read.php:95 controllers/links/Read.php:144
 #: controllers/links/Read.php:192 controllers/my/Avatar.php:44
 msgid "A security verification failed."
@@ -104,7 +104,7 @@ msgstr "Vous avez déjà un groupe portant le même nom."
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:320 controllers/links/Collections.php:153
+#: controllers/Links.php:320 controllers/links/Collections.php:154
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
