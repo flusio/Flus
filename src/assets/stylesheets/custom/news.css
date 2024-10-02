@@ -18,12 +18,6 @@
     font-size: var(--size-normal);
 }
 
-@media (min-width: 800px) {
-    .news__postpone-popup .popup__container {
-        width: 34rem;
-    }
-}
-
 .news__postpone-button {
     font-size: 1.2em;
 
