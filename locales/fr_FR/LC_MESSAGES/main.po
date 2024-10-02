@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-09-20 15:22+0200\n"
-"PO-Revision-Date: 2024-09-20 15:22+0200\n"
+"POT-Creation-Date: 2024-10-02 10:37+0200\n"
+"PO-Revision-Date: 2024-10-02 10:37+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1141,8 +1141,8 @@ msgstr "Tout marquer comme lu"
 
 #: views/collections/show_public.phtml:175 views/news/index.phtml:85
 #: views/news/index.phtml:177 views/news/index.phtml:253
-msgid "Never see the links again"
-msgstr "Ne plus revoir les liens"
+msgid "Remove the links from the news"
+msgstr "Retirer les liens du journal"
 
 #: views/collections/show_public.phtml:187 views/links/searches/show.phtml:121
 msgid "Unfollow"
