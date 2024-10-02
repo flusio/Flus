@@ -57,7 +57,7 @@ class LinksSync extends \Minz\Job
     {
         $fetch_service = new services\LinkFetcher();
 
-        $links = models\Link::listToFetch(25);
+        $links = models\Link::listToFetch(max: 25);
         foreach ($links as $link) {
             $has_lock = $link->lock();
             if (!$has_lock) {

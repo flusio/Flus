@@ -80,6 +80,8 @@ class LinkFetcher
             $link->fetched_error = $info['error'];
         }
 
+        $link->to_be_fetched = self::shouldBeFetchedAgain($link);
+
         // we set the title only if it wasn't changed yet
         $title_never_changed = $link->title === $link->url;
         if (
@@ -290,6 +292,25 @@ class LinkFetcher
         }
 
         return $info;
+    }
+
+    public static function shouldBeFetchedAgain(models\Link $link): bool
+    {
+        if (!$link->to_be_fetched) {
+            return false;
+        }
+
+        $never_fetched = $link->fetched_at === null;
+
+        if ($never_fetched) {
+            return true;
+        }
+
+        $in_error = $link->fetched_code < 200 || $link->fetched_code >= 300;
+        $reached_max_retries = $link->fetched_count > 25;
+        $should_retry = $in_error && !$reached_max_retries;
+
+        return $should_retry;
     }
 
     /**
