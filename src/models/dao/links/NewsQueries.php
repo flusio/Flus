@@ -18,16 +18,23 @@ trait NewsQueries
      *
      * @return self[]
      */
-    public static function listFromFollowedCollections(string $user_id): array
+    public static function listFromFollowedCollections(string $user_id, int $max): array
     {
         $values = [
             ':user_id' => $user_id,
+            ':until_hard_limit' => \Minz\Time::ago(1, 'year')->format(Database\Column::DATETIME_FORMAT),
             ':until_strict' => \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT),
             ':until_normal' => \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT),
+            ':limit' => $max,
         ];
 
         $sql = <<<SQL
-            SELECT l.*, lc.created_at AS published_at, 'collection' AS source_news_type, c.id AS source_news_resource_id
+            SELECT
+                l.url_hash,
+                l.*,
+                lc.created_at AS published_at,
+                'collection' AS source_news_type,
+                c.id AS source_news_resource_id
             FROM collections c, links_to_collections lc, followed_collections fc, links l
 
             WHERE fc.user_id = :user_id
@@ -45,8 +52,28 @@ trait NewsQueries
                 )
             )
 
+            AND NOT EXISTS (
+                SELECT 1
+                FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
+
+                WHERE c_exclude.user_id = :user_id
+                AND l_exclude.user_id = :user_id
+                AND l_exclude.url_hash = l.url_hash
+
+                AND (
+                    c_exclude.type = 'news'
+                    OR c_exclude.type = 'bookmarks'
+                    OR c_exclude.type = 'read'
+                    OR c_exclude.type = 'never'
+                )
+
+                AND lc_exclude.link_id = l_exclude.id
+                AND lc_exclude.collection_id = c_exclude.id
+            )
+
             AND l.user_id != :user_id
 
+            AND lc.created_at >= :until_hard_limit
             AND (
                 (fc.time_filter = 'strict' AND lc.created_at >= :until_strict) OR
                 (fc.time_filter = 'normal' AND lc.created_at >= :until_normal) OR
@@ -54,47 +81,18 @@ trait NewsQueries
             )
 
             ORDER BY published_at DESC, l.id
+
+            LIMIT :limit
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute($values);
 
-        return self::fromDatabaseRows($statement->fetchAll());
-    }
+        // Get the results indexed by the url_hash (i.e. the first column)
+        $results = $statement->fetchAll(\PDO::FETCH_UNIQUE);
 
-    /**
-     * Return hashes of links that are in news, bookmarks, never or read lists.
-     *
-     * @return array<string, bool>
-     */
-    public static function listHashesExcludedFromNews(string $user_id): array
-    {
-        $values = [
-            ':user_id' => $user_id,
-        ];
-
-        $sql = <<<SQL
-            SELECT l.url_hash, true
-            FROM links l, collections c, links_to_collections lc
-
-            WHERE c.user_id = :user_id
-            AND (
-                c.type = 'news'
-                OR c.type = 'bookmarks'
-                OR c.type = 'read'
-                OR c.type = 'never'
-            )
-
-            AND lc.link_id = l.id
-            AND lc.collection_id = c.id
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($values);
-
-        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+        return self::fromDatabaseRows($results);
     }
 
     /**

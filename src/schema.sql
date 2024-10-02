@@ -180,6 +180,7 @@ CREATE TABLE links_to_collections (
 
 CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, collection_id);
 CREATE INDEX idx_links_to_collections_collection_id ON links_to_collections(collection_id);
+CREATE INDEX idx_links_to_collections_created_at ON links_to_collections(created_at);
 
 CREATE TABLE followed_collections (
     id BIGSERIAL PRIMARY KEY,

@@ -27,25 +27,6 @@ class NewsPicker
      */
     public function pick(int $max = 25): array
     {
-        $excluded_hashes = models\Link::listHashesExcludedFromNews($this->user->id);
-        $links_from_followed = models\Link::listFromFollowedCollections($this->user->id);
-
-        $links = [];
-
-        foreach ($links_from_followed as $link) {
-            $hash = $link->url_hash;
-
-            if (isset($excluded_hashes[$hash])) {
-                continue;
-            }
-
-            $links[$hash] = $link;
-
-            if (count($links) >= $max) {
-                break;
-            }
-        }
-
-        return array_values($links);
+        return models\Link::listFromFollowedCollections($this->user->id, $max);
     }
 }

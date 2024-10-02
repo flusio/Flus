@@ -31,11 +31,14 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        /** @var int */
-        $days_ago = $this->fake('numberBetween', 0, 7);
-        $published_at = \Minz\Time::ago($days_ago, 'days');
+        $published_at1 = \Minz\Time::ago(3, 'days');
+        $published_at2 = \Minz\Time::ago(1, 'days');
         $news_picker = new NewsPicker($this->user);
-        $link = LinkFactory::create([
+        $link1 = LinkFactory::create([
+            'user_id' => $this->other_user->id,
+            'is_hidden' => false,
+        ]);
+        $link2 = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'is_hidden' => false,
         ]);
@@ -45,9 +48,14 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         LinkToCollectionFactory::create([
-            'created_at' => $published_at,
+            'created_at' => $published_at1,
             'collection_id' => $collection->id,
-            'link_id' => $link->id,
+            'link_id' => $link1->id,
+        ]);
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at2,
+            'collection_id' => $collection->id,
+            'link_id' => $link2->id,
         ]);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
@@ -56,10 +64,13 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
 
         $links = $news_picker->pick();
 
-        $this->assertSame(1, count($links));
-        $this->assertSame($link->id, $links[0]->id);
+        $this->assertSame(2, count($links));
+        $this->assertSame($link2->id, $links[0]->id);
         $this->assertSame('collection', $links[0]->source_news_type);
         $this->assertSame($collection->id, $links[0]->source_news_resource_id);
+        $this->assertSame($link1->id, $links[1]->id);
+        $this->assertSame('collection', $links[1]->source_news_type);
+        $this->assertSame($collection->id, $links[1]->source_news_resource_id);
     }
 
     public function testPickSelectsHiddenLinkIfCollectionIsShared(): void
@@ -148,7 +159,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 8, 9999);
+        $days_ago = $this->fake('numberBetween', 8, 180);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         // time_filter 'all' will search links until 7 days before the date
         // when the user started to follow the collection
@@ -190,7 +201,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $days_ago = $this->fake('numberBetween', 8, 9999);
+        $days_ago = $this->fake('numberBetween', 8, 180);
         $published_at = \Minz\Time::ago($days_ago, 'days');
         $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
