@@ -100,9 +100,11 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformLogsFetch(): void
     {
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $link = LinkFactory::create([
-            'url' => 'https://github.com/flusio/Flus',
-            'title' => 'https://github.com/flusio/Flus',
+            'url' => $url,
+            'title' => $url,
             'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
@@ -115,8 +117,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertGreaterThanOrEqual(1, models\FetchLog::count());
         $fetch_log = models\FetchLog::take();
         $this->assertNotNull($fetch_log);
-        $this->assertSame('https://github.com/flusio/Flus', $fetch_log->url);
-        $this->assertSame('github.com', $fetch_log->host);
+        $this->assertSame($url, $fetch_log->url);
+        $this->assertSame('flus.fr', $fetch_log->host);
     }
 
     public function testPerformSavesResponseInCache(): void
@@ -142,7 +144,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformUsesCache(): void
     {
-        $url = 'https://github.com/flusio/Flus';
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
@@ -176,11 +179,12 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformSkipsFetchIfReachedRateLimit(): void
     {
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $host = 'flus.fr';
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $url = 'https://github.com/flusio/Flus';
-        $host = 'github.com';
         foreach (range(1, 25) as $i) {
             /** @var int */
             $seconds = $this->fake('numberBetween', 0, 60);
@@ -209,6 +213,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformDoesNotFetchLinksIfFetchedAtIsWithinIntervalToWait(): void
     {
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -221,8 +227,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $seconds = $this->fake('numberBetween', 0, $interval_to_wait);
         $fetched_at = \Minz\Time::ago($seconds, 'seconds');
         $link = LinkFactory::create([
-            'url' => 'https://github.com/flusio/Flus',
-            'title' => 'https://github.com/flusio/Flus',
+            'url' => $url,
+            'title' => $url,
             'to_be_fetched' => true,
             'fetched_at' => $fetched_at,
             'fetched_count' => $fetched_count,
@@ -232,20 +238,21 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $links_fetcher_job->perform();
 
         $link = $link->reload();
-        $this->assertSame('https://github.com/flusio/Flus', $link->title);
+        $this->assertSame($url, $link->title);
         $this->assertEquals($fetched_at, $link->fetched_at);
         $this->assertSame($fetched_count, $link->fetched_count);
     }
 
     public function testPerformDoesNotFetchLinkIfLockedDuringLastHour(): void
     {
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
         $minutes = $this->fake('numberBetween', 0, 59);
         $locked_at = \Minz\Time::ago($minutes, 'minutes');
-        $url = 'https://github.com/flusio/Flus';
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
@@ -254,28 +261,11 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
             'locked_at' => $locked_at,
         ]);
         $links_fetcher_job = new LinksSync();
-        /** @var string */
-        $title = $this->fake('sentence');
-        $hash = \SpiderBits\Cache::hash($url);
-        $raw_response = <<<TEXT
-        HTTP/2 200 OK
-        Content-Type: text/html
-
-        <html>
-            <head>
-                <title>{$title}</title>
-            </head>
-        </html>
-        TEXT;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
 
         $links_fetcher_job->perform();
 
         $link = $link->reload();
-        $this->assertNotSame($title, $link->title);
+        $this->assertSame($url, $link->title);
         $this->assertNull($link->fetched_at);
         $this->assertSame(0, $link->fetched_code);
         $this->assertSame(0, $link->fetched_count);
@@ -284,13 +274,14 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformFetchesLinkIfLockedAfterAnHour(): void
     {
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
         $minutes = $this->fake('numberBetween', 60, 1000);
         $locked_at = \Minz\Time::ago($minutes, 'minutes');
-        $url = 'https://github.com/flusio/Flus';
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
@@ -299,28 +290,11 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
             'locked_at' => $locked_at,
         ]);
         $links_fetcher_job = new LinksSync();
-        /** @var string */
-        $title = $this->fake('sentence');
-        $hash = \SpiderBits\Cache::hash($url);
-        $raw_response = <<<TEXT
-        HTTP/2 200 OK
-        Content-Type: text/html
-
-        <html>
-            <head>
-                <title>{$title}</title>
-            </head>
-        </html>
-        TEXT;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
 
         $links_fetcher_job->perform();
 
         $link = $link->reload();
-        $this->assertSame($title, $link->title);
+        $this->assertSame('Carnet de Flus', $link->title);
         $this->assertNotNull($link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame(1, $link->fetched_count);
