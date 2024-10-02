@@ -78,10 +78,8 @@ class News
             ]);
         }
 
-        $news_picker = new services\NewsPicker($user, [
-            'number_links' => 50,
-        ]);
-        $links = $news_picker->pick();
+        $news_picker = new services\NewsPicker($user);
+        $links = $news_picker->pick(max: 50);
 
         $news = $user->news();
 
@@ -125,11 +123,8 @@ class News
             ]);
         }
 
-        $news_picker = new services\NewsPicker($user, [
-            'number_links' => 1,
-            'from' => 'followed',
-        ]);
-        $links = $news_picker->pick();
+        $news_picker = new services\NewsPicker($user);
+        $links = $news_picker->pick(max: 1);
 
         return Response::json(200, [
             'available' => count($links) > 0,

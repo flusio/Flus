@@ -8,33 +8,16 @@ use App\models;
  * The NewsPicker service is a sort of basic artificial intelligence. Its
  * purpose is to select a bunch of links relevant for a given user.
  *
- * @phpstan-type Options array{
- *     'number_links': int,
- * }
- *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class NewsPicker
 {
-    private const DEFAULT_OPTIONS = [
-        'number_links' => 9,
-    ];
-
     private models\User $user;
 
-    /** @var Options */
-    private array $options;
-
-    /**
-     * @param array{
-     *     'number_links'?: int,
-     * } $options
-     */
-    public function __construct(models\User $user, array $options = [])
+    public function __construct(models\User $user)
     {
         $this->user = $user;
-        $this->options = array_merge(self::DEFAULT_OPTIONS, $options);
     }
 
     /**
@@ -42,7 +25,7 @@ class NewsPicker
      *
      * @return models\Link[]
      */
-    public function pick(): array
+    public function pick(int $max = 25): array
     {
         $excluded_hashes = models\Link::listHashesExcludedFromNews($this->user->id);
         $links_from_followed = models\Link::listFromFollowedCollections($this->user->id);
@@ -58,7 +41,7 @@ class NewsPicker
 
             $links[$hash] = $link;
 
-            if (count($links) >= $this->options['number_links']) {
+            if (count($links) >= $max) {
                 break;
             }
         }
