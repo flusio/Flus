@@ -375,4 +375,77 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link = $link->reload();
         $this->assertSame('old.png', $link->image_filename);
     }
+
+    public function testShouldBeFetchedAgainReturnsTrueIfNeverFetched(): void
+    {
+        $link = new models\Link('https://example.com', 'foo', true);
+        $link->to_be_fetched = true;
+        $link->fetched_at = null;
+
+        $to_be_fetched = LinkFetcher::shouldBeFetchedAgain($link);
+
+        $this->assertTrue($to_be_fetched);
+    }
+
+    public function testShouldBeFetchedAgainReturnsTrueIfInErrorAndCanRetry(): void
+    {
+        $link = new models\Link('https://example.com', 'foo', true);
+        $link->to_be_fetched = true;
+        $link->fetched_code = 404;
+        /** @var int */
+        $fetched_count = $this->fake('numberBetween', 1, 25);
+        $link->fetched_count = $fetched_count;
+        /** @var \DateTimeImmutable */
+        $fetched_at = $this->fake('dateTime');
+        $link->fetched_at = $fetched_at;
+
+        $to_be_fetched = LinkFetcher::shouldBeFetchedAgain($link);
+
+        $this->assertTrue($to_be_fetched);
+    }
+
+    public function testShouldBeFetchedAgainReturnsFalseIfCanRetryButNotInError(): void
+    {
+        $link = new models\Link('https://example.com', 'foo', true);
+        $link->to_be_fetched = true;
+        $link->fetched_code = 200;
+        /** @var int */
+        $fetched_count = $this->fake('numberBetween', 1, 25);
+        $link->fetched_count = $fetched_count;
+        /** @var \DateTimeImmutable */
+        $fetched_at = $this->fake('dateTime');
+        $link->fetched_at = $fetched_at;
+
+        $to_be_fetched = LinkFetcher::shouldBeFetchedAgain($link);
+
+        $this->assertFalse($to_be_fetched);
+    }
+
+    public function testShouldBeFetchedAgainReturnsFalseIfInErrorButCannotRetry(): void
+    {
+        $link = new models\Link('https://example.com', 'foo', true);
+        $link->to_be_fetched = true;
+        $link->fetched_code = 404;
+        /** @var int */
+        $fetched_count = $this->fake('numberBetween', 26, 42);
+        $link->fetched_count = $fetched_count;
+        /** @var \DateTimeImmutable */
+        $fetched_at = $this->fake('dateTime');
+        $link->fetched_at = $fetched_at;
+
+        $to_be_fetched = LinkFetcher::shouldBeFetchedAgain($link);
+
+        $this->assertFalse($to_be_fetched);
+    }
+
+    public function testShouldBeFetchedAgainReturnsFalseIfToBeFetchedIsFalse(): void
+    {
+        $link = new models\Link('https://example.com', 'foo', true);
+        $link->to_be_fetched = false;
+        $link->fetched_at = null;
+
+        $to_be_fetched = LinkFetcher::shouldBeFetchedAgain($link);
+
+        $this->assertFalse($to_be_fetched);
+    }
 }

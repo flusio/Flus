@@ -59,6 +59,9 @@ class Link
     public ?string $image_filename = null;
 
     #[Database\Column]
+    public bool $to_be_fetched = true;
+
+    #[Database\Column]
     public ?\DateTimeImmutable $fetched_at = null;
 
     #[Database\Column]

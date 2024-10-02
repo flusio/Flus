@@ -83,9 +83,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
+            'to_be_fetched' => true,
             'fetched_at' => null,
-            'fetched_code' => 0,
-            'fetched_count' => 0,
         ]);
         $links_fetcher_job = new LinksSync();
 
@@ -104,6 +103,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => 'https://github.com/flusio/Flus',
             'title' => 'https://github.com/flusio/Flus',
+            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -126,6 +126,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
+            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -145,6 +146,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
+            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -192,6 +194,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
+            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -204,70 +207,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link->fetched_at);
     }
 
-    public function testPerformFetchesLinksInError(): void
-    {
-        /** @var \DateTimeImmutable */
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        /** @var int */
-        $fetched_count = $this->fake('numberBetween', 1, 25);
-        $interval_to_wait = 5 + pow($fetched_count, 4);
-        /** @var int */
-        $seconds = $this->fake('numberBetween', $interval_to_wait + 1, $interval_to_wait + 9000);
-        $fetched_at = \Minz\Time::ago($seconds, 'seconds');
-        $url = 'https://flus.fr/carnet/';
-        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        $link = LinkFactory::create([
-            'url' => $url,
-            'title' => $url,
-            'fetched_at' => $fetched_at,
-            'fetched_code' => 404,
-            'fetched_error' => 'not found',
-            'fetched_count' => $fetched_count,
-        ]);
-        $links_fetcher_job = new LinksSync();
-
-        $links_fetcher_job->perform();
-
-        $link = $link->reload();
-        $this->assertSame('Carnet de Flus', $link->title);
-        $this->assertNotEquals($fetched_at, $link->fetched_at);
-        $this->assertSame(200, $link->fetched_code);
-        $this->assertNull($link->fetched_error);
-        $this->assertSame($fetched_count + 1, $link->fetched_count);
-    }
-
-    public function testPerformDoesNotFetchLinksInErrorIfFetchedCountIsGreaterThan25(): void
-    {
-        /** @var \DateTimeImmutable */
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        /** @var int */
-        $fetched_count = $this->fake('numberBetween', 26, 42);
-        $interval_to_wait = 5 + pow($fetched_count, 4);
-        /** @var int */
-        $seconds = $this->fake('numberBetween', $interval_to_wait + 1, $interval_to_wait + 9000);
-        $fetched_at = \Minz\Time::ago($seconds, 'seconds');
-        $link = LinkFactory::create([
-            'url' => 'https://github.com/flusio/Flus',
-            'title' => 'https://github.com/flusio/Flus',
-            'fetched_at' => $fetched_at,
-            'fetched_code' => 404,
-            'fetched_error' => 'not found',
-            'fetched_count' => $fetched_count,
-        ]);
-        $links_fetcher_job = new LinksSync();
-
-        $links_fetcher_job->perform();
-
-        $link = $link->reload();
-        $this->assertSame('https://github.com/flusio/Flus', $link->title);
-        $this->assertEquals($fetched_at, $link->fetched_at);
-        $this->assertSame(404, $link->fetched_code);
-        $this->assertSame($fetched_count, $link->fetched_count);
-    }
-
-    public function testPerformDoesNotFetchLinksInErrorIfFetchedAtIsWithinIntervalToWait(): void
+    public function testPerformDoesNotFetchLinksIfFetchedAtIsWithinIntervalToWait(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -283,9 +223,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => 'https://github.com/flusio/Flus',
             'title' => 'https://github.com/flusio/Flus',
+            'to_be_fetched' => true,
             'fetched_at' => $fetched_at,
-            'fetched_code' => 404,
-            'fetched_error' => 'not found',
             'fetched_count' => $fetched_count,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -295,7 +234,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = $link->reload();
         $this->assertSame('https://github.com/flusio/Flus', $link->title);
         $this->assertEquals($fetched_at, $link->fetched_at);
-        $this->assertSame(404, $link->fetched_code);
         $this->assertSame($fetched_count, $link->fetched_count);
     }
 
@@ -311,9 +249,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
+            'to_be_fetched' => true,
             'fetched_at' => null,
-            'fetched_code' => 0,
-            'fetched_count' => 0,
             'locked_at' => $locked_at,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -357,9 +294,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
+            'to_be_fetched' => true,
             'fetched_at' => null,
-            'fetched_code' => 0,
-            'fetched_count' => 0,
             'locked_at' => $locked_at,
         ]);
         $links_fetcher_job = new LinksSync();
