@@ -57,6 +57,7 @@
     }
 
     .popup__container--bottom {
+        right: auto;
         left: 50%;
 
         margin-top: 0.5rem;
