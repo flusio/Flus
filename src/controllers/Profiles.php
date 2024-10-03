@@ -39,7 +39,6 @@ class Profiles
         $links = $user->links(['published_at', 'number_comments'], [
             'unshared' => false,
             'limit' => 6,
-            'context_user_id' => $current_user ? $current_user->id : null,
         ]);
 
         $collections = $user->collections(['number_links'], [
