@@ -75,6 +75,9 @@
                     </span>
                 </summary>
 
+                <?php $is_following = $current_user->isFollowing($collection->id); ?>
+                <?php $is_shared = count($collection->shares()) > 0; ?>
+
                 <nav class="popup__container popup__container--left" role="menu">
                     <button
                         class="popup__item popup__item--button"
@@ -91,6 +94,21 @@
 
                     <div class="popup__separator"></div>
 
+                    <?php if ($is_following): ?>
+                        <button
+                            class="popup__item popup__item--button"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href-value="<?= url('edit collection filter', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                            role="menuitem"
+                        >
+                            <?= icon('slider') ?>
+                            <?= _('Adjust for the news') ?>
+                        </button>
+                    <?php endif; ?>
+
                     <button
                         class="popup__item popup__item--button"
                         data-controller="modal-opener"
@@ -104,20 +122,18 @@
                         <?= _('Edit') ?>
                     </button>
 
-                    <?php if ($collection->user_id === $current_user->id): ?>
-                        <button
-                            class="popup__item popup__item--button"
-                            data-controller="modal-opener"
-                            data-action="modal-opener#fetch"
-                            data-modal-opener-href-value="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
-                            aria-haspopup="dialog"
-                            aria-controls="modal"
-                            role="menuitem"
-                        >
-                            <?= icon('directory') ?>
-                            <?= _('Put in a group') ?>
-                        </button>
-                    <?php endif; ?>
+                    <button
+                        class="popup__item popup__item--button"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="<?= url('edit group collection', ['id' => $collection->id, 'from' => url('collection', $current_url_params)]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                        role="menuitem"
+                    >
+                        <?= icon('directory') ?>
+                        <?= _('Put in a group') ?>
+                    </button>
 
                     <button
                         class="popup__item popup__item--button"
@@ -131,6 +147,32 @@
                         <?= icon('image') ?>
                         <?= _('Change the illustration') ?>
                     </button>
+
+                    <?php if ($is_following): ?>
+                        <div class="popup__separator"></div>
+
+                        <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>" role="menuitem">
+                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                            <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
+
+                            <button class="popup__item popup__item--button">
+                                <?= icon('feed-stop') ?>
+                                <?= _('Unfollow') ?>
+                            </button>
+                        </form>
+                    <?php elseif ($is_shared): ?>
+                        <div class="popup__separator"></div>
+
+                        <form method="post" action="<?= url('follow collection', ['id' => $collection->id]) ?>" role="menuitem">
+                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                            <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
+
+                            <button class="popup__item popup__item--button">
+                                <?= icon('feed') ?>
+                                <?= _('Follow') ?>
+                            </button>
+                        </form>
+                    <?php endif; ?>
 
                     <?php if ($collection->user_id === $current_user->id): ?>
                         <div class="popup__separator"></div>
