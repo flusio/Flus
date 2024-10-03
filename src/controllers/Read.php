@@ -50,7 +50,6 @@ class Read
             [
                 'offset' => $pagination->currentOffset(),
                 'limit' => $pagination->numberPerPage(),
-                'context_user_id' => $user->id,
             ]
         );
 

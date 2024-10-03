@@ -164,6 +164,7 @@ trait Link
                 INNER JOIN collections c
                 ON lc.collection_id = c.id
                 AND c.is_public = true
+                AND c.user_id = :user_id
             SQL;
 
             if (in_array('published_at', $selected_computed_props)) {

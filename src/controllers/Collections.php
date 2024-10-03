@@ -196,7 +196,6 @@ class Collections
                     [
                         'offset' => $pagination->currentOffset(),
                         'limit' => $pagination->numberPerPage(),
-                        'context_user_id' => $user->id,
                     ]
                 ),
                 'pagination' => $pagination,
@@ -211,7 +210,6 @@ class Collections
                         'hidden' => $access_is_shared,
                         'offset' => $pagination->currentOffset(),
                         'limit' => $pagination->numberPerPage(),
-                        'context_user_id' => $user ? $user->id : '',
                     ]
                 ),
                 'pagination' => $pagination,
