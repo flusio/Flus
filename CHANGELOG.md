@@ -1,5 +1,24 @@
 # Changelog of Flus
 
+## 2024-10-03 - v1.0.2
+
+### Improvements
+
+- Allow to follow a shared collection ([99b8cb18](https://github.com/flusio/Flus/commit/99b8cb18))
+- Improve performance to get public links of a user ([56aae219](https://github.com/flusio/Flus/commit/56aae219))
+- Improve the performance of news refreshing ([0d54d7c6](https://github.com/flusio/Flus/commit/0d54d7c6))
+- Homogeneize the "remove from news" labels ([96907f33](https://github.com/flusio/Flus/commit/96907f33))
+
+### Technical
+
+- Improve performance to retrieve links to fetch ([805380d3](https://github.com/flusio/Flus/commit/805380d3))
+
+### Developers
+
+- Mock all the requests in LinksSyncTest ([0c514c5c](https://github.com/flusio/Flus/commit/0c514c5c))
+- Refactor the NewsPicker API ([346e732e](https://github.com/flusio/Flus/commit/346e732e))
+- Fix `popup__container--bottom` position ([ad8cdbd2](https://github.com/flusio/Flus/commit/ad8cdbd2))
+
 ## 2024-09-19 - v1.0.1
 
 ### Improvements
