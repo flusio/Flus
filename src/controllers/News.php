@@ -124,7 +124,7 @@ class News
         }
 
         $news_picker = new services\NewsPicker($user);
-        $links = $news_picker->pick(max: 1);
+        $links = $news_picker->pick(max: 2);
 
         return Response::json(200, [
             'available' => count($links) > 0,
