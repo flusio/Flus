@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-10-03 13:37+0200\n"
-"PO-Revision-Date: 2024-10-03 13:38+0200\n"
+"POT-Creation-Date: 2024-10-03 14:41+0200\n"
+"PO-Revision-Date: 2024-10-03 14:41+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -46,7 +46,7 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:101 controllers/Collections.php:313
+#: controllers/Collections.php:101 controllers/Collections.php:311
 #: controllers/Feeds.php:107 controllers/Groups.php:90
 #: controllers/Links.php:270 controllers/Links.php:442
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
@@ -69,11 +69,11 @@ msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:114 controllers/Collections.php:328
+#: controllers/Collections.php:114 controllers/Collections.php:326
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:388 controllers/Exportations.php:62
+#: controllers/Collections.php:386 controllers/Exportations.php:62
 #: controllers/Groups.php:161 controllers/Importations.php:48
 #: controllers/Links.php:499 controllers/Mastodon.php:87
 #: controllers/Messages.php:94 controllers/Messages.php:145

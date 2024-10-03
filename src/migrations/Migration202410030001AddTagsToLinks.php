@@ -5,7 +5,7 @@ namespace App\migrations;
 use App\models;
 use App\services;
 
-class Migration202409200001AddTagsToLinks
+class Migration202410030001AddTagsToLinks
 {
     public function migrate(): bool
     {
