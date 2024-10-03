@@ -44,8 +44,9 @@ trait NewsQueries
             AND lc.collection_id = c.id
 
             AND (
-                (l.is_hidden = false AND c.is_public = true) OR
-                EXISTS (
+                (l.is_hidden = false AND c.is_public = true)
+                OR c.user_id = :user_id
+                OR EXISTS (
                     SELECT 1 FROM collection_shares cs
                     WHERE cs.user_id = :user_id
                     AND cs.collection_id = c.id

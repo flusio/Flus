@@ -154,7 +154,9 @@ class Groups
         if ($can_update) {
             $collection->group_id = $group_id;
             $collection->save();
-        } else {
+        }
+
+        if ($is_following) {
             $followed_collection = models\FollowedCollection::findBy([
                 'user_id' => $user->id,
                 'collection_id' => $collection->id,

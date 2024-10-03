@@ -122,6 +122,10 @@
 }
 
 .section__actions {
+    display: flex;
+
+    gap: var(--space-small);
+
     flex-shrink: 0;
 }
 
