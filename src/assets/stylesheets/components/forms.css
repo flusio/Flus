@@ -82,7 +82,7 @@ input[type="radio"] + label {
 
 input[type="checkbox"] + label::before,
 input[type="radio"] + label::before {
-    content: ' ';
+    content: '';
 
     position: relative;
     top: 0.5rem;
@@ -129,11 +129,11 @@ input[type="radio"]:checked + label::after {
     content: '';
 
     position: absolute;
-    top: 1.2rem;
-    left: 1.5rem;
 
     width: 1.5rem;
     height: 0.75rem;
+    margin-top: 1.2rem;
+    margin-left: 0.5rem;
 
     border-bottom: var(--width-border) solid var(--color-text);
     border-left: var(--width-border) solid var(--color-text);

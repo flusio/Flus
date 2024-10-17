@@ -43,7 +43,3 @@ input[type="checkbox"]:checked + .topics-selector__label::before {
     border-color: var(--color-turquoise-7);
     border-color: transparent;
 }
-
-input[type="checkbox"]:checked + .topics-selector__label::after {
-    left: 2.5rem;
-}
