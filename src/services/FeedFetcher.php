@@ -124,6 +124,10 @@ class FeedFetcher
         $links_to_collections_to_create = [];
 
         foreach ($feed->entries as $entry) {
+            if (!$entry->link && \SpiderBits\Url::isValid($entry->id)) {
+                $entry->link = $entry->id;
+            }
+
             if (!$entry->link) {
                 continue;
             }
