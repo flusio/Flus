@@ -24,6 +24,7 @@ class LinkTags
         }
 
         $tags = array_unique($tags);
+        $tags = array_values($tags);
 
         $link->tags = $tags;
 
