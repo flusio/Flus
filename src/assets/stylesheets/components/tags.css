@@ -1,0 +1,13 @@
+.tag {
+    overflow: hidden;
+
+    padding: 0 var(--space-smaller);
+
+    color: var(--color-turquoise-8);
+    font-size: var(--size-small);
+    text-decoration: none;
+    text-overflow: ellipsis;
+
+    background-color: var(--color-turquoise-2);
+    border-radius: var(--radius);
+}

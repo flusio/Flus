@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-10-17 17:36+0200\n"
-"PO-Revision-Date: 2024-10-17 17:36+0200\n"
+"POT-Creation-Date: 2024-10-17 18:52+0200\n"
+"PO-Revision-Date: 2024-10-17 18:52+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -464,7 +464,7 @@ msgstr "< 1 min"
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:211 views/links/show.phtml:73
+#: utils/view_helpers.php:211 views/links/show.phtml:83
 msgid "you"
 msgstr "vous"
 
@@ -676,7 +676,7 @@ msgstr "Page suivante"
 #: views/links/collections/index.phtml:43 views/links/edit.phtml:44
 #: views/links/edit.phtml:73 views/links/new.phtml:42 views/links/new.phtml:59
 #: views/links/new.phtml:66 views/links/repairing/new.phtml:50
-#: views/links/searches/show.phtml:54 views/links/show.phtml:206
+#: views/links/searches/show.phtml:54 views/links/show.phtml:216
 #: views/mastodon/show.phtml:77 views/mastodon/show.phtml:132
 #: views/messages/edit.phtml:44 views/my/account/deletion.phtml:63
 #: views/my/preferences/edit.phtml:41 views/my/profile/edit.phtml:56
@@ -1073,8 +1073,8 @@ msgid "Published by %s"
 msgstr "Publiée par %s"
 
 #: views/collections/show.phtml:74 views/collections/show_public.phtml:112
-#: views/links/_link.phtml:221 views/links/_link.phtml:225
-#: views/links/show.phtml:121 views/links/show.phtml:125
+#: views/links/_link.phtml:231 views/links/_link.phtml:235
+#: views/links/show.phtml:131 views/links/show.phtml:135
 #: views/news/index.phtml:41 views/news/index.phtml:129
 #: views/news/index.phtml:213
 msgid "Actions"
@@ -1085,8 +1085,8 @@ msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
 #: views/collections/show.phtml:122 views/groups/_group.phtml:23
-#: views/groups/_group.phtml:37 views/links/_link.phtml:273
-#: views/links/show.phtml:141 views/profiles/show.phtml:55
+#: views/groups/_group.phtml:37 views/links/_link.phtml:283
+#: views/links/show.phtml:151 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1116,8 +1116,8 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/show.phtml:194 views/links/_link.phtml:311
-#: views/links/show.phtml:158
+#: views/collections/show.phtml:194 views/links/_link.phtml:321
+#: views/links/show.phtml:168
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1447,7 +1447,7 @@ msgstr ""
 "Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
 "être respectée si vous cliquez dessus."
 
-#: views/links/_link.phtml:139 views/links/show.phtml:64
+#: views/links/_link.phtml:139 views/links/show.phtml:74
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
@@ -1481,50 +1481,50 @@ msgstr ""
 msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
-#: views/links/_link.phtml:189
+#: views/links/_link.phtml:199
 #, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
 msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
 
-#: views/links/_link.phtml:194
+#: views/links/_link.phtml:204
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.phtml:208
+#: views/links/_link.phtml:218
 msgid "Comments"
 msgstr "Commentaires"
 
-#: views/links/_link.phtml:237
+#: views/links/_link.phtml:247
 msgid "Remove from the news"
 msgstr "Retirer du journal"
 
-#: views/links/_link.phtml:254
+#: views/links/_link.phtml:264
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:288
+#: views/links/_link.phtml:298
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.phtml:299
+#: views/links/_link.phtml:309
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.phtml:323 views/links/_link.phtml:326
+#: views/links/_link.phtml:333 views/links/_link.phtml:336
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:336 views/links/_link.phtml:339
+#: views/links/_link.phtml:346 views/links/_link.phtml:349
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.phtml:349 views/links/_link.phtml:352
+#: views/links/_link.phtml:359 views/links/_link.phtml:362
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.phtml:365 views/links/_link.phtml:369
+#: views/links/_link.phtml:375 views/links/_link.phtml:379
 #: views/links/collections/index.phtml:181
 msgid "Store the link"
 msgstr "Ranger le lien"
@@ -1541,16 +1541,16 @@ msgstr "Collections"
 msgid "You already commented this link."
 msgstr "Vous avez déjà commenté ce lien."
 
-#: views/links/collections/index.phtml:113 views/links/show.phtml:190
+#: views/links/collections/index.phtml:113 views/links/show.phtml:200
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
 #: views/links/collections/index.phtml:137
-#: views/links/collections/index.phtml:170 views/links/show.phtml:223
+#: views/links/collections/index.phtml:170 views/links/show.phtml:233
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
-#: views/links/collections/index.phtml:146 views/links/show.phtml:188
+#: views/links/collections/index.phtml:146 views/links/show.phtml:198
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -1666,28 +1666,28 @@ msgstr "Un lien partagé par %s sur %s."
 msgid "Syndication feed of comments on %s"
 msgstr "Flux de syndication de commentaires sur %s"
 
-#: views/links/show.phtml:74
+#: views/links/show.phtml:84
 #, php-format
 msgid "Added by <a href=\"%s\">%s</a>"
 msgstr "Ajouté par <a href=\"%s\">%s</a>"
 
-#: views/links/show.phtml:85
+#: views/links/show.phtml:95
 msgid "read"
 msgstr "lire"
 
-#: views/links/show.phtml:87
+#: views/links/show.phtml:97
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
-#: views/links/show.phtml:150
+#: views/links/show.phtml:160
 msgid "Are you sure that you want to delete this message?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
 
-#: views/links/show.phtml:230
+#: views/links/show.phtml:240
 msgid "Comment"
 msgstr "Commenter"
 
-#: views/links/show.phtml:237
+#: views/links/show.phtml:247
 msgid "This link being hidden, the comments are private."
 msgstr "Ce lien étant masqué, les commentaires sont privés."
 

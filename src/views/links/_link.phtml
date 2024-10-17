@@ -182,6 +182,16 @@
                 </p>
             <?php endif; ?>
 
+            <?php if ($link->tags && $beta_enabled): ?>
+                <div class="link__tags">
+                    <?php foreach ($link->tags as $tag): ?>
+                        <a class="tag" href="<?= url('links', ['q' => "#{$tag}"]) ?>">
+                            #<?= $tag ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
             <?php if ($display_comments): ?>
                 <p class="link__text">
                     <a href="<?= url('link', ['id' => $link->id]) ?>">

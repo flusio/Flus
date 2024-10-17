@@ -57,6 +57,16 @@
         </h1>
     </div>
 
+    <?php if ($link->tags && $beta_enabled): ?>
+        <div class="link__tags link__tags--center">
+            <?php foreach ($link->tags as $tag): ?>
+                <a class="tag" href="<?= url('links', ['q' => "#{$tag}"]) ?>">
+                    #<?= $tag ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
     <p class="section__intro">
         <?php if (!$link->fetched_at): ?>
             <span>
