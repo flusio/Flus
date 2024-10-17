@@ -1,6 +1,6 @@
 <?php
 
-namespace App\services;
+namespace App\models\dao\links;
 
 use App\models;
 use tests\factories\CollectionFactory;
@@ -10,7 +10,7 @@ use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
-class NewsPickerTest extends \PHPUnit\Framework\TestCase
+class NewsQueriesTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
@@ -26,14 +26,13 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->other_user = UserFactory::create();
     }
 
-    public function testPickSelectsFromFollowed(): void
+    public function testListFromFollowedCollectionsSelectsFromFollowed(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $published_at1 = \Minz\Time::ago(3, 'days');
         $published_at2 = \Minz\Time::ago(1, 'days');
-        $news_picker = new NewsPicker($this->user);
         $link1 = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'is_hidden' => false,
@@ -62,7 +61,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(2, count($links));
         $this->assertSame($link2->id, $links[0]->id);
@@ -73,7 +72,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $links[1]->source_news_resource_id);
     }
 
-    public function testPickSelectsHiddenLinkIfCollectionIsShared(): void
+    public function testListFromFollowedCollectionsSelectsHiddenLinkIfCollectionIsShared(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -81,7 +80,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'is_hidden' => true,
@@ -105,7 +103,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
@@ -113,7 +111,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $links[0]->source_news_resource_id);
     }
 
-    public function testPickSelectsFromPrivateCollectionIfShared(): void
+    public function testListFromFollowedCollectionsSelectsFromPrivateCollectionIfShared(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -121,7 +119,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'is_hidden' => false,
@@ -145,7 +142,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
@@ -153,7 +150,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $links[0]->source_news_resource_id);
     }
 
-    public function testPickRespectsFromFollowedIfOldLinksButWithTimeFilterAll(): void
+    public function testListFromFollowedCollectionsRespectsFromFollowedIfOldLinksButWithTimeFilterAll(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -165,7 +162,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         // when the user started to follow the collection
         $delta_followed_days = $this->fake('numberBetween', 0, 7);
         $followed_at = \Minz\Time::ago($days_ago - $delta_followed_days, 'days');
-        $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'is_hidden' => false,
@@ -187,7 +183,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'time_filter' => 'all',
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
@@ -195,7 +191,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $links[0]->source_news_resource_id);
     }
 
-    public function testPickDoesNotPickFromFollowedIfTooOld(): void
+    public function testListFromFollowedCollectionsDoesNotPickFromFollowedIfTooOld(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -203,7 +199,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 8, 180);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'is_hidden' => false,
@@ -223,12 +218,12 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfTooOldWithTimeFilterStrict(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfTooOldWithTimeFilterStrict(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -236,7 +231,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $hours_ago = $this->fake('numberBetween', 25, 72);
         $published_at = \Minz\Time::ago($hours_ago, 'hours');
-        $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'is_hidden' => false,
@@ -257,12 +251,12 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'time_filter' => 'strict',
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfLinkIsHidden(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfLinkIsHidden(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -270,7 +264,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'is_hidden' => true,
@@ -290,12 +283,12 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfCollectionIsPrivate(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfCollectionIsPrivate(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -303,7 +296,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
             'user_id' => $this->other_user->id,
             'is_hidden' => false,
@@ -323,12 +315,12 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfUrlInBookmarks(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlInBookmarks(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -336,7 +328,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $news_picker = new NewsPicker($this->user);
         $bookmarks = $this->user->bookmarks();
         /** @var string */
         $url = $this->fake('url');
@@ -368,12 +359,12 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfUrlInReadList(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlInReadList(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -381,7 +372,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $news_picker = new NewsPicker($this->user);
         $read_list = $this->user->readList();
         /** @var string */
         $url = $this->fake('url');
@@ -413,12 +403,12 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfUrlInNeverList(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlInNeverList(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -426,7 +416,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $news_picker = new NewsPicker($this->user);
         $never_list = $this->user->neverList();
         /** @var string */
         $url = $this->fake('url');
@@ -458,12 +447,12 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testPickDoesNotSelectFromFollowedIfLinkIsOwned(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfLinkIsOwned(): void
     {
         // This is a very particular use case where the user got write access
         // to a collection while he was following it (or followed it
@@ -476,7 +465,6 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $news_picker = new NewsPicker($this->user);
         $link = LinkFactory::create([
             'user_id' => $this->user->id,
             'is_hidden' => false,
@@ -496,7 +484,7 @@ class NewsPickerTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = $news_picker->pick();
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
 
         $this->assertSame(0, count($links));
     }

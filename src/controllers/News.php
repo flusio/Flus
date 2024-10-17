@@ -6,7 +6,6 @@ use Minz\Request;
 use Minz\Response;
 use App\auth;
 use App\models;
-use App\services;
 use App\utils;
 
 /**
@@ -78,8 +77,7 @@ class News
             ]);
         }
 
-        $news_picker = new services\NewsPicker($user);
-        $links = $news_picker->pick(max: 50);
+        $links = models\Link::listFromFollowedCollections($user->id, max:50);
 
         $news = $user->news();
 
@@ -123,8 +121,7 @@ class News
             ]);
         }
 
-        $news_picker = new services\NewsPicker($user);
-        $links = $news_picker->pick(max: 2);
+        $links = models\Link::listFromFollowedCollections($user->id, max:2);
 
         return Response::json(200, [
             'available' => count($links) > 0,
