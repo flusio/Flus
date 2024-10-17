@@ -121,10 +121,8 @@ class News
             ]);
         }
 
-        $links = models\Link::listFromFollowedCollections($user->id, max:2);
-
         return Response::json(200, [
-            'available' => count($links) > 0,
+            'available' => models\Link::anyFromFollowedCollections($user->id),
         ]);
     }
 }

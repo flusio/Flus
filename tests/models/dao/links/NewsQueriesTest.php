@@ -488,4 +488,58 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, count($links));
     }
+
+    public function testAnyFromFollowedCollectionsCanReturnTrue(): void
+    {
+        $published_at = \Minz\Time::ago(1, 'day');
+        $link = LinkFactory::create([
+            'user_id' => $this->other_user->id,
+            'is_hidden' => false,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
+        ]);
+        FollowedCollectionFactory::create([
+            'user_id' => $this->user->id,
+            'collection_id' => $collection->id,
+        ]);
+
+        $result = models\Link::anyFromFollowedCollections($this->user->id);
+
+        $this->assertTrue($result);
+    }
+
+    public function testAnyFromFollowedCollectionsCanReturnFalse(): void
+    {
+        $published_at = \Minz\Time::ago(1, 'day');
+        $link = LinkFactory::create([
+            'user_id' => $this->other_user->id,
+            'is_hidden' => true, // Note the link is hidden
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        LinkToCollectionFactory::create([
+            'created_at' => $published_at,
+            'collection_id' => $collection->id,
+            'link_id' => $link->id,
+        ]);
+        FollowedCollectionFactory::create([
+            'user_id' => $this->user->id,
+            'collection_id' => $collection->id,
+        ]);
+
+        $result = models\Link::anyFromFollowedCollections($this->user->id);
+
+        $this->assertFalse($result);
+    }
 }

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-10-04 19:18+0200\n"
-"PO-Revision-Date: 2024-10-04 19:18+0200\n"
+"POT-Creation-Date: 2024-10-17 17:36+0200\n"
+"PO-Revision-Date: 2024-10-17 17:36+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -50,7 +50,7 @@ msgstr "Afficher"
 #: controllers/Feeds.php:107 controllers/Groups.php:90
 #: controllers/Links.php:293 controllers/Links.php:465
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
-#: controllers/News.php:77 controllers/Passwords.php:89
+#: controllers/News.php:76 controllers/Passwords.php:89
 #: controllers/Passwords.php:192 controllers/Registrations.php:103
 #: controllers/Sessions.php:85 controllers/Support.php:70
 #: controllers/collections/Filters.php:105
