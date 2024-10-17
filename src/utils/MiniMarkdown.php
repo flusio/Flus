@@ -2,6 +2,8 @@
 
 namespace App\utils;
 
+use App\services;
+
 /**
  * An extension to the Parsedown library.
  *
@@ -30,8 +32,55 @@ class MiniMarkdown extends \Parsedown
 
     public function __construct()
     {
-        $this->setSafeMode(true)
-             ->setBreaksEnabled(true);
+        $this->setSafeMode(true);
+        $this->setBreaksEnabled(true);
+
+        $this->InlineTypes['#'][] = 'Tag';
+
+        $this->inlineMarkerList .= '#';
+    }
+
+    /**
+     * Make sure to block header tag so it doesn't conflict with lines starting
+     * with a #tag.
+     *
+     * @param array{body: string, indent: int, text: string} $line
+     *
+     * @return ?array<string, mixed>
+     */
+    protected function blockHeader($line): ?array
+    {
+        return null;
+    }
+
+    /**
+     * @param array{text: string, context: string} $excerpt
+     *
+     * @return ?array<string, mixed>
+     */
+    protected function inlineTag(array $excerpt): ?array
+    {
+        $result = preg_match(services\LinkTags::TAG_REGEX, $excerpt['text'], $matches);
+
+        if ($result) {
+            $tag = $matches['tag'];
+            $tag_url = \Minz\Url::for('links', [
+                'q' => "#{$tag}",
+            ]);
+
+            return array(
+                'extent' => strlen($tag) + 1,
+                'element' => array(
+                    'name' => 'a',
+                    'text' => "#{$tag}",
+                    'attributes' => array(
+                        'href' => $tag_url,
+                    ),
+                ),
+            );
+        } else {
+            return null;
+        }
     }
 
     /**
