@@ -147,7 +147,7 @@ class PocketImportator extends \Minz\Job
 
         foreach ($items as $item) {
             /** @var string */
-            $given_url = $item['given_url'];
+            $given_url = $item['given_url'] ?? '';
             $given_url = \SpiderBits\Url::sanitize($given_url);
 
             if (!\SpiderBits\Url::isValid($given_url)) {
@@ -190,7 +190,7 @@ class PocketImportator extends \Minz\Job
             }
 
             /** @var string */
-            $resolved_url = $item['resolved_url'];
+            $resolved_url = $item['resolved_url'] ?? '';
             $resolved_url = \SpiderBits\Url::sanitize($resolved_url);
 
             if (isset($link_ids_by_urls[$given_url])) {
