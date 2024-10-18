@@ -1,5 +1,32 @@
 # Changelog of Flus
 
+## 2024-10-18 - v1.0.3
+
+### Improvements
+
+- Improve the performance when checking if news are available ([41014681](https://github.com/flusio/Flus/commit/41014681))
+
+### Bug fixes
+
+- Fix the position of checkbox ticks of the topics selector ([eb698ace](https://github.com/flusio/Flus/commit/eb698ace))
+
+### Technical
+
+- Use the feed entry id as link if the link is missing ([edfcddd5](https://github.com/flusio/Flus/commit/edfcddd5))
+- Update the ClearUrls rules ([51fb95e0](https://github.com/flusio/Flus/commit/51fb95e0))
+
+### Developers
+
+- Configure Mailpit to catch emails in development mode ([736a0871](https://github.com/flusio/Flus/commit/736a0871))
+- Remove the NewsPicker service ([b30022da](https://github.com/flusio/Flus/commit/b30022da))
+
+### Beta
+
+- Allow to add tags to links ([6870e57b](https://github.com/flusio/Flus/commit/6870e57b))
+- Allow to search for tags and URL parts ([4258fe2d](https://github.com/flusio/Flus/commit/4258fe2d), [14a859d2](https://github.com/flusio/Flus/commit/14a859d2))
+- Display the links' tags ([4b63e012](https://github.com/flusio/Flus/commit/4b63e012))
+- Make the tags in comments clickable ([fc648e37](https://github.com/flusio/Flus/commit/fc648e37))
+
 ## 2024-10-03 - v1.0.2
 
 ### Improvements
