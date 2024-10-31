@@ -74,32 +74,6 @@
             <div class="form-group" data-controller="caption-switcher">
                 <input
                     type="checkbox"
-                    id="ignore-tags"
-                    name="ignore_tags"
-                    checked
-                    aria-describedby="ignore-tags-caption"
-                    data-action="caption-switcher#switch"
-                    data-caption-switcher-target="switch"
-                />
-
-                <label class="label--checkbox" for="ignore-tags">
-                    <?= _('Import your links by ignoring the tags') ?>
-                </label>
-
-                <p class="form-group__caption form-group__caption--alt" id="ignore-tags-caption" aria-live="polite">
-                    <span data-caption-switcher-target="caption" data-caption-value="on">
-                        <?= _f('%s will import your links in a collection named “Pocket links”, your tags will be ignored.', $brand) ?>
-                    </span>
-
-                    <span data-caption-switcher-target="caption" data-caption-unchecked>
-                        <?= _f('%s will import your links in a collection named “Pocket links” and in collections named after your tags (not recommended if you have a lot of tags).', $brand) ?>
-                    </span>
-                </p>
-            </div>
-
-            <div class="form-group" data-controller="caption-switcher">
-                <input
-                    type="checkbox"
                     id="import-bookmarks"
                     name="import_bookmarks"
                     checked

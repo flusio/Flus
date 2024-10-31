@@ -12,6 +12,8 @@ use Minz\Database;
  */
 trait Message
 {
+    use BulkQueries;
+
     /**
      * Return the link messages, orderer by creation date
      *

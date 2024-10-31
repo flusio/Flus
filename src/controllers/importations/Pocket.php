@@ -51,7 +51,6 @@ class Pocket
      * Initialize a new Pocket importation and register a PocketImportator job.
      *
      * @request_param string $csrf
-     * @request_param boolean $ignore_tags
      * @request_param boolean $import_bookmarks
      * @request_param boolean $import_favorites
      *
@@ -112,7 +111,6 @@ class Pocket
         }
 
         $options = [
-            'ignore_tags' => $request->paramBoolean('ignore_tags'),
             'import_bookmarks' => $request->paramBoolean('import_bookmarks'),
             'import_favorites' => $request->paramBoolean('import_favorites'),
         ];

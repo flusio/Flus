@@ -107,7 +107,6 @@ class PocketImportator extends \Minz\Job
      *
      * @param array<array<string, mixed>> $items
      * @param array{
-     *     'ignore_tags': bool,
      *     'import_bookmarks': bool,
      *     'import_favorites': bool,
      * } $options
@@ -144,6 +143,7 @@ class PocketImportator extends \Minz\Job
         $links_to_create = [];
         $collections_to_create = [];
         $links_to_collections_to_create = [];
+        $messages = [];
 
         foreach ($items as $item) {
             /** @var string */
@@ -163,29 +163,12 @@ class PocketImportator extends \Minz\Job
                 $collection_ids[] = $bookmarks_collection->id;
             }
 
-            if (is_array($item['tags'] ?? null) && !$options['ignore_tags']) {
-                // we want to create a collection per tag
-                $tags = array_keys($item['tags']);
-                foreach ($tags as $tag) {
-                    if (isset($collection_ids_by_names[$tag])) {
-                        // a collection named by the current tag already
-                        // exists, just pick its id
-                        $collection_ids[] = $collection_ids_by_names[$tag];
-                    } else {
-                        // the collection needs to be created
-                        $collection = models\Collection::init($user->id, $tag, '', false);
-                        $collection->created_at = \Minz\Time::now();
+            $tags = [];
 
-                        $collections_to_create[] = $collection;
-
-                        // add the collection to the map array to avoid
-                        // creating it again next time we find it
-                        $collection_ids_by_names[$collection->name] = $collection->id;
-
-                        // and add the collection id to the array which stores
-                        // the link collections
-                        $collection_ids[] = $collection->id;
-                    }
+            if (is_array($item['tags'] ?? null)) {
+                foreach (array_keys($item['tags']) as $tag) {
+                    $tag = str_replace(' ', '_', $tag);
+                    $tags[] = $tag;
                 }
             }
 
@@ -207,6 +190,8 @@ class PocketImportator extends \Minz\Job
                 } elseif (is_string($item['given_title'] ?? null)) {
                     $link->title = $item['given_title'];
                 }
+
+                $link->setTags($tags);
 
                 // In normal cases, created_at is set on save() call. Since we
                 // add links via the bulkInsert call, we have to set created_at
@@ -245,12 +230,27 @@ class PocketImportator extends \Minz\Job
                 $link_to_collection->created_at = $published_at;
                 $links_to_collections_to_create[] = $link_to_collection;
             }
+
+            // We create a message containing the list of tags if any.
+            if ($tags) {
+                $formatted_tags = array_map(function ($tag) {
+                    return "#{$tag}";
+                }, $tags);
+
+                $content = implode(' ', $formatted_tags);
+
+                $message = new models\Message($user->id, $link_id, $content);
+                $message->created_at = $published_at;
+
+                $messages[] = $message;
+            }
         }
 
         // Finally, let the big import (in DB) begin!
         models\Link::bulkInsert($links_to_create);
         models\Collection::bulkInsert($collections_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
+        models\Message::bulkInsert($messages);
 
         // Delete the collections if they are empty at the end of the
         // importation.

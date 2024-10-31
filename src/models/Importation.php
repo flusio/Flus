@@ -86,7 +86,6 @@ class Importation
 
     /**
      * @return array{
-     *     'ignore_tags': bool,
      *     'import_bookmarks': bool,
      *     'import_favorites': bool,
      * }
@@ -98,14 +97,9 @@ class Importation
         }
 
         $clean_options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
-
-        if (is_bool($this->options['ignore_tags'])) {
-            $clean_options['ignore_tags'] = $this->options['ignore_tags'];
-        }
 
         if (is_bool($this->options['import_bookmarks'])) {
             $clean_options['import_bookmarks'] = $this->options['import_bookmarks'];

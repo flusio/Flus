@@ -36,7 +36,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
@@ -68,7 +67,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => false,
             'import_favorites' => true,
         ];
@@ -99,7 +97,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
@@ -132,7 +129,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
@@ -158,7 +154,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => false,
         ];
@@ -186,7 +181,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
@@ -212,7 +206,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $url = $this->fake('url');
         $items = [];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
@@ -223,40 +216,7 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection);
     }
 
-    public function testImportPocketItemsDoesNotImportTags(): void
-    {
-        $importator = new PocketImportator();
-        $user = UserFactory::create();
-        /** @var string */
-        $url = $this->fake('url');
-        /** @var string */
-        $tag = $this->fake('word');
-        $items = [
-            [
-                'given_url' => $url,
-                'resolved_url' => $url,
-                'favorite' => '0',
-                'status' => '1',
-                'tags' => [
-                    $tag => ['item_id' => 'some id', 'tag' => $tag],
-                ],
-            ],
-        ];
-        $options = [
-            'ignore_tags' => true,
-            'import_bookmarks' => true,
-            'import_favorites' => true,
-        ];
-
-        $importator->importPocketItems($user, $items, $options);
-
-        $link = models\Link::findBy(['url' => $url]);
-        $this->assertNotNull($link);
-        $collection = models\Collection::findBy(['name' => $tag]);
-        $this->assertNull($collection);
-    }
-
-    public function testImportPocketItemsImportTagsIfOption(): void
+    public function testImportPocketItemsImportTags(): void
     {
         $importator = new PocketImportator();
         $user = UserFactory::create();
@@ -279,29 +239,18 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => false,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
 
         $importator->importPocketItems($user, $items, $options);
 
-        $collection1 = models\Collection::findBy(['name' => $tag1]);
-        $collection2 = models\Collection::findBy(['name' => $tag2]);
-        $this->assertNotNull($collection1);
-        $this->assertNotNull($collection2);
         $link = models\Link::findBy(['url' => $url]);
         $this->assertNotNull($link);
-        $db_links_to_collection1 = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection1->id,
-        ]);
-        $db_links_to_collection2 = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection2->id,
-        ]);
-        $this->assertNotNull($db_links_to_collection1);
-        $this->assertNotNull($db_links_to_collection2);
+        $this->assertEquals([$tag1 => $tag1, $tag2 => $tag2], $link->tags);
+        $messages = $link->messages();
+        $this->assertSame(1, count($messages));
+        $this->assertSame("#{$tag1} #{$tag2}", $messages[0]->content);
     }
 
     public function testImportPocketItemsUsesTimeAddedIfItExists(): void
@@ -323,7 +272,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
@@ -365,7 +313,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
@@ -412,7 +359,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
@@ -449,7 +395,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
@@ -479,7 +424,6 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $options = [
-            'ignore_tags' => true,
             'import_bookmarks' => true,
             'import_favorites' => true,
         ];
