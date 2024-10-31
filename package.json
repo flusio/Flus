@@ -4,31 +4,19 @@
   "repository": "github:flusio/Flus",
   "type": "module",
   "scripts": {
-    "watch": "parcel watch --no-hmr --dist-dir public/dev_assets src/assets/*/application.*",
-    "build": "parcel build --dist-dir public/assets src/assets/*/application.*",
+    "watch": "esbuild --bundle --loader:.woff=file --loader:.woff2=file --loader:.svg=file --sourcemap --outdir=public/dev_assets --watch=forever src/assets/*/application.*",
+    "build": "esbuild --bundle --loader:.woff=file --loader:.woff2=file --loader:.svg=file --sourcemap --outdir=public/assets --minify src/assets/*/application.*",
     "build:icons": "svg-sprite --symbol --symbol-dest=. --symbol-sprite=icons.svg --dest=public/static src/assets/icons/*",
     "lint-js": "eslint -c .eslint.config.js src/assets/javascripts/",
     "lint-js-fix": "eslint -c .eslint.config.js --fix src/assets/javascripts/",
     "lint-css": "stylelint src/assets/stylesheets/**/*.css",
     "lint-css-fix": "stylelint --fix src/assets/stylesheets/**/*.css"
   },
-  "targets": {
-    "default": {
-      "sourceMap": {
-        "inline": false,
-        "inlineSources": false,
-        "sourceRoot": ""
-      }
-    }
-  },
-  "alias": {
-    "js": "./src/assets/javascripts"
-  },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^2",
+    "esbuild": "0.24.0",
     "eslint": "^9.4.0",
     "globals": "^15.4.0",
-    "parcel": "^2.7.0",
     "stylelint": "^16",
     "stylelint-config-standard": "^36",
     "stylelint-order": "^6.0.0",

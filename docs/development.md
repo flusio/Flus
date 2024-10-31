@@ -116,7 +116,7 @@ Then start the job worker in a different console:
 $ php cli jobs watch
 ```
 
-And Parcel in another console:
+And esbuild in another console:
 
 ```console
 $ npm run watch

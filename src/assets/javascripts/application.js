@@ -1,22 +1,22 @@
 import * as Turbo from '@hotwired/turbo';
 import { Application } from '@hotwired/stimulus';
 
-import AutosubmitController from 'js/controllers/autosubmit_controller.js';
-import AutosaveController from 'js/controllers/autosave_controller.js';
-import BackButtonController from 'js/controllers/back_button_controller.js';
-import CaptionSwitcherController from 'js/controllers/caption_switcher_controller.js';
-import CollectionsSelectorController from 'js/controllers/collections_selector_controller.js';
-import CopyToClipboardController from 'js/controllers/copy_to_clipboard_controller.js';
-import CsrfLoaderController from 'js/controllers/csrf_loader_controller.js';
-import FormFileController from 'js/controllers/form_file_controller.js';
-import GroupSelectorController from 'js/controllers/group_selector_controller.js';
-import InputPasswordController from 'js/controllers/input_password_controller.js';
-import LinkSuggestionController from 'js/controllers/link_suggestion_controller.js';
-import ModalController from 'js/controllers/modal_controller.js';
-import ModalOpenerController from 'js/controllers/modal_opener_controller.js';
-import NewsRefresherController from 'js/controllers/news_refresher_controller.js';
-import PopupController from 'js/controllers/popup_controller.js';
-import TextEditorController from 'js/controllers/text_editor_controller.js';
+import AutosubmitController from './controllers/autosubmit_controller.js';
+import AutosaveController from './controllers/autosave_controller.js';
+import BackButtonController from './controllers/back_button_controller.js';
+import CaptionSwitcherController from './controllers/caption_switcher_controller.js';
+import CollectionsSelectorController from './controllers/collections_selector_controller.js';
+import CopyToClipboardController from './controllers/copy_to_clipboard_controller.js';
+import CsrfLoaderController from './controllers/csrf_loader_controller.js';
+import FormFileController from './controllers/form_file_controller.js';
+import GroupSelectorController from './controllers/group_selector_controller.js';
+import InputPasswordController from './controllers/input_password_controller.js';
+import LinkSuggestionController from './controllers/link_suggestion_controller.js';
+import ModalController from './controllers/modal_controller.js';
+import ModalOpenerController from './controllers/modal_opener_controller.js';
+import NewsRefresherController from './controllers/news_refresher_controller.js';
+import PopupController from './controllers/popup_controller.js';
+import TextEditorController from './controllers/text_editor_controller.js';
 
 window.jsConfiguration = JSON.parse(document.getElementById('javascript-configuration').innerHTML);
 

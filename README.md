@@ -44,9 +44,9 @@ It’s also based on other projects:
 
 - [ClearURLs rules](https://clearurls.xyz/) to detect and remove trackers from
   URLs;
+- [esbuild](https://esbuild.github.io/), a build tool for JavaScript;
 - [FakerPHP](https://fakerphp.github.io/) to generate fake data during tests;
 - [Minz](https://github.com/flusio/Minz), a small and personal PHP framework;
-- [Parcel](https://parceljs.org/), a build tool for JavaScript;
 - [Parsedown](https://parsedown.org/) to render Markdown;
 - [PHP\_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer),
   [Eslint](https://eslint.org/) and [Stylelint](https://stylelint.io/) to

@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
-import _ from 'js/l10n.js';
-import icon from 'js/icon.js';
+import _ from '../l10n.js';
+import icon from '../icon.js';
 
 export default class extends Controller {
     static values = {

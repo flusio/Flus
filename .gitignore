@@ -1,7 +1,6 @@
 /.env
 /vendor
 /node_modules
-/.parcel-cache
 /.phpunit.result.cache
 /coverage
 

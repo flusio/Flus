@@ -200,9 +200,6 @@ class Router
 
         $router->addRoute('GET', '/topics/:id', 'Topics#show', 'topic');
 
-        // This should be used only for source mapping
-        $router->addRoute('GET', '/src/assets/*', 'Assets#show');
-
         return $router;
     }
 

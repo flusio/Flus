@@ -1,17 +1,15 @@
 # How are the assets bundled
 
-I use [Parcel](https://parceljs.org/) to bundle the assets. Be aware I use the
-version 2 which is still in beta version. I really like Parcel, but
-unfortunately version 1 is buggy with the setup I want…
+I use [esbuild](https://esbuild.github.io/) to bundle the assets.
 
-Either if you started Parcel via Docker Compose or NPM, it will look at two
+Either if you started esbuild via Docker Compose or NPM, it will look at two
 files: [`src/assets/stylesheets/application.css`](/src/assets/stylesheets/application.css)
 and [`src/assets/javascripts/application.js`](/src/assets/javascripts/application.js).
 These files are the entrypoints and load the other CSS and JS files, which are
-monitored by Parcel.
+monitored by esbuild.
 
-Each time Parcel detects a change in one of these files, it bundles the files
-altogether and puts the bundled files under the `public/dev_assets/` folder.
+Each time esbuild detects a change in one of these files, it bundles the files
+all together and puts the bundled files under the `public/dev_assets/` folder.
 The files are finally loaded in the application [by the layout](/src/views/_layouts/base.phtml)
 via the `url_asset()` function.
 

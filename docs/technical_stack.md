@@ -18,7 +18,7 @@ The asynchronous jobs, such as emails sending, are handled by a PHP script. The
 worker should be configured as a OS service (e.g. systemd service), or can be
 handled via a CRON task (but with less efficiency).
 
-The assets (CSS and JS) are bundled with [Parcel](https://parceljs.org/). The
+The assets (CSS and JS) are bundled with [esbuild](https://esbuild.github.io/). The
 JavaScript relies on both [Stimulus](https://stimulus.hotwired.dev/) (“a modest
 JavaScript framework”) and [Turbo](https://turbo.hotwired.dev/) (used to speed
 up navigation on the application). The dependencies are managed with
@@ -34,5 +34,5 @@ and CSS files with [stylelint](https://stylelint.io/).
 
 The development environment is powered by Docker and Docker Compose setting up
 5 containers: a PHP server, a Nginx server, a job worker, a PostgreSQL database and
-a Node container running Parcel in watch mode. See the [`docker/` folder](/docker/)
+a Node container running esbuild in watch mode. See the [`docker/` folder](/docker/)
 for more information.

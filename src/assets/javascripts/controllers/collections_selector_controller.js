@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 
-import _ from 'js/l10n.js';
+import _ from '../l10n.js';
 
 export default class extends Controller {
     static get targets () {
