@@ -13,193 +13,195 @@
 </div>
 
 <?php if (!$links_timeline->empty()): ?>
-    <?php foreach ($links_timeline->datesGroups() as $date_group): ?>
-        <section class="group">
-            <header class="group__header">
-                <h2 class="group__title">
-                    <?= _date($date_group->date, 'dd MMMM') ?>
+    <div data-controller="zindex-inverser">
+        <?php foreach ($links_timeline->datesGroups() as $date_group): ?>
+            <section class="group">
+                <header class="group__header" data-zindex-inverser-target="item">
+                    <h2 class="group__title">
+                        <?= _date($date_group->date, 'dd MMMM') ?>
 
-                    <?php if ($date_group->isToday()): ?>
-                        <small class="text--secondary">⋅ <?= _('today') ?></small>
-                    <?php elseif ($date_group->isYesterday()): ?>
-                        <small class="text--secondary">⋅ <?= _('yesterday') ?></small>
-                    <?php endif; ?>
-                </h2>
+                        <?php if ($date_group->isToday()): ?>
+                            <small class="text--secondary">⋅ <?= _('today') ?></small>
+                        <?php elseif ($date_group->isYesterday()): ?>
+                            <small class="text--secondary">⋅ <?= _('yesterday') ?></small>
+                        <?php endif; ?>
+                    </h2>
 
-                <div class="group__separator"></div>
+                    <div class="group__separator"></div>
 
-                <details
-                    class="popup"
-                    data-controller="popup"
-                    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                >
-                    <summary class="popup__opener">
-                        <span class="button button--small button--ghost">
-                            <?= icon('menu') ?>
+                    <details
+                        class="popup"
+                        data-controller="popup"
+                        data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                    >
+                        <summary class="popup__opener">
+                            <span class="button button--small button--ghost">
+                                <?= icon('menu') ?>
 
-                            <span class="no-mobile">
-                                <?= _('Actions') ?>
-                            </span>
-                        </span>
-                    </summary>
-
-                    <nav class="popup__container popup__container--left" role="menu">
-                        <div class="popup__title"><?= _('Actions on the day') ?></div>
-
-                        <form method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
-                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                            <input type="hidden" name="from" value="<?= url('news') ?>" />
-                            <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
-
-                            <button class="popup__item popup__item--button">
-                                <?= icon('check') ?>
-                                <?= _('Mark all as read') ?>
-                            </button>
-                        </form>
-
-                        <form method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>" role="menuitem">
-                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                            <input type="hidden" name="from" value="<?= url('news') ?>" />
-                            <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
-
-                            <button class="popup__item popup__item--button">
-                                <?= icon('bookmark') ?>
-                                <?= _('Read the links later') ?>
-                            </button>
-                        </form>
-
-                        <div class="popup__separator"></div>
-
-                        <form
-                            method="post"
-                            action="<?= url('never read collection', ['id' => $news->id]) ?>"
-                            data-turbo-confirm="<?= _('You’ll remove all the news links, this action cannot be canceled. Are you sure?') ?>"
-                            role="menuitem"
-                        >
-                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                            <input type="hidden" name="from" value="<?= url('news') ?>" />
-                            <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
-
-                            <button class="popup__item popup__item--button">
-                                <?= icon('times') ?>
-                                <?= _('Remove the links from the news') ?>
-                            </button>
-                        </form>
-                    </nav>
-                </details>
-            </header>
-
-            <div class="cards">
-                <?php foreach ($date_group->links as $link): ?>
-                    <?= $this->include('links/_link.phtml', [
-                        'link' => $link,
-                        'from' => \Minz\Url::for('news'),
-                        'display_edit' => true,
-                        'display_repair' => true,
-                        'display_source' => true,
-                        'display_read_later' => true,
-                        'display_mark_as_read' => true,
-                        'display_never' => true,
-                        'storing_must_mark_as_read' => true,
-                    ]); ?>
-                <?php endforeach; ?>
-            </div>
-
-            <?php foreach ($date_group->sourceGroups() as $source_group): ?>
-                <div class="news__source-group">
-                    <div class="line">
-                        <h3 class="news__source-title">
-                            <?= protect($source_group->title) ?>
-
-                            <small class="text--secondary">
-                                ⋅ <?= _nf('%s link', '%s links', count($source_group->links), count($source_group->links)) ?>
-                            </small>
-                        </h3>
-
-                        <details
-                            class="popup"
-                            data-controller="popup"
-                            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                        >
-                            <summary class="popup__opener">
-                                <span class="button button--smaller button--ghost">
-                                    <?= icon('menu') ?>
-
-                                    <span class="sr-only">
-                                        <?= _('Actions') ?>
-                                    </span>
+                                <span class="no-mobile">
+                                    <?= _('Actions') ?>
                                 </span>
-                            </summary>
+                            </span>
+                        </summary>
 
-                            <nav class="popup__container popup__container--left" role="menu">
-                                <div class="popup__title"><?= _('Actions on the feed') ?></div>
+                        <nav class="popup__container popup__container--left" role="menu">
+                            <div class="popup__title"><?= _('Actions on the day') ?></div>
 
-                                <form data-turbo-preserve-scroll method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
-                                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                                    <input type="hidden" name="from" value="<?= url('news') ?>" />
-                                    <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
-                                    <input type="hidden" name="source" value="<?= $source_group->reference ?>" />
+                            <form method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
+                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                <input type="hidden" name="from" value="<?= url('news') ?>" />
+                                <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
 
-                                    <button class="popup__item popup__item--button">
-                                        <?= icon('check') ?>
-                                        <?= _('Mark all as read') ?>
-                                    </button>
-                                </form>
+                                <button class="popup__item popup__item--button">
+                                    <?= icon('check') ?>
+                                    <?= _('Mark all as read') ?>
+                                </button>
+                            </form>
 
-                                <form data-turbo-preserve-scroll method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>" role="menuitem">
-                                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                                    <input type="hidden" name="from" value="<?= url('news') ?>" />
-                                    <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
-                                    <input type="hidden" name="source" value="<?= $source_group->reference ?>" />
+                            <form method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>" role="menuitem">
+                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                <input type="hidden" name="from" value="<?= url('news') ?>" />
+                                <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
 
-                                    <button class="popup__item popup__item--button">
-                                        <?= icon('bookmark') ?>
-                                        <?= _('Read the links later') ?>
-                                    </button>
-                                </form>
+                                <button class="popup__item popup__item--button">
+                                    <?= icon('bookmark') ?>
+                                    <?= _('Read the links later') ?>
+                                </button>
+                            </form>
 
-                                <div class="popup__separator"></div>
+                            <div class="popup__separator"></div>
 
-                                <form
-                                    data-turbo-preserve-scroll
-                                    method="post"
-                                    action="<?= url('never read collection', ['id' => $news->id]) ?>"
-                                    data-turbo-confirm="<?= _('You’ll remove all the news links, this action cannot be canceled. Are you sure?') ?>"
-                                    role="menuitem"
-                                >
-                                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                                    <input type="hidden" name="from" value="<?= url('news') ?>" />
-                                    <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
-                                    <input type="hidden" name="source" value="<?= $source_group->reference ?>" />
+                            <form
+                                method="post"
+                                action="<?= url('never read collection', ['id' => $news->id]) ?>"
+                                data-turbo-confirm="<?= _('You’ll remove all the news links, this action cannot be canceled. Are you sure?') ?>"
+                                role="menuitem"
+                            >
+                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                <input type="hidden" name="from" value="<?= url('news') ?>" />
+                                <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
 
-                                    <button class="popup__item popup__item--button">
-                                        <?= icon('times') ?>
-                                        <?= _('Remove the links from the news') ?>
-                                    </button>
-                                </form>
-                            </nav>
-                        </details>
-                    </div>
+                                <button class="popup__item popup__item--button">
+                                    <?= icon('times') ?>
+                                    <?= _('Remove the links from the news') ?>
+                                </button>
+                            </form>
+                        </nav>
+                    </details>
+                </header>
 
-                    <div class="cards">
-                        <?php foreach ($source_group->links as $link): ?>
-                            <?= $this->include('links/_link.phtml', [
-                                'link' => $link,
-                                'from' => \Minz\Url::for('news'),
-                                'display_edit' => true,
-                                'display_repair' => true,
-                                'display_source' => true,
-                                'display_read_later' => true,
-                                'display_mark_as_read' => true,
-                                'display_never' => true,
-                                'storing_must_mark_as_read' => true,
-                            ]); ?>
-                        <?php endforeach; ?>
-                    </div>
+                <div class="cards">
+                    <?php foreach ($date_group->links as $link): ?>
+                        <?= $this->include('links/_link.phtml', [
+                            'link' => $link,
+                            'from' => \Minz\Url::for('news'),
+                            'display_edit' => true,
+                            'display_repair' => true,
+                            'display_source' => true,
+                            'display_read_later' => true,
+                            'display_mark_as_read' => true,
+                            'display_never' => true,
+                            'storing_must_mark_as_read' => true,
+                        ]); ?>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
-        </section>
-    <?php endforeach; ?>
+
+                <?php foreach ($date_group->sourceGroups() as $source_group): ?>
+                    <div class="news__source-group">
+                        <div class="line">
+                            <h3 class="news__source-title">
+                                <?= protect($source_group->title) ?>
+
+                                <small class="text--secondary">
+                                    ⋅ <?= _nf('%s link', '%s links', count($source_group->links), count($source_group->links)) ?>
+                                </small>
+                            </h3>
+
+                            <details
+                                class="popup"
+                                data-controller="popup"
+                                data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                            >
+                                <summary class="popup__opener">
+                                    <span class="button button--smaller button--ghost">
+                                        <?= icon('menu') ?>
+
+                                        <span class="sr-only">
+                                            <?= _('Actions') ?>
+                                        </span>
+                                    </span>
+                                </summary>
+
+                                <nav class="popup__container popup__container--left" role="menu">
+                                    <div class="popup__title"><?= _('Actions on the feed') ?></div>
+
+                                    <form data-turbo-preserve-scroll method="post" action="<?= url('mark collection as read', ['id' => $news->id]) ?>" role="menuitem">
+                                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                        <input type="hidden" name="from" value="<?= url('news') ?>" />
+                                        <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
+                                        <input type="hidden" name="source" value="<?= $source_group->reference ?>" />
+
+                                        <button class="popup__item popup__item--button">
+                                            <?= icon('check') ?>
+                                            <?= _('Mark all as read') ?>
+                                        </button>
+                                    </form>
+
+                                    <form data-turbo-preserve-scroll method="post" action="<?= url('read collection later', ['id' => $news->id]) ?>" role="menuitem">
+                                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                        <input type="hidden" name="from" value="<?= url('news') ?>" />
+                                        <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
+                                        <input type="hidden" name="source" value="<?= $source_group->reference ?>" />
+
+                                        <button class="popup__item popup__item--button">
+                                            <?= icon('bookmark') ?>
+                                            <?= _('Read the links later') ?>
+                                        </button>
+                                    </form>
+
+                                    <div class="popup__separator"></div>
+
+                                    <form
+                                        data-turbo-preserve-scroll
+                                        method="post"
+                                        action="<?= url('never read collection', ['id' => $news->id]) ?>"
+                                        data-turbo-confirm="<?= _('You’ll remove all the news links, this action cannot be canceled. Are you sure?') ?>"
+                                        role="menuitem"
+                                    >
+                                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                        <input type="hidden" name="from" value="<?= url('news') ?>" />
+                                        <input type="hidden" name="date" value="<?= $date_group->date->format('Y-m-d') ?>" />
+                                        <input type="hidden" name="source" value="<?= $source_group->reference ?>" />
+
+                                        <button class="popup__item popup__item--button">
+                                            <?= icon('times') ?>
+                                            <?= _('Remove the links from the news') ?>
+                                        </button>
+                                    </form>
+                                </nav>
+                            </details>
+                        </div>
+
+                        <div class="cards">
+                            <?php foreach ($source_group->links as $link): ?>
+                                <?= $this->include('links/_link.phtml', [
+                                    'link' => $link,
+                                    'from' => \Minz\Url::for('news'),
+                                    'display_edit' => true,
+                                    'display_repair' => true,
+                                    'display_source' => true,
+                                    'display_read_later' => true,
+                                    'display_mark_as_read' => true,
+                                    'display_never' => true,
+                                    'storing_must_mark_as_read' => true,
+                                ]); ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </section>
+        <?php endforeach; ?>
+    </div>
 
     <div class="news__postpone">
         <details

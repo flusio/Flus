@@ -17,6 +17,7 @@ import ModalOpenerController from './controllers/modal_opener_controller.js';
 import NewsRefresherController from './controllers/news_refresher_controller.js';
 import PopupController from './controllers/popup_controller.js';
 import TextEditorController from './controllers/text_editor_controller.js';
+import ZindexInverserController from './controllers/zindex_inverser_controller.js';
 
 window.jsConfiguration = JSON.parse(document.getElementById('javascript-configuration').innerHTML);
 
@@ -37,6 +38,7 @@ application.register('modal-opener', ModalOpenerController);
 application.register('news-refresher', NewsRefresherController);
 application.register('popup', PopupController);
 application.register('text-editor', TextEditorController);
+application.register('zindex-inverser', ZindexInverserController);
 
 function adaptLayoutContentBorderRadius () {
     const layoutContentNode = document.querySelector('.layout__content');
