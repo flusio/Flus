@@ -14,6 +14,22 @@
       "url": "url"
     }
   },
+  "screenshots" : [
+    {
+      "src": "<?= url_static('screenshot.webp') ?>",
+      "sizes": "1280x848",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "<?= _f('Bookmarks screen of %s on desktop', $brand) ?>"
+    },
+    {
+      "src": "<?= url_static('screenshot-mobile.webp') ?>",
+      "sizes": "416x900",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "<?= _f('Bookmarks screen of %s on mobile', $brand) ?>"
+    }
+  ],
   "icons": [{
     "src": "<?= url_static('icons/icon-48.png') ?>",
     "sizes": "48x48",
