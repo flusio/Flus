@@ -35,4 +35,9 @@ class SourceGroup
             $this->reference = "user#{$this->source->id}";
         }
     }
+
+    public function count(): int
+    {
+        return count($this->links);
+    }
 }

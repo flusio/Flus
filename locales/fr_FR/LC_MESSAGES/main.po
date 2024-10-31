@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-10-17 18:52+0200\n"
-"PO-Revision-Date: 2024-10-17 18:52+0200\n"
+"POT-Creation-Date: 2024-10-31 15:15+0100\n"
+"PO-Revision-Date: 2024-10-31 15:15+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -722,8 +722,8 @@ msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
 #: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:31
 #: views/collections/show.phtml:211 views/collections/show_public.phtml:226
-#: views/links/searches/show.phtml:106 views/news/index.phtml:115
-#: views/read/index.phtml:29
+#: views/links/searches/show.phtml:106 views/news/index.phtml:18
+#: views/news/index.phtml:121 views/read/index.phtml:29
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -1075,8 +1075,8 @@ msgstr "Publiée par %s"
 #: views/collections/show.phtml:74 views/collections/show_public.phtml:112
 #: views/links/_link.phtml:231 views/links/_link.phtml:235
 #: views/links/show.phtml:131 views/links/show.phtml:135
-#: views/news/index.phtml:41 views/news/index.phtml:129
-#: views/news/index.phtml:213
+#: views/news/index.phtml:47 views/news/index.phtml:135
+#: views/news/index.phtml:220
 msgid "Actions"
 msgstr "Actions"
 
@@ -1144,13 +1144,13 @@ msgstr ""
 msgid "Copy the link"
 msgstr "Copier le lien"
 
-#: views/collections/show_public.phtml:165 views/news/index.phtml:56
-#: views/news/index.phtml:145 views/news/index.phtml:226
+#: views/collections/show_public.phtml:165 views/news/index.phtml:62
+#: views/news/index.phtml:151 views/news/index.phtml:233
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/collections/show_public.phtml:175 views/news/index.phtml:85
-#: views/news/index.phtml:177 views/news/index.phtml:253
+#: views/collections/show_public.phtml:175 views/news/index.phtml:91
+#: views/news/index.phtml:183 views/news/index.phtml:260
 msgid "Remove the links from the news"
 msgstr "Retirer les liens du journal"
 
@@ -2100,25 +2100,25 @@ msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
-#: views/news/index.phtml:23
+#: views/news/index.phtml:29
 msgid "today"
 msgstr "aujourd’hui"
 
-#: views/news/index.phtml:25
+#: views/news/index.phtml:31
 msgid "yesterday"
 msgstr "hier"
 
-#: views/news/index.phtml:47
+#: views/news/index.phtml:53
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
-#: views/news/index.phtml:67 views/news/index.phtml:157
-#: views/news/index.phtml:236
+#: views/news/index.phtml:73 views/news/index.phtml:163
+#: views/news/index.phtml:243
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/index.phtml:76 views/news/index.phtml:167
-#: views/news/index.phtml:245
+#: views/news/index.phtml:82 views/news/index.phtml:173
+#: views/news/index.phtml:252
 msgid ""
 "You’ll remove all the news links, this action cannot be canceled. Are you "
 "sure?"
@@ -2126,25 +2126,25 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.phtml:135
+#: views/news/index.phtml:141
 msgid "Actions on the feed"
 msgstr "Actions pour le flux"
 
-#: views/news/index.phtml:218
+#: views/news/index.phtml:225
 msgid "Empty the news"
 msgstr "Vider le journal"
 
-#: views/news/index.phtml:261
+#: views/news/index.phtml:268
 msgid ""
 "Fill your news feed with the content published by the feeds that you follow."
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
-#: views/news/index.phtml:266
+#: views/news/index.phtml:273
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: views/news/index.phtml:286
+#: views/news/index.phtml:293
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
 

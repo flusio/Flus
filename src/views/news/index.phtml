@@ -13,6 +13,11 @@
 </div>
 
 <?php if (!$links_timeline->empty()): ?>
+    <p class="collection__number-links">
+        <?php $count_links = $links_timeline->count(); ?>
+        <?= _nf('%s link', '%s links', $count_links, format_number($count_links)) ?>
+    </p>
+
     <div data-controller="zindex-inverser">
         <?php foreach ($links_timeline->datesGroups() as $date_group): ?>
             <section class="group">

@@ -49,4 +49,15 @@ class LinksTimeline
     {
         return empty($this->dates_groups);
     }
+
+    public function count(): int
+    {
+        $count = 0;
+
+        foreach ($this->dates_groups as $date_group) {
+            $count += $date_group->count();
+        }
+
+        return $count;
+    }
 }

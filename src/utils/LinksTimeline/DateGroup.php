@@ -69,4 +69,15 @@ class DateGroup
     {
         return utils\Sorter::localeSort($this->source_groups, 'title');
     }
+
+    public function count(): int
+    {
+        $count = count($this->links);
+
+        foreach ($this->source_groups as $source_group) {
+            $count += $source_group->count();
+        }
+
+        return $count;
+    }
 }
