@@ -142,9 +142,8 @@ input[type="radio"]:checked + label::after {
 }
 
 input[type="radio"]:checked + label::after {
-    top: 1rem;
-
     height: 1.5rem;
+    margin-top: 1rem;
 
     background-color: var(--color-text);
     border-top: var(--width-border) solid var(--color-text);
