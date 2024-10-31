@@ -55,7 +55,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'tags' => [],
         ]);
-        $content = '#foo #bar';
+        $content = '#foo #Bar';
 
         $this->assertSame(0, models\Message::count());
 
@@ -66,7 +66,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
         $link = $link->reload();
-        $this->assertEquals(['foo', 'bar'], $link->tags);
+        $this->assertEquals(['foo' => 'foo', 'bar' => 'Bar'], $link->tags);
     }
 
     public function testCreateWorksIfLinkIsInCollectionSharedWithWriteAccess(): void

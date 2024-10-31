@@ -122,6 +122,24 @@ class Link
     }
 
     /**
+     * @param string[] $tags
+     */
+    public function setTags(array $tags): void
+    {
+        $sanitized_tags = [];
+
+        foreach ($tags as $tag) {
+            $lower_tag = mb_strtolower($tag);
+
+            if (!isset($sanitized_tags[$lower_tag])) {
+                $sanitized_tags[$lower_tag] = $tag;
+            }
+        }
+
+        $this->tags = $sanitized_tags;
+    }
+
+    /**
      * Copy a Link to the given user.
      */
     public static function copy(self $link, string $user_id): self

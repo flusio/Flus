@@ -180,7 +180,7 @@ class LinksSearcher
 
             $parameter_name = ':tag' . (count($parameters) + 1);
 
-            $parameters[$parameter_name] = $value;
+            $parameters[$parameter_name] = mb_strtolower($value);
 
             if ($condition->not()) {
                 $not_tags_parameters[] = $parameter_name;

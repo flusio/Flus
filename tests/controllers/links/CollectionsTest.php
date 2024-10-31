@@ -461,7 +461,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $comment = '#foo #bar';
+        $comment = '#foo #Bar';
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf' => $user->csrf,
@@ -471,7 +471,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $link = $link->reload();
-        $this->assertEquals(['foo', 'bar'], $link->tags);
+        $this->assertEquals(['foo' => 'foo', 'bar' => 'Bar'], $link->tags);
     }
 
     public function testUpdateCanMarkAsRead(): void

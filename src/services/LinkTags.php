@@ -23,11 +23,7 @@ class LinkTags
             $tags = array_merge($tags, $message_tags);
         }
 
-        $tags = array_unique($tags);
-        $tags = array_values($tags);
-
-        $link->tags = $tags;
-
+        $link->setTags($tags);
         $link->save();
     }
 

@@ -66,6 +66,23 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link->id, $links[0]->id);
     }
 
+    public function testGetLinksSearchesByTagIgnoringCase(): void
+    {
+        $tags = ['foo' => 'FOO', 'bar' => 'BAR'];
+        $tag = 'Foo';
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'tags' => $tags,
+        ]);
+        $query = Query::fromString("#{$tag}");
+
+        $links = LinksSearcher::getLinks($user, $query);
+
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
+    }
+
     public function testGetLinksCanExcludeByTag(): void
     {
         /** @var string[] */

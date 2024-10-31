@@ -116,10 +116,10 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $link = LinkFactory::create([
-            'tags' => ['foo'],
+            'tags' => ['foo' => 'foo'],
         ]);
         $old_content = '#foo';
-        $new_content = '#bar';
+        $new_content = '#Bar';
         $message = MessageFactory::create([
             'user_id' => $user->id,
             'link_id' => $link->id,
@@ -137,7 +137,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $message = $message->reload();
         $this->assertSame($new_content, $message->content);
         $link = $link->reload();
-        $this->assertEquals(['bar'], $link->tags);
+        $this->assertEquals(['bar' => 'Bar'], $link->tags);
     }
 
     public function testUpdateRedirectsToLoginIfNotConnected(): void
