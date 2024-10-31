@@ -147,7 +147,7 @@ CREATE TABLE links (
     url_replies TEXT NOT NULL DEFAULT '',
     reading_time INTEGER NOT NULL DEFAULT 0,
     image_filename TEXT,
-    tags JSON NOT NULL DEFAULT '[]',
+    tags JSONB NOT NULL DEFAULT '[]',
 
     to_be_fetched BOOLEAN NOT NULL DEFAULT true,
     fetched_at TIMESTAMPTZ,
@@ -173,6 +173,7 @@ CREATE INDEX idx_links_url ON links USING gin (url gin_trgm_ops);
 CREATE INDEX idx_links_to_be_fetched ON links(to_be_fetched) WHERE to_be_fetched = true;
 CREATE INDEX idx_links_image_filename ON links(image_filename) WHERE image_filename IS NOT NULL;
 CREATE INDEX idx_links_search ON links USING GIN (search_index);
+CREATE INDEX idx_links_tags ON links USING GIN (tags);
 
 CREATE TABLE links_to_collections (
     id BIGSERIAL PRIMARY KEY,

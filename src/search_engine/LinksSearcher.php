@@ -191,12 +191,12 @@ class LinksSearcher
 
         if ($tags_parameters) {
             $tags_statement = implode(',', $tags_parameters);
-            $where_sql .= " AND l.tags::jsonb ??& array[{$tags_statement}]";
+            $where_sql .= " AND l.tags ??& array[{$tags_statement}]";
         }
 
         if ($not_tags_parameters) {
             $not_tags_statement = implode(',', $not_tags_parameters);
-            $where_sql .= " AND NOT (l.tags::jsonb ??| array[{$not_tags_statement}])";
+            $where_sql .= " AND NOT (l.tags ??| array[{$not_tags_statement}])";
         }
 
         return [$where_sql, $parameters];
