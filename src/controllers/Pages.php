@@ -94,7 +94,7 @@ class Pages
      */
     public function webmanifest(): Response
     {
-        $response = Response::ok('pages/webmanifest.json');
+        $response = Response::ok('pages/webmanifest.json.php');
         $response->setHeader('Content-Type', 'application/manifest+json');
         return $response;
     }

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-10-31 15:15+0100\n"
-"PO-Revision-Date: 2024-10-31 15:15+0100\n"
+"POT-Creation-Date: 2024-10-31 16:01+0100\n"
+"PO-Revision-Date: 2024-10-31 16:01+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,9 +16,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:47
-#: views/_layouts/connected.phtml:225
-#: views/_layouts/connected_blocked.phtml:183
-#: views/_layouts/not_connected.phtml:151
+#: views/_layouts/connected.phtml:223
+#: views/_layouts/connected_blocked.phtml:181
+#: views/_layouts/not_connected.phtml:149
 msgid "Back"
 msgstr "Retour"
 
@@ -514,101 +514,117 @@ msgstr "Commentaire par %s"
 msgid "Comments on %s"
 msgstr "Commentaires sur %s"
 
+#: views/pages/webmanifest.json.php:4 views/pages/about.phtml:15
+msgid "Collect, organise, comment on and share links from around the Web."
+msgstr ""
+"Collectez, organisez, commentez et partagez les liens provenant de "
+"l'ensemble du Web."
+
+#: views/pages/webmanifest.json.php:23
+#, php-format
+msgid "Bookmarks screen of %s on desktop"
+msgstr "L’écran des signets de %s sur ordinateur"
+
+#: views/pages/webmanifest.json.php:30
+#, php-format
+msgid "Bookmarks screen of %s on mobile"
+msgstr "L’écran des signets de %s sur mobile"
+
 #: views/_layouts/connected.phtml:5 views/_layouts/connected_blocked.phtml:5
 #: views/_layouts/not_connected.phtml:5
 msgid "Error: "
 msgstr "Erreur : "
 
-#: views/_layouts/connected.phtml:47 views/_layouts/connected_blocked.phtml:43
-#: views/_layouts/not_connected.phtml:61 views/_layouts/onboarding.phtml:43
+#: views/_layouts/connected.phtml:45 views/_layouts/connected_blocked.phtml:41
+#: views/_layouts/not_connected.phtml:59 views/_layouts/onboarding.phtml:41
 msgid "Skip to main content"
 msgstr "Accéder au contenu principal"
 
-#: views/_layouts/connected.phtml:54 views/_layouts/connected_blocked.phtml:50
-#: views/_layouts/not_connected.phtml:68 views/_layouts/onboarding.phtml:50
+#: views/_layouts/connected.phtml:52 views/_layouts/connected_blocked.phtml:48
+#: views/_layouts/not_connected.phtml:66 views/_layouts/onboarding.phtml:48
 #, php-format
 msgid "You need to activate JavaScript in order to use %s."
 msgstr "Vous devez activer JavaScript pour utiliser %s."
 
-#: views/_layouts/connected.phtml:62 views/_layouts/connected_blocked.phtml:58
-#: views/_layouts/not_connected.phtml:76
+#: views/_layouts/connected.phtml:60 views/_layouts/connected_blocked.phtml:56
+#: views/_layouts/not_connected.phtml:74
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
 msgstr ""
 "Vous utilisez une version de démo de %s, les données sont réinitialisées "
 "chaque nuit."
 
-#: views/_layouts/connected.phtml:70 views/_layouts/connected_blocked.phtml:66
+#: views/_layouts/connected.phtml:68 views/_layouts/connected_blocked.phtml:64
 msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
-#: views/_layouts/connected.phtml:87
+#: views/_layouts/connected.phtml:85
 msgid "Reading"
 msgstr "Lecture"
 
-#: views/_layouts/connected.phtml:98 views/links/index.phtml:3
+#: views/_layouts/connected.phtml:96 views/links/index.phtml:3
 #: views/links/index.phtml:19
 msgid "My links"
 msgstr "Mes liens"
 
-#: views/_layouts/connected.phtml:109 views/feeds/index.phtml:3
+#: views/_layouts/connected.phtml:107 views/feeds/index.phtml:3
 #: views/feeds/index.phtml:15
 msgid "Feeds"
 msgstr "Flux"
 
-#: views/_layouts/connected.phtml:122 views/collections/_selector.phtml:83
+#: views/_layouts/connected.phtml:120 views/collections/_selector.phtml:83
 #: views/collections/groups/edit.phtml:88 views/links/searches/show.phtml:9
 #: views/links/searches/show.phtml:21
 msgid "New"
 msgstr "Nouveau"
 
-#: views/_layouts/connected.phtml:131 views/_layouts/connected.phtml:134
-#: views/_layouts/connected_blocked.phtml:89
-#: views/_layouts/connected_blocked.phtml:92
+#: views/_layouts/connected.phtml:129 views/_layouts/connected.phtml:132
+#: views/_layouts/connected_blocked.phtml:87
+#: views/_layouts/connected_blocked.phtml:90
 #, php-format
 msgid "Menu of %s"
 msgstr "Menu de %s"
 
-#: views/_layouts/connected.phtml:151
-#: views/_layouts/connected_blocked.phtml:109 views/my/profile/edit.phtml:3
+#: views/_layouts/connected.phtml:149
+#: views/_layouts/connected_blocked.phtml:107 views/my/profile/edit.phtml:3
 #: views/my/profile/edit.phtml:14
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:161
-#: views/_layouts/connected_blocked.phtml:119 views/my/preferences/edit.phtml:3
+#: views/_layouts/connected.phtml:159
+#: views/_layouts/connected_blocked.phtml:117 views/my/preferences/edit.phtml:3
 #: views/my/preferences/edit.phtml:12
 msgid "Preferences"
 msgstr "Préférences"
 
-#: views/_layouts/connected.phtml:171
-#: views/_layouts/connected_blocked.phtml:129 views/my/account/show.phtml:3
+#: views/_layouts/connected.phtml:169
+#: views/_layouts/connected_blocked.phtml:127 views/my/account/show.phtml:3
 #: views/my/account/show.phtml:11
 msgid "Account & data"
 msgstr "Compte & données"
 
-#: views/_layouts/connected.phtml:183
-#: views/_layouts/connected_blocked.phtml:141 views/pages/addons.phtml:3
+#: views/_layouts/connected.phtml:181
+#: views/_layouts/connected_blocked.phtml:139 views/pages/addons.phtml:3
 #: views/pages/addons.phtml:11
 msgid "Add-ons"
 msgstr "Extensions"
 
-#: views/_layouts/connected.phtml:193
-#: views/_layouts/connected_blocked.phtml:151 views/support/show.phtml:3
+#: views/_layouts/connected.phtml:191
+#: views/_layouts/connected_blocked.phtml:149 views/support/show.phtml:3
 #: views/support/show.phtml:12
 msgid "Help & support"
 msgstr "Aide & support"
 
-#: views/_layouts/connected.phtml:202
-#: views/_layouts/connected_blocked.phtml:160
+#: views/_layouts/connected.phtml:200
+#: views/_layouts/connected_blocked.phtml:158
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:236 views/_layouts/connected.phtml:237
+#: views/_layouts/connected.phtml:234 views/_layouts/connected.phtml:235
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:245 views/links/searches/show.phtml:47
+#: views/_layouts/connected.phtml:243 views/links/searches/show.phtml:47
 #: views/links/searches/show.phtml:63
 msgid "Search"
 msgstr "Rechercher"
@@ -617,34 +633,34 @@ msgstr "Rechercher"
 msgid "Oh no&nbsp;😟"
 msgstr "Oh non&nbsp;😟"
 
-#: views/_layouts/not_connected.phtml:96 views/registrations/new.phtml:172
+#: views/_layouts/not_connected.phtml:94 views/registrations/new.phtml:172
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:100 views/sessions/new.phtml:97
+#: views/_layouts/not_connected.phtml:98 views/sessions/new.phtml:97
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/_layouts/not_connected.phtml:114 views/onboarding/step1.phtml:26
+#: views/_layouts/not_connected.phtml:112 views/onboarding/step1.phtml:26
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:164 views/pages/about.phtml:3
+#: views/_layouts/not_connected.phtml:162 views/pages/about.phtml:3
 #: views/pages/about.phtml:11 views/support/show.phtml:115
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
 
-#: views/_layouts/onboarding.phtml:69
+#: views/_layouts/onboarding.phtml:67
 #, php-format
 msgid "Step %d on %d"
 msgstr "Étape %d sur %d"
 
-#: views/_layouts/onboarding.phtml:71
+#: views/_layouts/onboarding.phtml:69
 msgid "skip"
 msgstr "passer"
 
-#: views/_layouts/onboarding.phtml:73
+#: views/_layouts/onboarding.phtml:71
 msgid "finished"
 msgstr "terminé"
 
@@ -2356,10 +2372,6 @@ msgstr "Plutôt un ou une utilisatrice de <abbr>RSS</abbr> ?"
 #: views/onboarding/step6.phtml:70
 msgid "Import an <abbr>OPML</abbr> file"
 msgstr "Importer un fichier <abbr>OPML</abbr>"
-
-#: views/pages/about.phtml:15
-msgid "Aggregate, save and share links from all over the Web."
-msgstr "Agrégez, stockez et partagez vos liens vers le Web."
 
 #: views/pages/about.phtml:20
 #, php-format

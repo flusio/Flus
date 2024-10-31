@@ -1,7 +1,7 @@
 {
   "name": "<?= $brand ?>",
   "short_name": "<?= $brand ?>",
-  "description": "<?= _('A social media to soothe our online relationship with the news.') ?>",
+  "description": "<?= _('Collect, organise, comment on and share links from around the Web.') ?>",
   "start_url": "<?= url('home') ?>",
   "display": "standalone",
   "background_color": "#eeebfb",
