@@ -257,3 +257,9 @@
 .link__actions-button:hover {
     border-color: var(--color-purple-2);
 }
+
+.link__actions-button[disabled] {
+    color: var(--color-text-disabled);
+
+    border-color: transparent;
+}

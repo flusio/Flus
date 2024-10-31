@@ -33,13 +33,27 @@ button:active,
     border-color: var(--color-border-active);
 }
 
+button[disabled],
+.button[disabled] {
+    color: var(--color-text-disabled);
+
+    background-color: var(--color-grey-1);
+    border-color: var(--color-border-disabled);
+}
+
 .button--primary {
     background-color: var(--color-turquoise-3);
-    border-color: var(--color-text);
+    border-color: currentcolor;
 }
 
 .button--primary:hover,
 .button--primary:focus {
+    background-color: var(--color-turquoise-1);
+}
+
+.button--primary[disabled] {
+    color: var(--color-text-disabled);
+
     background-color: var(--color-turquoise-1);
 }
 
@@ -58,6 +72,13 @@ button:active,
     border-color: var(--color-border-active);
 }
 
+.button--ghost[disabled] {
+    color: var(--color-text-disabled);
+
+    background-color: transparent;
+    border-color: var(--color-border-disabled);
+}
+
 .button--danger {
     background-color: var(--color-red-1);
     border-color: var(--color-red-5);
@@ -66,6 +87,10 @@ button:active,
 .button--danger:hover,
 .button--danger:focus {
     background-color: var(--color-red-2);
+}
+
+.button--danger[disabled] {
+    background-color: var(--color-red-1);
     border-color: var(--color-red-2);
 }
 

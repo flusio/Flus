@@ -87,6 +87,7 @@
     --color-text-error: var(--color-red-6);
     --color-text-info: var(--color-purple-6);
     --color-text-secondary: var(--color-grey-7);
+    --color-text-disabled: var(--color-grey-6);
     --color-text-success: var(--color-turquoise-7);
     --color-text-warning: var(--color-orange-9);
 
