@@ -77,7 +77,7 @@
                         </option>
 
                         <?php foreach ($groups as $group): ?>
-                            <option <?= $name === $group->name ? 'selected' : '' ?> value="<?= $group->name ?>">
+                            <option <?= $this->safe('name') === $group->name ? 'selected' : '' ?> value="<?= $group->name ?>">
                                 <?= protect($group->name) ?>
                             </option>
                         <?php endforeach; ?>
