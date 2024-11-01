@@ -23,6 +23,7 @@ class Router
         $router->addRoute('GET', '/robots.txt', 'Pages#robots', 'robots.txt');
         $router->addRoute('GET', '/app.webmanifest', 'Pages#webmanifest', 'webmanifest');
         $router->addRoute('GET', '/.well-known/change-password', 'WellKnown#changePassword');
+        $router->addRoute('GET', '/share', 'Shares#new', 'share');
 
         $router->addRoute('GET', '/support', 'Support#show', 'support');
         $router->addRoute('POST', '/support', 'Support#create', 'call support');

@@ -20,7 +20,8 @@ class Searches
     /**
      * Show the page to search by URL.
      *
-     * @request_param string id
+     * @request_param string url
+     * @request_param boolean autosubmit
      *
      * @response 302 /login?redirect_to=/links/search
      * @response 200
@@ -35,6 +36,8 @@ class Searches
         }
 
         $support_user = models\User::supportUser();
+
+        $autosubmit = $request->paramBoolean('autosubmit');
 
         $url = $request->param('url', '');
         $url = \SpiderBits\Url::sanitize($url);
@@ -69,6 +72,7 @@ class Searches
             'default_link' => $default_link,
             'existing_link' => $existing_link,
             'feeds' => $feeds,
+            'autosubmit' => $autosubmit,
         ]);
     }
 
@@ -100,6 +104,7 @@ class Searches
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('links/searches/show.phtml', [
                 'url' => $url,
+                'autosubmit' => false,
                 'default_link' => null,
                 'existing_link' => null,
                 'feeds' => [],
@@ -119,6 +124,7 @@ class Searches
         if ($errors) {
             return Response::badRequest('links/searches/show.phtml', [
                 'url' => $url,
+                'autosubmit' => false,
                 'default_link' => null,
                 'existing_link' => null,
                 'feeds' => [],

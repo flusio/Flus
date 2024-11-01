@@ -8,9 +8,11 @@
   "theme_color": "#00d0ad",
   "share_target": {
     "enctype": "application/x-www-form-urlencoded",
-    "action": "<?= url('show search link') ?>",
+    "action": "<?= url('share') ?>",
     "method": "GET",
     "params": {
+      "title": "title",
+      "text": "text",
       "url": "url"
     }
   },

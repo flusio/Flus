@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-10-31 19:23+0100\n"
-"PO-Revision-Date: 2024-10-31 19:23+0100\n"
+"POT-Creation-Date: 2024-11-13 10:08+0100\n"
+"PO-Revision-Date: 2024-11-13 10:08+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -60,7 +60,7 @@ msgstr "Afficher"
 #: controllers/collections/Images.php:114 controllers/collections/Links.php:105
 #: controllers/collections/Shares.php:98 controllers/collections/Shares.php:211
 #: controllers/links/Messages.php:84 controllers/links/Repairing.php:99
-#: controllers/links/Searches.php:106 controllers/my/Account.php:111
+#: controllers/links/Searches.php:109 controllers/my/Account.php:111
 #: controllers/my/Preferences.php:82 controllers/my/Profile.php:73
 #: controllers/my/Security.php:93 controllers/my/Security.php:209
 #: controllers/my/Subscription.php:74 controllers/my/Validation.php:138
@@ -520,12 +520,12 @@ msgstr ""
 "Collectez, organisez, commentez et partagez les liens provenant de "
 "l'ensemble du Web."
 
-#: views/pages/webmanifest.json.php:23
+#: views/pages/webmanifest.json.php:25
 #, php-format
 msgid "Bookmarks screen of %s on desktop"
 msgstr "L’écran des signets de %s sur ordinateur"
 
-#: views/pages/webmanifest.json.php:30
+#: views/pages/webmanifest.json.php:32
 #, php-format
 msgid "Bookmarks screen of %s on mobile"
 msgstr "L’écran des signets de %s sur mobile"
@@ -624,8 +624,8 @@ msgstr "Se déconnecter"
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:243 views/links/searches/show.phtml:47
-#: views/links/searches/show.phtml:63
+#: views/_layouts/connected.phtml:243 views/links/searches/show.phtml:55
+#: views/links/searches/show.phtml:71
 msgid "Search"
 msgstr "Rechercher"
 
@@ -692,7 +692,7 @@ msgstr "Page suivante"
 #: views/links/collections/index.phtml:43 views/links/edit.phtml:44
 #: views/links/edit.phtml:73 views/links/new.phtml:42 views/links/new.phtml:59
 #: views/links/new.phtml:66 views/links/repairing/new.phtml:50
-#: views/links/searches/show.phtml:54 views/links/show.phtml:216
+#: views/links/searches/show.phtml:62 views/links/show.phtml:216
 #: views/mastodon/show.phtml:77 views/mastodon/show.phtml:132
 #: views/messages/edit.phtml:44 views/my/account/deletion.phtml:63
 #: views/my/preferences/edit.phtml:41 views/my/profile/edit.phtml:56
@@ -738,7 +738,7 @@ msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
 #: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:31
 #: views/collections/show.phtml:211 views/collections/show_public.phtml:226
-#: views/links/searches/show.phtml:106 views/news/index.phtml:18
+#: views/links/searches/show.phtml:114 views/news/index.phtml:18
 #: views/news/index.phtml:121 views/read/index.phtml:29
 #, php-format
 msgid "%s link"
@@ -750,7 +750,7 @@ msgstr[1] "%s liens"
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/collections/_collection.phtml:18 views/links/searches/show.phtml:101
+#: views/collections/_collection.phtml:18 views/links/searches/show.phtml:109
 #, php-format
 msgid "Feed %s"
 msgstr "Flux %s"
@@ -760,7 +760,7 @@ msgstr "Flux %s"
 msgid "By %s"
 msgstr "Par %s"
 
-#: views/collections/_collection.phtml:29 views/links/searches/show.phtml:104
+#: views/collections/_collection.phtml:29 views/links/searches/show.phtml:112
 msgid "no links"
 msgstr "aucun lien"
 
@@ -1119,12 +1119,12 @@ msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
 #: views/collections/show.phtml:160 views/collections/show_public.phtml:187
-#: views/links/searches/show.phtml:121
+#: views/links/searches/show.phtml:129
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
 #: views/collections/show.phtml:172 views/collections/show_public.phtml:198
-#: views/collections/show_public.phtml:212 views/links/searches/show.phtml:130
+#: views/collections/show_public.phtml:212 views/links/searches/show.phtml:138
 msgid "Follow"
 msgstr "Suivre"
 
@@ -1656,7 +1656,7 @@ msgid_plural "%s results (“%s”)"
 msgstr[0] "%s résultat (« %s »)"
 msgstr[1] "%s résultats (« %s »)"
 
-#: views/links/searches/show.phtml:31
+#: views/links/searches/show.phtml:39
 msgid "What’s the address of the link or feed?"
 msgstr "Quelle est l’adresse du lien ou du flux ?"
 
