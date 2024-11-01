@@ -1,5 +1,39 @@
 # Changelog of Flus
 
+## 2024-11-01 - v1.0.4
+
+### Improvements
+
+- Use the system dialog to share URLs to Flus on mobile (not sure if it works :)) ([7a837c2e](https://github.com/flusio/Flus/commit/7a837c2e))
+- Display the total number of links in the news ([26edbade](https://github.com/flusio/Flus/commit/26edbade))
+- Improve the feedback of the disabled buttons ([8991c212](https://github.com/flusio/Flus/commit/8991c212))
+- Explain that Markdown can be used in comments ([0010f425](https://github.com/flusio/Flus/commit/0010f425))
+- Improve the description of Flus ([54c52978](https://github.com/flusio/Flus/commit/54c52978))
+
+### Bug fixes
+
+- Fix the position of the inner circle of radio buttons ([4542d36b](https://github.com/flusio/Flus/commit/4542d36b))
+- Fix the Collection group's default value in forms ([c7083afb](https://github.com/flusio/Flus/commit/c7083afb))
+- Fix the z-index of group headers ([dffbdd63](https://github.com/flusio/Flus/commit/dffbdd63))
+- Generate correct links to tags in the "direct" Atom feeds ([ccbcbbc2](https://github.com/flusio/Flus/commit/ccbcbbc2))
+- Handle the Pocket links without URL ([f14335ae](https://github.com/flusio/Flus/commit/f14335ae))
+
+### Technical
+
+- Remove the `apple-mobile-web-app*` meta tags ([0b77f022](https://github.com/flusio/Flus/commit/0b77f022))
+- Add screenshots to the webmanifest ([8043f060](https://github.com/flusio/Flus/commit/8043f060))
+
+### Developers
+
+- Replace Parcel by esbuild ([5a988874](https://github.com/flusio/Flus/commit/5a988874))
+
+### Beta
+
+- Ignore case when searching for tags ([b8e55544](https://github.com/flusio/Flus/commit/b8e55544))
+- Import Pocket tags as links tags ([8d36730f](https://github.com/flusio/Flus/commit/8d36730f))
+- Explain that tags can be used ([0010f425](https://github.com/flusio/Flus/commit/0010f425))
+- (tec) Add a GIN index on links.tags ([4faef23b](https://github.com/flusio/Flus/commit/4faef23b))
+
 ## 2024-10-18 - v1.0.3
 
 ### Improvements
