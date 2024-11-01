@@ -64,7 +64,7 @@ class MiniMarkdown extends \Parsedown
 
         if ($result) {
             $tag = $matches['tag'];
-            $tag_url = \Minz\Url::for('links', [
+            $tag_url = \Minz\Url::absoluteFor('links', [
                 'q' => "#{$tag}",
             ]);
 
