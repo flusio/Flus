@@ -56,7 +56,7 @@ class PocketImportator extends \Minz\Job
         $pocket_service = new services\Pocket($consumer_key);
 
         $offset = 0;
-        $count = 500;
+        $count = 30;
         $imported_count = 0;
         $error = '';
         $exit_loop = false;
