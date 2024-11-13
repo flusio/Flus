@@ -37,25 +37,13 @@ class Links
             return Response::redirect('login', ['redirect_to' => \Minz\Url::for('links')]);
         }
 
-        $beta_enabled = models\FeatureFlag::isEnabled('beta', $user->id);
-
         $query = $request->param('q');
         $pagination_page = $request->paramInteger('page', 1);
 
         if ($query) {
-            if ($beta_enabled) {
-                $search_query = search_engine\Query::fromString($query);
+            $search_query = search_engine\Query::fromString($query);
 
-                $number_links = search_engine\LinksSearcher::countLinks($user, $search_query);
-            } else {
-                $number_links = models\Link::countByQueryAndUserId(
-                    $query,
-                    $user->id,
-                    [
-                        'exclude_never_only' => true,
-                    ]
-                );
-            }
+            $number_links = search_engine\LinksSearcher::countLinks($user, $search_query);
 
             $number_per_page = 30;
 
@@ -68,27 +56,14 @@ class Links
                 ]);
             }
 
-            if ($beta_enabled) {
-                $links = search_engine\LinksSearcher::getLinks(
-                    $user,
-                    $search_query,
-                    pagination: [
-                        'offset' => $pagination->currentOffset(),
-                        'limit' => $pagination->numberPerPage(),
-                    ]
-                );
-            } else {
-                $links = models\Link::listComputedByQueryAndUserId(
-                    $query,
-                    $user->id,
-                    ['published_at', 'number_comments'],
-                    [
-                        'exclude_never_only' => true,
-                        'offset' => $pagination->currentOffset(),
-                        'limit' => $pagination->numberPerPage(),
-                    ]
-                );
-            }
+            $links = search_engine\LinksSearcher::getLinks(
+                $user,
+                $search_query,
+                pagination: [
+                    'offset' => $pagination->currentOffset(),
+                    'limit' => $pagination->numberPerPage(),
+                ]
+            );
 
             return Response::ok('links/search.phtml', [
                 'links' => $links,

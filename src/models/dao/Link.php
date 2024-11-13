@@ -22,7 +22,6 @@ trait Link
     use links\FetcherQueries;
     use links\NewsQueries;
     use links\PocketQueries;
-    use links\SearchQueries;
     use Database\Lockable;
 
     /**

@@ -182,7 +182,7 @@
                 </p>
             <?php endif; ?>
 
-            <?php if ($link->tags && $beta_enabled): ?>
+            <?php if ($link->tags): ?>
                 <div class="link__tags">
                     <?php foreach ($link->tags as $tag): ?>
                         <a class="tag" href="<?= url('links', ['q' => "#{$tag}"]) ?>">
