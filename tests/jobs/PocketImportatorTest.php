@@ -223,9 +223,9 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $url = $this->fake('url');
         /** @var string */
-        $tag1 = $this->fake('word');
+        $tag1 = $this->fakeUnique('word');
         /** @var string */
-        $tag2 = $this->fake('word');
+        $tag2 = $this->fakeUnique('word');
         $items = [
             [
                 'given_url' => $url,
