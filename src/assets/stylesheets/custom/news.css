@@ -41,8 +41,11 @@
 }
 
 .news__source-title {
+    overflow: hidden;
+
     margin: 0;
     padding: var(--space-small);
 
     font-size: var(--size-normal);
+    text-overflow: ellipsis;
 }
