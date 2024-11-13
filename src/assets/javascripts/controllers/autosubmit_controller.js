@@ -6,6 +6,10 @@ export default class extends Controller {
         timeout: Number,
     };
 
+    static get targets () {
+        return ['actionButton'];
+    }
+
     connect () {
         if (this.modeValue === 'timeout') {
             let timeout;
@@ -23,5 +27,9 @@ export default class extends Controller {
 
     submit () {
         this.element.submit();
+
+        if (this.hasActionButtonTarget) {
+            this.actionButtonTarget.disabled = true;
+        }
     }
 };
