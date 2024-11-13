@@ -147,3 +147,8 @@
     background-color: var(--color-turquoise-2);
     border-color: var(--color-turquoise-5);
 }
+
+.popup__item[disabled] {
+    background-color: var(--color-turquoise-2);
+    border-color: var(--color-turquoise-3);
+}
