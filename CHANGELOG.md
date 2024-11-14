@@ -1,5 +1,26 @@
 # Changelog of Flus
 
+## 2024-11-14 - v1.1.0
+
+### New
+
+- Enable the tagging system for everyone ([9b3c31c1](https://github.com/flusio/Flus/commit/9b3c31c1))
+
+### Improvements
+
+- Add feedback when autosubmit forms are submitted ([61fcba81](https://github.com/flusio/Flus/commit/61fcba81))
+
+### Bug fixes
+
+- Fix the sharing to Flus through the Android system sharing ([ef660258](https://github.com/flusio/Flus/commit/ef660258))
+- Fix the appearance of the popup buttons during the submission ([05c2de51](https://github.com/flusio/Flus/commit/05c2de51))
+- Fix overflowing news groups titles on Chrome ([aadb9786](https://github.com/flusio/Flus/commit/aadb9786))
+
+### Technical
+
+- Decrease the Pocket retrieve `count` parameter to 30 ([d2b23f35](https://github.com/flusio/Flus/commit/d2b23f35))
+- Update the dependencies ([a958487f](https://github.com/flusio/Flus/commit/a958487f), [9d4519a9](https://github.com/flusio/Flus/commit/9d4519a9))
+
 ## 2024-11-01 - v1.0.4
 
 ### Improvements
