@@ -246,7 +246,7 @@ class Shares
             return $string;
         }
 
-        $user_id = $matches['id'] ?? '';
+        $user_id = $matches['id'];
 
         if (!models\User::exists($user_id)) {
             return $string;

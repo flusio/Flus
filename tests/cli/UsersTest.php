@@ -158,6 +158,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $output = $response->render();
         $success = preg_match('/^.*\((?P<filepath>.*)\).$/', $output, $matches);
         $this->assertSame(1, $success, 'Output must match the regex');
+        $this->assertTrue(isset($matches['filepath']));
         $this->assertTrue(file_exists($matches['filepath']), 'Data file must exist');
     }
 
