@@ -13,7 +13,7 @@
     "lint-css-fix": "stylelint --fix src/assets/stylesheets/**/*.css"
   },
   "devDependencies": {
-    "@stylistic/stylelint-plugin": "^2",
+    "@stylistic/stylelint-plugin": "^3",
     "esbuild": "0.24.0",
     "eslint": "^9.4.0",
     "globals": "^15.4.0",
