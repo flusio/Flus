@@ -137,18 +137,15 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Token::exists($token->token));
     }
 
-    public function testPerformDeletesOldInvalidatedUsers(): void
+    public function testPerformDeletesInactiveAndNotifiedUsers(): void
     {
-        /** @var \DateTimeImmutable */
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
+        $this->freeze();
         $cleaner_job = new Cleaner();
-        /** @var int */
-        $months = $this->fake('numberBetween', 7, 24);
-        $created_at = \Minz\Time::ago($months, 'months');
+        $inactivity_months = 6;
+        $notified_months = 1;
         $user = UserFactory::create([
-            'created_at' => $created_at,
-            'validated_at' => null,
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
         ]);
 
         $cleaner_job->perform();
@@ -156,18 +153,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\User::exists($user->id));
     }
 
-    public function testPerformKeepsOldValidatedUsers(): void
+    public function testPerformKeepsInactiveButNotNotifiedUsers(): void
     {
-        /** @var \DateTimeImmutable */
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
+        $this->freeze();
         $cleaner_job = new Cleaner();
-        /** @var int */
-        $months = $this->fake('numberBetween', 7, 24);
-        $created_at = \Minz\Time::ago($months, 'months');
+        $inactivity_months = 6;
         $user = UserFactory::create([
-            'created_at' => $created_at,
-            'validated_at' => \Minz\Time::now(),
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => null,
         ]);
 
         $cleaner_job->perform();
@@ -175,18 +168,65 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\User::exists($user->id));
     }
 
-    public function testPerformKeepsRecentInvalidatedUsers(): void
+    public function testPerformKeepsRecentNotifiedUser(): void
     {
-        /** @var \DateTimeImmutable */
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
+        $this->freeze();
         $cleaner_job = new Cleaner();
-        /** @var int */
-        $months = $this->fake('numberBetween', 0, 6);
-        $created_at = \Minz\Time::ago($months, 'months');
+        $inactivity_months = 6;
+        $notified_months = 0;
         $user = UserFactory::create([
-            'created_at' => $created_at,
-            'validated_at' => null,
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\User::exists($user->id));
+    }
+
+    public function testPerformKeepsRecentInactiveButNotifiedUsers(): void
+    {
+        $this->freeze();
+        $cleaner_job = new Cleaner();
+        $inactivity_months = 5;
+        $notified_months = 1;
+        $user = UserFactory::create([
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\User::exists($user->id));
+    }
+
+    public function testPerformKeepsActiveUsers(): void
+    {
+        $this->freeze();
+        $cleaner_job = new Cleaner();
+        $inactivity_months = 0;
+        $user = UserFactory::create([
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => null,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\User::exists($user->id));
+    }
+
+    public function testPerformKeepsSupportUser(): void
+    {
+        $this->freeze();
+        $cleaner_job = new Cleaner();
+        /** @var string */
+        $support_email = \Minz\Configuration::$application['support_email'];
+        $inactivity_months = 6;
+        $notified_months = 1;
+        $user = UserFactory::create([
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
+            'email' => $support_email,
         ]);
 
         $cleaner_job->perform();

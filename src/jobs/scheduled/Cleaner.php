@@ -4,7 +4,6 @@ namespace App\jobs\scheduled;
 
 use App\models;
 use App\services;
-use App\utils;
 
 /**
  * Job to clean the system.
@@ -45,7 +44,10 @@ class Cleaner extends \Minz\Job
         models\FetchLog::deleteOlderThan(\Minz\Time::ago(3, 'days'));
         models\Token::deleteExpired();
         models\Session::deleteExpired();
-        models\User::deleteNotValidatedOlderThan(\Minz\Time::ago(6, 'months'));
+        models\User::deleteInactiveAndNotified(
+            inactive_since: \Minz\Time::ago(6, 'months'),
+            notified_since: \Minz\Time::ago(1, 'month'),
+        );
         models\Collection::deleteUnfollowedOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
         models\Link::deleteNotStoredOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
         /** @var int */
