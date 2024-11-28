@@ -42,6 +42,12 @@ class User
     public \DateTimeImmutable $subscription_expired_at;
 
     #[Database\Column]
+    public \DateTimeImmutable $last_activity_at;
+
+    #[Database\Column]
+    public ?\DateTimeImmutable $deletion_notified_at;
+
+    #[Database\Column]
     #[Validable\Presence(
         message: new Translatable('The address email is required.'),
     )]
@@ -98,6 +104,7 @@ class User
     {
         $this->id = \Minz\Random::timebased();
         $this->subscription_expired_at = \Minz\Time::fromNow(1, 'month');
+        $this->last_activity_at = \Minz\Time::now();
         $this->username = trim($username);
         $this->email = \Minz\Email::sanitize($email);
         $this->password_hash = self::passwordHash($password);
@@ -501,6 +508,29 @@ class User
         $must_validate = $this->mustValidateEmail();
         $must_renew = $subscriptions_enabled && $this->isSubscriptionOverdue();
         return $must_validate || $must_renew;
+    }
+
+    /**
+     * Change the last activity attribute. Return true if the date changed,
+     * false otherwise. Only the day is remembered to not track the user too
+     * much and to avoid to save the user at each request.
+     */
+    public function refreshLastActivity(): bool
+    {
+        $changed = false;
+        $today = \Minz\Time::relative('today');
+
+        if ($this->last_activity_at != $today) {
+            $this->last_activity_at = $today;
+            $changed = true;
+        }
+
+        if ($this->deletion_notified_at !== null) {
+            $this->deletion_notified_at = null;
+            $changed = true;
+        }
+
+        return $changed;
     }
 
     /**
