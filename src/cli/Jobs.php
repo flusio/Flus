@@ -22,6 +22,7 @@ class Jobs extends \Minz\Job\Controller
 
         \App\jobs\scheduled\FeedsSync::install();
         \App\jobs\scheduled\LinksSync::install();
+        \App\jobs\scheduled\InactivityNotifier::install();
         \App\jobs\scheduled\Cleaner::install();
         if ($subscriptions_enabled) {
             \App\jobs\scheduled\SubscriptionsSync::install();

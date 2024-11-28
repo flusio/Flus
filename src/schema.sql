@@ -40,6 +40,9 @@ CREATE TABLE users (
     validation_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE,
     reset_token TEXT REFERENCES tokens ON DELETE SET NULL ON UPDATE CASCADE,
 
+    last_activity_at TIMESTAMPTZ NOT NULL DEFAULT date_trunc('second', NOW()),
+    deletion_notified_at TIMESTAMPTZ,
+
     subscription_account_id TEXT,
     subscription_expired_at TIMESTAMPTZ
         NOT NULL

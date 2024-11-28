@@ -10,6 +10,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
     use \tests\LoginHelper;
 
@@ -79,6 +80,25 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $current_user = auth\CurrentUser::get();
         $this->assertNotNull($current_user);
         $this->assertSame($user->id, $current_user->id);
+    }
+
+    public function testRunRefreshesLastActivity(): void
+    {
+        $last_activity = new \DateTimeImmutable('2024-11-01');
+        $current_datetime = new \DateTimeImmutable('2024-11-30 12:42:42');
+        $current_date = new \DateTimeImmutable('2024-11-30 00:00:00');
+        $this->freeze($current_datetime);
+        $user = $this->login([
+            'last_activity_at' => $last_activity,
+        ]);
+        $request = new \Minz\Request('GET', '/news');
+
+        $application = new Application();
+        $response = $application->run($request);
+
+        $this->assertResponseCode($response, 200);
+        $user = $user->reload();
+        $this->assertEquals($current_date, $user->last_activity_at);
     }
 
     public function testRunSetsAutoloadModal(): void

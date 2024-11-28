@@ -126,6 +126,12 @@ class Application
                 return \Minz\Response::redirect('account');
             }
 
+            // Track the last activity of the user
+            $changed = $current_user->refreshLastActivity();
+            if ($changed) {
+                $current_user->save();
+            }
+
             $beta_enabled = models\FeatureFlag::isEnabled('beta', $current_user->id);
 
             if ($current_user->autoload_modal === 'showcase navigation') {
