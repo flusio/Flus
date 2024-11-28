@@ -75,4 +75,42 @@ class Users extends \Minz\Mailer
         );
         return $this->send($user->email, $subject);
     }
+
+    /**
+     * Send an email to the given user to warn about its inactivity and the
+     * upcoming deletion of its account.
+     */
+    public function sendInactivityEmail(string $user_id): bool
+    {
+        $user = models\User::find($user_id);
+        if (!$user) {
+            \Minz\Log::warning("Can’t send inactivity email to user {$user_id} (not found)");
+            return false;
+        }
+
+        if (!$user->isInactive(months: 5)) {
+            \Minz\Log::warning("Can’t send inactivity email to user {$user_id} (not inactive)");
+            return false;
+        }
+
+        if ($user->deletion_notified_at) {
+            \Minz\Log::warning("Can’t send inactivity email to user {$user_id} (already notified)");
+            return false;
+        }
+
+        utils\Locale::setCurrentLocale($user->locale);
+
+        /** @var string */
+        $brand = \Minz\Configuration::$application['brand'];
+        $subject = sprintf(_('[%s] Your account will be deleted soon due to inactivity'), $brand);
+        $this->setBody(
+            'mailers/users/inactivity_email.phtml',
+            'mailers/users/inactivity_email.txt',
+            [
+                'brand' => $brand,
+                'username' => $user->username,
+            ]
+        );
+        return $this->send($user->email, $subject);
+    }
 }

@@ -1,0 +1,22 @@
+<p>
+    <?= _f('Hello %s,', $username) ?>
+</p>
+
+<p>
+    <?= _f('You receive this email because you haven’t been active on %s for several months. To avoid storing outdated data, your account will be deleted after one month. If you don’t want to keep it, you don’t have to do anything. However, if you wish to keep your account, you should login to %s by clicking on the following link:', $brand, $brand) ?></br />
+    <a href="<?= url_full('login') ?>">
+        <?= url_full('login') ?>
+    </a>
+</p>
+
+<p>
+    <?= _('Note that you will not receive any further notification that your account will be deleted.'); ?>
+</p>
+
+<p>
+    <?= _('Best regards,') ?>
+</p>
+
+<p>
+    <?= _f('The %s robot', $brand) ?>
+</p>

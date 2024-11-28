@@ -201,4 +201,28 @@ trait User
 
         return self::fromDatabaseRows($statement->fetchAll());
     }
+
+    /**
+     * Return the users that haven't be active since the given date.
+     *
+     * @return self[]
+     */
+    public static function listInactiveAndNotNotified(\DateTimeImmutable $inactive_since): array
+    {
+        $sql = <<<'SQL'
+            SELECT * FROM users
+            WHERE last_activity_at <= :inactive_since
+            AND deletion_notified_at IS NULL
+            AND id != :support_user_id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':inactive_since' => $inactive_since->format(Database\Column::DATETIME_FORMAT),
+            ':support_user_id' => models\User::supportUser()->id,
+        ]);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
 }
