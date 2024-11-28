@@ -32,13 +32,10 @@ class Account
             ]);
         }
 
-        /** @var bool */
-        $sub_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        $sub_enabled = \App\Configuration::$application['subscriptions_enabled'];
         if ($sub_enabled && $user->subscription_account_id && $user->isSubscriptionOverdue()) {
-            /** @var string */
-            $sub_host = \Minz\Configuration::$application['subscriptions_host'];
-            /** @var string */
-            $sub_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
+            $sub_host = \App\Configuration::$application['subscriptions_host'];
+            $sub_private_key = \App\Configuration::$application['subscriptions_private_key'];
 
             $service = new services\Subscriptions($sub_host, $sub_private_key);
 
@@ -52,7 +49,7 @@ class Account
             }
         }
 
-        $pocket_enabled = isset(\Minz\Configuration::$application['pocket_consumer_key']);
+        $pocket_enabled = \App\Configuration::$application['pocket_consumer_key'] !== '';
 
         return Response::ok('my/account/show.phtml', [
             'subscriptions_enabled' => $sub_enabled,
@@ -120,7 +117,7 @@ class Account
             ]);
         }
 
-        $demo = \Minz\Configuration::$application['demo'];
+        $demo = \App\Configuration::$application['demo'];
         if ($demo && $current_user->email === 'demo@flus.io') {
             return Response::badRequest('my/account/deletion.phtml', [
                 'error' => _('Sorry but you cannot delete the demo account 😉'),
@@ -128,8 +125,7 @@ class Account
         }
 
         if ($current_user->avatar_filename) {
-            /** @var string */
-            $media_path = \Minz\Configuration::$application['media_path'];
+            $media_path = \App\Configuration::$application['media_path'];
             $filename = $current_user->avatar_filename;
             $subpath = utils\Belt::filenameToSubpath($filename);
             @unlink("{$media_path}/avatars/{$subpath}/{$filename}");

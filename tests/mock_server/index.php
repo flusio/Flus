@@ -66,8 +66,8 @@ $app_path = realpath(__DIR__ . '/../..');
 assert($app_path !== false);
 
 include $app_path . '/vendor/autoload.php';
-\Minz\Configuration::load('test', $app_path);
-\Minz\Configuration::$no_syslog_output = false;
+\App\Configuration::load('test', $app_path);
+\App\Configuration::$no_syslog_output = false;
 
 $http_parameters = array_merge($_GET, $_POST);
 

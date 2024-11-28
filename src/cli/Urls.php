@@ -58,8 +58,7 @@ class Urls
         }
 
         $url_hash = \SpiderBits\Cache::hash($url);
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
 
         $result = $cache->remove($url_hash);

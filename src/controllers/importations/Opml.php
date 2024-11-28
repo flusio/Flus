@@ -106,7 +106,7 @@ class Opml
             ]);
         }
 
-        $importations_filepath = \Minz\Configuration::$data_path . '/importations';
+        $importations_filepath = \App\Configuration::$data_path . '/importations';
         if (!file_exists($importations_filepath)) {
             @mkdir($importations_filepath);
         }

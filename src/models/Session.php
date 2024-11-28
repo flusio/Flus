@@ -42,7 +42,7 @@ class Session
     {
         $this->id = \Minz\Random::hex(32);
         $this->name = utils\Browser::format($user_agent);
-        if (\Minz\Configuration::$application['demo']) {
+        if (\App\Configuration::$application['demo']) {
             $this->ip = 'unknown';
         } else {
             $this->ip = utils\Ip::mask($ip);

@@ -1,6 +1,6 @@
 <?php
 
-$environment = \Minz\Configuration::$environment;
+$environment = \App\Configuration::$environment;
 $application = new \App\cli\Application();
 
 // Make sure that the technical user is initialized

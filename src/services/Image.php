@@ -21,14 +21,12 @@ class Image
 
     public function __construct()
     {
-        /** @var string */
-        $user_agent = \Minz\Configuration::$application['user_agent'];
+        $user_agent = \App\Configuration::$application['user_agent'];
         $this->http = new \SpiderBits\Http();
         $this->http->user_agent = $user_agent;
         $this->http->timeout = 10;
 
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $this->path_cards = "{$media_path}/cards";
         $this->path_covers = "{$media_path}/covers";
         $this->path_large = "{$media_path}/large";

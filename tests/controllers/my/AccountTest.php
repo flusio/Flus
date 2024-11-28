@@ -4,7 +4,6 @@ namespace App\controllers\my;
 
 use App\auth;
 use App\models;
-use App\services;
 use App\utils;
 
 class AccountTest extends \PHPUnit\Framework\TestCase
@@ -19,13 +18,13 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function initializeSubscriptionConfiguration(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        \App\Configuration::$application['subscriptions_enabled'] = true;
     }
 
     #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function resetSubscriptionConfiguration(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        \App\Configuration::$application['subscriptions_enabled'] = false;
     }
 
     public function testShowRendersCorrectly(): void
@@ -137,8 +136,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testShowSyncsExpiredAtIfOverdue(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         /** @var int */
         $weeks = $this->fake('randomDigitNotNull');
         $old_expired_at = \Minz\Time::ago($weeks, 'weeks');
@@ -214,9 +212,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     public function testDeleteDeletesAvatarIfSet(): void
     {
         // we copy an existing file as an avatar file.
-        $image_path = \Minz\Configuration::$app_path . '/public/static/default-card.png';
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $image_path = \App\Configuration::$app_path . '/public/static/default-card.png';
+        $media_path = \App\Configuration::$application['media_path'];
         /** @var string */
         $avatar_filename = $this->fake('md5');
         $avatar_filename = $avatar_filename . '.png';
@@ -309,7 +306,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfTryingToDeleteDemoAccount(): void
     {
-        \Minz\Configuration::$application['demo'] = true;
+        \App\Configuration::$application['demo'] = true;
 
         /** @var string */
         $password = $this->fake('password');
@@ -323,7 +320,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'password' => $password,
         ]);
 
-        \Minz\Configuration::$application['demo'] = false;
+        \App\Configuration::$application['demo'] = false;
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Sorry but you cannot delete the demo account 😉');
         $this->assertTrue(models\User::exists($user->id));

@@ -110,8 +110,7 @@ class Exportations
         }
 
         $filename_date = $exportation->created_at->format('Y-m-d');
-        /** @var string */
-        $filename_brand = \Minz\Configuration::$application['brand'];
+        $filename_brand = \App\Configuration::$application['brand'];
         $filename = "{$filename_date}_{$filename_brand}_data.zip";
 
         $file_output = new \Minz\Output\File($exportation->filepath);

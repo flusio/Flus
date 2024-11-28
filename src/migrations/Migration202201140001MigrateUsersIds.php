@@ -8,7 +8,7 @@ class Migration202201140001MigrateUsersIds
     {
         $database = \Minz\Database::get();
 
-        $support_email = \Minz\Configuration::$application['support_email'];
+        $support_email = \App\Configuration::$application['support_email'];
 
         $statement = $database->query(<<<'SQL'
             SELECT id, created_at, email FROM users

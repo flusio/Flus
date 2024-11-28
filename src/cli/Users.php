@@ -109,7 +109,7 @@ class Users
 
         $exportations_path = getcwd();
         if ($exportations_path === false) {
-            $exportations_path = \Minz\Configuration::$data_path;
+            $exportations_path = \App\Configuration::$data_path;
         }
 
         $data_exporter = new services\DataExporter($exportations_path);
@@ -153,13 +153,10 @@ class Users
 
         $user->validated_at = \Minz\Time::now();
 
-        /** @var bool */
-        $sub_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        $sub_enabled = \App\Configuration::$application['subscriptions_enabled'];
         if ($sub_enabled) {
-            /** @var string */
-            $sub_host = \Minz\Configuration::$application['subscriptions_host'];
-            /** @var string */
-            $sub_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
+            $sub_host = \App\Configuration::$application['subscriptions_host'];
+            $sub_private_key = \App\Configuration::$application['subscriptions_private_key'];
             $subscriptions_service = new services\Subscriptions(
                 $sub_host,
                 $sub_private_key,

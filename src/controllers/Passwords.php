@@ -7,7 +7,6 @@ use Minz\Response;
 use App\auth;
 use App\jobs;
 use App\models;
-use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -25,7 +24,7 @@ class Passwords
     public function forgot(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        if ($user || \Minz\Configuration::$application['demo']) {
+        if ($user || \App\Configuration::$application['demo']) {
             return Response::redirect('home');
         }
 
@@ -51,7 +50,7 @@ class Passwords
     public function reset(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        if ($user || \Minz\Configuration::$application['demo']) {
+        if ($user || \App\Configuration::$application['demo']) {
             return Response::redirect('home');
         }
 

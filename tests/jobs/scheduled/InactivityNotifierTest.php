@@ -35,13 +35,13 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
 
     public function testInstall(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
 
         $this->assertSame(0, \Minz\Job::count());
 
         InactivityNotifier::install();
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertSame(1, \Minz\Job::count());
     }
@@ -143,8 +143,7 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $now = \Minz\Time::now();
         $job = new InactivityNotifier();
-        /** @var string */
-        $support_email = \Minz\Configuration::$application['support_email'];
+        $support_email = \App\Configuration::$application['support_email'];
         $inactivity_months = 5;
         $notified_at = null;
         $validated_at = \Minz\Time::ago(1, 'year');

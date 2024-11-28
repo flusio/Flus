@@ -116,8 +116,7 @@ class User
 
     public static function supportUser(): self
     {
-        /** @var string */
-        $support_email = \Minz\Configuration::$application['support_email'];
+        $support_email = \App\Configuration::$application['support_email'];
         $default_password = \Minz\Random::hex(128);
 
         return self::findOrCreateBy([
@@ -132,7 +131,7 @@ class User
 
     public function isSupportUser(): bool
     {
-        $support_email = \Minz\Configuration::$application['support_email'];
+        $support_email = \App\Configuration::$application['support_email'];
         return $this->email === $support_email;
     }
 
@@ -504,7 +503,7 @@ class User
      */
     public function isBlocked(): bool
     {
-        $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        $subscriptions_enabled = \App\Configuration::$application['subscriptions_enabled'];
         $must_validate = $this->mustValidateEmail();
         $must_renew = $subscriptions_enabled && $this->isSubscriptionOverdue();
         return $must_validate || $must_renew;
@@ -545,7 +544,7 @@ class User
      */
     public function tagUri(): string
     {
-        $host = \Minz\Configuration::$url_options['host'];
+        $host = \App\Configuration::$url_options['host'];
         $date = $this->created_at->format('Y-m-d');
         return "tag:{$host},{$date}:users/{$this->id}";
     }

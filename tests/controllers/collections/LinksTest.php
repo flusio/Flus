@@ -19,7 +19,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
-        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
 
         assert($files !== false);
 

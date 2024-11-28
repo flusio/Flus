@@ -11,7 +11,7 @@ $app_path = realpath(__DIR__ . '/..');
 assert($app_path !== false);
 
 include $app_path . '/vendor/autoload.php';
-\Minz\Configuration::load('dotenv', $app_path);
+\App\Configuration::load('dotenv', $app_path);
 
 // Get the http information and create a Request
 $request = \Minz\Request::initFromGlobals();
@@ -22,7 +22,7 @@ try {
     $response = $application->run($request);
 } catch (\Exception $e) {
     $response = \Minz\Response::internalServerError('internal_server_error.phtml', [
-        'environment' => \Minz\Configuration::$environment,
+        'environment' => \App\Configuration::$environment,
         'error' => $e,
     ]);
 }

@@ -2,8 +2,6 @@
 
 namespace App\jobs\scheduled;
 
-use App\models;
-use App\services;
 use tests\factories\UserFactory;
 
 class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
@@ -15,13 +13,13 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function initializeSubscriptionConfiguration(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        \App\Configuration::$application['subscriptions_enabled'] = true;
     }
 
     #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function resetSubscriptionConfiguration(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        \App\Configuration::$application['subscriptions_enabled'] = false;
     }
 
     public function testQueue(): void
@@ -40,21 +38,20 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testInstall(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
 
         $this->assertSame(0, \Minz\Job::count());
 
         SubscriptionsSync::install();
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertSame(1, \Minz\Job::count());
     }
 
     public function testSyncUpdatesExpiredAt(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         /** @var string */
         $account_id = $this->fake('uuid');
@@ -85,8 +82,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncGetsAccountIdIfMissing(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         /** @var string */
         $email = $this->fake('email');
@@ -121,8 +117,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncHandlesIfAccountIdFailsBeingGet(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         /** @var string */
         $email = $this->fake('email');
@@ -151,8 +146,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncIgnoresInvalidExpiredAt(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         /** @var string */
         $account_id = $this->fake('uuid');
@@ -181,8 +175,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncIgnoresUnexpectedAccountIds(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         /** @var string */
         $account_id_1 = $this->fake('uuid');
@@ -218,8 +211,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncDoesNotGetAccountIdIfNotValidated(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         /** @var string */
         $email = $this->fake('email');
@@ -254,8 +246,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testSyncDoesNothingIfHttpIsInError(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         /** @var string */
         $account_id = $this->fake('uuid');
@@ -287,9 +278,8 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
     public function testSyncDoesNothingIfSubscriptionsAreDisabled(): void
     {
         $subscriptions_sync_job = new SubscriptionsSync();
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        \App\Configuration::$application['subscriptions_enabled'] = false;
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         $subscriptions_sync_job = new SubscriptionsSync();
         /** @var string */
         $account_id = $this->fake('uuid');
@@ -314,7 +304,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
         $subscriptions_sync_job->perform();
 
-        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        \App\Configuration::$application['subscriptions_enabled'] = true;
 
         $user = $user->reload();
         $this->assertEquals($old_expired_at, $user->subscription_expired_at);

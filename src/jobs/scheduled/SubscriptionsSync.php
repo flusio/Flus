@@ -4,7 +4,6 @@ namespace App\jobs\scheduled;
 
 use App\models;
 use App\services;
-use App\utils;
 
 /**
  * Job to synchronize the subscriptions with the host
@@ -34,7 +33,7 @@ class SubscriptionsSync extends \Minz\Job
 
     public function perform(): void
     {
-        $app_conf = \Minz\Configuration::$application;
+        $app_conf = \App\Configuration::$application;
         if (!$app_conf['subscriptions_enabled']) {
             return;
         }

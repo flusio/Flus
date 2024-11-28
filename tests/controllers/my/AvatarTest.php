@@ -18,7 +18,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateCreatesAvatarAndRedirects(): void
     {
-        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
@@ -37,8 +37,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/my/profile');
         $user = $user->reload();
         $this->assertSame($user->id . '.webp', $user->avatar_filename);
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
         $avatar_path = "{$media_path}/avatars/{$subpath}/{$user->avatar_filename}";
         $this->assertTrue(file_exists($avatar_path));
@@ -46,12 +45,11 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateDeletesOldFile(): void
     {
-        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         // we also copy the image as the existing avatar. Note the extension is
         // JPG instead of PNG: we just want to check that the file is deleted.
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $previous_avatar_filename = $this->fake('md5') . '.jpg';
         $subpath = utils\Belt::filenameToSubpath($previous_avatar_filename);
         $previous_avatar_path = "{$media_path}/avatars/{$subpath}";
@@ -84,7 +82,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsToLoginIfNotConnected(): void
     {
-        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = UserFactory::create([
             'avatar_filename' => null,
@@ -108,7 +106,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCsrfIsInvalid(): void
     {
-        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
@@ -149,7 +147,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfWrongFileType(): void
     {
-        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-avatar.svg';
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-avatar.svg';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
@@ -173,7 +171,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfIsUploadedFileReturnsFalse(): void
     {
-        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
@@ -199,7 +197,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('tooLargeErrorsProvider')]
     public function testUpdateFailsIfTooLarge(int $error): void
     {
-        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,
@@ -224,7 +222,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('otherFileErrorsProvider')]
     public function testUpdateFailsIfFileFailedToUpload(int $error): void
     {
-        $image_filepath = \Minz\Configuration::$app_path . '/public/static/default-card.png';
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
             'avatar_filename' => null,

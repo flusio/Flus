@@ -34,11 +34,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRedirectsToLoginIfRegistrationsAreClosed(): void
     {
-        \Minz\Configuration::$application['registrations_opened'] = false;
+        \App\Configuration::$application['registrations_opened'] = false;
 
         $response = $this->appRun('GET', '/registration');
 
-        \Minz\Configuration::$application['registrations_opened'] = true;
+        \App\Configuration::$application['registrations_opened'] = true;
         $this->assertResponseCode($response, 302, '/login');
     }
 
@@ -149,7 +149,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateTakesAcceptTermsIfExist(): void
     {
-        $app_path = \Minz\Configuration::$app_path;
+        $app_path = \App\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
         file_put_contents($terms_path, $this->fake('sentence'));
 
@@ -168,7 +168,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateAddFollowedCollectionsIfDefaultFeedsExist(): void
     {
-        $default_feeds_path = \Minz\Configuration::$data_path . '/default-feeds.opml.xml';
+        $default_feeds_path = \App\Configuration::$data_path . '/default-feeds.opml.xml';
         file_put_contents($default_feeds_path, <<<OPML
             <?xml version="1.0" encoding="UTF-8"?>
             <opml version="2.0">
@@ -207,7 +207,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateImportsBookmarksIfDefaultBookmarksExist(): void
     {
-        $default_bookmarks_path = \Minz\Configuration::$data_path . '/default-bookmarks.atom.xml';
+        $default_bookmarks_path = \App\Configuration::$data_path . '/default-bookmarks.atom.xml';
         file_put_contents($default_bookmarks_path, <<<TXT
             <?xml version="1.0" encoding="UTF-8"?>
             <feed xmlns="http://www.w3.org/2005/Atom">
@@ -299,7 +299,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfRegistrationsAreClosed(): void
     {
-        \Minz\Configuration::$application['registrations_opened'] = false;
+        \App\Configuration::$application['registrations_opened'] = false;
 
         $response = $this->appRun('POST', '/registration', [
             'csrf' => \Minz\Csrf::generate(),
@@ -308,7 +308,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        \Minz\Configuration::$application['registrations_opened'] = true;
+        \App\Configuration::$application['registrations_opened'] = true;
         $this->assertResponseCode($response, 302, '/login');
         $this->assertSame(0, models\User::count());
     }
@@ -432,7 +432,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfAcceptTermsIsFalseAndTermsExist(): void
     {
-        $app_path = \Minz\Configuration::$app_path;
+        $app_path = \App\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
         file_put_contents($terms_path, $this->fake('sentence'));
 

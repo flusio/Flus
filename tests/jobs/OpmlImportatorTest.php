@@ -16,13 +16,13 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setJobAdapterToDatabase(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
     }
 
     #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function setJobAdapterToTest(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
     }
 
     public function testQueue(): void
@@ -34,7 +34,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformCreatesNewCollectionsAndGroupsFromOpmlFile(): void
     {
-        $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $example_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         $importator = new OpmlImportator();
         $user = UserFactory::create();
@@ -87,7 +87,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformRemovesFile(): void
     {
-        $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $example_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         $importator = new OpmlImportator();
         $user = UserFactory::create();
@@ -106,7 +106,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformDoesNotCreateExistingFeed(): void
     {
-        $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $example_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         $importator = new OpmlImportator();
         $user = UserFactory::create();
@@ -147,7 +147,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformFailsIfFileIsMissing(): void
     {
-        $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $example_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         unlink($opml_filepath);
         $importator = new OpmlImportator();
@@ -170,7 +170,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformFailsIfFileIsNotOpml(): void
     {
-        $example_filepath = \Minz\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $example_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         file_put_contents($opml_filepath, 'not opml');
         $importator = new OpmlImportator();

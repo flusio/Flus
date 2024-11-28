@@ -19,13 +19,13 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setJobAdapterToDatabase(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
     }
 
     #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function setJobAdapterToTest(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
     }
 
     public function testShowRendersCorrectly(): void
@@ -121,7 +121,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateDeletesExistingExportationAndArchiveIfStatusIsFinished(): void
     {
         $user = $this->login();
-        $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
+        $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
         $exportation = ExportationFactory::create([
             'user_id' => $user->id,
@@ -217,7 +217,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     public function testDownloadReturnsTheArchiveFile(): void
     {
         $user = $this->login();
-        $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
+        $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
         $exportation = ExportationFactory::create([
             'user_id' => $user->id,
@@ -230,8 +230,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $exportation = $exportation->reload();
         $filename_date = $exportation->created_at->format('Y-m-d');
-        /** @var string */
-        $filename_brand = \Minz\Configuration::$application['brand'];
+        $filename_brand = \App\Configuration::$application['brand'];
         $filename = "{$filename_date}_{$filename_brand}_data.zip";
         $filesize = filesize($filepath);
         $this->assertNotFalse($filesize);
@@ -245,7 +244,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     public function testDownloadRedirectsIfUserIsNotConnected(): void
     {
         $user = UserFactory::create();
-        $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
+        $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
         $exportation = ExportationFactory::create([
             'user_id' => $user->id,
@@ -261,7 +260,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     public function testDownloadFailsIfFileDoesNotExist(): void
     {
         $user = $this->login();
-        $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
+        $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
         $exportation = ExportationFactory::create([
             'user_id' => $user->id,
@@ -278,7 +277,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     public function testDownloadFailsIfExportationDoesNotExist(): void
     {
         $user = $this->login();
-        $exportation_service = new services\DataExporter(\Minz\Configuration::$tmp_path);
+        $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user->id);
 
         $response = $this->appRun('GET', '/exportations/download');

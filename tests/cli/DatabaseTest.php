@@ -20,7 +20,7 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     public static function recreateDatabase(): void
     {
         \Minz\Database::reset();
-        $schema = @file_get_contents(\Minz\Configuration::$schema_path);
+        $schema = @file_get_contents(\App\Configuration::$schema_path);
 
         assert($schema !== false);
 
@@ -39,17 +39,17 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     public function testStatusFailsWithWrongCredentials(): void
     {
         \Minz\Database::drop(); // make sure to reset the singleton instance
-        $initial_database_conf = \Minz\Configuration::$database;
+        $initial_database_conf = \App\Configuration::$database;
         /** @var ConfigurationDatabase */
-        $configuration = \Minz\Configuration::$database;
+        $configuration = \App\Configuration::$database;
         $configuration['username'] = 'not the username';
-        \Minz\Configuration::$database = $configuration;
+        \App\Configuration::$database = $configuration;
 
         $response = $this->appRun('CLI', '/database/status');
 
         $this->assertResponseCode($response, 500);
         $this->assertResponseContains($response, 'Database status: An error occured during database initialization');
 
-        \Minz\Configuration::$database = $initial_database_conf;
+        \App\Configuration::$database = $initial_database_conf;
     }
 }

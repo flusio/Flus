@@ -39,7 +39,7 @@ class Feeds
         $response = Response::ok('links/feeds/show.atom.xml.php', [
             'link' => $link,
             'messages' => $link->messages(),
-            'user_agent' => \Minz\Configuration::$application['user_agent'],
+            'user_agent' => \App\Configuration::$application['user_agent'],
         ]);
         $response->setHeader('X-Content-Type-Options', 'nosniff');
         return $response;

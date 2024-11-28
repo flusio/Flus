@@ -18,7 +18,7 @@ class FeedsSync extends \Minz\Job
      */
     public static function install(): void
     {
-        $number_jobs_to_install = \Minz\Configuration::$application['job_feeds_sync_count'];
+        $number_jobs_to_install = \App\Configuration::$application['job_feeds_sync_count'];
 
         $jobs = \Minz\Job::listBy([
             'name' => self::class,

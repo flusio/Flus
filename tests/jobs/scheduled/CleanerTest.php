@@ -38,7 +38,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformDeletesFilesOutsideValidityInterval(): void
     {
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $filepath = $cache_path . '/foo';
         $validity_interval = 7 * 24 * 60 * 60;
         $modification_time = time() - $validity_interval;
@@ -54,7 +54,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformKeepsFilesWithinValidityInterval(): void
     {
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $filepath = $cache_path . '/foo';
         $validity_interval = 7 * 24 * 60 * 60;
         $modification_time = time() - $validity_interval + 1;
@@ -219,8 +219,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $cleaner_job = new Cleaner();
-        /** @var string */
-        $support_email = \Minz\Configuration::$application['support_email'];
+        $support_email = \App\Configuration::$application['support_email'];
         $inactivity_months = 6;
         $notified_months = 1;
         $user = UserFactory::create([
@@ -386,7 +385,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformDeletesFeedsLinksInExcess(): void
     {
-        \Minz\Configuration::$application['feeds_links_keep_maximum'] = 1;
+        \App\Configuration::$application['feeds_links_keep_maximum'] = 1;
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -421,7 +420,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job->perform();
 
-        \Minz\Configuration::$application['feeds_links_keep_maximum'] = 0;
+        \App\Configuration::$application['feeds_links_keep_maximum'] = 0;
 
         $this->assertTrue(models\Link::exists($link_1->id));
         $this->assertFalse(models\Link::exists($link_2->id));
@@ -429,7 +428,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformDeletesOldEnoughFeedsLinks(): void
     {
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
+        \App\Configuration::$application['feeds_links_keep_period'] = 6;
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -457,14 +456,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job->perform();
 
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
+        \App\Configuration::$application['feeds_links_keep_period'] = 0;
 
         $this->assertFalse(models\Link::exists($link->id));
     }
 
     public function testPerformKeepsAllFeedsLinksIfMaximumIsZero(): void
     {
-        \Minz\Configuration::$application['feeds_links_keep_maximum'] = 0;
+        \App\Configuration::$application['feeds_links_keep_maximum'] = 0;
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -505,7 +504,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformKeepsRecentFeedsLinks(): void
     {
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
+        \App\Configuration::$application['feeds_links_keep_period'] = 6;
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -533,15 +532,15 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job->perform();
 
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
+        \App\Configuration::$application['feeds_links_keep_period'] = 0;
 
         $this->assertTrue(models\Link::exists($link->id));
     }
 
     public function testPerformKeepsOldEnoughFeedsLinksInMinimumLimit(): void
     {
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
-        \Minz\Configuration::$application['feeds_links_keep_minimum'] = 1;
+        \App\Configuration::$application['feeds_links_keep_period'] = 6;
+        \App\Configuration::$application['feeds_links_keep_minimum'] = 1;
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -595,8 +594,8 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job->perform();
 
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
-        \Minz\Configuration::$application['feeds_links_keep_minimum'] = 0;
+        \App\Configuration::$application['feeds_links_keep_period'] = 0;
+        \App\Configuration::$application['feeds_links_keep_minimum'] = 0;
 
         $this->assertSame(2, models\Link::count());
         $this->assertFalse(models\Link::exists($link_1->id));
@@ -606,7 +605,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformDeletesDataIfDemoIsEnabled(): void
     {
-        \Minz\Configuration::$application['demo'] = true;
+        \App\Configuration::$application['demo'] = true;
         $cleaner_job = new Cleaner();
         /** @var int */
         $days = $this->fake('numberBetween', 1, 9000);
@@ -626,7 +625,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job->perform();
 
-        \Minz\Configuration::$application['demo'] = false;
+        \App\Configuration::$application['demo'] = false;
 
         $this->assertSame(2, models\User::count()); // count the support and demo users
         $this->assertGreaterThan(0, models\Collection::count());
@@ -662,7 +661,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformKeepsDataIfDemoIsDisabled(): void
     {
-        \Minz\Configuration::$application['demo'] = false;
+        \App\Configuration::$application['demo'] = false;
         $cleaner_job = new Cleaner();
         /** @var int */
         $days = $this->fake('numberBetween', 1, 9000);

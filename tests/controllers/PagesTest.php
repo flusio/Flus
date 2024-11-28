@@ -28,7 +28,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
     public function testTermsRendersCorrectlyWhenTermsExist(): void
     {
-        $app_path = \Minz\Configuration::$app_path;
+        $app_path = \App\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
         file_put_contents($terms_path, $this->fake('sentence'));
 
@@ -41,7 +41,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
     public function testTermsFailsIfTermsDoNotExist(): void
     {
-        $app_path = \Minz\Configuration::$app_path;
+        $app_path = \App\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
         @unlink($terms_path);
 
@@ -70,7 +70,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
     public function testRobotsRendersCorrectlyWhenRegistrationsAreOpened(): void
     {
-        \Minz\Configuration::$application['registrations_opened'] = true;
+        \App\Configuration::$application['registrations_opened'] = true;
 
         $response = $this->appRun('GET', '/robots.txt');
 
@@ -85,11 +85,11 @@ class PagesTest extends \PHPUnit\Framework\TestCase
 
     public function testRobotsRendersCorrectlyWhenRegistrationsAreClosed(): void
     {
-        \Minz\Configuration::$application['registrations_opened'] = false;
+        \App\Configuration::$application['registrations_opened'] = false;
 
         $response = $this->appRun('GET', '/robots.txt');
 
-        \Minz\Configuration::$application['registrations_opened'] = true;
+        \App\Configuration::$application['registrations_opened'] = true;
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'pages/robots.txt');

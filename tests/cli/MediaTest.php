@@ -2,7 +2,6 @@
 
 namespace App\cli;
 
-use App\models;
 use App\services;
 use App\utils;
 use tests\factories\CollectionFactory;
@@ -25,8 +24,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\After]
     public function clearMediaDirectories(): void
     {
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $file_names = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator(
                 $media_path,
@@ -54,8 +52,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $subdir_name = substr($image_filename, 0, 3);
 
         $this->assertNotEmpty($image_filename);
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
@@ -103,8 +100,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertNotEmpty($image_filename);
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
@@ -149,8 +145,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertNotEmpty($image_filename);
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
@@ -195,8 +190,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertNotEmpty($image_filename);
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";

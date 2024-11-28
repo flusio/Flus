@@ -9,8 +9,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setCachePath(): void
     {
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         self::$cache_path = $cache_path;
     }
 

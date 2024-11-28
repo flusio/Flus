@@ -5,7 +5,6 @@ namespace App\controllers\my;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
-use App\models;
 use App\services;
 
 /**
@@ -20,14 +19,11 @@ class Subscription
 
     public function __construct()
     {
-        /** @var bool */
-        $sub_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        $sub_enabled = \App\Configuration::$application['subscriptions_enabled'];
         $this->enabled = $sub_enabled;
         if ($this->enabled) {
-            /** @var string */
-            $sub_host = \Minz\Configuration::$application['subscriptions_host'];
-            /** @var string */
-            $sub_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
+            $sub_host = \App\Configuration::$application['subscriptions_host'];
+            $sub_private_key = \App\Configuration::$application['subscriptions_private_key'];
             $this->service = new services\Subscriptions($sub_host, $sub_private_key);
         }
     }

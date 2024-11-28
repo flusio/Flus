@@ -2,8 +2,6 @@
 
 namespace App\controllers\my;
 
-use App\models;
-use App\services;
 use tests\factories\UserFactory;
 
 class SubscriptionTest extends \PHPUnit\Framework\TestCase
@@ -18,19 +16,18 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function initializeSubscriptionConfiguration(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        \App\Configuration::$application['subscriptions_enabled'] = true;
     }
 
     #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function resetSubscriptionConfiguration(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        \App\Configuration::$application['subscriptions_enabled'] = false;
     }
 
     public function testCreateSetsSubscriptionProperties(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         /** @var string */
         $email = $this->fake('email');
         /** @var string */
@@ -163,9 +160,8 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfSecretKeyIsInvalid(): void
     {
-        /** @var string */
-        $old_private_key = \Minz\Configuration::$application['subscriptions_private_key'];
-        \Minz\Configuration::$application['subscriptions_private_key'] = 'not the key';
+        $old_private_key = \App\Configuration::$application['subscriptions_private_key'];
+        \App\Configuration::$application['subscriptions_private_key'] = 'not the key';
         $expired_at = new \DateTimeImmutable('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
@@ -177,7 +173,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        \Minz\Configuration::$application['subscriptions_private_key'] = $old_private_key;
+        \App\Configuration::$application['subscriptions_private_key'] = $old_private_key;
 
         $this->assertResponseCode($response, 302, '/my/account');
         $this->assertSame(
@@ -194,7 +190,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfSubscriptionsAreDisabled(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        \App\Configuration::$application['subscriptions_enabled'] = false;
         $expired_at = new \DateTimeImmutable('1970-01-01');
         $user = $this->login([
             'subscription_account_id' => null,
@@ -216,8 +212,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testRedirectRedirectsToLoginUrl(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         /** @var string */
         $account_id = $this->fake('uuid');
         /** @var string */
@@ -279,7 +274,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
     public function testRedirectFailsIfSubscriptionsAreDisabled(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        \App\Configuration::$application['subscriptions_enabled'] = false;
         $this->login([
             // We don't make additional call for a failing test, but this id
             // should theorically be created on the subscriptions host first.

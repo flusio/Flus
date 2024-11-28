@@ -26,8 +26,7 @@ class Media
      */
     public function clean(): mixed
     {
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $path_cards = "{$media_path}/cards";
         $path_covers = "{$media_path}/covers";
         $path_large = "{$media_path}/large";

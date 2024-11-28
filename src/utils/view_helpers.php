@@ -90,13 +90,13 @@ function format_reading_time(int $reading_time): string
  */
 function url_asset(string $filename): string
 {
-    if (\Minz\Configuration::$environment === 'development') {
+    if (\App\Configuration::$environment === 'development') {
         $assets_folder = 'dev_assets';
     } else {
         $assets_folder = 'assets';
     }
 
-    $filepath = \Minz\Configuration::$app_path . "/public/{$assets_folder}/{$filename}";
+    $filepath = \App\Configuration::$app_path . "/public/{$assets_folder}/{$filename}";
     $modification_time = @filemtime($filepath);
 
     $file_url = \Minz\Url::path() . "/{$assets_folder}/{$filename}";
@@ -118,8 +118,7 @@ function url_media(string $type, ?string $filename, string $default = 'default-c
         return url_static($default);
     }
 
-    /** @var string */
-    $media_path = \Minz\Configuration::$application['media_path'];
+    $media_path = \App\Configuration::$application['media_path'];
     $subpath = \App\utils\Belt::filenameToSubpath($filename);
     $filepath = "{$media_path}/{$type}/{$subpath}/{$filename}";
     $modification_time = @filemtime($filepath);

@@ -22,7 +22,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
-        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
 
         assert($files !== false);
 
@@ -82,8 +82,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($topic);
         $image_filename = $topic->image_filename;
         $this->assertNotNull($image_filename);
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
@@ -163,8 +162,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $topic = $topic->reload();
         $this->assertNotNull($topic->image_filename);
         $this->assertNotSame($old_image_filename, $topic->image_filename);
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $image_filename = $topic->image_filename;
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";

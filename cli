@@ -14,8 +14,8 @@ if (php_sapi_name() !== 'cli') {
 $app_path = __DIR__;
 
 include $app_path . '/vendor/autoload.php';
-\Minz\Configuration::load('dotenv', $app_path);
-\Minz\Configuration::$no_syslog_output = true;
+\App\Configuration::load('dotenv', $app_path);
+\App\Configuration::$no_syslog_output = true;
 
 $request = \Minz\Request::initFromCli($argv);
 

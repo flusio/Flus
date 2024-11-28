@@ -29,8 +29,7 @@ class Users extends \Minz\Mailer
 
         utils\Locale::setCurrentLocale($user->locale);
 
-        /** @var string */
-        $brand = \Minz\Configuration::$application['brand'];
+        $brand = \App\Configuration::$application['brand'];
         $subject = sprintf(_('[%s] Confirm your account'), $brand);
         $this->setBody(
             'mailers/users/account_validation_email.phtml',
@@ -61,8 +60,7 @@ class Users extends \Minz\Mailer
 
         utils\Locale::setCurrentLocale($user->locale);
 
-        /** @var string */
-        $brand = \Minz\Configuration::$application['brand'];
+        $brand = \App\Configuration::$application['brand'];
         $subject = sprintf(_('[%s] Reset your password'), $brand);
         $this->setBody(
             'mailers/users/reset_password_email.phtml',
@@ -100,8 +98,7 @@ class Users extends \Minz\Mailer
 
         utils\Locale::setCurrentLocale($user->locale);
 
-        /** @var string */
-        $brand = \Minz\Configuration::$application['brand'];
+        $brand = \App\Configuration::$application['brand'];
         $subject = sprintf(_('[%s] Your account will be deleted soon due to inactivity'), $brand);
         $this->setBody(
             'mailers/users/inactivity_email.phtml',

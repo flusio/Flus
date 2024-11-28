@@ -31,7 +31,7 @@ class PocketImportator extends \Minz\Job
         $user = $importation->user();
         utils\Locale::setCurrentLocale($user->locale);
 
-        if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
+        if (\App\Configuration::$application['pocket_consumer_key'] === '') {
             $importation->fail(
                 _('We tried to import from Pocket, but pocket_consumer_key is missing (please contact the support).')
             );
@@ -51,8 +51,7 @@ class PocketImportator extends \Minz\Job
             return;
         }
 
-        /** @var string */
-        $consumer_key = \Minz\Configuration::$application['pocket_consumer_key'];
+        $consumer_key = \App\Configuration::$application['pocket_consumer_key'];
         $pocket_service = new services\Pocket($consumer_key);
 
         $offset = 0;
@@ -81,7 +80,7 @@ class PocketImportator extends \Minz\Job
                 $this->importPocketItems($user, $items, $importation->pocketOptions());
             } catch (\Exception $e) {
                 $error = $e->getMessage();
-                $dump_filename = \Minz\Configuration::$data_path . "/dump_importation_{$importation->id}.json";
+                $dump_filename = \App\Configuration::$data_path . "/dump_importation_{$importation->id}.json";
                 $dump = json_encode($items);
                 file_put_contents($dump_filename, $dump);
                 break;

@@ -25,13 +25,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         // Adding a feed will fetch its links one by one via a job.
         // When jobs_adapter is set to test, jobs are automatically triggered.
         // We don't want to fetch the links because it's too long.
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
     }
 
     #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
-        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
 
         assert($files !== false);
 
@@ -43,7 +43,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function changeJobAdapterToTest(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
     }
 
     public function testIndexRendersCorrectly(): void
@@ -209,8 +209,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $hash = \SpiderBits\Cache::hash($feed_url);
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache_filepath = $cache_path . '/' . $hash;
         $this->assertTrue(file_exists($cache_filepath));
     }
@@ -249,8 +248,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 
@@ -299,8 +297,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 

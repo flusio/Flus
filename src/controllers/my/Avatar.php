@@ -62,8 +62,7 @@ class Avatar
             return Response::found($from);
         }
 
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($user->id);
         $avatars_path = "{$media_path}/avatars";
         $avatar_path = "{$avatars_path}/{$subpath}";

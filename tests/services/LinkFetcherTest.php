@@ -15,8 +15,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $files = glob($cache_path . '/*');
 
         assert($files !== false);
@@ -56,8 +55,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service->fetch($link);
 
         $hash = \SpiderBits\Cache::hash($url);
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache_filepath = $cache_path . '/' . $hash;
         $this->assertTrue(file_exists($cache_filepath));
     }
@@ -83,8 +81,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             </head>
         </html>
         TEXT;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 
@@ -104,11 +101,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             'title' => $url,
         ]);
         $hash = \SpiderBits\Cache::hash($url);
-        $fixtures_path = \Minz\Configuration::$app_path . '/tests/fixtures';
+        $fixtures_path = \App\Configuration::$app_path . '/tests/fixtures';
         $raw_response = @file_get_contents($fixtures_path . '/responses/test_iso_8859_1');
         assert($raw_response !== false);
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 
@@ -128,11 +124,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             'title' => $url,
         ]);
         $hash = \SpiderBits\Cache::hash($url);
-        $fixtures_path = \Minz\Configuration::$app_path . '/tests/fixtures';
+        $fixtures_path = \App\Configuration::$app_path . '/tests/fixtures';
         $raw_response = file_get_contents($fixtures_path . '/responses/test_bad_encoding');
         assert($raw_response !== false);
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 
@@ -194,8 +189,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link = $link->reload();
         $image_filename = $link->image_filename;
         $this->assertNotEmpty($image_filename);
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
@@ -264,8 +258,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $image_filename = $link->image_filename;
         $this->assertNotNull($image_filename);
         $this->assertNotSame('old.png', $image_filename);
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
@@ -294,8 +287,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link_fetcher_service->fetch($link);
 
         $hash = \SpiderBits\Cache::hash($url);
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache_filepath = $cache_path . '/' . $hash;
         $this->assertFalse(file_exists($cache_filepath));
     }

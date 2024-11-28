@@ -59,7 +59,7 @@ class UserCreator
         $shares->save();
 
         // Load default feeds
-        $default_opml_filepath = \Minz\Configuration::$data_path . '/default-feeds.opml.xml';
+        $default_opml_filepath = \App\Configuration::$data_path . '/default-feeds.opml.xml';
         if (file_exists($default_opml_filepath)) {
             try {
                 $opml_importator_service = new OpmlImportator($default_opml_filepath);
@@ -72,7 +72,7 @@ class UserCreator
         }
 
         // Load default bookmarks
-        $default_bookmarks_filepath = \Minz\Configuration::$data_path . '/default-bookmarks.atom.xml';
+        $default_bookmarks_filepath = \App\Configuration::$data_path . '/default-bookmarks.atom.xml';
         if (file_exists($default_bookmarks_filepath)) {
             try {
                 $atom_importator_service = new AtomImportator($default_bookmarks_filepath);

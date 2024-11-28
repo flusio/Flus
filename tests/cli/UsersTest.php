@@ -142,7 +142,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testExportCreatesTheDataFileAndRendersCorrectly(): void
     {
-        $tmp_path = \Minz\Configuration::$tmp_path;
+        $tmp_path = \App\Configuration::$tmp_path;
         $current_path = $tmp_path . '/' . md5((string) rand());
         @mkdir($current_path, 0777, true);
         @chdir($current_path);
@@ -164,7 +164,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testExportFailsIfUserDoesNotExist(): void
     {
-        $tmp_path = \Minz\Configuration::$tmp_path;
+        $tmp_path = \App\Configuration::$tmp_path;
         $current_path = $tmp_path . '/' . md5((string) rand());
         @mkdir($current_path, 0777, true);
         @chdir($current_path);
@@ -201,9 +201,8 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testValidateSetsSubscriptionAccountId(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = true;
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        \App\Configuration::$application['subscriptions_enabled'] = true;
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         /** @var string */
         $email = $this->fake('email');
         /** @var string */
@@ -231,7 +230,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'id' => $user->id,
         ]);
 
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        \App\Configuration::$application['subscriptions_enabled'] = false;
 
         $user = $user->reload();
         $this->assertSame($account_id, $user->subscription_account_id);

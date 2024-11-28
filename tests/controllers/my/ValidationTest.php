@@ -3,7 +3,6 @@
 namespace App\controllers\my;
 
 use App\models;
-use App\utils;
 use tests\factories\UserFactory;
 use tests\factories\TokenFactory;
 
@@ -21,13 +20,13 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function initializeSubscriptionConfiguration(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        \App\Configuration::$application['subscriptions_enabled'] = true;
     }
 
     #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function resetSubscriptionConfiguration(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        \App\Configuration::$application['subscriptions_enabled'] = false;
     }
 
     public function testShowWithoutTokenAndConnectedRendersCorrectly(): void
@@ -129,8 +128,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
     public function testShowWithTokenSetsSubscriptionAccountId(): void
     {
-        /** @var string */
-        $subscriptions_host = \Minz\Configuration::$application['subscriptions_host'];
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);

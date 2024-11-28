@@ -83,7 +83,7 @@ class DataExporter
     private function generateMetadata(): string
     {
         $metadata = json_encode([
-            'generator' => \Minz\Configuration::$application['user_agent'],
+            'generator' => \App\Configuration::$application['user_agent'],
         ]);
 
         if (!$metadata) {
@@ -103,7 +103,7 @@ class DataExporter
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
         $view = new \Minz\Output\View('collections/followed.opml.xml.php', [
-            'brand' => \Minz\Configuration::$application['brand'],
+            'brand' => \App\Configuration::$application['brand'],
             'now' => \Minz\Time::now(),
             'groups' => $groups,
             'groups_to_collections' => $groups_to_collections,
@@ -118,8 +118,8 @@ class DataExporter
     private function generateCollection(models\Collection $collection): string
     {
         $view = new \Minz\Output\View('collections/exportation.atom.xml.php', [
-            'brand' => \Minz\Configuration::$application['brand'],
-            'user_agent' => \Minz\Configuration::$application['user_agent'],
+            'brand' => \App\Configuration::$application['brand'],
+            'user_agent' => \App\Configuration::$application['user_agent'],
             'collection' => $collection,
             'topics' => $collection->topics(),
             'links' => $collection->links(['published_at']),
@@ -134,8 +134,8 @@ class DataExporter
     private function generateLink(models\Link $link): string
     {
         $view = new \Minz\Output\View('links/exportation.atom.xml.php', [
-            'brand' => \Minz\Configuration::$application['brand'],
-            'user_agent' => \Minz\Configuration::$application['user_agent'],
+            'brand' => \App\Configuration::$application['brand'],
+            'user_agent' => \App\Configuration::$application['user_agent'],
             'link' => $link,
             'messages' => $link->messages(),
         ]);

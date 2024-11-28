@@ -48,13 +48,11 @@ class LinkFetcher
     {
         $this->options = array_merge($this->options, $options);
 
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $this->cache = new \SpiderBits\Cache($cache_path);
 
         $this->http = new \SpiderBits\Http();
-        /** @var string */
-        $user_agent = \Minz\Configuration::$application['user_agent'];
+        $user_agent = \App\Configuration::$application['user_agent'];
         $this->http->user_agent = $user_agent;
         $this->http->timeout = $this->options['timeout'];
     }
@@ -136,8 +134,7 @@ class LinkFetcher
     {
         // First, we get information about rate limit and IP to select to
         // execute the request (for Youtube).
-        /** @var string[] */
-        $server_ips = \Minz\Configuration::$application['server_ips'];
+        $server_ips = \App\Configuration::$application['server_ips'];
         if (!$this->options['rate_limit']) {
             // rate limit is disabled for this call
             $is_rate_limited = false;

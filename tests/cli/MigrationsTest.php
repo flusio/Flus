@@ -16,7 +16,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function uninstall(): void
     {
-        $migration_file = \Minz\Configuration::$data_path . '/migrations_version.txt';
+        $migration_file = \App\Configuration::$data_path . '/migrations_version.txt';
         @unlink($migration_file);
         \Minz\Database::drop();
     }
@@ -25,7 +25,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     public static function recreateDatabase(): void
     {
         \Minz\Database::reset();
-        $schema = @file_get_contents(\Minz\Configuration::$schema_path);
+        $schema = @file_get_contents(\App\Configuration::$schema_path);
         assert($schema !== false);
         $database = \Minz\Database::get();
         $database->exec($schema);
@@ -33,8 +33,8 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testAllMigrationsCanBeApplied(): void
     {
-        $migrations_version_path = \Minz\Configuration::$data_path . '/migrations_version.txt';
-        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
+        $migrations_version_path = \App\Configuration::$data_path . '/migrations_version.txt';
+        $migrations_path = \App\Configuration::$app_path . '/src/migrations';
         touch($migrations_version_path);
         \Minz\Database::create();
         $migrator = new \Minz\Migration\Migrator($migrations_path);
@@ -55,8 +55,8 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testAllMigrationsCanRollback(): void
     {
-        $migrations_path = \Minz\Configuration::$app_path . '/src/migrations';
-        $migrations_version_path = \Minz\Configuration::$data_path . '/migrations_version.txt';
+        $migrations_path = \App\Configuration::$app_path . '/src/migrations';
+        $migrations_version_path = \App\Configuration::$data_path . '/migrations_version.txt';
         $migrations_files = scandir($migrations_path);
         $this->assertNotFalse($migrations_files);
         $number_migrations = count($migrations_files) - 2;

@@ -29,7 +29,7 @@ return [
     ],
 
     'application' => [
-        'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
+        'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL', ''),
         'brand' => 'Flus',
         'version' => $flus_version,
         'user_agent' => $user_agent,
@@ -52,8 +52,8 @@ return [
         'server_ips' => [],
         'pocket_consumer_key' => 'some token',
         'cli_locale' => 'en_GB',
-        'plausible_url' => null,
-        'mock_host' => $dotenv->pop('MOCK_HOST'),
+        'plausible_url' => '',
+        'mock_host' => $dotenv->pop('MOCK_HOST', ''),
     ],
 
     'database' => [

@@ -43,14 +43,13 @@ class Application
         \Minz\Output\View::$extensions_to_content_types['.xsl.php'] = 'application/xslt+xml';
 
         // Include a link to the about page in the user agent
-        /** @var string */
-        $user_agent = \Minz\Configuration::$application['user_agent'];
-        if (\Minz\Configuration::$environment === 'production') {
+        $user_agent = \App\Configuration::$application['user_agent'];
+        if (\App\Configuration::$environment === 'production') {
             $about_url = \Minz\Url::absoluteFor('about');
         } else {
             $about_url = 'https://github.com/flusio/Flus';
         }
-        \Minz\Configuration::$application['user_agent'] = "{$user_agent} ({$about_url})";
+        \App\Configuration::$application['user_agent'] = "{$user_agent} ({$about_url})";
     }
 
     /**
@@ -69,7 +68,7 @@ class Application
             // We should probably make sure to pass the session token in the
             // tests, but it would be a lot of changes. I prefer to bypass this
             // security in the tests for now.
-            \Minz\Configuration::$environment !== 'test'
+            \App\Configuration::$environment !== 'test'
         ) {
             auth\CurrentUser::reset();
         } elseif (
@@ -149,9 +148,9 @@ class Application
         $error = \Minz\Flash::pop('error');
         $status = \Minz\Flash::pop('status');
 
-        $app_conf = \Minz\Configuration::$application;
+        $app_conf = \App\Configuration::$application;
         \Minz\Output\View::declareDefaultVariables([
-            'environment' => \Minz\Configuration::$environment,
+            'environment' => \App\Configuration::$environment,
             'brand' => $app_conf['brand'],
             'csrf_token' => \Minz\Csrf::generate(),
             'errors' => $errors,
@@ -168,7 +167,7 @@ class Application
             'demo' => $app_conf['demo'],
             'registrations_opened' => $app_conf['registrations_opened'],
             'plausible_url' => $app_conf['plausible_url'],
-            'current_host' => \Minz\Configuration::$url_options['host'],
+            'current_host' => \App\Configuration::$url_options['host'],
         ]);
 
         $response = \Minz\Engine::run($request);
@@ -241,7 +240,7 @@ class Application
      */
     public function mustRedirectToAccount($request, $user)
     {
-        $app_conf = \Minz\Configuration::$application;
+        $app_conf = \App\Configuration::$application;
         if (!$app_conf['subscriptions_enabled']) {
             return false;
         }

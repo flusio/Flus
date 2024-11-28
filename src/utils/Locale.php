@@ -20,7 +20,7 @@ class Locale
      */
     public static function localesPath(): string
     {
-        return \Minz\Configuration::$app_path . '/locales';
+        return \App\Configuration::$app_path . '/locales';
     }
 
     /**

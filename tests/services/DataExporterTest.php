@@ -2,8 +2,6 @@
 
 namespace App\services;
 
-use App\models;
-use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionToTopicFactory;
 use tests\factories\FollowedCollectionFactory;
@@ -33,7 +31,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function setExportationsPath(): void
     {
-        $tmp_path = \Minz\Configuration::$tmp_path;
+        $tmp_path = \App\Configuration::$tmp_path;
         $this->exportations_path = $tmp_path . '/' . md5((string) rand());
         @mkdir($this->exportations_path, 0777, true);
     }
@@ -51,7 +49,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('The path is not a directory');
 
-        $tmp_path = \Minz\Configuration::$tmp_path;
+        $tmp_path = \App\Configuration::$tmp_path;
         $path = $tmp_path . '/' . md5((string) rand());
         touch($path);
 
@@ -91,7 +89,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $metadata_content = $this->zipGetContents($filepath, 'metadata.json');
         $metadata = json_decode($metadata_content, true);
         $this->assertIsArray($metadata);
-        $this->assertSame(\Minz\Configuration::$application['user_agent'], $metadata['generator']);
+        $this->assertSame(\App\Configuration::$application['user_agent'], $metadata['generator']);
     }
 
     public function testExportCreatesOpmlFile(): void

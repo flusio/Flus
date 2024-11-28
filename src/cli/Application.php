@@ -37,8 +37,7 @@ class Application
      */
     public function run(Request $request): mixed
     {
-        /** @var string */
-        $cli_locale = \Minz\Configuration::$application['cli_locale'];
+        $cli_locale = \App\Configuration::$application['cli_locale'];
         if ($cli_locale) {
             utils\Locale::setCurrentLocale($cli_locale);
         }

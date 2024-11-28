@@ -41,12 +41,10 @@ class FeedFetcher
     {
         $this->options = array_merge($this->options, $options);
 
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $this->cache = new \SpiderBits\Cache($cache_path);
 
-        /** @var string */
-        $user_agent = \Minz\Configuration::$application['user_agent'];
+        $user_agent = \App\Configuration::$application['user_agent'];
         $this->http = new \SpiderBits\Http();
         $this->http->user_agent = $user_agent;
         $this->http->timeout = $this->options['timeout'];
@@ -293,8 +291,7 @@ class FeedFetcher
     {
         // First, we get information about rate limit and IP to select to
         // execute the request (for Youtube).
-        /** @var string[] */
-        $server_ips = \Minz\Configuration::$application['server_ips'];
+        $server_ips = \App\Configuration::$application['server_ips'];
         if (!$this->options['rate_limit']) {
             // rate limit is disabled for this call
             $is_rate_limited = false;
@@ -422,12 +419,9 @@ class FeedFetcher
      */
     private function filterLinksToCollections(array $links_to_collections, int $initial_links_count): array
     {
-        /** @var int */
-        $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
-        /** @var int */
-        $feeds_links_keep_maximum = \Minz\Configuration::$application['feeds_links_keep_maximum'];
-        /** @var int */
-        $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
+        $feeds_links_keep_minimum = \App\Configuration::$application['feeds_links_keep_minimum'];
+        $feeds_links_keep_maximum = \App\Configuration::$application['feeds_links_keep_maximum'];
+        $feeds_links_keep_period = \App\Configuration::$application['feeds_links_keep_period'];
 
         $feeds_keep_links_date = \Minz\Time::ago($feeds_links_keep_period, 'months');
 

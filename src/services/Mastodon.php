@@ -25,8 +25,7 @@ class Mastodon
     {
         $http = new \SpiderBits\Http();
 
-        /** @var string */
-        $user_agent = \Minz\Configuration::$application['user_agent'];
+        $user_agent = \App\Configuration::$application['user_agent'];
         $http->user_agent = $user_agent;
         $http->timeout = 10;
 
@@ -65,7 +64,7 @@ class Mastodon
         $http = self::http();
 
         $response = $http->post($host . '/api/v1/apps', [
-            'client_name' => \Minz\Configuration::$application['brand'],
+            'client_name' => \App\Configuration::$application['brand'],
             'redirect_uris' => $redirect_uris,
             'scopes' => self::SCOPES,
             'website' => $website,
@@ -258,7 +257,7 @@ class Mastodon
             $url_to_comment = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
             $status .= "\n" . $url_to_comment;
 
-            if (\Minz\Configuration::$url_options['host'] === 'localhost') {
+            if (\App\Configuration::$url_options['host'] === 'localhost') {
                 // Mastodon doesn't count localhost links as URLs
                 $count_chars += 1 + mb_strlen($url_to_comment);
             } else {

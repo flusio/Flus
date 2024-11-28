@@ -8,8 +8,7 @@ class Migration202109290001MigrateMediaFiles
 {
     public function migrate(): bool
     {
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $media_folders = ['avatars', 'cards', 'covers', 'large'];
 
         foreach ($media_folders as $media_folder) {
@@ -50,8 +49,7 @@ class Migration202109290001MigrateMediaFiles
 
     public function rollback(): bool
     {
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $media_folders = ['avatars', 'cards', 'covers', 'large'];
 
         foreach ($media_folders as $media_folder) {

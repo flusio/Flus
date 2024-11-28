@@ -115,8 +115,7 @@ class Images
             ]);
         }
 
-        /** @var string */
-        $media_path = \Minz\Configuration::$application['media_path'];
+        $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($collection->id);
         $card_path = "{$media_path}/cards/{$subpath}/";
         $cover_path = "{$media_path}/covers/{$subpath}/";

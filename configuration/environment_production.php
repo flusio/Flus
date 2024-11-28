@@ -41,7 +41,7 @@ return [
     'data_path' => $dotenv->pop('APP_DATA_PATH', $app_path . '/data'),
 
     'application' => [
-        'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
+        'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL', ''),
         'brand' => $dotenv->pop('APP_BRAND', 'Flus'),
         'version' => $flus_version,
         'user_agent' => $user_agent,
@@ -55,16 +55,16 @@ return [
         ),
         'subscriptions_enabled' => $subscriptions_host !== null,
         'subscriptions_host' => $subscriptions_host,
-        'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY'),
+        'subscriptions_private_key' => $dotenv->pop('APP_SUBSCRIPTIONS_PRIVATE_KEY', ''),
         'feeds_links_keep_minimum' => $feeds_links_keep_minimum,
         'feeds_links_keep_maximum' => $feeds_links_keep_maximum,
         'feeds_links_keep_period' => $feeds_links_keep_period,
         'job_feeds_sync_count' => $job_feeds_sync_count,
         'job_links_sync_count' => $job_links_sync_count,
         'server_ips' => $server_ips,
-        'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY'),
-        'cli_locale' => $dotenv->pop('CLI_LOCALE'),
-        'plausible_url' => $dotenv->pop('APP_PLAUSIBLE_URL'),
+        'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY', ''),
+        'cli_locale' => $dotenv->pop('CLI_LOCALE', ''),
+        'plausible_url' => $dotenv->pop('APP_PLAUSIBLE_URL', ''),
     ],
 
     'database' => [

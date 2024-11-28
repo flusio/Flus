@@ -36,7 +36,7 @@ class Sessions
         $email = '';
         $password = '';
 
-        if (\Minz\Configuration::$application['demo']) {
+        if (\App\Configuration::$application['demo']) {
             $email = 'demo@flus.io';
             $password = 'demo';
         }

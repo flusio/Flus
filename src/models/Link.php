@@ -312,7 +312,7 @@ class Link
      */
     public function tagUri(): string
     {
-        $host = \Minz\Configuration::$url_options['host'];
+        $host = \App\Configuration::$url_options['host'];
         $date = $this->created_at->format('Y-m-d');
         return "tag:{$host},{$date}:links/{$this->id}";
     }

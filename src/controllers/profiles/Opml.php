@@ -42,7 +42,7 @@ class Opml
         return Response::ok('profiles/opml/show.opml.xml.php', [
             'user' => $user,
             'collections' => $collections,
-            'user_agent' => \Minz\Configuration::$application['user_agent'],
+            'user_agent' => \App\Configuration::$application['user_agent'],
         ]);
     }
 

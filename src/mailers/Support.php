@@ -25,8 +25,7 @@ class Support extends \Minz\Mailer
         $support_user = models\User::supportUser();
         utils\Locale::setCurrentLocale($support_user->locale);
 
-        /** @var string */
-        $brand = \Minz\Configuration::$application['brand'];
+        $brand = \App\Configuration::$application['brand'];
         $current_subject = sprintf(_('[%s] Contact: %s'), $brand, $subject);
         $this->setBody(
             'mailers/support/message.phtml',
@@ -54,8 +53,7 @@ class Support extends \Minz\Mailer
 
         utils\Locale::setCurrentLocale($user->locale);
 
-        /** @var string */
-        $brand = \Minz\Configuration::$application['brand'];
+        $brand = \App\Configuration::$application['brand'];
         $current_subject = sprintf(_('[%s] Your message has been sent'), $brand);
         $this->setBody(
             'mailers/support/notification.phtml',

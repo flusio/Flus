@@ -26,7 +26,7 @@ class Pocket
      */
     public function show(Request $request): Response
     {
-        if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
+        if (\App\Configuration::$application['pocket_consumer_key'] === '') {
             return Response::notFound('not_found.phtml');
         }
 
@@ -66,7 +66,7 @@ class Pocket
      */
     public function import(Request $request): Response
     {
-        if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
+        if (\App\Configuration::$application['pocket_consumer_key'] === '') {
             return Response::notFound('not_found.phtml');
         }
 
@@ -139,7 +139,7 @@ class Pocket
      */
     public function requestAccess(Request $request): Response
     {
-        if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
+        if (\App\Configuration::$application['pocket_consumer_key'] === '') {
             return Response::notFound('not_found.phtml');
         }
 
@@ -156,8 +156,7 @@ class Pocket
             return Response::redirect('pocket');
         }
 
-        /** @var string */
-        $consumer_key = \Minz\Configuration::$application['pocket_consumer_key'];
+        $consumer_key = \App\Configuration::$application['pocket_consumer_key'];
         $pocket_service = new services\Pocket($consumer_key);
 
         try {
@@ -189,7 +188,7 @@ class Pocket
      */
     public function authorization(Request $request): Response
     {
-        if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
+        if (\App\Configuration::$application['pocket_consumer_key'] === '') {
             return Response::notFound('not_found.phtml');
         }
 
@@ -231,7 +230,7 @@ class Pocket
      */
     public function authorize(Request $request): Response
     {
-        if (!isset(\Minz\Configuration::$application['pocket_consumer_key'])) {
+        if (\App\Configuration::$application['pocket_consumer_key'] === '') {
             return Response::notFound('not_found.phtml');
         }
 
@@ -257,8 +256,7 @@ class Pocket
             ]);
         }
 
-        /** @var string */
-        $consumer_key = \Minz\Configuration::$application['pocket_consumer_key'];
+        $consumer_key = \App\Configuration::$application['pocket_consumer_key'];
         $pocket_service = new services\Pocket($consumer_key);
 
         try {

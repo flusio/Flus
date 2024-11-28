@@ -7,7 +7,7 @@ class ViewHelpersTest extends \PHPUnit\Framework\TestCase
     public static function loadViewHelpers(): void
     {
         // This is done in the src/Application.php file normally
-        include_once(\Minz\Configuration::$app_path . '/src/utils/view_helpers.php');
+        include_once(\App\Configuration::$app_path . '/src/utils/view_helpers.php');
     }
 
     public function testLocaleToBcp47TransformsLocale(): void

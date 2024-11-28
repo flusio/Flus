@@ -8,7 +8,6 @@ use App\auth;
 use App\jobs;
 use App\models;
 use App\services;
-use App\utils;
 
 /**
  * Handle the requests related to the registrations.
@@ -33,12 +32,12 @@ class Registrations
             return Response::redirect('home');
         }
 
-        $app_conf = \Minz\Configuration::$application;
+        $app_conf = \App\Configuration::$application;
         if (!$app_conf['registrations_opened']) {
             return Response::redirect('login');
         }
 
-        $app_path = \Minz\Configuration::$app_path;
+        $app_path = \App\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
         $has_terms = file_exists($terms_path);
 
@@ -76,12 +75,12 @@ class Registrations
             return Response::redirect('home');
         }
 
-        $app_conf = \Minz\Configuration::$application;
+        $app_conf = \App\Configuration::$application;
         if (!$app_conf['registrations_opened']) {
             return Response::redirect('login');
         }
 
-        $app_path = \Minz\Configuration::$app_path;
+        $app_path = \App\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
         $has_terms = file_exists($terms_path);
 

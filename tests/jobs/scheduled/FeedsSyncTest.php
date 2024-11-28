@@ -20,7 +20,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
-        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
 
         assert($files !== false);
 
@@ -49,22 +49,22 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testInstallWithJobsToCreate(): void
     {
-        \Minz\Configuration::$application['job_feeds_sync_count'] = 2;
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$application['job_feeds_sync_count'] = 2;
+        \App\Configuration::$jobs_adapter = 'database';
 
         $this->assertSame(0, \Minz\Job::count());
 
         FeedsSync::install();
 
-        \Minz\Configuration::$application['job_feeds_sync_count'] = 1;
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$application['job_feeds_sync_count'] = 1;
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertSame(2, \Minz\Job::count());
     }
 
     public function testInstallWithJobsToDelete(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
         $feeds_sync_job = new FeedsSync();
         $feeds_sync_job->performAsap();
         $feeds_sync_job = new FeedsSync();
@@ -74,7 +74,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         FeedsSync::install();
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertSame(1, \Minz\Job::count());
     }
@@ -171,8 +171,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feeds_sync_job->perform();
 
         $hash = \SpiderBits\Cache::hash($feed_url);
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache_filepath = $cache_path . '/' . $hash;
         $this->assertTrue(file_exists($cache_filepath));
     }
@@ -222,8 +221,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -281,8 +279,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -370,8 +367,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -432,8 +428,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -534,8 +529,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -592,8 +586,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -643,8 +636,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -708,8 +700,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -723,7 +714,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformIgnoresEntriesIfOverKeepMaximum(): void
     {
-        \Minz\Configuration::$application['feeds_links_keep_maximum'] = 1;
+        \App\Configuration::$application['feeds_links_keep_maximum'] = 1;
 
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -771,15 +762,14 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
 
-        \Minz\Configuration::$application['feeds_links_keep_maximum'] = 0;
+        \App\Configuration::$application['feeds_links_keep_maximum'] = 0;
 
         $this->assertSame(1, models\Link::count());
         $collection = $collection->reload();
@@ -790,7 +780,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformIgnoresEntriesIfOlderThanKeepPeriod(): void
     {
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
+        \App\Configuration::$application['feeds_links_keep_period'] = 6;
 
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -830,22 +820,21 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
 
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
+        \App\Configuration::$application['feeds_links_keep_period'] = 0;
 
         $this->assertSame(0, models\Link::count());
     }
 
     public function testPerformTakesEntriesIfRecentEnoughWhenKeepPeriodIsSet(): void
     {
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
+        \App\Configuration::$application['feeds_links_keep_period'] = 6;
 
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -885,15 +874,14 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
 
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
+        \App\Configuration::$application['feeds_links_keep_period'] = 0;
 
         $this->assertSame(1, models\Link::count());
         $collection = $collection->reload();
@@ -904,8 +892,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformTakesEntriesIfOlderThanKeepPeriodUntilMinimum(): void
     {
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 6;
-        \Minz\Configuration::$application['feeds_links_keep_minimum'] = 1;
+        \App\Configuration::$application['feeds_links_keep_period'] = 6;
+        \App\Configuration::$application['feeds_links_keep_minimum'] = 1;
 
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -955,16 +943,15 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
 
-        \Minz\Configuration::$application['feeds_links_keep_period'] = 0;
-        \Minz\Configuration::$application['feeds_links_keep_minimum'] = 0;
+        \App\Configuration::$application['feeds_links_keep_period'] = 0;
+        \App\Configuration::$application['feeds_links_keep_minimum'] = 0;
 
         $collection = $collection->reload();
         $links = $collection->links();
@@ -1016,8 +1003,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -1080,8 +1066,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -1135,8 +1120,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         </feed>
 
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -1187,8 +1171,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         </feed>
 
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -1237,8 +1220,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         </feed>
 
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -1289,8 +1271,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         </feed>
 
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -1354,8 +1335,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -1419,8 +1399,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             </entry>
         </feed>
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();
@@ -1469,8 +1448,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         {$xml_feed}
         XML;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
         $feeds_sync_job = new FeedsSync();

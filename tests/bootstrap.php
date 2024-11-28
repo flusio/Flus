@@ -6,12 +6,12 @@ assert($app_path !== false);
 
 include $app_path . '/vendor/autoload.php';
 
-\Minz\Configuration::load('test', $app_path);
+\App\Configuration::load('test', $app_path);
 
 \Minz\Engine::startSession();
 
 \Minz\Database::reset();
-$schema = @file_get_contents(\Minz\Configuration::$schema_path);
+$schema = @file_get_contents(\App\Configuration::$schema_path);
 
 assert($schema !== false);
 

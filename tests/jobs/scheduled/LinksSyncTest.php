@@ -16,7 +16,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
-        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
 
         assert($files !== false);
 
@@ -45,23 +45,23 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testInstallWithJobsToCreate(): void
     {
-        \Minz\Configuration::$application['job_links_sync_count'] = 2;
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$application['job_links_sync_count'] = 2;
+        \App\Configuration::$jobs_adapter = 'database';
         $links_fetcher_job = new LinksSync();
 
         $this->assertSame(0, \Minz\Job::count());
 
         $links_fetcher_job->install();
 
-        \Minz\Configuration::$application['job_links_sync_count'] = 1;
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$application['job_links_sync_count'] = 1;
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertSame(2, \Minz\Job::count());
     }
 
     public function testInstallWithJobsToDelete(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
         $links_fetcher_job = new LinksSync();
         $links_fetcher_job->performAsap();
         $links_fetcher_job = new LinksSync();
@@ -71,7 +71,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->install();
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertSame(1, \Minz\Job::count());
     }
@@ -136,8 +136,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $links_fetcher_job->perform();
 
         $hash = \SpiderBits\Cache::hash($url);
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache_filepath = $cache_path . '/' . $hash;
         $this->assertTrue(file_exists($cache_filepath));
     }
@@ -166,8 +165,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
             </head>
         </html>
         TEXT;
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->save($hash, $raw_response);
 

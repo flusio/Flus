@@ -2,7 +2,6 @@
 
 namespace App\jobs;
 
-use App\models;
 use tests\factories\ExportationFactory;
 use tests\factories\UserFactory;
 
@@ -20,13 +19,13 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setJobAdapterToDatabase(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
     }
 
     #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function setJobAdapterToTest(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
     }
 
     public function testQueue(): void
@@ -51,7 +50,7 @@ class ExportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('finished', $exportation->status);
         $this->assertNotEmpty($exportation->filepath);
         $this->assertTrue(file_exists($exportation->filepath));
-        $exportations_path = \Minz\Configuration::$data_path . '/exportations';
+        $exportations_path = \App\Configuration::$data_path . '/exportations';
         $this->assertTrue(str_starts_with($exportation->filepath, $exportations_path));
     }
 

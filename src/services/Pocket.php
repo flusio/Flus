@@ -23,8 +23,7 @@ class Pocket
             'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF8',
             'X-Accept' => 'application/json',
         ];
-        /** @var string */
-        $user_agent = \Minz\Configuration::$application['user_agent'];
+        $user_agent = \App\Configuration::$application['user_agent'];
         $this->http->user_agent = $user_agent;
         $this->http->timeout = 20;
     }

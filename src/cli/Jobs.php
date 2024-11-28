@@ -18,7 +18,7 @@ class Jobs extends \Minz\Job\Controller
      */
     public function install(Request $request): Response
     {
-        $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
+        $subscriptions_enabled = \App\Configuration::$application['subscriptions_enabled'];
 
         \App\jobs\scheduled\FeedsSync::install();
         \App\jobs\scheduled\LinksSync::install();

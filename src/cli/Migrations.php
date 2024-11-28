@@ -30,7 +30,7 @@ class Migrations extends \Minz\Migration\Controller
      */
     public function reset(Request $request): mixed
     {
-        $environment = \Minz\Configuration::$environment;
+        $environment = \App\Configuration::$environment;
         if ($environment === 'production') {
             return Response::text(400, 'You can’t reset the database in production.');
         }

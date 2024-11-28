@@ -25,7 +25,7 @@ class Exportator extends \Minz\Job
             return;
         }
 
-        $exportations_path = \Minz\Configuration::$data_path . '/exportations';
+        $exportations_path = \App\Configuration::$data_path . '/exportations';
         if (!file_exists($exportations_path)) {
             @mkdir($exportations_path);
         }

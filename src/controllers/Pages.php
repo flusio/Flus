@@ -43,7 +43,7 @@ class Pages
      */
     public function terms(): Response
     {
-        $app_path = \Minz\Configuration::$app_path;
+        $app_path = \App\Configuration::$app_path;
         $terms_path = $app_path . '/policies/terms.html';
         $terms = @file_get_contents($terms_path);
         if (!$terms) {
@@ -73,7 +73,7 @@ class Pages
     public function about(): Response
     {
         return Response::ok('pages/about.phtml', [
-            'version' => \Minz\Configuration::$application['version'],
+            'version' => \App\Configuration::$application['version'],
         ]);
     }
 

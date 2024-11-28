@@ -47,11 +47,11 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testForgotRedirectsIfDemoIsEnabled(): void
     {
-        \Minz\Configuration::$application['demo'] = true;
+        \App\Configuration::$application['demo'] = true;
 
         $response = $this->appRun('GET', '/password/forgot');
 
-        \Minz\Configuration::$application['demo'] = false;
+        \App\Configuration::$application['demo'] = false;
         $this->assertResponseCode($response, 302, '/');
     }
 
@@ -168,7 +168,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testResetRedirectsIfDemoIsEnabled(): void
     {
-        \Minz\Configuration::$application['demo'] = true;
+        \App\Configuration::$application['demo'] = true;
         $this->freeze();
         $csrf = \Minz\Csrf::generate();
         /** @var string */
@@ -183,7 +183,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
         ]);
 
-        \Minz\Configuration::$application['demo'] = false;
+        \App\Configuration::$application['demo'] = false;
         $this->assertResponseCode($response, 302, '/');
         $user = $user->reload();
         $this->assertNull($user->reset_token);

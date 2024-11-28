@@ -22,31 +22,19 @@ class System
      */
     public function show(): Response
     {
-        /** @var string */
-        $app_name = \Minz\Configuration::$app_name;
-        /** @var string */
-        $app_version = \Minz\Configuration::$application['version'];
-        /** @var bool */
-        $demo_enabled = \Minz\Configuration::$application['demo'];
-        /** @var bool */
-        $registrations_enabled = \Minz\Configuration::$application['registrations_opened'];
-        /** @var bool */
-        $subscriptions_enabled = \Minz\Configuration::$application['subscriptions_enabled'];
-        /** @var bool */
-        $pocket_enabled = \Minz\Configuration::$application['pocket_consumer_key'] !== null;
-        /** @var int */
-        $job_feeds_sync_count = \Minz\Configuration::$application['job_feeds_sync_count'];
-        /** @var int */
-        $job_links_sync_count = \Minz\Configuration::$application['job_links_sync_count'];
-        /** @var string[] */
-        $server_ips = \Minz\Configuration::$application['server_ips'];
+        $app_name = \App\Configuration::$app_name;
+        $app_version = \App\Configuration::$application['version'];
+        $demo_enabled = \App\Configuration::$application['demo'];
+        $registrations_enabled = \App\Configuration::$application['registrations_opened'];
+        $subscriptions_enabled = \App\Configuration::$application['subscriptions_enabled'];
+        $pocket_enabled = \App\Configuration::$application['pocket_consumer_key'] !== '';
+        $job_feeds_sync_count = \App\Configuration::$application['job_feeds_sync_count'];
+        $job_links_sync_count = \App\Configuration::$application['job_links_sync_count'];
+        $server_ips = \App\Configuration::$application['server_ips'];
         $server_ips = implode(', ', $server_ips);
-        /** @var int */
-        $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
-        /** @var int */
-        $feeds_links_keep_maximum = \Minz\Configuration::$application['feeds_links_keep_maximum'];
-        /** @var int */
-        $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
+        $feeds_links_keep_minimum = \App\Configuration::$application['feeds_links_keep_minimum'];
+        $feeds_links_keep_maximum = \App\Configuration::$application['feeds_links_keep_maximum'];
+        $feeds_links_keep_period = \App\Configuration::$application['feeds_links_keep_period'];
 
         $info =  "{$app_name} v{$app_version}\n";
         $info .= "\n";

@@ -9,7 +9,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setExamplesPath(): void
     {
-        $app_path = \Minz\Configuration::$app_path;
+        $app_path = \App\Configuration::$app_path;
         self::$examples_path = $app_path . '/tests/lib/SpiderBits/examples';
     }
 

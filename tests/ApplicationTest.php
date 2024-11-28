@@ -151,7 +151,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
     public function testRunRedirectsIfUserSubscriptionIsOverdue(): void
     {
-        \Minz\Configuration::$application['subscriptions_enabled'] = true;
+        \App\Configuration::$application['subscriptions_enabled'] = true;
         /** @var int */
         $days = $this->fake('randomDigitNotNull');
         $expired_at = \Minz\Time::ago($days, 'days');
@@ -163,15 +163,14 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $application = new Application();
         $response = $application->run($request);
 
-        \Minz\Configuration::$application['subscriptions_enabled'] = false;
+        \App\Configuration::$application['subscriptions_enabled'] = false;
 
         $this->assertResponseCode($response, 302, '/my/account');
     }
 
     public function testRunLogoutAndRedirectsIfConnectedWithSupportUser(): void
     {
-        /** @var string */
-        $support_email = \Minz\Configuration::$application['support_email'];
+        $support_email = \App\Configuration::$application['support_email'];
         $this->login([
             'email' => $support_email,
         ]);

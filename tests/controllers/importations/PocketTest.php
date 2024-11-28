@@ -4,8 +4,6 @@ namespace App\controllers\importations;
 
 use App\jobs;
 use App\models;
-use App\services;
-use App\utils;
 use tests\factories\ImportationFactory;
 use tests\factories\PocketAccountFactory;
 use tests\factories\UserFactory;
@@ -25,8 +23,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function savePocketConsumerKey(): void
     {
-        /** @var string */
-        $pocket_consumer_key = \Minz\Configuration::$application['pocket_consumer_key'];
+        $pocket_consumer_key = \App\Configuration::$application['pocket_consumer_key'];
         self::$pocket_consumer_key = $pocket_consumer_key;
     }
 
@@ -34,7 +31,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
     public function forcePocketConsumerKey(): void
     {
         // because some tests disable Pocket to test 404 pages
-        \Minz\Configuration::$application['pocket_consumer_key'] = self::$pocket_consumer_key;
+        \App\Configuration::$application['pocket_consumer_key'] = self::$pocket_consumer_key;
     }
 
     public function testShowRendersCorrectly(): void
@@ -105,7 +102,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfPocketNotConfigured(): void
     {
-        \Minz\Configuration::$application['pocket_consumer_key'] = null;
+        \App\Configuration::$application['pocket_consumer_key'] = '';
         $this->login();
 
         $response = $this->appRun('GET', '/pocket');
@@ -115,7 +112,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testImportRegistersAPocketImportatorJobAndRedirects(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $pocket_account = PocketAccountFactory::create([
             'user_id' => $user->id,
@@ -129,7 +126,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertSame(1, models\Importation::count());
         $this->assertSame(1, \Minz\Job::count());
@@ -145,7 +142,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testImportRedirectsToLoginIfNotConnected(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
         $user = UserFactory::create([
             'csrf' => 'some token',
         ]);
@@ -158,7 +155,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'some token',
         ]);
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket');
         $this->assertSame(0, models\Importation::count());
@@ -167,8 +164,8 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testImportFailsIfPocketNotConfigured(): void
     {
-        \Minz\Configuration::$application['pocket_consumer_key'] = null;
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$application['pocket_consumer_key'] = '';
+        \App\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $pocket_account = PocketAccountFactory::create([
             'user_id' => $user->id,
@@ -179,7 +176,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 404);
         $this->assertSame(0, models\Importation::count());
@@ -188,7 +185,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testImportFailsIfUserHasNoAccessToken(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $pocket_account = PocketAccountFactory::create([
             'user_id' => $user->id,
@@ -199,7 +196,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'You didn’t authorize us to access your Pocket data');
@@ -209,7 +206,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testImportFailsIfCsrfIsInvalid(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $pocket_account = PocketAccountFactory::create([
             'user_id' => $user->id,
@@ -220,7 +217,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
@@ -230,7 +227,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testImportFailsIfAnImportAlreadyExists(): void
     {
-        \Minz\Configuration::$jobs_adapter = 'database';
+        \App\Configuration::$jobs_adapter = 'database';
         $user = $this->login();
         $pocket_account = PocketAccountFactory::create([
             'user_id' => $user->id,
@@ -245,7 +242,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        \Minz\Configuration::$jobs_adapter = 'test';
+        \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'You already have an ongoing Pocket importation');
@@ -321,7 +318,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testRequestAccessFailsIfPocketNotConfigured(): void
     {
-        \Minz\Configuration::$application['pocket_consumer_key'] = null;
+        \App\Configuration::$application['pocket_consumer_key'] = '';
         $user = $this->login();
         $pocket_account = PocketAccountFactory::create([
             'user_id' => $user->id,
@@ -374,7 +371,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testAuthorizationFailsIfPocketNotConfigured(): void
     {
-        \Minz\Configuration::$application['pocket_consumer_key'] = null;
+        \App\Configuration::$application['pocket_consumer_key'] = '';
         $user = $this->login();
         $pocket_account = PocketAccountFactory::create([
             'user_id' => $user->id,
@@ -416,7 +413,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
     public function testAuthorizeFailsIfPocketNotConfigured(): void
     {
-        \Minz\Configuration::$application['pocket_consumer_key'] = null;
+        \App\Configuration::$application['pocket_consumer_key'] = '';
         $user = $this->login();
         $pocket_account = PocketAccountFactory::create([
             'user_id' => $user->id,

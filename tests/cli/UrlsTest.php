@@ -18,7 +18,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\Before]
     public function emptyCachePath(): void
     {
-        $files = glob(\Minz\Configuration::$application['cache_path'] . '/*');
+        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
 
         assert($files !== false);
 
@@ -74,8 +74,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
 
     public function testUncacheClearsCacheOfGivenUrl(): void
     {
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         /** @var string */
         $url = $this->fake('url');
@@ -113,8 +112,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
 
     public function testUncacheFailsIfCachePathCannotBeWritten(): void
     {
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         /** @var string */
         $url = $this->fake('url');

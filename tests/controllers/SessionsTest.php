@@ -47,11 +47,11 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testNewShowsDemoCredentialsIfDemo(): void
     {
-        \Minz\Configuration::$application['demo'] = true;
+        \App\Configuration::$application['demo'] = true;
 
         $response = $this->appRun('GET', '/login');
 
-        \Minz\Configuration::$application['demo'] = false;
+        \App\Configuration::$application['demo'] = false;
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'demo@flus.io');
     }
@@ -287,8 +287,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfEmailIsSupportUserEmail(): void
     {
-        /** @var string */
-        $email = \Minz\Configuration::$application['support_email'];
+        $email = \App\Configuration::$application['support_email'];
         /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([

@@ -23,8 +23,7 @@ class Subscriptions
         $this->private_key = $private_key;
 
         $this->http = new \SpiderBits\Http();
-        /** @var string */
-        $user_agent = \Minz\Configuration::$application['user_agent'];
+        $user_agent = \App\Configuration::$application['user_agent'];
         $this->http->user_agent = $user_agent;
         $this->http->timeout = 5;
     }

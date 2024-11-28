@@ -34,8 +34,7 @@ class Cleaner extends \Minz\Job
 
     public function perform(): void
     {
-        /** @var string */
-        $cache_path = \Minz\Configuration::$application['cache_path'];
+        $cache_path = \App\Configuration::$application['cache_path'];
         $cache = new \SpiderBits\Cache($cache_path);
         $cache->clean();
 
@@ -50,12 +49,9 @@ class Cleaner extends \Minz\Job
         );
         models\Collection::deleteUnfollowedOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
         models\Link::deleteNotStoredOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
-        /** @var int */
-        $feeds_links_keep_period = \Minz\Configuration::$application['feeds_links_keep_period'];
-        /** @var int */
-        $feeds_links_keep_minimum = \Minz\Configuration::$application['feeds_links_keep_minimum'];
-        /** @var int */
-        $feeds_links_keep_maximum = \Minz\Configuration::$application['feeds_links_keep_maximum'];
+        $feeds_links_keep_period = \App\Configuration::$application['feeds_links_keep_period'];
+        $feeds_links_keep_minimum = \App\Configuration::$application['feeds_links_keep_minimum'];
+        $feeds_links_keep_maximum = \App\Configuration::$application['feeds_links_keep_maximum'];
         models\Link::deleteFromFeeds(
             $support_user->id,
             $feeds_links_keep_period,
@@ -63,7 +59,7 @@ class Cleaner extends \Minz\Job
             $feeds_links_keep_maximum,
         );
 
-        if (\Minz\Configuration::$application['demo']) {
+        if (\App\Configuration::$application['demo']) {
             // with these two delete, the other tables should be deleted in cascade
             models\Token::deleteAll();
             models\User::deleteAll();

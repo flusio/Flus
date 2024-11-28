@@ -30,8 +30,7 @@ trait MockHttpHelper
      */
     public function mockHttpWithResponse(string $url, string $raw_response): void
     {
-        /** @var string */
-        $mock_host = \Minz\Configuration::$application['mock_host'];
+        $mock_host = \App\Configuration::$application['mock_host'] ?? '';
         \SpiderBits\Http::$mock_host = $mock_host;
 
         $http = new \SpiderBits\Http();
@@ -48,7 +47,7 @@ trait MockHttpHelper
      */
     public function mockHttpWithFixture(string $url, string $fixture_name): void
     {
-        $app_path = \Minz\Configuration::$app_path;
+        $app_path = \App\Configuration::$app_path;
         $fixtures_path = $app_path . '/tests/fixtures';
         $fixture_pathname = "{$fixtures_path}/{$fixture_name}";
         $raw_response = @file_get_contents($fixture_pathname);
@@ -64,8 +63,7 @@ trait MockHttpHelper
      */
     public function mockHttpWithFile(string $url, string $filename): void
     {
-        /** @var string */
-        $mock_host = \Minz\Configuration::$application['mock_host'];
+        $mock_host = \App\Configuration::$application['mock_host'] ?? '';
         \SpiderBits\Http::$mock_host = $mock_host;
 
         $http = new \SpiderBits\Http();
@@ -82,8 +80,7 @@ trait MockHttpHelper
      */
     public function mockHttpWithEcho(string $url): void
     {
-        /** @var string */
-        $mock_host = \Minz\Configuration::$application['mock_host'];
+        $mock_host = \App\Configuration::$application['mock_host'] ?? '';
         \SpiderBits\Http::$mock_host = $mock_host;
 
         $http = new \SpiderBits\Http();
