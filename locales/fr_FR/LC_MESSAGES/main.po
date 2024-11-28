@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-11-13 11:36+0100\n"
-"PO-Revision-Date: 2024-11-13 11:36+0100\n"
+"POT-Creation-Date: 2024-11-28 15:50+0100\n"
+"PO-Revision-Date: 2024-11-28 15:56+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -117,7 +117,7 @@ msgstr "L’URL est invalide."
 msgid "The Mastodon host returned an error, please try later."
 msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 
-#: controllers/Passwords.php:67 controllers/Sessions.php:96 models/User.php:49
+#: controllers/Passwords.php:67 controllers/Sessions.php:96 models/User.php:55
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -285,6 +285,11 @@ msgstr "[%s] Confirmer votre compte"
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
+#: mailers/Users.php:105
+#, php-format
+msgid "[%s] Your account will be deleted soon due to inactivity"
+msgstr "[%s] Votre compte sera bientôt supprimé pour cause d'inactivité"
+
 #: models/Collection.php:38 models/Group.php:29
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
@@ -349,31 +354,31 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than {max} characters."
 msgstr "Le nom doit faire moins de {max} caractères."
 
-#: models/User.php:46
+#: models/User.php:52
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: models/User.php:55
+#: models/User.php:61
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:59
+#: models/User.php:65
 msgid "The username must be less than {max} characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de {max} caractères."
 
-#: models/User.php:63
+#: models/User.php:69
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:69
+#: models/User.php:75
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: models/User.php:75
+#: models/User.php:81
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: models/User.php:78
+#: models/User.php:84
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -1736,6 +1741,43 @@ msgstr ""
 #: views/mailers/users/reset_password_email.phtml:13
 msgid "Have a nice day!"
 msgstr "Bonne journée !"
+
+#: views/mailers/users/inactivity_email.phtml:2
+#, php-format
+msgid "Hello %s,"
+msgstr "Bonjour %s,"
+
+#: views/mailers/users/inactivity_email.phtml:6
+#, php-format
+msgid ""
+"You receive this email because you haven’t been active on %s for several "
+"months. To avoid storing outdated data, your account will be deleted after "
+"one month. If you don’t want to keep it, you don’t have to do anything. "
+"However, if you wish to keep your account, you should login to %s by "
+"clicking on the following link:"
+msgstr ""
+"Vous recevez ce courriel parce que vous n’avez pas été actif sur %s depuis "
+"plusieurs mois. Pour éviter de conserver des données obsolètes, votre compte "
+"sera supprimé dans un mois. Si vous ne souhaitez pas le conserver, vous "
+"n’avez rien faire. Toutefois, si vous souhaitez conserver votre compte, vous "
+"devez vous connecter à %s en cliquant sur le lien suivant :"
+
+#: views/mailers/users/inactivity_email.phtml:13
+msgid ""
+"Note that you will not receive any further notification that your account "
+"will be deleted."
+msgstr ""
+"Notez que vous ne recevrez pas d’autre notification concernant la "
+"suppression de votre compte."
+
+#: views/mailers/users/inactivity_email.phtml:17
+msgid "Best regards,"
+msgstr "Bien à vous,"
+
+#: views/mailers/users/inactivity_email.phtml:21
+#, php-format
+msgid "The %s robot"
+msgstr "Le robot %s"
 
 #: views/mailers/users/reset_password_email.phtml:2
 #, php-format
