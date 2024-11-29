@@ -9,8 +9,6 @@ class Migration202202080001RenameViaColumns
         $database = \Minz\Database::get();
 
         $database->exec(<<<'SQL'
-            BEGIN;
-
             UPDATE links
             SET via_type = 'collection'
             WHERE via_type = 'followed';
@@ -25,8 +23,6 @@ class Migration202202080001RenameViaColumns
             ALTER TABLE links
             DROP COLUMN via_link_id,
             DROP COLUMN via_collection_id;
-
-            COMMIT;
         SQL);
 
         return true;
@@ -37,8 +33,6 @@ class Migration202202080001RenameViaColumns
         $database = \Minz\Database::get();
 
         $database->exec(<<<'SQL'
-            BEGIN;
-
             UPDATE links
             SET via_type = 'followed'
             WHERE via_type = 'collection';
@@ -56,8 +50,6 @@ class Migration202202080001RenameViaColumns
 
             ALTER TABLE links
             DROP COLUMN via_resource_id;
-
-            COMMIT;
         SQL);
 
         return true;

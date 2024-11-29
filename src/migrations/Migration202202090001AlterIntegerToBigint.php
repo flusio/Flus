@@ -9,8 +9,6 @@ class Migration202202090001AlterIntegerToBigint
         $database = \Minz\Database::get();
 
         $database->exec(<<<'SQL'
-            BEGIN;
-
             ALTER SEQUENCE fetch_logs_id_seq AS BIGINT;
             ALTER TABLE fetch_logs ALTER id TYPE BIGINT;
 
@@ -21,8 +19,6 @@ class Migration202202090001AlterIntegerToBigint
             ALTER TABLE followed_collections ALTER id TYPE BIGINT;
 
             ALTER TABLE jobs ALTER number_attempts TYPE BIGINT;
-
-            COMMIT;
         SQL);
 
         return true;
@@ -33,8 +29,6 @@ class Migration202202090001AlterIntegerToBigint
         $database = \Minz\Database::get();
 
         $database->exec(<<<'SQL'
-            BEGIN;
-
             ALTER SEQUENCE fetch_logs_id_seq AS INTEGER;
             ALTER TABLE fetch_logs ALTER id TYPE INTEGER;
 
@@ -45,8 +39,6 @@ class Migration202202090001AlterIntegerToBigint
             ALTER TABLE followed_collections ALTER id TYPE INTEGER;
 
             ALTER TABLE jobs ALTER number_attempts TYPE INTEGER;
-
-            COMMIT;
         SQL);
 
         return true;

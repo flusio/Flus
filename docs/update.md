@@ -10,10 +10,19 @@ Then, you can pull the new code from GitHub:
 
 ```console
 flus$ git status # check that you didn't make any change in your working directory
-flus$ git fetch --recurse-submodules
+flus$ git fetch
 flus$ git checkout TAG # to update to a specific version
 flus$ # OR, in development
 flus$ git pull
+```
+
+Then, install the dependencies:
+
+```console
+flus$ # In production
+flus$ composer install --no-dev --optimize-autoloader
+flus$ # In development
+flus$ make install
 ```
 
 **In production,** you should change the owner of the files:

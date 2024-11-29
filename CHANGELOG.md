@@ -1,5 +1,18 @@
 # Changelog of Flus
 
+## unreleased - v1.2.0
+
+### Breaking change
+
+Flus now requires [Composer](https://getcomposer.org/) in production.
+You must install it and install the dependencies with:
+
+```console
+$ composer install --no-dev --optimize-autoloader
+```
+
+See [the documentation to update Flus.](/docs/update.md)
+
 ## 2024-11-14 - v1.1.0
 
 ### New

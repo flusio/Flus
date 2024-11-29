@@ -11,7 +11,7 @@ own setup better than me.
 In both cases, you’ll need to download Flus with Git:
 
 ```console
-$ git clone --recurse-submodules https://github.com/flusio/Flus.git
+$ git clone https://github.com/flusio/Flus.git
 $ cd Flus
 ```
 

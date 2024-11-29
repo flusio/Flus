@@ -4,7 +4,7 @@ Installing Flus on your own server is quite simple but still requires basic
 notions in sysadmin. First, make sure you match with the following
 requirements:
 
-- git, Nginx, PHP 8.2+ and PostgreSQL 13+ are installed on your server;
+- git, Nginx, PHP 8.2+, [Composer](https://getcomposer.org/) and PostgreSQL 13+ are installed on your server;
 - PHP requires `intl`, `gettext`, `pcntl`, `gd` (with at least WebP support), `pdo` and `pdo_pgsql` extensions;
 - your PostgreSQL user must have the permission to create a database;
 - Flus must be served over <abbr>HTTPS</abbr>.
@@ -23,7 +23,7 @@ as the `root` user):
 
 ```console
 # cd /var/www/
-# git clone --recurse-submodules https://github.com/flusio/Flus.git
+# git clone https://github.com/flusio/Flus.git
 # cd Flus
 flus# git checkout TAG
 ```
@@ -31,11 +31,13 @@ flus# git checkout TAG
 You must replace the `TAG` argument with the latest version that you can find
 on the [GitHub releases page](https://github.com/flusio/Flus/releases).
 
-Contrary to development, there’re nothing more to install: all the dependencies
-are already here (at least if you didn’t forget the `--recurse-submodules`
-argument) and assets are bundled for you so you don’t need to install Node and
-its dependencies (this is only true if you didn’t forget to checkout to a
-version tag).
+## Install the dependencies
+
+Install the Composer dependencies with:
+
+```console
+flus$ composer install --no-dev --optimize-autoloader
+```
 
 ## Configure the environment
 

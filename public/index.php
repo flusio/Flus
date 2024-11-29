@@ -10,7 +10,7 @@ $app_path = realpath(__DIR__ . '/..');
 
 assert($app_path !== false);
 
-include $app_path . '/autoload.php';
+include $app_path . '/vendor/autoload.php';
 \Minz\Configuration::load('dotenv', $app_path);
 
 // Get the http information and create a Request

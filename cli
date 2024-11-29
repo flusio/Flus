@@ -13,7 +13,7 @@ if (php_sapi_name() !== 'cli') {
 // Setup the Minz framework
 $app_path = __DIR__;
 
-include $app_path . '/autoload.php';
+include $app_path . '/vendor/autoload.php';
 \Minz\Configuration::load('dotenv', $app_path);
 \Minz\Configuration::$no_syslog_output = true;
 

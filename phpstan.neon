@@ -9,7 +9,3 @@ parameters:
     excludePaths:
         analyseAndScan:
             - src/views/*
-
-        analyse:
-            - lib/Minz/*
-            - lib/Parsedown/*
