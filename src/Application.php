@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Minz\Request;
+
 /**
  * This is the central class of the application. It declares routes and
  * executes a Request to return a Response.
@@ -203,13 +205,8 @@ class Application
     /**
      * Return true if the user must validate its account (i.e. when not
      * validated after its first day).
-     *
-     * @param \Minz\Request $request
-     * @param \App\models\User $user
-     *
-     * @return boolean
      */
-    public function mustRedirectToValidation($request, $user)
+    public function mustRedirectToValidation(Request $request, models\User $user): bool
     {
         if (!$user->mustValidateEmail()) {
             return false;
@@ -232,13 +229,8 @@ class Application
 
     /**
      * Return true if the user must renew its subscription
-     *
-     * @param \Minz\Request $request
-     * @param \App\models\User $user
-     *
-     * @return boolean
      */
-    public function mustRedirectToAccount($request, $user)
+    public function mustRedirectToAccount(Request $request, models\User $user): bool
     {
         $app_conf = \App\Configuration::$application;
         if (!$app_conf['subscriptions_enabled']) {
