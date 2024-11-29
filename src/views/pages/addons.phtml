@@ -13,7 +13,7 @@
 
     <div class="flow">
         <h2>
-            <?= _f('Keep %s at hand in your browser', $brand) ?>
+            <?= _f('Keep %s at hand in your browser', get_app_configuration('brand')) ?>
         </h2>
 
         <div class="cards cards--centered">
@@ -49,7 +49,7 @@
                 class="anchor--action"
                 href="javascript:(function(){var%20win=window.open('about:blank','_blank');win.opener=null;win.location='<?= url_full('new link') ?>?url='+encodeURIComponent(location.href);})();"
             >
-                <?= _f('Add to %s', $brand) ?>
+                <?= _f('Add to %s', get_app_configuration('brand')) ?>
             </a>
         </div>
     </div>
@@ -64,7 +64,7 @@
         </p>
 
         <p>
-            <?= _f('Instead, you can <strong>add a shortcut to %s on your home screen.</strong>', $brand) ?>
+            <?= _f('Instead, you can <strong>add a shortcut to %s on your home screen.</strong>', get_app_configuration('brand')) ?>
             <?= _('With modern browsers, it will work as a mobile application.') ?>
         </p>
     </div>

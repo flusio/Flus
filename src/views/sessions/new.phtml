@@ -99,7 +99,7 @@
         </div>
     </form>
 
-    <?php if (!$demo): ?>
+    <?php if (!get_app_configuration('demo')): ?>
         <p class="paragraph--centered">
             <a href="<?= url('forgot password') ?>">
                 <?= _('Forgot password?') ?>
@@ -107,7 +107,7 @@
         </p>
     <?php endif; ?>
 
-    <?php if ($registrations_opened): ?>
+    <?php if (get_app_configuration('registrations_opened')): ?>
         <p class="paragraph--centered">
             <a href="<?= url('registration') ?>">
                 <?= _('No account yet?') ?>

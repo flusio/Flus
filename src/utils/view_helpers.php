@@ -55,6 +55,26 @@ function format_number(int|float $number): string
     return $formatted_number;
 }
 
+function is_environment(string $environment): bool
+{
+    return \App\Configuration::$environment === $environment;
+}
+
+function get_app_configuration(string $key): mixed
+{
+    return \App\Configuration::$application[$key] ?? '';
+}
+
+function get_current_host(): string
+{
+    return \App\Configuration::$url_options['host'];
+}
+
+function get_current_locale(): string
+{
+    return \App\utils\Locale::currentLocale();
+}
+
 /**
  * Transform a locale to BCP47 format
  *

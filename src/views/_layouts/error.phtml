@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="<?= locale_to_bcp_47($current_locale) ?>">
+<html lang="<?= locale_to_bcp_47(get_current_locale()) ?>">
     <head>
         <meta charset="UTF-8" />
-        <title><?= $environment === 'development' ? '[dev] ' : '' ?><?= $title ?> · <?= $brand ?></title>
+        <title><?= is_environment('development') ? '[dev] ' : '' ?><?= $title ?> · <?= get_app_configuration('brand') ?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
         <meta name="robots" content="noindex">
 
         <link rel="stylesheet" href="<?= url_asset('stylesheets/application.css') ?>" data-turbo-track="reload">
 
-        <?php if ($plausible_url): ?>
-            <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
+        <?php if (get_app_configuration('plausible_url')): ?>
+            <script defer data-domain="<?= get_current_host() ?>" src="<?= get_app_configuration('plausible_url') ?>/js/script.js"></script>
         <?php endif; ?>
     </head>
 
@@ -34,7 +34,7 @@
                     height="250"
                 />
 
-                <?php if ($environment !== 'production' && $error): ?>
+                <?php if (!is_environment('production') && $error): ?>
                     <pre class="layout--error__box"><?= (string)$error ?></pre>
                 <?php endif; ?>
             </main>

@@ -29,7 +29,7 @@
                                         <xsl:attribute name="href">
                                             <xsl:value-of select="/atom:feed/atom:link[@rel='alternate']/@href"/>
                                         </xsl:attribute>
-                                        <?= _f('Follow on %s', $brand) ?>
+                                        <?= _f('Follow on %s', get_app_configuration('brand')) ?>
                                     </a>
                                 </p>
                             </section>

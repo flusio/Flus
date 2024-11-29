@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="<?= locale_to_bcp_47($current_locale) ?>">
+<html lang="<?= locale_to_bcp_47(get_current_locale()) ?>">
     <head>
         <meta charset="UTF-8" />
-        <title><?= $environment === 'development' ? '[dev] ' : '' ?><?= $title ?> · <?= $brand ?></title>
+        <title><?= is_environment('development') ? '[dev] ' : '' ?><?= $title ?> · <?= get_app_configuration('brand') ?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="canonical" href="<?= $this->safe('canonical') ?>">
 
-        <meta name="application-name" content="<?= $brand ?>">
+        <meta name="application-name" content="<?= get_app_configuration('brand') ?>">
         <meta name="theme-color" content="#00d0ad">
         <link rel="manifest" href="<?= url('webmanifest') ?>">
         <link rel="icon" type="image/png" sizes="32x32" href="<?= url_static('icons/icon-32.png') ?>">
@@ -23,8 +23,8 @@
         </script>
         <script src="<?= url_asset('javascripts/application.js') ?>" data-turbo-track="reload" defer></script>
 
-        <?php if ($plausible_url): ?>
-            <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
+        <?php if (get_app_configuration('plausible_url')): ?>
+            <script defer data-domain="<?= get_current_host() ?>" src="<?= get_app_configuration('plausible_url') ?>/js/script.js"></script>
         <?php endif; ?>
 
         <meta name="csrf-param" content="csrf" />
@@ -45,7 +45,7 @@
             <noscript>
                 <div class="layout__banner layout__banner--alert">
                     <div class="banner__container">
-                        <?= _f('You need to activate JavaScript in order to use %s.', $brand) ?>
+                        <?= _f('You need to activate JavaScript in order to use %s.', get_app_configuration('brand')) ?>
                     </div>
                 </div>
             </noscript>

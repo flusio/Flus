@@ -3,8 +3,8 @@
     $owner_is_current_user = $current_user && $current_user->id === $owner->id;
 
     $open_graph = [
-        'title' => _f('Shared on %s: %s', $brand, $link->title),
-        'description' => _f('A link shared by %s on %s.', $owner->username, $brand),
+        'title' => _f('Shared on %s: %s', get_app_configuration('brand'), $link->title),
+        'description' => _f('A link shared by %s on %s.', $owner->username, get_app_configuration('brand')),
         'locale' => $owner->locale,
         'url' => url_full('link', ['id' => $link->id]),
     ];

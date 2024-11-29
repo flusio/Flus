@@ -12,7 +12,7 @@
     </div>
 
     <p class="paragraph--centered">
-        <?= _f('This is the end of the onboarding. You should now have the keys to use %s in an efficient way.', $brand) ?>
+        <?= _f('This is the end of the onboarding. You should now have the keys to use %s in an efficient way.', get_app_configuration('brand')) ?>
     </p>
 
     <p class="paragraph--centered">
@@ -21,7 +21,7 @@
 
     <p class="paragraph--featured">
         <a class="anchor--action" href="<?= url('news') ?>">
-            <?= _f('Start using %s', $brand) ?>
+            <?= _f('Start using %s', get_app_configuration('brand')) ?>
         </a>
     </p>
 

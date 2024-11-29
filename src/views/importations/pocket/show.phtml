@@ -15,7 +15,7 @@
     </div>
 
     <p class="section__intro">
-        <?= _f('%s enables you to import your links saved in Pocket.', $brand) ?>
+        <?= _f('%s enables you to import your links saved in Pocket.', get_app_configuration('brand')) ?>
     </p>
 
     <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
@@ -88,11 +88,11 @@
 
                 <p class="form-group__caption form-group__caption--alt" id="import-bookmarks-caption" aria-live="polite">
                     <span data-caption-switcher-target="caption" data-caption-value="on">
-                        <?= _f('%s will import your non-archived Pocket links in your bookmarks.', $brand) ?>
+                        <?= _f('%s will import your non-archived Pocket links in your bookmarks.', get_app_configuration('brand')) ?>
                     </span>
 
                     <span data-caption-switcher-target="caption" data-caption-unchecked>
-                        <?= _f('%s will leave your bookmarks unchanged.', $brand) ?>
+                        <?= _f('%s will leave your bookmarks unchanged.', get_app_configuration('brand')) ?>
                     </span>
                 </p>
             </div>
@@ -114,11 +114,11 @@
 
                 <p class="form-group__caption form-group__caption--alt" id="import-favorites-caption" aria-live="polite">
                     <span data-caption-switcher-target="caption" data-caption-value="on">
-                        <?= _f('%s doesn’t provide favorites, but it’ll import them in a collection named “Pocket favorites”.', $brand) ?>
+                        <?= _f('%s doesn’t provide favorites, but it’ll import them in a collection named “Pocket favorites”.', get_app_configuration('brand')) ?>
                     </span>
 
                     <span data-caption-switcher-target="caption" data-caption-unchecked>
-                        <?= _f('%s doesn’t provide favorites, so they’ll be ignored.', $brand) ?>
+                        <?= _f('%s doesn’t provide favorites, so they’ll be ignored.', get_app_configuration('brand')) ?>
                     </span>
                 </p>
             </div>

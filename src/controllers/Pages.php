@@ -84,7 +84,9 @@ class Pages
      */
     public function robots(): Response
     {
-        return Response::ok('pages/robots.txt');
+        return Response::ok('pages/robots.txt', [
+            'opened' => \App\Configuration::$application['registrations_opened'],
+        ]);
     }
 
     /**

@@ -152,24 +152,17 @@ class Application
 
         $app_conf = \App\Configuration::$application;
         \Minz\Output\View::declareDefaultVariables([
-            'environment' => \App\Configuration::$environment,
-            'brand' => $app_conf['brand'],
             'csrf_token' => \Minz\Csrf::generate(),
             'errors' => $errors,
             'error' => $error,
             'status' => $status,
             'available_locales' => utils\Locale::availableLocales(),
-            'current_locale' => $locale,
             'current_user' => $current_user,
             'beta_enabled' => $beta_enabled,
             'autoload_modal_url' => $autoload_modal_url,
             'now' => \Minz\Time::now(),
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
             'modal_requested' => $request->header('HTTP_TURBO_FRAME') === 'modal-content',
-            'demo' => $app_conf['demo'],
-            'registrations_opened' => $app_conf['registrations_opened'],
-            'plausible_url' => $app_conf['plausible_url'],
-            'current_host' => \App\Configuration::$url_options['host'],
         ]);
 
         $response = \Minz\Engine::run($request);

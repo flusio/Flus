@@ -35,7 +35,7 @@
                 <?php foreach ($available_locales as $locale_value => $locale_name): ?>
                     <option
                         value="<?= $locale_value ?>"
-                        <?= $locale_value === $current_locale ? 'selected' : '' ?>
+                        <?= $locale_value === get_current_locale() ? 'selected' : '' ?>
                     >
                         <?= $locale_name ?>
                     </option>
@@ -47,11 +47,11 @@
     <hr />
 
     <p class="paragraph--featured">
-        <strong><?= _f('The few next screens will explain you some main features of %s.', $brand) ?></strong>
+        <strong><?= _f('The few next screens will explain you some main features of %s.', get_app_configuration('brand')) ?></strong>
     </p>
 
     <p class="paragraph--centered">
-        <?= _f('There’s not much to know before getting started with %s. This onboarding should take less than 3 minutes of your time.', $brand) ?>
+        <?= _f('There’s not much to know before getting started with %s. This onboarding should take less than 3 minutes of your time.', get_app_configuration('brand')) ?>
     </p>
 
     <p class="paragraph--centered">

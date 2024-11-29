@@ -15,7 +15,7 @@
     </div>
 
     <p class="section__intro">
-        <?= _f('%s lets you share your links and comments on Mastodon.', $brand) ?>
+        <?= _f('%s lets you share your links and comments on Mastodon.', get_app_configuration('brand')) ?>
     </p>
 
     <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
@@ -49,7 +49,7 @@
 
                 <div id="link-to-comment-desc">
                     <p class="form-group__caption">
-                        <?= _f('Your Mastodon posts can include a link to your comments on %s.', $brand) ?>
+                        <?= _f('Your Mastodon posts can include a link to your comments on %s.', get_app_configuration('brand')) ?>
                     </p>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _f('About %s', $brand),
+        'title' => _f('About %s', get_app_configuration('brand')),
         'canonical' => url_full('about'),
         'current_page' => 'about',
     ]);
@@ -8,7 +8,7 @@
 
 <div class="section section--small">
     <div class="section__title">
-        <h1><?= _f('About %s', $brand) ?></h1>
+        <h1><?= _f('About %s', get_app_configuration('brand')) ?></h1>
     </div>
 
     <p class="section__intro">
@@ -17,14 +17,14 @@
 
     <img
         class="illustration illustration--centered"
-        alt="<?= _f('The logo of %s', $brand) ?>"
+        alt="<?= _f('The logo of %s', get_app_configuration('brand')) ?>"
         src="<?= url_static('icons/icon.svg') ?>"
         width="125"
         height="125"
     />
 
     <p>
-        <strong><?= _f('%s is an instance of Flus.', $brand) ?></strong>
+        <strong><?= _f('%s is an instance of Flus.', get_app_configuration('brand')) ?></strong>
     </p>
 
     <ul>

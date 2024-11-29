@@ -10,8 +10,8 @@
 
     $open_graph = [
         'title' => $topic->label,
-        'description' => _f('The collections about %s, on %s.', $topic->label, $brand),
-        'locale' => $current_locale,
+        'description' => _f('The collections about %s, on %s.', $topic->label, get_app_configuration('brand')),
+        'locale' => get_current_locale(),
         'url' => url_full('topic', $current_url_params),
     ];
     if ($topic->image_filename) {

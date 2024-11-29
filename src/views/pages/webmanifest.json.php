@@ -1,6 +1,6 @@
 {
-  "name": "<?= $brand ?>",
-  "short_name": "<?= $brand ?>",
+  "name": "<?= get_app_configuration('brand') ?>",
+  "short_name": "<?= get_app_configuration('brand') ?>",
   "description": "<?= _('Collect, organise, comment on and share links from around the Web.') ?>",
   "start_url": "<?= url('home') ?>",
   "display": "standalone",
@@ -22,14 +22,14 @@
       "sizes": "1280x848",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "<?= _f('Bookmarks screen of %s on desktop', $brand) ?>"
+      "label": "<?= _f('Bookmarks screen of %s on desktop', get_app_configuration('brand')) ?>"
     },
     {
       "src": "<?= url_static('screenshot-mobile.webp') ?>",
       "sizes": "416x900",
       "type": "image/webp",
       "form_factor": "narrow",
-      "label": "<?= _f('Bookmarks screen of %s on mobile', $brand) ?>"
+      "label": "<?= _f('Bookmarks screen of %s on mobile', get_app_configuration('brand')) ?>"
     }
   ],
   "icons": [{

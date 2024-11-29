@@ -4,7 +4,7 @@
     if ($collection->type === 'feed') {
         $open_graph = [
             'title' => $collection->name,
-            'description' => _f('A feed from %s, on %s.', protect($collection->feedWebsite()), $brand),
+            'description' => _f('A feed from %s, on %s.', protect($collection->feedWebsite()), get_app_configuration('brand')),
             'locale' => $owner->locale,
             'url' => url_full('collection', ['id' => $collection->id]),
         ];
@@ -17,7 +17,7 @@
     } else {
         $open_graph = [
             'title' => $collection->name,
-            'description' => _f('A collection created by %s on %s.', $owner->username, $brand),
+            'description' => _f('A collection created by %s on %s.', $owner->username, get_app_configuration('brand')),
             'locale' => $owner->locale,
             'url' => url_full('collection', ['id' => $collection->id]),
         ];

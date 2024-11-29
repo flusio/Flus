@@ -1,5 +1,5 @@
 User-agent: *
-<?php if ($registrations_opened): ?>
+<?php if ($opened): ?>
 Allow: /
 <?php else: ?>
 Disallow: /

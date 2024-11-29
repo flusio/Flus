@@ -1,7 +1,7 @@
 <?php
     $open_graph = [
-        'title' => _f('%s on %s', $user->username, $brand),
-        'description' => _f('Discover %s’s collections on %s.', $user->username, $brand),
+        'title' => _f('%s on %s', $user->username, get_app_configuration('brand')),
+        'description' => _f('Discover %s’s collections on %s.', $user->username, get_app_configuration('brand')),
         'locale' => $user->locale,
         'url' => url_full('profile', ['id' => $user->id]),
     ];

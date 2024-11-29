@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="<?= locale_to_bcp_47($current_locale) ?>">
+<html lang="<?= locale_to_bcp_47(get_current_locale()) ?>">
     <head>
         <meta charset="UTF-8" />
-        <title><?= $environment === 'development' ? '[dev] ' : '' ?><?= $has_errors ? _('Error: ') : '' ?><?= $title ?> · <?= $brand ?></title>
+        <title><?= is_environment('development') ? '[dev] ' : '' ?><?= $has_errors ? _('Error: ') : '' ?><?= $title ?> · <?= get_app_configuration('brand') ?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="canonical" href="<?= $this->safe('canonical') ?>">
 
@@ -24,7 +24,7 @@
             <?php endif; ?>
         <?php endif; ?>
 
-        <meta name="application-name" content="<?= $brand ?>">
+        <meta name="application-name" content="<?= get_app_configuration('brand') ?>">
         <meta name="theme-color" content="#00d0ad">
         <link rel="manifest" href="<?= url('webmanifest') ?>">
         <link rel="icon" type="image/png" sizes="32x32" href="<?= url_static('icons/icon-32.png') ?>">
@@ -41,8 +41,8 @@
         </script>
         <script src="<?= url_asset('javascripts/application.js') ?>" data-turbo-track="reload" defer></script>
 
-        <?php if ($plausible_url): ?>
-            <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
+        <?php if (get_app_configuration('plausible_url')): ?>
+            <script defer data-domain="<?= get_current_host() ?>" src="<?= get_app_configuration('plausible_url') ?>/js/script.js"></script>
         <?php endif; ?>
 
         <meta name="csrf-param" content="csrf" />
@@ -63,15 +63,15 @@
             <noscript>
                 <div class="layout__banner layout__banner--alert">
                     <div class="banner__container">
-                        <?= _f('You need to activate JavaScript in order to use %s.', $brand) ?>
+                        <?= _f('You need to activate JavaScript in order to use %s.', get_app_configuration('brand')) ?>
                     </div>
                 </div>
             </noscript>
 
-            <?php if ($demo): ?>
+            <?php if (get_app_configuration('demo')): ?>
                 <div class="layout__banner">
                     <div class="banner__container">
-                        <?= _f('You’re using a demo version of %s, the data are reset every night.', $brand) ?>
+                        <?= _f('You’re using a demo version of %s, the data are reset every night.', get_app_configuration('brand')) ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -89,7 +89,7 @@
 
                     <div class="header__separator"></div>
 
-                    <?php if ($registrations_opened && $current_page !== 'registration'): ?>
+                    <?php if (get_app_configuration('registrations_opened') && $current_page !== 'registration'): ?>
                         <a class="header__link no-mobile" href="<?= url('registration') ?>">
                             <?= _('Sign up') ?>
                         </a>
@@ -120,7 +120,7 @@
                                     <?php foreach ($available_locales as $locale_value => $locale_name): ?>
                                         <option
                                             value="<?= $locale_value ?>"
-                                            <?= $locale_value === $current_locale ? 'selected' : '' ?>
+                                            <?= $locale_value === get_current_locale() ? 'selected' : '' ?>
                                         >
                                             <?= $locale_name ?>
                                         </option>
@@ -160,7 +160,7 @@
                 <footer class="layout__footer">
                     <p>
                         <a href="<?= url('about') ?>">
-                            <?= _f('About %s', $brand) ?>
+                            <?= _f('About %s', get_app_configuration('brand')) ?>
                         </a>
                     </p>
                 </footer>

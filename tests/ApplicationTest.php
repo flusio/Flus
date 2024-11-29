@@ -21,8 +21,6 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $application = new Application();
         $response = $application->run($request);
 
-        $variables = \Minz\Output\View::defaultVariables();
-        $this->assertSame('en_GB', $variables['current_locale']);
         $this->assertSame('en_GB', utils\Locale::currentLocale());
     }
 
@@ -34,8 +32,6 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $application = new Application();
         $response = $application->run($request);
 
-        $variables = \Minz\Output\View::defaultVariables();
-        $this->assertSame('fr_FR', $variables['current_locale']);
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
     }
 
@@ -49,8 +45,6 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $application = new Application();
         $response = $application->run($request);
 
-        $variables = \Minz\Output\View::defaultVariables();
-        $this->assertSame('fr_FR', $variables['current_locale']);
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
     }
 

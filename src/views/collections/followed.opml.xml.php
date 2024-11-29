@@ -1,7 +1,7 @@
 <?= '<?xml version="1.0" encoding="UTF-8"?>' . "\n" ?>
 <opml version="2.0">
     <head>
-        <title><?= $brand ?></title>
+        <title><?= get_app_configuration('brand') ?></title>
         <dateCreated><?= $now->format('D, d M Y H:i:s') ?></dateCreated>
     </head>
 
