@@ -13,16 +13,19 @@ assert($app_path !== false);
 include $app_path . '/vendor/autoload.php';
 \App\Configuration::load('dotenv', $app_path);
 
-// Get the http information and create a Request
-$request = \Minz\Request::initFromGlobals();
-
 // Initialize the Application and execute the request to get a Response
 try {
     $application = new \App\Application();
+
+    $request = \Minz\Request::initFromGlobals();
+
     $response = $application->run($request);
+} catch (\Minz\Errors\RequestError $e) {
+    $response = \Minz\Response::notFound('not_found.phtml', [
+        'error' => $e,
+    ]);
 } catch (\Exception $e) {
     $response = \Minz\Response::internalServerError('internal_server_error.phtml', [
-        'environment' => \App\Configuration::$environment,
         'error' => $e,
     ]);
 }
