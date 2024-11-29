@@ -5,8 +5,6 @@ namespace App\controllers\my;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
-use App\models;
-use App\utils;
 
 /**
  * Handle the requests related to the profile.
