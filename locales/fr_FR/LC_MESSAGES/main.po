@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-11-28 15:50+0100\n"
-"PO-Revision-Date: 2024-11-28 15:56+0100\n"
+"POT-Creation-Date: 2024-12-01 15:50+0100\n"
+"PO-Revision-Date: 2024-12-01 15:50+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -50,8 +50,8 @@ msgstr "Afficher"
 #: controllers/Feeds.php:107 controllers/Groups.php:90
 #: controllers/Links.php:268 controllers/Links.php:440
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
-#: controllers/News.php:76 controllers/Passwords.php:89
-#: controllers/Passwords.php:192 controllers/Registrations.php:103
+#: controllers/News.php:76 controllers/Passwords.php:88
+#: controllers/Passwords.php:191 controllers/Registrations.php:102
 #: controllers/Sessions.php:85 controllers/Support.php:70
 #: controllers/collections/Filters.php:105
 #: controllers/collections/Followers.php:49
@@ -60,10 +60,10 @@ msgstr "Afficher"
 #: controllers/collections/Images.php:114 controllers/collections/Links.php:105
 #: controllers/collections/Shares.php:98 controllers/collections/Shares.php:211
 #: controllers/links/Messages.php:84 controllers/links/Repairing.php:99
-#: controllers/links/Searches.php:111 controllers/my/Account.php:111
-#: controllers/my/Preferences.php:82 controllers/my/Profile.php:73
+#: controllers/links/Searches.php:111 controllers/my/Account.php:108
+#: controllers/my/Preferences.php:82 controllers/my/Profile.php:71
 #: controllers/my/Security.php:93 controllers/my/Security.php:209
-#: controllers/my/Subscription.php:74 controllers/my/Validation.php:138
+#: controllers/my/Subscription.php:70 controllers/my/Validation.php:135
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -81,7 +81,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/collections/Read.php:168 controllers/collections/Read.php:243
 #: controllers/importations/Opml.php:79 controllers/importations/Pocket.php:109
 #: controllers/importations/Pocket.php:155
-#: controllers/importations/Pocket.php:256
+#: controllers/importations/Pocket.php:255
 #: controllers/links/Collections.php:159 controllers/links/Read.php:46
 #: controllers/links/Read.php:95 controllers/links/Read.php:144
 #: controllers/links/Read.php:192 controllers/my/Avatar.php:44
@@ -117,26 +117,26 @@ msgstr "L’URL est invalide."
 msgid "The Mastodon host returned an error, please try later."
 msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 
-#: controllers/Passwords.php:67 controllers/Sessions.php:96 models/User.php:55
+#: controllers/Passwords.php:66 controllers/Sessions.php:96 models/User.php:55
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: controllers/Passwords.php:80 controllers/Sessions.php:110
+#: controllers/Passwords.php:79 controllers/Sessions.php:110
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: controllers/Passwords.php:124 controllers/Passwords.php:131
-#: controllers/Passwords.php:171 controllers/Passwords.php:178
+#: controllers/Passwords.php:123 controllers/Passwords.php:130
+#: controllers/Passwords.php:170 controllers/Passwords.php:177
 #: controllers/my/Validation.php:59 controllers/my/Validation.php:72
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: controllers/Passwords.php:137 controllers/Passwords.php:184
+#: controllers/Passwords.php:136 controllers/Passwords.php:183
 msgid "The token has expired, you should reset your password again."
 msgstr ""
 "Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
 
-#: controllers/Registrations.php:116
+#: controllers/Registrations.php:115
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
@@ -146,7 +146,7 @@ msgstr ""
 "Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
 "support."
 
-#: controllers/Sessions.php:130 controllers/my/Account.php:118
+#: controllers/Sessions.php:130 controllers/my/Account.php:115
 #: controllers/my/Security.php:217
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
@@ -175,7 +175,7 @@ msgstr "Ce fichier est trop gros."
 msgid "This file cannot be uploaded (error %d)."
 msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
 
-#: controllers/collections/Images.php:153 controllers/my/Avatar.php:86
+#: controllers/collections/Images.php:152 controllers/my/Avatar.php:85
 msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
 msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
 
@@ -207,7 +207,7 @@ msgstr "Vous avez déjà une importation Pocket en cours."
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
-#: controllers/my/Account.php:126
+#: controllers/my/Account.php:123
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
@@ -215,7 +215,7 @@ msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: controllers/my/Subscription.php:83
+#: controllers/my/Subscription.php:79
 msgid ""
 "An error occured when getting you a subscription account, please contact the "
 "support."
@@ -223,7 +223,7 @@ msgstr ""
 "Une erreur est survenue pendant que nous récupérions les informations de "
 "votre compte, merci de contacter le support."
 
-#: controllers/my/Subscription.php:131
+#: controllers/my/Subscription.php:127
 msgid "An error occured while logging you, please contact the support."
 msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
@@ -249,43 +249,43 @@ msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais vous n’avez pas autorisé "
 "l’accès à vos données Pocket."
 
-#: jobs/PocketImportator.php:118
+#: jobs/PocketImportator.php:117
 msgid "Pocket links"
 msgstr "Liens Pocket"
 
-#: jobs/PocketImportator.php:122
+#: jobs/PocketImportator.php:121
 msgid "All your links imported from Pocket."
 msgstr "Tous vos liens importés depuis Pocket."
 
-#: jobs/PocketImportator.php:126
+#: jobs/PocketImportator.php:125
 msgid "Pocket favorite"
 msgstr "Favoris Pocket"
 
-#: jobs/PocketImportator.php:130
+#: jobs/PocketImportator.php:129
 msgid "All your favorites imported from Pocket."
 msgstr "Tous vos favoris importés depuis Pocket."
 
-#: mailers/Support.php:30
+#: mailers/Support.php:29
 #, php-format
 msgid "[%s] Contact: %s"
 msgstr "[%s] Contact : %s"
 
-#: mailers/Support.php:59
+#: mailers/Support.php:57
 #, php-format
 msgid "[%s] Your message has been sent"
 msgstr "[%s] Votre message a été envoyé"
 
-#: mailers/Users.php:34
+#: mailers/Users.php:33
 #, php-format
 msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
-#: mailers/Users.php:66
+#: mailers/Users.php:64
 #, php-format
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
-#: mailers/Users.php:105
+#: mailers/Users.php:102
 #, php-format
 msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d'inactivité"
@@ -414,7 +414,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:274
+#: services/LinkFetcher.php:271
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -460,16 +460,16 @@ msgstr "plateforme inconnue"
 msgid "%s on %s"
 msgstr "%s sur %s"
 
-#: utils/view_helpers.php:81
+#: utils/view_helpers.php:101
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:83
+#: utils/view_helpers.php:103
 #, php-format
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:211 views/links/show.phtml:83
+#: utils/view_helpers.php:230 views/links/show.phtml:83
 msgid "you"
 msgstr "vous"
 
@@ -592,7 +592,7 @@ msgstr "Menu de %s"
 
 #: views/_layouts/connected.phtml:149
 #: views/_layouts/connected_blocked.phtml:107 views/my/profile/edit.phtml:3
-#: views/my/profile/edit.phtml:14
+#: views/my/profile/edit.phtml:13
 msgid "Profile"
 msgstr "Profil"
 
@@ -700,8 +700,8 @@ msgstr "Page suivante"
 #: views/links/searches/show.phtml:66 views/links/show.phtml:216
 #: views/mastodon/show.phtml:77 views/mastodon/show.phtml:132
 #: views/messages/edit.phtml:44 views/my/account/deletion.phtml:63
-#: views/my/preferences/edit.phtml:41 views/my/profile/edit.phtml:57
-#: views/my/profile/edit.phtml:93 views/my/security/confirmation.phtml:59
+#: views/my/preferences/edit.phtml:41 views/my/profile/edit.phtml:56
+#: views/my/profile/edit.phtml:92 views/my/security/confirmation.phtml:59
 #: views/my/security/show.phtml:41 views/my/security/show.phtml:81
 #: views/passwords/edit.phtml:58 views/passwords/forgot.phtml:48
 #: views/registrations/new.phtml:51 views/registrations/new.phtml:76
@@ -727,12 +727,12 @@ msgstr "Mauvaise requête"
 msgid "The request is invalid."
 msgstr "La requête est invalide."
 
-#: views/bad_request.phtml:22 views/internal_server_error.phtml:23
+#: views/bad_request.phtml:22 views/internal_server_error.phtml:22
 #: views/not_found.phtml:22 views/unauthorized.phtml:22
 msgid "Back to the previous page"
 msgstr "Retour à la page précédente"
 
-#: views/bad_request.phtml:26 views/internal_server_error.phtml:27
+#: views/bad_request.phtml:26 views/internal_server_error.phtml:26
 #: views/not_found.phtml:26 views/unauthorized.phtml:26
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
@@ -864,7 +864,7 @@ msgstr "Afficher la collection publiquement"
 #: views/collections/groups/edit.phtml:105 views/groups/edit.phtml:53
 #: views/links/edit.phtml:82 views/mastodon/show.phtml:86
 #: views/messages/edit.phtml:57 views/my/preferences/edit.phtml:99
-#: views/my/profile/edit.phtml:102 views/my/security/show.phtml:94
+#: views/my/profile/edit.phtml:101 views/my/security/show.phtml:94
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -1413,7 +1413,7 @@ msgstr "Se connecter à Pocket"
 msgid "Something bad happened"
 msgstr "Quelque chose s’est mal passé"
 
-#: views/internal_server_error.phtml:11
+#: views/internal_server_error.phtml:10
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
@@ -2024,11 +2024,11 @@ msgstr ""
 "Avec les fonctionnalités bêta, vous testez des fonctionnalités avant tout le "
 "monde, mais vous entrez dans une zone de turbulences."
 
-#: views/my/profile/edit.phtml:50
+#: views/my/profile/edit.phtml:49
 msgid "Upload a photo"
 msgstr "Téléverser une photo"
 
-#: views/my/profile/edit.phtml:63
+#: views/my/profile/edit.phtml:62
 msgid ""
 "<abbr>PNG</abbr> or <abbr>JPG</abbr> images only, a 150x150 image is "
 "recommended."
@@ -2036,11 +2036,11 @@ msgstr ""
 "Formats <abbr>PNG</abbr> ou <abbr>JPG</abbr> seulement, une image de 150x150 "
 "est recommandée."
 
-#: views/my/profile/edit.phtml:74
+#: views/my/profile/edit.phtml:73
 msgid "Your name"
 msgstr "Votre nom"
 
-#: views/my/profile/edit.phtml:76 views/registrations/new.phtml:32
+#: views/my/profile/edit.phtml:75 views/registrations/new.phtml:32
 #, php-format
 msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
