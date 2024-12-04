@@ -23,7 +23,7 @@ class SessionFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function () {
+            'id' => function (): string {
                 return \Minz\Random::hex(32);
             },
 
@@ -31,7 +31,7 @@ class SessionFactory extends Database\Factory
                 return $faker->dateTime;
             },
 
-            'name' => function () use ($faker) {
+            'name' => function () use ($faker): string {
                 return "{$faker->word} on {$faker->word}";
             },
 

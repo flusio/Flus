@@ -23,7 +23,7 @@ class TopicFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function () {
+            'id' => function (): string {
                 return \Minz\Random::timebased();
             },
 

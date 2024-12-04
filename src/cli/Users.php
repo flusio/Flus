@@ -33,7 +33,7 @@ class Users
             $users = models\User::listAll();
         }
 
-        usort($users, function ($user1, $user2) {
+        usort($users, function ($user1, $user2): int {
             if ($user1->created_at == $user2->created_at) {
                 return 0;
             }

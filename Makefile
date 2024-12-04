@@ -85,14 +85,16 @@ test: ## Run the test suite
 
 .PHONY: lint
 lint: ## Run the linters on the PHP and JS files
-	$(PHP) ./vendor/bin/phpstan analyse --memory-limit 1G -c .phpstan.neon
-	$(PHP) ./vendor/bin/phpcs
+	$(PHP) vendor/bin/phpstan analyse --memory-limit 1G -c .phpstan.neon
+	$(PHP) vendor/bin/rector process --dry-run --config .rector.php
+	$(PHP) vendor/bin/phpcs
 	$(NPM) run lint-js
 	$(NPM) run lint-css
 
 .PHONY: lint-fix
 lint-fix: ## Fix the errors detected by the linters
-	$(PHP) ./vendor/bin/phpcbf
+	$(PHP) vendor/bin/rector process --config .rector.php
+	$(PHP) vendor/bin/phpcbf
 	$(NPM) run lint-js-fix
 	$(NPM) run lint-css-fix
 

@@ -29,7 +29,7 @@ class LinkFetcher
     private \SpiderBits\Http $http;
 
     /** @var Options */
-    private $options = [
+    private array $options = [
         'timeout' => 10,
         'rate_limit' => true,
         'cache' => true,
@@ -312,12 +312,8 @@ class LinkFetcher
 
     /**
      * Return true if the url is pointing to Twitter
-     *
-     * @param string $url
-     *
-     * @return boolean
      */
-    private function isTwitter($url)
+    private function isTwitter(string $url): bool
     {
         $host = utils\Belt::host($url);
         return str_ends_with($host, 'twitter.com');

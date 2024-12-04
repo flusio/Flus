@@ -18,8 +18,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
 
-    /** @var string */
-    private $exportations_path;
+    private string $exportations_path;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setRouterToUrl(): void

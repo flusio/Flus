@@ -23,7 +23,7 @@ class TokenFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'token' => function () {
+            'token' => function (): string {
                 return \Minz\Random::hex(32);
             },
 

@@ -232,7 +232,7 @@ class PocketImportator extends \Minz\Job
 
             // We create a message containing the list of tags if any.
             if ($tags) {
-                $formatted_tags = array_map(function ($tag) {
+                $formatted_tags = array_map(function ($tag): string {
                     return "#{$tag}";
                 }, $tags);
 
