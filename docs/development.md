@@ -34,6 +34,13 @@ Once this is done, you should start the services:
 $ make docker-start
 ```
 
+> [!TIP]
+> You can change the port of the application by passing the `PORT` parameter:
+>
+> ```console
+> $ make docker-start PORT=9000
+> ```
+
 This command calls `docker compose` with the file under the `docker/development` folder.
 The first time you call it, it will download the Docker images and build the
 `php` one with the information from the `docker/development/Dockerfile.php` file.
@@ -41,7 +48,7 @@ The first time you call it, it will download the Docker images and build the
 The last step is to setup the environment with:
 
 ```console
-$ make setup
+$ make db-setup
 ```
 
 It will copy the `env.sample` file to `.env` and call the Flus CLI to
@@ -101,7 +108,7 @@ You should now install the dependencies and setup the database with:
 ```console
 $ export NO_DOCKER=true # tell the `make` commands to use native commands
 $ make install
-$ make setup
+$ make db-setup
 ```
 
 You’re all good now, just start a PHP development server:

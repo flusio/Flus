@@ -16,87 +16,110 @@ else
 	CLI = ./docker/bin/cli
 endif
 
-ifndef COVERAGE
-	COVERAGE = --coverage-html ./coverage
-endif
-
-ifdef FILTER
-	PHPUNIT_FILTER = --filter=$(FILTER)
-else
-	PHPUNIT_FILTER =
-endif
-
-ifdef FILE
-	PHPUNIT_FILE = $(FILE)
-else
-	PHPUNIT_FILE = ./tests
-endif
-
 .PHONY: docker-start
-docker-start: .env ## Start a development server with Docker
-	@echo "Running webserver on http://localhost:8000"
+docker-start: PORT ?= 8000
+docker-start: .env ## Start a development server (can take a PORT argument)
+	@echo "Running webserver on http://localhost:$(PORT)"
 	$(DOCKER_COMPOSE) up
-
-.PHONY: docker-clean
-docker-clean: ## Stop and clean Docker server
-	$(DOCKER_COMPOSE) down
 
 .PHONY: docker-build
 docker-build: ## Rebuild the Docker images
-	$(DOCKER_COMPOSE) build
+	$(DOCKER_COMPOSE) build --pull
+
+.PHONY: docker-pull
+docker-pull: ## Pull the Docker images from the Docker Hub
+	$(DOCKER_COMPOSE) pull --ignore-buildable
+
+.PHONY: docker-clean
+docker-clean: ## Clean the Docker stuff
+	$(DOCKER_COMPOSE) down -v
 
 .PHONY: install
-install: ## Install the dependencies
+install: INSTALLER ?= all
+install: ## Install the dependencies (can take an INSTALLER argument)
+ifeq ($(INSTALLER), $(filter $(INSTALLER), all composer))
 	$(COMPOSER) install
+endif
+ifeq ($(INSTALLER), $(filter $(INSTALLER), all npm))
 	$(NPM) install
+endif
 
-.PHONY: setup
-setup: .env ## Setup the application system
+.PHONY: db-setup
+db-setup: .env ## Setup and migrate the application system
 	$(CLI) migrations setup --seed
 
-.PHONY: rollback
-rollback: ## Reverse the last migration
+.PHONY: db-rollback
+db-rollback: ## Reverse the last migration (can take a STEPS argument)
 ifdef STEPS
 	$(CLI) migrations rollback --steps=$(STEPS)
 else
 	$(CLI) migrations rollback
 endif
 
-.PHONY: reset
-reset: ## Reset the database
+.PHONY: db-reset
+db-reset: ## Reset the database (take a FORCE argument)
 ifndef FORCE
 	$(error Please run the operation with FORCE=true)
 endif
+ifndef NO_DOCKER
 	$(DOCKER_COMPOSE) stop job_worker
+endif
 	$(CLI) migrations reset --force --seed
+ifndef NO_DOCKER
 	$(DOCKER_COMPOSE) start job_worker
+endif
 
-.PHONY: icons-build
-icons-build: ## Build the icons asset
+.PHONY: icons
+icons: ## Build the icons asset
 	$(NPM) run build:icons
 
 .PHONY: test
-test: ## Run the test suite
+test: FILE ?= ./tests
+ifdef FILTER
+test: override FILTER := --filter=$(FILTER)
+endif
+test: COVERAGE ?= --coverage-html ./coverage
+test: ## Run the test suite (can take FILE, FILTER and COVERAGE arguments)
 	$(PHP) ./vendor/bin/phpunit \
 		-c .phpunit.xml \
 		$(COVERAGE) \
-		$(PHPUNIT_FILTER) \
-		$(PHPUNIT_FILE)
+		$(FILTER) \
+		$(FILE)
 
 .PHONY: lint
-lint: ## Run the linters on the PHP and JS files
+lint: LINTER ?= all
+lint: ## Execute the linters (can take a LINTER argument)
+ifeq ($(LINTER), $(filter $(LINTER), all phpstan))
 	$(PHP) vendor/bin/phpstan analyse --memory-limit 1G -c .phpstan.neon
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all rector))
 	$(PHP) vendor/bin/rector process --dry-run --config .rector.php
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all phpcs))
 	$(PHP) vendor/bin/phpcs
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all js))
 	$(NPM) run lint-js
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all css))
 	$(NPM) run lint-css
+endif
 
 .PHONY: lint-fix
-lint-fix: ## Fix the errors detected by the linters
+lint-fix: LINTER ?= all
+lint-fix: ## Fix the errors detected by the linters (can take a LINTER argument)
+ifeq ($(LINTER), $(filter $(LINTER), all rector))
 	$(PHP) vendor/bin/rector process --config .rector.php
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all phpcs))
 	$(PHP) vendor/bin/phpcbf
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all js))
 	$(NPM) run lint-js-fix
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all css))
 	$(NPM) run lint-css-fix
+endif
 
 .PHONY: release
 release: ## Release a new version (take a VERSION argument)
