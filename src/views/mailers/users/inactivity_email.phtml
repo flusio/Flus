@@ -1,6 +1,7 @@
-<p>
-    <?= _f('Hello %s,', $username) ?>
-</p>
+<?php $this->layout('emails/default.phtml', [
+    'username' => $username,
+    'logo_cid' => $logo_cid,
+]) ?>
 
 <p>
     <?= _f('You receive this email because you haven’t been active on %s for several months. To avoid storing outdated data, your account will be deleted after one month. If you don’t want to keep it, you don’t have to do anything. However, if you wish to keep your account, you should login to %s by clicking on the following link:', get_app_configuration('brand'), get_app_configuration('brand')) ?></br />
@@ -11,12 +12,4 @@
 
 <p>
     <?= _('Note that you will not receive any further notification that your account will be deleted.'); ?>
-</p>
-
-<p>
-    <?= _('Best regards,') ?>
-</p>
-
-<p>
-    <?= _f('The %s robot', get_app_configuration('brand')) ?>
 </p>

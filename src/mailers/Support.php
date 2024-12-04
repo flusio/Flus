@@ -53,14 +53,19 @@ class Support extends \Minz\Mailer
 
         utils\Locale::setCurrentLocale($user->locale);
 
+        $logo_path = \App\Configuration::$app_path . '/public/static/logo.svg';
+        $logo_cid = md5($logo_path);
+        $this->mailer->addEmbeddedImage($logo_path, $logo_cid);
+
         $brand = \App\Configuration::$application['brand'];
         $current_subject = sprintf(_('[%s] Your message has been sent'), $brand);
         $this->setBody(
             'mailers/support/notification.phtml',
             'mailers/support/notification.txt',
             [
+                'logo_cid' => $logo_cid,
+                'username' => $user->username,
                 'subject' => $subject,
-                'brand' => $brand,
             ]
         );
 

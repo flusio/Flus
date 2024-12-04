@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-12-01 15:50+0100\n"
-"PO-Revision-Date: 2024-12-01 15:50+0100\n"
+"POT-Creation-Date: 2024-12-04 21:46+0100\n"
+"PO-Revision-Date: 2024-12-04 21:46+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -270,22 +270,22 @@ msgstr "Tous vos favoris importés depuis Pocket."
 msgid "[%s] Contact: %s"
 msgstr "[%s] Contact : %s"
 
-#: mailers/Support.php:57
+#: mailers/Support.php:61
 #, php-format
 msgid "[%s] Your message has been sent"
 msgstr "[%s] Votre message a été envoyé"
 
-#: mailers/Users.php:33
+#: mailers/Users.php:44
 #, php-format
 msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
-#: mailers/Users.php:64
+#: mailers/Users.php:77
 #, php-format
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
-#: mailers/Users.php:102
+#: mailers/Users.php:116
 #, php-format
 msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d'inactivité"
@@ -460,6 +460,11 @@ msgstr "plateforme inconnue"
 msgid "%s on %s"
 msgstr "%s sur %s"
 
+#: utils/additionnal_translations.php:10
+#, php-format
+msgid "This email has been sent by %s (%s)"
+msgstr "Ce courriel a été envoyé par %s (%s)"
+
 #: utils/view_helpers.php:101
 msgid "< 1 min"
 msgstr "< 1 min"
@@ -633,6 +638,27 @@ msgstr "Rechercher des liens par mots ou URL"
 #: views/links/searches/show.phtml:75
 msgid "Search"
 msgstr "Rechercher"
+
+#: views/_layouts/emails/default.phtml:15
+#, php-format
+msgid "Hello %s,"
+msgstr "Bonjour %s,"
+
+#: views/_layouts/emails/default.phtml:21
+msgid "Best regards,"
+msgstr "Bien à vous,"
+
+#: views/_layouts/emails/default.phtml:25
+#, php-format
+msgid "The %s robot"
+msgstr "Le robot %s"
+
+#: views/_layouts/emails/default.phtml:30
+#, php-format
+msgid ""
+"This email has been sent by <a href=\"%s\" style=\"color: #4f4e5e;\">%s</a>."
+msgstr ""
+"Ce courriel a été envoyé par <a href=\"%s\" style=\"color: #4f4e5e;\">%s</a>."
 
 #: views/_layouts/error.phtml:22
 msgid "Oh no&nbsp;😟"
@@ -1703,11 +1729,7 @@ msgstr "Ce lien étant masqué, les commentaires sont privés."
 msgid "New message from the support."
 msgstr "Nouveau message depuis le support."
 
-#: views/mailers/support/notification.phtml:2
-msgid "Hello,"
-msgstr "Bonjour,"
-
-#: views/mailers/support/notification.phtml:6
+#: views/mailers/support/notification.phtml:7
 #, php-format
 msgid ""
 "Your message named “%s” has been sent. Someone will reply to you as soon as "
@@ -1716,17 +1738,7 @@ msgstr ""
 "Votre message intitulé « %s » a été envoyé. Quelqu’un va vous répondre aussi "
 "rapidement que possible !"
 
-#: views/mailers/support/notification.phtml:10
-#, php-format
-msgid "Transactionally yours, the %s bot"
-msgstr "Transactionnellement vôtre, le robot %s"
-
-#: views/mailers/users/account_validation_email.phtml:2
-#, php-format
-msgid "Welcome %s,"
-msgstr "Bienvenue %s,"
-
-#: views/mailers/users/account_validation_email.phtml:6
+#: views/mailers/users/account_validation_email.phtml:7
 #, php-format
 msgid ""
 "Thank you for your inscription on %s. To finish, you’ll have to confirm your "
@@ -1737,17 +1749,7 @@ msgstr ""
 "votre adresse courriel. Vous avez seulement à cliquer sur le lien suivant, "
 "et tout devrait être bon ensuite :"
 
-#: views/mailers/users/account_validation_email.phtml:13
-#: views/mailers/users/reset_password_email.phtml:13
-msgid "Have a nice day!"
-msgstr "Bonne journée !"
-
-#: views/mailers/users/inactivity_email.phtml:2
-#, php-format
-msgid "Hello %s,"
-msgstr "Bonjour %s,"
-
-#: views/mailers/users/inactivity_email.phtml:6
+#: views/mailers/users/inactivity_email.phtml:7
 #, php-format
 msgid ""
 "You receive this email because you haven’t been active on %s for several "
@@ -1762,7 +1764,7 @@ msgstr ""
 "n’avez rien faire. Toutefois, si vous souhaitez conserver votre compte, vous "
 "devez vous connecter à %s en cliquant sur le lien suivant :"
 
-#: views/mailers/users/inactivity_email.phtml:13
+#: views/mailers/users/inactivity_email.phtml:14
 msgid ""
 "Note that you will not receive any further notification that your account "
 "will be deleted."
@@ -1770,21 +1772,7 @@ msgstr ""
 "Notez que vous ne recevrez pas d’autre notification concernant la "
 "suppression de votre compte."
 
-#: views/mailers/users/inactivity_email.phtml:17
-msgid "Best regards,"
-msgstr "Bien à vous,"
-
-#: views/mailers/users/inactivity_email.phtml:21
-#, php-format
-msgid "The %s robot"
-msgstr "Le robot %s"
-
-#: views/mailers/users/reset_password_email.phtml:2
-#, php-format
-msgid "Hi %s,"
-msgstr "Bonjour %s,"
-
-#: views/mailers/users/reset_password_email.phtml:6
+#: views/mailers/users/reset_password_email.phtml:7
 #, php-format
 msgid ""
 "You receive this email because you’ve asked to reset your password on %s. "
@@ -1794,12 +1782,11 @@ msgstr ""
 "mot de passe sur %s. Vous avez seulement à cliquer sur le lien suivant et "
 "suivre les instructions :"
 
-#: views/mailers/users/reset_password_email.phtml:17
-msgid ""
-"P.S. – If you didn’t ask to reset your password, please ignore this email."
+#: views/mailers/users/reset_password_email.phtml:14
+msgid "If you didn’t ask to reset your password, please ignore this email."
 msgstr ""
-"P.S. – Si vous n’avez pas demandé à réinitialiser votre mot de passe, vous "
-"pouvez ignorer ce courriel."
+"Si vous n’avez pas demandé à réinitialiser votre mot de passe, vous pouvez "
+"ignorer ce courriel."
 
 #: views/mastodon/authorization.phtml:3 views/mastodon/authorization.phtml:11
 msgid "Mastodon authorization"

@@ -1,7 +1,5 @@
-<?= _('Hello,') ?>
-
+<?php $this->layout('emails/default.txt', [
+    'username' => $username,
+]) ?>
 
 <?= _f('Your message named “%s” has been sent. Someone will reply to you as soon as possible!', $subject) ?>
-
-
-<?= _f('Transactionally yours, the %s bot', get_app_configuration('brand')) ?>

@@ -11,6 +11,17 @@ use App\utils;
  */
 class Users extends \Minz\Mailer
 {
+    private string $logo_cid;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $logo_path = \App\Configuration::$app_path . '/public/static/logo.svg';
+        $this->logo_cid = md5($logo_path);
+        $this->mailer->addEmbeddedImage($logo_path, $this->logo_cid);
+    }
+
     /**
      * Send an email to given user to validate its account.
      */
@@ -35,10 +46,12 @@ class Users extends \Minz\Mailer
             'mailers/users/account_validation_email.phtml',
             'mailers/users/account_validation_email.txt',
             [
+                'logo_cid' => $this->logo_cid,
                 'username' => $user->username,
                 'token' => $user->validation_token,
             ]
         );
+
         return $this->send($user->email, $subject);
     }
 
@@ -66,11 +79,12 @@ class Users extends \Minz\Mailer
             'mailers/users/reset_password_email.phtml',
             'mailers/users/reset_password_email.txt',
             [
-                'brand' => $brand,
+                'logo_cid' => $this->logo_cid,
                 'username' => $user->username,
                 'token' => $user->reset_token,
             ]
         );
+
         return $this->send($user->email, $subject);
     }
 
@@ -104,10 +118,11 @@ class Users extends \Minz\Mailer
             'mailers/users/inactivity_email.phtml',
             'mailers/users/inactivity_email.txt',
             [
-                'brand' => $brand,
+                'logo_cid' => $this->logo_cid,
                 'username' => $user->username,
             ]
         );
+
         return $this->send($user->email, $subject);
     }
 }

@@ -1,0 +1,12 @@
+<?= _f('Hello %s,', $username) ?>
+
+<?= $content ?>
+
+
+<?= _('Best regards,') ?>
+
+<?= _f('The %s robot', get_app_configuration('brand')) ?>
+
+
+-- 
+<?= _f('This email has been sent by %s (%s)', get_app_configuration('brand'), url_full('home')) ?>
