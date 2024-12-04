@@ -1,3 +1,7 @@
 #!/bin/bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
-USER=$(id -u):$(id -g) docker compose -p flus -f ./docker/docker-compose.yml exec database psql -d flus_development -U postgres "$@"
+SCRIPT_PATH=$(dirname $(realpath -s $0))
+export COMPOSE_FILE=$SCRIPT_PATH/../development/docker-compose.yml
+
+docker compose exec database psql -U postgres "$@"

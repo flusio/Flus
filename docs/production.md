@@ -248,8 +248,8 @@ browser on unknown platform`.
 
 Browscap is configured at the PHP level. It can be done by downloading the
 latest version of [one of the `browscap.ini` files for PHP](https://browscap.org/).
-A file is already provided in this repository as [`docker/lite_php_browscap.ini`
-file](/docker/lite_php_browscap.ini) but can be outdated.
+A file is already provided in this repository as [`docker/development/lite_php_browscap.ini`
+file](/docker/development/lite_php_browscap.ini) but can be outdated.
 
 Once you’ve placed this file on your system, you can add the following to your
 `php.ini` file:
