@@ -1,11 +1,12 @@
 #!/bin/bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
-flus-compose () {
-    docker compose -p flus -f ./docker/docker-compose.yml "$@"
-}
+SCRIPT_PATH=$(dirname $(realpath -s $0))
+export COMPOSE_FILE=$SCRIPT_PATH/../development/docker-compose.yml
+export USER=$(id -u):$(id -g)
 
-if [ -z `flus-compose ps -q php` ] || [ -z `docker ps -q --no-trunc | grep $(flus-compose ps -q php)` ]; then
-    USER=$(id -u):$(id -g) flus-compose run --rm --no-deps php php cli "$@"
+if [ -z `docker compose ps -q php` ] || [ -z `docker ps -q --no-trunc | grep $(docker compose ps -q php)` ]; then
+    docker compose run -T --rm php php cli "$@"
 else
-    USER=$(id -u):$(id -g) flus-compose exec php php cli "$@"
+    docker compose exec -T php php cli "$@"
 fi

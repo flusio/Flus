@@ -34,9 +34,9 @@ Once this is done, you should start the services:
 $ make docker-start
 ```
 
-This command calls `docker compose` with the file under the `docker/` folder.
+This command calls `docker compose` with the file under the `docker/development` folder.
 The first time you call it, it will download the Docker images and build the
-`php` one with the information from the `docker/Dockerfile.php` file.
+`php` one with the information from the `docker/development/Dockerfile.php` file.
 
 The last step is to setup the environment with:
 
@@ -74,9 +74,9 @@ You might want to configure [browscap](https://www.php.net/manual/fr/misc.config
 This allows to detect the browser and the platform of a user correctly in order
 to identify a session. Without browscap, all the sessions will be identified as
 “Unknown browser on unknown platform”.
-You’ll have to place the [`docker/lite_php_browscap.ini` file](/docker/lite_php_browscap.ini)
+You’ll have to place the [`docker/development/lite_php_browscap.ini` file](/docker/development/lite_php_browscap.ini)
 somewhere on your filesystem and set the `browscap` path to this file in your
-`php.ini` file ([see an example](/docker/php-ext-browscap.ini)). If you need
+`php.ini` file ([see an example](/docker/development/php-ext-browscap.ini)). If you need
 an up-to-date `browscap.ini` file, you can download one on [browscap.org](https://browscap.org/).
 
 Then, create and edit the `.env` file:

@@ -24,8 +24,7 @@ RUN echo 'en_GB.UTF-8 UTF-8' >> /etc/locale.gen && \
     echo 'fr_FR.UTF-8 UTF-8' >> /etc/locale.gen && \
     locale-gen
 
-COPY install-composer.sh .
-RUN sh ./install-composer.sh && rm ./install-composer.sh
+COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 
 COPY lite_php_browscap.ini $PHP_INI_DIR/browscap.ini
 COPY php-ext-browscap.ini $PHP_INI_DIR/conf.d/php-ext-browscap.ini
