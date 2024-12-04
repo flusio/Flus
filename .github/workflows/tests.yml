@@ -69,7 +69,7 @@ jobs:
           run: composer install
 
         - name: Setup the application
-          run: make setup
+          run: make db-setup
           env:
               DB_PORT: ${{ job.services.postgres.ports[5432] }}
 

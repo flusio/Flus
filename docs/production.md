@@ -87,8 +87,6 @@ You must now load the SQL schema to your database. You can do it with:
 
 ```console
 flus# sudo -u www-data php cli migrations setup --seed
-flus# # OR via make
-flus# sudo -u www-data make setup NO_DOCKER=true
 ```
 
 If the permissions are correct, you should have a message to tell you the

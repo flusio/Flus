@@ -31,7 +31,7 @@ services:
         image: nginx:alpine
         restart: unless-stopped
         ports:
-            - "8000:8000"
+            - "${PORT:-8000}:8000"
             - "8001:8001"
         volumes:
             - ../..:/var/www/html:z
