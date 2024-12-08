@@ -118,7 +118,7 @@ class Http
             curl_setopt(
                 $curl_handle,
                 CURLOPT_PROGRESSFUNCTION,
-                function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($max_size) {
+                function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($max_size): int {
                     return ($downloaded > $max_size) ? 1 : 0;
                 }
             );
@@ -129,7 +129,7 @@ class Http
         } else {
             $request_headers = $this->headers;
         }
-        $request_headers = array_map(function ($name, $value) {
+        $request_headers = array_map(function ($name, $value): string {
             return "{$name}: {$value}";
         }, array_keys($request_headers), $request_headers);
         curl_setopt($curl_handle, CURLOPT_HTTPHEADER, $request_headers);
@@ -139,7 +139,7 @@ class Http
         curl_setopt(
             $curl_handle,
             CURLOPT_HEADERFUNCTION,
-            function ($curl, $current_header) use (&$headers, &$done) {
+            function ($curl, string $current_header) use (&$headers, &$done): int {
                 if ($done) {
                     // we want to drop headers from previous requests (e.g. on
                     // 302 responses for instance)

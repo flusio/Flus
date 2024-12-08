@@ -27,7 +27,7 @@ class MastodonServerFactory extends Database\Factory
                 return $faker->dateTime;
             },
 
-            'host' => function () use ($faker) {
+            'host' => function () use ($faker): string {
                 return 'https://' . $faker->domainName;
             },
 

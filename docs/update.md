@@ -34,7 +34,10 @@ flus# chown -R www-data:www-data .
 Then, apply the migrations and load seeds with:
 
 ```console
-flus$ sudo -u www-data make setup NO_DOCKER=true
+flus$ # In production
+flus# sudo -u www-data php cli migrations setup --seed
+flus$ # In development
+flus$ make db-setup
 ```
 
 Finally, you might need to restart PHP and the job worker so it detects
@@ -59,7 +62,7 @@ If at any time something goes wrong and you need to reset the application to
 its previous state, you should start by reverse the migrations with:
 
 ```console
-flus$ sudo -u www-data make rollback STEP=1 NO_DOCKER=true
+flus$ sudo -u www-data php cli migrations rollback --steps=1
 ```
 
 You can increase `STEP` to rollback more migrations (its default value is `1`
@@ -72,7 +75,7 @@ flus$ git checkout PREVIOUS_TAG
 If something goes really wrong with the database, you can use the joker command:
 
 ```console
-flus$ sudo -u www-data make reset FORCE=true
+flus$ make db-reset FORCE=true
 ```
 
 It will reset the database and reload the schema. **Note this command doesn't

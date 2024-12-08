@@ -17,7 +17,7 @@ trait PocketQueries
      *
      * @return array<string, string>
      */
-    public static function listNamesToIdsByUserId(string $user_id)
+    public static function listNamesToIdsByUserId(string $user_id): array
     {
         $sql = <<<SQL
             SELECT name, id FROM collections

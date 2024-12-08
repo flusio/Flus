@@ -219,12 +219,12 @@ function collection_publishers(\App\models\Collection $collection, ?\App\models\
     $owner = $collection->owner();
     $shares = $collection->shares(['access_type' => 'write']);
 
-    $publishers = array_map(function ($share) {
+    $publishers = array_map(function ($share): \App\models\User {
         return $share->user();
     }, $shares);
     array_unshift($publishers, $owner);
 
-    $publishers_as_strings = array_map(function ($user) use ($current_user) {
+    $publishers_as_strings = array_map(function ($user) use ($current_user): string {
         $url_profile = url('profile', ['id' => $user->id]);
         if ($current_user && $user->id === $current_user->id) {
             $username = _('you');

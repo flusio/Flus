@@ -23,7 +23,7 @@ class UserFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function () {
+            'id' => function (): string {
                 return \Minz\Random::timebased();
             },
 
@@ -47,7 +47,7 @@ class UserFactory extends Database\Factory
                 return $faker->email;
             },
 
-            'password_hash' => function () use ($faker) {
+            'password_hash' => function () use ($faker): string {
                 return password_hash($faker->password, PASSWORD_BCRYPT);
             },
 
@@ -55,7 +55,7 @@ class UserFactory extends Database\Factory
             // localize the tests as well, which would be painful)
             'locale' => 'en_GB',
 
-            'csrf' => function () {
+            'csrf' => function (): string {
                 return \Minz\Random::hex(64);
             },
         ];

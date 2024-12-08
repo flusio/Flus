@@ -2,7 +2,6 @@
 
 namespace App\services;
 
-use App\jobs;
 use App\models;
 use App\utils;
 
@@ -17,17 +16,11 @@ class UserCreator
     /**
      * Create a user with default data.
      *
-     * @param string $username
-     * @param string $email
-     * @param string $password
-     *
      * @throws UserCreatorError
      *     If username, email or password is invalid, or if a user already
      *     exists with this email.
-     *
-     * @return models\User
      */
-    public static function create($username, $email, $password)
+    public static function create(string $username, string $email, string $password): models\User
     {
         $user = new models\User($username, $email, $password);
         $user->locale = utils\Locale::currentLocale();
