@@ -26,6 +26,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $outlines = $opml->outlines[0]['outlines'];
         $this->assertIsArray($outlines);
         $this->assertSame(3, count($outlines));
+        $this->assertIsArray($outlines[0]);
         $this->assertSame('Framablog', $outlines[0]['text']);
         $this->assertSame('rss', $outlines[0]['type']);
         $this->assertSame('https://framablog.org/feed/', $outlines[0]['xmlUrl']);
@@ -58,6 +59,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $outlines = $opml->outlines[0]['outlines'];
         $this->assertIsArray($outlines);
         $this->assertSame(3, count($outlines));
+        $this->assertIsArray($outlines[0]);
         $this->assertSame('Framablog', $outlines[0]['text']);
         $this->assertSame('Framablog', $outlines[0]['title']);
         $this->assertSame('rss', $outlines[0]['type']);

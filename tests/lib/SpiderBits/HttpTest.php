@@ -85,6 +85,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
         $this->assertIsArray($data);
+        $this->assertIsArray($data['headers']);
         $this->assertSame('foo', $data['headers']['HTTP_X_CUSTOM']);
     }
 
@@ -103,6 +104,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
         $this->assertIsArray($data);
+        $this->assertIsArray($data['headers']);
         $this->assertSame('foo', $data['headers']['HTTP_X_CUSTOM']);
     }
 
@@ -122,6 +124,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
         $this->assertIsArray($data);
+        $this->assertIsArray($data['headers']);
         $this->assertSame($user_agent, $data['headers']['HTTP_USER_AGENT']);
     }
 
@@ -151,6 +154,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
         $this->assertIsArray($data);
+        $this->assertIsArray($data['form']);
         $this->assertSame($parameters['foo'], $data['form']['foo']);
         $this->assertSame($parameters['baz'], $data['form']['baz']);
     }

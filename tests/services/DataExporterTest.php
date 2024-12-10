@@ -164,6 +164,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_3_url = \Minz\Url::absoluteFor('collection', ['id' => $collection_3->id]);
         $group_outlines = $opml->outlines[2]['outlines'];
+        $this->assertIsArray($group_outlines[0]);
         $this->assertSame($collection_3_url_feed, $group_outlines[0]['xmlUrl']);
         $this->assertSame($collection_3_url, $group_outlines[0]['htmlUrl']);
     }
