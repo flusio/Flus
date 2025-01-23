@@ -37,6 +37,27 @@
     }
 }
 
+.message__content h1 {
+    margin-top: 1.17em;
+    margin-bottom: 0.67em;
+
+    font-size: 1.5em;
+}
+
+.message__content h2 {
+    margin-top: 1.25em;
+    margin-bottom: 0.75em;
+
+    font-size: 1.2em;
+}
+
+.message__content h3 {
+    margin-top: 1.33em;
+    margin-bottom: 0.83em;
+
+    font-size: 1em;
+}
+
 .message__content code {
     padding-right: var(--space-smaller);
     padding-left: var(--space-smaller);
@@ -96,4 +117,8 @@
 
         background-size: 75px;
     }
+}
+
+.message__content > *:first-child {
+    margin-top: 0;
 }

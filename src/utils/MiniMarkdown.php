@@ -28,6 +28,12 @@ class MiniMarkdown extends \Parsedown
         'pre',
         'strong',
         'ul',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
     ];
 
     public function __construct()
@@ -41,8 +47,8 @@ class MiniMarkdown extends \Parsedown
     }
 
     /**
-     * Make sure to block header tag so it doesn't conflict with lines starting
-     * with a #tag.
+     * Make sure to block header tag if the line starts with a #tag. Otherwise,
+     * it would generate a h1 title.
      *
      * @param array{body: string, indent: int, text: string} $line
      *
@@ -50,7 +56,11 @@ class MiniMarkdown extends \Parsedown
      */
     protected function blockHeader($line): ?array
     {
-        return null;
+        if (preg_match('/^#+\s+/', $line['text'])) {
+            return parent::blockHeader($line);
+        } else {
+            return null;
+        }
     }
 
     /**
