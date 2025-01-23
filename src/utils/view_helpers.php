@@ -21,21 +21,6 @@ function _date(\DateTimeInterface $date, string $format): string
 }
 
 /**
- * Format a DateTime according to current day (designed for Message dates)
- */
-function format_message_date(\DateTimeInterface $date): string
-{
-    $today = \Minz\Time::relative('today');
-    if ($date >= $today) {
-        return _date($date, 'HH:mm');
-    } elseif ($date->format('Y') === $today->format('Y')) {
-        return _date($date, 'dd MMM, HH:mm');
-    } else {
-        return _date($date, 'dd MMM Y, HH:mm');
-    }
-}
-
-/**
  * Format a number accordingly to the current locale
  */
 function format_number(int|float $number): string

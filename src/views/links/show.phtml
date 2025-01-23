@@ -119,7 +119,7 @@
                         <div class="header__separator"></div>
 
                         <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
-                            <?= format_message_date($message->created_at) ?>
+                            <?= _d($message->created_at, 'dd MMM y, HH:mm') ?>
                         </time>
 
                         <?php if ($current_user && $user->id === $current_user->id): ?>
