@@ -2,6 +2,8 @@
 
 namespace App\services;
 
+use App\utils;
+
 /**
  * The Subscriptions service allows to get information about a user
  * subscription.
@@ -23,8 +25,7 @@ class Subscriptions
         $this->private_key = $private_key;
 
         $this->http = new \SpiderBits\Http();
-        $user_agent = \App\Configuration::$application['user_agent'];
-        $this->http->user_agent = $user_agent;
+        $this->http->user_agent = utils\UserAgent::get();
         $this->http->timeout = 5;
     }
 

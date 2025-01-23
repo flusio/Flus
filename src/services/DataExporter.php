@@ -83,7 +83,7 @@ class DataExporter
     private function generateMetadata(): string
     {
         $metadata = json_encode([
-            'generator' => \App\Configuration::$application['user_agent'],
+            'generator' => utils\UserAgent::get(),
         ]);
 
         if (!$metadata) {
@@ -119,7 +119,7 @@ class DataExporter
     {
         $view = new \Minz\Output\View('collections/exportation.atom.xml.php', [
             'brand' => \App\Configuration::$application['brand'],
-            'user_agent' => \App\Configuration::$application['user_agent'],
+            'user_agent' => utils\UserAgent::get(),
             'collection' => $collection,
             'topics' => $collection->topics(),
             'links' => $collection->links(['published_at']),
@@ -135,7 +135,7 @@ class DataExporter
     {
         $view = new \Minz\Output\View('links/exportation.atom.xml.php', [
             'brand' => \App\Configuration::$application['brand'],
-            'user_agent' => \App\Configuration::$application['user_agent'],
+            'user_agent' => utils\UserAgent::get(),
             'link' => $link,
             'messages' => $link->messages(),
         ]);

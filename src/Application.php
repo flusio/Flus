@@ -43,15 +43,6 @@ class Application
         \Minz\Output\View::$extensions_to_content_types['.atom.xml.php'] = 'application/xml';
         \Minz\Output\View::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
         \Minz\Output\View::$extensions_to_content_types['.xsl.php'] = 'application/xslt+xml';
-
-        // Include a link to the about page in the user agent
-        $user_agent = \App\Configuration::$application['user_agent'];
-        if (\App\Configuration::$environment === 'production') {
-            $about_url = \Minz\Url::absoluteFor('about');
-        } else {
-            $about_url = 'https://github.com/flusio/Flus';
-        }
-        \App\Configuration::$application['user_agent'] = "{$user_agent} ({$about_url})";
     }
 
     /**

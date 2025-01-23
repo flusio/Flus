@@ -2,6 +2,7 @@
 
 namespace App\services;
 
+use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionToTopicFactory;
 use tests\factories\FollowedCollectionFactory;
@@ -88,7 +89,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $metadata_content = $this->zipGetContents($filepath, 'metadata.json');
         $metadata = json_decode($metadata_content, true);
         $this->assertIsArray($metadata);
-        $this->assertSame(\App\Configuration::$application['user_agent'], $metadata['generator']);
+        $this->assertSame(utils\UserAgent::get(), $metadata['generator']);
     }
 
     public function testExportCreatesOpmlFile(): void

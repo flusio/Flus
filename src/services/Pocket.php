@@ -2,6 +2,8 @@
 
 namespace App\services;
 
+use App\utils;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -23,8 +25,7 @@ class Pocket
             'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF8',
             'X-Accept' => 'application/json',
         ];
-        $user_agent = \App\Configuration::$application['user_agent'];
-        $this->http->user_agent = $user_agent;
+        $this->http->user_agent = utils\UserAgent::get();
         $this->http->timeout = 20;
     }
 

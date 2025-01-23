@@ -3,6 +3,7 @@
 namespace App\services;
 
 use App\models;
+use App\utils;
 
 /**
  * @phpstan-import-type Options from models\MastodonAccount
@@ -25,8 +26,7 @@ class Mastodon
     {
         $http = new \SpiderBits\Http();
 
-        $user_agent = \App\Configuration::$application['user_agent'];
-        $http->user_agent = $user_agent;
+        $http->user_agent = utils\UserAgent::get();
         $http->timeout = 10;
 
         return $http;

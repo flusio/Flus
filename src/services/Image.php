@@ -2,8 +2,8 @@
 
 namespace App\services;
 
-use App\utils;
 use App\models;
+use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -21,9 +21,8 @@ class Image
 
     public function __construct()
     {
-        $user_agent = \App\Configuration::$application['user_agent'];
         $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = $user_agent;
+        $this->http->user_agent = utils\UserAgent::get();
         $this->http->timeout = 10;
 
         $media_path = \App\Configuration::$application['media_path'];

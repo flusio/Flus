@@ -52,8 +52,7 @@ class LinkFetcher
         $this->cache = new \SpiderBits\Cache($cache_path);
 
         $this->http = new \SpiderBits\Http();
-        $user_agent = \App\Configuration::$application['user_agent'];
-        $this->http->user_agent = $user_agent;
+        $this->http->user_agent = utils\UserAgent::get();
         $this->http->timeout = $this->options['timeout'];
     }
 

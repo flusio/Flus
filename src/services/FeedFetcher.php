@@ -44,9 +44,8 @@ class FeedFetcher
         $cache_path = \App\Configuration::$application['cache_path'];
         $this->cache = new \SpiderBits\Cache($cache_path);
 
-        $user_agent = \App\Configuration::$application['user_agent'];
         $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = $user_agent;
+        $this->http->user_agent = utils\UserAgent::get();
         $this->http->timeout = $this->options['timeout'];
     }
 

@@ -47,7 +47,7 @@ class Feeds
         $response = Response::ok('profiles/feeds/show.atom.xml.php', [
             'user' => $user,
             'links' => $links,
-            'user_agent' => \App\Configuration::$application['user_agent'],
+            'user_agent' => utils\UserAgent::get(),
             'direct' => $direct,
         ]);
         $response->setHeader('X-Content-Type-Options', 'nosniff');
