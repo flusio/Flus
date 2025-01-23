@@ -34,7 +34,7 @@ class InactivityNotifier extends \Minz\Job
 
     public function perform(): void
     {
-        $inactive_since = \Minz\Time::ago(5, 'months');
+        $inactive_since = \Minz\Time::ago(11, 'months');
         $inactive_users = models\User::listInactiveAndNotNotified($inactive_since);
 
         $mailer = new mailers\Users();

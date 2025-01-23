@@ -100,7 +100,7 @@ class Users extends \Minz\Mailer
             return false;
         }
 
-        if (!$user->isInactive(months: 5)) {
+        if (!$user->isInactive(months: 11)) {
             \Minz\Log::warning("Can’t send inactivity email to user {$user_id} (not inactive)");
             return false;
         }

@@ -51,7 +51,7 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $now = \Minz\Time::now();
         $job = new InactivityNotifier();
-        $inactivity_months = 5;
+        $inactivity_months = 11;
         $notified_at = null;
         $validated_at = \Minz\Time::ago(1, 'year');
         $user = UserFactory::create([
@@ -80,7 +80,7 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $now = \Minz\Time::now();
         $job = new InactivityNotifier();
-        $inactivity_months = 5;
+        $inactivity_months = 11;
         $notified_at = null;
         $validated_at = null;
         $user = UserFactory::create([
@@ -101,7 +101,7 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $now = \Minz\Time::now();
         $job = new InactivityNotifier();
-        $inactivity_months = 5;
+        $inactivity_months = 11;
         $notified_at = \Minz\Time::ago(1, 'month');
         $validated_at = \Minz\Time::ago(1, 'year');
         $user = UserFactory::create([
@@ -122,7 +122,7 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $now = \Minz\Time::now();
         $job = new InactivityNotifier();
-        $inactivity_months = 4;
+        $inactivity_months = 10;
         $notified_at = null;
         $validated_at = \Minz\Time::ago(1, 'year');
         $user = UserFactory::create([
@@ -144,7 +144,7 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
         $now = \Minz\Time::now();
         $job = new InactivityNotifier();
         $support_email = \App\Configuration::$application['support_email'];
-        $inactivity_months = 5;
+        $inactivity_months = 11;
         $notified_at = null;
         $validated_at = \Minz\Time::ago(1, 'year');
         $user = UserFactory::create([

@@ -532,7 +532,7 @@ class User
         return $changed;
     }
 
-    public function isInactive(int $months = 6): bool
+    public function isInactive(int $months = 12): bool
     {
         return $this->last_activity_at < \Minz\Time::ago($months, 'months');
     }

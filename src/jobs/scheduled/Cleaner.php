@@ -44,7 +44,7 @@ class Cleaner extends \Minz\Job
         models\Token::deleteExpired();
         models\Session::deleteExpired();
         models\User::deleteInactiveAndNotified(
-            inactive_since: \Minz\Time::ago(6, 'months'),
+            inactive_since: \Minz\Time::ago(12, 'months'),
             notified_since: \Minz\Time::ago(1, 'month'),
         );
         models\Collection::deleteUnfollowedOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));

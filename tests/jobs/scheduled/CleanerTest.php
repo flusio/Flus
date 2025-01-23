@@ -141,7 +141,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $cleaner_job = new Cleaner();
-        $inactivity_months = 6;
+        $inactivity_months = 12;
         $notified_months = 1;
         $user = UserFactory::create([
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
@@ -157,7 +157,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $cleaner_job = new Cleaner();
-        $inactivity_months = 6;
+        $inactivity_months = 12;
         $user = UserFactory::create([
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
             'deletion_notified_at' => null,
@@ -172,7 +172,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $cleaner_job = new Cleaner();
-        $inactivity_months = 6;
+        $inactivity_months = 12;
         $notified_months = 0;
         $user = UserFactory::create([
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
@@ -188,7 +188,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $cleaner_job = new Cleaner();
-        $inactivity_months = 5;
+        $inactivity_months = 11;
         $notified_months = 1;
         $user = UserFactory::create([
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
@@ -220,7 +220,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $cleaner_job = new Cleaner();
         $support_email = \App\Configuration::$application['support_email'];
-        $inactivity_months = 6;
+        $inactivity_months = 12;
         $notified_months = 1;
         $user = UserFactory::create([
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
