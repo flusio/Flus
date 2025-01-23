@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2024-12-04 21:46+0100\n"
-"PO-Revision-Date: 2024-12-04 21:46+0100\n"
+"POT-Creation-Date: 2025-01-23 18:43+0100\n"
+"PO-Revision-Date: 2025-01-23 18:43+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -211,7 +211,7 @@ msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: controllers/my/Security.php:108 services/UserCreator.php:43
+#: controllers/my/Security.php:108 services/UserCreator.php:36
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
@@ -414,7 +414,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:271
+#: services/LinkFetcher.php:270
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -439,11 +439,11 @@ msgstr ""
 "Erreur Pocket : mauvaise configuration, merci de contacter le support (code "
 "erreur %d)."
 
-#: services/UserCreator.php:55
+#: services/UserCreator.php:48
 msgid "My favourites"
 msgstr "Mes favoris"
 
-#: services/UserCreator.php:58
+#: services/UserCreator.php:51
 msgid "My shares"
 msgstr "Mes partages"
 
@@ -465,16 +465,16 @@ msgstr "%s sur %s"
 msgid "This email has been sent by %s (%s)"
 msgstr "Ce courriel a été envoyé par %s (%s)"
 
-#: utils/view_helpers.php:101
+#: utils/view_helpers.php:86
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:103
+#: utils/view_helpers.php:88
 #, php-format
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:230 views/links/show.phtml:83
+#: utils/view_helpers.php:215 views/links/show.phtml:83
 msgid "you"
 msgstr "vous"
 
@@ -723,7 +723,7 @@ msgstr "Page suivante"
 #: views/links/collections/index.phtml:43 views/links/edit.phtml:44
 #: views/links/edit.phtml:73 views/links/new.phtml:42 views/links/new.phtml:59
 #: views/links/new.phtml:66 views/links/repairing/new.phtml:50
-#: views/links/searches/show.phtml:66 views/links/show.phtml:216
+#: views/links/searches/show.phtml:66 views/links/show.phtml:218
 #: views/mastodon/show.phtml:77 views/mastodon/show.phtml:132
 #: views/messages/edit.phtml:44 views/my/account/deletion.phtml:63
 #: views/my/preferences/edit.phtml:41 views/my/profile/edit.phtml:56
@@ -1125,7 +1125,7 @@ msgstr "Publiée par %s"
 
 #: views/collections/show.phtml:74 views/collections/show_public.phtml:112
 #: views/links/_link.phtml:231 views/links/_link.phtml:235
-#: views/links/show.phtml:131 views/links/show.phtml:135
+#: views/links/show.phtml:133 views/links/show.phtml:137
 #: views/news/index.phtml:47 views/news/index.phtml:135
 #: views/news/index.phtml:220
 msgid "Actions"
@@ -1137,7 +1137,7 @@ msgstr "Régler pour le journal"
 
 #: views/collections/show.phtml:122 views/groups/_group.phtml:23
 #: views/groups/_group.phtml:37 views/links/_link.phtml:283
-#: views/links/show.phtml:151 views/profiles/show.phtml:55
+#: views/links/show.phtml:153 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1168,7 +1168,7 @@ msgstr ""
 "les liens qui lui sont attachés."
 
 #: views/collections/show.phtml:194 views/links/_link.phtml:321
-#: views/links/show.phtml:168
+#: views/links/show.phtml:170
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1568,23 +1568,23 @@ msgstr "Collections"
 msgid "You already commented this link."
 msgstr "Vous avez déjà commenté ce lien."
 
-#: views/links/collections/index.phtml:113 views/links/show.phtml:200
+#: views/links/collections/index.phtml:113 views/links/show.phtml:202
 msgid "Anything else to add?"
 msgstr "Des choses à ajouter ?"
 
 #: views/links/collections/index.phtml:128
-#: views/links/collections/index.phtml:166 views/links/show.phtml:222
+#: views/links/collections/index.phtml:166 views/links/show.phtml:224
 #: views/messages/edit.phtml:50
 msgid "You can format your comment in Markdown and use #tags."
 msgstr ""
 "Vous pouvez formater votre commentaire en Markdown et utiliser des #tags."
 
 #: views/links/collections/index.phtml:142
-#: views/links/collections/index.phtml:180 views/links/show.phtml:237
+#: views/links/collections/index.phtml:180 views/links/show.phtml:239
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
-#: views/links/collections/index.phtml:151 views/links/show.phtml:198
+#: views/links/collections/index.phtml:151 views/links/show.phtml:200
 msgid "What do you think?"
 msgstr "Qu’en pensez-vous ?"
 
@@ -1713,15 +1713,15 @@ msgstr "lire"
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
-#: views/links/show.phtml:160
+#: views/links/show.phtml:162
 msgid "Are you sure that you want to delete this message?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce message ?"
 
-#: views/links/show.phtml:244
+#: views/links/show.phtml:246
 msgid "Comment"
 msgstr "Commenter"
 
-#: views/links/show.phtml:251
+#: views/links/show.phtml:253
 msgid "This link being hidden, the comments are private."
 msgstr "Ce lien étant masqué, les commentaires sont privés."
 

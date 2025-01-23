@@ -19,6 +19,11 @@
 .message__date {
     color: var(--color-text-secondary);
     font-size: var(--size-small);
+    text-decoration: none;
+}
+
+.message__date:hover {
+    text-decoration: underline;
 }
 
 .message__content {
