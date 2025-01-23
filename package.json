@@ -14,11 +14,11 @@
   },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^3",
-    "esbuild": "0.24.0",
+    "esbuild": "0.24.2",
     "eslint": "^9.4.0",
     "globals": "^15.4.0",
     "stylelint": "^16",
-    "stylelint-config-standard": "^36",
+    "stylelint-config-standard": "^37",
     "stylelint-order": "^6.0.0",
     "svg-sprite": "^2.0.0"
   },
