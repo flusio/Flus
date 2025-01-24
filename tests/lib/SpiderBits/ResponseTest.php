@@ -181,16 +181,16 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     public function testUtf8Data(): void
     {
         $content = 'Test ëéàçï';
-        $content = mb_convert_encoding($content, 'ISO-8859-1', 'UTF-8');
+        $content = mb_convert_encoding($content, 'Windows-1252', 'UTF-8');
         $text = <<<TEXT
         HTTP/2 200 OK\r
-        Content-Type: text/plain; charset="ISO-8859-1"\r
+        Content-Type: text/plain; charset="Windows-1252"\r
         \r
         {$content}
         TEXT;
         $response = Response::fromText($text);
         $encoding = $response->encoding();
-        $this->assertSame('ISO-8859-1', $encoding);
+        $this->assertSame('windows-1252', $encoding);
 
         $data = $response->utf8Data();
 
@@ -200,7 +200,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     public function testUtf8DataWithUnsupportedEncoding(): void
     {
         $content = 'Test ëéàçï';
-        $content = mb_convert_encoding($content, 'ISO-8859-1', 'UTF-8');
+        $content = mb_convert_encoding($content, 'Windows-1252', 'UTF-8');
         $text = <<<TEXT
         HTTP/2 200 OK\r
         Content-Type: text/plain; charset="Bad-Encoding"\r
@@ -209,11 +209,32 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         TEXT;
         $response = Response::fromText($text);
         $encoding = $response->encoding();
-        $this->assertSame('Bad-Encoding', $encoding);
+        $this->assertSame('bad-encoding', $encoding);
 
         $data = $response->utf8Data();
 
         $this->assertSame('Test ?????', $data);
+    }
+
+    public function testUtf8DataWithHtmlWindows1252DeclaredAsIso88591(): void
+    {
+        // HTML spec says that ISO-8859-1 should be treated as Windows-1252
+        // encoding. See https://encoding.spec.whatwg.org/#names-and-labels
+        $content = 'Test œ'; // btw, "œ" cannot be encoded in iso-8859-1
+        $content = mb_convert_encoding($content, 'Windows-1252', 'UTF-8');
+        $text = <<<TEXT
+        HTTP/2 200 OK\r
+        Content-Type: text/html; charset="ISO-8859-1"\r
+        \r
+        {$content}
+        TEXT;
+        $response = Response::fromText($text);
+        $encoding = $response->encoding();
+        $this->assertSame('windows-1252', $encoding);
+
+        $data = $response->utf8Data();
+
+        $this->assertSame('Test œ', $data);
     }
 
     public function testEncodingWithNoSpecifiedEncoding(): void
@@ -235,7 +256,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     {
         $text = <<<TEXT
         HTTP/2 200 OK\r
-        Content-Type: text/plain; charset="iso-8859-1"\r
+        Content-Type: text/plain; charset="windows-1252"\r
         \r
         Hello World!
         TEXT;
@@ -243,7 +264,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 
         $encoding = $response->encoding();
 
-        $this->assertSame('iso-8859-1', $encoding);
+        $this->assertSame('windows-1252', $encoding);
     }
 
     public function testEncodingWithHtmlMetaCharset(): void
@@ -254,7 +275,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         \r
         <html>
             <head>
-                <meta charset="iso-8859-1" />
+                <meta charset="windows-1252" />
             </head>
         </html>
         TEXT;
@@ -262,7 +283,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 
         $encoding = $response->encoding();
 
-        $this->assertSame('iso-8859-1', $encoding);
+        $this->assertSame('windows-1252', $encoding);
     }
 
     public function testEncodingWithHtmlMetaHttpEquiv(): void
@@ -273,7 +294,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         \r
         <html>
             <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
             </head>
         </html>
         TEXT;
@@ -281,7 +302,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 
         $encoding = $response->encoding();
 
-        $this->assertSame('iso-8859-1', $encoding);
+        $this->assertSame('windows-1252', $encoding);
     }
 
     public function testEncodingWithXmlEncoding(): void
@@ -290,7 +311,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         HTTP/2 200 OK\r
         Content-Type: text/xml\r
         \r
-        <?xml version="1.0" encoding="iso-8859-1"?>
+        <?xml version="1.0" encoding="windows-1252"?>
         <feed>
         </feed>
         TEXT;
@@ -298,6 +319,6 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 
         $encoding = $response->encoding();
 
-        $this->assertSame('iso-8859-1', $encoding);
+        $this->assertSame('windows-1252', $encoding);
     }
 }

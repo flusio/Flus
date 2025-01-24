@@ -81,17 +81,34 @@ class Response
     {
         /** @var string */
         $content_type = $this->header('content-type', '');
-        $data = mb_substr($this->data, 0, 5000); // look only in the first 5000 characters
-
+        $is_html = str_contains($content_type, 'text/html');
         $charset = self::extractCharsetFromContentType($content_type);
+
         if ($charset) {
-            // The charset is defined in the Content-Type.
-            return $charset;
+            $encoding = $charset;
+        } elseif ($this->data) {
+            $encoding = $this->encodingFromData($this->data, $is_html);
+        } else {
+            $encoding = 'utf-8';
         }
 
-        if (!$data) {
-            return 'utf-8';
+        // Don't trust websites that declare "iso-8859-1": it should be treated
+        // as "windows-1252" according to HTML5 spec!
+        // See https://en.wikipedia.org/wiki/Windows-1252
+        // Also https://encoding.spec.whatwg.org/#names-and-labels
+        if ($is_html && strtolower($encoding) === 'iso-8859-1') {
+            $encoding = 'windows-1252';
         }
+
+        return strtolower($encoding);
+    }
+
+    /**
+     * @param non-empty-string $data
+     */
+    private function encodingFromData(string $data, bool $is_html): string
+    {
+        $data = mb_substr($data, 0, 5000); // look only in the first 5000 characters
 
         $result = preg_match(
             '/^\s*<\?xml\s+(?:(?:.*?)\s)?encoding=[\'"](?P<encoding>.+?)[\'"]/i',
@@ -104,7 +121,7 @@ class Response
             return $matches['encoding'];
         }
 
-        if (!str_contains($content_type, 'text/html')) {
+        if (!$is_html) {
             // The document isn't declared as HTML, return UTF-8 by default.
             return 'utf-8';
         }
