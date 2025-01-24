@@ -126,8 +126,8 @@ class Feeds
         }
 
         $link_fetcher_service = new services\LinkFetcher([
-            'timeout' => 10,
-            'rate_limit' => false,
+            'http_timeout' => 10,
+            'ignore_rate_limit' => true,
         ]);
         $link_fetcher_service->fetch($default_link);
 
@@ -149,8 +149,8 @@ class Feeds
         ]);
         if (!$feed) {
             $feed_fetcher_service = new services\FeedFetcher([
-                'timeout' => 10,
-                'rate_limit' => false,
+                'http_timeout' => 10,
+                'ignore_rate_limit' => true,
             ]);
 
             $feed = models\Collection::initFeed($support_user->id, $feed_url);
@@ -182,8 +182,8 @@ class Feeds
         ]);
         if (!$feed) {
             $feed_fetcher_service = new services\FeedFetcher([
-                'timeout' => 10,
-                'rate_limit' => false,
+                'http_timeout' => 10,
+                'ignore_rate_limit' => true,
             ]);
 
             $feed = models\Collection::initFeed($support_user->id, $feed_url);

@@ -2,6 +2,7 @@
 
 namespace App\jobs\scheduled;
 
+use App\http;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\FetchLogFactory;
@@ -136,12 +137,12 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         ]);
         $feeds_sync_job = new FeedsSync();
 
-        $this->assertSame(0, models\FetchLog::count());
+        $this->assertSame(0, http\FetchLog::count());
 
         $feeds_sync_job->perform();
 
-        $this->assertSame(1, models\FetchLog::count());
-        $fetch_log = models\FetchLog::take();
+        $this->assertSame(1, http\FetchLog::count());
+        $fetch_log = http\FetchLog::take();
         $this->assertNotNull($fetch_log);
         $this->assertSame($feed_url, $fetch_log->url);
         $this->assertSame('flus.fr', $fetch_log->host);

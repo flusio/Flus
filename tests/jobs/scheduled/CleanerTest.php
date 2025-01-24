@@ -2,6 +2,7 @@
 
 namespace App\jobs\scheduled;
 
+use App\http;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\FetchLogFactory;
@@ -80,7 +81,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job->perform();
 
-        $this->assertFalse(models\FetchLog::exists($fetch_log->id));
+        $this->assertFalse(http\FetchLog::exists($fetch_log->id));
     }
 
     public function testPerformKeepsFreshFetchLogs(): void
@@ -96,7 +97,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\FetchLog::exists($fetch_log->id));
+        $this->assertTrue(http\FetchLog::exists($fetch_log->id));
     }
 
     public function testPerformDeletesExpiredSession(): void

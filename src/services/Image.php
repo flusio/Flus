@@ -2,6 +2,7 @@
 
 namespace App\services;
 
+use App\http;
 use App\models;
 use App\utils;
 
@@ -11,7 +12,7 @@ use App\utils;
  */
 class Image
 {
-    private \SpiderBits\Http $http;
+    private http\Fetcher $fetcher;
 
     private string $path_cards;
 
@@ -21,9 +22,11 @@ class Image
 
     public function __construct()
     {
-        $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = utils\UserAgent::get();
-        $this->http->timeout = 10;
+        $this->fetcher = new http\Fetcher(
+            http_timeout: 10,
+            http_max_size: 5 * 1024 * 1024,
+            ignore_rate_limit: true,
+        );
 
         $media_path = \App\Configuration::$application['media_path'];
         $this->path_cards = "{$media_path}/cards";
@@ -64,13 +67,9 @@ class Image
             return basename($card_file_exists[0]);
         }
 
-        models\FetchLog::log($image_url, 'image');
         try {
-            $options = [
-                'max_size' => 5 * 1024 * 1024,
-            ];
-            $response = $this->http->get($image_url, [], $options);
-        } catch (\SpiderBits\HttpError $e) {
+            $response = $this->fetcher->get($image_url, type: 'image');
+        } catch (http\FetcherError $e) {
             return '';
         }
 
