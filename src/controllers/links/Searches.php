@@ -133,14 +133,14 @@ class Searches
         }
 
         $link_fetcher_service = new services\LinkFetcher([
-            'timeout' => 10,
-            'rate_limit' => false,
+            'http_timeout' => 10,
+            'ignore_rate_limit' => true,
         ]);
         $link_fetcher_service->fetch($default_link);
 
         $feed_fetcher_service = new services\FeedFetcher([
-            'timeout' => 10,
-            'rate_limit' => false,
+            'http_timeout' => 10,
+            'ignore_rate_limit' => true,
         ]);
         foreach ($default_link->url_feeds as $feed_url) {
             $existing_feed = models\Collection::findBy([
