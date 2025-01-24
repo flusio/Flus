@@ -2,6 +2,7 @@
 
 namespace App\jobs\scheduled;
 
+use App\http;
 use App\models;
 use App\services;
 
@@ -40,7 +41,7 @@ class Cleaner extends \Minz\Job
 
         $support_user = models\User::supportUser();
 
-        models\FetchLog::deleteOlderThan(\Minz\Time::ago(3, 'days'));
+        http\FetchLog::deleteOlderThan(\Minz\Time::ago(3, 'days'));
         models\Token::deleteExpired();
         models\Session::deleteExpired();
         models\User::deleteInactiveAndNotified(

@@ -11,6 +11,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
@@ -26,18 +27,6 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         // When jobs_adapter is set to test, jobs are automatically triggered.
         // We don't want to fetch the links because it's too long.
         \App\Configuration::$jobs_adapter = 'database';
-    }
-
-    #[\PHPUnit\Framework\Attributes\Before]
-    public function emptyCachePath(): void
-    {
-        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
-
-        assert($files !== false);
-
-        foreach ($files as $file) {
-            unlink($file);
-        }
     }
 
     #[\PHPUnit\Framework\Attributes\AfterClass]
@@ -139,7 +128,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://not.a.domain.flus.fr/', $collection->name);
         $this->assertSame('https://not.a.domain.flus.fr/', $collection->feed_url);
         $this->assertSame(0, $collection->feed_fetched_code);
-        $this->assertSame('Could not resolve host: not.a.domain.flus.fr', $collection->feed_fetched_error);
+        $this->assertIsString($collection->feed_fetched_error);
+        $this->assertStringEndsWith('Could not resolve host: not.a.domain.flus.fr', $collection->feed_fetched_error);
     }
 
     public function testAddFailsIfUrlIsInvalid(): void

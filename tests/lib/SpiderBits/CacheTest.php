@@ -13,7 +13,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
         self::$cache_path = $cache_path;
     }
 
-    #[\PHPUnit\Framework\Attributes\Before]
+    #[\PHPUnit\Framework\Attributes\After]
     public function emptyCachePath(): void
     {
         $files = glob(self::$cache_path . '/*');

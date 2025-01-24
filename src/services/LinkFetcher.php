@@ -2,19 +2,13 @@
 
 namespace App\services;
 
+use App\http;
 use App\models;
 use App\utils;
 
 /**
  * This service helps to fetch links content. It's a wrapper around the
  * SpiderBits library.
- *
- * @phpstan-type Options array{
- *     'timeout': int,
- *     'rate_limit': bool,
- *     'cache': bool,
- *     'force_sync': bool,
- * }
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -24,36 +18,27 @@ class LinkFetcher
     public const ERROR_RATE_LIMIT = -1;
     public const ERROR_UNKNOWN = 0;
 
-    private \SpiderBits\Cache $cache;
+    private http\Fetcher $fetcher;
 
-    private \SpiderBits\Http $http;
-
-    /** @var Options */
-    private array $options = [
-        'timeout' => 10,
-        'rate_limit' => true,
-        'cache' => true,
-        'force_sync' => false,
-    ];
+    private bool $force_sync;
 
     /**
      * @param array{
-     *     'timeout'?: int,
-     *     'rate_limit'?: bool,
-     *     'cache'?: bool,
-     *     'force_sync'?: bool,
+     *     force_sync?: bool,
+     *     http_timeout?: int,
+     *     ignore_cache?: bool,
+     *     ignore_rate_limit?: bool,
      * } $options
      */
     public function __construct(array $options = [])
     {
-        $this->options = array_merge($this->options, $options);
+        $this->fetcher = new http\Fetcher(
+            http_timeout: $options['http_timeout'] ?? 10,
+            ignore_cache: $options['ignore_cache'] ?? false,
+            ignore_rate_limit: $options['ignore_rate_limit'] ?? false,
+        );
 
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $this->cache = new \SpiderBits\Cache($cache_path);
-
-        $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = utils\UserAgent::get();
-        $this->http->timeout = $this->options['timeout'];
+        $this->force_sync = $options['force_sync'] ?? false;
     }
 
     /**
@@ -83,7 +68,7 @@ class LinkFetcher
         $title_never_changed = $link->title === $link->url;
         if (
             isset($info['title']) &&
-            ($this->options['force_sync'] || $title_never_changed)
+            ($this->force_sync || $title_never_changed)
         ) {
             $link->title = $info['title'];
         }
@@ -91,7 +76,7 @@ class LinkFetcher
         $reading_never_changed = $link->reading_time <= 0;
         if (
             isset($info['reading_time']) &&
-            ($this->options['force_sync'] || $reading_never_changed)
+            ($this->force_sync || $reading_never_changed)
         ) {
             $link->reading_time = $info['reading_time'];
         }
@@ -99,7 +84,7 @@ class LinkFetcher
         $illustration_never_set = empty($link->image_filename);
         if (
             isset($info['url_illustration']) &&
-            ($this->options['force_sync'] || $illustration_never_set)
+            ($this->force_sync || $illustration_never_set)
         ) {
             $image_service = new Image();
             $image_filename = $image_service->generatePreviews($info['url_illustration']);
@@ -131,87 +116,17 @@ class LinkFetcher
      */
     public function fetchUrl(string $url): array
     {
-        // First, we get information about rate limit and IP to select to
-        // execute the request (for Youtube).
-        $server_ips = \App\Configuration::$application['server_ips'];
-        if (!$this->options['rate_limit']) {
-            // rate limit is disabled for this call
-            $is_rate_limited = false;
-            $selected_ip = null;
-        } elseif ($server_ips && $this->isYoutube($url)) {
-            // Youtube has a strict rate limit (1 req/min), so we load balance
-            // the requests on different IPs if the admin set the options.
-            $is_rate_limited = true;
-            $selected_ip = null;
-            // shuffle the IPs so it's not always the same IPs that fetch
-            // Youtube
-            shuffle($server_ips);
-            foreach ($server_ips as $server_ip) {
-                // we calculate the rate limit for the given IP and if it
-                // hasn't been reached, we select the IP to be passed to Curl.
-                $is_rate_limited = models\FetchLog::hasReachedRateLimit(
-                    $url,
-                    'link',
-                    $server_ip
-                );
-                if (!$is_rate_limited) {
-                    $selected_ip = $server_ip;
-                    break;
-                }
-            }
-        } else {
-            // the default case where we calculate the reach limit and select
-            // no interface.
-            $is_rate_limited = models\FetchLog::hasReachedRateLimit($url, 'link');
-            $selected_ip = null;
-        }
-
-        // Then, we "GET" the URL...
-        $url_hash = \SpiderBits\Cache::hash($url);
-        $cached_response = $this->cache->get($url_hash);
-        if ($this->options['cache'] && $cached_response) {
-            // ... via the cache
-            $response = \SpiderBits\Response::fromText($cached_response);
-        } elseif (!$is_rate_limited) {
-            // ... or via HTTP
-            $options = [
-                'max_size' => 20 * 1024 * 1024,
-            ];
-
-            // If we fetch Twitter or Youtube, we need to alter our user agent
-            // to get server-side rendered content.
-            if ($this->isTwitter($url)) {
-                // @see https://stackoverflow.com/a/64332370
-                $options['user_agent'] = $this->http->user_agent . ' (compatible; bot)';
-            } elseif ($this->isYoutube($url)) {
-                // @see https://stackoverflow.com/a/46616889
-                $options['user_agent'] = $this->http->user_agent . ' (compatible; facebookexternalhit/1.1)';
-            }
-
-            if ($selected_ip) {
-                $options['interface'] = $selected_ip;
-                models\FetchLog::log($url, 'link', $selected_ip);
-            } else {
-                models\FetchLog::log($url, 'link');
-            }
-
-            try {
-                $response = $this->http->get($url, [], $options);
-            } catch (\SpiderBits\HttpError $e) {
-                return [
-                    'status' => self::ERROR_UNKNOWN,
-                    'error' => $e->getMessage(),
-                ];
-            }
-
-            // that we add to cache on success
-            if ($response->success) {
-                $this->cache->save($url_hash, (string)$response);
-            }
-        } else {
+        try {
+            $response = $this->fetcher->get($url, type: 'link');
+        } catch (http\RateLimitError $e) {
             return [
                 'status' => self::ERROR_RATE_LIMIT,
                 'error' => 'Reached rate limit',
+            ];
+        } catch (http\UnexpectedHttpError $e) {
+            return [
+                'status' => self::ERROR_UNKNOWN,
+                'error' => $e->getMessage(),
             ];
         }
 

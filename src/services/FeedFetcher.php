@@ -2,51 +2,36 @@
 
 namespace App\services;
 
+use App\http;
 use App\models;
 use App\utils;
 
 /**
- * @phpstan-type Options array{
- *     'timeout': int,
- *     'rate_limit': bool,
- *     'cache': bool,
- * }
- *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class FeedFetcher
 {
     public const ERROR_RATE_LIMIT = -1;
+    public const ERROR_UNKNOWN = 0;
 
-    private \SpiderBits\Cache $cache;
-
-    private \SpiderBits\Http $http;
-
-    /** @var Options */
-    private array $options = [
-        'timeout' => 20,
-        'rate_limit' => true,
-        'cache' => true,
-    ];
+    private http\Fetcher $fetcher;
 
     /**
      * @param array{
-     *     'timeout'?: int,
-     *     'rate_limit'?: bool,
-     *     'cache'?: bool,
+     *     http_timeout?: int,
+     *     ignore_cache?: bool,
+     *     ignore_rate_limit?: bool,
      * } $options
      */
     public function __construct(array $options = [])
     {
-        $this->options = array_merge($this->options, $options);
-
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $this->cache = new \SpiderBits\Cache($cache_path);
-
-        $this->http = new \SpiderBits\Http();
-        $this->http->user_agent = utils\UserAgent::get();
-        $this->http->timeout = $this->options['timeout'];
+        $this->fetcher = new http\Fetcher(
+            http_timeout: $options['http_timeout'] ?? 20,
+            cache_duration: 1 * 60 * 60,
+            ignore_cache: $options['ignore_cache'] ?? false,
+            ignore_rate_limit: $options['ignore_rate_limit'] ?? false,
+        );
     }
 
     /**
@@ -237,8 +222,8 @@ class FeedFetcher
 
         if (!$collection->image_fetched_at && $collection->feed_site_url) {
             try {
-                $response = $this->http->get($collection->feed_site_url);
-            } catch (\SpiderBits\HttpError $e) {
+                $response = $this->fetcher->get($collection->feed_site_url, type: 'link');
+            } catch (http\FetcherError $e) {
                 return;
             }
 
@@ -288,76 +273,17 @@ class FeedFetcher
      */
     public function fetchUrl(string $url): array
     {
-        // First, we get information about rate limit and IP to select to
-        // execute the request (for Youtube).
-        $server_ips = \App\Configuration::$application['server_ips'];
-        if (!$this->options['rate_limit']) {
-            // rate limit is disabled for this call
-            $is_rate_limited = false;
-            $selected_ip = null;
-        } elseif ($server_ips && $this->isYoutube($url)) {
-            // Youtube has a strict rate limit, so we load balance the requests
-            // on different IPs if the admin set the options.
-            $is_rate_limited = true;
-            $selected_ip = null;
-            // shuffle the IPs so it's not always the same IPs that fetch
-            // Youtube
-            shuffle($server_ips);
-            foreach ($server_ips as $server_ip) {
-                // we calculate the rate limit for the given IP and if it
-                // hasn't been reached, we select the IP to be passed to Curl.
-                $is_rate_limited = models\FetchLog::hasReachedRateLimit(
-                    $url,
-                    'feed',
-                    $server_ip
-                );
-                if (!$is_rate_limited) {
-                    $selected_ip = $server_ip;
-                    break;
-                }
-            }
-        } else {
-            // the default case where we calculate the reach limit and select
-            // no interface.
-            $is_rate_limited = models\FetchLog::hasReachedRateLimit($url, 'feed');
-            $selected_ip = null;
-        }
-
-        // First, we "GET" the URL...
-        $url_hash = \SpiderBits\Cache::hash($url);
-        $cached_response = $this->cache->get($url_hash, 60 * 60);
-        if ($this->options['cache'] && $cached_response) {
-            // ... via the cache
-            $response = \SpiderBits\Response::fromText($cached_response);
-        } elseif (!$is_rate_limited) {
-            // ... or via HTTP
-            $options = [
-                'max_size' => 20 * 1024 * 1024,
-            ];
-            if ($selected_ip) {
-                $options['interface'] = $selected_ip;
-                models\FetchLog::log($url, 'feed', $selected_ip);
-            } else {
-                models\FetchLog::log($url, 'feed');
-            }
-
-            try {
-                $response = $this->http->get($url, [], $options);
-            } catch (\SpiderBits\HttpError $e) {
-                return [
-                    'status' => 0,
-                    'error' => $e->getMessage(),
-                ];
-            }
-
-            // that we add to cache on success
-            if ($response->success) {
-                $this->cache->save($url_hash, (string)$response);
-            }
-        } else {
+        try {
+            $response = $this->fetcher->get($url, type: 'feed');
+        } catch (http\RateLimitError $e) {
             return [
                 'status' => self::ERROR_RATE_LIMIT,
                 'error' => 'Reached rate limit',
+            ];
+        } catch (http\UnexpectedHttpError $e) {
+            return [
+                'status' => self::ERROR_UNKNOWN,
+                'error' => $e->getMessage(),
             ];
         }
 
@@ -460,17 +386,5 @@ class FeedFetcher
         }
 
         return $to_create;
-    }
-
-    /**
-     * Return true if the url is pointing to Youtube
-     */
-    private function isYoutube(string $url): bool
-    {
-        $host = utils\Belt::host($url);
-        return (
-            str_ends_with($host, 'youtube.com') ||
-            str_ends_with($host, 'youtu.be')
-        );
     }
 }

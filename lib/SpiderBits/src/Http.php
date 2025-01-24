@@ -9,7 +9,7 @@ namespace SpiderBits;
  *     'user_agent'?: string,
  *     'auth_basic'?: string,
  *     'force_ipv4'?: bool,
- *     'interface'?: string,
+ *     'interface'?: ?string,
  *     'max_size'?: int,
  *     'headers'?: array<string, string>,
  * }

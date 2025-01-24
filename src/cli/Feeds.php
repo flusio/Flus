@@ -105,7 +105,7 @@ class Feeds
         }
 
         $feed_fetcher_service = new services\FeedFetcher([
-            'cache' => !$nocache,
+            'ignore_cache' => $nocache,
         ]);
         $feed_fetcher_service->fetch($collection);
 

@@ -10,20 +10,8 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\MockHttpHelper;
-
-    #[\PHPUnit\Framework\Attributes\Before]
-    public function emptyCachePath(): void
-    {
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $files = glob($cache_path . '/*');
-
-        assert($files !== false);
-
-        foreach ($files as $file) {
-            unlink($file);
-        }
-    }
 
     public function testFetchSavesNewLinkInfo(): void
     {

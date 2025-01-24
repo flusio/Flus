@@ -116,8 +116,8 @@ class Repairing
         }
 
         $link_fetcher_service = new services\LinkFetcher([
-            'timeout' => 10,
-            'rate_limit' => false,
+            'http_timeout' => 10,
+            'ignore_rate_limit' => true,
             'force_sync' => $force_sync,
         ]);
         $link_fetcher_service->fetch($link);

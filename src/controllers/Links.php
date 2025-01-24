@@ -351,8 +351,8 @@ class Links
             $link = $existing_link;
         } else {
             $link_fetcher_service = new services\LinkFetcher([
-                'timeout' => 10,
-                'rate_limit' => false,
+                'http_timeout' => 10,
+                'ignore_rate_limit' => true,
             ]);
             $link_fetcher_service->fetch($link);
         }

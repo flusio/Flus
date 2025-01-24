@@ -2,6 +2,7 @@
 
 namespace App\jobs\scheduled;
 
+use App\http;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\FetchLogFactory;
@@ -15,19 +16,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\MockHttpHelper;
-
-    #[\PHPUnit\Framework\Attributes\Before]
-    public function emptyCachePath(): void
-    {
-        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
-
-        assert($files !== false);
-
-        foreach ($files as $file) {
-            unlink($file);
-        }
-    }
 
     public function testQueue(): void
     {
@@ -104,6 +94,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         ]);
         $feeds_sync_job = new FeedsSync();
 
+        $this->assertSame(0, http\FetchLog::count());
+
         $feeds_sync_job->perform();
 
         $collection = $collection->reload();
@@ -114,37 +106,20 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection->locked_at);
         $links_number = count($collection->links());
         $this->assertSame(3, $links_number);
-    }
 
-    public function testPerformLogsFetch(): void
-    {
-        /** @var string */
-        $old_name = $this->fake('sentence');
-        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'name' => $old_name,
-            'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
-        ]);
-        $user = UserFactory::create([
-            'validated_at' => \Minz\Time::now(),
-        ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-        ]);
-        $feeds_sync_job = new FeedsSync();
-
-        $this->assertSame(0, models\FetchLog::count());
-
-        $feeds_sync_job->perform();
-
-        $this->assertSame(1, models\FetchLog::count());
-        $fetch_log = models\FetchLog::take();
-        $this->assertNotNull($fetch_log);
-        $this->assertSame($feed_url, $fetch_log->url);
-        $this->assertSame('flus.fr', $fetch_log->host);
+        $this->assertSame(3, http\FetchLog::count());
+        $fetch_log1 = http\FetchLog::take(0);
+        $fetch_log2 = http\FetchLog::take(1);
+        $fetch_log3 = http\FetchLog::take(2);
+        $this->assertNotNull($fetch_log1);
+        $this->assertNotNull($fetch_log2);
+        $this->assertNotNull($fetch_log3);
+        $this->assertSame($feed_url, $fetch_log1->url);
+        $this->assertSame('flus.fr', $fetch_log1->host);
+        $this->assertSame($url, $fetch_log2->url);
+        $this->assertSame('flus.fr', $fetch_log2->host);
+        $this->assertSame($card_url, $fetch_log3->url);
+        $this->assertSame('flus.fr', $fetch_log3->host);
     }
 
     public function testPerformSavesResponseInCache(): void

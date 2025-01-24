@@ -1,17 +1,58 @@
 <?php
 
-namespace App\models\dao;
+namespace App\http;
 
+use App\utils;
 use Minz\Database;
 
 /**
+ * Represent an HTTP request log made to an external website.
+ *
+ * It is useful to make statistics and to rate limit the requests.
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait FetchLog
+#[Database\Table(name: 'fetch_logs')]
+class FetchLog
 {
+    use Database\Recordable;
+
+    #[Database\Column]
+    public int $id;
+
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
+
+    #[Database\Column]
+    public string $url;
+
+    #[Database\Column]
+    public string $host;
+
+    #[Database\Column]
+    public string $type;
+
+    #[Database\Column]
+    public ?string $ip;
+
     /**
-     * Return the number of fetch_logs by type
+     * Create a log in DB for the given URL.
+     */
+    public static function log(string $url, string $type, ?string $ip = null): void
+    {
+        $fetch_log = new self();
+
+        $fetch_log->url = $url;
+        $fetch_log->host = utils\Belt::host($url);
+        $fetch_log->type = $type;
+        $fetch_log->ip = $ip;
+
+        $fetch_log->save();
+    }
+
+    /**
+     * Return the number of fetch_logs by type.
      */
     public static function countByType(string $type): int
     {
@@ -56,17 +97,17 @@ trait FetchLog
     }
 
     /**
-     * Return the number of calls to a host since a given time.
+     * Return the number of calls to the url's host since a given time.
      */
     public static function countFetchesToHost(
-        string $host,
+        string $url,
         \DateTimeImmutable $since,
         ?string $type = null,
         ?string $ip = null
     ): int {
         $since = $since->format(Database\Column::DATETIME_FORMAT);
         $values = [
-            ':host' => $host,
+            ':host' => utils\Belt::host($url),
             ':since' => $since,
         ];
 

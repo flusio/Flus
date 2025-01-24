@@ -2,7 +2,7 @@
 
 namespace App\jobs\scheduled;
 
-use App\models;
+use App\http;
 use tests\factories\FetchLogFactory;
 use tests\factories\LinkFactory;
 
@@ -11,19 +11,8 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\MockHttpHelper;
-
-    #[\PHPUnit\Framework\Attributes\Before]
-    public function emptyCachePath(): void
-    {
-        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
-
-        assert($files !== false);
-
-        foreach ($files as $file) {
-            unlink($file);
-        }
-    }
 
     public function testQueue(): void
     {
@@ -110,12 +99,12 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         ]);
         $links_fetcher_job = new LinksSync();
 
-        $this->assertSame(0, models\FetchLog::count());
+        $this->assertSame(0, http\FetchLog::count());
 
         $links_fetcher_job->perform();
 
-        $this->assertGreaterThanOrEqual(1, models\FetchLog::count());
-        $fetch_log = models\FetchLog::take();
+        $this->assertGreaterThanOrEqual(1, http\FetchLog::count());
+        $fetch_log = http\FetchLog::take();
         $this->assertNotNull($fetch_log);
         $this->assertSame($url, $fetch_log->url);
         $this->assertSame('flus.fr', $fetch_log->host);

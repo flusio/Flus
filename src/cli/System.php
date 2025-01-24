@@ -4,6 +4,7 @@ namespace App\cli;
 
 use Minz\Request;
 use Minz\Response;
+use App\http;
 use App\models;
 use App\utils;
 
@@ -125,11 +126,11 @@ class System
                 'count_collections_public' => models\Collection::countCollectionsPublic(),
                 'count_feeds' => models\Collection::countFeeds(),
                 'count_feeds_by_hours' => models\Collection::countFeedsByHours(),
-                'count_requests' => models\FetchLog::countEstimated(),
-                'count_requests_feeds' => models\FetchLog::countByType('feed'),
-                'count_requests_links' => models\FetchLog::countByType('link'),
-                'count_requests_images' => models\FetchLog::countByType('image'),
-                'count_requests_by_days' => models\FetchLog::countByDays(),
+                'count_requests' => http\FetchLog::countEstimated(),
+                'count_requests_feeds' => http\FetchLog::countByType('feed'),
+                'count_requests_links' => http\FetchLog::countByType('link'),
+                'count_requests_images' => http\FetchLog::countByType('image'),
+                'count_requests_by_days' => http\FetchLog::countByDays(),
             ]);
         }
     }

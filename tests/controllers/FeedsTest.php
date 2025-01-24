@@ -14,20 +14,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\LoginHelper;
     use \tests\MockHttpHelper;
-
-    #[\PHPUnit\Framework\Attributes\Before]
-    public function emptyCachePath(): void
-    {
-        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
-
-        assert($files !== false);
-
-        foreach ($files as $file) {
-            unlink($file);
-        }
-    }
 
     public function testIndexRendersCorrectly(): void
     {

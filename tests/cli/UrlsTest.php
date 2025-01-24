@@ -7,24 +7,13 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\MockHttpHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void
     {
         self::$application = new \App\cli\Application();
-    }
-
-    #[\PHPUnit\Framework\Attributes\Before]
-    public function emptyCachePath(): void
-    {
-        $files = glob(\App\Configuration::$application['cache_path'] . '/*');
-
-        assert($files !== false);
-
-        foreach ($files as $file) {
-            unlink($file);
-        }
     }
 
     public function testShowRendersCorrectly(): void
