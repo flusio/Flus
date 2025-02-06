@@ -27,7 +27,7 @@
         "ext-gd": "*",
         "ext-pdo": "*",
         "ext-pdo_pgsql": "*",
-        "flus/minz": "dev-main",
+        "flus/minz": "^1.0",
         "erusev/parsedown": "^1.7"
     },
     "require-dev": {

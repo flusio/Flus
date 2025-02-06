@@ -2,10 +2,11 @@
 
 namespace App\controllers;
 
+use Minz\Mailer;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
-use App\jobs;
+use App\mailers;
 use App\models;
 use App\services;
 
@@ -155,8 +156,8 @@ class Registrations
 
         auth\CurrentUser::setSessionToken($session_token->token);
 
-        $mailer_job = new jobs\Mailer();
-        $mailer_job->performAsap('Users', 'sendAccountValidationEmail', $user->id);
+        $mailer_job = new Mailer\Job();
+        $mailer_job->performAsap(mailers\Users::class, 'sendAccountValidationEmail', $user->id);
 
         $response = Response::redirect('onboarding');
         $response->setCookie('session_token', $session_token->token, [

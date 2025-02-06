@@ -2,10 +2,11 @@
 
 namespace App\controllers;
 
+use Minz\Mailer;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
-use App\jobs;
+use App\mailers;
 use App\models;
 
 /**
@@ -95,8 +96,8 @@ class Passwords
         $user->reset_token = $reset_token->token;
         $user->save();
 
-        $mailer_job = new jobs\Mailer();
-        $mailer_job->performAsap('Users', 'sendResetPasswordEmail', $user->id);
+        $mailer_job = new Mailer\Job();
+        $mailer_job->performAsap(mailers\Users::class, 'sendResetPasswordEmail', $user->id);
 
         \Minz\Flash::set('email_sent', true);
 

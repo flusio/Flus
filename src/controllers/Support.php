@@ -2,10 +2,11 @@
 
 namespace App\controllers;
 
+use Minz\Mailer;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
-use App\jobs;
+use App\mailers;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -88,11 +89,11 @@ class Support
             ]);
         }
 
-        $mailer_job = new jobs\Mailer();
-        $mailer_job->performAsap('Support', 'sendMessage', $user->id, $subject, $message);
+        $mailer_job = new Mailer\Job();
+        $mailer_job->performAsap(mailers\Support::class, 'sendMessage', $user->id, $subject, $message);
 
-        $mailer_job = new jobs\Mailer();
-        $mailer_job->performAsap('Support', 'sendNotification', $user->id, $subject);
+        $mailer_job = new Mailer\Job();
+        $mailer_job->performAsap(mailers\Support::class, 'sendNotification', $user->id, $subject);
 
         \Minz\Flash::set('message_sent', true);
 
