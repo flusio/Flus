@@ -103,6 +103,17 @@ CREATE TABLE fetch_logs (
 CREATE INDEX idx_fetch_logs_host_created_at ON fetch_logs(host, created_at);
 CREATE INDEX idx_fetch_logs_created_at ON fetch_logs(created_at);
 
+CREATE TABLE cache_entries (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    expired_at TIMESTAMPTZ NOT NULL,
+    key TEXT NOT NULL,
+    url TEXT NOT NULL,
+    response_path TEXT NOT NULL
+);
+
+CREATE INDEX idx_cache_entries_key ON cache_entries USING hash(key);
+
 CREATE TABLE groups (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
