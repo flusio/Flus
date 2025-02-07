@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-01-23 18:43+0100\n"
-"PO-Revision-Date: 2025-01-23 18:43+0100\n"
+"POT-Creation-Date: 2025-02-07 11:44+0100\n"
+"PO-Revision-Date: 2025-02-07 11:45+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -50,9 +50,9 @@ msgstr "Afficher"
 #: controllers/Feeds.php:107 controllers/Groups.php:90
 #: controllers/Links.php:268 controllers/Links.php:440
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
-#: controllers/News.php:76 controllers/Passwords.php:88
-#: controllers/Passwords.php:191 controllers/Registrations.php:102
-#: controllers/Sessions.php:85 controllers/Support.php:70
+#: controllers/News.php:76 controllers/Passwords.php:89
+#: controllers/Passwords.php:192 controllers/Registrations.php:103
+#: controllers/Sessions.php:85 controllers/Support.php:71
 #: controllers/collections/Filters.php:105
 #: controllers/collections/Followers.php:49
 #: controllers/collections/Followers.php:93
@@ -62,8 +62,8 @@ msgstr "Afficher"
 #: controllers/links/Messages.php:84 controllers/links/Repairing.php:99
 #: controllers/links/Searches.php:111 controllers/my/Account.php:108
 #: controllers/my/Preferences.php:82 controllers/my/Profile.php:71
-#: controllers/my/Security.php:93 controllers/my/Security.php:209
-#: controllers/my/Subscription.php:70 controllers/my/Validation.php:135
+#: controllers/my/Security.php:95 controllers/my/Security.php:219
+#: controllers/my/Subscription.php:70 controllers/my/Validation.php:136
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -117,26 +117,26 @@ msgstr "L’URL est invalide."
 msgid "The Mastodon host returned an error, please try later."
 msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 
-#: controllers/Passwords.php:66 controllers/Sessions.php:96 models/User.php:55
+#: controllers/Passwords.php:67 controllers/Sessions.php:96 models/User.php:55
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: controllers/Passwords.php:79 controllers/Sessions.php:110
+#: controllers/Passwords.php:80 controllers/Sessions.php:110
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
-#: controllers/Passwords.php:123 controllers/Passwords.php:130
-#: controllers/Passwords.php:170 controllers/Passwords.php:177
-#: controllers/my/Validation.php:59 controllers/my/Validation.php:72
+#: controllers/Passwords.php:124 controllers/Passwords.php:131
+#: controllers/Passwords.php:171 controllers/Passwords.php:178
+#: controllers/my/Validation.php:60 controllers/my/Validation.php:73
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
-#: controllers/Passwords.php:136 controllers/Passwords.php:183
+#: controllers/Passwords.php:137 controllers/Passwords.php:184
 msgid "The token has expired, you should reset your password again."
 msgstr ""
 "Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
 
-#: controllers/Registrations.php:115
+#: controllers/Registrations.php:116
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
@@ -147,15 +147,15 @@ msgstr ""
 "support."
 
 #: controllers/Sessions.php:130 controllers/my/Account.php:115
-#: controllers/my/Security.php:217
+#: controllers/my/Security.php:227
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
-#: controllers/Support.php:76
+#: controllers/Support.php:77
 msgid "The subject is required."
 msgstr "Le sujet est obligatoire."
 
-#: controllers/Support.php:79 models/Message.php:29
+#: controllers/Support.php:80 models/Message.php:29
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
@@ -211,7 +211,12 @@ msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: controllers/my/Security.php:108 services/UserCreator.php:36
+#: controllers/my/Security.php:103
+msgid "Sorry but you cannot change the login details for the demo account 😉"
+msgstr ""
+"Désolé mais vous ne pouvez pas changer les identifiants du compte de démo 😉"
+
+#: controllers/my/Security.php:118 services/UserCreator.php:36
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
@@ -229,7 +234,7 @@ msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
 
-#: controllers/my/Validation.php:65
+#: controllers/my/Validation.php:66
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
@@ -265,27 +270,27 @@ msgstr "Favoris Pocket"
 msgid "All your favorites imported from Pocket."
 msgstr "Tous vos favoris importés depuis Pocket."
 
-#: mailers/Support.php:29
+#: mailers/Support.php:32
 #, php-format
 msgid "[%s] Contact: %s"
 msgstr "[%s] Contact : %s"
 
-#: mailers/Support.php:61
+#: mailers/Support.php:68
 #, php-format
 msgid "[%s] Your message has been sent"
 msgstr "[%s] Votre message a été envoyé"
 
-#: mailers/Users.php:44
+#: mailers/Users.php:46
 #, php-format
 msgid "[%s] Confirm your account"
 msgstr "[%s] Confirmer votre compte"
 
-#: mailers/Users.php:77
+#: mailers/Users.php:84
 #, php-format
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
-#: mailers/Users.php:116
+#: mailers/Users.php:128
 #, php-format
 msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d'inactivité"
@@ -414,7 +419,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:270
+#: services/LinkFetcher.php:185
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"

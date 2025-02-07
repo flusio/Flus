@@ -61,6 +61,8 @@ class Security
      *    If the password is not confirmed.
      * @response 400
      *    If the CSRF token or the email is invalid.
+     * @response 400
+     *     If trying to change the demo account credentials if demo is enabled
      * @response 302 /my/security
      *    On success
      */
@@ -91,6 +93,14 @@ class Security
             return Response::badRequest('my/security/show.phtml', [
                 'email' => $email,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
+            ]);
+        }
+
+        $demo = \App\Configuration::$application['demo'];
+        if ($demo && $user->email === 'demo@flus.io') {
+            return Response::badRequest('my/security/show.phtml', [
+                'email' => $email,
+                'error' => _('Sorry but you cannot change the login details for the demo account 😉'),
             ]);
         }
 

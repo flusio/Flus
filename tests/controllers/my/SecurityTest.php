@@ -368,6 +368,41 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
+    public function testUpdateFailsIfChangingDemoAccount(): void
+    {
+        \App\Configuration::$application['demo'] = true;
+
+        $old_email = 'demo@flus.io';
+        /** @var string */
+        $new_email = $this->fake('email');
+        /** @var string */
+        $old_password = $this->fake('password');
+        /** @var string */
+        $new_password = $this->fake('password');
+        $user = $this->login([
+            'email' => $old_email,
+            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+        ], [], [
+            'confirmed_password_at' => \Minz\Time::now(),
+        ]);
+
+        $response = $this->appRun('POST', '/my/security', [
+            'csrf' => $user->csrf,
+            'email' => $new_email,
+            'password' => $new_password,
+        ]);
+
+        \App\Configuration::$application['demo'] = false;
+        $this->assertResponseCode($response, 400, '/my/security');
+        $this->assertResponseContains(
+            $response,
+            'Sorry but you cannot change the login details for the demo account 😉'
+        );
+        $user = $user->reload();
+        $this->assertSame($old_email, $user->email);
+        $this->assertTrue($user->verifyPassword($old_password));
+    }
+
     public function testConfirmationRendersCorrectly(): void
     {
         /** @var \DateTimeImmutable */
