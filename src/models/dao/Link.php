@@ -204,6 +204,35 @@ trait Link
         return self::fromDatabaseRows($statement->fetchAll());
     }
 
+
+    /**
+     * Return the links of the given collection since the given time.
+     *
+     * @return self[]
+     */
+    public static function listByCollectionSince(models\Collection $collection, \DateTimeImmutable $since): array
+    {
+        $sql = <<<SQL
+            SELECT l.*, lc.created_at AS published_at
+            FROM links l, links_to_collections lc
+
+            WHERE lc.link_id = l.id
+            AND lc.collection_id = :collection_id
+            AND lc.created_at >= :since
+
+            ORDER BY lc.created_at
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':collection_id' => $collection->id,
+            ':since' => $since->format(Database\Column::DATETIME_FORMAT),
+        ]);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
     /**
      * Return links of the given collection with its computed properties.
      *

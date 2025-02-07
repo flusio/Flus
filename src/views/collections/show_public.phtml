@@ -85,6 +85,11 @@
                         <?= _f('Feed from <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', protect($collection->feed_url), protect($collection->feedWebsite())) ?>
                     <?php endif; ?>
                 </p>
+
+                <p title="<?= _('Publication frequency') ?>">
+                    <?= icon('line-chart') ?>
+                    <?= format_publication_frequency($collection->publicationFrequencyPerYear()) ?>
+                </p>
             </div>
         <?php else: ?>
             <div class="section__details">
@@ -94,6 +99,11 @@
                     <?php endif; ?>
 
                     <?= _f('Published by %s', collection_publishers($collection, $current_user)) ?></li>
+                </p>
+
+                <p title="<?= _('Publication frequency') ?>">
+                    <?= icon('line-chart') ?>
+                    <?= format_publication_frequency($collection->publicationFrequencyPerYear()) ?>
                 </p>
             </div>
         <?php endif; ?>

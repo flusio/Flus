@@ -60,6 +60,11 @@
 
                 <?= _f('Published by %s', collection_publishers($collection, $current_user)) ?></li>
             </p>
+
+            <p title="<?= _('Publication frequency') ?>">
+                <?= icon('line-chart') ?>
+                <?= format_publication_frequency($collection->publicationFrequencyPerYear()) ?>
+            </p>
         </div>
 
         <div class="section__actions">

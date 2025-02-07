@@ -369,4 +369,31 @@ class Collection
             return utils\HtmlSanitizer::sanitizeCollectionDescription($this->description, $site_url);
         }
     }
+
+    /**
+     * Return the publication frequency of the collection.
+     */
+    public function publicationFrequencyPerYear(): int
+    {
+        $today = \Minz\Time::now();
+        $one_year_ago = \Minz\Time::ago(1, 'year');
+
+        $last_year_links = Link::listByCollectionSince($this, $one_year_ago);
+        $count_links = count($last_year_links);
+
+        if ($count_links === 0) {
+            return 0;
+        }
+
+        $oldest_link = $last_year_links[0];
+
+        if ($oldest_link->published_at === null) {
+            throw new \LogicException('Link published_at must be set');
+        }
+
+        $diff_since_oldest_link = $today->diff($oldest_link->published_at);
+        $number_of_days = intval($diff_since_oldest_link->format('%a')) + 1;
+
+        return (int) round($count_links / $number_of_days * 365);
+    }
 }
