@@ -1,8 +1,8 @@
 # Changelog of Flus
 
-## unreleased - v1.2.0
+## 2025-02-07 - v1.2.0
 
-### Breaking change
+### Migration notes
 
 Flus now requires [Composer](https://getcomposer.org/) in production.
 You must install it and install the dependencies with:
@@ -12,6 +12,46 @@ $ composer install --no-dev --optimize-autoloader
 ```
 
 See [the documentation to update Flus.](/docs/update.md)
+
+### New
+
+- Delete automatically users after 1 year of inactivity ([2e744913](https://github.com/flusio/Flus/commit/2e744913), [fb625995](https://github.com/flusio/Flus/commit/fb625995))
+
+### Improvements
+
+- Display the collections' publication frequency ([8c490ae8](https://github.com/flusio/Flus/commit/8c490ae8))
+- Allow titles in Markdown content ([6dcac125](https://github.com/flusio/Flus/commit/6dcac125))
+- Allow to get a link to a comment ([94eda9ed](https://github.com/flusio/Flus/commit/94eda9ed))
+- Always display the full date of comments ([537d6ce1](https://github.com/flusio/Flus/commit/537d6ce1))
+- Homogeneize and improve the look of the emails ([7c9447de](https://github.com/flusio/Flus/commit/7c9447de), [9d89091c](https://github.com/flusio/Flus/commit/9d89091c), [b647b99e](https://github.com/flusio/Flus/commit/b647b99e), [8cccaa22](https://github.com/flusio/Flus/commit/8cccaa22))
+- Forbid changing the credentials of the demo account ([ab30c7af](https://github.com/flusio/Flus/commit/ab30c7af))
+
+### Bug fixes
+
+- Treat ISO-8859-1 HTML responses as Windows-1252 ([a58a5dee](https://github.com/flusio/Flus/commit/a58a5dee))
+- Fix the URL duplicating itself in the user agent ([30cbfaca](https://github.com/flusio/Flus/commit/30cbfaca))
+- Allow to setup Flus if the database already exists ([f8dc4024](https://github.com/flusio/Flus/commit/f8dc4024), [eda82090](https://github.com/flusio/Flus/commit/eda82090))
+- Handle correctly invalid HTTP method errors ([d73bab29](https://github.com/flusio/Flus/commit/d73bab29))
+
+### Technical
+
+- Configure Flus with Composer ([24c91753](https://github.com/flusio/Flus/commit/24c91753))
+- Send "Accept" header when fetching feeds ([59fd37f3](https://github.com/flusio/Flus/commit/59fd37f3))
+- Update the dependencies ([4a39d517](https://github.com/flusio/Flus/commit/4a39d517), [c04aa670](https://github.com/flusio/Flus/commit/c04aa670), [230e6a41](https://github.com/flusio/Flus/commit/230e6a41))
+
+### Developers
+
+- Upgrade to Minz 1.0 ([9872079a](https://github.com/flusio/Flus/commit/9872079a))
+- Improve the PR template ([1fc47468](https://github.com/flusio/Flus/commit/1fc47468))
+- Refactor fetching HTTP resources ([b3366ae7](https://github.com/flusio/Flus/commit/b3366ae7))
+- Extract a FilesystemHelper class ([da442a4c](https://github.com/flusio/Flus/commit/da442a4c))
+- Improve typing of the configuration ([45209fe1](https://github.com/flusio/Flus/commit/45209fe1))
+- Replace some view variables by helper functions ([231dcb08](https://github.com/flusio/Flus/commit/231dcb08))
+- Improve config files for PHPUnit, PHPStan and PHPCS ([96b2978a](https://github.com/flusio/Flus/commit/96b2978a))
+- Install Rector ([eb23bfbf](https://github.com/flusio/Flus/commit/eb23bfbf))
+- Reorganize the Docker development environment ([48a54387](https://github.com/flusio/Flus/commit/48a54387))
+- Improve the Makefile ([82f389fa](https://github.com/flusio/Flus/commit/82f389fa))
+- Fix the CI configuration ([42d40c0c](https://github.com/flusio/Flus/commit/42d40c0c))
 
 ## 2024-11-14 - v1.1.0
 
