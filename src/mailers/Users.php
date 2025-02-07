@@ -53,7 +53,7 @@ class Users extends Mailer
                 'token' => $user->validation_token,
             ]
         );
-        $email->addEmbeddedImage($this->logo_path, $this->logo_cid);
+        $email->addEmbeddedImage($this->logo_path, $this->logo_cid, type: 'image/svg+xml');
 
         $this->send($email, to: $user->email);
 
@@ -91,7 +91,7 @@ class Users extends Mailer
                 'token' => $user->reset_token,
             ]
         );
-        $email->addEmbeddedImage($this->logo_path, $this->logo_cid);
+        $email->addEmbeddedImage($this->logo_path, $this->logo_cid, type: 'image/svg+xml');
 
         $this->send($email, to: $user->email);
 
@@ -134,7 +134,7 @@ class Users extends Mailer
                 'username' => $user->username,
             ]
         );
-        $email->addEmbeddedImage($this->logo_path, $this->logo_cid);
+        $email->addEmbeddedImage($this->logo_path, $this->logo_cid, type: 'image/svg+xml');
 
         $this->send($email, to: $user->email);
 

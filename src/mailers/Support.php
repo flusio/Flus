@@ -62,7 +62,7 @@ class Support extends Mailer
 
         $logo_path = \App\Configuration::$app_path . '/public/static/logo.svg';
         $logo_cid = md5($logo_path);
-        $email->addEmbeddedImage($logo_path, $logo_cid);
+        $email->addEmbeddedImage($logo_path, $logo_cid, type: 'image/svg+xml');
 
         $brand = \App\Configuration::$application['brand'];
         $email->setSubject(sprintf(_('[%s] Your message has been sent'), $brand));
