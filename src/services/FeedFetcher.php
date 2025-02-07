@@ -31,6 +31,9 @@ class FeedFetcher
             cache_duration: 1 * 60 * 60,
             ignore_cache: $options['ignore_cache'] ?? false,
             ignore_rate_limit: $options['ignore_rate_limit'] ?? false,
+            headers: [
+                'Accept' => 'application/atom+xml,application/rss+xml,application/xml',
+            ],
         );
     }
 

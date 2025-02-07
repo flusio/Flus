@@ -26,6 +26,8 @@ class Fetcher
         private int $cache_duration = 1 * 60 * 60 * 24,
         private bool $ignore_cache = false,
         private bool $ignore_rate_limit = false,
+        /** @var array<string, string> */
+        private array $headers = [],
     ) {
         $this->http = new \SpiderBits\Http();
         $this->http->timeout = $this->http_timeout;
@@ -62,6 +64,7 @@ class Fetcher
             'max_size' => $this->http_max_size,
             'user_agent' => $this->getUserAgent($url),
             'interface' => $selected_ip,
+            'headers' => $this->headers,
         ];
 
         try {

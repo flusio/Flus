@@ -1433,4 +1433,41 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = $collection->reload();
         $this->assertSame('My feed with an ?ccent', $collection->name);
     }
+
+    public function testPerformSendsAcceptHeader(): void
+    {
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithEcho($feed_url);
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+        ]);
+        $user = UserFactory::create([
+            'validated_at' => \Minz\Time::now(),
+        ]);
+        FollowedCollectionFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
+        ]);
+        $feeds_sync_job = new FeedsSync();
+
+        $feeds_sync_job->perform();
+
+        $hash = \SpiderBits\Cache::hash($feed_url);
+        $cache_path = \App\Configuration::$application['cache_path'];
+        $cache = new \SpiderBits\Cache($cache_path);
+        $response_text = $cache->get($hash);
+        $this->assertIsString($response_text);
+        $response = \SpiderBits\Response::fromText($response_text);
+        $data = json_decode($response->data, true);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $headers = $data['headers'];
+        $this->assertIsArray($headers);
+        $this->assertArrayHasKey('HTTP_ACCEPT', $headers);
+        $accept = $headers['HTTP_ACCEPT'];
+        $expected_accept = 'application/atom+xml,application/rss+xml,application/xml';
+        $this->assertSame($expected_accept, $accept);
+    }
 }
