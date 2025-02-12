@@ -126,7 +126,8 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $old_username = $this->fakeUnique('username');
         /** @var string */
-        $new_username = $this->fakeUnique('username') . '@';
+        $new_username = $this->fakeUnique('username');
+        $new_username = $new_username . '@';
         $user = $this->login([
             'username' => $old_username,
         ]);

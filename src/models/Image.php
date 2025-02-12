@@ -41,6 +41,9 @@ class Image
      * Resize the current image to the given size.
      *
      * The image is cropped in the middle to keep the proportion of the image.
+     *
+     * @param positive-int $width
+     * @param positive-int $height
      */
     public function resize(int $width, int $height): void
     {

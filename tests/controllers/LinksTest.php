@@ -726,10 +726,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $from = \Minz\Url::for('bookmarks');
+        /** @var string */
+        $url = $this->fake('domainName');
+        $url = 'ftp://' . $url;
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf' => $user->csrf,
-            'url' => 'ftp://' . $this->fake('domainName'),
+            'url' => $url,
             'collection_ids' => [$collection->id],
             'from' => $from,
         ]);

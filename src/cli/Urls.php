@@ -26,7 +26,8 @@ class Urls
     {
         $url = $request->param('url', '');
         $url_is_valid = filter_var($url, FILTER_VALIDATE_URL) !== false;
-        if (!$url_is_valid) {
+
+        if (!$url_is_valid || empty($url)) {
             return Response::text(400, "`{$url}` is not a valid URL.");
         }
 

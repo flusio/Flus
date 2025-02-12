@@ -37,9 +37,15 @@ class Image
     /**
      * Generate preview images and return the generated image filename on the
      * disk (or an empty string on failure).
+     *
+     * @throws \DomainException if $image_url is empty
      */
     public function generatePreviews(string $image_url): string
     {
+        if (empty($image_url)) {
+            throw new \DomainException('URL cannot be empty');
+        }
+
         $url_hash = \SpiderBits\Cache::hash($image_url);
         $subpath = utils\Belt::filenameToSubpath($url_hash);
         $path_card = "{$this->path_cards}/{$subpath}";

@@ -38,7 +38,9 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
     public function testRequestAccessRedirectsCorrectly(): void
     {
         $user = $this->login();
-        $mastodon_host = 'https://' . $this->fake('domainName');
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
         $create_app_endpoint = $mastodon_host . '/api/v1/apps';
         $authorization_endpoint = $mastodon_host . '/oauth/authorize';
         /** @var string */
@@ -84,7 +86,9 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
     public function testRequestAccessRedirectsIfAlreadyAuthorized(): void
     {
         $user = $this->login();
-        $mastodon_host = 'https://' . $this->fake('domainName');
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
         $mastodon_server = MastodonServerFactory::create([
             'host' => $mastodon_host,
         ]);
@@ -108,7 +112,9 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testRequestAccessRedirectsToLoginIfNotConnected(): void
     {
-        $mastodon_host = 'https://' . $this->fake('domainName');
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
 
         $response = $this->appRun('POST', '/mastodon/request', [
             'csrf' => \Minz\Csrf::generate(),
@@ -141,7 +147,9 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
     public function testRequestAccessFailsIfHostFails(): void
     {
         $user = $this->login();
-        $mastodon_host = 'https://' . $this->fake('domainName');
+        /** @var string */
+        $mastodon_host = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_host;
         $create_app_endpoint = $mastodon_host . '/api/v1/apps';
         $this->mockHttpWithResponse($create_app_endpoint, <<<TEXT
             HTTP/2 422
@@ -169,7 +177,9 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
     public function testRequestAccessFailsIfHostReturnsNonJson(): void
     {
         $user = $this->login();
-        $mastodon_host = 'https://' . $this->fake('domainName');
+        /** @var string */
+        $mastodon_host = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_host;
         $create_app_endpoint = $mastodon_host . '/api/v1/apps';
         $this->mockHttpWithResponse($create_app_endpoint, <<<TEXT
             HTTP/2 200
@@ -195,7 +205,9 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
     public function testRequestAccessFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $mastodon_host = 'https://' . $this->fake('domainName');
+        /** @var string */
+        $mastodon_host = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_host;
 
         $response = $this->appRun('POST', '/mastodon/request', [
             'csrf' => 'not the token',
@@ -288,6 +300,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $code = $this->fake('sha256');
+        /** @var string */
         $mastodon_domain = $this->fake('domainName');
         $mastodon_host = 'https://' . $mastodon_domain;
         $access_token_endpoint = $mastodon_host . '/oauth/token';
@@ -405,7 +418,9 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $code = $this->fake('sha256');
-        $mastodon_host = 'https://' . $this->fake('domainName');
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
         $access_token_endpoint = $mastodon_host . '/oauth/token';
         $mastodon_server = MastodonServerFactory::create([
             'host' => $mastodon_host,
@@ -446,7 +461,9 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $code = $this->fake('sha256');
-        $mastodon_host = 'https://' . $this->fake('domainName');
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
         $access_token_endpoint = $mastodon_host . '/oauth/token';
         $mastodon_server = MastodonServerFactory::create([
             'host' => $mastodon_host,
@@ -482,7 +499,9 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $code = $this->fake('sha256');
-        $mastodon_host = 'https://' . $this->fake('domainName');
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
         $access_token_endpoint = $mastodon_host . '/oauth/token';
         $mastodon_server = MastodonServerFactory::create([
             'host' => $mastodon_host,

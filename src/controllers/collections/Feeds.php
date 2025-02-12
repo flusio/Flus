@@ -78,9 +78,12 @@ class Feeds
     {
         $collection_id = $request->param('id');
         $url = \Minz\Url::for('collection feed', ['id' => $collection_id]);
-        if (!empty($_SERVER['QUERY_STRING'])) {
-            $url .= '?' . $_SERVER['QUERY_STRING'];
+
+        $query_string = $_SERVER['QUERY_STRING'] ?? null;
+        if (is_string($query_string) && $query_string) {
+            $url .= '?' . $query_string;
         }
+
         return Response::movedPermanently($url);
     }
 }

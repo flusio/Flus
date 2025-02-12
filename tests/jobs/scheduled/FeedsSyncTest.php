@@ -997,7 +997,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $old_url = $this->fakeUnique('url');
         /** @var string */
         $new_url = $this->fakeUnique('url');
-        $entry_id = 'urn:uuid: ' . $this->fake('uuid');
+        /** @var string */
+        $uuid = $this->fake('uuid');
+        $entry_id = 'urn:uuid: ' . $uuid;
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,

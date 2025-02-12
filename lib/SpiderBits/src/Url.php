@@ -289,7 +289,7 @@ class Url
         foreach ($parameters as $name => $value) {
             $name = urlencode(self::fullPercentDecode($name, raw: false));
             if (is_array($value)) {
-                $value = array_map(function ($partial_value): ?string {
+                $value = array_map(function (?string $partial_value): ?string {
                     if ($partial_value === null) {
                         return null;
                     } else {

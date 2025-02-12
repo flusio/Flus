@@ -55,14 +55,7 @@ class Pocket
         }
 
         if ($response->success) {
-            /** @var ?mixed[] */
-            $json = json_decode($response->data, true);
-
-            if (!$json || !is_array($json['list'] ?? null)) {
-                throw new PocketError(42, 'Invalid data');
-            }
-
-            return $json['list'];
+            return $this->parseRetrievedData($response->data);
         } else {
             /** @var string */
             $error_code = $response->header('X-Error-Code', '42');
@@ -156,5 +149,45 @@ class Pocket
             $error_code = $response->header('X-Error-Code', '42');
             throw new PocketError($error_code, 'Request failed');
         }
+    }
+
+    /**
+     * @return array<array<string, mixed>>
+     */
+    private function parseRetrievedData(string $data): array
+    {
+        $json = json_decode($data, true);
+
+        if (!is_array($json)) {
+            throw new PocketError(42, 'Invalid data: received data is not a JSON array');
+        }
+
+        $list = $json['list'] ?? null;
+
+        if (!is_array($list)) {
+            throw new PocketError(42, 'Invalid data: missing "list" in received JSON');
+        }
+
+        $items = [];
+
+        foreach ($list as $dirty_item) {
+            if (!is_array($dirty_item)) {
+                throw new PocketError(42, 'Invalid data: item is not an array');
+            }
+
+            $item = [];
+
+            foreach ($dirty_item as $attribute => $value) {
+                if (!is_string($attribute)) {
+                    throw new PocketError(42, 'Invalid data: attribute name is not a string');
+                }
+
+                $item[$attribute] = $value;
+            }
+
+            $items[] = $item;
+        }
+
+        return $items;
     }
 }

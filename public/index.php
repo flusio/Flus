@@ -30,5 +30,8 @@ try {
     ]);
 }
 
-$is_head = strtoupper($_SERVER['REQUEST_METHOD']) === 'HEAD';
+/** @var string */
+$request_method = $_SERVER['REQUEST_METHOD'];
+$is_head = strtoupper($request_method) === 'HEAD';
+
 \Minz\Response::sendByHttp($response, echo_output: !$is_head);

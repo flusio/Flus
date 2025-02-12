@@ -71,10 +71,6 @@ class RdfParser
         }
 
         foreach ($rss_node->getElementsByTagName('item') as $node) {
-            if (!($node instanceof \DOMElement)) {
-                continue; // @codeCoverageIgnore
-            }
-
             $entry = self::parseEntry($node);
             $feed->entries[] = $entry;
         }

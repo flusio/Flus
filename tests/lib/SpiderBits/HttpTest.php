@@ -10,7 +10,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
     public function testGetWithParameters(): void
     {
         $http = new Http();
-        /** @var string */
+        /** @var non-empty-string */
         $url = $this->fake('url');
         $parameters = [
             'foo' => 'bar',
@@ -32,7 +32,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
     public function testGetWithMixedParameters(): void
     {
         $http = new Http();
-        /** @var string */
+        /** @var non-empty-string */
         $url = $this->fake('url');
         $url = $url . '/get?foo=bar';
         $parameters = [
@@ -54,7 +54,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $http = new Http();
         $user = 'john';
         $pass = 'secret';
-        /** @var string */
+        /** @var non-empty-string */
         $url = $this->fake('url');
         $this->mockHttpWithEcho($url);
 
@@ -74,7 +74,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $headers = [
             'X-Custom' => 'foo',
         ];
-        /** @var string */
+        /** @var non-empty-string */
         $url = $this->fake('url');
         $this->mockHttpWithEcho($url);
 
@@ -95,7 +95,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $http->headers = [
             'X-Custom' => 'foo',
         ];
-        /** @var string */
+        /** @var non-empty-string */
         $url = $this->fake('url');
         $this->mockHttpWithEcho($url);
 
@@ -111,9 +111,9 @@ class HttpTest extends \PHPUnit\Framework\TestCase
     public function testGetWithSettingUserAgent(): void
     {
         $http = new Http();
-        /** @var string */
+        /** @var non-empty-string */
         $user_agent = $this->fake('userAgent');
-        /** @var string */
+        /** @var non-empty-string */
         $url = $this->fake('url');
         $this->mockHttpWithEcho($url);
 
@@ -141,7 +141,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
     public function testPostWithParameters(): void
     {
         $http = new Http();
-        /** @var string */
+        /** @var non-empty-string */
         $url = $this->fake('url');
         $parameters = [
             'foo' => 'bar',

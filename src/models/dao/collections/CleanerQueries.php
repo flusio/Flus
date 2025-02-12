@@ -44,7 +44,7 @@ trait CleanerQueries
     /**
      * Set all the feed_last_hash to empty string.
      */
-    public static function resetHashes(): bool
+    public static function resetHashes(): int
     {
         $sql = <<<SQL
             UPDATE collections
@@ -53,6 +53,6 @@ trait CleanerQueries
         SQL;
 
         $database = Database::get();
-        return $database->exec($sql) !== false;
+        return $database->exec($sql);
     }
 }

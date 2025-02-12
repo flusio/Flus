@@ -235,7 +235,7 @@ function collection_publishers(\App\models\Collection $collection, ?\App\models\
     $owner = $collection->owner();
     $shares = $collection->shares(['access_type' => 'write']);
 
-    $publishers = array_map(function ($share): \App\models\User {
+    $publishers = array_map(function (\App\models\CollectionShare $share): \App\models\User {
         return $share->user();
     }, $shares);
     array_unshift($publishers, $owner);

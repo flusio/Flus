@@ -82,20 +82,12 @@ class Opml
         $outline = [];
 
         foreach ($dom_element->attributes as $attribute_name => $attribute) {
-            /** @var string */
-            $attribute_name = $attribute_name;
-            if ($attribute instanceof \DOMAttr) {
-                $outline[$attribute_name] = $attribute->value;
-            }
+            $outline[$attribute_name] = $attribute->value;
         }
 
         $outline_nodes = $dom_element->getElementsByTagName('outline');
         $outline['outlines'] = [];
         foreach ($outline_nodes as $outline_node) {
-            if (!($outline_node instanceof \DOMElement)) {
-                continue; // @codeCoverageIgnore
-            }
-
             $outline['outlines'][] = self::parseOutline($outline_node);
         }
 

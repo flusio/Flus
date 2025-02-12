@@ -79,13 +79,14 @@ class Application
         // Setup current localization
         if ($current_user) {
             $locale = $current_user->locale;
-        } elseif (isset($_SESSION['locale'])) {
+        } elseif (isset($_SESSION['locale']) && is_string($_SESSION['locale'])) {
             $locale = $_SESSION['locale'];
         } else {
             /** @var string */
             $http_accept_language = $request->header('HTTP_ACCEPT_LANGUAGE', '');
             $locale = utils\Locale::best($http_accept_language);
         }
+
         utils\Locale::setCurrentLocale($locale);
 
         if ($current_user) {
@@ -166,7 +167,6 @@ class Application
             $response->addContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
 
             if ($app_conf['plausible_url']) {
-                /** @var string */
                 $plausible_url = $app_conf['plausible_url'];
                 $response->addContentSecurityPolicy('connect-src', "'self' {$plausible_url}");
                 $response->addContentSecurityPolicy('script-src', "'self' {$plausible_url}");

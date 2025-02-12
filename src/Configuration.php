@@ -21,7 +21,7 @@ namespace App;
  *     'feeds_links_keep_period': int,
  *     'job_feeds_sync_count': int,
  *     'job_links_sync_count': int,
- *     'server_ips': string[],
+ *     'server_ips': non-empty-string[],
  *     'pocket_consumer_key': string,
  *     'cli_locale': string,
  *     'plausible_url': string,

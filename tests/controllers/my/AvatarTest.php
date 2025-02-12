@@ -50,7 +50,9 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         // we also copy the image as the existing avatar. Note the extension is
         // JPG instead of PNG: we just want to check that the file is deleted.
         $media_path = \App\Configuration::$application['media_path'];
-        $previous_avatar_filename = $this->fake('md5') . '.jpg';
+        /** @var string */
+        $previous_avatar_filename = $this->fake('md5');
+        $previous_avatar_filename = $previous_avatar_filename . '.jpg';
         $subpath = utils\Belt::filenameToSubpath($previous_avatar_filename);
         $previous_avatar_path = "{$media_path}/avatars/{$subpath}";
         $previous_avatar_filepath = "{$previous_avatar_path}/{$previous_avatar_filename}";

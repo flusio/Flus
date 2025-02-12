@@ -8,6 +8,9 @@ namespace App\utils;
  */
 class UserAgent
 {
+    /**
+     * @return non-empty-string
+     */
     public static function get(): string
     {
         // Include a link to the about page in the user agent

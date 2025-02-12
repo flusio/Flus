@@ -52,7 +52,6 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->perform($importation->id);
 
         $importation = $importation->reload();
-        $this->assertNotNull($importation);
         $this->assertSame('finished', $importation->status);
         $this->assertSame(3, models\Collection::count());
         $collection1 = models\Collection::take(0);

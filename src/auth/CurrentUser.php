@@ -26,7 +26,9 @@ class CurrentUser
      */
     public static function get(): ?models\User
     {
-        if (!isset($_SESSION['current_session_token'])) {
+        $session_token = self::sessionToken();
+
+        if (!$session_token) {
             // Not logged in, meh.
             return null;
         }
@@ -37,7 +39,8 @@ class CurrentUser
         }
 
         // Let's load the user from the database
-        $current_user = models\User::findBySessionToken($_SESSION['current_session_token']);
+        $current_user = models\User::findBySessionToken($session_token);
+
         if (!$current_user) {
             // The user doesn't exist… what are you trying to do evil user?
             return null;
@@ -55,9 +58,11 @@ class CurrentUser
      */
     public static function session(): ?models\Session
     {
-        if (isset($_SESSION['current_session_token'])) {
+        $session_token = self::sessionToken();
+
+        if ($session_token) {
             return models\Session::findBy([
-                'token' => $_SESSION['current_session_token'],
+                'token' => $session_token,
             ]);
         } else {
             return null;
@@ -96,10 +101,12 @@ class CurrentUser
      */
     public static function sessionToken(): ?string
     {
-        if (isset($_SESSION['current_session_token'])) {
-            return $_SESSION['current_session_token'];
-        } else {
+        $session_token = $_SESSION['current_session_token'] ?? null;
+
+        if ($session_token === null || !is_string($session_token)) {
             return null;
         }
+
+        return $session_token;
     }
 }

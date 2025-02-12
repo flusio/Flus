@@ -6,10 +6,10 @@ namespace SpiderBits;
  * HTTP made easy.
  *
  * @phpstan-type Options array{
- *     'user_agent'?: string,
- *     'auth_basic'?: string,
+ *     'user_agent'?: non-empty-string,
+ *     'auth_basic'?: non-empty-string,
  *     'force_ipv4'?: bool,
- *     'interface'?: ?string,
+ *     'interface'?: ?non-empty-string,
  *     'max_size'?: int,
  *     'headers'?: array<string, string>,
  * }
@@ -21,6 +21,7 @@ class Http
 {
     public int $timeout = 5;
 
+    /** @var non-empty-string */
     public string $user_agent = 'SpiderBits/0.0.1 (' . PHP_OS . '; https://github.com/flusio/SpiderBits)';
 
     /** @var array<string, string> */
@@ -31,6 +32,7 @@ class Http
     /**
      * Make a GET HTTP request.
      *
+     * @param non-empty-string $url
      * @param array<string, mixed> $parameters
      * @param Options $options
      *
@@ -53,6 +55,7 @@ class Http
     /**
      * Make a POST HTTP request.
      *
+     * @param non-empty-string $url
      * @param array<string, mixed> $parameters
      * @param Options $options
      *
@@ -67,6 +70,7 @@ class Http
      * Generic method that uses Curl to make HTTP requests.
      *
      * @param 'get'|'post' $method
+     * @param non-empty-string $url
      * @param array<string, mixed> $parameters
      * @param Options $options
      *
@@ -129,7 +133,7 @@ class Http
         } else {
             $request_headers = $this->headers;
         }
-        $request_headers = array_map(function ($name, $value): string {
+        $request_headers = array_map(function (string $name, string $value): string {
             return "{$name}: {$value}";
         }, array_keys($request_headers), $request_headers);
         curl_setopt($curl_handle, CURLOPT_HTTPHEADER, $request_headers);

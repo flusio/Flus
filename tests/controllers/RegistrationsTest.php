@@ -358,9 +358,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUsernameContainsAnAt(): void
     {
+        /** @var string */
+        $username = $this->fake('name');
         $response = $this->appRun('POST', '/registration', [
             'csrf' => \Minz\Csrf::generate(),
-            'username' => $this->fake('name') . '@',
+            'username' => $username . '@',
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
         ]);

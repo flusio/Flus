@@ -74,7 +74,13 @@ $http_parameters = array_merge($_GET, $_POST);
 $mocks_path = sys_get_temp_dir() . '/Flus/mocks';
 @mkdir($mocks_path, 0777, true);
 
-$url = urldecode($http_parameters['url'] ?? '');
+$url = $http_parameters['url'] ?? null;
+
+if (!is_string($url)) {
+    die('You must pass a "url" parameter.');
+}
+
+$url = urldecode($url);
 $url_base64 = str_replace('/', '', base64_encode($url));
 $mock_path = "{$mocks_path}/{$url_base64}";
 

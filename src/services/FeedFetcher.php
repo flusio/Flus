@@ -268,6 +268,8 @@ class FeedFetcher
     /**
      * Fetch URL content and return information about the feed
      *
+     * @throws \DomainException if $url is empty
+     *
      * @return array{
      *     'status': int,
      *     'error'?: string,
@@ -276,6 +278,10 @@ class FeedFetcher
      */
     public function fetchUrl(string $url): array
     {
+        if (empty($url)) {
+            throw new \DomainException('URL cannot be empty');
+        }
+
         try {
             $response = $this->fetcher->get($url, type: 'feed');
         } catch (http\RateLimitError $e) {

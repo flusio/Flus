@@ -41,6 +41,8 @@ class Fetcher
      *
      * If the response is in the cache, the fetcher doesn't perform a HTTP request.
      *
+     * @param non-empty-string $url
+     *
      * @throws RateLimitError if too many HTTP requests have been made to the host.
      * @throws UnexpectedHttpError if the HTTP request fails.
      */
@@ -117,6 +119,8 @@ class Fetcher
      *
      * The user-agent is defined at the application level, but can be altered
      * for some specific resources.
+     *
+     * @return non-empty-string
      */
     private function getUserAgent(string $url): string
     {
@@ -143,6 +147,8 @@ class Fetcher
      * variable.
      *
      * For now, this is only used for Youtube requests.
+     *
+     * @return ?non-empty-string
      */
     private function getServerIp(string $type, string $url): ?string
     {

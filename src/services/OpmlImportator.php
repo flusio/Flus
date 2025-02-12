@@ -145,7 +145,7 @@ class OpmlImportator
     {
         $urls_by_groups = [];
 
-        if ($outline['outlines']) {
+        if ($outline['outlines'] && is_array($outline['outlines'])) {
             // The outline has children, it's probably a new group
             $text = $outline['text'] ?? '';
             if (is_string($text) && !empty($text)) {

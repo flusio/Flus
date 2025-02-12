@@ -83,7 +83,7 @@ class LinkFetcher
 
         $illustration_never_set = empty($link->image_filename);
         if (
-            isset($info['url_illustration']) &&
+            !empty($info['url_illustration']) &&
             ($this->force_sync || $illustration_never_set)
         ) {
             $image_service = new Image();
@@ -103,7 +103,7 @@ class LinkFetcher
     /**
      * Fetch URL content and return information about the page
      *
-     * @param string $url
+     * @throws \DomainException if $url is empty
      *
      * @return array{
      *     'status': int,
@@ -116,6 +116,10 @@ class LinkFetcher
      */
     public function fetchUrl(string $url): array
     {
+        if (empty($url)) {
+            throw new \DomainException('URL cannot be empty');
+        }
+
         try {
             $response = $this->fetcher->get($url, type: 'link');
         } catch (http\RateLimitError $e) {

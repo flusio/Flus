@@ -160,6 +160,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         $published_at = \Minz\Time::ago($days_ago, 'days');
         // time_filter 'all' will search links until 7 days before the date
         // when the user started to follow the collection
+        /** @var int */
         $delta_followed_days = $this->fake('numberBetween', 0, 7);
         $followed_at = \Minz\Time::ago($days_ago - $delta_followed_days, 'days');
         $link = LinkFactory::create([
