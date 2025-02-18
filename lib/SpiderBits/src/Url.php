@@ -131,27 +131,21 @@ class Url
         $host = trim($host, '.');
         $host = preg_replace('/\.{2,}/', '.', $host);
 
-        if ($host === null) {
-            $host = '';
-        }
-
         // The host can be a valid integer ip address, we want to normalize it
         // to 4 dot-separated decimal values
-        if (filter_var($host, FILTER_VALIDATE_INT) !== false) {
+        if ($host && filter_var($host, FILTER_VALIDATE_INT) !== false) {
             $host = long2ip(intval($host));
-
-            if ($host === false) {
-                $host = '';
-            }
         }
 
         // idn_to_ascii allows to transform an unicode hostname to an
         // ASCII representation
         // @see https://en.wikipedia.org/wiki/Punycode
         // It also lowercases the string.
-        $host = idn_to_ascii($host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+        if ($host) {
+            $host = idn_to_ascii($host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+        }
 
-        if ($host === false) {
+        if (!$host) {
             $host = '';
         }
 

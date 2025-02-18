@@ -34,7 +34,7 @@
         </testsuite>
     </testsuites>
 
-    <source>
+    <source ignoreIndirectDeprecations="true">
         <include>
             <directory suffix=".php">src</directory>
             <directory suffix=".php">lib/SpiderBits</directory>
