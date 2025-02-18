@@ -150,7 +150,7 @@ class Fetcher
      *
      * @return ?non-empty-string
      */
-    private function getServerIp(string $type, string $url): ?string
+    private function getServerIp(string $url, string $type): ?string
     {
         $server_ips = \App\Configuration::$application['server_ips'];
 
