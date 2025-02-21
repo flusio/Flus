@@ -56,7 +56,7 @@ class FeedFetcher
         }
 
         $collection->feed_fetched_at = \Minz\Time::now();
-        $collection->feed_fetched_next_at = \Minz\Time::fromNow(1, 'hour');
+        $collection->feed_fetched_next_at = $this->calculateNextFetchedAt($collection);
         $collection->feed_fetched_code = $info['status'];
         $collection->feed_fetched_error = null;
 
@@ -224,6 +224,9 @@ class FeedFetcher
         // We now can insert the links and links_to_collections via a bulkInsert
         models\Link::bulkInsert($links_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
+
+        $collection->feed_fetched_next_at = $this->calculateNextFetchedAt($collection);
+        $collection->save();
 
         if (!$collection->image_fetched_at && $collection->feed_site_url) {
             try {
@@ -397,5 +400,43 @@ class FeedFetcher
         }
 
         return $to_create;
+    }
+
+    /**
+     * Return a new value for the feed's feed_fetched_next_at attribute based
+     * on the publication frequency of the feed.
+     *
+     * The less the feed publishes, the less often it will be synchronized.
+     *
+     * This minimal value is 1h in the future, and the maximal value is 24h in
+     * the future.
+     */
+    private function calculateNextFetchedAt(models\Collection $feed): \DateTimeImmutable
+    {
+        $min_minutes = 60;
+        $max_minutes = 60 * 24;
+
+        $publication_frequency = $feed->publicationFrequencyPerYear();
+
+        if ($publication_frequency === 0) {
+            return \Minz\Time::fromNow($max_minutes, 'minutes');
+        }
+
+        // This function approximates the following:
+        // - publish 4 times a month = synchronize each 1 hour
+        // - publish 2 times a month = synchronize each 6 hours
+        // - publish 1 time a month = synchronize each 12 hours
+        // - publish 1 time each 2 months = synchronize each 24 hours
+        $next_fetched_at_as_minutes = (int) round((180 / $publication_frequency - 3) * 60);
+
+        // Add a bit of randomness
+        $random_delta = random_int(-15, 15);
+        $next_fetched_at_as_minutes = $next_fetched_at_as_minutes + $random_delta;
+
+        // Bound the value between the min and the max values
+        $next_fetched_at_as_minutes = min($max_minutes, $next_fetched_at_as_minutes);
+        $next_fetched_at_as_minutes = max($min_minutes, $next_fetched_at_as_minutes);
+
+        return \Minz\Time::fromNow($next_fetched_at_as_minutes, 'minutes');
     }
 }

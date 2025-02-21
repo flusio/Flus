@@ -103,7 +103,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = $collection->reload();
         $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame('atom', $collection->feed_type);
-        $this->assertSame(
+        $this->assertGreaterThanOrEqual(
             \Minz\Time::fromNow(1, 'hour')->getTimestamp(),
             $collection->feed_fetched_next_at?->getTimestamp(),
         );
