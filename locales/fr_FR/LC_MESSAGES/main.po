@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-02-07 14:38+0100\n"
-"PO-Revision-Date: 2025-02-07 14:39+0100\n"
+"POT-Creation-Date: 2025-02-19 21:23+0100\n"
+"PO-Revision-Date: 2025-02-21 14:30+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -419,7 +419,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:185
+#: services/LinkFetcher.php:189
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -470,48 +470,48 @@ msgstr "%s sur %s"
 msgid "This email has been sent by %s (%s)"
 msgstr "Ce courriel a été envoyé par %s (%s)"
 
-#: utils/view_helpers.php:53
+#: utils/view_helpers.php:56
 #, php-format
 msgid "%d link per day"
 msgid_plural "%d links per day"
 msgstr[0] "%d lien par jour"
 msgstr[1] "%d liens par jour"
 
-#: utils/view_helpers.php:57
+#: utils/view_helpers.php:60
 #, php-format
 msgid "%d link per week"
 msgid_plural "%d links per week"
 msgstr[0] "%d lien par semaine"
 msgstr[1] "%d liens par semaine"
 
-#: utils/view_helpers.php:61
+#: utils/view_helpers.php:64
 #, php-format
 msgid "%d link per month"
 msgid_plural "%d links per month"
 msgstr[0] "%d lien par mois"
 msgstr[1] "%d liens par mois"
 
-#: utils/view_helpers.php:65
+#: utils/view_helpers.php:68
 #, php-format
 msgid "%d link per year"
 msgid_plural "%d links per year"
 msgstr[0] "%d lien par an"
 msgstr[1] "%d liens par an"
 
-#: utils/view_helpers.php:68
+#: utils/view_helpers.php:71
 msgid "No links published in the past year"
 msgstr "Aucun lien publié durant l'année passée"
 
-#: utils/view_helpers.php:114
+#: utils/view_helpers.php:117
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:116
+#: utils/view_helpers.php:119
 #, php-format
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:243 views/links/show.phtml:83
+#: utils/view_helpers.php:246 views/links/show.phtml:83
 msgid "you"
 msgstr "vous"
 
@@ -1800,11 +1800,11 @@ msgid ""
 "However, if you wish to keep your account, you should login to %s by "
 "clicking on the following link:"
 msgstr ""
-"Vous recevez ce courriel parce que vous n’avez pas été actif sur %s depuis "
+"Vous recevez ce courriel parce que vous n’avez pas été acti·ve sur %s depuis "
 "plusieurs mois. Pour éviter de conserver des données obsolètes, votre compte "
 "sera supprimé dans un mois. Si vous ne souhaitez pas le conserver, vous "
-"n’avez rien faire. Toutefois, si vous souhaitez conserver votre compte, vous "
-"devez vous connecter à %s en cliquant sur le lien suivant :"
+"n’avez rien à faire. Toutefois, si vous souhaitez conserver votre compte, "
+"vous devez vous connecter à %s en cliquant sur le lien suivant :"
 
 #: views/mailers/users/inactivity_email.phtml:14
 msgid ""
