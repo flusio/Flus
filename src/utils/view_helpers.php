@@ -68,7 +68,7 @@ function format_publication_frequency(int $frequency_per_year): string
         return _nf('%d link per year', '%d links per year', $frequency_per_year, $frequency_per_year);
     }
 
-    return _('No links published in the past year');
+    return _('Inactive');
 }
 
 function is_environment(string $environment): bool

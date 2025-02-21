@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-02-19 21:23+0100\n"
-"PO-Revision-Date: 2025-02-21 14:30+0100\n"
+"POT-Creation-Date: 2025-02-21 15:19+0100\n"
+"PO-Revision-Date: 2025-02-21 15:20+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -499,8 +499,8 @@ msgstr[0] "%d lien par an"
 msgstr[1] "%d liens par an"
 
 #: utils/view_helpers.php:71
-msgid "No links published in the past year"
-msgstr "Aucun lien publié durant l'année passée"
+msgid "Inactive"
+msgstr "Inactif"
 
 #: utils/view_helpers.php:117
 msgid "< 1 min"
@@ -842,6 +842,12 @@ msgstr "publique"
 msgid "private"
 msgstr "privée"
 
+#: views/collections/_collection.phtml:55 views/collections/show.phtml:64
+#: views/collections/show_public.phtml:89
+#: views/collections/show_public.phtml:104 views/links/searches/show.phtml:124
+msgid "Publication frequency"
+msgstr "Fréquence de publication"
+
 #: views/collections/_collections_by_others.phtml:9
 #, php-format
 msgid "<strong>%s</strong> added this link to <strong>%s</strong>."
@@ -1160,11 +1166,6 @@ msgstr "Flux de syndication de %s"
 msgid "Published by %s"
 msgstr "Publiée par %s"
 
-#: views/collections/show.phtml:64 views/collections/show_public.phtml:89
-#: views/collections/show_public.phtml:104
-msgid "Publication frequency"
-msgstr "Fréquence de publication"
-
 #: views/collections/show.phtml:79 views/collections/show_public.phtml:122
 #: views/links/_link.phtml:231 views/links/_link.phtml:235
 #: views/links/show.phtml:133 views/links/show.phtml:137
@@ -1192,12 +1193,12 @@ msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
 #: views/collections/show.phtml:165 views/collections/show_public.phtml:197
-#: views/links/searches/show.phtml:133
+#: views/links/searches/show.phtml:138
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
 #: views/collections/show.phtml:177 views/collections/show_public.phtml:208
-#: views/collections/show_public.phtml:222 views/links/searches/show.phtml:142
+#: views/collections/show_public.phtml:222 views/links/searches/show.phtml:147
 msgid "Follow"
 msgstr "Suivre"
 

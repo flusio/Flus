@@ -51,5 +51,10 @@
                 </span>
             <?php endif; ?>
         </p>
+
+        <p class="card__text" title="<?= _('Publication frequency') ?>">
+            <?= icon('line-chart') ?>
+            <?= format_publication_frequency($collection->publicationFrequencyPerYear()) ?>
+        </p>
     </a>
 </div>
