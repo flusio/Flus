@@ -131,11 +131,12 @@ CREATE TABLE collections (
     feed_last_hash TEXT,
     feed_fetched_code INTEGER NOT NULL DEFAULT 0,
     feed_fetched_at TIMESTAMPTZ,
+    feed_fetched_next_at TIMESTAMPTZ,
     feed_fetched_error TEXT
 );
 
 CREATE INDEX idx_collections_user_id ON collections(user_id);
-CREATE INDEX idx_collections_feed_fetched_at ON collections(feed_fetched_at);
+CREATE INDEX idx_collections_feed_fetched_next_at ON collections(feed_fetched_next_at);
 CREATE INDEX idx_collections_image_filename ON collections(image_filename) WHERE image_filename IS NOT NULL;
 
 CREATE TABLE links (

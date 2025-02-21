@@ -63,12 +63,11 @@ class FeedsSync extends \Minz\Job
         // 1 out of 6. This allows multiple jobs to run in parallel on (mostly)
         // different feeds (first strategy), while being sure to sync all the
         // feeds (second strategy).
-        $before = \Minz\Time::ago(1, 'hour');
         $strategy_choice = random_int(1, 6);
         if ($strategy_choice < 6) {
-            $collections = models\Collection::listActiveFeedsToFetch($before, 25);
+            $collections = models\Collection::listActiveFeedsToFetch(limit: 25);
         } else {
-            $collections = models\Collection::listOldestFeedsToFetch($before, 25);
+            $collections = models\Collection::listOldestFeedsToFetch(limit: 25);
         }
 
         foreach ($collections as $collection) {

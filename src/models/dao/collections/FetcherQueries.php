@@ -20,7 +20,7 @@ trait FetcherQueries
      *
      * @return self[]
      */
-    public static function listActiveFeedsToFetch(\DateTimeImmutable $before, int $limit): array
+    public static function listActiveFeedsToFetch(int $limit): array
     {
         $sql = <<<SQL
             SELECT c.*
@@ -28,8 +28,8 @@ trait FetcherQueries
 
             WHERE c.type = 'feed'
             AND (
-                c.feed_fetched_at <= :before
-                OR c.feed_fetched_at IS NULL
+                c.feed_fetched_next_at <= :before
+                OR c.feed_fetched_next_at IS NULL
             )
 
             AND c.id = fc.collection_id
@@ -46,7 +46,7 @@ trait FetcherQueries
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':before' => $before->format(Database\Column::DATETIME_FORMAT),
+            ':before' => \Minz\Time::now()->format(Database\Column::DATETIME_FORMAT),
             ':limit' => $limit,
         ]);
 
@@ -58,7 +58,7 @@ trait FetcherQueries
      *
      * @return self[]
      */
-    public static function listOldestFeedsToFetch(\DateTimeImmutable $before, int $limit): array
+    public static function listOldestFeedsToFetch(int $limit): array
     {
         $sql = <<<SQL
             SELECT c.*
@@ -66,18 +66,18 @@ trait FetcherQueries
 
             WHERE c.type = 'feed'
             AND (
-                c.feed_fetched_at <= :before
-                OR c.feed_fetched_at IS NULL
+                c.feed_fetched_next_at <= :before
+                OR c.feed_fetched_next_at IS NULL
             )
 
-            ORDER BY feed_fetched_at NULLS FIRST
+            ORDER BY feed_fetched_next_at NULLS FIRST
             LIMIT :limit
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':before' => $before->format(Database\Column::DATETIME_FORMAT),
+            ':before' => \Minz\Time::now()->format(Database\Column::DATETIME_FORMAT),
             ':limit' => $limit,
         ]);
 

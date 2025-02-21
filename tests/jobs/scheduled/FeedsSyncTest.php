@@ -71,6 +71,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerform(): void
     {
+        $this->freeze();
+
         /** @var string */
         $old_name = $this->fake('sentence');
         $url = 'https://flus.fr/carnet/';
@@ -83,7 +85,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $old_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -101,6 +103,10 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = $collection->reload();
         $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame('atom', $collection->feed_type);
+        $this->assertSame(
+            \Minz\Time::fromNow(1, 'hour')->getTimestamp(),
+            $collection->feed_fetched_next_at?->getTimestamp(),
+        );
         $this->assertNotNull($collection->image_fetched_at);
         $this->assertNotEmpty($collection->image_filename);
         $this->assertNull($collection->locked_at);
@@ -132,7 +138,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $old_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -164,7 +170,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $old_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -222,7 +228,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $old_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -266,7 +272,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1617096360, $link_to_collection->created_at->getTimestamp());
     }
 
-    public function testPerformIgnoresFeedFetchedLastHour(): void
+    public function testPerformIgnoresFeedNotYetToFetch(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         /** @var string */
@@ -275,7 +281,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $expected_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(59, 'minutes'),
+            'feed_fetched_next_at' => \Minz\Time::fromNow(5, 'minutes'),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -309,7 +315,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $expected_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
             'feed_last_hash' => $feed_hash,
         ]);
         $user = UserFactory::create([
@@ -362,7 +368,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'user_id' => $support_user->id,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -439,6 +445,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $feed_url,
             'feed_url' => $feed_url,
+            'feed_fetched_next_at' => \Minz\Time::now(),
             'feed_fetched_at' => null,
             'feed_fetched_code' => 0,
         ]);
@@ -473,7 +480,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $old_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -530,7 +537,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $old_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -578,7 +585,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -630,7 +637,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'user_id' => $support_user->id,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -700,7 +707,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -767,7 +774,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -821,7 +828,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -881,7 +888,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -947,7 +954,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $old_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -1003,7 +1010,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $link = LinkFactory::create([
             'url' => $old_url,
@@ -1064,7 +1071,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -1116,7 +1123,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -1173,7 +1180,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -1214,7 +1221,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -1279,7 +1286,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $old_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
             'locked_at' => $locked_at,
         ]);
         $user = UserFactory::create([
@@ -1343,7 +1350,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'name' => $old_name,
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
             'locked_at' => $locked_at,
         ]);
         $user = UserFactory::create([
@@ -1409,7 +1416,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
@@ -1443,7 +1450,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'feed_fetched_at' => \Minz\Time::ago(2, 'hours'),
+            'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),

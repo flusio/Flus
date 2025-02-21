@@ -84,6 +84,9 @@ class Collection
     public ?\DateTimeImmutable $feed_fetched_at = null;
 
     #[Database\Column]
+    public ?\DateTimeImmutable $feed_fetched_next_at = null;
+
+    #[Database\Column]
     public ?string $feed_fetched_error = null;
 
     #[Database\Column(computed: true)]
