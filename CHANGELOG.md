@@ -1,5 +1,27 @@
 # Changelog of Flus
 
+## 2025-02-21 - v1.2.1
+
+### Improvements
+
+- Display the publication frequency in the collection cards ([9a8158a4](https://github.com/flusio/Flus/commit/9a8158a4))
+
+### Bug fixes
+
+- Fix the synchronization of Youtube resources ([c3ff13d1](https://github.com/flusio/Flus/commit/c3ff13d1))
+- Fix a typo in French translation ([27462124](https://github.com/flusio/Flus/commit/27462124))
+
+### Technical
+
+- Add official support for PHP 8.4 ([8f3d556c](https://github.com/flusio/Flus/commit/8f3d556c))
+- Decrease the synchronization frequency based on the publication frequency ([2de24577](https://github.com/flusio/Flus/commit/2de24577))
+- Improve the display of feed statistics ([55c248d4](https://github.com/flusio/Flus/commit/55c248d4))
+
+### Developers
+
+- Upgrade the dependencies ([fb7209c6](https://github.com/flusio/Flus/commit/fb7209c6), [37ed8db0](https://github.com/flusio/Flus/commit/37ed8db0), [e29325d8](https://github.com/flusio/Flus/commit/e29325d8), [79d64f8b](https://github.com/flusio/Flus/commit/79d64f8b), [444e0ff2](https://github.com/flusio/Flus/commit/444e0ff2))
+- Get feeds to fetch from the new `feed_fetched_next_at` attribute ([cbc6736c](https://github.com/flusio/Flus/commit/cbc6736c))
+
 ## 2025-02-07 - v1.2.0
 
 ### Migration notes
