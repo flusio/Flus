@@ -12,7 +12,7 @@
 
 <?= "{$count_feeds} feeds\n" ?>
 <?php foreach ($count_feeds_by_hours as $hour => $count): ?>
-<?= "→ {$count} synchronized at {$hour}h\n" ?>
+<?= "→ {$count} to synchronize at {$hour}h\n" ?>
 <?php endforeach; ?>
 
 <?= "{$count_requests} HTTP requests (last 3 - 4 days)\n" ?>

@@ -59,15 +59,15 @@ trait StatisticsQueries
     }
 
     /**
-     * Return the number of feeds (type "feed") indexed by the hour of their
-     * last fetch.
+     * Return the number of feeds (type "feed") indexed by the date - hour of
+     * their next retrieval.
      *
      * @return array<string, int>
      */
     public static function countFeedsByHours(): array
     {
         $sql = <<<'SQL'
-            SELECT TO_CHAR(feed_fetched_at, 'HH24') AS hour, COUNT(*) as count
+            SELECT TO_CHAR(feed_fetched_next_at, 'YYYY-MM-DD HH24') AS hour, COUNT(*) as count
             FROM collections
             WHERE type = 'feed'
             GROUP BY hour
