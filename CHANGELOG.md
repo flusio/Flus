@@ -1,5 +1,15 @@
 # Changelog of Flus
 
+## 2025-03-21 - v1.2.2
+
+### Bug fixes
+
+- Limit the memory used to calculate the collections' frequency ([6e15ebc3](https://github.com/flusio/Flus/commit/6e15ebc3))
+
+### Technical
+
+- Update the dependencies ([19b97089](https://github.com/flusio/Flus/commit/19b97089), [ad6ae4a7](https://github.com/flusio/Flus/commit/ad6ae4a7))
+
 ## 2025-02-21 - v1.2.1
 
 ### Improvements
