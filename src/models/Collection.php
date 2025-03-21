@@ -381,7 +381,7 @@ class Collection
         $today = \Minz\Time::now();
         $one_year_ago = \Minz\Time::ago(1, 'year');
 
-        $last_year_links = Link::listByCollectionSince($this, $one_year_ago);
+        $last_year_links = Link::listByCollectionSince($this, since: $one_year_ago, max: 500);
         $count_links = count($last_year_links);
 
         if ($count_links === 0) {
@@ -389,6 +389,8 @@ class Collection
         }
 
         $oldest_link = $last_year_links[0];
+
+        unset($last_year_links);
 
         if ($oldest_link->published_at === null) {
             throw new \LogicException('Link published_at must be set');

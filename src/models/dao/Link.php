@@ -210,8 +210,11 @@ trait Link
      *
      * @return self[]
      */
-    public static function listByCollectionSince(models\Collection $collection, \DateTimeImmutable $since): array
-    {
+    public static function listByCollectionSince(
+        models\Collection $collection,
+        \DateTimeImmutable $since,
+        int $max,
+    ): array {
         $sql = <<<SQL
             SELECT l.*, lc.created_at AS published_at
             FROM links l, links_to_collections lc
@@ -221,6 +224,7 @@ trait Link
             AND lc.created_at >= :since
 
             ORDER BY lc.created_at
+            LIMIT :limit
         SQL;
 
         $database = Database::get();
@@ -228,6 +232,7 @@ trait Link
         $statement->execute([
             ':collection_id' => $collection->id,
             ':since' => $since->format(Database\Column::DATETIME_FORMAT),
+            ':limit' => $max,
         ]);
 
         return self::fromDatabaseRows($statement->fetchAll());
