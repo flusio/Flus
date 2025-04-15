@@ -51,7 +51,8 @@ class InactivityNotifier extends \Minz\Job
                 $user->save();
             }
 
-            sleep(1);
+            $sleep_seconds = random_int(2, 5);
+            sleep($sleep_seconds);
         }
     }
 }
