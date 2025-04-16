@@ -89,6 +89,12 @@ class Http
             $user_agent = $this->user_agent;
         }
 
+        if (isset($options['headers'])) {
+            $request_headers = array_merge($this->headers, $options['headers']);
+        } else {
+            $request_headers = $this->headers;
+        }
+
         $curl_handle = curl_init();
         curl_setopt($curl_handle, CURLOPT_URL, $url);
         curl_setopt($curl_handle, CURLOPT_HEADER, false);
@@ -98,8 +104,18 @@ class Http
         curl_setopt($curl_handle, CURLOPT_USERAGENT, $user_agent);
 
         if ($method === 'post') {
+            if ($this->isJsonContentType($request_headers)) {
+                $postfields = json_encode($parameters);
+
+                if ($postfields === false) {
+                    throw new HttpError('Parameters cannot be JSON encoded.');
+                }
+            } else {
+                $postfields = http_build_query($parameters);
+            }
+
             curl_setopt($curl_handle, CURLOPT_POST, true);
-            curl_setopt($curl_handle, CURLOPT_POSTFIELDS, http_build_query($parameters));
+            curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $postfields);
         }
 
         if (isset($options['auth_basic'])) {
@@ -128,11 +144,6 @@ class Http
             );
         }
 
-        if (isset($options['headers'])) {
-            $request_headers = array_merge($this->headers, $options['headers']);
-        } else {
-            $request_headers = $this->headers;
-        }
         $request_headers = array_map(function (string $name, string $value): string {
             return "{$name}: {$value}";
         }, array_keys($request_headers), $request_headers);
@@ -176,5 +187,21 @@ class Http
         curl_close($curl_handle);
 
         return new Response($status, $data, $headers);
+    }
+
+    /**
+     * Return whether a content-type header is defined as application/json or not.
+     *
+     * @param array<string, string> $headers
+     */
+    private function isJsonContentType(array $headers): bool
+    {
+        foreach ($headers as $name => $value) {
+            if (strtolower($name) === 'content-type') {
+                return $value === 'application/json';
+            }
+        }
+
+        return false;
     }
 }

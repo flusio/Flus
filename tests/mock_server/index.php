@@ -159,6 +159,11 @@ if (!isset($http_parameters['action'])) {
             $info['form'] = $_POST;
         }
 
+        $php_input = file_get_contents('php://input');
+        if ($php_input) {
+            $info['php://input'] = $php_input;
+        }
+
         header('Content-type: application/json');
 
         echo json_encode($info);

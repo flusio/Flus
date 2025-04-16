@@ -158,4 +158,32 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($parameters['foo'], $data['form']['foo']);
         $this->assertSame($parameters['baz'], $data['form']['baz']);
     }
+
+    public function testPostWithJsonParameters(): void
+    {
+        $http = new Http();
+        /** @var non-empty-string */
+        $url = $this->fake('url');
+        $parameters = [
+            'foo' => 'bar',
+            'baz' => 'quz',
+        ];
+        $this->mockHttpWithEcho($url);
+
+        $response = $http->post($url, $parameters, [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $this->assertSame(200, $response->status);
+        $data = json_decode($response->data, true);
+        $this->assertIsArray($data);
+        $this->assertIsString($data['php://input']);
+
+        $input_data = json_decode($data['php://input'], associative: true);
+        $this->assertIsArray($input_data);
+        $this->assertSame($parameters['foo'], $input_data['foo']);
+        $this->assertSame($parameters['baz'], $input_data['baz']);
+    }
 }
