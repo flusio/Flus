@@ -1,5 +1,21 @@
 # Changelog of Flus
 
+## 2025-04-16 - v1.2.3
+
+### Improvements
+
+- Improve the French translation of the inactivity email ([4d65b880](https://github.com/flusio/Flus/commit/4d65b880))
+
+### Technical
+
+- Allow to send support messages to a Bileto server ([c6bd416e](https://github.com/flusio/Flus/commit/c6bd416e))
+- Sleep for a random number of seconds between two inactivity emails ([2c442040](https://github.com/flusio/Flus/commit/2c442040))
+
+### Developers
+
+- Allow to send JSON encoded data with the SpiderBits `Http` class ([fddcfa59](https://github.com/flusio/Flus/commit/fddcfa59))
+- Update the dependencies ([73286b0b](https://github.com/flusio/Flus/commit/73286b0b))
+
 ## 2025-03-21 - v1.2.2
 
 ### Bug fixes
