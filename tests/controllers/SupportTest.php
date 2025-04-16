@@ -13,6 +13,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
     use \tests\LoginHelper;
+    use \tests\MockHttpHelper;
 
     public function testShowRendersCorrectly(): void
     {
@@ -75,6 +76,46 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailSubject($email_2, '[Flus] Your message has been sent');
         $this->assertEmailContainsTo($email_2, $email);
         $this->assertEmailContainsBody($email_2, 'Someone will reply to you as soon as possible');
+    }
+
+    public function testCreateSendsToBiletoIfConfigured(): void
+    {
+        $bileto_url = 'https://support.example.org';
+        \App\Configuration::$application['bileto_url'] = $bileto_url;
+        \App\Configuration::$application['bileto_api_token'] = 'some-token';
+        $support_user = models\User::supportUser();
+        /** @var string */
+        $email = $this->fake('email');
+        /** @var string */
+        $subject = $this->fake('sentence');
+        /** @var string */
+        $message = $this->fake('paragraph');
+        $user = $this->login([
+            'email' => $email,
+        ]);
+        $endpoint_url = "{$bileto_url}/api/tickets";
+        $this->mockHttpWithResponse($endpoint_url, <<<TEXT
+            HTTP/2 200
+            server: nginx
+            date: Fri, 16 Apr 2025 16:10:00 GMT
+            content-type: application/json
+
+            {'message': 'ok'}
+            TEXT
+        );
+
+        $response = $this->appRun('POST', '/support', [
+            'csrf' => $user->csrf,
+            'subject' => $subject,
+            'message' => $message,
+        ]);
+
+        \App\Configuration::$application['bileto_url'] = '';
+        \App\Configuration::$application['bileto_api_token'] = '';
+
+        $this->assertResponseCode($response, 302, '/support');
+        $this->assertTrue(\Minz\Flash::get('message_sent'));
+        $this->assertEmailsCount(0);
     }
 
     public function testCreateRedirectsIfNotConnected(): void

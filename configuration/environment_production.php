@@ -65,6 +65,8 @@ return [
         'pocket_consumer_key' => $dotenv->pop('APP_POCKET_CONSUMER_KEY', ''),
         'cli_locale' => $dotenv->pop('CLI_LOCALE', ''),
         'plausible_url' => $dotenv->pop('APP_PLAUSIBLE_URL', ''),
+        'bileto_url' => $dotenv->pop('APP_BILETO_URL', ''),
+        'bileto_api_token' => $dotenv->pop('APP_BILETO_API_TOKEN', ''),
     ],
 
     'database' => [

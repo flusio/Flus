@@ -25,6 +25,8 @@ namespace App;
  *     'pocket_consumer_key': string,
  *     'cli_locale': string,
  *     'plausible_url': string,
+ *     'bileto_url': string,
+ *     'bileto_api_token': string,
  *     'mock_host'?: string,
  * }
  *

@@ -380,3 +380,11 @@ and `APP_SUBSCRIPTIONS_PRIVATE_KEY` environment variables. The host must run
 the code of [flusio/flus.fr](https://github.com/flusio/flus.fr).
 
 A scheduled job run every 4 hours to sync the subscriptions.
+
+## Optional: Handle support with Bileto
+
+By default, the support form sends messages by email to the support email.
+It's possible to send them to a [Bileto](https://github.com/Probesys/bileto) server instead.
+Be aware that for now you must install my own fork (at [github.com/flusio/bileto](https://github.com/flusio/bileto)) as the official repository doesn't provide an API yet.
+
+To configure it, you must set both `APP_BILETO_URL` and `APP_BILETO_API_TOKEN` environment variables.

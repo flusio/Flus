@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-02-21 15:19+0100\n"
-"PO-Revision-Date: 2025-04-15 15:02+0200\n"
+"POT-Creation-Date: 2025-04-16 16:05+0200\n"
+"PO-Revision-Date: 2025-04-16 16:06+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -52,7 +52,7 @@ msgstr "Afficher"
 #: controllers/Mastodon.php:211 controllers/Mastodon.php:297
 #: controllers/News.php:76 controllers/Passwords.php:89
 #: controllers/Passwords.php:192 controllers/Registrations.php:103
-#: controllers/Sessions.php:85 controllers/Support.php:71
+#: controllers/Sessions.php:85 controllers/Support.php:72
 #: controllers/collections/Filters.php:105
 #: controllers/collections/Followers.php:49
 #: controllers/collections/Followers.php:93
@@ -151,13 +151,17 @@ msgstr ""
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
-#: controllers/Support.php:77
+#: controllers/Support.php:78
 msgid "The subject is required."
 msgstr "Le sujet est obligatoire."
 
-#: controllers/Support.php:80 models/Message.php:29
+#: controllers/Support.php:81 models/Message.php:29
 msgid "The message is required."
 msgstr "Le message est obligatoire."
+
+#: controllers/Support.php:113
+msgid "The message could not be sent due to a server-side problem."
+msgstr "Le message n’a pas pu être envoyé à cause d’un problème côté serveur."
 
 #: controllers/collections/Images.php:92 controllers/importations/Opml.php:88
 #: controllers/my/Avatar.php:49
@@ -303,21 +307,21 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
-#: models/Collection.php:120 models/Collection.php:182
+#: models/Collection.php:123 models/Collection.php:185
 #: views/_layouts/reading.phtml:32 views/bookmarks/index.phtml:10
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:131 models/Collection.php:184
+#: models/Collection.php:134 models/Collection.php:187
 #: views/_layouts/reading.phtml:42
 msgid "Links read"
 msgstr "Liens lus"
 
-#: models/Collection.php:142
+#: models/Collection.php:145
 msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
-#: models/Collection.php:153 models/Collection.php:186
+#: models/Collection.php:156 models/Collection.php:189
 #: views/_layouts/reading.phtml:22 views/news/index.phtml:3
 #: views/news/index.phtml:12
 msgid "News"

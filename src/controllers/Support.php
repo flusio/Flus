@@ -7,6 +7,7 @@ use Minz\Request;
 use Minz\Response;
 use App\auth;
 use App\mailers;
+use App\services;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -67,7 +68,7 @@ class Support
             return Response::badRequest('support/show.phtml', [
                 'subject' => $subject,
                 'message' => $message,
-                'message_sent' => null,
+                'message_sent' => false,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
@@ -84,16 +85,35 @@ class Support
             return Response::badRequest('support/show.phtml', [
                 'subject' => $subject,
                 'message' => $message,
-                'message_sent' => null,
+                'message_sent' => false,
                 'errors' => $errors,
             ]);
         }
 
-        $mailer_job = new Mailer\Job();
-        $mailer_job->performAsap(mailers\Support::class, 'sendMessage', $user->id, $subject, $message);
+        $bileto = new services\Bileto();
 
-        $mailer_job = new Mailer\Job();
-        $mailer_job->performAsap(mailers\Support::class, 'sendNotification', $user->id, $subject);
+        if ($bileto->isEnabled()) {
+            $result = $bileto->sendMessage($user, $subject, $message);
+        } else {
+            $mailer_job = new Mailer\Job();
+            $mailer_job->performAsap(mailers\Support::class, 'sendMessage', $user->id, $subject, $message);
+
+            $mailer_job = new Mailer\Job();
+            $mailer_job->performAsap(mailers\Support::class, 'sendNotification', $user->id, $subject);
+
+            $result = true;
+        }
+
+        if (!$result) {
+            return Response::internalServerError('support/show.phtml', [
+                'subject' => $subject,
+                'message' => $message,
+                'message_sent' => false,
+                'errors' => [
+                    'message' => _('The message could not be sent due to a server-side problem.'),
+                ],
+            ]);
+        }
 
         \Minz\Flash::set('message_sent', true);
 

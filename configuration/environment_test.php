@@ -53,6 +53,8 @@ return [
         'pocket_consumer_key' => 'some token',
         'cli_locale' => 'en_GB',
         'plausible_url' => '',
+        'bileto_url' => '',
+        'bileto_api_token' => '',
         'mock_host' => $dotenv->pop('MOCK_HOST', ''),
     ],
 
