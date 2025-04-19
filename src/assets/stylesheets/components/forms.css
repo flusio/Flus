@@ -152,7 +152,9 @@ input[type="radio"]:checked + label::after {
 }
 
 .form-group--invalid input,
-.form-group--invalid textarea {
+.form-group--invalid textarea,
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
     border-color: var(--color-border-error);
 }
 
@@ -288,16 +290,11 @@ legend {
     margin-top: var(--space-small);
     margin-bottom: var(--space-small);
     padding-right: var(--space-small);
-    padding-left: calc(var(--space-small) + 1.75em);
+    padding-left: var(--space-small);
 
     color: var(--color-text-error);
     font-size: var(--size-small);
     font-weight: bold;
-
-    background-image: url("../../icons/error-red.svg");
-    background-repeat: no-repeat;
-    background-position: left var(--space-small) center;
-    background-size: 1.5em;
 }
 
 .form__actions {

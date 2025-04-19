@@ -5,6 +5,7 @@ namespace App\controllers;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\forms;
 use App\models;
 use App\utils;
 
@@ -41,9 +42,13 @@ class Sessions
             $password = 'demo';
         }
 
-        return Response::ok('sessions/new.phtml', [
+        $form = new forms\Login([
             'email' => $email,
             'password' => $password,
+        ]);
+
+        return Response::ok('sessions/new.phtml', [
+            'form' => $form,
             'redirect_to' => $redirect_to,
         ]);
     }
@@ -73,64 +78,17 @@ class Sessions
             return Response::found($redirect_to);
         }
 
-        $email = $request->param('email', '');
-        $password = $request->param('password', '');
-        $csrf = $request->param('csrf', '');
+        $form = new forms\Login();
+        $form->handleRequest($request);
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
+                'form' => $form,
                 'redirect_to' => $redirect_to,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $email = \Minz\Email::sanitize($email);
-        if (!\Minz\Email::validate($email)) {
-            return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
-                'redirect_to' => $redirect_to,
-                'errors' => [
-                    'email' => _('The address email is invalid.'),
-                ],
-            ]);
-        }
-
-        $user = models\User::findBy([
-            'email' => $email,
-        ]);
-        if (!$user) {
-            return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
-                'redirect_to' => $redirect_to,
-                'errors' => [
-                    'email' => _('We can’t find any account with this email address.'),
-                ],
-            ]);
-        }
-
-        if ($user->isSupportUser()) {
-            return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
-                'redirect_to' => $redirect_to,
-                'error' => _('What are you trying to do? You can’t login to the support account.'),
-            ]);
-        }
-
-        if (!$user->verifyPassword($password)) {
-            return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
-                'redirect_to' => $redirect_to,
-                'errors' => [
-                    'password_hash' => _('The password is incorrect.'),
-                ],
-            ]);
-        }
+        $user = $form->getUser();
 
         // The session cookie will probably expire before, but it's another
         // security barrier.
