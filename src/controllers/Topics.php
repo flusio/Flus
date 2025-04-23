@@ -11,7 +11,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Topics
+class Topics extends BaseController
 {
     /**
      * Show the discovery page

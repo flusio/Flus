@@ -13,7 +13,7 @@ use App\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Support
+class Support extends BaseController
 {
     /**
      * Show the support form
@@ -24,12 +24,7 @@ class Support
      */
     public function show(): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('support'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('support'));
 
         return Response::ok('support/show.phtml', [
             'subject' => '',
@@ -53,12 +48,7 @@ class Support
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('support'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('support'));
 
         $subject = trim($request->param('subject', ''));
         $message = trim($request->param('message', ''));

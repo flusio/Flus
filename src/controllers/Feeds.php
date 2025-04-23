@@ -13,7 +13,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Feeds
+class Feeds extends BaseController
 {
     /**
      * List the followed feeds/collections of the current user.
@@ -24,11 +24,7 @@ class Feeds
      */
     public function index(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => \Minz\Url::for('feeds')]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('feeds'));
 
         $groups = models\Group::listBy(['user_id' => $user->id]);
         $groups = utils\Sorter::localeSort($groups, 'name');
@@ -62,12 +58,9 @@ class Feeds
      */
     public function new(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', \Minz\Url::for('feeds'));
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         return Response::ok('feeds/new.phtml', [
             'url' => '',

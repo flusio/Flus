@@ -5,6 +5,7 @@ namespace App\controllers\collections;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\services;
 use App\utils;
@@ -13,7 +14,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Links
+class Links extends BaseController
 {
     /**
      * Show the page to add a link to a collection.
@@ -32,14 +33,10 @@ class Links
      */
     public function new(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-
         $collection_id = $request->param('id', '');
         $from = $request->param('from', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         if (!$collection || !auth\CollectionsAccess::canAddLinks($user, $collection)) {
@@ -79,17 +76,13 @@ class Links
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-
         $collection_id = $request->param('id', '');
         $url = $request->param('url', '');
         $is_hidden = $request->paramBoolean('is_hidden', false);
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         if (!$collection || !auth\CollectionsAccess::canAddLinks($user, $collection)) {

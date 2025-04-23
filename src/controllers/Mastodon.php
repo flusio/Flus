@@ -12,7 +12,7 @@ use Minz\Response;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Mastodon
+class Mastodon extends BaseController
 {
     /**
      * Show the page to configure the Mastodon host/sharing.
@@ -24,13 +24,7 @@ class Mastodon
      */
     public function show(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('mastodon'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
         $mastodon_account = models\MastodonAccount::findBy(['user_id' => $user->id]);
         if ($mastodon_account && !$mastodon_account->access_token) {
@@ -72,16 +66,10 @@ class Mastodon
      */
     public function requestAccess(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
         $host = $request->param('host', '');
         $csrf = $request->param('csrf', '');
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('mastodon'),
-            ]);
-        }
 
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
@@ -137,15 +125,9 @@ class Mastodon
      */
     public function authorization(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
         $code = $request->param('code', '');
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('mastodon'),
-            ]);
-        }
 
         if (!$code) {
             return Response::redirect('mastodon');
@@ -182,16 +164,10 @@ class Mastodon
      */
     public function authorize(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
         $code = $request->param('code', '');
         $csrf = $request->param('csrf', '');
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('mastodon'),
-            ]);
-        }
 
         if (!$code) {
             return Response::redirect('mastodon');
@@ -262,13 +238,7 @@ class Mastodon
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('mastodon'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
         $mastodon_account = models\MastodonAccount::findBy(['user_id' => $user->id]);
 
@@ -334,13 +304,7 @@ class Mastodon
      */
     public function disconnect(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('mastodon'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
         $csrf = $request->param('csrf', '');
 

@@ -5,6 +5,7 @@ namespace App\controllers\links;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\services;
 
@@ -12,7 +13,7 @@ use App\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Repairing
+class Repairing extends BaseController
 {
     /**
      * Show the page to repair a link (change URL and resynchronize it).
@@ -29,13 +30,10 @@ class Repairing
      */
     public function new(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $link_id = $request->param('id', '');
         $from = $request->param('from', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
         $can_update = $link && auth\LinksAccess::canUpdate($user, $link);
@@ -72,16 +70,13 @@ class Repairing
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $link_id = $request->param('id', '');
         $url = $request->param('url', '');
         $force_sync = $request->paramBoolean('force_sync', false);
         $csrf = $request->param('csrf', '');
         $from = $request->param('from', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
         $can_update = $link && auth\LinksAccess::canUpdate($user, $link);

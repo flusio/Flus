@@ -898,7 +898,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fedit");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
     }
 
     public function testEditFailsIfTheLinkDoesNotExist(): void
@@ -1046,7 +1046,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fedit");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);
     }

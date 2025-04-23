@@ -12,7 +12,7 @@ use App\models;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Exportations
+class Exportations extends BaseController
 {
     /**
      * @response 302 /login?redirect_to=/exportations
@@ -22,11 +22,7 @@ class Exportations
      */
     public function show(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            $redirect_to = \Minz\Url::for('exportation');
-            return Response::redirect('login', ['redirect_to' => $redirect_to]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('exportation'));
 
         $exportation = models\Exportation::findBy([
             'user_id' => $user->id,
@@ -49,12 +45,8 @@ class Exportations
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('exportation'));
         $csrf = $request->param('csrf', '');
-        if (!$user) {
-            $redirect_to = \Minz\Url::for('exportation');
-            return Response::redirect('login', ['redirect_to' => $redirect_to]);
-        }
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('exportations/show.phtml', [
@@ -94,11 +86,7 @@ class Exportations
      */
     public function download(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            $redirect_to = \Minz\Url::for('exportation');
-            return Response::redirect('login', ['redirect_to' => $redirect_to]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('exportation'));
 
         $exportation = models\Exportation::findBy([
             'user_id' => $user->id,

@@ -5,6 +5,7 @@ namespace App\controllers\links;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\jobs;
 use App\models;
 use App\services;
@@ -16,7 +17,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Collections
+class Collections extends BaseController
 {
     /**
      * Show the page to update the link collections
@@ -31,14 +32,11 @@ class Collections
      */
     public function index(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $link_id = $request->param('id', '');
         $mark_as_read = $request->paramBoolean('mark_as_read', false);
         $from = $request->param('from', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
         $messages = [];
@@ -128,7 +126,6 @@ class Collections
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $link_id = $request->param('id', '');
         /** @var string[] */
         $new_collection_ids = $request->paramArray('collection_ids', []);
@@ -141,9 +138,7 @@ class Collections
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
         if (!$link || !auth\LinksAccess::canView($user, $link)) {

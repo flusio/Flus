@@ -4,15 +4,13 @@ namespace App\controllers\collections;
 
 use Minz\Request;
 use Minz\Response;
-use App\auth;
-use App\models;
-use App\utils;
+use App\controllers\BaseController;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Discovery
+class Discovery extends BaseController
 {
     /**
      * Redirect to the discovery page

@@ -5,13 +5,14 @@ namespace App\controllers\collections;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Followers
+class Followers extends BaseController
 {
     /**
      * Make the current user following the given collection
@@ -30,14 +31,11 @@ class Followers
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id', '');
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
@@ -75,14 +73,11 @@ class Followers
      */
     public function delete(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id', '');
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         if (!$collection) {

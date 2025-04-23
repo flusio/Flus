@@ -11,7 +11,7 @@ use App\models;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Importations
+class Importations extends BaseController
 {
     /**
      * Delete an importation
@@ -27,14 +27,11 @@ class Importations
      */
     public function delete(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $importation_id = $request->param('id', '');
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $importation = models\Importation::findBy([
             'id' => $importation_id,

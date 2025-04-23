@@ -5,10 +5,11 @@ namespace App\controllers\collections;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\utils;
 
-class Shares
+class Shares extends BaseController
 {
     /**
      * @request_param string id

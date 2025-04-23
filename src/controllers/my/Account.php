@@ -5,6 +5,7 @@ namespace App\controllers\my;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\services;
 use App\utils;
@@ -13,7 +14,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Account
+class Account extends BaseController
 {
     /**
      * Show the main account page.
@@ -25,12 +26,7 @@ class Account
      */
     public function show(): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('account'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account'));
 
         $sub_enabled = \App\Configuration::$application['subscriptions_enabled'];
         if ($sub_enabled && $user->subscription_account_id && $user->isSubscriptionOverdue()) {
@@ -67,11 +63,7 @@ class Account
      */
     public function deletion(): Response
     {
-        if (!auth\CurrentUser::get()) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('account deletion'),
-            ]);
-        }
+        $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account deletion'));
 
         return Response::ok('my/account/deletion.phtml');
     }
@@ -93,15 +85,9 @@ class Account
      */
     public function delete(Request $request): Response
     {
-        $current_user = auth\CurrentUser::get();
+        $current_user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account deletion'));
         $password = $request->param('password', '');
         $csrf = $request->param('csrf', '');
-
-        if (!$current_user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('account deletion'),
-            ]);
-        }
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('my/account/deletion.phtml', [

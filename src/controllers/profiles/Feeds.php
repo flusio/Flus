@@ -5,6 +5,7 @@ namespace App\controllers\profiles;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\utils;
 
@@ -12,7 +13,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Feeds
+class Feeds extends BaseController
 {
     /**
      * Show the feed of a user.

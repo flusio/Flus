@@ -6,6 +6,7 @@ use Minz\Mailer;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\forms;
 use App\mailers;
 use App\models;
@@ -15,7 +16,7 @@ use App\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Validation
+class Validation extends BaseController
 {
     /**
      * Display the validation page.
@@ -133,12 +134,8 @@ class Validation
     public function resendEmail(Request $request): Response
     {
         $csrf = $request->param('csrf', '');
-        $user = auth\CurrentUser::get();
 
-        if (!$user) {
-            $redirect_to = \Minz\Url::for('account validation');
-            return Response::redirect('login', ['redirect_to' => $redirect_to]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account validation'));
 
         if ($user->validated_at) {
             // nothing to do, the user is already validated

@@ -16,7 +16,7 @@ use App\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Registrations
+class Registrations extends BaseController
 {
     /**
      * Show the registration form.

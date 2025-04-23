@@ -5,6 +5,7 @@ namespace App\controllers\my;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\utils;
 
@@ -12,7 +13,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Avatar
+class Avatar extends BaseController
 {
     /**
      * Set the avatar of the current user
@@ -31,14 +32,11 @@ class Avatar
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $avatar_file = $request->paramFile('avatar');
         $csrf = $request->param('csrf', '');
         $from = $request->param('from', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));

@@ -5,12 +5,13 @@ namespace App\controllers\my;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Info
+class Info extends BaseController
 {
     /**
      * Return some useful information for the browser extension
@@ -22,13 +23,7 @@ class Info
      */
     public function show(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('profile info'),
-            ]);
-        }
-
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('profile info'));
         $bookmarks = $user->bookmarks();
         $links = $bookmarks->links();
 

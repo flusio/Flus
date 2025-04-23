@@ -16,7 +16,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Links
+class Links extends BaseController
 {
     /**
      * Display the links page of the current user (it shows the owned
@@ -31,11 +31,7 @@ class Links
      */
     public function index(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => \Minz\Url::for('links')]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('links'));
 
         $query = $request->param('q');
         $pagination_page = $request->paramInteger('page', 1);
@@ -160,13 +156,10 @@ class Links
      */
     public function new(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $default_url = $request->param('url', '');
         $from = $request->param('from', \Minz\Url::for('new link'));
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $bookmarks = $user->bookmarks();
 
@@ -225,7 +218,6 @@ class Links
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $url = $request->param('url', '');
         $is_hidden = $request->paramBoolean('is_hidden', false);
         /** @var string[] */
@@ -235,9 +227,7 @@ class Links
         $from = $request->param('from', \Minz\Url::for('new link', ['url' => $url]));
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $bookmarks = $user->bookmarks();
 
@@ -368,21 +358,16 @@ class Links
      * @request_param string id
      * @request_param string from (default is /links/:id)
      *
-     * @response 302 /login?redirect_to=/links/:id/edit if not connected
+     * @response 302 /login?redirect_to=:from if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
      * @response 200
      */
     public function edit(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $link_id = $request->param('id', '');
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
 
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('edit link', ['id' => $link_id]),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
         if ($link && auth\LinksAccess::canUpdate($user, $link)) {
@@ -406,25 +391,20 @@ class Links
      * @request_param integer reading_time
      * @request_param string from (default is /links/:id)
      *
-     * @response 302 /login?redirect_to=/links/:id/edit if not connected
+     * @response 302 /login?redirect_to=/links/:id if not connected
      * @response 404 if the link doesn't exist or not associated to the current user
      * @response 400 :from if csrf token or title are invalid
      * @response 302 :from
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $link_id = $request->param('id', '');
         $new_title = $request->param('title', '');
         $new_reading_time = $request->paramInteger('reading_time', 0);
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('edit link', ['id' => $link_id]),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
         if (!$link || !auth\LinksAccess::canUpdate($user, $link)) {
@@ -478,15 +458,12 @@ class Links
      */
     public function delete(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $link_id = $request->param('id', '');
         $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
         if (!$link || !auth\LinksAccess::canDelete($user, $link)) {

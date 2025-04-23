@@ -5,10 +5,11 @@ namespace App\controllers\collections;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\utils;
 
-class Groups
+class Groups extends BaseController
 {
     /**
      * @request_param string id
@@ -23,15 +24,11 @@ class Groups
      */
     public function edit(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
-
         $collection_id = $request->param('id', '');
+
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
+
         $collection = models\Collection::find($collection_id);
 
         $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
@@ -83,17 +80,12 @@ class Groups
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
-
         $name = $request->param('name', '');
         $collection_id = $request->param('id', '');
         $csrf = $request->param('csrf', '');
+
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
 

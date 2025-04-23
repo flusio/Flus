@@ -14,10 +14,8 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Sessions
+class Sessions extends BaseController
 {
-    use utils\InternalPathChecker;
-
     /**
      * Show the login form.
      *
@@ -65,7 +63,7 @@ class Sessions
     {
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
 
-        if (!$this->isInternalPath($redirect_to)) {
+        if (!$this->isPathRedirectable($redirect_to)) {
             $redirect_to = \Minz\Url::for('home');
         }
 
@@ -196,10 +194,7 @@ class Sessions
      */
     public function delete(Request $request): Response
     {
-        $current_user = auth\CurrentUser::get();
-        if (!$current_user) {
-            return Response::redirect('home');
-        }
+        $current_user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('home'));
 
         $csrf = $request->param('csrf', '');
         if (!\Minz\Csrf::validate($csrf)) {

@@ -5,6 +5,7 @@ namespace App\controllers\my;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 
 /**
  * Handle the requests related to the profile.
@@ -12,7 +13,7 @@ use App\auth;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Profile
+class Profile extends BaseController
 {
     /**
      * Show the form to edit the current user’s profile.
@@ -28,10 +29,7 @@ class Profile
     {
         $from = $request->param('from', \Minz\Url::for('edit profile'));
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         return Response::ok('my/profile/edit.phtml', [
             'username' => $user->username,
@@ -59,10 +57,7 @@ class Profile
         $csrf = $request->param('csrf', '');
         $from = $request->param('from', '');
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('my/profile/edit.phtml', [

@@ -16,8 +16,9 @@ class CurrentUser
     private static ?models\User $instance = null;
 
     /**
-     * Load a User from the database by the id stored in the session.
+     * Return the logged-in user if any.
      *
+     * It loads a User from the database by the id stored in the session.
      * The User model is stored in the static $instance variable to avoid
      * useless multiple calls to the database.
      *

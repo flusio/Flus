@@ -5,6 +5,7 @@ namespace App\controllers\importations;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\jobs;
 use App\models;
 
@@ -12,7 +13,7 @@ use App\models;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Opml
+class Opml extends BaseController
 {
     /**
      * Display the Opml importation main page
@@ -23,12 +24,7 @@ class Opml
      */
     public function show(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('opml'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('opml'));
 
         $importation = models\Importation::findBy([
             'type' => 'opml',
@@ -53,14 +49,8 @@ class Opml
      */
     public function import(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('opml'));
         $csrf = $request->param('csrf', '');
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('opml'),
-            ]);
-        }
 
         $importation = models\Importation::findBy([
             'type' => 'opml',

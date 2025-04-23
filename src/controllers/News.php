@@ -14,7 +14,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class News
+class News extends BaseController
 {
     /**
      * Show the news page.
@@ -25,12 +25,7 @@ class News
      */
     public function index(): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('news'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('news'));
 
         $news = $user->news();
         $links = $news->links(['published_at', 'number_comments']);
@@ -57,12 +52,7 @@ class News
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('news'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('news'));
 
         $csrf = $request->param('csrf', '');
 
@@ -111,15 +101,16 @@ class News
         return Response::redirect('news');
     }
 
+    /**
+     * Return a JSON telling if there are new links available for the news.
+     *
+     * @response 302 /login?redirect_to=/news
+     *     if not connected
+     * @response 200
+     */
     public function showAvailable(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('news'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('news'));
 
         return Response::json(200, [
             'available' => models\Link::anyFromFollowedCollections($user->id),

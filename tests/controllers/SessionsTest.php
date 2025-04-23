@@ -389,7 +389,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'csrf' => \Minz\Csrf::generate(),
         ]);
 
-        $this->assertResponseCode($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
     }
 
     public function testDeleteFailsIfCsrfIsInvalid(): void

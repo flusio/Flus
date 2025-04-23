@@ -13,7 +13,7 @@ use App\models;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Passwords
+class Passwords extends BaseController
 {
     /**
      * Show the form to send email to reset the password.

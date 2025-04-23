@@ -4,6 +4,7 @@ namespace App\controllers\profiles;
 
 use Minz\Request;
 use Minz\Response;
+use App\controllers\BaseController;
 use App\models;
 use App\utils;
 
@@ -11,7 +12,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Opml
+class Opml extends BaseController
 {
     /**
      * Show the collections of a user as an OPML file.

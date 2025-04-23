@@ -5,6 +5,7 @@ namespace App\controllers\importations;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\jobs;
 use App\models;
 use App\services;
@@ -13,7 +14,7 @@ use App\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Pocket
+class Pocket extends BaseController
 {
     /**
      * Display the Pocket importation main page
@@ -30,12 +31,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('pocket'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket'));
 
         $importation = models\Importation::findBy([
             'type' => 'pocket',
@@ -70,12 +66,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('pocket'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket'));
 
         $pocket_account = models\PocketAccount::findBy([
             'user_id' => $user->id,
@@ -143,12 +134,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('pocket'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket'));
 
         $csrf = $request->param('csrf', '');
         if (!\Minz\Csrf::validate($csrf)) {
@@ -192,12 +178,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('pocket auth'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket auth'));
 
         $pocket_account = models\PocketAccount::findBy([
             'user_id' => $user->id,
@@ -234,12 +215,7 @@ class Pocket
             return Response::notFound('not_found.phtml');
         }
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('pocket auth'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket auth'));
 
         $pocket_account = models\PocketAccount::findBy([
             'user_id' => $user->id,

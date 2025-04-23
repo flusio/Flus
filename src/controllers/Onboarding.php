@@ -12,14 +12,14 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Onboarding
+class Onboarding extends BaseController
 {
     /**
      * Show an onboarding page.
      *
      * @request_param integer step
      *
-     * @response 302 /login?redirect_to if not connected
+     * @response 302 /login?redirect_to=/onboarding if not connected
      * @response 404 if step is out of bound
      * @response 200
      *
@@ -29,12 +29,7 @@ class Onboarding
      */
     public function show(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('onboarding'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('onboarding'));
 
         $step = $request->paramInteger('step', 1);
         if ($step < 1 || $step > 6) {
@@ -66,12 +61,7 @@ class Onboarding
         $locale = $request->param('locale', '');
         $csrf = $request->param('csrf', '');
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('onboarding'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('onboarding'));
 
         $user->locale = trim($locale);
 

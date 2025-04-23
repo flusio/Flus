@@ -14,7 +14,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Collections
+class Collections extends BaseController
 {
     /**
      * Show the page listing all the collections of the current user
@@ -38,12 +38,7 @@ class Collections
      */
     public function new(): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('new collection'),
-            ]);
-        }
+        $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('new collection'));
 
         $topics = models\Topic::listAll();
         $topics = utils\Sorter::localeSort($topics, 'label');
@@ -73,12 +68,7 @@ class Collections
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('new collection'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('new collection'));
 
         $name = $request->param('name', '');
         $description = $request->param('description', '');
@@ -229,13 +219,10 @@ class Collections
      */
     public function edit(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id', '');
         $from = $request->param('from', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         if ($collection && auth\CollectionsAccess::canUpdate($user, $collection)) {
@@ -275,13 +262,10 @@ class Collections
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id', '');
         $from = $request->param('from', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         if (!$collection || !auth\CollectionsAccess::canUpdate($user, $collection)) {
@@ -366,16 +350,11 @@ class Collections
      */
     public function delete(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $collection_id = $request->param('id', '');
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         if (!$collection || !auth\CollectionsAccess::canDelete($user, $collection)) {

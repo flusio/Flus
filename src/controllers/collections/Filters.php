@@ -5,9 +5,10 @@ namespace App\controllers\collections;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 
-class Filters
+class Filters extends BaseController
 {
     /**
      * @request_param string id
@@ -22,13 +23,9 @@ class Filters
      */
     public function edit(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection_id = $request->param('id', '');
         $collection = models\Collection::find($collection_id);
@@ -70,13 +67,9 @@ class Filters
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $time_filter = $request->param('time_filter', '');
         $collection_id = $request->param('id', '');

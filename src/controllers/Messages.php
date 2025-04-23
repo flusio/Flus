@@ -12,7 +12,7 @@ use App\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Messages
+class Messages extends BaseController
 {
     /**
      * Edit a message.
@@ -29,13 +29,10 @@ class Messages
      */
     public function edit(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $message_id = $request->param('id', '');
         $from = $request->param('from', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $message = models\Message::findBy([
             'id' => $message_id,
@@ -72,15 +69,12 @@ class Messages
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $message_id = $request->param('id');
         $content = $request->param('content', '');
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $message = models\Message::findBy([
             'id' => $message_id,
@@ -123,14 +117,11 @@ class Messages
      */
     public function delete(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $message_id = $request->param('id', '');
         $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $redirect_to]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $redirect_to);
 
         $message = models\Message::findBy([
             'id' => $message_id,

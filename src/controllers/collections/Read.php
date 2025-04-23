@@ -5,6 +5,7 @@ namespace App\controllers\collections;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\utils;
 
@@ -12,7 +13,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Read
+class Read extends BaseController
 {
     /**
      * Mark links of the collection as read and remove them from bookmarks.
@@ -35,16 +36,13 @@ class Read
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
         $collection_id = $request->param('id', '');
         $date = $request->paramDatetime('date', format: 'Y-m-d');
         $source = $request->param('source', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         $links = [];
@@ -115,16 +113,13 @@ class Read
      */
     public function later(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
         $collection_id = $request->param('id', '');
         $date = $request->paramDatetime('date', format: 'Y-m-d');
         $source = $request->param('source', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         $links = [];
@@ -196,16 +191,13 @@ class Read
      */
     public function never(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
         $collection_id = $request->param('id', '');
         $date = $request->paramDatetime('date', format: 'Y-m-d');
         $source = $request->param('source', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
         $links = [];

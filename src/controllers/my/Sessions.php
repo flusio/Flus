@@ -5,13 +5,14 @@ namespace App\controllers\my;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Sessions
+class Sessions extends BaseController
 {
     /**
      * List the sessions of the current user
@@ -25,12 +26,7 @@ class Sessions
      */
     public function index(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('sessions'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('sessions'));
 
         $session = auth\CurrentUser::session();
 
@@ -70,12 +66,7 @@ class Sessions
      */
     public function delete(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('sessions'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('sessions'));
 
         $current_session = auth\CurrentUser::session();
 

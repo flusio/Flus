@@ -5,17 +5,15 @@ namespace App\controllers\my;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
-use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Security
+class Security extends BaseController
 {
-    use utils\InternalPathChecker;
-
     /**
      * @response 302 /login?redirect_to=/my/security
      *    If the user is not connected.
@@ -26,12 +24,7 @@ class Security
      */
     public function show(): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('security'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('security'));
 
         $session = auth\CurrentUser::session();
 
@@ -68,12 +61,7 @@ class Security
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('security'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('security'));
 
         $session = auth\CurrentUser::session();
 
@@ -148,7 +136,7 @@ class Security
      *
      * @request_param string from
      *
-     * @response 302 /login?redirect_to=/my/security/confirmation
+     * @response 302 /login?redirect_to=:from
      *    If the user is not connected
      * @response 200
      *    On success
@@ -156,17 +144,11 @@ class Security
     public function confirmation(Request $request): Response
     {
         $from = $request->param('from', \Minz\Url::for('security'));
-
-        if (!$this->isInternalPath($from)) {
+        if (!$this->isPathRedirectable($from)) {
             $from = \Minz\Url::for('security');
         }
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $session = auth\CurrentUser::session();
 
@@ -188,7 +170,7 @@ class Security
      * @request_param string password
      * @request_param string from
      *
-     * @response 302 /login?redirect_to=/my/security/confirmation
+     * @response 302 /login?redirect_to=:from
      *    If the user is not connected
      * @response 400
      *    If the CSRF token is invalid or if the password is invalid
@@ -199,16 +181,11 @@ class Security
     {
         $from = $request->param('from', \Minz\Url::for('security'));
 
-        if (!$this->isInternalPath($from)) {
+        if (!$this->isPathRedirectable($from)) {
             $from = \Minz\Url::for('security');
         }
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $password = $request->param('password', '');
         $csrf = $request->param('csrf', '');

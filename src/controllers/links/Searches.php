@@ -5,6 +5,7 @@ namespace App\controllers\links;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\services;
 use App\utils;
@@ -15,7 +16,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Searches
+class Searches extends BaseController
 {
     /**
      * Show the page to search by URL.
@@ -28,13 +29,7 @@ class Searches
      */
     public function show(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show search link'),
-            ]);
-        }
-
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('show search link'));
         $support_user = models\User::supportUser();
 
         $autosubmit = $request->paramBoolean('autosubmit');
@@ -88,18 +83,12 @@ class Searches
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('show search link'));
         $url = $request->param('url', '');
         $csrf = $request->param('csrf', '');
 
         $url = \SpiderBits\Url::sanitize($url);
         $support_user = models\User::supportUser();
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('show search link'),
-            ]);
-        }
 
         if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('links/searches/show.phtml', [

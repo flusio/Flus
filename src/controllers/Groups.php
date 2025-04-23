@@ -11,7 +11,7 @@ use App\models;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Groups
+class Groups extends BaseController
 {
     /**
      * @request_param string id
@@ -26,13 +26,10 @@ class Groups
      */
     public function edit(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $group_id = $request->param('id', '');
         $from = $request->param('from', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $group = models\Group::find($group_id);
 
@@ -65,15 +62,12 @@ class Groups
      */
     public function update(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $group_id = $request->param('id', '');
         $name = $request->param('name', '');
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $group = models\Group::find($group_id);
 
@@ -142,14 +136,11 @@ class Groups
      */
     public function delete(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $group_id = $request->param('id', '');
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $group = models\Group::find($group_id);
 

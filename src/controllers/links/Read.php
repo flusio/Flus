@@ -5,6 +5,7 @@ namespace App\controllers\links;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\utils;
 
@@ -12,7 +13,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Read
+class Read extends BaseController
 {
     /**
      * Mark a link as read and remove it from bookmarks.
@@ -33,14 +34,11 @@ class Read
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
         $link_id = $request->param('id', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
@@ -82,14 +80,11 @@ class Read
      */
     public function later(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
         $link_id = $request->param('id', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
@@ -131,14 +126,11 @@ class Read
      */
     public function never(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
         $link_id = $request->param('id', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
@@ -179,14 +171,11 @@ class Read
      */
     public function delete(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
         $link_id = $request->param('id', '');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         if (!\Minz\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));

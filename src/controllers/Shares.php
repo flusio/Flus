@@ -9,7 +9,7 @@ use Minz\Response;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Shares
+class Shares extends BaseController
 {
     /**
      * Allow to share a URL to Flus.

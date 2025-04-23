@@ -5,6 +5,7 @@ namespace App\controllers\links;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\jobs;
 use App\models;
 use App\services;
@@ -15,7 +16,7 @@ use App\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Messages
+class Messages extends BaseController
 {
     /**
      * @request_param string link_id
@@ -51,17 +52,12 @@ class Messages
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $link_id = $request->param('link_id', '');
         $content = $request->param('content', '');
         $share_on_mastodon = $request->paramBoolean('share_on_mastodon');
         $csrf = $request->param('csrf', '');
 
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('link', ['id' => $link_id]),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('link', ['id' => $link_id]));
 
         $link = models\Link::find($link_id);
         $can_comment = $link && auth\LinksAccess::canComment($user, $link);

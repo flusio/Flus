@@ -12,7 +12,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Read
+class Read extends BaseController
 {
     /**
      * Show the read page.
@@ -27,12 +27,7 @@ class Read
      */
     public function index(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('read list'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('read list'));
 
         $read_list = $user->readList();
         $number_links = models\Link::countByCollectionId($read_list->id);

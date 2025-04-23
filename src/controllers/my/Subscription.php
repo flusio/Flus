@@ -5,13 +5,14 @@ namespace App\controllers\my;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\services;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Subscription
+class Subscription extends BaseController
 {
     private bool $enabled;
 
@@ -50,12 +51,7 @@ class Subscription
             return Response::notFound('not_found.phtml');
         }
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('account'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account'));
 
         if ($user->subscription_account_id) {
             return Response::redirect('account');
@@ -107,12 +103,7 @@ class Subscription
             return Response::notFound('not_found.phtml');
         }
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('account'),
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account'));
 
         if (!$user->subscription_account_id) {
             return Response::badRequest('bad_request.phtml');

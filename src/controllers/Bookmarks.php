@@ -12,7 +12,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Bookmarks
+class Bookmarks extends BaseController
 {
     /**
      * Show the bookmarks page
@@ -24,15 +24,8 @@ class Bookmarks
      */
     public function index(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
+        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('bookmarks'));
         $page = $request->paramInteger('page', 1);
-
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('bookmarks'),
-            ]);
-        }
-
         $bookmarks = $user->bookmarks();
 
         $number_links = models\Link::countByCollectionId($bookmarks->id);

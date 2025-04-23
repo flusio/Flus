@@ -5,6 +5,7 @@ namespace App\controllers\collections;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\controllers\BaseController;
 use App\models;
 use App\utils;
 
@@ -12,7 +13,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Images
+class Images extends BaseController
 {
     /**
      * @request_param string id
@@ -27,13 +28,9 @@ class Images
      */
     public function edit(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
         $from = $request->param('from', '');
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection_id = $request->param('id', '');
         $collection = models\Collection::find($collection_id);
@@ -71,12 +68,7 @@ class Images
         $from = $request->param('from', '');
         $csrf = $request->param('csrf', '');
 
-        $user = auth\CurrentUser::get();
-        if (!$user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $collection = models\Collection::find($collection_id);
 
