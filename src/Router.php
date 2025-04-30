@@ -69,13 +69,17 @@ class Router
         $router->addRoute('POST', '/my/security/confirmation', 'my/Security#confirm', 'confirm password');
 
         $router->addRoute('GET', '/my/account', 'my/Account#show', 'account');
+
         $router->addRoute('GET', '/my/account/validation', 'my/Validation#show', 'account validation');
+        $router->addRoute('GET', '/my/account/validation/new', 'my/Validation#new', 'new account validation');
+        $router->addRoute('POST', '/my/account/validation/new', 'my/Validation#create', 'create account validation');
         $router->addRoute(
             'POST',
             '/my/account/validation/email',
             'my/Validation#resendEmail',
             'resend validation email'
         );
+
         $router->addRoute('GET', '/my/account/deletion', 'my/Account#deletion', 'account deletion');
         $router->addRoute('POST', '/my/account/deletion', 'my/Account#delete', 'delete account');
 

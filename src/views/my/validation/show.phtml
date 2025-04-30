@@ -15,7 +15,7 @@
         <h1><?= _('Account validation') ?></h1>
     </div>
 
-    <?php if (isset($success) && $success): ?>
+    <?php if ($current_user->validated_at): ?>
         <p class="section__intro">
             <?= _('Your account is now validated.') ?>
         </p>

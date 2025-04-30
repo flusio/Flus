@@ -29,17 +29,10 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         \App\Configuration::$application['subscriptions_enabled'] = false;
     }
 
-    public function testShowWithoutTokenAndConnectedRendersCorrectly(): void
+    public function testShowRendersCorrectlyWhenNotValidated(): void
     {
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 1, 9000);
-        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
-        $token = TokenFactory::create([
-            'expired_at' => $expired_at,
-        ]);
         $this->login([
             'validated_at' => null,
-            'validation_token' => $token->token,
         ]);
 
         $response = $this->appRun('GET', '/my/account/validation');
@@ -48,38 +41,25 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Didn’t receive the email? Resend it');
     }
 
-    public function testShowWithoutTokenAndNotConnectedRedirectsToLogin(): void
+    public function testShowRendersCorrectlyWhenValidated(): void
     {
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 1, 9000);
-        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
-        $token = TokenFactory::create([
-            'expired_at' => $expired_at,
-        ]);
-        UserFactory::create([
-            'validated_at' => null,
-            'validation_token' => $token->token,
+        $this->login([
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('GET', '/my/account/validation');
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fvalidation');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Your account is now validated.');
     }
 
-    public function testShowWithValidationEmailSentStatusRendersCorrectly(): void
+    public function testShowRendersCorrectlyWithValidationEmailSentStatus(): void
     {
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 1, 9000);
-        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
-        $token = TokenFactory::create([
-            'expired_at' => $expired_at,
-        ]);
         /** @var string */
         $email = $this->fake('email');
         $this->login([
             'email' => $email,
             'validated_at' => null,
-            'validation_token' => $token->token,
         ]);
         \Minz\Flash::set('status', 'validation_email_sent');
 
@@ -89,18 +69,33 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, "We’ve just sent you an email at {$email}");
     }
 
-    public function testShowRedirectsIfUserConnectedAndRegistrationAlreadyValidated(): void
+    public function testShowRedirectsIfTheUserIsNotConnected(): void
     {
-        $this->login([
-            'validated_at' => \Minz\Time::now(),
-        ]);
-
         $response = $this->appRun('GET', '/my/account/validation');
 
-        $this->assertResponseCode($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fvalidation');
     }
 
-    public function testShowWithTokenRendersCorrectlyAndValidatesRegistration(): void
+    public function testShowRedirectsIfATokenIsPassed(): void
+    {
+        $response = $this->appRun('GET', '/my/account/validation', [
+            't' => 'some-token'
+        ]);
+
+        $this->assertResponseCode($response, 302, '/my/account/validation/new?t=some-token');
+    }
+
+    public function testNewRendersCorrectly(): void
+    {
+        $response = $this->appRun('GET', '/my/account/validation/new', [
+            't' => 'some-token',
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'You’re about to validate your account on Flus.');
+    }
+
+    public function testCreateValidatesAccountAndRedirects(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -116,17 +111,19 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token->token,
         ]);
 
-        $response = $this->appRun('GET', '/my/account/validation', [
+        $response = $this->appRun('POST', '/my/account/validation/new', [
+            'csrf' => \Minz\Csrf::generate(),
             't' => $token->token,
         ]);
 
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Your account is now validated');
+        $this->assertResponseCode($response, 302, '/my/account/validation');
         $user = $user->reload();
         $this->assertEquals(\Minz\Time::now(), $user->validated_at);
+        $this->assertNull($user->validation_token);
+        $this->assertFalse(models\Token::exists($token->token));
     }
 
-    public function testShowWithTokenSetsSubscriptionAccountId(): void
+    public function testCreateSetsSubscriptionAccountId(): void
     {
         $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
         /** @var \DateTimeImmutable */
@@ -161,7 +158,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'subscription_expired_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('GET', '/my/account/validation', [
+        $response = $this->appRun('POST', '/my/account/validation/new', [
+            'csrf' => \Minz\Csrf::generate(),
             't' => $token->token,
         ]);
 
@@ -170,55 +168,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expired_at, $user->subscription_expired_at);
     }
 
-    public function testShowWithTokenRedirectsIfRegistrationAlreadyValidated(): void
-    {
-        /** @var \DateTimeImmutable */
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 1, 9000);
-        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
-        $token = TokenFactory::create([
-            'expired_at' => $expired_at,
-        ]);
-        $user = UserFactory::create([
-            'validated_at' => \Minz\Time::now(),
-            'validation_token' => $token->token,
-        ]);
-
-        $response = $this->appRun('GET', '/my/account/validation', [
-            't' => $token->token,
-        ]);
-
-        $this->assertResponseCode($response, 302, '/');
-    }
-
-    public function testShowWithTokenDeletesToken(): void
-    {
-        /** @var \DateTimeImmutable */
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 1, 9000);
-        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
-        $token = TokenFactory::create([
-            'expired_at' => $expired_at,
-        ]);
-        $user = UserFactory::create([
-            'validated_at' => null,
-            'validation_token' => $token->token,
-        ]);
-
-        $response = $this->appRun('GET', '/my/account/validation', [
-            't' => $token->token,
-        ]);
-
-        $this->assertFalse(models\Token::exists($token->token));
-        $user = $user->reload();
-        $this->assertNull($user->validation_token);
-    }
-
-    public function testShowWithTokenFailsIfTokenHasExpired(): void
+    public function testCreateFailsIfTokenHasExpired(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -234,7 +184,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token->token,
         ]);
 
-        $response = $this->appRun('GET', '/my/account/validation', [
+        $response = $this->appRun('POST', '/my/account/validation/new', [
+            'csrf' => \Minz\Csrf::generate(),
             't' => $token->token,
         ]);
 
@@ -244,7 +195,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->validated_at);
     }
 
-    public function testShowWithTokenFailsIfTokenHasBeenInvalidated(): void
+    public function testCreateFailsIfTokenHasBeenInvalidated(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -261,7 +212,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token->token,
         ]);
 
-        $response = $this->appRun('GET', '/my/account/validation', [
+        $response = $this->appRun('POST', '/my/account/validation/new', [
+            'csrf' => \Minz\Csrf::generate(),
             't' => $token->token,
         ]);
 
@@ -271,7 +223,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->validated_at);
     }
 
-    public function testShowFailsIfTokenIsNotAssociatedToAUser(): void
+    public function testCreateFailsIfTokenIsNotAssociatedToAUser(): void
     {
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
@@ -280,15 +232,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'expired_at' => $expired_at,
         ]);
 
-        $response = $this->appRun('GET', '/my/account/validation', [
+        $response = $this->appRun('POST', '/my/account/validation/new', [
+            'csrf' => \Minz\Csrf::generate(),
             't' => $token->token,
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The token doesn’t exist');
     }
 
-    public function testShowWithTokenFailsIfTokenDoesNotExist(): void
+    public function testCreateFailsIfTokenDoesNotExist(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -304,11 +257,12 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token->token,
         ]);
 
-        $response = $this->appRun('GET', '/my/account/validation', [
-            't' => 'not the token',
+        $response = $this->appRun('POST', '/my/account/validation/new', [
+            'csrf' => \Minz\Csrf::generate(),
+            't' => 'not a token',
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The token doesn’t exist');
         $user = $user->reload();
         $this->assertNull($user->validated_at);
@@ -336,35 +290,13 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'csrf' => $user->csrf,
         ]);
 
-        $this->assertResponseCode($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/my/account/validation');
         $this->assertSame('validation_email_sent', \Minz\Flash::get('status'));
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertNotNull($email_sent);
         $this->assertEmailSubject($email_sent, '[Flus] Confirm your account');
         $this->assertEmailContainsTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, $token->token);
-    }
-
-    public function testResendEmailRedirectsToRedictTo(): void
-    {
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 31, 9000);
-        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
-        $token = TokenFactory::create([
-            'expired_at' => $expired_at,
-        ]);
-        $user = $this->login([
-            'validated_at' => null,
-            'validation_token' => $token->token,
-        ]);
-
-        $response = $this->appRun('POST', '/my/account/validation/email', [
-            'csrf' => $user->csrf,
-            'from' => '/about',
-        ]);
-
-        $this->assertResponseCode($response, 302, '/about');
-        $this->assertSame('validation_email_sent', \Minz\Flash::get('status'));
     }
 
     public function testResendEmailCreatesANewTokenIfNoToken(): void
@@ -471,7 +403,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponseCode($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/my/account/validation');
         $this->assertSame(
             'A security verification failed: you should retry to submit the form.',
             \Minz\Flash::get('error'),
@@ -485,7 +417,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'csrf' => \Minz\Csrf::generate(),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fvalidation');
         $this->assertEmailsCount(0);
     }
 }

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-04-16 16:05+0200\n"
-"PO-Revision-Date: 2025-04-16 16:06+0200\n"
+"POT-Creation-Date: 2025-04-30 14:18+0200\n"
+"PO-Revision-Date: 2025-04-30 14:20+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,9 +16,6 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:47
-#: views/_layouts/connected.phtml:223
-#: views/_layouts/connected_blocked.phtml:181
-#: views/_layouts/not_connected.phtml:150
 msgid "Back"
 msgstr "Retour"
 
@@ -40,9 +37,6 @@ msgid "Hide"
 msgstr "Cacher"
 
 #: assets/javascripts/controllers/input_password_controller.js:25
-#: views/my/account/deletion.phtml:56 views/my/security/confirmation.phtml:52
-#: views/my/security/show.phtml:74 views/passwords/edit.phtml:51
-#: views/registrations/new.phtml:115 views/sessions/new.phtml:81
 msgid "Show"
 msgstr "Afficher"
 
@@ -63,7 +57,8 @@ msgstr "Afficher"
 #: controllers/links/Searches.php:111 controllers/my/Account.php:108
 #: controllers/my/Preferences.php:82 controllers/my/Profile.php:71
 #: controllers/my/Security.php:95 controllers/my/Security.php:219
-#: controllers/my/Subscription.php:70 controllers/my/Validation.php:136
+#: controllers/my/Subscription.php:70 controllers/my/Validation.php:144
+#: forms/BaseForm.php:21
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -127,7 +122,6 @@ msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
 #: controllers/Passwords.php:124 controllers/Passwords.php:131
 #: controllers/Passwords.php:171 controllers/Passwords.php:178
-#: controllers/my/Validation.php:60 controllers/my/Validation.php:73
 msgid "The token doesn’t exist."
 msgstr "Le token n’existe pas."
 
@@ -238,7 +232,15 @@ msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
 "contacter le support."
 
-#: controllers/my/Validation.php:66
+#: forms/AccountValidation.php:28
+msgid ""
+"The token doesn’t exist. The validation link you clicked on should have "
+"expired."
+msgstr ""
+"Le token n’existe pas. Le lien de validation sur lequel vous avez cliqué a "
+"dû expiré."
+
+#: forms/AccountValidation.php:34
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
@@ -308,12 +310,10 @@ msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:123 models/Collection.php:185
-#: views/_layouts/reading.phtml:32 views/bookmarks/index.phtml:10
 msgid "Bookmarks"
 msgstr "Signets"
 
 #: models/Collection.php:134 models/Collection.php:187
-#: views/_layouts/reading.phtml:42
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -322,8 +322,6 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:156 models/Collection.php:189
-#: views/_layouts/reading.phtml:22 views/news/index.phtml:3
-#: views/news/index.phtml:12
 msgid "News"
 msgstr "Journal"
 
@@ -464,7 +462,7 @@ msgstr "Navigateur inconnu"
 msgid "unknown platform"
 msgstr "plateforme inconnue"
 
-#: utils/Browser.php:47 views/profiles/show.phtml:3
+#: utils/Browser.php:47
 #, php-format
 msgid "%s on %s"
 msgstr "%s sur %s"
@@ -515,7 +513,7 @@ msgstr "< 1 min"
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:246 views/links/show.phtml:83
+#: utils/view_helpers.php:246
 msgid "you"
 msgstr "vous"
 
@@ -565,7 +563,7 @@ msgstr "Commentaire par %s"
 msgid "Comments on %s"
 msgstr "Commentaires sur %s"
 
-#: views/pages/webmanifest.json.php:4 views/pages/about.phtml:15
+#: views/pages/webmanifest.json.php:4
 msgid "Collect, organise, comment on and share links from around the Web."
 msgstr ""
 "Collectez, organisez, commentez et partagez les liens provenant de "
@@ -2142,9 +2140,27 @@ msgstr "session courante"
 msgid "expired"
 msgstr "expirée"
 
+#: views/my/validation/new.phtml:3 views/my/validation/new.phtml:15
 #: views/my/validation/show.phtml:3 views/my/validation/show.phtml:15
 msgid "Account validation"
 msgstr "Validation du compte"
+
+#: views/my/validation/new.phtml:19
+#, php-format
+msgid ""
+"You’re about to validate your account on %s. Please click the button below "
+"to confirm."
+msgstr ""
+"Vous êtes sur le point de confirmer votre compte sur %s. Veuillez cliquer "
+"sur le bouton ci-dessous pour confirmer."
+
+#: views/my/validation/new.phtml:28
+msgid "Back to the account validation"
+msgstr "Retour à la validation du compte"
+
+#: views/my/validation/new.phtml:34
+msgid "Confirm my account"
+msgstr "Confirmer mon compte"
 
 #: views/my/validation/show.phtml:20
 msgid "Your account is now validated."
@@ -2528,11 +2544,11 @@ msgstr ""
 
 #: views/pages/about.phtml:64
 msgid ""
-"default cards illustrations are from <a href=\"https://www.svgbackgrounds."
-"com/\">SVGBackgrounds</a>."
+"default cards illustrations are from <a href=\"https://"
+"www.svgbackgrounds.com/\">SVGBackgrounds</a>."
 msgstr ""
-"les illustrations par défaut des cartes viennent de <a href=\"https://www."
-"svgbackgrounds.com/\">SVGBackgrounds</a>."
+"les illustrations par défaut des cartes viennent de <a href=\"https://"
+"www.svgbackgrounds.com/\">SVGBackgrounds</a>."
 
 #: views/pages/about.phtml:69
 msgid ""
