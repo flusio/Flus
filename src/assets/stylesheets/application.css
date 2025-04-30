@@ -2,6 +2,7 @@
 @import './utils/variables.css';
 @import './utils/fonts.css';
 @import './utils/animations.css';
+@import './utils/text.css';
 @import './components/alerts.css';
 @import './components/avatars.css';
 @import './components/anchors.css';
