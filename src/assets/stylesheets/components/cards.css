@@ -179,14 +179,14 @@
         1px -1px 0 var(--color-purple-8),
         -1px -1px 0 var(--color-purple-8);
 
-    background-color: rgba(0, 0, 0, 30%);
+    background-color: rgb(0, 0, 0, 30%);
     background-image:
         linear-gradient(
             to bottom,
             transparent 0,
-            rgba(0, 0, 0, 40%) 25px,
-            rgba(0, 0, 0, 60%) 45px,
-            rgba(0, 0, 0, 80%)
+            rgb(0, 0, 0, 40%) 25px,
+            rgb(0, 0, 0, 60%) 45px,
+            rgb(0, 0, 0, 80%)
         );
 
     transition: background-color 0.3s ease-in-out;
@@ -199,9 +199,9 @@
         linear-gradient(
             to bottom,
             transparent 30px,
-            rgba(0, 0, 0, 40%) 70px,
-            rgba(0, 0, 0, 60%) 90px,
-            rgba(0, 0, 0, 80%)
+            rgb(0, 0, 0, 40%) 70px,
+            rgb(0, 0, 0, 60%) 90px,
+            rgb(0, 0, 0, 80%)
         );
 }
 
@@ -212,9 +212,9 @@
         linear-gradient(
             to bottom,
             transparent 110px,
-            rgba(0, 0, 0, 40%) 150px,
-            rgba(0, 0, 0, 60%) 170px,
-            rgba(0, 0, 0, 80%)
+            rgb(0, 0, 0, 40%) 150px,
+            rgb(0, 0, 0, 60%) 170px,
+            rgb(0, 0, 0, 80%)
         );
 }
 
@@ -231,7 +231,7 @@
 
 .card--illustrated-alt a.card__body:hover,
 .card--illustrated-alt a.card__body:focus {
-    background-color: rgba(0, 0, 0, 30%);
+    background-color: rgb(0, 0, 0, 30%);
 }
 
 .card--illustrated .sticker {
@@ -310,7 +310,7 @@
 .card--illustrated .card__footer {
     color: var(--color-white);
 
-    background-color: rgba(0, 0, 0, 90%);
+    background-color: rgb(0, 0, 0, 90%);
     background-image: none;
     box-shadow: none;
 }

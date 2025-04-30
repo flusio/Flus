@@ -7,7 +7,7 @@
     overflow: hidden auto;
 
     opacity: 0;
-    background-color: rgba(0, 0, 0, 50%);
+    background-color: rgb(0, 0, 0, 50%);
 
     transform: scaleX(1.02) scaleY(1.02);
     transition: visibility 0s linear 0.2s, opacity 0.2s 0s, transform 0.2s;
