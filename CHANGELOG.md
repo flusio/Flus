@@ -1,5 +1,20 @@
 # Changelog of Flus
 
+## 2025-04-30 - v1.2.4
+
+### Bug fixes
+
+- Fix the account validation mechanism ([0836dba6](https://github.com/flusio/Flus/commit/0836dba6))
+
+### Technical
+
+- Update the Composer dependencies ([334d9dc0](https://github.com/flusio/Flus/commit/334d9dc0), [83859ccd](https://github.com/flusio/Flus/commit/83859ccd))
+
+### Developers
+
+- Refactor requiring logged-in user ([cda27108](https://github.com/flusio/Flus/commit/cda27108))
+- Add a CSS utility class `.text--center` ([11ad4d29](https://github.com/flusio/Flus/commit/11ad4d29))
+
 ## 2025-04-16 - v1.2.3
 
 ### Improvements
