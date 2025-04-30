@@ -202,6 +202,8 @@ class ClearUrls
             self::$clear_urls_data = $clear_urls_data;
         }
 
+        assert(self::$clear_urls_data !== null);
+
         return self::$clear_urls_data['providers'];
     }
 
