@@ -34,19 +34,19 @@ class Application
         $router = Router::load();
         \Minz\Engine::init($router, [
             'start_session' => true,
-            'not_found_view_pointer' => 'not_found.phtml',
-            'internal_server_error_view_pointer' => 'internal_server_error.phtml',
+            'not_found_template' => 'not_found.phtml',
+            'internal_server_error_template' => 'internal_server_error.phtml',
             'controller_namespace' => '\\App\\controllers',
         ]);
 
         // Automatically declare content types for these views files extensions
-        \Minz\Output\View::$extensions_to_content_types['.atom.xml.php'] = 'application/xml';
-        \Minz\Output\View::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
-        \Minz\Output\View::$extensions_to_content_types['.xsl.php'] = 'application/xslt+xml';
+        \Minz\Output\Template::$extensions_to_content_types['.atom.xml.php'] = 'application/xml';
+        \Minz\Output\Template::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
+        \Minz\Output\Template::$extensions_to_content_types['.xsl.php'] = 'application/xslt+xml';
     }
 
     /**
-     * Declare global View variables and execute a request.
+     * Declare global template variables and execute a request.
      *
      * @return ResponseReturnable
      */
@@ -143,7 +143,7 @@ class Application
         $status = \Minz\Flash::pop('status');
 
         $app_conf = \App\Configuration::$application;
-        \Minz\Output\View::declareDefaultVariables([
+        \Minz\Template\Simple::addGlobals([
             'csrf_token' => \Minz\Csrf::generate(),
             'errors' => $errors,
             'error' => $error,

@@ -102,7 +102,7 @@ class DataExporter
         $collections = $user->followedCollections(['time_filter']);
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
-        $view = new \Minz\Output\View('collections/followed.opml.xml.php', [
+        $view = new \Minz\Template\Simple('collections/followed.opml.xml.php', [
             'brand' => \App\Configuration::$application['brand'],
             'now' => \Minz\Time::now(),
             'groups' => $groups,
@@ -117,7 +117,7 @@ class DataExporter
      */
     private function generateCollection(models\Collection $collection): string
     {
-        $view = new \Minz\Output\View('collections/exportation.atom.xml.php', [
+        $view = new \Minz\Template\Simple('collections/exportation.atom.xml.php', [
             'brand' => \App\Configuration::$application['brand'],
             'user_agent' => utils\UserAgent::get(),
             'collection' => $collection,
@@ -133,7 +133,7 @@ class DataExporter
      */
     private function generateLink(models\Link $link): string
     {
-        $view = new \Minz\Output\View('links/exportation.atom.xml.php', [
+        $view = new \Minz\Template\Simple('links/exportation.atom.xml.php', [
             'brand' => \App\Configuration::$application['brand'],
             'user_agent' => utils\UserAgent::get(),
             'link' => $link,

@@ -109,15 +109,14 @@ class Searches extends BaseController
             $default_link = new models\Link($url, $support_user->id, false);
         }
 
-        $errors = $default_link->validate();
-        if ($errors) {
+        if (!$default_link->validate()) {
             return Response::badRequest('links/searches/show.phtml', [
                 'url' => $url,
                 'autosubmit' => false,
                 'default_link' => null,
                 'existing_link' => null,
                 'feeds' => [],
-                'errors' => $errors,
+                'errors' => $default_link->errors(),
             ]);
         }
 

@@ -55,7 +55,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/addons');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'pages/addons.phtml');
+        $this->assertResponseTemplateName($response, 'pages/addons.phtml');
         $this->assertResponseContains($response, ' Keep Flus at hand in your browser');
     }
 
@@ -64,7 +64,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/about');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'pages/about.phtml');
+        $this->assertResponseTemplateName($response, 'pages/about.phtml');
         $this->assertResponseContains($response, 'About Flus');
     }
 
@@ -75,7 +75,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/robots.txt');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'pages/robots.txt');
+        $this->assertResponseTemplateName($response, 'pages/robots.txt');
         $this->assertResponseEquals($response, <<<TXT
             User-agent: *
             Allow: /
@@ -92,7 +92,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         \App\Configuration::$application['registrations_opened'] = true;
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'pages/robots.txt');
+        $this->assertResponseTemplateName($response, 'pages/robots.txt');
         $this->assertResponseEquals($response, <<<TXT
             User-agent: *
             Disallow: /

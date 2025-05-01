@@ -38,7 +38,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/filters/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/filters/edit.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 

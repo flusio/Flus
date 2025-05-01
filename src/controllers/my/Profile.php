@@ -70,8 +70,7 @@ class Profile extends BaseController
         $old_username = $user->username;
         $user->username = trim($username);
 
-        $errors = $user->validate();
-        if ($errors) {
+        if (!$user->validate()) {
             // by keeping the new values, an invalid username could be
             // displayed in the header since the `$user` objects are the same
             // (referenced by the CurrentUser::$instance)
@@ -79,7 +78,7 @@ class Profile extends BaseController
             return Response::badRequest('my/profile/edit.phtml', [
                 'username' => $username,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $user->errors(),
             ]);
         }
 

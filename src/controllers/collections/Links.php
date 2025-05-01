@@ -100,14 +100,14 @@ class Links extends BaseController
         }
 
         $link = new models\Link($url, $user->id, $is_hidden);
-        $errors = $link->validate();
-        if ($errors) {
+
+        if (!$link->validate()) {
             return Response::badRequest('collections/links/new.phtml', [
                 'collection' => $collection,
                 'url' => $url,
                 'is_hidden' => $is_hidden,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $link->errors(),
             ]);
         }
 

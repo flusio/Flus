@@ -81,8 +81,7 @@ class Preferences extends BaseController
         $user->option_compact_mode = $option_compact_mode;
         $user->accept_contact = $accept_contact;
 
-        $errors = $user->validate();
-        if ($errors) {
+        if (!$user->validate()) {
             $user->locale = $old_locale;
             return Response::badRequest('my/preferences/edit.phtml', [
                 'locale' => $locale,
@@ -90,7 +89,7 @@ class Preferences extends BaseController
                 'accept_contact' => $accept_contact,
                 'is_beta_enabled' => $beta_enabled,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $user->errors(),
             ]);
         }
 

@@ -29,7 +29,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $url);
-        $this->assertResponsePointer($response, 'links/searches/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/searches/show.phtml');
     }
 
     public function testShowDisplaysDefaultLink(): void

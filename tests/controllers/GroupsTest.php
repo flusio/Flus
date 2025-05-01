@@ -30,7 +30,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, $group_name);
     }
 
@@ -231,7 +231,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);
@@ -259,7 +259,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, "The name must be less than {$name_max_length} characters");
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);
@@ -282,7 +282,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, 'The name is required');
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);
@@ -312,7 +312,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, 'You already have a group with this name');
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);

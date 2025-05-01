@@ -33,7 +33,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'You can change your login details here');
-        $this->assertResponsePointer($response, 'my/security/show.phtml');
+        $this->assertResponseTemplateName($response, 'my/security/show.phtml');
     }
 
     public function testShowRedirectsIfPasswordIsNotConfirmed(): void
@@ -268,7 +268,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $this->assertResponsePointer($response, 'my/security/show.phtml');
+        $this->assertResponseTemplateName($response, 'my/security/show.phtml');
         $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -302,7 +302,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'An account already exists with this email address');
-        $this->assertResponsePointer($response, 'my/security/show.phtml');
+        $this->assertResponseTemplateName($response, 'my/security/show.phtml');
         $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -333,7 +333,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The address email is invalid');
-        $this->assertResponsePointer($response, 'my/security/show.phtml');
+        $this->assertResponseTemplateName($response, 'my/security/show.phtml');
         $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -362,7 +362,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The address email is required');
-        $this->assertResponsePointer($response, 'my/security/show.phtml');
+        $this->assertResponseTemplateName($response, 'my/security/show.phtml');
         $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -421,7 +421,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'We need you to confirm your password');
-        $this->assertResponsePointer($response, 'my/security/confirmation.phtml');
+        $this->assertResponseTemplateName($response, 'my/security/confirmation.phtml');
     }
 
     public function testConfirmationRedirectsIfUserIsNotConnected(): void
@@ -514,7 +514,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $this->assertResponsePointer($response, 'my/security/confirmation.phtml');
+        $this->assertResponseTemplateName($response, 'my/security/confirmation.phtml');
         $session = auth\CurrentUser::session();
         $this->assertNotNull($session);
         $this->assertNull($session->confirmed_password_at);
@@ -538,7 +538,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The password is incorrect.');
-        $this->assertResponsePointer($response, 'my/security/confirmation.phtml');
+        $this->assertResponseTemplateName($response, 'my/security/confirmation.phtml');
         $session = auth\CurrentUser::session();
         $this->assertNotNull($session);
         $this->assertNull($session->confirmed_password_at);

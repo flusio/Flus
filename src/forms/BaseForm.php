@@ -5,7 +5,7 @@ namespace App\forms;
 use Minz\Form;
 
 /**
- * @template T of object
+ * @template T of ?object
  *
  * @phpstan-extends Form<T>
  *

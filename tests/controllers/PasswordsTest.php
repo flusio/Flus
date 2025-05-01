@@ -23,7 +23,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/password/forgot');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'passwords/forgot.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/forgot.phtml');
         $this->assertResponseContains($response, 'Reset your password');
     }
 
@@ -205,7 +205,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'passwords/forgot.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/forgot.phtml');
         $this->assertResponseContains($response, 'The address email is invalid');
         $user = $user->reload();
         $this->assertNull($user->reset_token);
@@ -230,7 +230,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'passwords/forgot.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/forgot.phtml');
         $this->assertResponseContains($response, 'We can’t find any account with this email address');
         $user = $user->reload();
         $this->assertNull($user->reset_token);
@@ -253,7 +253,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'passwords/forgot.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/forgot.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $user = $user->reload();
         $this->assertNull($user->reset_token);
@@ -279,7 +279,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, "You’re changing the password of {$email}");
     }
 
@@ -294,7 +294,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/password/edit');
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token doesn’t exist.');
     }
 
@@ -311,7 +311,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token doesn’t exist.');
     }
 
@@ -334,7 +334,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token doesn’t exist.');
     }
 
@@ -358,7 +358,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token has expired');
     }
 
@@ -385,7 +385,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token has expired');
     }
 
@@ -526,7 +526,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token doesn’t exist.');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
@@ -556,7 +556,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token doesn’t exist.');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
@@ -589,7 +589,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token doesn’t exist.');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
@@ -623,7 +623,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token has expired');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
@@ -660,7 +660,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The token has expired');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
@@ -693,7 +693,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'The password is required');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
@@ -727,7 +727,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));

@@ -34,7 +34,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -83,7 +83,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -448,7 +448,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
         $this->assertResponseContains($response, "The name must be less than {$max_size} characters");
         $this->assertSame(0, models\Group::count());
     }
@@ -472,7 +472,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Group::count());
     }

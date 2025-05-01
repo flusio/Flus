@@ -107,8 +107,8 @@ class Collections extends BaseController
         }
 
         $collection = models\Collection::init($user->id, $name, $description, $is_public);
-        $errors = $collection->validate();
-        if ($errors) {
+
+        if (!$collection->validate()) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
@@ -116,7 +116,7 @@ class Collections extends BaseController
                 'is_public' => $is_public,
                 'topics' => $topics,
                 'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-                'errors' => $errors,
+                'errors' => $collection->errors(),
             ]);
         }
 
@@ -315,8 +315,7 @@ class Collections extends BaseController
         $collection->name = trim($name);
         $collection->description = trim($description);
         $collection->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
-        $errors = $collection->validate();
-        if ($errors) {
+        if (!$collection->validate()) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
@@ -326,7 +325,7 @@ class Collections extends BaseController
                 'topic_ids' => $topic_ids,
                 'from' => $from,
                 'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-                'errors' => $errors,
+                'errors' => $collection->errors(),
             ]);
         }
 

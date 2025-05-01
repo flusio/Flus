@@ -23,7 +23,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'my/profile/edit.phtml');
+        $this->assertResponseTemplateName($response, 'my/profile/edit.phtml');
     }
 
     public function testEditRedirectsToLoginIfUserNotConnected(): void

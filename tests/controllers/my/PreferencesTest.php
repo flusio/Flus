@@ -22,7 +22,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/my/preferences');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'my/preferences/edit.phtml');
+        $this->assertResponseTemplateName($response, 'my/preferences/edit.phtml');
     }
 
     public function testEditRedirectsToLoginIfUserNotConnected(): void

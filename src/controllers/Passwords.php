@@ -195,12 +195,11 @@ class Passwords extends BaseController
 
         $user->password_hash = models\User::passwordHash($password);
 
-        $errors = $user->validate();
-        if ($errors) {
+        if (!$user->validate()) {
             return Response::badRequest('passwords/edit.phtml', [
                 'token' => $token->token,
                 'email' => $user->email,
-                'errors' => $errors,
+                'errors' => $user->errors(),
             ]);
         }
 

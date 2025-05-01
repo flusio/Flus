@@ -50,10 +50,8 @@ class Topics
             $topic->image_filename = $image_filename;
         }
 
-        /** @var array<string, string> */
-        $errors = $topic->validate();
-        if ($errors) {
-            $errors = implode(' ', $errors);
+        if (!$topic->validate()) {
+            $errors = implode(' ', $topic->errors());
             return Response::text(400, "Topic creation failed: {$errors}");
         }
 
@@ -94,10 +92,8 @@ class Topics
             $topic->image_filename = $image_filename;
         }
 
-        /** @var array<string, string> */
-        $errors = $topic->validate();
-        if ($errors) {
-            $errors = implode(' ', $errors);
+        if (!$topic->validate()) {
+            $errors = implode(' ', $topic->errors());
             return Response::text(400, "Topic creation failed: {$errors}");
         }
 

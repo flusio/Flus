@@ -100,13 +100,12 @@ class Filters extends BaseController
         }
 
         $followed_collection->time_filter = $time_filter;
-        $errors = $followed_collection->validate();
-        if ($errors) {
+        if (!$followed_collection->validate()) {
             return Response::badRequest('collections/filters/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'time_filter' => $time_filter,
-                'errors' => $errors,
+                'errors' => $followed_collection->errors(),
             ]);
         }
 

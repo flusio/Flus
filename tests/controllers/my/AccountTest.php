@@ -39,7 +39,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $username);
-        $this->assertResponsePointer($response, 'my/account/show.phtml');
+        $this->assertResponseTemplateName($response, 'my/account/show.phtml');
     }
 
     public function testShowRendersIfSubscriptionIsNotOverdue(): void
@@ -180,7 +180,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/my/account/deletion');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'my/account/deletion.phtml');
+        $this->assertResponseTemplateName($response, 'my/account/deletion.phtml');
     }
 
     public function testDeletionRedirectsToLoginIfUserNotConnected(): void

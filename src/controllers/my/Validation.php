@@ -90,7 +90,7 @@ class Validation extends BaseController
             ]);
         }
 
-        $user = $form->getUser();
+        $user = $form->user();
 
         models\Token::delete($form->t);
 

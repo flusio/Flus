@@ -108,11 +108,10 @@ class Security extends BaseController
             ]);
         }
 
-        $errors = $user->validate();
-        if ($errors) {
+        if (!$user->validate()) {
             return Response::badRequest('my/security/show.phtml', [
                 'email' => $email,
-                'errors' => $errors,
+                'errors' => $user->errors(),
             ]);
         }
 

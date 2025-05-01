@@ -68,7 +68,7 @@ class HtmlSanitizer
                     // Absolutize the URL of the href attribute.
                     $href_node = $node->getAttributeNode('href');
                     $url = \SpiderBits\Url::absolutize($href_node->value, $base_url);
-                    $href_node->value = \Minz\Output\ViewHelpers::protect($url);
+                    $href_node->value = \Minz\Template\SimpleTemplateHelpers::protect($url);
 
                     // Make sure to open the URL in a new tab.
                     $target_node = new \DOMAttr('target', '_blank');

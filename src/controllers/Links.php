@@ -260,8 +260,8 @@ class Links extends BaseController
         }
 
         $link = new models\Link($url, $user->id, $is_hidden);
-        $errors = $link->validate();
-        if ($errors) {
+
+        if (!$link->validate()) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_hidden' => $is_hidden,
@@ -272,7 +272,7 @@ class Links extends BaseController
                 'groups_to_collections' => $groups_to_collections,
                 'shared_collections' => $shared_collections,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $link->errors(),
             ]);
         }
 
@@ -313,8 +313,7 @@ class Links extends BaseController
         foreach ($new_collection_names as $name) {
             $new_collection = models\Collection::init($user->id, $name, '', false);
 
-            $errors = $new_collection->validate();
-            if ($errors) {
+            if (!$new_collection->validate()) {
                 return Response::badRequest('links/new.phtml', [
                     'url' => $url,
                     'is_hidden' => $is_hidden,
@@ -325,7 +324,7 @@ class Links extends BaseController
                     'groups_to_collections' => $groups_to_collections,
                     'shared_collections' => $shared_collections,
                     'from' => $from,
-                    'errors' => $errors,
+                    'errors' => $new_collection->errors(),
                 ]);
             }
 
@@ -426,8 +425,7 @@ class Links extends BaseController
 
         $link->title = trim($new_title);
         $link->reading_time = max(0, $new_reading_time);
-        $errors = $link->validate();
-        if ($errors) {
+        if (!$link->validate()) {
             $link->title = $old_title;
             $link->reading_time = $old_reading_time;
             return Response::badRequest('links/edit.phtml', [
@@ -435,7 +433,7 @@ class Links extends BaseController
                 'title' => $new_title,
                 'reading_time' => $new_reading_time,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $link->errors(),
             ]);
         }
 

@@ -34,7 +34,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/images/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -61,7 +61,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/images/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -370,7 +370,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/images/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
@@ -392,7 +392,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/images/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'The file is required');
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
@@ -421,7 +421,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/images/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>');
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
@@ -451,7 +451,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/images/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'This file cannot be uploaded (error -1).');
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
@@ -481,7 +481,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/images/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, 'This file is too large');
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
@@ -511,7 +511,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/images/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
         $this->assertResponseContains($response, "This file cannot be uploaded (error {$error}).");
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);

@@ -65,8 +65,7 @@ class Onboarding extends BaseController
 
         $user->locale = trim($locale);
 
-        $errors = $user->validate();
-        if (\Minz\Csrf::validate($csrf) && !$errors) {
+        if (\Minz\Csrf::validate($csrf) && $user->validate()) {
             $user->save();
             utils\Locale::setCurrentLocale($locale);
         }

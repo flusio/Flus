@@ -158,9 +158,8 @@ class Collections extends BaseController
         foreach ($new_collection_names as $name) {
             $new_collection = models\Collection::init($user->id, $name, '', false);
 
-            $errors = $new_collection->validate();
-            if ($errors) {
-                \Minz\Flash::set('errors', $errors);
+            if (!$new_collection->validate()) {
+                \Minz\Flash::set('errors', $new_collection->errors());
                 return Response::found($from);
             }
 

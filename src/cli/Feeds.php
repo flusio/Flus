@@ -52,10 +52,8 @@ class Feeds
         $user = models\User::supportUser();
         $collection = models\Collection::initFeed($user->id, $feed_url);
 
-        /** @var array<string, string> */
-        $errors = $collection->validate();
-        if ($errors) {
-            $errors = implode(' ', $errors);
+        if (!$collection->validate()) {
+            $errors = implode(' ', $collection->errors());
             return Response::text(400, "Feed collection creation failed: {$errors}");
         }
 

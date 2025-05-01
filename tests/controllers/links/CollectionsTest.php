@@ -49,7 +49,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $collection_name);
-        $this->assertResponsePointer($response, 'links/collections/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
     }
 
     public function testIndexRendersCorrectlyWhenMarkAsReadIsSet(): void
@@ -107,7 +107,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/collections/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
         $this->assertResponseContains($response, $link_owned->id);
         $this->assertResponseNotContains($response, $link_not_owned->id);
     }
@@ -131,7 +131,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/collections/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
         $this->assertResponseContains($response, $link_2->id);
         $this->assertResponseNotContains($response, $link_1->id);
     }

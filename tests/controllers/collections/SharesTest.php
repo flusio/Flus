@@ -32,7 +32,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -84,7 +84,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -178,7 +178,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
     }
 
     public function testCreateCreatesCollectionShare(): void
@@ -330,7 +330,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -356,7 +356,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'You can’t share access with yourself');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -382,7 +382,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'This user doesn’t exist');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -409,7 +409,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'This user doesn’t exist');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -440,7 +440,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'The collection is already shared with this user');
         $collection_shares = models\CollectionShare::listBy([
             'collection_id' => $collection->id,
@@ -468,7 +468,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'The type is invalid');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -495,7 +495,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'The type is required');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -634,7 +634,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
     }
 
     public function testDeleteRedirectsToLoginIfNotConnected(): void
@@ -761,7 +761,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400, $from);
-        $this->assertResponsePointer($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $this->assertTrue(models\CollectionShare::exists($collection_share->id));
     }

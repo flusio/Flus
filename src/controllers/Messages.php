@@ -91,9 +91,8 @@ class Messages extends BaseController
 
         $message->content = trim($content);
 
-        $errors = $message->validate();
-        if ($errors) {
-            \Minz\Flash::set('errors', $errors);
+        if (!$message->validate()) {
+            \Minz\Flash::set('errors', $message->errors());
             return Response::found($from);
         }
 

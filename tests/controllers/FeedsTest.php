@@ -36,7 +36,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/feeds');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'feeds/index.phtml');
+        $this->assertResponseTemplateName($response, 'feeds/index.phtml');
         $this->assertResponseContains($response, $feed_name);
     }
 
@@ -113,7 +113,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'feeds/new.phtml');
+        $this->assertResponseTemplateName($response, 'feeds/new.phtml');
         $this->assertResponseContains($response, 'New feed');
     }
 

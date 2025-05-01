@@ -30,7 +30,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/repairing/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/repairing/new.phtml');
         $this->assertResponseContains($response, $url);
     }
 
@@ -293,7 +293,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/repairing/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/repairing/new.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $link = $link->reload();
         $this->assertSame($old_url, $link->url);
@@ -318,7 +318,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/repairing/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/repairing/new.phtml');
         $this->assertResponseContains($response, 'The link is invalid.');
         $link = $link->reload();
         $this->assertSame($old_url, $link->url);

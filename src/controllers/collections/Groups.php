@@ -119,15 +119,14 @@ class Groups extends BaseController
         if ($name) {
             $group = new models\Group($user->id, $name);
 
-            $errors = $group->validate();
-            if ($errors) {
+            if (!$group->validate()) {
                 return Response::badRequest('collections/groups/edit.phtml', [
                     'collection' => $collection,
                     'groups' => $groups,
                     'from' => $from,
                     'name' => $name,
                     'name_max_length' => models\Group::NAME_MAX_LENGTH,
-                    'errors' => $errors,
+                    'errors' => $group->errors(),
                 ]);
             }
 

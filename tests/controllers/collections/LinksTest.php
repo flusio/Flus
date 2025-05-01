@@ -30,7 +30,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/links/new.phtml');
+        $this->assertResponseTemplateName($response, 'collections/links/new.phtml');
         $this->assertResponseContains($response, 'New link');
     }
 
@@ -53,7 +53,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/links/new.phtml');
+        $this->assertResponseTemplateName($response, 'collections/links/new.phtml');
         $this->assertResponseContains($response, 'New link');
     }
 

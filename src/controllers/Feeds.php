@@ -109,12 +109,11 @@ class Feeds extends BaseController
             $default_link = new models\Link($url, $support_user->id, false);
         }
 
-        $errors = $default_link->validate();
-        if ($errors) {
+        if (!$default_link->validate()) {
             return Response::badRequest('feeds/new.phtml', [
                 'url' => $url,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $default_link->errors(),
             ]);
         }
 

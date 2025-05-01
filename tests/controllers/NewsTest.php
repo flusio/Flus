@@ -36,7 +36,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/news');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'news/index.phtml');
+        $this->assertResponseTemplateName($response, 'news/index.phtml');
         $this->assertResponseContains($response, $title);
     }
 

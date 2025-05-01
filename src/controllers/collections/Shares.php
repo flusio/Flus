@@ -145,14 +145,14 @@ class Shares extends BaseController
         }
 
         $collection_share = new models\CollectionShare($user_id, $collection->id, $type);
-        $errors = $collection_share->validate();
-        if ($errors) {
+
+        if (!$collection_share->validate()) {
             return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'type' => $type,
                 'user_id' => $user_id,
-                'errors' => $errors,
+                'errors' => $collection_share->errors(),
             ]);
         }
 

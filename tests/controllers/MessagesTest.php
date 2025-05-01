@@ -31,7 +31,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'messages/edit.phtml');
+        $this->assertResponseTemplateName($response, 'messages/edit.phtml');
         $this->assertResponseContains($response, $content);
     }
 

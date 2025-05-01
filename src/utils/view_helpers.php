@@ -17,7 +17,7 @@
 function _date(\DateTimeInterface $date, string $format): string
 {
     $current_locale = \App\utils\Locale::currentLocale();
-    return \Minz\Output\ViewHelpers::formatDate($date, $format, $current_locale);
+    return \Minz\Template\SimpleTemplateHelpers::formatDate($date, $format, $current_locale);
 }
 
 /**
@@ -194,7 +194,7 @@ function icon(string $icon_name, string $additional_class_names = ''): string
         $class .= ' ' . $additional_class_names;
     }
 
-    $url_icons = \Minz\Output\ViewHelpers::urlStatic('icons.svg');
+    $url_icons = \Minz\Template\SimpleTemplateHelpers::urlStatic('icons.svg');
     $svg = "<svg class=\"{$class}\" aria-hidden=\"true\" width=\"36\" height=\"36\">";
     $svg .= "<use xlink:href=\"{$url_icons}#{$icon_name}\"/>";
     $svg .= '</svg>';

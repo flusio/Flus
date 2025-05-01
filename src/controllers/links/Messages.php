@@ -82,8 +82,8 @@ class Messages extends BaseController
         }
 
         $message = new models\Message($user->id, $link->id, $content);
-        $errors = $message->validate();
-        if ($errors) {
+
+        if (!$message->validate()) {
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
@@ -91,7 +91,7 @@ class Messages extends BaseController
                 'comment' => $content,
                 'share_on_mastodon' => $share_on_mastodon,
                 'mastodon_configured' => $mastodon_configured,
-                'errors' => $errors,
+                'errors' => $message->errors(),
             ]);
         }
 

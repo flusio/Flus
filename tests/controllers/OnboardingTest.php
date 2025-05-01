@@ -20,7 +20,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/onboarding');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'onboarding/step1.phtml');
+        $this->assertResponseTemplateName($response, 'onboarding/step1.phtml');
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('validStepsProvider')]
@@ -33,7 +33,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, "onboarding/step{$step}.phtml");
+        $this->assertResponseTemplateName($response, "onboarding/step{$step}.phtml");
     }
 
     public function testShowRedirectsIfNotConnected(): void

@@ -42,7 +42,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Importation from Pocket');
-        $this->assertResponsePointer($response, 'importations/pocket/show.phtml');
+        $this->assertResponseTemplateName($response, 'importations/pocket/show.phtml');
     }
 
     public function testShowIfImportationIsOngoing(): void
@@ -346,7 +346,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Please wait while we’re verifying access to Pocket');
-        $this->assertResponsePointer($response, 'importations/pocket/authorization.phtml');
+        $this->assertResponseTemplateName($response, 'importations/pocket/authorization.phtml');
     }
 
     public function testAuthorizationRedirectsToLoginIfNotConnected(): void

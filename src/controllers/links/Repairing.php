@@ -98,15 +98,15 @@ class Repairing extends BaseController
         $old_link = models\Link::copy($link, $user->id);
 
         $link->url = \SpiderBits\Url::sanitize($url);
-        $errors = $link->validate();
-        if ($errors) {
+
+        if (!$link->validate()) {
             return Response::badRequest('links/repairing/new.phtml', [
                 'link' => $link,
                 'url' => $url,
                 'url_cleared' => $url,
                 'force_sync' => $force_sync,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $link->errors(),
             ]);
         }
 

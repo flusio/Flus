@@ -24,8 +24,8 @@ class Application
         $router = \App\Router::loadCli();
         \Minz\Engine::init($router, [
             'start_session' => false,
-            'not_found_view_pointer' => 'cli/not_found.txt',
-            'internal_server_error_view_pointer' => 'cli/internal_server_error.txt',
+            'not_found_template' => 'cli/not_found.txt',
+            'internal_server_error_template' => 'cli/internal_server_error.txt',
             'controller_namespace' => '\\App\\cli',
         ]);
     }
@@ -48,7 +48,7 @@ class Application
         $current_command = $request->path();
         $current_command = trim(str_replace('/', ' ', $current_command));
 
-        \Minz\Output\View::declareDefaultVariables([
+        \Minz\Template\Simple::addGlobals([
             'bin' => $bin,
             'current_command' => $current_command,
         ]);

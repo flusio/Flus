@@ -49,7 +49,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/links');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/index.phtml');
         $this->assertResponseContains($response, $group_name);
         $this->assertResponseContains($response, $collection_name_1);
         $this->assertResponseContains($response, $collection_name_2);
@@ -75,7 +75,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/search.phtml');
+        $this->assertResponseTemplateName($response, 'links/search.phtml');
         $this->assertResponseContains($response, $title_1);
         $this->assertResponseNotContains($response, $title_2);
     }
@@ -169,7 +169,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowDisplaysMessages(): void
@@ -204,7 +204,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfNotHiddenAndDoesNotOwnTheLink(): void
@@ -224,7 +224,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfHiddenAndNotOwnedButInOwnedCollection(): void
@@ -251,7 +251,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfHiddenButInSharedCollection(): void
@@ -282,7 +282,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowRedirectsIfHiddenAndNotConnected(): void
@@ -341,14 +341,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'New link');
-        $this->assertResponsePointer($response, 'links/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/new.phtml');
         $this->assertInstanceOf(\Minz\Response::class, $response);
         $output = $response->output();
-        $this->assertInstanceOf(\Minz\Output\View::class, $output);
-        /** @var array<string, mixed> */
-        $variables = $output->variables();
-        $this->assertIsArray($variables['collection_ids']);
-        $this->assertContains($bookmarks->id, $variables['collection_ids']);
+        $this->assertInstanceOf(\Minz\Output\Template::class, $output);
+        $template = $output->template();
+        $this->assertInstanceOf(\Minz\Template\Simple::class, $template);
+        $context = $output->context();
+        $this->assertIsArray($context['collection_ids']);
+        $this->assertContains($bookmarks->id, $context['collection_ids']);
     }
 
     public function testNewPrefillsUrl(): void
@@ -391,11 +392,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(\Minz\Response::class, $response);
         $output = $response->output();
-        $this->assertInstanceOf(\Minz\Output\View::class, $output);
-        /** @var array<string, mixed> */
-        $variables = $output->variables();
-        $this->assertIsArray($variables['collection_ids']);
-        $this->assertContains($collection->id, $variables['collection_ids']);
+        $this->assertInstanceOf(\Minz\Output\Template::class, $output);
+        $template = $output->template();
+        $this->assertInstanceOf(\Minz\Template\Simple::class, $template);
+        $context = $output->context();
+        $this->assertIsArray($context['collection_ids']);
+        $this->assertContains($collection->id, $context['collection_ids']);
     }
 
     public function testNewRendersCollectionSharedWithWriteAccess(): void
@@ -885,7 +887,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.phtml');
     }
 
     public function testEditFailsIfNotConnected(): void
@@ -998,7 +1000,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);
@@ -1022,7 +1024,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.phtml');
         $this->assertResponseContains($response, 'The title is required.');
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);

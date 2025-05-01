@@ -44,7 +44,7 @@ class DiscoveryTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $topic_label);
         $this->assertResponseContains($response, '1 collection');
-        $this->assertResponsePointer($response, 'discovery/show.phtml');
+        $this->assertResponseTemplateName($response, 'discovery/show.phtml');
     }
 
     public function testShowDoesNotCountCollectionIfEmpty(): void
