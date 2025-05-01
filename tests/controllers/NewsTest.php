@@ -36,7 +36,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/news');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'news/index.phtml');
+        $this->assertResponseTemplateName($response, 'news/index.phtml');
         $this->assertResponseContains($response, $title);
     }
 
@@ -187,7 +187,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
@@ -250,7 +250,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
@@ -297,7 +297,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
@@ -318,7 +318,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertTrue(\Minz\Flash::get('no_news'));
@@ -355,7 +355,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');

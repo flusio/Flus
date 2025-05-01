@@ -36,7 +36,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/feeds');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'feeds/index.phtml');
+        $this->assertResponseTemplateName($response, 'feeds/index.phtml');
         $this->assertResponseContains($response, $feed_name);
     }
 
@@ -113,7 +113,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'feeds/new.phtml');
+        $this->assertResponseTemplateName($response, 'feeds/new.phtml');
         $this->assertResponseContains($response, 'New feed');
     }
 
@@ -135,7 +135,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
         ]);
@@ -159,7 +159,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'from' => \Minz\Url::for('feeds'),
         ]);
@@ -178,7 +178,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
         ]);
@@ -210,7 +210,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'ftp://flus.fr/carnet/feeds/all.atom.xml';
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
         ]);
@@ -226,7 +226,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_url = '';
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
         ]);
@@ -255,7 +255,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $feed_url,
             'from' => \Minz\Url::for('feeds'),
         ]);

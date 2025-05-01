@@ -21,7 +21,7 @@
     >
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
         <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
             <label for="name">

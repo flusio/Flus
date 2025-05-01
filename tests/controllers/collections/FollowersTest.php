@@ -30,7 +30,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\FollowedCollection::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -58,7 +58,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -102,7 +102,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', '/collections/unknown/follow', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -122,7 +122,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -170,7 +170,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -198,7 +198,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -224,7 +224,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -273,7 +273,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', '/collections/unknown/unfollow', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 

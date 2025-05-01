@@ -32,8 +32,8 @@ class Feeds extends BaseController
     public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->param('id', '');
-        $direct = $request->paramBoolean('direct', false);
+        $collection_id = $request->parameters->getString('id', '');
+        $direct = $request->parameters->getBoolean('direct');
 
         $collection = models\Collection::find($collection_id);
         if (!$collection || !auth\CollectionsAccess::canView($user, $collection)) {
@@ -77,7 +77,7 @@ class Feeds extends BaseController
      */
     public function alias(Request $request): Response
     {
-        $collection_id = $request->param('id');
+        $collection_id = $request->parameters->getString('id');
         $url = \Minz\Url::for('collection feed', ['id' => $collection_id]);
 
         $query_string = $_SERVER['QUERY_STRING'] ?? null;

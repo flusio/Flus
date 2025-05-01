@@ -34,7 +34,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -59,7 +59,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -97,7 +97,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $news->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -140,7 +140,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -209,7 +209,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -237,7 +237,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -260,7 +260,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -293,7 +293,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $news->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -330,7 +330,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -387,7 +387,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -419,7 +419,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -457,7 +457,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -499,7 +499,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -568,7 +568,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -595,7 +595,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -616,7 +616,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -660,7 +660,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
         ]);
 

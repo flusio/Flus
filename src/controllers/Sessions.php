@@ -26,7 +26,7 @@ class Sessions extends BaseController
      */
     public function new(Request $request): Response
     {
-        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
+        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
         if (auth\CurrentUser::get()) {
             return Response::found($redirect_to);
         }
@@ -61,7 +61,7 @@ class Sessions extends BaseController
      */
     public function create(Request $request): Response
     {
-        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
+        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
 
         if (!$this->isPathRedirectable($redirect_to)) {
             $redirect_to = \Minz\Url::for('home');
@@ -71,11 +71,11 @@ class Sessions extends BaseController
             return Response::found($redirect_to);
         }
 
-        $email = $request->param('email', '');
-        $password = $request->param('password', '');
-        $csrf = $request->param('csrf', '');
+        $email = $request->parameters->getString('email', '');
+        $password = $request->parameters->getString('password', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('sessions/new.phtml', [
                 'email' => $email,
                 'password' => $password,
@@ -135,10 +135,8 @@ class Sessions extends BaseController
         $token = new models\Token(1, 'month');
         $token->save();
 
-        /** @var string */
-        $user_agent = $request->header('HTTP_USER_AGENT', '');
-        /** @var string */
-        $ip = $request->header('REMOTE_ADDR', 'unknown');
+        $user_agent = $request->headers->getString('User-Agent', '');
+        $ip = $request->ip();
         $session = new models\Session($user_agent, $ip);
         $session->user_id = $user->id;
         $session->token = $token->token;
@@ -165,11 +163,11 @@ class Sessions extends BaseController
      */
     public function changeLocale(Request $request): Response
     {
-        $locale = $request->param('locale', '');
-        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
-        $csrf = $request->param('csrf', '');
+        $locale = $request->parameters->getString('locale', '');
+        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::found($redirect_to);
         }
 
@@ -196,8 +194,8 @@ class Sessions extends BaseController
     {
         $current_user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('home'));
 
-        $csrf = $request->param('csrf', '');
-        if (!\Minz\Csrf::validate($csrf)) {
+        $csrf = $request->parameters->getString('csrf', '');
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('home');
         }

@@ -32,7 +32,7 @@
     >
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
         <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
             <label for="url">
@@ -131,7 +131,7 @@
                     <div class="card__footer card__footer--centered">
                         <?php if ($current_user->isFollowing($feed->id)): ?>
                             <form data-turbo-preserve-scroll method="post" action="<?= url('unfollow collection', ['id' => $feed->id]) ?>">
-                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                                 <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>
                                     <?= icon('feed-stop') ?>
@@ -140,7 +140,7 @@
                             </form>
                         <?php else: ?>
                             <form data-turbo-preserve-scroll method="post" action="<?= url('follow collection', ['id' => $feed->id]) ?>">
-                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                                 <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>
                                     <?= icon('feed') ?>

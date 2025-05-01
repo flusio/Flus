@@ -54,11 +54,11 @@ class News extends BaseController
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('news'));
 
-        $csrf = $request->param('csrf', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $news = $user->news();
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('news/index.phtml', [
                 'news' => $news,
                 'links_timeline' => new utils\LinksTimeline([]),

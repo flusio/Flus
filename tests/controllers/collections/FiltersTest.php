@@ -38,7 +38,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/filters/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/filters/edit.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -135,7 +135,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'time_filter' => $new_time_filter,
         ]);
@@ -166,7 +166,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'time_filter' => $new_time_filter,
         ]);
@@ -198,7 +198,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'time_filter' => $new_time_filter,
         ]);
@@ -224,7 +224,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'time_filter' => $new_time_filter,
         ]);
@@ -285,7 +285,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'time_filter' => $new_time_filter,
         ]);
@@ -316,7 +316,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 

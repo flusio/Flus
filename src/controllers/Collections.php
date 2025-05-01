@@ -70,17 +70,17 @@ class Collections extends BaseController
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('new collection'));
 
-        $name = $request->param('name', '');
-        $description = $request->param('description', '');
+        $name = $request->parameters->getString('name', '');
+        $description = $request->parameters->getString('description', '');
         /** @var string[] */
-        $topic_ids = $request->paramArray('topic_ids', []);
-        $is_public = $request->paramBoolean('is_public', false);
-        $csrf = $request->param('csrf', '');
+        $topic_ids = $request->parameters->getArray('topic_ids', []);
+        $is_public = $request->parameters->getBoolean('is_public');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $topics = models\Topic::listAll();
         $topics = utils\Sorter::localeSort($topics, 'label');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
@@ -107,8 +107,8 @@ class Collections extends BaseController
         }
 
         $collection = models\Collection::init($user->id, $name, $description, $is_public);
-        $errors = $collection->validate();
-        if ($errors) {
+
+        if (!$collection->validate()) {
             return Response::badRequest('collections/new.phtml', [
                 'name' => $name,
                 'description' => $description,
@@ -116,7 +116,7 @@ class Collections extends BaseController
                 'is_public' => $is_public,
                 'topics' => $topics,
                 'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-                'errors' => $errors,
+                'errors' => $collection->errors(),
             ]);
         }
 
@@ -143,8 +143,8 @@ class Collections extends BaseController
     public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->param('id', '');
-        $pagination_page = $request->paramInteger('page', 1);
+        $collection_id = $request->parameters->getString('id', '');
+        $pagination_page = $request->parameters->getInteger('page', 1);
         $collection = models\Collection::find($collection_id);
 
         if (!$collection) {
@@ -219,8 +219,8 @@ class Collections extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $collection_id = $request->param('id', '');
-        $from = $request->param('from', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -262,8 +262,8 @@ class Collections extends BaseController
      */
     public function update(Request $request): Response
     {
-        $collection_id = $request->param('id', '');
-        $from = $request->param('from', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -275,14 +275,14 @@ class Collections extends BaseController
         $topics = models\Topic::listAll();
         $topics = utils\Sorter::localeSort($topics, 'label');
 
-        $name = $request->param('name', '');
-        $description = $request->param('description', '');
-        $is_public = $request->paramBoolean('is_public', false);
+        $name = $request->parameters->getString('name', '');
+        $description = $request->parameters->getString('description', '');
+        $is_public = $request->parameters->getBoolean('is_public');
         /** @var string[] */
-        $topic_ids = $request->paramArray('topic_ids', []);
-        $csrf = $request->param('csrf', '');
+        $topic_ids = $request->parameters->getArray('topic_ids', []);
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
@@ -315,8 +315,7 @@ class Collections extends BaseController
         $collection->name = trim($name);
         $collection->description = trim($description);
         $collection->is_public = filter_var($is_public, FILTER_VALIDATE_BOOLEAN);
-        $errors = $collection->validate();
-        if ($errors) {
+        if (!$collection->validate()) {
             return Response::badRequest('collections/edit.phtml', [
                 'collection' => $collection,
                 'topics' => $topics,
@@ -326,7 +325,7 @@ class Collections extends BaseController
                 'topic_ids' => $topic_ids,
                 'from' => $from,
                 'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-                'errors' => $errors,
+                'errors' => $collection->errors(),
             ]);
         }
 
@@ -350,9 +349,9 @@ class Collections extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $collection_id = $request->param('id', '');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -361,7 +360,7 @@ class Collections extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

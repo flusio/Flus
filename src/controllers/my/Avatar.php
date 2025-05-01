@@ -32,13 +32,13 @@ class Avatar extends BaseController
      */
     public function update(Request $request): Response
     {
-        $avatar_file = $request->paramFile('avatar');
-        $csrf = $request->param('csrf', '');
-        $from = $request->param('from', '');
+        $avatar_file = $request->parameters->getFile('avatar');
+        $csrf = $request->parameters->getString('csrf', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

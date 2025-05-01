@@ -31,9 +31,9 @@ class Followers extends BaseController
      */
     public function create(Request $request): Response
     {
-        $collection_id = $request->param('id', '');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -43,7 +43,7 @@ class Followers extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::found($from);
         }
@@ -73,9 +73,9 @@ class Followers extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $collection_id = $request->param('id', '');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -84,7 +84,7 @@ class Followers extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::found($from);
         }

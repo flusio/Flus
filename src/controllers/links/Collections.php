@@ -32,9 +32,9 @@ class Collections extends BaseController
      */
     public function index(Request $request): Response
     {
-        $link_id = $request->param('id', '');
-        $mark_as_read = $request->paramBoolean('mark_as_read', false);
-        $from = $request->param('from', '');
+        $link_id = $request->parameters->getString('id', '');
+        $mark_as_read = $request->parameters->getBoolean('mark_as_read');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -126,17 +126,17 @@ class Collections extends BaseController
      */
     public function update(Request $request): Response
     {
-        $link_id = $request->param('id', '');
+        $link_id = $request->parameters->getString('id', '');
         /** @var string[] */
-        $new_collection_ids = $request->paramArray('collection_ids', []);
+        $new_collection_ids = $request->parameters->getArray('collection_ids', []);
         /** @var string[] */
-        $new_collection_names = $request->paramArray('new_collection_names', []);
-        $is_hidden = $request->paramBoolean('is_hidden', false);
-        $mark_as_read = $request->paramBoolean('mark_as_read', false);
-        $comment = trim($request->param('comment', ''));
-        $share_on_mastodon = $request->paramBoolean('share_on_mastodon');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $new_collection_names = $request->parameters->getArray('new_collection_names', []);
+        $is_hidden = $request->parameters->getBoolean('is_hidden');
+        $mark_as_read = $request->parameters->getBoolean('mark_as_read');
+        $comment = trim($request->parameters->getString('comment', ''));
+        $share_on_mastodon = $request->parameters->getBoolean('share_on_mastodon');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -150,7 +150,7 @@ class Collections extends BaseController
             return Response::found($from);
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
@@ -158,9 +158,8 @@ class Collections extends BaseController
         foreach ($new_collection_names as $name) {
             $new_collection = models\Collection::init($user->id, $name, '', false);
 
-            $errors = $new_collection->validate();
-            if ($errors) {
-                \Minz\Flash::set('errors', $errors);
+            if (!$new_collection->validate()) {
+                \Minz\Flash::set('errors', $new_collection->errors());
                 return Response::found($from);
             }
 

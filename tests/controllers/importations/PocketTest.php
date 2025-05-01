@@ -42,7 +42,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Importation from Pocket');
-        $this->assertResponsePointer($response, 'importations/pocket/show.phtml');
+        $this->assertResponseTemplateName($response, 'importations/pocket/show.phtml');
     }
 
     public function testShowIfImportationIsOngoing(): void
@@ -123,7 +123,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/pocket', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
@@ -173,7 +173,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/pocket', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
@@ -193,7 +193,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/pocket', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
@@ -239,7 +239,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/pocket', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
@@ -266,7 +266,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\PocketAccount::count());
 
         $response = $this->appRun('POST', '/pocket/request', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $pocket_account = models\PocketAccount::take();
@@ -326,7 +326,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/pocket/request', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -346,7 +346,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Please wait while we’re verifying access to Pocket');
-        $this->assertResponsePointer($response, 'importations/pocket/authorization.phtml');
+        $this->assertResponseTemplateName($response, 'importations/pocket/authorization.phtml');
     }
 
     public function testAuthorizationRedirectsToLoginIfNotConnected(): void
@@ -405,7 +405,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/pocket/auth', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/pocket');
@@ -421,7 +421,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/pocket/auth', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);

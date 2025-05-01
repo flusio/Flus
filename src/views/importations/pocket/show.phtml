@@ -45,7 +45,7 @@
         ]) ?>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
             <input type="hidden" name="from" value="<?= url('pocket') ?>" />
 
             <div class="form__actions">
@@ -58,7 +58,7 @@
         <?= $this->include('alerts/_error.phtml', ['message' => protect($importation->error)]) ?>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
             <input type="hidden" name="from" value="<?= url('pocket') ?>" />
 
             <div class="form__actions">
@@ -69,7 +69,7 @@
         </form>
     <?php elseif ($pocket_account && $pocket_account->access_token): ?>
         <form method="post" action="<?= url('import pocket') ?>">
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
             <div class="form-group" data-controller="caption-switcher">
                 <input
@@ -137,7 +137,7 @@
         </p>
     <?php else: ?>
         <form method="post" action="<?= url('request pocket access') ?>" data-turbo="false">
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
             <div class="form__actions">
                 <button type="submit" class="button--primary">

@@ -23,11 +23,11 @@ class Filters extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $from = $request->param('from', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        $collection_id = $request->param('id', '');
+        $collection_id = $request->parameters->getString('id', '');
         $collection = models\Collection::find($collection_id);
 
         $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
@@ -67,13 +67,13 @@ class Filters extends BaseController
      */
     public function update(Request $request): Response
     {
-        $from = $request->param('from', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        $time_filter = $request->param('time_filter', '');
-        $collection_id = $request->param('id', '');
-        $csrf = $request->param('csrf', '');
+        $time_filter = $request->parameters->getString('time_filter', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $collection = models\Collection::find($collection_id);
 
@@ -90,7 +90,7 @@ class Filters extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('collections/filters/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,
@@ -100,13 +100,12 @@ class Filters extends BaseController
         }
 
         $followed_collection->time_filter = $time_filter;
-        $errors = $followed_collection->validate();
-        if ($errors) {
+        if (!$followed_collection->validate()) {
             return Response::badRequest('collections/filters/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'time_filter' => $time_filter,
-                'errors' => $errors,
+                'errors' => $followed_collection->errors(),
             ]);
         }
 

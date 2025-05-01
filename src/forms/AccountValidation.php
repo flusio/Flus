@@ -4,10 +4,9 @@ namespace App\forms;
 
 use App\models;
 use Minz\Form;
+use Minz\Validable;
 
 /**
- * @extends BaseForm<\stdClass>
- *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -16,27 +15,32 @@ class AccountValidation extends BaseForm
     #[Form\Field]
     public string $t = '';
 
-    #[Form\Check]
+    #[Validable\Check]
     public function checkToken(): void
     {
         try {
-            $token = $this->getToken();
-            $user = $this->getUser();
+            $token = $this->token();
+            $user = $this->user();
         } catch (\RuntimeException $e) {
             $this->addError(
-                '@global',
+                '@base',
+                'unknown_token',
                 _('The token doesn’t exist. The validation link you clicked on should have expired.')
             );
             return;
         }
 
         if (!$token->isValid()) {
-            $this->addError('@global', _('The token has expired or has been invalidated.'));
+            $this->addError(
+                '@base',
+                'invalid_token',
+                _('The token has expired or has been invalidated.')
+            );
             return;
         }
     }
 
-    public function getToken(): models\Token
+    public function token(): models\Token
     {
         $token = models\Token::find($this->t);
 
@@ -47,7 +51,7 @@ class AccountValidation extends BaseForm
         return $token;
     }
 
-    public function getUser(): models\User
+    public function user(): models\User
     {
         $user = models\User::findBy(['validation_token' => $this->t]);
 

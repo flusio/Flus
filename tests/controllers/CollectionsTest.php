@@ -34,7 +34,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'New collection');
-        $this->assertResponsePointer($response, 'collections/new.phtml');
+        $this->assertResponseTemplateName($response, 'collections/new.phtml');
     }
 
     public function testNewRendersTopics(): void
@@ -70,7 +70,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('POST', '/collections/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $name,
             'description' => $description,
         ]);
@@ -93,7 +93,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $description = $this->fake('sentence');
 
         $response = $this->appRun('POST', '/collections/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $name,
             'description' => $description,
             'is_public' => true,
@@ -114,7 +114,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $topic = TopicFactory::create();
 
         $response = $this->appRun('POST', '/collections/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $name,
             'description' => $description,
             'topic_ids' => [$topic->id],
@@ -133,7 +133,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $description = $this->fake('sentence');
 
         $response = $this->appRun('POST', '/collections/new', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'name' => $name,
             'description' => $description,
         ]);
@@ -170,7 +170,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $description = $this->fake('sentence');
 
         $response = $this->appRun('POST', '/collections/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $name,
             'description' => $description,
         ]);
@@ -187,7 +187,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $description = $this->fake('sentence');
 
         $response = $this->appRun('POST', '/collections/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'description' => $description,
         ]);
 
@@ -206,7 +206,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $topic = TopicFactory::create();
 
         $response = $this->appRun('POST', '/collections/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $name,
             'description' => $description,
             'topic_ids' => ['not an id'],
@@ -242,7 +242,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
         $this->assertResponseContains($response, '<strong>foo bar</strong>');
-        $this->assertResponsePointer($response, 'collections/show.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfPublicAndNotConnected(): void
@@ -269,7 +269,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
-        $this->assertResponsePointer($response, 'collections/show_public.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show_public.phtml');
     }
 
     public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink(): void
@@ -297,7 +297,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
-        $this->assertResponsePointer($response, 'collections/show_public.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show_public.phtml');
     }
 
     public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithReadAccess(): void
@@ -329,7 +329,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
-        $this->assertResponsePointer($response, 'collections/show_public.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show_public.phtml');
     }
 
     public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithWriteAccess(): void
@@ -361,7 +361,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
-        $this->assertResponsePointer($response, 'collections/show.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show.phtml');
     }
 
     public function testShowHidesHiddenLinksInPublicCollections(): void
@@ -474,7 +474,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/edit.phtml');
     }
 
     public function testEditRendersCorrectlyIfCollectionIsSharedWithWriteAccess(): void
@@ -497,7 +497,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/edit.phtml');
     }
 
     public function testEditRedirectsIfNotConnected(): void
@@ -606,7 +606,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'is_public' => $new_public,
@@ -641,7 +641,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'is_public' => $new_public,
@@ -675,7 +675,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $new_name,
         ]);
@@ -705,7 +705,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'from' => $from,
@@ -771,7 +771,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'from' => $from,
@@ -803,7 +803,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'from' => $from,
@@ -836,7 +836,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'is_public' => $new_public,
@@ -860,7 +860,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_description = $this->fakeUnique('sentence');
 
         $response = $this->appRun('POST', '/collections/unknown/edit', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'from' => \Minz\Url::for('collections'),
@@ -890,7 +890,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'from' => $from,
@@ -923,7 +923,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $new_name,
         ]);
@@ -953,7 +953,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'name' => $new_name,
             'description' => $new_description,
             'from' => $from,
@@ -974,7 +974,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => "/collections/{$collection->id}/edit",
         ]);
 
@@ -991,7 +991,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'from' => "/collections/{$collection->id}/edit",
         ]);
 
@@ -1008,7 +1008,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/collections/unknown/delete', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => "/collections/{$collection->id}/edit",
         ]);
 
@@ -1026,7 +1026,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => "/collections/{$collection->id}/edit",
         ]);
 
@@ -1048,7 +1048,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => "/collections/{$collection->id}/edit",
         ]);
 
@@ -1065,7 +1065,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => "/collections/{$collection->id}/edit",
         ]);
 

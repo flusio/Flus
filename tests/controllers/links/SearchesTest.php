@@ -29,7 +29,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $url);
-        $this->assertResponsePointer($response, 'links/searches/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/searches/show.phtml');
     }
 
     public function testShowDisplaysDefaultLink(): void
@@ -212,7 +212,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
 
         $response = $this->appRun('POST', '/links/search', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
         ]);
 
@@ -238,7 +238,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('POST', '/links/search', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
         ]);
 
@@ -260,7 +260,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('POST', '/links/search', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
         ]);
 
@@ -298,7 +298,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/links/search', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
         ]);
 
@@ -327,7 +327,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Link::count());
 
         $response = $this->appRun('POST', '/links/search', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
         ]);
 
@@ -355,7 +355,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Collection::count());
 
         $response = $this->appRun('POST', '/links/search', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
         ]);
 
@@ -408,7 +408,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Link::count());
 
         $response = $this->appRun('POST', '/links/search', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
         ]);
 

@@ -30,7 +30,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/links/new.phtml');
+        $this->assertResponseTemplateName($response, 'collections/links/new.phtml');
         $this->assertResponseContains($response, 'New link');
     }
 
@@ -53,7 +53,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/links/new.phtml');
+        $this->assertResponseTemplateName($response, 'collections/links/new.phtml');
         $this->assertResponseContains($response, 'New link');
     }
 
@@ -142,7 +142,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/collections/{$collection->id}/links/new", [
             'url' => $url,
             'from' => $from,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertSame(1, models\Link::count());
@@ -174,7 +174,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'is_hidden' => true,
             'from' => $from,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, $from);
@@ -203,7 +203,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/collections/{$collection->id}/links/new", [
             'url' => $url,
             'from' => $from,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, $from);
@@ -235,7 +235,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/collections/{$collection->id}/links/new", [
             'url' => $url,
             'from' => $from,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertSame(1, models\Link::count());
@@ -303,7 +303,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/collections/{$collection->id}/links/new", [
             'url' => $url,
             'from' => $from,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -321,7 +321,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/links/new", [
             'from' => $from,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -343,7 +343,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/collections/not-an-id/links/new', [
             'url' => $url,
             'from' => $from,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -365,7 +365,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/collections/{$collection->id}/links/new", [
             'url' => $url,
             'from' => $from,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -392,7 +392,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/collections/{$collection->id}/links/new", [
             'url' => $url,
             'from' => $from,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);

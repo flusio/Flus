@@ -46,9 +46,9 @@ class Exportations extends BaseController
     public function create(Request $request): Response
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('exportation'));
-        $csrf = $request->param('csrf', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('exportations/show.phtml', [
                 'exportation' => null,
                 'error' => _('A security verification failed.'),

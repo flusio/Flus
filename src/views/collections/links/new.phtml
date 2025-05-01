@@ -15,7 +15,7 @@
     <form method="post" action="<?= url('create collection link', ['id' => $collection->id]) ?>">
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
 
         <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">

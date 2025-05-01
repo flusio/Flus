@@ -35,7 +35,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/messages", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
@@ -60,7 +60,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/messages", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
@@ -93,7 +93,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/messages", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
@@ -117,7 +117,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $content = $this->fake('paragraphs', 3, true);
 
         $response = $this->appRun('POST', "/links/{$link->id}/messages", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
@@ -137,7 +137,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/messages", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
@@ -169,7 +169,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/messages", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
@@ -208,7 +208,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Message::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/messages", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 

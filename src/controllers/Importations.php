@@ -27,9 +27,9 @@ class Importations extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $importation_id = $request->param('id', '');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $importation_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -41,7 +41,7 @@ class Importations extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

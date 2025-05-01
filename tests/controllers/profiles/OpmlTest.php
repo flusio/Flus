@@ -27,7 +27,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/p/{$user->id}/opml.xml");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'profiles/opml/show.opml.xml.php');
+        $this->assertResponseTemplateName($response, 'profiles/opml/show.opml.xml.php');
         $this->assertResponseContains($response, $collection_name);
         $this->assertResponseHeaders($response, [
             'Content-Type' => 'text/x-opml',

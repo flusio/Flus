@@ -57,8 +57,8 @@ class FeatureFlags
      */
     public function enable(Request $request): Response
     {
-        $type = $request->param('type', '');
-        $user_id = $request->param('user_id', '');
+        $type = $request->parameters->getString('type', '');
+        $user_id = $request->parameters->getString('user_id', '');
 
         if (!in_array($type, models\FeatureFlag::VALID_TYPES)) {
             return Response::text(400, "{$type} is not a valid feature flag type");
@@ -85,8 +85,8 @@ class FeatureFlags
      */
     public function disable(Request $request): Response
     {
-        $type = $request->param('type', '');
-        $user_id = $request->param('user_id', '');
+        $type = $request->parameters->getString('type', '');
+        $user_id = $request->parameters->getString('user_id', '');
 
         $user = models\User::find($user_id);
         if (!$user) {

@@ -34,7 +34,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -83,7 +83,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'collections/groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -208,7 +208,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $group_name,
         ]);
@@ -231,7 +231,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Group::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $group_name,
         ]);
@@ -266,7 +266,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Group::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $group_name,
         ]);
@@ -292,7 +292,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => '',
         ]);
@@ -321,7 +321,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Group::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $group_name,
         ]);
@@ -368,7 +368,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/not-an-id/group", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $group_name,
         ]);
@@ -391,7 +391,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $group_name,
         ]);
@@ -419,7 +419,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $group_name,
         ]);
@@ -442,13 +442,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $group_name,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
         $this->assertResponseContains($response, "The name must be less than {$max_size} characters");
         $this->assertSame(0, models\Group::count());
     }
@@ -472,7 +472,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'collections/groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\Group::count());
     }

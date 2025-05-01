@@ -33,8 +33,8 @@ class Links extends BaseController
      */
     public function new(Request $request): Response
     {
-        $collection_id = $request->param('id', '');
-        $from = $request->param('from', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -76,11 +76,11 @@ class Links extends BaseController
      */
     public function create(Request $request): Response
     {
-        $collection_id = $request->param('id', '');
-        $url = $request->param('url', '');
-        $is_hidden = $request->paramBoolean('is_hidden', false);
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $url = $request->parameters->getString('url', '');
+        $is_hidden = $request->parameters->getBoolean('is_hidden');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -89,7 +89,7 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('collections/links/new.phtml', [
                 'collection' => $collection,
                 'url' => $url,
@@ -100,14 +100,14 @@ class Links extends BaseController
         }
 
         $link = new models\Link($url, $user->id, $is_hidden);
-        $errors = $link->validate();
-        if ($errors) {
+
+        if (!$link->validate()) {
             return Response::badRequest('collections/links/new.phtml', [
                 'collection' => $collection,
                 'url' => $url,
                 'is_hidden' => $is_hidden,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $link->errors(),
             ]);
         }
 

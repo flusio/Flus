@@ -27,7 +27,7 @@ class Profile extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $from = $request->param('from', \Minz\Url::for('edit profile'));
+        $from = $request->parameters->getString('from', \Minz\Url::for('edit profile'));
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -53,13 +53,13 @@ class Profile extends BaseController
      */
     public function update(Request $request): Response
     {
-        $username = $request->param('username', '');
-        $csrf = $request->param('csrf', '');
-        $from = $request->param('from', '');
+        $username = $request->parameters->getString('username', '');
+        $csrf = $request->parameters->getString('csrf', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('my/profile/edit.phtml', [
                 'username' => $username,
                 'from' => $from,
@@ -70,8 +70,7 @@ class Profile extends BaseController
         $old_username = $user->username;
         $user->username = trim($username);
 
-        $errors = $user->validate();
-        if ($errors) {
+        if (!$user->validate()) {
             // by keeping the new values, an invalid username could be
             // displayed in the header since the `$user` objects are the same
             // (referenced by the CurrentUser::$instance)
@@ -79,7 +78,7 @@ class Profile extends BaseController
             return Response::badRequest('my/profile/edit.phtml', [
                 'username' => $username,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $user->errors(),
             ]);
         }
 

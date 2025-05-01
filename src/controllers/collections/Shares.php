@@ -25,14 +25,14 @@ class Shares extends BaseController
     public function index(Request $request): Response
     {
         $current_user = auth\CurrentUser::get();
-        $from = $request->param('from', '');
+        $from = $request->parameters->getString('from', '');
         if (!$current_user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $collection_id = $request->param('id', '');
+        $collection_id = $request->parameters->getString('id', '');
         $collection = models\Collection::find($collection_id);
 
         $can_update = $collection && auth\CollectionsAccess::canUpdate($current_user, $collection);
@@ -69,17 +69,17 @@ class Shares extends BaseController
     public function create(Request $request): Response
     {
         $current_user = auth\CurrentUser::get();
-        $from = $request->param('from', '');
+        $from = $request->parameters->getString('from', '');
         if (!$current_user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $collection_id = $request->param('id', '');
-        $user_id = $request->param('user_id', '');
-        $type = $request->param('type', '');
-        $csrf = $request->param('csrf', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $user_id = $request->parameters->getString('user_id', '');
+        $type = $request->parameters->getString('type', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         // We also accept profiles URLs
         $user_id = $this->extractUserId($user_id);
@@ -90,7 +90,7 @@ class Shares extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
@@ -145,14 +145,14 @@ class Shares extends BaseController
         }
 
         $collection_share = new models\CollectionShare($user_id, $collection->id, $type);
-        $errors = $collection_share->validate();
-        if ($errors) {
+
+        if (!$collection_share->validate()) {
             return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,
                 'type' => $type,
                 'user_id' => $user_id,
-                'errors' => $errors,
+                'errors' => $collection_share->errors(),
             ]);
         }
 
@@ -183,15 +183,15 @@ class Shares extends BaseController
     public function delete(Request $request): Response
     {
         $current_user = auth\CurrentUser::get();
-        $from = $request->param('from', '');
+        $from = $request->parameters->getString('from', '');
         if (!$current_user) {
             return Response::redirect('login', [
                 'redirect_to' => $from,
             ]);
         }
 
-        $csrf = $request->param('csrf', '');
-        $collection_share_id = $request->paramInteger('id', -1);
+        $csrf = $request->parameters->getString('csrf', '');
+        $collection_share_id = $request->parameters->getInteger('id', -1);
         $collection_share = models\CollectionShare::find($collection_share_id);
         if (!$collection_share) {
             return Response::notFound('not_found.phtml');
@@ -203,7 +203,7 @@ class Shares extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
                 'from' => $from,

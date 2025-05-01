@@ -240,7 +240,7 @@
             <nav class="popup__container popup__container--over" role="menu">
                 <?php if ($display_never): ?>
                     <form data-turbo-preserve-scroll method="post" action="<?= url('mark link to never read', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
-                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                         <button class="popup__item popup__item--button">
                             <?= icon('times') ?>
@@ -308,7 +308,7 @@
                         action="<?= url('delete link', ['id' => $link->id]) ?>"
                         data-turbo-confirm="<?= _('Are you sure that you want to delete this link?') ?>"
                     >
-                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                         <input type="hidden" name="from" value="<?= $from ?>" />
                         <input type="hidden" name="redirect_to" value="<?= $from ?>" />
 
@@ -328,7 +328,7 @@
         <div class="link__actions-group">
             <?php if ($display_mark_as_read): ?>
                 <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
-                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                     <button class="link__actions-button button--ghost button--smaller" title="<?= _('Mark as read') ?>">
                         <?= icon('check') ?>
@@ -341,7 +341,7 @@
 
             <?php if ($display_mark_as_unread): ?>
                 <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as unread', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
-                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                     <button class="link__actions-button button--ghost button--smaller" title="<?= _('Remove from read list') ?>">
                         <?= icon('uncheck') ?>
@@ -354,7 +354,7 @@
 
             <?php if ($display_read_later): ?>
                 <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
-                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                     <button class="link__actions-button button--ghost button--smaller" title="<?= _('Read later') ?>">
                         <?= icon('bookmark') ?>

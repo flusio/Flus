@@ -25,8 +25,8 @@ class Topics extends BaseController
      */
     public function show(Request $request): Response
     {
-        $id = $request->param('id', '');
-        $pagination_page = $request->paramInteger('page', 1);
+        $id = $request->parameters->getString('id', '');
+        $pagination_page = $request->parameters->getInteger('page', 1);
 
         $topic = models\Topic::find($id);
         if (!$topic) {

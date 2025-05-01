@@ -32,7 +32,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'List and manage your login sessions.');
-        $this->assertResponsePointer($response, 'my/sessions/index.phtml');
+        $this->assertResponseTemplateName($response, 'my/sessions/index.phtml');
     }
 
     public function testIndexRedirectsIfPasswordIsNotConfirmed(): void
@@ -75,7 +75,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/sessions');
@@ -99,7 +99,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($session);
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/sessions');
@@ -142,7 +142,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsessions');
@@ -165,7 +165,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/security/confirmation?from=%2Fmy%2Fsessions');
@@ -188,7 +188,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/my/sessions/not-an-id/deletion", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);

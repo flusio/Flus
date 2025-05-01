@@ -49,7 +49,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $collection_name);
-        $this->assertResponsePointer($response, 'links/collections/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
     }
 
     public function testIndexRendersCorrectlyWhenMarkAsReadIsSet(): void
@@ -107,7 +107,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/collections/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
         $this->assertResponseContains($response, $link_owned->id);
         $this->assertResponseNotContains($response, $link_not_owned->id);
     }
@@ -131,7 +131,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/collections/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
         $this->assertResponseContains($response, $link_2->id);
         $this->assertResponseNotContains($response, $link_1->id);
     }
@@ -357,7 +357,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_2->id],
             'is_hidden' => $is_hidden,
@@ -405,7 +405,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
@@ -435,7 +435,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $comment = $this->fake('sentence');
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
             'comment' => $comment,
@@ -464,7 +464,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $comment = '#foo #Bar';
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
             'comment' => $comment,
@@ -497,7 +497,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
             'mark_as_read' => '1',
@@ -542,7 +542,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'collection_ids' => [$owned_collection->id],
         ]);
@@ -596,7 +596,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
@@ -621,7 +621,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'new_collection_names' => [$collection_name],
         ]);
@@ -658,7 +658,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_2->id],
         ]);
@@ -698,7 +698,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_2->id],
         ]);
@@ -729,7 +729,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
@@ -751,7 +751,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
@@ -778,7 +778,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
@@ -798,7 +798,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'new_collection_names' => [$collection_name],
         ]);

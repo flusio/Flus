@@ -23,7 +23,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'you can contact me via this form');
-        $this->assertResponsePointer($response, 'support/show.phtml');
+        $this->assertResponseTemplateName($response, 'support/show.phtml');
     }
 
     public function testShowRendersSuccessParagraphIfMessageSent(): void
@@ -57,7 +57,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'subject' => $subject,
             'message' => $message,
         ]);
@@ -105,7 +105,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'subject' => $subject,
             'message' => $message,
         ]);
@@ -128,12 +128,11 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $message = $this->fake('paragraph');
         $user = UserFactory::create([
-            'csrf' => 'a token',
             'email' => $email,
         ]);
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => 'a token',
+            'csrf' => \App\Csrf::generate(),
             'subject' => $subject,
             'message' => $message,
         ]);
@@ -164,7 +163,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $this->assertResponsePointer($response, 'support/show.phtml');
+        $this->assertResponseTemplateName($response, 'support/show.phtml');
         $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }
@@ -182,14 +181,14 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'subject' => $subject,
             'message' => $message,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The subject is required.');
-        $this->assertResponsePointer($response, 'support/show.phtml');
+        $this->assertResponseTemplateName($response, 'support/show.phtml');
         $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }
@@ -207,14 +206,14 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'subject' => $subject,
             'message' => $message,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The message is required.');
-        $this->assertResponsePointer($response, 'support/show.phtml');
+        $this->assertResponseTemplateName($response, 'support/show.phtml');
         $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }

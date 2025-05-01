@@ -23,7 +23,7 @@
         data-controller="autosave"
         data-action="turbo:submit-start@document->autosave#clear"
     >
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
         <input type="hidden" name="mark_as_read" value="<?= $mark_as_read ?>" />
 

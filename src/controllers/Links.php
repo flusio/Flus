@@ -33,8 +33,8 @@ class Links extends BaseController
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('links'));
 
-        $query = $request->param('q');
-        $pagination_page = $request->paramInteger('page', 1);
+        $query = $request->parameters->getString('q');
+        $pagination_page = $request->parameters->getInteger('page', 1);
 
         if ($query) {
             $search_query = search_engine\Query::fromString($query);
@@ -107,7 +107,7 @@ class Links extends BaseController
     public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id', '');
+        $link_id = $request->parameters->getString('id', '');
         $link = models\Link::find($link_id);
 
         if (!$link) {
@@ -156,8 +156,8 @@ class Links extends BaseController
      */
     public function new(Request $request): Response
     {
-        $default_url = $request->param('url', '');
-        $from = $request->param('from', \Minz\Url::for('new link'));
+        $default_url = $request->parameters->getString('url', '');
+        $from = $request->parameters->getString('from', \Minz\Url::for('new link'));
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -176,7 +176,7 @@ class Links extends BaseController
         ]);
         $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
 
-        $default_collection_id = $request->param('collection_id');
+        $default_collection_id = $request->parameters->getString('collection_id');
         if ($default_collection_id) {
             $default_collection_ids = [$default_collection_id];
         } else {
@@ -218,14 +218,14 @@ class Links extends BaseController
      */
     public function create(Request $request): Response
     {
-        $url = $request->param('url', '');
-        $is_hidden = $request->paramBoolean('is_hidden', false);
+        $url = $request->parameters->getString('url', '');
+        $is_hidden = $request->parameters->getBoolean('is_hidden');
         /** @var string[] */
-        $collection_ids = $request->paramArray('collection_ids', []);
+        $collection_ids = $request->parameters->getArray('collection_ids', []);
         /** @var string[] */
-        $new_collection_names = $request->paramArray('new_collection_names', []);
-        $from = $request->param('from', \Minz\Url::for('new link', ['url' => $url]));
-        $csrf = $request->param('csrf', '');
+        $new_collection_names = $request->parameters->getArray('new_collection_names', []);
+        $from = $request->parameters->getString('from', \Minz\Url::for('new link', ['url' => $url]));
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -244,7 +244,7 @@ class Links extends BaseController
         ]);
         $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_hidden' => $is_hidden,
@@ -260,8 +260,8 @@ class Links extends BaseController
         }
 
         $link = new models\Link($url, $user->id, $is_hidden);
-        $errors = $link->validate();
-        if ($errors) {
+
+        if (!$link->validate()) {
             return Response::badRequest('links/new.phtml', [
                 'url' => $url,
                 'is_hidden' => $is_hidden,
@@ -272,7 +272,7 @@ class Links extends BaseController
                 'groups_to_collections' => $groups_to_collections,
                 'shared_collections' => $shared_collections,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $link->errors(),
             ]);
         }
 
@@ -313,8 +313,7 @@ class Links extends BaseController
         foreach ($new_collection_names as $name) {
             $new_collection = models\Collection::init($user->id, $name, '', false);
 
-            $errors = $new_collection->validate();
-            if ($errors) {
+            if (!$new_collection->validate()) {
                 return Response::badRequest('links/new.phtml', [
                     'url' => $url,
                     'is_hidden' => $is_hidden,
@@ -325,7 +324,7 @@ class Links extends BaseController
                     'groups_to_collections' => $groups_to_collections,
                     'shared_collections' => $shared_collections,
                     'from' => $from,
-                    'errors' => $errors,
+                    'errors' => $new_collection->errors(),
                 ]);
             }
 
@@ -364,8 +363,8 @@ class Links extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $link_id = $request->param('id', '');
-        $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $link_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -398,11 +397,11 @@ class Links extends BaseController
      */
     public function update(Request $request): Response
     {
-        $link_id = $request->param('id', '');
-        $new_title = $request->param('title', '');
-        $new_reading_time = $request->paramInteger('reading_time', 0);
-        $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
-        $csrf = $request->param('csrf', '');
+        $link_id = $request->parameters->getString('id', '');
+        $new_title = $request->parameters->getString('title', '');
+        $new_reading_time = $request->parameters->getInteger('reading_time', 0);
+        $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -411,7 +410,7 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('links/edit.phtml', [
                 'link' => $link,
                 'title' => $new_title,
@@ -426,8 +425,7 @@ class Links extends BaseController
 
         $link->title = trim($new_title);
         $link->reading_time = max(0, $new_reading_time);
-        $errors = $link->validate();
-        if ($errors) {
+        if (!$link->validate()) {
             $link->title = $old_title;
             $link->reading_time = $old_reading_time;
             return Response::badRequest('links/edit.phtml', [
@@ -435,7 +433,7 @@ class Links extends BaseController
                 'title' => $new_title,
                 'reading_time' => $new_reading_time,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $link->errors(),
             ]);
         }
 
@@ -458,10 +456,10 @@ class Links extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $link_id = $request->param('id', '');
-        $from = $request->param('from', \Minz\Url::for('link', ['id' => $link_id]));
-        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
-        $csrf = $request->param('csrf', '');
+        $link_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -470,7 +468,7 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

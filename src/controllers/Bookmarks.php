@@ -25,7 +25,7 @@ class Bookmarks extends BaseController
     public function index(Request $request): Response
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('bookmarks'));
-        $page = $request->paramInteger('page', 1);
+        $page = $request->parameters->getInteger('page', 1);
         $bookmarks = $user->bookmarks();
 
         $number_links = models\Link::countByCollectionId($bookmarks->id);

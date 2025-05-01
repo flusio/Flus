@@ -15,7 +15,7 @@
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <form method="post" action="<?= url('authorize pocket') ?>">
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
             <button type="submit" class="button--primary">
                 <?= _('Check authorization') ?>
             </button>
@@ -33,7 +33,7 @@
              data-controller="autosubmit"
              data-autosubmit-mode-value="timeout"
          >
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
         </form>
     <?php endif; ?>
 </div>

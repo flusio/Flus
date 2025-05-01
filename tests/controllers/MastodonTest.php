@@ -24,7 +24,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/mastodon');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'mastodon/show.phtml');
+        $this->assertResponseTemplateName($response, 'mastodon/show.phtml');
         $this->assertResponseContains($response, 'Configure sharing to Mastodon');
     }
 
@@ -66,7 +66,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $authorization_url = $authorization_endpoint . '?' . $authorization_params;
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'host' => $mastodon_host,
         ]);
 
@@ -101,7 +101,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'host' => $mastodon_host,
         ]);
 
@@ -117,7 +117,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $mastodon_host = 'https://' . $mastodon_domain;
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'host' => $mastodon_host,
         ]);
 
@@ -132,7 +132,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $mastodon_host = 'not a valid host';
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'host' => $mastodon_host,
         ]);
 
@@ -162,7 +162,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'host' => $mastodon_host,
         ]);
 
@@ -190,7 +190,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'host' => $mastodon_host,
         ]);
 
@@ -234,7 +234,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'mastodon/authorization.phtml');
+        $this->assertResponseTemplateName($response, 'mastodon/authorization.phtml');
         $this->assertResponseContains($response, 'Mastodon authorization');
         $this->assertResponseContains($response, $code);
     }
@@ -337,7 +337,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'code' => $code,
         ]);
 
@@ -353,7 +353,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $code = $this->fake('sha256');
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'code' => $code,
         ]);
 
@@ -369,7 +369,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
@@ -384,7 +384,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $code = $this->fake('sha256');
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'code' => $code,
         ]);
 
@@ -404,7 +404,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'code' => $code,
         ]);
 
@@ -443,7 +443,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'code' => $code,
         ]);
 
@@ -484,7 +484,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'code' => $code,
         ]);
 
@@ -542,7 +542,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
@@ -572,7 +572,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
@@ -602,7 +602,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
@@ -663,7 +663,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
@@ -684,7 +684,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon/disconnect', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');

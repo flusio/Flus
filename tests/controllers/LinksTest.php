@@ -49,7 +49,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/links');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/index.phtml');
         $this->assertResponseContains($response, $group_name);
         $this->assertResponseContains($response, $collection_name_1);
         $this->assertResponseContains($response, $collection_name_2);
@@ -75,7 +75,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/search.phtml');
+        $this->assertResponseTemplateName($response, 'links/search.phtml');
         $this->assertResponseContains($response, $title_1);
         $this->assertResponseNotContains($response, $title_2);
     }
@@ -169,7 +169,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowDisplaysMessages(): void
@@ -204,7 +204,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfNotHiddenAndDoesNotOwnTheLink(): void
@@ -224,7 +224,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfHiddenAndNotOwnedButInOwnedCollection(): void
@@ -251,7 +251,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowRendersCorrectlyIfHiddenButInSharedCollection(): void
@@ -282,7 +282,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponsePointer($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
     public function testShowRedirectsIfHiddenAndNotConnected(): void
@@ -341,14 +341,15 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'New link');
-        $this->assertResponsePointer($response, 'links/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/new.phtml');
         $this->assertInstanceOf(\Minz\Response::class, $response);
         $output = $response->output();
-        $this->assertInstanceOf(\Minz\Output\View::class, $output);
-        /** @var array<string, mixed> */
-        $variables = $output->variables();
-        $this->assertIsArray($variables['collection_ids']);
-        $this->assertContains($bookmarks->id, $variables['collection_ids']);
+        $this->assertInstanceOf(\Minz\Output\Template::class, $output);
+        $template = $output->template();
+        $this->assertInstanceOf(\Minz\Template\Simple::class, $template);
+        $context = $output->context();
+        $this->assertIsArray($context['collection_ids']);
+        $this->assertContains($bookmarks->id, $context['collection_ids']);
     }
 
     public function testNewPrefillsUrl(): void
@@ -391,11 +392,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(\Minz\Response::class, $response);
         $output = $response->output();
-        $this->assertInstanceOf(\Minz\Output\View::class, $output);
-        /** @var array<string, mixed> */
-        $variables = $output->variables();
-        $this->assertIsArray($variables['collection_ids']);
-        $this->assertContains($collection->id, $variables['collection_ids']);
+        $this->assertInstanceOf(\Minz\Output\Template::class, $output);
+        $template = $output->template();
+        $this->assertInstanceOf(\Minz\Template\Simple::class, $template);
+        $context = $output->context();
+        $this->assertIsArray($context['collection_ids']);
+        $this->assertContains($collection->id, $context['collection_ids']);
     }
 
     public function testNewRendersCollectionSharedWithWriteAccess(): void
@@ -468,7 +470,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'collection_ids' => [$collection->id],
             'from' => $from,
@@ -497,7 +499,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => 'https://github.com/flusio/Flus',
             'collection_ids' => [$collection->id],
             'is_hidden' => true,
@@ -526,7 +528,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'collection_ids' => [$collection->id],
             'from' => $from,
@@ -557,7 +559,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'collection_ids' => [$collection->id],
             'from' => $from,
@@ -595,7 +597,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'collection_ids' => [$collection_1->id, $collection_2->id],
             'from' => $from,
@@ -630,7 +632,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'collection_ids' => [$collection->id],
             'from' => $from,
@@ -657,7 +659,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'new_collection_names' => [$collection_name],
             'from' => $from,
@@ -688,7 +690,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'collection_ids' => [$collection->id],
             'from' => $from,
@@ -731,7 +733,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $url = 'ftp://' . $url;
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'collection_ids' => [$collection->id],
             'from' => $from,
@@ -751,7 +753,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'collection_ids' => [$collection->id],
             'from' => $from,
         ]);
@@ -771,7 +773,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => 'https://github.com/flusio/Flus',
             'collection_ids' => [$collection->id],
             'from' => $from,
@@ -788,7 +790,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => 'https://github.com/flusio/Flus',
             'collection_ids' => [],
             'from' => $from,
@@ -816,7 +818,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'collection_ids' => [$collection->id],
             'from' => $from,
@@ -840,7 +842,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'collection_ids' => [$collection->id],
             'from' => $from,
@@ -862,7 +864,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'url' => $url,
             'new_collection_names' => [$collection_name],
             'from' => $from,
@@ -885,7 +887,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.phtml');
     }
 
     public function testEditFailsIfNotConnected(): void
@@ -943,7 +945,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'title' => $new_title,
             'reading_time' => $new_reading_time,
         ]);
@@ -969,7 +971,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'title' => $new_title,
             'from' => $from,
         ]);
@@ -998,7 +1000,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);
@@ -1017,12 +1019,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'title' => $new_title,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.phtml');
         $this->assertResponseContains($response, 'The title is required.');
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);
@@ -1042,7 +1044,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'title' => $new_title,
         ]);
 
@@ -1065,7 +1067,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/links/not-the-id/edit', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'title' => $new_title,
         ]);
 
@@ -1089,7 +1091,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'title' => $new_title,
         ]);
 
@@ -1106,7 +1108,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => "/links/{$link->id}",
         ]);
 
@@ -1122,7 +1124,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => "/links/{$link->id}",
             'redirect_to' => '/bookmarks',
         ]);
@@ -1157,7 +1159,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => "/links/{$link->id}",
         ]);
 

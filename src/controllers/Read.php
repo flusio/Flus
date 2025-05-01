@@ -31,7 +31,7 @@ class Read extends BaseController
 
         $read_list = $user->readList();
         $number_links = models\Link::countByCollectionId($read_list->id);
-        $pagination_page = $request->paramInteger('page', 1);
+        $pagination_page = $request->parameters->getInteger('page', 1);
         $number_per_page = 30;
         $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
         if ($pagination_page !== $pagination->currentPage()) {

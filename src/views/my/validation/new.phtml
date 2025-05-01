@@ -6,7 +6,7 @@
         'back_options' => [
             'track' => false,
         ],
-        'has_errors' => $form->hasError('@global'),
+        'has_errors' => $form->isInvalid(),
     ]);
 ?>
 
@@ -20,8 +20,8 @@
     </p>
 
     <form method="post" action="<?= url('create account validation') ?>">
-        <?php if ($form->hasError('@global')): ?>
-            <?= $this->include('alerts/_error.phtml', ['message' => $form->getError('@global')]) ?>
+        <?php if ($form->isInvalid('@base')): ?>
+            <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
             <div class="text--center">
                 <a class="anchor--action" href="<?= url('account validation') ?>">
@@ -35,7 +35,7 @@
                 </button>
             </div>
 
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf_token" value="<?= $form->csrfToken() ?>" />
             <input type="hidden" name="t" value="<?= $form->t ?>" />
         <?php endif; ?>
     </form>

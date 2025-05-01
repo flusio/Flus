@@ -30,7 +30,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, $group_name);
     }
 
@@ -104,7 +104,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $new_group_name,
         ]);
@@ -127,7 +127,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $new_group_name,
         ]);
@@ -177,7 +177,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $new_group_name,
         ]);
@@ -201,7 +201,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', '/groups/not-an-id/edit', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $new_group_name,
         ]);
@@ -231,7 +231,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);
@@ -253,13 +253,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $new_group_name,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, "The name must be less than {$name_max_length} characters");
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);
@@ -277,12 +277,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, 'The name is required');
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);
@@ -306,13 +306,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
             'name' => $new_group_name,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'groups/edit.phtml');
+        $this->assertResponseTemplateName($response, 'groups/edit.phtml');
         $this->assertResponseContains($response, 'You already have a group with this name');
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);
@@ -327,7 +327,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -343,7 +343,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -380,7 +380,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -397,7 +397,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', '/groups/not-an-id/delete', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 

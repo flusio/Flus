@@ -61,8 +61,8 @@ class Subscription extends BaseController
             return Response::redirect('account');
         }
 
-        $csrf = $request->param('csrf', '');
-        if (!\Minz\Csrf::validate($csrf)) {
+        $csrf = $request->parameters->getString('csrf', '');
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::redirect('account');
         }

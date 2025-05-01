@@ -24,7 +24,7 @@ class Showcases extends BaseController
      */
     public function show(Request $request): Response
     {
-        $id = $request->param('id');
+        $id = $request->parameters->getString('id');
         if ($id === 'navigation') {
             return Response::ok('showcases/show_navigation.phtml');
         } elseif ($id === 'link') {

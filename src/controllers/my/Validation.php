@@ -31,7 +31,7 @@ class Validation extends BaseController
      */
     public function show(Request $request): Response
     {
-        $token = $request->param('t');
+        $token = $request->parameters->getString('t');
         if ($token) {
             return Response::redirect('new account validation', [
                 't' => $token,
@@ -60,7 +60,7 @@ class Validation extends BaseController
     public function new(Request $request): Response
     {
         $form = new forms\AccountValidation([
-            't' => $request->param('t', ''),
+            't' => $request->parameters->getString('t', ''),
         ]);
 
         return Response::ok('my/validation/new.phtml', [
@@ -72,7 +72,7 @@ class Validation extends BaseController
      * Validate an account.
      *
      * @request_param string t
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
      * @response 400
      *     If the token or if the csrf token are invalid.
@@ -90,7 +90,7 @@ class Validation extends BaseController
             ]);
         }
 
-        $user = $form->getUser();
+        $user = $form->user();
 
         models\Token::delete($form->t);
 
@@ -133,7 +133,7 @@ class Validation extends BaseController
      */
     public function resendEmail(Request $request): Response
     {
-        $csrf = $request->param('csrf', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account validation'));
 
@@ -142,7 +142,7 @@ class Validation extends BaseController
             return Response::redirect('home');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
             return Response::redirect('account validation');
         }

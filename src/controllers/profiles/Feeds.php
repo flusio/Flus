@@ -31,8 +31,8 @@ class Feeds extends BaseController
      */
     public function show(Request $request): Response
     {
-        $user_id = $request->param('id', '');
-        $direct = $request->paramBoolean('direct', false);
+        $user_id = $request->parameters->getString('id', '');
+        $direct = $request->parameters->getBoolean('direct');
 
         $user = models\User::find($user_id);
         if (!$user || $user->isSupportUser()) {
@@ -64,7 +64,7 @@ class Feeds extends BaseController
      */
     public function alias(Request $request): Response
     {
-        $user_id = $request->param('id');
+        $user_id = $request->parameters->getString('id');
         $url = \Minz\Url::for('profile feed', ['id' => $user_id]);
 
         $query_string = $_SERVER['QUERY_STRING'] ?? null;

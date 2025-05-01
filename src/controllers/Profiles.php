@@ -27,7 +27,7 @@ class Profiles extends BaseController
      */
     public function show(Request $request): Response
     {
-        $user_id = $request->param('id', '');
+        $user_id = $request->parameters->getString('id', '');
         $user = models\User::find($user_id);
         if (!$user || $user->isSupportUser()) {
             return Response::notFound('not_found.phtml');

@@ -31,7 +31,7 @@ class Onboarding extends BaseController
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('onboarding'));
 
-        $step = $request->paramInteger('step', 1);
+        $step = $request->parameters->getInteger('step', 1);
         if ($step < 1 || $step > 6) {
             return Response::notFound('not_found.phtml');
         }
@@ -58,15 +58,14 @@ class Onboarding extends BaseController
      */
     public function updateLocale(Request $request): Response
     {
-        $locale = $request->param('locale', '');
-        $csrf = $request->param('csrf', '');
+        $locale = $request->parameters->getString('locale', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('onboarding'));
 
         $user->locale = trim($locale);
 
-        $errors = $user->validate();
-        if (\Minz\Csrf::validate($csrf) && !$errors) {
+        if (\App\Csrf::validate($csrf) && $user->validate()) {
             $user->save();
             utils\Locale::setCurrentLocale($locale);
         }

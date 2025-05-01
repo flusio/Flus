@@ -24,8 +24,8 @@ class Groups extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $from = $request->param('from', '');
-        $collection_id = $request->param('id', '');
+        $from = $request->parameters->getString('from', '');
+        $collection_id = $request->parameters->getString('id', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -80,10 +80,10 @@ class Groups extends BaseController
      */
     public function update(Request $request): Response
     {
-        $from = $request->param('from', '');
-        $name = $request->param('name', '');
-        $collection_id = $request->param('id', '');
-        $csrf = $request->param('csrf', '');
+        $from = $request->parameters->getString('from', '');
+        $name = $request->parameters->getString('name', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -105,7 +105,7 @@ class Groups extends BaseController
         ]);
         $groups = utils\Sorter::localeSort($groups, 'name');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('collections/groups/edit.phtml', [
                 'collection' => $collection,
                 'groups' => $groups,
@@ -119,15 +119,14 @@ class Groups extends BaseController
         if ($name) {
             $group = new models\Group($user->id, $name);
 
-            $errors = $group->validate();
-            if ($errors) {
+            if (!$group->validate()) {
                 return Response::badRequest('collections/groups/edit.phtml', [
                     'collection' => $collection,
                     'groups' => $groups,
                     'from' => $from,
                     'name' => $name,
                     'name_max_length' => models\Group::NAME_MAX_LENGTH,
-                    'errors' => $errors,
+                    'errors' => $group->errors(),
                 ]);
             }
 

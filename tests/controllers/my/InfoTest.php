@@ -43,7 +43,8 @@ class InfoTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\Minz\Response::class, $response);
         /** @var array<string, mixed> */
         $output = json_decode($response->render(), true);
-        $this->assertSame($user->csrf, $output['csrf']);
+        $this->assertTrue(is_string($output['csrf']));
+        $this->assertTrue(\App\Csrf::validate($output['csrf']));
         $this->assertSame($bookmarks->id, $output['bookmarks_id']);
         $this->assertSame([$url_1], $output['bookmarked_urls']);
     }

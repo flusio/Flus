@@ -63,10 +63,8 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $current_user = auth\CurrentUser::get();
         $this->assertNull($current_user);
 
-        $request = new \Minz\Request('GET', '/', [], [
-            'COOKIE' => [
-                'session_token' => $token->token,
-            ],
+        $request = new \Minz\Request('GET', '/', cookies: [
+            'session_token' => $token->token,
         ]);
         $application = new Application();
         $response = $application->run($request);

@@ -27,7 +27,7 @@ class Feeds extends BaseController
     public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->param('id', '');
+        $link_id = $request->parameters->getString('id', '');
         $link = models\Link::find($link_id);
 
         if (!$link || !auth\LinksAccess::canView($user, $link)) {
@@ -55,7 +55,7 @@ class Feeds extends BaseController
      */
     public function alias(Request $request): Response
     {
-        $link_id = $request->param('id');
+        $link_id = $request->parameters->getString('id');
         $url = \Minz\Url::for('link feed', ['id' => $link_id]);
         return Response::movedPermanently($url);
     }

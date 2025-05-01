@@ -25,7 +25,7 @@ class Users
      */
     public function index(Request $request): Response
     {
-        $to_contact = $request->paramBoolean('to-contact');
+        $to_contact = $request->parameters->getBoolean('to-contact');
 
         if ($to_contact) {
             $users = models\User::listBy(['accept_contact' => true]);
@@ -70,9 +70,9 @@ class Users
      */
     public function create(Request $request): Response
     {
-        $username = $request->param('username', '');
-        $email = $request->param('email', '');
-        $password = $request->param('password', '');
+        $username = $request->parameters->getString('username', '');
+        $email = $request->parameters->getString('email', '');
+        $password = $request->parameters->getString('password', '');
 
         try {
             $user = services\UserCreator::create($username, $email, $password);
@@ -101,7 +101,7 @@ class Users
      */
     public function export(Request $request): Response
     {
-        $user_id = $request->param('id', '');
+        $user_id = $request->parameters->getString('id', '');
         $user = models\User::find($user_id);
         if (!$user) {
             return Response::text(404, "User {$user_id} doesn’t exist.");
@@ -133,7 +133,7 @@ class Users
      */
     public function validate(Request $request): Response
     {
-        $user_id = $request->param('id', '');
+        $user_id = $request->parameters->getString('id', '');
         $user = models\User::find($user_id);
         if (!$user) {
             return Response::text(404, "User {$user_id} doesn’t exist.");

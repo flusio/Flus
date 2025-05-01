@@ -85,14 +85,14 @@ class Registrations extends BaseController
         $terms_path = $app_path . '/policies/terms.html';
         $has_terms = file_exists($terms_path);
 
-        $username = $request->param('username', '');
-        $email = $request->param('email', '');
-        $password = $request->param('password', '');
-        $accept_terms = $request->paramBoolean('accept_terms');
-        $accept_contact = $request->paramBoolean('accept_contact');
-        $csrf = $request->param('csrf', '');
+        $username = $request->parameters->getString('username', '');
+        $email = $request->parameters->getString('email', '');
+        $password = $request->parameters->getString('password', '');
+        $accept_terms = $request->parameters->getBoolean('accept_terms');
+        $accept_contact = $request->parameters->getBoolean('accept_contact');
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('registrations/new.phtml', [
                 'has_terms' => $has_terms,
                 'username' => $username,
@@ -145,10 +145,8 @@ class Registrations extends BaseController
         $session_token = new models\Token(1, 'month');
         $session_token->save();
 
-        /** @var string */
-        $user_agent = $request->header('HTTP_USER_AGENT', '');
-        /** @var string */
-        $ip = $request->header('REMOTE_ADDR', 'unknown');
+        $user_agent = $request->headers->getString('User-Agent', '');
+        $ip = $request->ip();
         $session = new models\Session($user_agent, $ip);
         $session->user_id = $user->id;
         $session->token = $session_token->token;

@@ -162,7 +162,7 @@
                                         data-turbo-confirm="<?= _('Are you sure that you want to delete this message?') ?>"
                                         role="menuitem"
                                     >
-                                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                                         <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />
 
                                         <button type="submit" class="popup__item popup__item--button">
@@ -192,7 +192,7 @@
             >
                 <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
-                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
                 <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
                     <label for="content">

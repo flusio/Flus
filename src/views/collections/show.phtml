@@ -157,7 +157,7 @@
                         <div class="popup__separator"></div>
 
                         <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>" role="menuitem">
-                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                             <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
 
                             <button class="popup__item popup__item--button">
@@ -169,7 +169,7 @@
                         <div class="popup__separator"></div>
 
                         <form method="post" action="<?= url('follow collection', ['id' => $collection->id]) ?>" role="menuitem">
-                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                             <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
 
                             <button class="popup__item popup__item--button">
@@ -187,7 +187,7 @@
                             action="<?= url('delete collection', ['id' => $collection->id]) ?>"
                             data-turbo-confirm="<?= _('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.') ?>"
                         >
-                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                             <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
 
                             <button

@@ -68,10 +68,10 @@ class Mastodon extends BaseController
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
-        $host = $request->param('host', '');
-        $csrf = $request->param('csrf', '');
+        $host = $request->parameters->getString('host', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::redirect('mastodon');
         }
@@ -127,7 +127,7 @@ class Mastodon extends BaseController
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
-        $code = $request->param('code', '');
+        $code = $request->parameters->getString('code', '');
 
         if (!$code) {
             return Response::redirect('mastodon');
@@ -166,8 +166,8 @@ class Mastodon extends BaseController
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
-        $code = $request->param('code', '');
-        $csrf = $request->param('csrf', '');
+        $code = $request->parameters->getString('code', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         if (!$code) {
             return Response::redirect('mastodon');
@@ -181,7 +181,7 @@ class Mastodon extends BaseController
             return Response::redirect('mastodon');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('mastodon/authorization.phtml', [
                 'code' => $code,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -246,9 +246,9 @@ class Mastodon extends BaseController
             return Response::redirect('mastodon');
         }
 
-        $link_to_comment = $request->param('link_to_comment', 'auto');
-        $post_scriptum = $request->param('post_scriptum', '');
-        $csrf = $request->param('csrf', '');
+        $link_to_comment = $request->parameters->getString('link_to_comment', 'auto');
+        $post_scriptum = $request->parameters->getString('post_scriptum', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         if (
             $link_to_comment !== 'always' &&
@@ -258,7 +258,7 @@ class Mastodon extends BaseController
             $link_to_comment = 'auto';
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('mastodon/show.phtml', [
                 'host' => '',
                 'mastodon_account' => $mastodon_account,
@@ -306,11 +306,11 @@ class Mastodon extends BaseController
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
 
-        $csrf = $request->param('csrf', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $mastodon_account = models\MastodonAccount::findBy(['user_id' => $user->id]);
 
-        if (!$mastodon_account || !\Minz\Csrf::validate($csrf)) {
+        if (!$mastodon_account || !\App\Csrf::validate($csrf)) {
             return Response::redirect('mastodon');
         }
 

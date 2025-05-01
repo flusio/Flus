@@ -35,7 +35,7 @@ class Migrations extends \Minz\Migration\Controller
             return Response::text(400, 'You can’t reset the database in production.');
         }
 
-        $force = $request->paramBoolean('force', false);
+        $force = $request->parameters->getBoolean('force');
         if (!$force) {
             return Response::text(400, 'You must pass the --force option to confirm.');
         }

@@ -73,11 +73,11 @@ class Security extends BaseController
             ]);
         }
 
-        $email = $request->param('email', '');
-        $password = $request->param('password', '');
-        $csrf = $request->param('csrf', '');
+        $email = $request->parameters->getString('email', '');
+        $password = $request->parameters->getString('password', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('my/security/show.phtml', [
                 'email' => $email,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
@@ -108,11 +108,10 @@ class Security extends BaseController
             ]);
         }
 
-        $errors = $user->validate();
-        if ($errors) {
+        if (!$user->validate()) {
             return Response::badRequest('my/security/show.phtml', [
                 'email' => $email,
-                'errors' => $errors,
+                'errors' => $user->errors(),
             ]);
         }
 
@@ -143,7 +142,7 @@ class Security extends BaseController
      */
     public function confirmation(Request $request): Response
     {
-        $from = $request->param('from', \Minz\Url::for('security'));
+        $from = $request->parameters->getString('from', \Minz\Url::for('security'));
         if (!$this->isPathRedirectable($from)) {
             $from = \Minz\Url::for('security');
         }
@@ -179,7 +178,7 @@ class Security extends BaseController
      */
     public function confirm(Request $request): Response
     {
-        $from = $request->param('from', \Minz\Url::for('security'));
+        $from = $request->parameters->getString('from', \Minz\Url::for('security'));
 
         if (!$this->isPathRedirectable($from)) {
             $from = \Minz\Url::for('security');
@@ -187,10 +186,10 @@ class Security extends BaseController
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        $password = $request->param('password', '');
-        $csrf = $request->param('csrf', '');
+        $password = $request->parameters->getString('password', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('my/security/confirmation.phtml', [
                 'from' => $from,
                 'error' => _('A security verification failed: you should retry to submit the form.'),

@@ -28,7 +28,7 @@ class Info extends BaseController
         $links = $bookmarks->links();
 
         return Response::json(200, [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'bookmarks_id' => $bookmarks->id,
             'bookmarked_urls' => array_column($links, 'url'),
         ]);

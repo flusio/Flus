@@ -24,7 +24,7 @@
     <form method="post" action="<?= url('create session') ?>">
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
         <input type="hidden" name="redirect_to" value="<?= $redirect_to ?>" />
 
         <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">

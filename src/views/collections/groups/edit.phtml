@@ -25,7 +25,7 @@
     <form method="post" action="<?= url('update group collection', ['id' => $collection->id]) ?>">
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
 
         <div

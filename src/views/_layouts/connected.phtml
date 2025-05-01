@@ -32,7 +32,7 @@
         <?php endif; ?>
 
         <meta name="csrf-param" content="csrf" />
-        <meta name="csrf-token" content="<?= $csrf_token ?>" />
+        <meta name="csrf-token" content="<?= csrf_token() ?>" />
     </head>
 
     <body>
@@ -194,7 +194,7 @@
                             <div class="popup__separator"></div>
 
                             <form method="post" action="<?= url('logout') ?>" role="menuitem">
-                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                                 <button type="submit" class="popup__item popup__item--button">
                                     <?= icon('logout') ?>
                                     <?= _('Log out') ?>

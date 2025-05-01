@@ -86,10 +86,10 @@ class Account extends BaseController
     public function delete(Request $request): Response
     {
         $current_user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account deletion'));
-        $password = $request->param('password', '');
-        $csrf = $request->param('csrf', '');
+        $password = $request->parameters->getString('password', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('my/account/deletion.phtml', [
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);

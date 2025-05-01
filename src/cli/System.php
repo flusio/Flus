@@ -82,11 +82,11 @@ class System
      */
     public function stats(Request $request): Response
     {
-        $format = $request->param('format', 'plain');
+        $format = $request->parameters->getString('format', 'plain');
 
         if ($format === 'csv') {
             $current_year = intval(\Minz\Time::now()->format('Y'));
-            $year = $request->paramInteger('year', $current_year);
+            $year = $request->parameters->getInteger('year', $current_year);
 
             $registrations_per_date = models\User::countPerMonth($year);
             $active_per_date = models\User::countActivePerMonth($year);

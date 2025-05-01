@@ -23,7 +23,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Importation from an OPML file');
-        $this->assertResponsePointer($response, 'importations/opml/show.phtml');
+        $this->assertResponseTemplateName($response, 'importations/opml/show.phtml');
     }
 
     public function testShowRendersIfImportationIsOngoing(): void
@@ -96,7 +96,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'opml' => $file,
         ]);
 
@@ -125,7 +125,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'opml' => $file,
         ]);
 
@@ -173,7 +173,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'opml' => $file,
         ]);
 
@@ -227,7 +227,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
@@ -251,7 +251,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'opml' => $file,
         ]);
 
@@ -276,7 +276,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'opml' => $file,
         ]);
 
@@ -301,7 +301,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'opml' => $file,
         ]);
 

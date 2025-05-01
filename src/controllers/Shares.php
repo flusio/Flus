@@ -22,8 +22,8 @@ class Shares extends BaseController
      */
     public function new(Request $request): Response
     {
-        $url = $request->param('url', '');
-        $text = $request->param('text', '');
+        $url = $request->parameters->getString('url', '');
+        $text = $request->parameters->getString('text', '');
 
         if ($url === '') {
             $url = $text;

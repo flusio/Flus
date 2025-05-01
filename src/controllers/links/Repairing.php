@@ -30,8 +30,8 @@ class Repairing extends BaseController
      */
     public function new(Request $request): Response
     {
-        $link_id = $request->param('id', '');
-        $from = $request->param('from', '');
+        $link_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -70,11 +70,11 @@ class Repairing extends BaseController
      */
     public function create(Request $request): Response
     {
-        $link_id = $request->param('id', '');
-        $url = $request->param('url', '');
-        $force_sync = $request->paramBoolean('force_sync', false);
-        $csrf = $request->param('csrf', '');
-        $from = $request->param('from', '');
+        $link_id = $request->parameters->getString('id', '');
+        $url = $request->parameters->getString('url', '');
+        $force_sync = $request->parameters->getBoolean('force_sync');
+        $csrf = $request->parameters->getString('csrf', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -84,7 +84,7 @@ class Repairing extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('links/repairing/new.phtml', [
                 'link' => $link,
                 'url' => $url,
@@ -98,15 +98,15 @@ class Repairing extends BaseController
         $old_link = models\Link::copy($link, $user->id);
 
         $link->url = \SpiderBits\Url::sanitize($url);
-        $errors = $link->validate();
-        if ($errors) {
+
+        if (!$link->validate()) {
             return Response::badRequest('links/repairing/new.phtml', [
                 'link' => $link,
                 'url' => $url,
                 'url_cleared' => $url,
                 'force_sync' => $force_sync,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $link->errors(),
             ]);
         }
 

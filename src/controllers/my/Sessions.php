@@ -78,8 +78,8 @@ class Sessions extends BaseController
             ]);
         }
 
-        $session_id = $request->param('id', '');
-        $csrf = $request->param('csrf', '');
+        $session_id = $request->parameters->getString('id', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $session = models\Session::findBy([
             'id' => $session_id,
@@ -92,7 +92,7 @@ class Sessions extends BaseController
 
         $response = Response::redirect('sessions');
 
-        if (\Minz\Csrf::validate($csrf)) {
+        if (\App\Csrf::validate($csrf)) {
             models\Token::delete($session->token);
             $session->remove();
 

@@ -23,7 +23,7 @@
     <form method="post" action="<?= url('share collection', ['id' => $collection->id]) ?>">
         <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
         <input type="hidden" name="from" value="<?= $from ?>" />
 
         <div class="form-group <?= isset($errors['user_id']) ? 'form-group--invalid' : '' ?>">
@@ -143,7 +143,7 @@
                     </span>
 
                     <form class="line__item" method="post" action="<?= url('delete collection share', ['id' => $collection_share->id]) ?>">
-                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                         <input type="hidden" name="from" value="<?= $from ?>" />
 
                         <button type="submit" class="button--ghost button--small">

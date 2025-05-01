@@ -46,7 +46,7 @@
         <?php endif; ?>
 
         <meta name="csrf-param" content="csrf" />
-        <meta name="csrf-token" content="<?= $csrf_token ?>" />
+        <meta name="csrf-token" content="<?= csrf_token() ?>" />
     </head>
 
     <body>
@@ -105,7 +105,7 @@
                         action="<?= url('change locale') ?>"
                         data-controller="autosubmit"
                     >
-                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
                         <input type="hidden" name="redirect_to" value="<?= $canonical ?>" />
 
                         <div class="form-group">

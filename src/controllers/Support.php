@@ -50,11 +50,11 @@ class Support extends BaseController
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('support'));
 
-        $subject = trim($request->param('subject', ''));
-        $message = trim($request->param('message', ''));
-        $csrf = $request->param('csrf', '');
+        $subject = trim($request->parameters->getString('subject', ''));
+        $message = trim($request->parameters->getString('message', ''));
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('support/show.phtml', [
                 'subject' => $subject,
                 'message' => $message,

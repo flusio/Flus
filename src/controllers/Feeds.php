@@ -58,7 +58,7 @@ class Feeds extends BaseController
      */
     public function new(Request $request): Response
     {
-        $from = $request->param('from', \Minz\Url::for('feeds'));
+        $from = $request->parameters->getString('from', \Minz\Url::for('feeds'));
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -82,9 +82,9 @@ class Feeds extends BaseController
     public function create(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $url = $request->param('url', '');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $url = $request->parameters->getString('url', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $url = \SpiderBits\Url::sanitize($url);
         $support_user = models\User::supportUser();
@@ -93,7 +93,7 @@ class Feeds extends BaseController
             return Response::redirect('login', ['redirect_to' => $from]);
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('feeds/new.phtml', [
                 'url' => $url,
                 'from' => $from,
@@ -109,12 +109,11 @@ class Feeds extends BaseController
             $default_link = new models\Link($url, $support_user->id, false);
         }
 
-        $errors = $default_link->validate();
-        if ($errors) {
+        if (!$default_link->validate()) {
             return Response::badRequest('feeds/new.phtml', [
                 'url' => $url,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $default_link->errors(),
             ]);
         }
 

@@ -24,7 +24,7 @@ class Urls
      */
     public function show(Request $request): Response
     {
-        $url = $request->param('url', '');
+        $url = $request->parameters->getString('url', '');
         $url_is_valid = filter_var($url, FILTER_VALIDATE_URL) !== false;
 
         if (!$url_is_valid || empty($url)) {
@@ -52,7 +52,7 @@ class Urls
      */
     public function uncache(Request $request): Response
     {
-        $url = $request->param('url', '');
+        $url = $request->parameters->getString('url', '');
         $url_is_valid = filter_var($url, FILTER_VALIDATE_URL) !== false;
         if (!$url_is_valid) {
             return Response::text(400, "`{$url}` is not a valid URL.");

@@ -50,7 +50,7 @@ class Opml extends BaseController
     public function import(Request $request): Response
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('opml'));
-        $csrf = $request->param('csrf', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $importation = models\Importation::findBy([
             'type' => 'opml',
@@ -63,14 +63,14 @@ class Opml extends BaseController
             ]);
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('importations/opml/show.phtml', [
                 'importation' => null,
                 'error' => _('A security verification failed.'),
             ]);
         }
 
-        $opml_file = $request->paramFile('opml');
+        $opml_file = $request->parameters->getFile('opml');
         if (!$opml_file) {
             return Response::badRequest('importations/opml/show.phtml', [
                 'importation' => null,

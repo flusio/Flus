@@ -22,7 +22,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/my/preferences');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'my/preferences/edit.phtml');
+        $this->assertResponseTemplateName($response, 'my/preferences/edit.phtml');
     }
 
     public function testEditRedirectsToLoginIfUserNotConnected(): void
@@ -40,7 +40,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'locale' => 'fr_FR',
             'option_compact_mode' => true,
             'from' => \Minz\Url::for('preferences'),
@@ -60,7 +60,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\FeatureFlag::isEnabled('beta', $user->id));
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'beta_enabled' => true,
             'locale' => 'fr_FR',
             'from' => \Minz\Url::for('preferences'),
@@ -78,7 +78,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\FeatureFlag::isEnabled('beta', $user->id));
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'beta_enabled' => false,
             'locale' => 'fr_FR',
             'from' => \Minz\Url::for('preferences'),
@@ -95,7 +95,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'locale' => 'fr_FR',
             'from' => \Minz\Url::for('preferences'),
         ]);
@@ -130,7 +130,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('preferences'),
         ]);
 
@@ -147,7 +147,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'locale' => 'not a locale',
             'from' => \Minz\Url::for('preferences'),
         ]);

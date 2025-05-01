@@ -28,11 +28,11 @@ class Images extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $from = $request->param('from', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        $collection_id = $request->param('id', '');
+        $collection_id = $request->parameters->getString('id', '');
         $collection = models\Collection::find($collection_id);
 
         $can_update = $collection && auth\CollectionsAccess::canUpdate($user, $collection);
@@ -63,10 +63,10 @@ class Images extends BaseController
      */
     public function update(Request $request): Response
     {
-        $image_file = $request->paramFile('image');
-        $collection_id = $request->param('id', '');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $image_file = $request->parameters->getFile('image');
+        $collection_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -99,7 +99,7 @@ class Images extends BaseController
             ]);
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('collections/images/edit.phtml', [
                 'collection' => $collection,
                 'from' => $from,

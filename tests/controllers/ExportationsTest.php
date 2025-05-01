@@ -35,7 +35,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'exportations/show.phtml');
+        $this->assertResponseTemplateName($response, 'exportations/show.phtml');
         $this->assertResponseContains($response, 'Generate a data archive');
     }
 
@@ -50,7 +50,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'exportations/show.phtml');
+        $this->assertResponseTemplateName($response, 'exportations/show.phtml');
         $this->assertResponseContains($response, 'We’re creating your archive');
     }
 
@@ -65,7 +65,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'exportations/show.phtml');
+        $this->assertResponseTemplateName($response, 'exportations/show.phtml');
         $this->assertResponseContains($response, 'Downloading your data');
     }
 
@@ -83,7 +83,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'exportations/show.phtml');
+        $this->assertResponseTemplateName($response, 'exportations/show.phtml');
         $this->assertResponseContains($response, $error);
     }
 
@@ -102,7 +102,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/exportations');
@@ -134,7 +134,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($filepath));
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/exportations');
@@ -156,7 +156,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/exportations');
@@ -170,7 +170,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fexportations');
@@ -190,7 +190,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count()); // in real life, a job should exist
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 400);

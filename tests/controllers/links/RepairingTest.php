@@ -30,7 +30,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'links/repairing/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/repairing/new.phtml');
         $this->assertResponseContains($response, $url);
     }
 
@@ -109,7 +109,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -146,7 +146,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => true,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -181,7 +181,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -239,7 +239,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/links/not-an-id/repair', [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -264,7 +264,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -293,7 +293,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/repairing/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/repairing/new.phtml');
         $this->assertResponseContains($response, 'A security verification failed');
         $link = $link->reload();
         $this->assertSame($old_url, $link->url);
@@ -313,12 +313,12 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('home'),
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponsePointer($response, 'links/repairing/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/repairing/new.phtml');
         $this->assertResponseContains($response, 'The link is invalid.');
         $link = $link->reload();
         $this->assertSame($old_url, $link->url);

@@ -40,8 +40,8 @@ class Topics
      */
     public function create(Request $request): Response
     {
-        $label = $request->param('label', '');
-        $image_url = $request->param('image_url', '');
+        $label = $request->parameters->getString('label', '');
+        $image_url = $request->parameters->getString('image_url', '');
         $topic = new models\Topic($label);
 
         if ($image_url) {
@@ -50,10 +50,8 @@ class Topics
             $topic->image_filename = $image_filename;
         }
 
-        /** @var array<string, string> */
-        $errors = $topic->validate();
-        if ($errors) {
-            $errors = implode(' ', $errors);
+        if (!$topic->validate()) {
+            $errors = implode(' ', $topic->errors());
             return Response::text(400, "Topic creation failed: {$errors}");
         }
 
@@ -75,9 +73,9 @@ class Topics
      */
     public function update(Request $request): Response
     {
-        $id = $request->param('id', '');
-        $label = trim($request->param('label', ''));
-        $image_url = trim($request->param('image_url', ''));
+        $id = $request->parameters->getString('id', '');
+        $label = trim($request->parameters->getString('label', ''));
+        $image_url = trim($request->parameters->getString('image_url', ''));
 
         $topic = models\Topic::find($id);
         if (!$topic) {
@@ -94,10 +92,8 @@ class Topics
             $topic->image_filename = $image_filename;
         }
 
-        /** @var array<string, string> */
-        $errors = $topic->validate();
-        if ($errors) {
-            $errors = implode(' ', $errors);
+        if (!$topic->validate()) {
+            $errors = implode(' ', $topic->errors());
             return Response::text(400, "Topic creation failed: {$errors}");
         }
 
@@ -116,7 +112,7 @@ class Topics
      */
     public function delete(Request $request): Response
     {
-        $id = $request->param('id', '');
+        $id = $request->parameters->getString('id', '');
 
         $topic = models\Topic::find($id);
         if (!$topic) {

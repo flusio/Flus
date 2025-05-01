@@ -29,8 +29,8 @@ class Messages extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $message_id = $request->param('id', '');
-        $from = $request->param('from', '');
+        $message_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -69,10 +69,10 @@ class Messages extends BaseController
      */
     public function update(Request $request): Response
     {
-        $message_id = $request->param('id');
-        $content = $request->param('content', '');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $message_id = $request->parameters->getString('id');
+        $content = $request->parameters->getString('content', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -84,16 +84,15 @@ class Messages extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
 
         $message->content = trim($content);
 
-        $errors = $message->validate();
-        if ($errors) {
-            \Minz\Flash::set('errors', $errors);
+        if (!$message->validate()) {
+            \Minz\Flash::set('errors', $message->errors());
             return Response::found($from);
         }
 
@@ -117,9 +116,9 @@ class Messages extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $message_id = $request->param('id', '');
-        $redirect_to = $request->param('redirect_to', \Minz\Url::for('home'));
-        $csrf = $request->param('csrf', '');
+        $message_id = $request->parameters->getString('id', '');
+        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $redirect_to);
 
@@ -132,7 +131,7 @@ class Messages extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($redirect_to);
         }

@@ -26,8 +26,8 @@ class Groups extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $group_id = $request->param('id', '');
-        $from = $request->param('from', '');
+        $group_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -62,10 +62,10 @@ class Groups extends BaseController
      */
     public function update(Request $request): Response
     {
-        $group_id = $request->param('id', '');
-        $name = $request->param('name', '');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $group_id = $request->parameters->getString('id', '');
+        $name = $request->parameters->getString('name', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -75,7 +75,7 @@ class Groups extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('groups/edit.phtml', [
                 'group' => $group,
                 'name' => $name,
@@ -87,14 +87,13 @@ class Groups extends BaseController
 
         $group->name = trim($name);
 
-        $errors = $group->validate();
-        if ($errors) {
+        if (!$group->validate()) {
             return Response::badRequest('groups/edit.phtml', [
                 'group' => $group,
                 'name' => $name,
                 'from' => $from,
                 'name_max_length' => models\Group::NAME_MAX_LENGTH,
-                'errors' => $errors,
+                'errors' => $group->errors(),
             ]);
         }
 
@@ -136,9 +135,9 @@ class Groups extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $group_id = $request->param('id', '');
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
+        $group_id = $request->parameters->getString('id', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -148,7 +147,7 @@ class Groups extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

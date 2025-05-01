@@ -55,8 +55,8 @@ class Passwords extends BaseController
             return Response::redirect('home');
         }
 
-        $email = $request->param('email', '');
-        $csrf = $request->param('csrf', '');
+        $email = $request->parameters->getString('email', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $email = \Minz\Email::sanitize($email);
         if (!\Minz\Email::validate($email)) {
@@ -82,7 +82,7 @@ class Passwords extends BaseController
             ]);
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('passwords/forgot.phtml', [
                 'email' => $email,
                 'email_sent' => false,
@@ -117,7 +117,7 @@ class Passwords extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $t = $request->param('t', '');
+        $t = $request->parameters->getString('t', '');
         $token = models\Token::find($t);
         if (!$token) {
             return Response::notFound('passwords/edit.phtml', [
@@ -161,9 +161,9 @@ class Passwords extends BaseController
      */
     public function update(Request $request): Response
     {
-        $t = $request->param('t', '');
-        $password = $request->param('password', '');
-        $csrf = $request->param('csrf', '');
+        $t = $request->parameters->getString('t', '');
+        $password = $request->parameters->getString('password', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $token = models\Token::find($t);
         if (!$token) {
@@ -185,7 +185,7 @@ class Passwords extends BaseController
             ]);
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('passwords/edit.phtml', [
                 'token' => $token->token,
                 'email' => $user->email,
@@ -195,12 +195,11 @@ class Passwords extends BaseController
 
         $user->password_hash = models\User::passwordHash($password);
 
-        $errors = $user->validate();
-        if ($errors) {
+        if (!$user->validate()) {
             return Response::badRequest('passwords/edit.phtml', [
                 'token' => $token->token,
                 'email' => $user->email,
-                'errors' => $errors,
+                'errors' => $user->errors(),
             ]);
         }
 
@@ -220,10 +219,8 @@ class Passwords extends BaseController
         $session_token = new models\Token(1, 'month');
         $session_token->save();
 
-        /** @var string */
-        $user_agent = $request->header('HTTP_USER_AGENT', '');
-        /** @var string */
-        $ip = $request->header('REMOTE_ADDR', 'unknown');
+        $user_agent = $request->headers->getString('User-Agent', '');
+        $ip = $request->ip();
         $session = new models\Session($user_agent, $ip);
         $session->user_id = $user->id;
         $session->token = $session_token->token;

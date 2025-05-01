@@ -34,26 +34,25 @@ class Application
         $router = Router::load();
         \Minz\Engine::init($router, [
             'start_session' => true,
-            'not_found_view_pointer' => 'not_found.phtml',
-            'internal_server_error_view_pointer' => 'internal_server_error.phtml',
+            'not_found_template' => 'not_found.phtml',
+            'internal_server_error_template' => 'internal_server_error.phtml',
             'controller_namespace' => '\\App\\controllers',
         ]);
 
         // Automatically declare content types for these views files extensions
-        \Minz\Output\View::$extensions_to_content_types['.atom.xml.php'] = 'application/xml';
-        \Minz\Output\View::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
-        \Minz\Output\View::$extensions_to_content_types['.xsl.php'] = 'application/xslt+xml';
+        \Minz\Output\Template::$extensions_to_content_types['.atom.xml.php'] = 'application/xml';
+        \Minz\Output\Template::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
+        \Minz\Output\Template::$extensions_to_content_types['.xsl.php'] = 'application/xslt+xml';
     }
 
     /**
-     * Declare global View variables and execute a request.
+     * Declare global template variables and execute a request.
      *
      * @return ResponseReturnable
      */
     public function run(\Minz\Request $request): mixed
     {
-        /** @var ?string */
-        $session_token = $request->cookie('session_token');
+        $session_token = $request->cookies->getString('session_token');
 
         if (
             !$session_token &&
@@ -82,8 +81,7 @@ class Application
         } elseif (isset($_SESSION['locale']) && is_string($_SESSION['locale'])) {
             $locale = $_SESSION['locale'];
         } else {
-            /** @var string */
-            $http_accept_language = $request->header('HTTP_ACCEPT_LANGUAGE', '');
+            $http_accept_language = $request->headers->getString('Accept-Language', '');
             $locale = utils\Locale::best($http_accept_language);
         }
 
@@ -133,9 +131,6 @@ class Application
             } elseif ($current_user->autoload_modal === 'showcase reading') {
                 $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'reading']);
             }
-
-            // Force CSRF token to avoid weird issues when user did nothing for a while
-            \Minz\Csrf::set($current_user->csrf);
         }
 
         $errors = \Minz\Flash::pop('errors', []);
@@ -143,8 +138,7 @@ class Application
         $status = \Minz\Flash::pop('status');
 
         $app_conf = \App\Configuration::$application;
-        \Minz\Output\View::declareDefaultVariables([
-            'csrf_token' => \Minz\Csrf::generate(),
+        \Minz\Template\Simple::addGlobals([
             'errors' => $errors,
             'error' => $error,
             'status' => $status,
@@ -154,7 +148,7 @@ class Application
             'autoload_modal_url' => $autoload_modal_url,
             'now' => \Minz\Time::now(),
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
-            'modal_requested' => $request->header('HTTP_TURBO_FRAME') === 'modal-content',
+            'modal_requested' => $request->headers->getString('Turbo-Frame') === 'modal-content',
         ]);
 
         $response = \Minz\Engine::run($request);

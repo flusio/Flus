@@ -29,7 +29,7 @@ class Messages extends BaseController
      */
     public function index(Request $request): Response
     {
-        $link_id = $request->param('link_id', '');
+        $link_id = $request->parameters->getString('link_id', '');
         return Response::redirect('link', ['id' => $link_id]);
     }
 
@@ -52,10 +52,10 @@ class Messages extends BaseController
      */
     public function create(Request $request): Response
     {
-        $link_id = $request->param('link_id', '');
-        $content = $request->param('content', '');
-        $share_on_mastodon = $request->paramBoolean('share_on_mastodon');
-        $csrf = $request->param('csrf', '');
+        $link_id = $request->parameters->getString('link_id', '');
+        $content = $request->parameters->getString('content', '');
+        $share_on_mastodon = $request->parameters->getBoolean('share_on_mastodon');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('link', ['id' => $link_id]));
 
@@ -69,7 +69,7 @@ class Messages extends BaseController
             'user_id' => $user->id,
         ]);
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
@@ -82,8 +82,8 @@ class Messages extends BaseController
         }
 
         $message = new models\Message($user->id, $link->id, $content);
-        $errors = $message->validate();
-        if ($errors) {
+
+        if (!$message->validate()) {
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
@@ -91,7 +91,7 @@ class Messages extends BaseController
                 'comment' => $content,
                 'share_on_mastodon' => $share_on_mastodon,
                 'mastodon_configured' => $mastodon_configured,
-                'errors' => $errors,
+                'errors' => $message->errors(),
             ]);
         }
 

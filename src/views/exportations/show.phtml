@@ -53,7 +53,7 @@
         </p>
 
         <form method="post" action="<?= url('create exportation') ?>">
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
             <div class="form__actions">
                 <button type="submit">
@@ -65,7 +65,7 @@
         <?= $this->include('alerts/_error.phtml', ['message' => protect($exportation->error)]) ?>
 
         <form method="post" action="<?= url('create exportation') ?>">
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
             <div class="form__actions">
                 <button type="submit" class="button--primary">
@@ -75,7 +75,7 @@
         </form>
     <?php else: ?>
         <form method="post" action="<?= url('create exportation') ?>">
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
             <div class="form__actions">
                 <button type="submit" class="button--primary">

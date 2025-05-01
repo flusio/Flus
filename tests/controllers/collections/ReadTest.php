@@ -32,7 +32,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -64,7 +64,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -100,7 +100,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -148,7 +148,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -190,7 +190,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -224,7 +224,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
             'date' => '2024-03-25',
         ]);
@@ -260,7 +260,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
             'source' => "collection#{$source1->id}",
         ]);
@@ -284,7 +284,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -313,7 +313,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -370,7 +370,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -402,7 +402,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -440,7 +440,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -488,7 +488,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -530,7 +530,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -565,7 +565,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
             'date' => '2024-03-25',
         ]);
@@ -602,7 +602,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
             'source' => "collection#{$source1->id}",
         ]);
@@ -626,7 +626,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -655,7 +655,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -717,7 +717,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -759,7 +759,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -805,7 +805,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -847,7 +847,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -881,7 +881,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
             'date' => '2024-03-25',
         ]);
@@ -917,7 +917,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
             'source' => "collection#{$source1->id}",
         ]);
@@ -946,7 +946,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 
@@ -982,7 +982,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('news'),
         ]);
 

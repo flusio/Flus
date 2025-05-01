@@ -31,7 +31,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'messages/edit.phtml');
+        $this->assertResponseTemplateName($response, 'messages/edit.phtml');
         $this->assertResponseContains($response, $content);
     }
 
@@ -103,7 +103,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
             'content' => $new_content,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -129,7 +129,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
             'content' => $new_content,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -181,7 +181,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/messages/not-an-id/edit', [
             'content' => $new_content,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -206,7 +206,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
             'content' => $new_content,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -229,7 +229,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
             'content' => $new_content,
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
@@ -274,7 +274,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -294,7 +294,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -311,7 +311,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'redirect_to' => \Minz\Url::for('bookmarks'),
         ]);
 
@@ -345,7 +345,7 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);

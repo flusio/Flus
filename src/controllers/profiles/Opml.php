@@ -27,7 +27,7 @@ class Opml extends BaseController
      */
     public function show(Request $request): Response
     {
-        $user_id = $request->param('id', '');
+        $user_id = $request->parameters->getString('id', '');
         $user = models\User::find($user_id);
 
         if (!$user || $user->isSupportUser()) {
@@ -56,7 +56,7 @@ class Opml extends BaseController
      */
     public function alias(Request $request): Response
     {
-        $user_id = $request->param('id');
+        $user_id = $request->parameters->getString('id');
         $url = \Minz\Url::for('profile opml', ['id' => $user_id]);
         $response = new Response(301);
         $response->setHeader('Location', $url);

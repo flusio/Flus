@@ -9,11 +9,11 @@ use App\utils;
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Locale extends \Minz\Validable\Check
+class Locale extends \Minz\Validable\PropertyCheck
 {
     public function assert(): bool
     {
-        $value = $this->getValue();
+        $value = $this->value();
 
         if ($value === null || $value === '') {
             return true;

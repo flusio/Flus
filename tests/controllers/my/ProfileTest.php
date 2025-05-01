@@ -23,7 +23,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'my/profile/edit.phtml');
+        $this->assertResponseTemplateName($response, 'my/profile/edit.phtml');
     }
 
     public function testEditRedirectsToLoginIfUserNotConnected(): void
@@ -46,7 +46,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'username' => $new_username,
             'from' => \Minz\Url::for('edit profile'),
         ]);
@@ -67,7 +67,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \App\Csrf::generate(),
             'username' => $new_username,
             'from' => \Minz\Url::for('edit profile'),
         ]);
@@ -110,7 +110,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'username' => $new_username,
             'from' => \Minz\Url::for('edit profile'),
         ]);
@@ -133,7 +133,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'username' => $new_username,
             'from' => \Minz\Url::for('edit profile'),
         ]);
@@ -153,7 +153,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('edit profile'),
         ]);
 

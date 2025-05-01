@@ -48,14 +48,12 @@ class Feeds
      */
     public function add(Request $request): Response
     {
-        $feed_url = $request->param('url', '');
+        $feed_url = $request->parameters->getString('url', '');
         $user = models\User::supportUser();
         $collection = models\Collection::initFeed($user->id, $feed_url);
 
-        /** @var array<string, string> */
-        $errors = $collection->validate();
-        if ($errors) {
-            $errors = implode(' ', $errors);
+        if (!$collection->validate()) {
+            $errors = implode(' ', $collection->errors());
             return Response::text(400, "Feed collection creation failed: {$errors}");
         }
 
@@ -94,8 +92,8 @@ class Feeds
      */
     public function sync(Request $request): Response
     {
-        $id = $request->param('id');
-        $nocache = $request->paramBoolean('nocache', false);
+        $id = $request->parameters->getString('id');
+        $nocache = $request->parameters->getBoolean('nocache');
         $collection = models\Collection::findBy([
             'type' => 'feed',
             'id' => $id,

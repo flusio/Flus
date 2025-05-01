@@ -56,16 +56,16 @@ class Preferences extends BaseController
      */
     public function update(Request $request): Response
     {
-        $locale = $request->param('locale', '');
-        $option_compact_mode = $request->paramBoolean('option_compact_mode');
-        $accept_contact = $request->paramBoolean('accept_contact');
-        $beta_enabled = $request->paramBoolean('beta_enabled');
-        $csrf = $request->param('csrf', '');
-        $from = $request->param('from', '');
+        $locale = $request->parameters->getString('locale', '');
+        $option_compact_mode = $request->parameters->getBoolean('option_compact_mode');
+        $accept_contact = $request->parameters->getBoolean('accept_contact');
+        $beta_enabled = $request->parameters->getBoolean('beta_enabled');
+        $csrf = $request->parameters->getString('csrf', '');
+        $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('my/preferences/edit.phtml', [
                 'locale' => $locale,
                 'option_compact_mode' => $option_compact_mode,
@@ -81,8 +81,7 @@ class Preferences extends BaseController
         $user->option_compact_mode = $option_compact_mode;
         $user->accept_contact = $accept_contact;
 
-        $errors = $user->validate();
-        if ($errors) {
+        if (!$user->validate()) {
             $user->locale = $old_locale;
             return Response::badRequest('my/preferences/edit.phtml', [
                 'locale' => $locale,
@@ -90,7 +89,7 @@ class Preferences extends BaseController
                 'accept_contact' => $accept_contact,
                 'is_beta_enabled' => $beta_enabled,
                 'from' => $from,
-                'errors' => $errors,
+                'errors' => $user->errors(),
             ]);
         }
 

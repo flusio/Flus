@@ -29,7 +29,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'avatar' => $file,
             'from' => \Minz\Url::for('edit profile'),
         ]);
@@ -68,7 +68,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'avatar' => $file,
             'from' => \Minz\Url::for('edit profile'),
         ]);
@@ -137,7 +137,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('edit profile'),
         ]);
 
@@ -160,7 +160,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'avatar' => $file,
             'from' => \Minz\Url::for('edit profile'),
         ]);
@@ -185,7 +185,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'avatar' => $file,
             'from' => \Minz\Url::for('edit profile'),
         ]);
@@ -210,7 +210,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'avatar' => $file,
             'from' => \Minz\Url::for('edit profile'),
         ]);
@@ -235,7 +235,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'avatar' => $file,
             'from' => \Minz\Url::for('edit profile'),
         ]);

@@ -47,7 +47,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $topic_label);
         $this->assertResponseContains($response, $collection_name);
-        $this->assertResponsePointer($response, 'topics/show.phtml');
+        $this->assertResponseTemplateName($response, 'topics/show.phtml');
     }
 
     public function testShowDoesNotListCollectionsIfEmpty(): void

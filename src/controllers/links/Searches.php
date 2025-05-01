@@ -32,9 +32,9 @@ class Searches extends BaseController
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('show search link'));
         $support_user = models\User::supportUser();
 
-        $autosubmit = $request->paramBoolean('autosubmit');
+        $autosubmit = $request->parameters->getBoolean('autosubmit');
 
-        $url = $request->param('url', '');
+        $url = $request->parameters->getString('url', '');
         $url = \SpiderBits\Url::sanitize($url);
 
         $existing_link = models\Link::findComputedBy([
@@ -84,13 +84,13 @@ class Searches extends BaseController
     public function create(Request $request): Response
     {
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('show search link'));
-        $url = $request->param('url', '');
-        $csrf = $request->param('csrf', '');
+        $url = $request->parameters->getString('url', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
         $url = \SpiderBits\Url::sanitize($url);
         $support_user = models\User::supportUser();
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('links/searches/show.phtml', [
                 'url' => $url,
                 'autosubmit' => false,
@@ -109,15 +109,14 @@ class Searches extends BaseController
             $default_link = new models\Link($url, $support_user->id, false);
         }
 
-        $errors = $default_link->validate();
-        if ($errors) {
+        if (!$default_link->validate()) {
             return Response::badRequest('links/searches/show.phtml', [
                 'url' => $url,
                 'autosubmit' => false,
                 'default_link' => null,
                 'existing_link' => null,
                 'feeds' => [],
-                'errors' => $errors,
+                'errors' => $default_link->errors(),
             ]);
         }
 

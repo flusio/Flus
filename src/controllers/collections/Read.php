@@ -36,11 +36,11 @@ class Read extends BaseController
      */
     public function create(Request $request): Response
     {
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
-        $collection_id = $request->param('id', '');
-        $date = $request->paramDatetime('date', format: 'Y-m-d');
-        $source = $request->param('source', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $date = $request->parameters->getDatetime('date', format: 'Y-m-d');
+        $source = $request->parameters->getString('source', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -81,7 +81,7 @@ class Read extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
@@ -113,11 +113,11 @@ class Read extends BaseController
      */
     public function later(Request $request): Response
     {
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
-        $collection_id = $request->param('id', '');
-        $date = $request->paramDatetime('date', format: 'Y-m-d');
-        $source = $request->param('source', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $date = $request->parameters->getDatetime('date', format: 'Y-m-d');
+        $source = $request->parameters->getString('source', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -159,7 +159,7 @@ class Read extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }
@@ -191,11 +191,11 @@ class Read extends BaseController
      */
     public function never(Request $request): Response
     {
-        $from = $request->param('from', '');
-        $csrf = $request->param('csrf', '');
-        $collection_id = $request->param('id', '');
-        $date = $request->paramDatetime('date', format: 'Y-m-d');
-        $source = $request->param('source', '');
+        $from = $request->parameters->getString('from', '');
+        $csrf = $request->parameters->getString('csrf', '');
+        $collection_id = $request->parameters->getString('id', '');
+        $date = $request->parameters->getDatetime('date', format: 'Y-m-d');
+        $source = $request->parameters->getString('source', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -231,7 +231,7 @@ class Read extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\App\Csrf::validate($csrf)) {
             \Minz\Flash::set('error', _('A security verification failed.'));
             return Response::found($from);
         }

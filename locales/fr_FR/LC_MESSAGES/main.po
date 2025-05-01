@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-05-13 15:12+0200\n"
-"PO-Revision-Date: 2025-05-28 23:21+0200\n"
+"POT-Creation-Date: 2025-05-29 18:30+0200\n"
+"PO-Revision-Date: 2025-05-29 18:30+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -42,7 +42,7 @@ msgstr "Afficher"
 
 #: controllers/Collections.php:91 controllers/Collections.php:295
 #: controllers/Feeds.php:100 controllers/Groups.php:84
-#: controllers/Links.php:258 controllers/Links.php:420
+#: controllers/Links.php:258 controllers/Links.php:419
 #: controllers/Mastodon.php:187 controllers/Mastodon.php:267
 #: controllers/News.php:66 controllers/Passwords.php:89
 #: controllers/Passwords.php:192 controllers/Registrations.php:103
@@ -56,9 +56,9 @@ msgstr "Afficher"
 #: controllers/links/Messages.php:80 controllers/links/Repairing.php:94
 #: controllers/links/Searches.php:100 controllers/my/Account.php:94
 #: controllers/my/Preferences.php:75 controllers/my/Profile.php:66
-#: controllers/my/Security.php:83 controllers/my/Security.php:196
+#: controllers/my/Security.php:83 controllers/my/Security.php:195
 #: controllers/my/Subscription.php:66 controllers/my/Validation.php:146
-#: forms/BaseForm.php:21
+#: forms/BaseForm.php:24
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -68,11 +68,11 @@ msgstr ""
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:365 controllers/Exportations.php:54
-#: controllers/Groups.php:152 controllers/Importations.php:45
-#: controllers/Links.php:474 controllers/Mastodon.php:75
-#: controllers/Messages.php:88 controllers/Messages.php:136
-#: controllers/Sessions.php:201 controllers/collections/Read.php:85
+#: controllers/Collections.php:364 controllers/Exportations.php:54
+#: controllers/Groups.php:151 controllers/Importations.php:45
+#: controllers/Links.php:472 controllers/Mastodon.php:75
+#: controllers/Messages.php:88 controllers/Messages.php:135
+#: controllers/Sessions.php:199 controllers/collections/Read.php:85
 #: controllers/collections/Read.php:163 controllers/collections/Read.php:235
 #: controllers/importations/Opml.php:69 controllers/importations/Pocket.php:100
 #: controllers/importations/Pocket.php:141
@@ -87,11 +87,11 @@ msgstr "Une vérification de sécurité a échoué."
 msgid "You already have an ongoing exportation."
 msgstr "Vous avez déjà une exportation en cours."
 
-#: controllers/Feeds.php:132
+#: controllers/Feeds.php:131
 msgid "There is no valid feeds at this address."
 msgstr "Aucun flux valide n’a été détecté à cette adresse."
 
-#: controllers/Groups.php:112
+#: controllers/Groups.php:111
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
@@ -141,7 +141,7 @@ msgstr ""
 "support."
 
 #: controllers/Sessions.php:128 controllers/my/Account.php:101
-#: controllers/my/Security.php:204
+#: controllers/my/Security.php:203
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -214,7 +214,7 @@ msgid "Sorry but you cannot change the login details for the demo account 😉"
 msgstr ""
 "Désolé mais vous ne pouvez pas changer les identifiants du compte de démo 😉"
 
-#: controllers/my/Security.php:106 services/UserCreator.php:36
+#: controllers/my/Security.php:106 services/UserCreator.php:34
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
@@ -240,7 +240,7 @@ msgstr ""
 "Le token n’existe pas. Le lien de validation sur lequel vous avez cliqué a "
 "dû expirer."
 
-#: forms/AccountValidation.php:34
+#: forms/AccountValidation.php:37
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
@@ -446,11 +446,11 @@ msgstr ""
 "Erreur Pocket : mauvaise configuration, merci de contacter le support (code "
 "erreur %d)."
 
-#: services/UserCreator.php:48
+#: services/UserCreator.php:46
 msgid "My favourites"
 msgstr "Mes favoris"
 
-#: services/UserCreator.php:51
+#: services/UserCreator.php:49
 msgid "My shares"
 msgstr "Mes partages"
 
@@ -472,48 +472,48 @@ msgstr "%s sur %s"
 msgid "This email has been sent by %s (%s)"
 msgstr "Ce courriel a été envoyé par %s (%s)"
 
-#: utils/view_helpers.php:56
+#: utils/view_helpers.php:61
 #, php-format
 msgid "%d link per day"
 msgid_plural "%d links per day"
 msgstr[0] "%d lien par jour"
 msgstr[1] "%d liens par jour"
 
-#: utils/view_helpers.php:60
+#: utils/view_helpers.php:65
 #, php-format
 msgid "%d link per week"
 msgid_plural "%d links per week"
 msgstr[0] "%d lien par semaine"
 msgstr[1] "%d liens par semaine"
 
-#: utils/view_helpers.php:64
+#: utils/view_helpers.php:69
 #, php-format
 msgid "%d link per month"
 msgid_plural "%d links per month"
 msgstr[0] "%d lien par mois"
 msgstr[1] "%d liens par mois"
 
-#: utils/view_helpers.php:68
+#: utils/view_helpers.php:73
 #, php-format
 msgid "%d link per year"
 msgid_plural "%d links per year"
 msgstr[0] "%d lien par an"
 msgstr[1] "%d liens par an"
 
-#: utils/view_helpers.php:71
+#: utils/view_helpers.php:76
 msgid "Inactive"
 msgstr "Inactif"
 
-#: utils/view_helpers.php:117
+#: utils/view_helpers.php:122
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:119
+#: utils/view_helpers.php:124
 #, php-format
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:246
+#: utils/view_helpers.php:251
 msgid "you"
 msgstr "vous"
 

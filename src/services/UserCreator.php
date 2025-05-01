@@ -25,10 +25,8 @@ class UserCreator
         $user = new models\User($username, $email, $password);
         $user->locale = utils\Locale::currentLocale();
 
-        /** @var array<string, string> */
-        $errors = $user->validate();
-        if ($errors) {
-            throw new UserCreatorError($errors);
+        if (!$user->validate()) {
+            throw new UserCreatorError($user->errors());
         }
 
         if (models\User::findBy(['email' => $user->email])) {

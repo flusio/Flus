@@ -23,7 +23,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/importations/{$importation->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('pocket'),
         ]);
 
@@ -58,7 +58,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/importations/{$importation->id}/delete", [
-            'csrf' => $user->csrf,
+            'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('pocket'),
         ]);
 
