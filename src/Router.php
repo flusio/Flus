@@ -205,6 +205,9 @@ class Router
 
         $router->addRoute('GET', '/topics/:id', 'Topics#show', 'topic');
 
+        // API v1
+        $router->addRoute('OPTIONS', '/api/*', 'api/v1/BaseController#options');
+
         return $router;
     }
 
