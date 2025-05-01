@@ -38,10 +38,10 @@ class Session
     #[Database\Column]
     public string $token;
 
-    public function __construct(string $user_agent, string $ip)
+    public function __construct(string $name, string $ip)
     {
         $this->id = \Minz\Random::hex(32);
-        $this->name = utils\Browser::format($user_agent);
+        $this->name = $name;
         if (\App\Configuration::$application['demo']) {
             $this->ip = 'unknown';
         } else {

@@ -8,6 +8,7 @@ use Minz\Response;
 use App\auth;
 use App\mailers;
 use App\models;
+use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -223,7 +224,8 @@ class Passwords extends BaseController
         $user_agent = $request->header('HTTP_USER_AGENT', '');
         /** @var string */
         $ip = $request->header('REMOTE_ADDR', 'unknown');
-        $session = new models\Session($user_agent, $ip);
+        $session_name = utils\Browser::format($user_agent);
+        $session = new models\Session($session_name, $ip);
         $session->user_id = $user->id;
         $session->token = $session_token->token;
         $session->save();
