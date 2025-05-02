@@ -41,7 +41,7 @@ class Session
     public function __construct(string $name, string $ip)
     {
         $this->id = \Minz\Random::hex(32);
-        $this->name = $name;
+        $this->name = mb_substr(trim($name), 0, 50);
         if (\App\Configuration::$application['demo']) {
             $this->ip = 'unknown';
         } else {
