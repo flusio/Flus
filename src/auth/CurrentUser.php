@@ -10,6 +10,8 @@ use Minz\Request;
  * An utility class to help to manipulate the current user (i.e. the one who is
  * connected if any).
  *
+ * @phpstan-import-type Scope from models\Session
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -22,22 +24,14 @@ class CurrentUser
     /**
      * Create a new session (valid for 1 month) connected to the given user.
      *
-     * If a Request is passed, it is used to store some information about the
-     * session (name and IP address).
+     * If a Request is passed, it is used to store the IP address and the
+     * session name built from the user agent.
      *
      * @throws \RuntimeException
      *     Raised if the user is the support user.
      */
     public static function createBrowserSession(models\User $user, ?Request $request = null): models\Session
     {
-        if ($user->isSupportUser()) {
-            \Minz\Log::error('Someone tried to log in with the support user');
-            throw new \RuntimeException('Cannot log in with the support user');
-        }
-
-        $token = new models\Token(1, 'month');
-        $token->save();
-
         if ($request) {
             $user_agent = $request->headers->getString('User-Agent', '');
             $session_name = utils\Browser::format($user_agent);
@@ -52,7 +46,54 @@ class CurrentUser
             $session_ip = 'unknown';
         }
 
-        $session = new models\Session($user, $token, 'browser', $session_name, $session_ip);
+        return self::createSession($user, 'browser', $session_name, $session_ip);
+    }
+
+    /**
+     * Create a new session (valid for 1 month) connected to the given user.
+     *
+     * If a Request is passed, it is used to store the IP address of the user.
+     *
+     * @throws \RuntimeException
+     *     Raised if the user is the support user.
+     */
+    public static function createApiSession(
+        models\User $user,
+        string $app_name,
+        ?Request $request = null
+    ): models\Session {
+        if ($request && !\App\Configuration::$application['demo']) {
+            $session_ip = utils\Ip::mask($request->ip());
+        } else {
+            $session_ip = 'unknown';
+        }
+
+        return self::createSession($user, 'api', $app_name, $session_ip);
+    }
+
+    /**
+     * Create a new session (valid for 1 month) connected to the given user.
+     *
+     * @param Scope $scope
+     *
+     * @throws \RuntimeException
+     *     Raised if the user is the support user.
+     */
+    private static function createSession(
+        models\User $user,
+        string $scope,
+        string $session_name,
+        string $session_ip,
+    ): models\Session {
+        if ($user->isSupportUser()) {
+            \Minz\Log::error('Someone tried to log in with the support user');
+            throw new \RuntimeException('Cannot log in with the support user');
+        }
+
+        $token = new models\Token(1, 'month');
+        $token->save();
+
+        $session = new models\Session($user, $token, $scope, $session_name, $session_ip);
         $session->save();
 
         self::$session = $session;
