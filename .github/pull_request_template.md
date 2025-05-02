@@ -22,6 +22,7 @@
 - [ ] Interface works on both Firefox and Chrome
 - [ ] Accessibility has been tested
 - [ ] Translations are synchronized
+- [ ] The API provides the corresponding endpoints / data
 - [ ] Tests are up to date
 - [ ] Copyright notices are up to date
 - [ ] Documentation is up to date

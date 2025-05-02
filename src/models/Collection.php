@@ -116,6 +116,16 @@ class Collection
         return $collection;
     }
 
+    public static function initCollection(string $user_id): self
+    {
+        $collection = new self();
+
+        $collection->type = 'collection';
+        $collection->user_id = $user_id;
+
+        return $collection;
+    }
+
     public static function initBookmarks(string $user_id): self
     {
         $collection = new self();
@@ -400,5 +410,19 @@ class Collection
         $number_of_days = intval($diff_since_oldest_link->format('%a')) + 1;
 
         return (int) round($count_links / $number_of_days * 365);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toJson(User $context_user): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'group' => $this->groupForUser($context_user->id)?->name,
+            'is_public' => $this->is_public,
+        ];
     }
 }

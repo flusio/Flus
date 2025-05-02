@@ -36,7 +36,7 @@ class Note
     #[Database\Column]
     public string $user_id;
 
-    public function __construct(string $user_id, string $link_id, string $content)
+    public function __construct(string $user_id, string $link_id, string $content = '')
     {
         $this->id = \Minz\Random::hex(32);
         $this->content = trim($content);
@@ -121,5 +121,19 @@ class Note
         $statement->execute([$link->id]);
 
         return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toJson(): array
+    {
+        return [
+            'id' => $this->id,
+            'created_at' => $this->created_at->format(\DateTime::ATOM),
+            'content' => $this->content,
+            'html_content' => $this->contentAsHtml(),
+            'tags' => $this->tags(),
+        ];
     }
 }

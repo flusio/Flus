@@ -120,7 +120,7 @@ class Repairing extends BaseController
         // Add the old link to the never list. It avoids to a link coming from
         // the news to reappear.
         $old_link->save();
-        models\LinkToCollection::markToNeverRead($user, [$old_link->id]);
+        $user->removeFromJournal($old_link);
 
         return Response::found($from);
     }

@@ -53,6 +53,10 @@ class Link
     public bool $is_hidden = true;
 
     #[Database\Column]
+    #[Validable\Comparison(
+        greater_or_equal: 0,
+        message: new Translatable('The reading time must be greater or equal to 0.'),
+    )]
     public int $reading_time = 0;
 
     #[Database\Column]
@@ -110,13 +114,14 @@ class Link
     #[Database\Column(computed: true)]
     public string $url_hash;
 
-    public function __construct(string $url, string $user_id, bool $is_hidden)
+    public function __construct(string $url, string $user_id, bool $is_hidden = false)
     {
         $url = \SpiderBits\Url::sanitize($url);
 
         $this->id = \Minz\Random::timebased();
         $this->title = $url;
         $this->url = $url;
+        $this->url_hash = self::hashUrl($url);
         $this->is_hidden = $is_hidden;
         $this->user_id = $user_id;
     }
@@ -196,6 +201,22 @@ class Link
     }
 
     /**
+     * Add the link to a collection.
+     */
+    public function addCollection(Collection $collection, ?\DateTimeImmutable $at = null): void
+    {
+        LinkToCollection::attach([$this->id], [$collection->id], $at);
+    }
+
+    /**
+     * Remove the link from a collection.
+     */
+    public function removeCollection(Collection $collection): void
+    {
+        LinkToCollection::detach([$this->id], [$collection->id]);
+    }
+
+    /**
      * Return the notes attached to the current link
      *
      * @return Note[]
@@ -220,6 +241,17 @@ class Link
         }
 
         return $notepad;
+    }
+
+    public function numberNotes(): int
+    {
+        if ($this->number_notes !== null) {
+            return $this->number_notes;
+        } else {
+            return Note::countBy([
+                'link_id' => $this->id,
+            ]);
+        }
     }
 
     public function sourceCollection(): ?Collection
@@ -266,7 +298,8 @@ class Link
             return false;
         }
 
-        return self::isUrlInBookmarksOfUserId($user->id, $this->url);
+        $bookmarks = $user->bookmarks();
+        return Link::isUrlInCollectionId($bookmarks->id, $this->url);
     }
 
     /**
@@ -278,7 +311,21 @@ class Link
             return false;
         }
 
-        return Link::isUrlReadByUserId($user->id, $this->url);
+        $read_list = $user->readList();
+        return Link::isUrlInCollectionId($read_list->id, $this->url);
+    }
+
+    /**
+     * Return whether or not the the link URL is in the given collection.
+     */
+    public function isInNeverList(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        $never_list = $user->neverList();
+        return Link::isUrlInCollectionId($never_list->id, $this->url);
     }
 
     /**
@@ -349,5 +396,32 @@ class Link
     public static function hashUrl(string $url): string
     {
         return hash('sha256', $url);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toJson(User $context_user): array
+    {
+        $source = null;
+        if ($this->source_type) {
+            $source = "{$this->source_type}#{$this->source_resource_id}";
+        }
+
+        return [
+            'id' => $this->id,
+            'created_at' => $this->created_at->format(\DateTime::ATOM),
+            'title' => $this->title,
+            'url' => $this->url,
+            'is_hidden' => $this->is_hidden,
+            'reading_time' => $this->reading_time,
+            'tags' => $this->tags,
+            'source' => $source,
+            'is_read' => $this->isReadBy($context_user),
+            'is_read_later' => $this->isInBookmarksOf($context_user),
+            'collections' => array_column($this->collections(), 'id'),
+            'published_at' => $this->published_at?->format(\DateTime::ATOM),
+            'number_notes' => $this->numberNotes(),
+        ];
     }
 }

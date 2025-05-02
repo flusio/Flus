@@ -206,6 +206,40 @@ class Router
         $router->addRoute('GET', '/topics/:id', 'Topics#show', 'topic');
 
         // API v1
+        $router->addRoute('POST', '/api/v1/sessions', 'api/v1/Sessions#create');
+        $router->addRoute('GET', '/api/v1/collections', 'api/v1/Collections#index');
+        $router->addRoute('POST', '/api/v1/collections', 'api/v1/Collections#create');
+        $router->addRoute('GET', '/api/v1/collections/:id', 'api/v1/Collections#show');
+        $router->addRoute('PATCH', '/api/v1/collections/:id', 'api/v1/Collections#update');
+        $router->addRoute('DELETE', '/api/v1/collections/:id', 'api/v1/Collections#delete');
+        $router->addRoute('POST', '/api/v1/search', 'api/v1/Searches#create');
+        $router->addRoute('GET', '/api/v1/journal', 'api/v1/Journal#show');
+        $router->addRoute('POST', '/api/v1/journal', 'api/v1/Journal#create');
+        $router->addRoute('POST', '/api/v1/journal/read', 'api/v1/journal/Read#create');
+        $router->addRoute('POST', '/api/v1/journal/later', 'api/v1/journal/Later#create');
+        $router->addRoute('DELETE', '/api/v1/journal/links', 'api/v1/journal/Links#deleteAll');
+        $router->addRoute('DELETE', '/api/v1/journal/links/:id', 'api/v1/journal/Links#delete');
+        $router->addRoute('GET', '/api/v1/links', 'api/v1/Links#index');
+        $router->addRoute('GET', '/api/v1/links/:id', 'api/v1/Links#show');
+        $router->addRoute('PATCH', '/api/v1/links/:id', 'api/v1/Links#update');
+        $router->addRoute('DELETE', '/api/v1/links/:id', 'api/v1/Links#delete');
+        $router->addRoute('POST', '/api/v1/links/:id/read', 'api/v1/links/Read#create');
+        $router->addRoute('DELETE', '/api/v1/links/:id/read', 'api/v1/links/Read#delete');
+        $router->addRoute('POST', '/api/v1/links/:id/later', 'api/v1/links/Later#create');
+        $router->addRoute(
+            'PUT',
+            '/api/v1/links/:link_id/collections/:collection_id',
+            'api/v1/links/Collections#create'
+        );
+        $router->addRoute(
+            'DELETE',
+            '/api/v1/links/:link_id/collections/:collection_id',
+            'api/v1/links/Collections#delete'
+        );
+        $router->addRoute('GET', '/api/v1/links/:link_id/notes', 'api/v1/links/Notes#index');
+        $router->addRoute('POST', '/api/v1/links/:link_id/notes', 'api/v1/links/Notes#create');
+        $router->addRoute('PATCH', '/api/v1/notes/:id', 'api/v1/Notes#update');
+        $router->addRoute('DELETE', '/api/v1/notes/:id', 'api/v1/Notes#delete');
         $router->addRoute('OPTIONS', '/api/*', 'api/v1/BaseController#options');
 
         return $router;

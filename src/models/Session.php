@@ -19,7 +19,7 @@ class Session
     use dao\Session;
     use Database\Recordable;
 
-    public const SCOPES = ['browser'];
+    public const SCOPES = ['browser', 'api'];
 
     #[Database\Column]
     public string $id;

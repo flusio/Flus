@@ -179,7 +179,7 @@ class Collections extends BaseController
         }
 
         if ($mark_as_read) {
-            models\LinkToCollection::markAsRead($user, [$link->id]);
+            $user->markAsRead($link);
         }
 
         $link->refreshTags();

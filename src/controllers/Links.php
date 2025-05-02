@@ -421,7 +421,7 @@ class Links extends BaseController
         $old_reading_time = $link->reading_time;
 
         $link->title = trim($new_title);
-        $link->reading_time = max(0, $new_reading_time);
+        $link->reading_time = $new_reading_time;
         if (!$link->validate()) {
             $link->title = $old_title;
             $link->reading_time = $old_reading_time;

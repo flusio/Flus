@@ -86,8 +86,7 @@ class Read extends BaseController
             return Response::found($from);
         }
 
-        $link_ids = array_column($links, 'id');
-        models\LinkToCollection::markAsRead($user, $link_ids);
+        $user->markAsRead($links);
 
         return Response::found($from);
     }
@@ -164,8 +163,7 @@ class Read extends BaseController
             return Response::found($from);
         }
 
-        $link_ids = array_column($links, 'id');
-        models\LinkToCollection::markToReadLater($user, $link_ids);
+        $user->markAsReadLater($links);
 
         return Response::found($from);
     }
@@ -236,8 +234,7 @@ class Read extends BaseController
             return Response::found($from);
         }
 
-        $link_ids = array_column($links, 'id');
-        models\LinkToCollection::markToNeverRead($user, $link_ids);
+        $user->removeFromJournal($links);
 
         return Response::found($from);
     }

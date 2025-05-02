@@ -56,7 +56,7 @@ class Read extends BaseController
             $link->save();
         }
 
-        models\LinkToCollection::markAsRead($user, [$link->id]);
+        $user->markAsRead($link);
 
         return Response::found($from);
     }
@@ -102,7 +102,7 @@ class Read extends BaseController
             $link->save();
         }
 
-        models\LinkToCollection::markToReadLater($user, [$link->id]);
+        $user->markAsReadLater($link);
 
         return Response::found($from);
     }
@@ -147,7 +147,7 @@ class Read extends BaseController
             $link->save();
         }
 
-        models\LinkToCollection::markToNeverRead($user, [$link->id]);
+        $user->removeFromJournal($link);
 
         return Response::found($from);
     }

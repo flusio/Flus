@@ -451,56 +451,24 @@ trait Link
     }
 
     /**
-     * Return whether or not the given user id has the link URL in its
-     * bookmarks.
+     * Return whether or not the given link URL is in the collection.
      */
-    public static function isUrlInBookmarksOfUserId(string $user_id, string $url): bool
+    public static function isUrlInCollectionId(string $collection_id, string $url): bool
     {
         $sql = <<<'SQL'
             SELECT 1
-            FROM links l, collections c, links_to_collections lc
+            FROM links l, links_to_collections lc
 
-            WHERE l.user_id = :user_id
-            AND l.url_hash = :url_hash
+            WHERE l.url_hash = :url_hash
 
-            AND c.type = 'bookmarks'
-
-            AND lc.collection_id = c.id
-            AND lc.link_id = l.id;
+            AND lc.link_id = l.id
+            AND lc.collection_id = :collection_id
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':user_id' => $user_id,
-            ':url_hash' => models\Link::hashUrl($url),
-        ]);
-
-        return (bool) $statement->fetchColumn();
-    }
-
-    /**
-     * Return whether or not the given user id read the link URL.
-     */
-    public static function isUrlReadByUserId(string $user_id, string $url): bool
-    {
-        $sql = <<<'SQL'
-            SELECT 1
-            FROM links l, collections c, links_to_collections lc
-
-            WHERE l.user_id = :user_id
-            AND l.url_hash = :url_hash
-
-            AND c.type = 'read'
-
-            AND lc.collection_id = c.id
-            AND lc.link_id = l.id;
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':user_id' => $user_id,
+            ':collection_id' => $collection_id,
             ':url_hash' => models\Link::hashUrl($url),
         ]);
 

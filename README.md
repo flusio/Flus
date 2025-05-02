@@ -96,6 +96,7 @@ understand how Flus is developed.
 1. [Setup the development environment](/docs/development.md)
 1. [How to update Flus](/docs/update.md)
 1. [Getting started](/docs/getting_started.md)
+1. [REST API guide](/docs/api/README.md)
 1. [Working with Docker](/docs/docker.md)
 1. [How is the CLI working](/docs/cli.md)
 1. [How is the localization managed](/docs/localization.md)

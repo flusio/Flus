@@ -27,6 +27,19 @@ class CollectionsAccess
         return $collection->sharedWith($user);
     }
 
+    public static function canViewHiddenLinks(?models\User $user, models\Collection $collection): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->id === $collection->user_id) {
+            return true;
+        }
+
+        return $collection->sharedWith($user);
+    }
+
     public static function canUpdate(?models\User $user, models\Collection $collection): bool
     {
         if (!$user) {

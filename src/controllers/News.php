@@ -56,45 +56,19 @@ class News extends BaseController
 
         $csrf = $request->parameters->getString('csrf', '');
 
-        $news = $user->news();
-
         if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('news/index.phtml', [
-                'news' => $news,
+                'news' => $user->news(),
                 'links_timeline' => new utils\LinksTimeline([]),
                 'no_news' => false,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $links = models\Link::listFromFollowedCollections($user->id, max:50);
+        $journal = new models\Journal($user);
+        $count = $journal->fill(max: 50);
 
-        $news = $user->news();
-
-        foreach ($links as $news_link) {
-            $link = $user->obtainLink($news_link);
-
-            // If the link has already a source info, we want to keep it (it
-            // might have been get via a followed collection, and put in the
-            // bookmarks then)
-            if (!$link->source_type && $news_link->source_news_type !== null) {
-                $link->source_type = $news_link->source_news_type;
-                $link->source_resource_id = $news_link->source_news_resource_id;
-            }
-
-            // Make sure to reset this value: it will be set to true later with
-            // Link::groupLinksBySources
-            $link->group_by_source = false;
-
-            $link->save();
-
-            // And don't forget to add the link to the news collection!
-            models\LinkToCollection::attach([$link->id], [$news->id], $news_link->published_at);
-        }
-
-        models\Link::groupLinksBySources($news->id);
-
-        if (!$links) {
+        if ($count === 0) {
             \Minz\Flash::set('no_news', true);
         }
 

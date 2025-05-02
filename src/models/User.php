@@ -475,6 +475,66 @@ class User
     }
 
     /**
+     * Mark the links as read for the user.
+     *
+     * @param Link|Link[] $links
+     */
+    public function markAsRead(Link|array $links): void
+    {
+        if ($links instanceof Link) {
+            $links = [$links];
+        }
+
+        $link_ids = array_column($links, 'id');
+        LinkToCollection::markAsRead($this, $link_ids);
+    }
+
+    /**
+     * Unmark the links as read for the user.
+     *
+     * @param Link|Link[] $links
+     */
+    public function unmarkAsRead(Link|array $links): void
+    {
+        if ($links instanceof Link) {
+            $links = [$links];
+        }
+
+        $link_ids = array_column($links, 'id');
+        LinkToCollection::markAsUnread($this, $link_ids);
+    }
+
+    /**
+     * Mark the links to read later for the user.
+     *
+     * @param Link|Link[] $links
+     */
+    public function markAsReadLater(Link|array $links): void
+    {
+        if ($links instanceof Link) {
+            $links = [$links];
+        }
+
+        $link_ids = array_column($links, 'id');
+        LinkToCollection::markToReadLater($this, $link_ids);
+    }
+
+    /**
+     * Remove the links from the journal of the user.
+     *
+     * @param Link|Link[] $links
+     */
+    public function removeFromJournal(Link|array $links): void
+    {
+        if ($links instanceof Link) {
+            $links = [$links];
+        }
+
+        $link_ids = array_column($links, 'id');
+        LinkToCollection::markToNeverRead($this, $link_ids);
+    }
+
+    /**
      * Set login credentials.
      *
      * The password is not changed if empty.
