@@ -56,7 +56,7 @@ class Session
         $this->user_id = $user->id;
         $this->token = $token->token;
         $this->scope = $scope;
-        $this->name = $name;
+        $this->name = mb_substr(trim($name), 0, 50);
         $this->ip = $ip;
         $this->confirmed_password_at = null;
     }
