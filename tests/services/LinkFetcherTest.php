@@ -176,7 +176,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 
         $link = $link->reload();
         $image_filename = $link->image_filename;
-        $this->assertNotEmpty($image_filename);
+        $this->assertNotNull($image_filename);
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
         $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
