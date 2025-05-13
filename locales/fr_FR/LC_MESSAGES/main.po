@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-04-30 14:18+0200\n"
-"PO-Revision-Date: 2025-04-30 14:20+0200\n"
+"POT-Creation-Date: 2025-05-13 15:12+0200\n"
+"PO-Revision-Date: 2025-05-13 15:13+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -40,83 +40,83 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: controllers/Collections.php:101 controllers/Collections.php:311
-#: controllers/Feeds.php:107 controllers/Groups.php:90
-#: controllers/Links.php:268 controllers/Links.php:440
-#: controllers/Mastodon.php:211 controllers/Mastodon.php:297
-#: controllers/News.php:76 controllers/Passwords.php:89
+#: controllers/Collections.php:91 controllers/Collections.php:295
+#: controllers/Feeds.php:100 controllers/Groups.php:84
+#: controllers/Links.php:258 controllers/Links.php:420
+#: controllers/Mastodon.php:187 controllers/Mastodon.php:267
+#: controllers/News.php:66 controllers/Passwords.php:89
 #: controllers/Passwords.php:192 controllers/Registrations.php:103
-#: controllers/Sessions.php:85 controllers/Support.php:72
-#: controllers/collections/Filters.php:105
-#: controllers/collections/Followers.php:49
-#: controllers/collections/Followers.php:93
-#: controllers/collections/Groups.php:123
-#: controllers/collections/Images.php:114 controllers/collections/Links.php:105
-#: controllers/collections/Shares.php:98 controllers/collections/Shares.php:211
-#: controllers/links/Messages.php:84 controllers/links/Repairing.php:99
-#: controllers/links/Searches.php:111 controllers/my/Account.php:108
-#: controllers/my/Preferences.php:82 controllers/my/Profile.php:71
-#: controllers/my/Security.php:95 controllers/my/Security.php:219
-#: controllers/my/Subscription.php:70 controllers/my/Validation.php:144
+#: controllers/Sessions.php:83 controllers/Support.php:62
+#: controllers/collections/Filters.php:98
+#: controllers/collections/Followers.php:47
+#: controllers/collections/Followers.php:88
+#: controllers/collections/Groups.php:115
+#: controllers/collections/Images.php:106 controllers/collections/Links.php:98
+#: controllers/collections/Shares.php:99 controllers/collections/Shares.php:212
+#: controllers/links/Messages.php:80 controllers/links/Repairing.php:94
+#: controllers/links/Searches.php:100 controllers/my/Account.php:94
+#: controllers/my/Preferences.php:75 controllers/my/Profile.php:66
+#: controllers/my/Security.php:83 controllers/my/Security.php:196
+#: controllers/my/Subscription.php:66 controllers/my/Validation.php:146
 #: forms/BaseForm.php:21
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
 "le formulaire."
 
-#: controllers/Collections.php:114 controllers/Collections.php:326
+#: controllers/Collections.php:104 controllers/Collections.php:310
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: controllers/Collections.php:386 controllers/Exportations.php:62
-#: controllers/Groups.php:161 controllers/Importations.php:48
-#: controllers/Links.php:497 controllers/Mastodon.php:87
-#: controllers/Messages.php:94 controllers/Messages.php:145
-#: controllers/Sessions.php:206 controllers/collections/Read.php:87
-#: controllers/collections/Read.php:168 controllers/collections/Read.php:243
-#: controllers/importations/Opml.php:79 controllers/importations/Pocket.php:109
-#: controllers/importations/Pocket.php:155
-#: controllers/importations/Pocket.php:255
-#: controllers/links/Collections.php:159 controllers/links/Read.php:46
-#: controllers/links/Read.php:95 controllers/links/Read.php:144
-#: controllers/links/Read.php:192 controllers/my/Avatar.php:44
+#: controllers/Collections.php:365 controllers/Exportations.php:54
+#: controllers/Groups.php:152 controllers/Importations.php:45
+#: controllers/Links.php:474 controllers/Mastodon.php:75
+#: controllers/Messages.php:88 controllers/Messages.php:136
+#: controllers/Sessions.php:201 controllers/collections/Read.php:85
+#: controllers/collections/Read.php:163 controllers/collections/Read.php:235
+#: controllers/importations/Opml.php:69 controllers/importations/Pocket.php:100
+#: controllers/importations/Pocket.php:141
+#: controllers/importations/Pocket.php:231
+#: controllers/links/Collections.php:154 controllers/links/Read.php:44
+#: controllers/links/Read.php:90 controllers/links/Read.php:136
+#: controllers/links/Read.php:181 controllers/my/Avatar.php:42
 msgid "A security verification failed."
 msgstr "Une vérification de sécurité a échoué."
 
-#: controllers/Exportations.php:75
+#: controllers/Exportations.php:67
 msgid "You already have an ongoing exportation."
 msgstr "Vous avez déjà une exportation en cours."
 
-#: controllers/Feeds.php:139
+#: controllers/Feeds.php:132
 msgid "There is no valid feeds at this address."
 msgstr "Aucun flux valide n’a été détecté à cette adresse."
 
-#: controllers/Groups.php:118
+#: controllers/Groups.php:112
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
-#: controllers/Links.php:301
+#: controllers/Links.php:291
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:318 controllers/links/Collections.php:154
+#: controllers/Links.php:308 controllers/links/Collections.php:149
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: controllers/Mastodon.php:95
+#: controllers/Mastodon.php:83
 msgid "The URL is invalid."
 msgstr "L’URL est invalide."
 
-#: controllers/Mastodon.php:106 controllers/Mastodon.php:225
-#: controllers/Mastodon.php:239
+#: controllers/Mastodon.php:94 controllers/Mastodon.php:201
+#: controllers/Mastodon.php:215
 msgid "The Mastodon host returned an error, please try later."
 msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 
-#: controllers/Passwords.php:67 controllers/Sessions.php:96 models/User.php:55
+#: controllers/Passwords.php:67 controllers/Sessions.php:94 models/User.php:55
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: controllers/Passwords.php:80 controllers/Sessions.php:110
+#: controllers/Passwords.php:80 controllers/Sessions.php:108
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
@@ -134,91 +134,91 @@ msgstr ""
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
-#: controllers/Sessions.php:120
+#: controllers/Sessions.php:118
 msgid "What are you trying to do? You can’t login to the support account."
 msgstr ""
 "Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
 "support."
 
-#: controllers/Sessions.php:130 controllers/my/Account.php:115
-#: controllers/my/Security.php:227
+#: controllers/Sessions.php:128 controllers/my/Account.php:101
+#: controllers/my/Security.php:204
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
-#: controllers/Support.php:78
+#: controllers/Support.php:68
 msgid "The subject is required."
 msgstr "Le sujet est obligatoire."
 
-#: controllers/Support.php:81 models/Message.php:29
+#: controllers/Support.php:71 models/Message.php:29
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: controllers/Support.php:113
+#: controllers/Support.php:103
 msgid "The message could not be sent due to a server-side problem."
 msgstr "Le message n’a pas pu être envoyé à cause d’un problème côté serveur."
 
-#: controllers/collections/Images.php:92 controllers/importations/Opml.php:88
-#: controllers/my/Avatar.php:49
+#: controllers/collections/Images.php:84 controllers/importations/Opml.php:78
+#: controllers/my/Avatar.php:47
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
 
-#: controllers/collections/Images.php:100 controllers/importations/Opml.php:97
-#: controllers/my/Avatar.php:54
+#: controllers/collections/Images.php:92 controllers/importations/Opml.php:87
+#: controllers/my/Avatar.php:52
 msgid "This file is too large."
 msgstr "Ce fichier est trop gros."
 
-#: controllers/collections/Images.php:106 controllers/importations/Opml.php:104
-#: controllers/my/Avatar.php:60
+#: controllers/collections/Images.php:98 controllers/importations/Opml.php:94
+#: controllers/my/Avatar.php:58
 #, php-format
 msgid "This file cannot be uploaded (error %d)."
 msgstr "Ce fichier ne peut pas être téléversé (erreur %d)."
 
-#: controllers/collections/Images.php:152 controllers/my/Avatar.php:85
+#: controllers/collections/Images.php:144 controllers/my/Avatar.php:83
 msgid "The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>."
 msgstr "La photo doit être un <abbr>PNG</abbr> ou un <abbr>JPG</abbr>."
 
-#: controllers/collections/Shares.php:109
+#: controllers/collections/Shares.php:110
 msgid "You can’t share access with yourself."
 msgstr "Vous ne pouvez pas partager l’accès avec vous-même."
 
-#: controllers/collections/Shares.php:125
+#: controllers/collections/Shares.php:126
 msgid "This user doesn’t exist."
 msgstr "Cet‧te utilisateur‧ice n’existe pas."
 
-#: controllers/collections/Shares.php:141
+#: controllers/collections/Shares.php:142
 msgid "The collection is already shared with this user."
 msgstr "Cette collection est déjà partagée avec cet‧te utilisateur‧ice."
 
-#: controllers/importations/Opml.php:72
+#: controllers/importations/Opml.php:62
 msgid "You already have an ongoing OPML importation."
 msgstr "Vous avez déjà une importation OPML en cours."
 
-#: controllers/importations/Opml.php:120
+#: controllers/importations/Opml.php:110
 msgid "This file cannot be uploaded."
 msgstr "Ce fichier ne peut pas être téléversé."
 
-#: controllers/importations/Pocket.php:92
+#: controllers/importations/Pocket.php:83
 msgid "You already have an ongoing Pocket importation."
 msgstr "Vous avez déjà une importation Pocket en cours."
 
-#: controllers/importations/Pocket.php:100
+#: controllers/importations/Pocket.php:91
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
-#: controllers/my/Account.php:123
+#: controllers/my/Account.php:109
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
 
-#: controllers/my/Security.php:103
+#: controllers/my/Security.php:91
 msgid "Sorry but you cannot change the login details for the demo account 😉"
 msgstr ""
 "Désolé mais vous ne pouvez pas changer les identifiants du compte de démo 😉"
 
-#: controllers/my/Security.php:118 services/UserCreator.php:36
+#: controllers/my/Security.php:106 services/UserCreator.php:36
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: controllers/my/Subscription.php:79
+#: controllers/my/Subscription.php:75
 msgid ""
 "An error occured when getting you a subscription account, please contact the "
 "support."
@@ -226,7 +226,7 @@ msgstr ""
 "Une erreur est survenue pendant que nous récupérions les informations de "
 "votre compte, merci de contacter le support."
 
-#: controllers/my/Subscription.php:127
+#: controllers/my/Subscription.php:118
 msgid "An error occured while logging you, please contact the support."
 msgstr ""
 "Une erreur est survenue pendant que nous vous connections, merci de "
@@ -2229,17 +2229,26 @@ msgstr "Actions pour le flux"
 msgid "Empty the news"
 msgstr "Vider le journal"
 
-#: views/news/index.phtml:268
+#: views/news/index.phtml:267
+msgid ""
+"Note: you will need to clear the news before you can refresh it. Mark the "
+"links as read, to be read later, or remove them with the appropriate actions."
+msgstr ""
+"Remarque : vous devez vider le journal avant de pouvoir le rafraîchir. "
+"Marquez les liens comme lus, à lire plus tard, ou retirez-les avec les "
+"actions adéquats."
+
+#: views/news/index.phtml:272
 msgid ""
 "Fill your news feed with the content published by the feeds that you follow."
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
-#: views/news/index.phtml:273
+#: views/news/index.phtml:277
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: views/news/index.phtml:293
+#: views/news/index.phtml:297
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
 
