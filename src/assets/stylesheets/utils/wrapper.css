@@ -1,0 +1,22 @@
+.wrapper {
+    --wrapper-max-width: 1000px;
+
+    max-width: var(--wrapper-max-width);
+}
+
+.wrapper--small {
+    --wrapper-max-width: 700px;
+}
+
+.wrapper--large {
+    --wrapper-max-width: 1200px;
+}
+
+.wrapper--larger {
+    --wrapper-max-width: 1400px;
+}
+
+.wrapper--center {
+    margin-right: auto;
+    margin-left: auto;
+}
