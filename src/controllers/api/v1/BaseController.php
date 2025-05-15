@@ -2,6 +2,9 @@
 
 namespace App\controllers\api\v1;
 
+use App\auth;
+use App\models;
+use App\controllers\errors;
 use Minz\Controller;
 use Minz\Form;
 use Minz\Request;
@@ -15,6 +18,41 @@ use Minz\Response;
  */
 class BaseController
 {
+    #[Controller\BeforeAction]
+    public function authenticateUser(Request $request): void
+    {
+        /** @var string */
+        $authorization_header = $request->header('HTTP_AUTHORIZATION', '');
+
+        $result = preg_match('/^Bearer (?P<token>\w+)$/', $authorization_header, $matches);
+        if ($result === false || !isset($matches['token'])) {
+            return;
+        }
+
+        $token = $matches['token'];
+        // TODO auth\CurrentUser::authenticate($token, scope: 'api');
+        auth\CurrentUser::setSessionToken($token);
+    }
+
+    public function requireCurrentUser(): models\User
+    {
+        $current_user = auth\CurrentUser::get();
+
+        if (!$current_user) {
+            throw new errors\MissingCurrentUserError('');
+        }
+
+        return $current_user;
+    }
+
+    #[Controller\ErrorHandler(errors\MissingCurrentUserError::class)]
+    public function failOnMissingCurrentUser(Request $request): Response
+    {
+        $response = Response::json(401, ['error' => 'The request is not authenticated.']);
+        $this->setCorsHeaders($request, $response);
+        return $response;
+    }
+
     /**
      * Set CORS headers to all the responses returned by the API.
      */
@@ -92,8 +130,13 @@ class BaseController
      */
     protected function badRequestWithForm(Form $form): Response
     {
-        $errors = $form->errors(format: false);
+        return $this->badRequestWithErrors($form->errors(format: false));
+    }
+
+    protected function badRequestWithErrors(array $errors): Response
+    {
         $structured_errors = [];
+
         foreach ($errors as $field => $field_errors) {
             $structured_errors[$field] = [];
 

@@ -207,6 +207,7 @@ class Router
 
         // API v1
         $router->addRoute('POST', '/api/v1/sessions', 'api/v1/Sessions#create');
+        $router->addRoute('GET', '/api/v1/search', 'api/v1/Searches#index');
         $router->addRoute('OPTIONS', '/api/*', 'api/v1/BaseController#options');
 
         return $router;
