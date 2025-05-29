@@ -110,13 +110,14 @@ class Link
     #[Database\Column(computed: true)]
     public string $url_hash;
 
-    public function __construct(string $url, string $user_id, bool $is_hidden)
+    public function __construct(string $url, string $user_id, bool $is_hidden = false)
     {
         $url = \SpiderBits\Url::sanitize($url);
 
         $this->id = \Minz\Random::timebased();
         $this->title = $url;
         $this->url = $url;
+        $this->url_hash = self::hashUrl($url);
         $this->is_hidden = $is_hidden;
         $this->user_id = $user_id;
     }
