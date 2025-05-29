@@ -56,3 +56,66 @@ $ curl -H "Content-Type: application/json" \
        -d '{"email": "alix@example.org", "password": "secret", "app_name": "curl request"}' \
        https://app.flus.fr/api/v1/sessions
 ```
+
+## Search link information
+
+Retrieve link information by URL:
+
+```http
+POST /api/v1/search
+```
+
+### JSON Parameters
+
+- `url` (string, required): a valid HTTP or HTTPS URL
+
+### Response
+
+`200 OK` on success:
+
+```json
+{
+    "links": [
+        {
+            "id": "1834713987655905145",
+            "title": "Flus, le complément éditorial de votre veille",
+            "url": "https://flus.fr/",
+            "reading_time": 3,
+            "tags": [],
+            "is_read": false,
+            "is_read_later": false,
+            "collections": []
+        }
+    ]
+}
+```
+
+`400 Bad Request` if the URL is invalid:
+
+```json
+{
+    "errors": {
+        "url": [
+            {"code": "url", "description": "The link is invalid."}
+        ]
+    }
+}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X POST \
+       -d '{"url": "https://flus.fr"}' \
+       https://app.flus.fr/api/v1/search
+```
