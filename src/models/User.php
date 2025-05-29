@@ -447,6 +447,29 @@ class User
     }
 
     /**
+     * Return a link corresponding to the given URL.
+     *
+     * If the user already has stored this URL, the stored link is returned.
+     * Otherwise, a fresh new link is returned.
+     */
+    public function linkByUrl(string $url): Link
+    {
+        $url = \SpiderBits\Url::sanitize($url);
+        $url_hash = Link::hashUrl($url);
+
+        $existing_link = Link::findBy([
+            'user_id' => $this->id,
+            'url_hash' => $url_hash,
+        ]);
+
+        if ($existing_link) {
+            return $existing_link;
+        }
+
+        return new Link($url, $this->id);
+    }
+
+    /**
      * Set login credentials.
      *
      * The password is not changed if empty.
