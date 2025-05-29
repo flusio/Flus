@@ -67,9 +67,10 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $session = SessionFactory::create([
             'user_id' => $user->id,
             'token' => $token->token,
+            'scope' => 'browser',
         ]);
 
-        CurrentUser::authenticate($token->token);
+        CurrentUser::authenticate($token->token, 'browser');
 
         $current_user = CurrentUser::get();
         $this->assertNotNull($current_user);
@@ -88,9 +89,10 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $session = SessionFactory::create([
             'user_id' => $user->id,
             'token' => $token->token,
+            'scope' => 'browser',
         ]);
 
-        CurrentUser::authenticate($token->token);
+        CurrentUser::authenticate($token->token, 'browser');
 
         $current_user = CurrentUser::get();
         $this->assertNull($current_user);
@@ -108,9 +110,30 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $session = SessionFactory::create([
             'user_id' => $user->id,
             'token' => $token->token,
+            'scope' => 'browser',
         ]);
 
-        CurrentUser::authenticate($token->token);
+        CurrentUser::authenticate($token->token, 'browser');
+
+        $current_user = CurrentUser::get();
+        $this->assertNull($current_user);
+        $current_session = CurrentUser::session();
+        $this->assertNull($current_session);
+    }
+
+    public function testAuthenticateDoesNotLogInIfScopeDoesNotMatch(): void
+    {
+        $user = UserFactory::create();
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(1, 'day'),
+        ]);
+        $session = SessionFactory::create([
+            'user_id' => $user->id,
+            'token' => $token->token,
+            'scope' => 'browser',
+        ]);
+
+        CurrentUser::authenticate($token->token, 'api');
 
         $current_user = CurrentUser::get();
         $this->assertNull($current_user);
@@ -132,8 +155,9 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $session = SessionFactory::create([
             'user_id' => $user->id,
             'token' => $token->token,
+            'scope' => 'browser',
         ]);
 
-        CurrentUser::authenticate($token->token);
+        CurrentUser::authenticate($token->token, 'browser');
     }
 }

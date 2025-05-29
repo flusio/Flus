@@ -8,6 +8,8 @@ use App\utils;
 /**
  * Represent a user login session.
  *
+ * @phpstan-type Scope value-of<Session::SCOPES>
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -17,11 +19,17 @@ class Session
     use dao\Session;
     use Database\Recordable;
 
+    public const SCOPES = ['browser'];
+
     #[Database\Column]
     public string $id;
 
     #[Database\Column]
     public \DateTimeImmutable $created_at;
+
+    /** @var Scope */
+    #[Database\Column]
+    public string $scope;
 
     #[Database\Column]
     public ?\DateTimeImmutable $confirmed_password_at;
@@ -38,12 +46,16 @@ class Session
     #[Database\Column]
     public string $token;
 
-    public function __construct(User $user, Token $token, string $name, string $ip)
+    /**
+     * @param Scope $scope
+     */
+    public function __construct(User $user, Token $token, string $scope, string $name, string $ip)
     {
         $this->id = \Minz\Random::hex(32);
 
         $this->user_id = $user->id;
         $this->token = $token->token;
+        $this->scope = $scope;
         $this->name = $name;
         $this->ip = $ip;
         $this->confirmed_password_at = null;

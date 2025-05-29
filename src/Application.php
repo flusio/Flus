@@ -54,7 +54,7 @@ class Application
     {
         $session_token = $request->cookies->getString('session_token');
         if ($session_token) {
-            auth\CurrentUser::authenticate($session_token);
+            auth\CurrentUser::authenticate($session_token, scope: 'browser');
         }
 
         $current_user = auth\CurrentUser::get();

@@ -63,6 +63,7 @@ CREATE UNIQUE INDEX idx_feature_flags_type_user_id ON feature_flags(type, user_i
 CREATE TABLE sessions (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
+    scope TEXT NOT NULL DEFAULT 'browser',
     confirmed_password_at TIMESTAMPTZ,
     name TEXT NOT NULL,
     ip TEXT NOT NULL,

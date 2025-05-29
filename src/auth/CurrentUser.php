@@ -52,7 +52,7 @@ class CurrentUser
             $session_ip = 'unknown';
         }
 
-        $session = new models\Session($user, $token, $session_name, $session_ip);
+        $session = new models\Session($user, $token, 'browser', $session_name, $session_ip);
         $session->save();
 
         self::$session = $session;
@@ -83,9 +83,9 @@ class CurrentUser
      * @throws \RuntimeException
      *     Raised if the user is the support user.
      */
-    public static function authenticate(string $session_token): ?models\User
+    public static function authenticate(string $session_token, string $scope): ?models\User
     {
-        $session = models\Session::findByTokenId($session_token);
+        $session = models\Session::findByTokenId($session_token, $scope);
 
         if (!$session) {
             return null;
