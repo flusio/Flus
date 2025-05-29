@@ -214,20 +214,14 @@ class Passwords extends BaseController
 
         // also, the user might be connected with a different account so we
         // make sure to log him in with the current one.
-        auth\CurrentUser::reset();
+        $session = auth\CurrentUser::createBrowserSession($user);
+        $session_token = $session->token();
 
-        $session_token = new models\Token(1, 'month');
-        $session_token->save();
-
-        $user_agent = $request->headers->getString('User-Agent', '');
-        $ip = $request->ip();
-        $session = new models\Session($user_agent, $ip);
-        $session->user_id = $user->id;
-        $session->token = $session_token->token;
-        $session->save();
-
-        auth\CurrentUser::setSessionToken($session_token->token);
-
-        return Response::redirect('home');
+        $response = Response::redirect('home');
+        $response->setCookie('session_token', $session_token->token, [
+            'expires' => $session_token->expired_at->getTimestamp(),
+            'samesite' => 'Lax',
+        ]);
+        return $response;
     }
 }

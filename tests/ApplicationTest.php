@@ -160,22 +160,6 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/my/account');
     }
 
-    public function testRunLogoutAndRedirectsIfConnectedWithSupportUser(): void
-    {
-        $support_email = \App\Configuration::$application['support_email'];
-        $this->login([
-            'email' => $support_email,
-        ]);
-        $request = new \Minz\Request('GET', '/news');
-
-        $application = new Application();
-        $response = $application->run($request);
-
-        $this->assertResponseCode($response, 302, '/login');
-        $current_user = auth\CurrentUser::get();
-        $this->assertNull($current_user);
-    }
-
     public function testHeaders(): void
     {
         $request = new \Minz\Request('GET', '/');

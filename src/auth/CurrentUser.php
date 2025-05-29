@@ -3,6 +3,8 @@
 namespace App\auth;
 
 use App\models;
+use App\utils;
+use Minz\Request;
 
 /**
  * An utility class to help to manipulate the current user (i.e. the one who is
@@ -15,99 +17,107 @@ class CurrentUser
 {
     private static ?models\User $instance = null;
 
+    private static ?models\Session $session = null;
+
+    /**
+     * Create a new session (valid for 1 month) connected to the given user.
+     *
+     * If a Request is passed, it is used to store some information about the
+     * session (name and IP address).
+     *
+     * @throws \RuntimeException
+     *     Raised if the user is the support user.
+     */
+    public static function createBrowserSession(models\User $user, ?Request $request = null): models\Session
+    {
+        if ($user->isSupportUser()) {
+            \Minz\Log::error('Someone tried to log in with the support user');
+            throw new \RuntimeException('Cannot log in with the support user');
+        }
+
+        $token = new models\Token(1, 'month');
+        $token->save();
+
+        if ($request) {
+            $user_agent = $request->headers->getString('User-Agent', '');
+            $session_name = utils\Browser::format($user_agent);
+
+            if (\App\Configuration::$application['demo']) {
+                $session_ip = 'unknown';
+            } else {
+                $session_ip = utils\Ip::mask($request->ip());
+            }
+        } else {
+            $session_name = 'unknown';
+            $session_ip = 'unknown';
+        }
+
+        $session = new models\Session($user, $token, $session_name, $session_ip);
+        $session->save();
+
+        self::$session = $session;
+        self::$instance = $user;
+
+        return $session;
+    }
+
+    /**
+     * Delete the current session if any and reset the current user.
+     */
+    public static function deleteSession(): void
+    {
+        if (self::$session) {
+            self::$session->remove();
+        }
+
+        self::$session = null;
+        self::$instance = null;
+    }
+
+    /**
+     * Authenticate a user using a session token.
+     *
+     * If the session token doesn't exist, has expired or is invalid, it
+     * returns null.
+     *
+     * @throws \RuntimeException
+     *     Raised if the user is the support user.
+     */
+    public static function authenticate(string $session_token): ?models\User
+    {
+        $session = models\Session::findByTokenId($session_token);
+
+        if (!$session) {
+            return null;
+        }
+
+        $user = $session->user();
+
+        if ($user->isSupportUser()) {
+            $session->remove();
+            \Minz\Log::error('Someone tried to log in with the support user');
+            throw new \RuntimeException('Cannot log in with the support user');
+        }
+
+        self::$session = $session;
+        self::$instance = $user;
+
+        return $user;
+    }
+
     /**
      * Return the logged-in user if any.
-     *
-     * It loads a User from the database by the id stored in the session.
-     * The User model is stored in the static $instance variable to avoid
-     * useless multiple calls to the database.
-     *
-     * If the session token doesn't exist, has expired or is invalid, null is
-     * returned.
      */
     public static function get(): ?models\User
     {
-        $session_token = self::sessionToken();
-
-        if (!$session_token) {
-            // Not logged in, meh.
-            return null;
-        }
-
-        if (self::$instance !== null) {
-            // Oh, it's you again?
-            return self::$instance;
-        }
-
-        // Let's load the user from the database
-        $current_user = models\User::findBySessionToken($session_token);
-
-        if (!$current_user) {
-            // The user doesn't exist… what are you trying to do evil user?
-            return null;
-        }
-
-        self::$instance = $current_user;
         return self::$instance;
     }
 
     /**
-     * Return the current session.
-     *
-     * Please note the token is not verified, so always check the user is
-     * logged in with the `get()` method.
+     * Return the current session if any.
      */
     public static function session(): ?models\Session
     {
-        $session_token = self::sessionToken();
-
-        if ($session_token) {
-            return models\Session::findBy([
-                'token' => $session_token,
-            ]);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Reset the current instance of User and reaload it from the database
-     */
-    public static function reload(): ?models\User
-    {
-        self::$instance = null;
-        return self::get();
-    }
-
-    /**
-     * Save the given session token in session and reset the instance.
-     */
-    public static function setSessionToken(string $token): void
-    {
-        $_SESSION['current_session_token'] = $token;
-        self::$instance = null;
-    }
-
-    /**
-     * Unset the user id in session and reset the instance.
-     */
-    public static function reset(): void
-    {
-        unset($_SESSION['current_session_token']);
-        self::$instance = null;
-    }
-
-    /**
-     * Return the current session token from $_SESSION.
-     */
-    public static function sessionToken(): ?string
-    {
-        $session_token = $_SESSION['current_session_token'] ?? null;
-
-        if ($session_token === null || !is_string($session_token)) {
-            return null;
-        }
-
-        return $session_token;
+        return self::$session;
     }
 }

@@ -142,17 +142,8 @@ class Registrations extends BaseController
         $user->save();
 
         // Initialize the current session
-        $session_token = new models\Token(1, 'month');
-        $session_token->save();
-
-        $user_agent = $request->headers->getString('User-Agent', '');
-        $ip = $request->ip();
-        $session = new models\Session($user_agent, $ip);
-        $session->user_id = $user->id;
-        $session->token = $session_token->token;
-        $session->save();
-
-        auth\CurrentUser::setSessionToken($session_token->token);
+        $session = auth\CurrentUser::createBrowserSession($user);
+        $session_token = $session->token();
 
         $mailer_job = new Mailer\Job();
         $mailer_job->performAsap(mailers\Users::class, 'sendAccountValidationEmail', $user->id);

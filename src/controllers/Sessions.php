@@ -130,23 +130,12 @@ class Sessions extends BaseController
             ]);
         }
 
-        // The session cookie will probably expire before, but it's another
-        // security barrier.
-        $token = new models\Token(1, 'month');
-        $token->save();
-
-        $user_agent = $request->headers->getString('User-Agent', '');
-        $ip = $request->ip();
-        $session = new models\Session($user_agent, $ip);
-        $session->user_id = $user->id;
-        $session->token = $token->token;
-        $session->save();
-
-        auth\CurrentUser::setSessionToken($token->token);
+        $session = auth\CurrentUser::createBrowserSession($user, $request);
+        $session_token = $session->token();
 
         $response = Response::found($redirect_to);
-        $response->setCookie('session_token', $token->token, [
-            'expires' => $token->expired_at->getTimestamp(),
+        $response->setCookie('session_token', $session_token->token, [
+            'expires' => $session_token->expired_at->getTimestamp(),
             'samesite' => 'Lax',
         ]);
         return $response;
@@ -200,12 +189,7 @@ class Sessions extends BaseController
             return Response::redirect('home');
         }
 
-        $session = auth\CurrentUser::session();
-
-        assert($session !== null);
-
-        models\Session::delete($session->id);
-        auth\CurrentUser::reset();
+        auth\CurrentUser::deleteSession();
 
         $response = Response::redirect('home');
         $response->removeCookie('session_token');

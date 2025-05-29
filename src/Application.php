@@ -53,21 +53,8 @@ class Application
     public function run(\Minz\Request $request): mixed
     {
         $session_token = $request->cookies->getString('session_token');
-
-        if (
-            !$session_token &&
-            auth\CurrentUser::sessionToken() &&
-            // We should probably make sure to pass the session token in the
-            // tests, but it would be a lot of changes. I prefer to bypass this
-            // security in the tests for now.
-            \App\Configuration::$environment !== 'test'
-        ) {
-            auth\CurrentUser::reset();
-        } elseif (
-            $session_token &&
-            auth\CurrentUser::sessionToken() !== $session_token
-        ) {
-            auth\CurrentUser::setSessionToken($session_token);
+        if ($session_token) {
+            auth\CurrentUser::authenticate($session_token);
         }
 
         $current_user = auth\CurrentUser::get();
@@ -88,21 +75,6 @@ class Application
         utils\Locale::setCurrentLocale($locale);
 
         if ($current_user) {
-            // A malicious user succeeded to logged in as the support user? He
-            // should not pass.
-            if ($current_user->isSupportUser()) {
-                $session = auth\CurrentUser::session();
-
-                assert($session !== null);
-
-                models\Session::delete($session->id);
-                auth\CurrentUser::reset();
-
-                $response = \Minz\Response::redirect('login');
-                $response->removeCookie('session_token');
-                return $response;
-            }
-
             // Redirect the user if she didn't validated its account after the
             // first day.
             if ($this->mustRedirectToValidation($request, $current_user)) {

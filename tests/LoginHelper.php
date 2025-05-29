@@ -21,24 +21,18 @@ trait LoginHelper
     /**
      * Simulate a user who logs in. A User is created using a DatabaseFactory.
      *
-     * @param ModelValues $user_values Values of the User to create (optional)
-     * @param ModelValues $token_values Values of the associated Token (optional)
-     * @param ModelValues $session_values Values of the associated Session (optional)
+     * @param ModelValues $user_values
      */
-    public function login(array $user_values = [], array $token_values = [], array $session_values = []): models\User
+    public function login(array $user_values = [], ?\DateTimeImmutable $confirmed_password_at = null): models\User
     {
-        $token_values = array_merge([
-            'expired_at' => \Minz\Time::fromNow(30, 'days'),
-        ], $token_values);
-
-        $token = TokenFactory::create($token_values);
         $user = UserFactory::create($user_values);
 
-        $session_values['token'] = $token->token;
-        $session_values['user_id'] = $user->id;
-        SessionFactory::create($session_values);
+        $session = auth\CurrentUser::createBrowserSession($user);
 
-        auth\CurrentUser::setSessionToken($token->token);
+        if ($confirmed_password_at) {
+            $session->confirmed_password_at = $confirmed_password_at;
+            $session->save();
+        }
 
         return $user;
     }
@@ -50,6 +44,6 @@ trait LoginHelper
     #[\PHPUnit\Framework\Attributes\Before]
     public function logout(): void
     {
-        auth\CurrentUser::reset();
+        auth\CurrentUser::deleteSession();
     }
 }

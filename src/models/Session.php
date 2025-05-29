@@ -38,15 +38,15 @@ class Session
     #[Database\Column]
     public string $token;
 
-    public function __construct(string $user_agent, string $ip)
+    public function __construct(User $user, Token $token, string $name, string $ip)
     {
         $this->id = \Minz\Random::hex(32);
-        $this->name = utils\Browser::format($user_agent);
-        if (\App\Configuration::$application['demo'] || !$ip) {
-            $this->ip = 'unknown';
-        } else {
-            $this->ip = utils\Ip::mask($ip);
-        }
+
+        $this->user_id = $user->id;
+        $this->token = $token->token;
+        $this->name = $name;
+        $this->ip = $ip;
+        $this->confirmed_password_at = null;
     }
 
     /**
@@ -59,6 +59,17 @@ class Session
         }
 
         return $this->confirmed_password_at >= \Minz\Time::ago(15, 'minutes');
+    }
+
+    public function user(): User
+    {
+        $user = User::find($this->user_id);
+
+        if (!$user) {
+            throw new \Exception("Session #{$this->id} has invalid user.");
+        }
+
+        return $user;
     }
 
     public function token(): Token

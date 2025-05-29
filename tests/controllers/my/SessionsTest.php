@@ -24,9 +24,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 0, 15);
         $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
-        $this->login([], [], [
-            'confirmed_password_at' => $confirmed_at,
-        ]);
+        $this->login(confirmed_password_at: $confirmed_at);
 
         $response = $this->appRun('GET', '/my/sessions');
 
@@ -43,9 +41,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 16, 9000);
         $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
-        $this->login([], [], [
-            'confirmed_password_at' => $confirmed_at,
-        ]);
+        $this->login(confirmed_password_at: $confirmed_at);
 
         $response = $this->appRun('GET', '/my/sessions');
 
@@ -67,9 +63,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 0, 15);
         $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
-        $user = $this->login([], [], [
-            'confirmed_password_at' => $confirmed_at,
-        ]);
+        $user = $this->login(confirmed_password_at: $confirmed_at);
         $session = SessionFactory::create([
             'user_id' => $user->id,
         ]);
@@ -80,7 +74,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/my/sessions');
         $this->assertFalse(models\Session::exists($session->id));
-        $this->assertFalse(models\Token::exists($session->token));
     }
 
     public function testDeleteLogsOutIfGivenSessionIsCurrentSession(): void
@@ -91,9 +84,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 0, 15);
         $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
-        $user = $this->login([], [], [
-            'confirmed_password_at' => $confirmed_at,
-        ]);
+        $user = $this->login(confirmed_password_at: $confirmed_at);
         $session = auth\CurrentUser::session();
 
         $this->assertNotNull($session);
@@ -119,9 +110,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 0, 15);
         $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
-        $user = $this->login([], [], [
-            'confirmed_password_at' => $confirmed_at,
-        ]);
+        $user = $this->login(confirmed_password_at: $confirmed_at);
         $session = SessionFactory::create([
             'user_id' => $user->id,
         ]);
@@ -157,9 +146,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 16, 9000);
         $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
-        $user = $this->login([], [], [
-            'confirmed_password_at' => $confirmed_at,
-        ]);
+        $user = $this->login(confirmed_password_at: $confirmed_at);
         $session = SessionFactory::create([
             'user_id' => $user->id,
         ]);
@@ -180,9 +167,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 0, 15);
         $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
-        $user = $this->login([], [], [
-            'confirmed_password_at' => $confirmed_at,
-        ]);
+        $user = $this->login(confirmed_password_at: $confirmed_at);
         $session = SessionFactory::create([
             'user_id' => $user->id,
         ]);

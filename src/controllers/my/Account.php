@@ -117,8 +117,9 @@ class Account extends BaseController
             @unlink("{$media_path}/avatars/{$subpath}/{$filename}");
         }
 
-        models\User::delete($current_user->id);
-        auth\CurrentUser::reset();
+        auth\CurrentUser::deleteSession();
+        $current_user->remove();
+
         \Minz\Flash::set('status', 'user_deleted');
         return Response::redirect('login');
     }

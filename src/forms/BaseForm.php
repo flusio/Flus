@@ -26,9 +26,9 @@ class BaseForm extends Form
 
     public function csrfSessionId(): string
     {
-        $session_id = auth\CurrentUser::sessionToken();
-        if ($session_id) {
-            return $session_id;
+        $session = auth\CurrentUser::session();
+        if ($session) {
+            return $session->id;
         } else {
             return $this->_csrfSessionId();
         }

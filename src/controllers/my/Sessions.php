@@ -93,13 +93,12 @@ class Sessions extends BaseController
         $response = Response::redirect('sessions');
 
         if (\App\Csrf::validate($csrf)) {
-            models\Token::delete($session->token);
-            $session->remove();
-
             if ($session->id === $current_session->id) {
-                auth\CurrentUser::reset();
+                auth\CurrentUser::deleteSession();
                 $response->removeCookie('session_token');
                 $response->removeCookie('flusio_session_token');
+            } else {
+                $session->remove();
             }
         }
 

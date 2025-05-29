@@ -147,44 +147,6 @@ trait User
     }
 
     /**
-     * Return a user by its session token.
-     *
-     * The token must not be invalidated, and should not have expired. In these
-     * cases, we return `null`. `null` is also returned if there are more than
-     * one result, which cannot happen theorically since the `sessions.token`
-     * column must be unique in database.
-     */
-    public static function findBySessionToken(string $token): ?self
-    {
-        $sql = <<<'SQL'
-            SELECT * FROM users WHERE id = (
-                SELECT user_id FROM sessions WHERE token = (
-                    SELECT token FROM tokens
-                    WHERE token = ?
-                    AND expired_at > ?
-                    AND invalidated_at IS NULL
-                )
-            )
-        SQL;
-
-        $now = \Minz\Time::now();
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            $token,
-            $now->format(Database\Column::DATETIME_FORMAT),
-        ]);
-
-        $result = $statement->fetch();
-        if (is_array($result)) {
-            return self::fromDatabaseRow($result);
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Return users with subscriptions expired_at before a given date. It does
      * not return users with no account id (you should create them first).
      *
