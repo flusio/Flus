@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\auth;
+use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\UserFactory;
@@ -10,6 +11,7 @@ use tests\factories\UserFactory;
 class SessionsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
@@ -71,7 +73,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($current_user);
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => $email,
             'password' => $password,
         ]);
@@ -94,7 +96,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => $email,
             'password' => $password,
         ]);
@@ -128,7 +130,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'POST',
             '/login',
             parameters: [
-                'csrf' => \App\Csrf::generate(),
+                'csrf_token' => $this->csrfToken(forms\Login::class),
                 'email' => $email,
                 'password' => $password,
             ],
@@ -169,7 +171,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $number_tokens = models\Session::count();
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => $email,
             'password' => $password,
         ]);
@@ -190,7 +192,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => $email,
             'password' => $password,
             'redirect_to' => '/about',
@@ -212,7 +214,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $redirect_to = 'https://example.com/about';
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => $email,
             'password' => $password,
             'redirect_to' => $redirect_to,
@@ -236,7 +238,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($current_user);
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => strtoupper($email),
             'password' => $password,
         ]);
@@ -260,7 +262,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         \App\Csrf::generate();
         $response = $this->appRun('POST', '/login', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'email' => $email,
             'password' => $password,
         ]);
@@ -282,7 +284,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => 'not@the.email',
             'password' => $password,
         ]);
@@ -303,7 +305,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => $email,
             'password' => $password,
         ]);
@@ -325,7 +327,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => 'foo',
             'password' => $password,
         ]);
@@ -347,7 +349,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/login', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Login::class),
             'email' => $email,
             'password' => 'not the password',
         ]);

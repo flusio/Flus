@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-05-29 18:30+0200\n"
-"PO-Revision-Date: 2025-05-29 18:30+0200\n"
+"POT-Creation-Date: 2025-06-01 17:07+0200\n"
+"PO-Revision-Date: 2025-06-01 17:07+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -46,8 +46,7 @@ msgstr "Afficher"
 #: controllers/Mastodon.php:187 controllers/Mastodon.php:267
 #: controllers/News.php:66 controllers/Passwords.php:89
 #: controllers/Passwords.php:192 controllers/Registrations.php:103
-#: controllers/Sessions.php:83 controllers/Support.php:62
-#: controllers/collections/Filters.php:98
+#: controllers/Support.php:62 controllers/collections/Filters.php:98
 #: controllers/collections/Followers.php:47
 #: controllers/collections/Followers.php:88
 #: controllers/collections/Groups.php:115
@@ -72,7 +71,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Groups.php:151 controllers/Importations.php:45
 #: controllers/Links.php:472 controllers/Mastodon.php:75
 #: controllers/Messages.php:88 controllers/Messages.php:135
-#: controllers/Sessions.php:199 controllers/collections/Read.php:85
+#: controllers/Sessions.php:146 controllers/collections/Read.php:85
 #: controllers/collections/Read.php:163 controllers/collections/Read.php:235
 #: controllers/importations/Opml.php:69 controllers/importations/Pocket.php:100
 #: controllers/importations/Pocket.php:141
@@ -112,11 +111,11 @@ msgstr "L’URL est invalide."
 msgid "The Mastodon host returned an error, please try later."
 msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 
-#: controllers/Passwords.php:67 controllers/Sessions.php:94 models/User.php:55
+#: controllers/Passwords.php:67 models/User.php:55
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: controllers/Passwords.php:80 controllers/Sessions.php:108
+#: controllers/Passwords.php:80 forms/Login.php:36
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
@@ -133,17 +132,6 @@ msgstr ""
 #: controllers/Registrations.php:116
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
-
-#: controllers/Sessions.php:118
-msgid "What are you trying to do? You can’t login to the support account."
-msgstr ""
-"Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
-"support."
-
-#: controllers/Sessions.php:128 controllers/my/Account.php:101
-#: controllers/my/Security.php:203
-msgid "The password is incorrect."
-msgstr "Le mot de passe est incorrect."
 
 #: controllers/Support.php:68
 msgid "The subject is required."
@@ -205,6 +193,11 @@ msgstr "Vous avez déjà une importation Pocket en cours."
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
+#: controllers/my/Account.php:101 controllers/my/Security.php:203
+#: forms/Login.php:45
+msgid "The password is incorrect."
+msgstr "Le mot de passe est incorrect."
+
 #: controllers/my/Account.php:109
 msgid "Sorry but you cannot delete the demo account 😉"
 msgstr "Désolé mais vous ne pouvez pas supprimer le compte de démo 😉"
@@ -243,6 +236,12 @@ msgstr ""
 #: forms/AccountValidation.php:37
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
+
+#: forms/Login.php:54
+msgid "What are you trying to do? You can’t login to the support account."
+msgstr ""
+"Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
+"support."
 
 #: jobs/PocketImportator.php:36
 msgid ""
@@ -707,7 +706,7 @@ msgstr "Oh non&nbsp;😟"
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/_layouts/not_connected.phtml:98 views/sessions/new.phtml:97
+#: views/_layouts/not_connected.phtml:98 views/sessions/new.phtml:96
 msgid "Login"
 msgstr "Se connecter"
 
@@ -771,7 +770,6 @@ msgstr "Page suivante"
 #: views/passwords/edit.phtml:58 views/passwords/forgot.phtml:48
 #: views/registrations/new.phtml:51 views/registrations/new.phtml:76
 #: views/registrations/new.phtml:122 views/registrations/new.phtml:146
-#: views/sessions/new.phtml:49 views/sessions/new.phtml:88
 #: views/support/show.phtml:51 views/support/show.phtml:75
 msgid "Error"
 msgstr "Erreur"
@@ -1933,7 +1931,7 @@ msgstr "Votre mot de passe"
 
 #: views/my/account/deletion.phtml:53 views/my/security/confirmation.phtml:49
 #: views/my/security/show.phtml:71 views/passwords/edit.phtml:48
-#: views/registrations/new.phtml:112 views/sessions/new.phtml:78
+#: views/registrations/new.phtml:112 views/sessions/new.phtml:86
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
@@ -2660,7 +2658,7 @@ msgid "We’ve sent you an email to reset your password."
 msgstr ""
 "Nous vous avons envoyé un courriel pour réinitialiser votre mot de passe."
 
-#: views/passwords/forgot.phtml:31 views/sessions/new.phtml:32
+#: views/passwords/forgot.phtml:31 views/sessions/new.phtml:29
 msgid "Email address"
 msgstr "Adresse courriel"
 
@@ -2773,15 +2771,19 @@ msgstr "Connexion"
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
 
-#: views/sessions/new.phtml:58
+#: views/sessions/new.phtml:34 views/sessions/new.phtml:61
+msgid "Error:"
+msgstr "Erreur :"
+
+#: views/sessions/new.phtml:56
 msgid "Password"
 msgstr "Mot de passe"
 
-#: views/sessions/new.phtml:105
+#: views/sessions/new.phtml:107
 msgid "Forgot password?"
 msgstr "Mot de passe oublié ?"
 
-#: views/sessions/new.phtml:113
+#: views/sessions/new.phtml:115
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 

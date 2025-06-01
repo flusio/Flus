@@ -5,6 +5,7 @@ namespace App\controllers;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\forms;
 use App\models;
 use App\utils;
 
@@ -19,9 +20,10 @@ class Sessions extends BaseController
     /**
      * Show the login form.
      *
-     * @request_param string redirect_to A URL to redirect to (optional, default is `/`)
+     * @request_param string redirect_to
      *
-     * @response 302 :redirect_to if already connected
+     * @response 302 :redirect_to
+     *     If the user is already connected.
      * @response 200
      */
     public function new(Request $request): Response
@@ -31,33 +33,26 @@ class Sessions extends BaseController
             return Response::found($redirect_to);
         }
 
-        $email = '';
-        $password = '';
-
-        if (\App\Configuration::$application['demo']) {
-            $email = 'demo@flus.io';
-            $password = 'demo';
-        }
-
         return Response::ok('sessions/new.phtml', [
-            'email' => $email,
-            'password' => $password,
+            'form' => new forms\Login(),
             'redirect_to' => $redirect_to,
         ]);
     }
 
     /**
-     * Login / create a Session for the user
+     * Login / create a browser Session for the user.
      *
-     * @request_param string csrf
+     * @request_param string csrf_token
      * @request_param string email
      * @request_param string password
-     * @request_param string redirect_to A URL to redirect to (optional, default is `/`)
+     * @request_param string redirect_to
      *
-     * @response 302 :redirect_to if already connected
-     * @response 400 if CSRF is invalid, email doesn't match with a User or if
-     *               password is wrong
-     * @response 302 :redirect_to if logged in
+     * @response 302 :redirect_to
+     *     If the user is already connected.
+     * @response 400
+     *     If the CSRF is invalid, email doesn't match with a User or if password is wrong.
+     * @response 302 :redirect_to
+     *     On success.
      */
     public function create(Request $request): Response
     {
@@ -71,64 +66,17 @@ class Sessions extends BaseController
             return Response::found($redirect_to);
         }
 
-        $email = $request->parameters->getString('email', '');
-        $password = $request->parameters->getString('password', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $form = new forms\Login();
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
+                'form' => $form,
                 'redirect_to' => $redirect_to,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $email = \Minz\Email::sanitize($email);
-        if (!\Minz\Email::validate($email)) {
-            return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
-                'redirect_to' => $redirect_to,
-                'errors' => [
-                    'email' => _('The address email is invalid.'),
-                ],
-            ]);
-        }
-
-        $user = models\User::findBy([
-            'email' => $email,
-        ]);
-        if (!$user) {
-            return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
-                'redirect_to' => $redirect_to,
-                'errors' => [
-                    'email' => _('We can’t find any account with this email address.'),
-                ],
-            ]);
-        }
-
-        if ($user->isSupportUser()) {
-            return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
-                'redirect_to' => $redirect_to,
-                'error' => _('What are you trying to do? You can’t login to the support account.'),
-            ]);
-        }
-
-        if (!$user->verifyPassword($password)) {
-            return Response::badRequest('sessions/new.phtml', [
-                'email' => $email,
-                'password' => $password,
-                'redirect_to' => $redirect_to,
-                'errors' => [
-                    'password_hash' => _('The password is incorrect.'),
-                ],
-            ]);
-        }
+        $user = $form->user();
 
         $session = auth\CurrentUser::createBrowserSession($user, $request);
         $session_token = $session->token();
