@@ -470,6 +470,22 @@ class User
     }
 
     /**
+     * Mark the link as read for the user.
+     */
+    public function markAsRead(Link $link): void
+    {
+        LinkToCollection::markAsRead($this, [$link->id]);
+    }
+
+    /**
+     * Unmark the link as read for the user.
+     */
+    public function unmarkAsRead(Link $link): void
+    {
+        LinkToCollection::markAsUnread($this, [$link->id]);
+    }
+
+    /**
      * Set login credentials.
      *
      * The password is not changed if empty.

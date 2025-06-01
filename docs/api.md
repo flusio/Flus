@@ -119,3 +119,101 @@ $ curl -H "Content-Type: application/json" \
        -d '{"url": "https://flus.fr"}' \
        https://app.flus.fr/api/v1/search
 ```
+
+## Mark a link as read
+
+Mark a link as read for the authenticated user:
+
+```http
+POST /api/v1/links/:id/read
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+{}
+```
+
+`404 Not Found` if the link doesn’t exist:
+
+```json
+{
+    "error": "The link does not exist."
+}
+```
+
+`403 Forbidden` if the user doesn't have access to the link:
+
+```json
+{
+    "error": "You cannot update the link."
+}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X POST \
+       https://app.flus.fr/api/v1/links/<id>/read
+```
+
+## Unmark a link as read
+
+Unmark a link as read for the authenticated user:
+
+```http
+DELETE /api/v1/links/:id/read
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+{}
+```
+
+`404 Not Found` if the link doesn’t exist:
+
+```json
+{
+    "error": "The link does not exist."
+}
+```
+
+`403 Forbidden` if the user doesn't have access to the link:
+
+```json
+{
+    "error": "You cannot update the link."
+}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X DELETE \
+       https://app.flus.fr/api/v1/links/<id>/read
+```
