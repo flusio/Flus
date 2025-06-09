@@ -81,8 +81,10 @@ class Opml
     {
         $outline = [];
 
-        foreach ($dom_element->attributes as $attribute_name => $attribute) {
-            $outline[$attribute_name] = $attribute->value;
+        if ($dom_element->attributes) {
+            foreach ($dom_element->attributes as $attribute_name => $attribute) {
+                $outline[$attribute_name] = $attribute->value;
+            }
         }
 
         $outline_nodes = $dom_element->getElementsByTagName('outline');

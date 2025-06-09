@@ -152,14 +152,22 @@ class Response
      * SpiderBits does its best to convert the data to actual utf8. It gets the
      * encoding from the Content-Type header and/or, for HTML, from the meta
      * tags.
+     *
+     * If the content fails to be decoded, an empty string is returned.
      */
     public function utf8Data(): string
     {
         try {
-            return mb_convert_encoding($this->data, 'utf-8', $this->encoding());
+            $data = mb_convert_encoding($this->data, 'utf-8', $this->encoding());
         } catch (\ValueError $exception) {
-            return mb_convert_encoding($this->data, 'utf-8', 'utf-8');
+            $data = mb_convert_encoding($this->data, 'utf-8', 'utf-8');
         }
+
+        if (!$data) {
+            return '';
+        }
+
+        return $data;
     }
 
     /**
