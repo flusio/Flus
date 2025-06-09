@@ -1,5 +1,30 @@
 # Changelog of Flus
 
+## 2025-06-09 - v1.2.5
+
+### Improvements
+
+- Add a note to explain that news need to be clear ([64d15eff](https://github.com/flusio/Flus/commit/64d15eff))
+- Improve the look of invalid inputs ([f79569e1](https://github.com/flusio/Flus/commit/f79569e1))
+
+### Bug fixes
+
+- Fix a typo in French translation ([7c69512b](https://github.com/flusio/Flus/commit/7c69512b))
+
+### Technical
+
+- Update the dependencies ([18bf993f](https://github.com/flusio/Flus/commit/18bf993f), [80994a78](https://github.com/flusio/Flus/commit/80994a78), [c0727b7d](https://github.com/flusio/Flus/commit/c0727b7d), [406a35d0](https://github.com/flusio/Flus/commit/406a35d0))
+- Add a scope to sessions ([e27117d5](https://github.com/flusio/Flus/commit/e27117d5))
+- Change the auth in the Subscriptions service ([3ede73a1](https://github.com/flusio/Flus/commit/3ede73a1))
+
+### Developers
+
+- Upgrade to Minz 2.0 ([5ae0ece9](https://github.com/flusio/Flus/commit/5ae0ece9))
+- Refactor handling of the sessions ([ed804176](https://github.com/flusio/Flus/commit/ed804176))
+- Refactor the login form ([93ddc92a](https://github.com/flusio/Flus/commit/93ddc92a))
+- Remove the errors.md document ([eb8300bb](https://github.com/flusio/Flus/commit/eb8300bb))
+- Provide a `.wrapper` CSS class ([994768d6](https://github.com/flusio/Flus/commit/994768d6))
+
 ## 2025-04-30 - v1.2.4
 
 ### Bug fixes
