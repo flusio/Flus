@@ -210,6 +210,7 @@ class Router
         $router->addRoute('POST', '/api/v1/search', 'api/v1/Searches#create');
         $router->addRoute('POST', '/api/v1/links/:id/read', 'api/v1/links/Read#create');
         $router->addRoute('DELETE', '/api/v1/links/:id/read', 'api/v1/links/Read#delete');
+        $router->addRoute('POST', '/api/v1/links/:id/later', 'api/v1/links/Later#create');
         $router->addRoute('OPTIONS', '/api/*', 'api/v1/BaseController#options');
 
         return $router;
