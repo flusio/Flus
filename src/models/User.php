@@ -486,6 +486,14 @@ class User
     }
 
     /**
+     * Mark the link to read later for the user.
+     */
+    public function markAsReadLater(Link $link): void
+    {
+        LinkToCollection::markToReadLater($this, [$link->id]);
+    }
+
+    /**
      * Set login credentials.
      *
      * The password is not changed if empty.
