@@ -190,3 +190,44 @@ $ curl -H "Content-Type: application/json" \
        -X DELETE \
        https://app.flus.fr/api/v1/links/<id>/read
 ```
+
+## Mark a link to read later
+
+Mark a link to read later for the authenticated user:
+
+```http
+POST /api/v1/links/:id/later
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+{}
+```
+
+`404 Not Found` if the link doesn’t exist or cannot be updated by the authenticated user:
+
+```json
+{
+    "error": "The link does not exist."
+}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X POST \
+       https://app.flus.fr/api/v1/links/<id>/later
+```
