@@ -30,7 +30,7 @@ trait Collection
      *
      * @return self[]
      */
-    public static function listByLinkId(string $link_id): array
+    public static function listByLinkId(string $link_id, string $type = 'any'): array
     {
         $sql = <<<'SQL'
             SELECT c.*
@@ -40,11 +40,18 @@ trait Collection
             AND lc.link_id = :link_id
         SQL;
 
+        $parameters = [
+            ':link_id' => $link_id,
+        ];
+
+        if ($type !== 'any') {
+            $sql .= ' AND c.type = :type';
+            $parameters[':type'] = $type;
+        }
+
         $database = Database::get();
         $statement = $database->prepare($sql);
-        $statement->execute([
-            ':link_id' => $link_id,
-        ]);
+        $statement->execute($parameters);
 
         return self::fromDatabaseRows($statement->fetchAll());
     }

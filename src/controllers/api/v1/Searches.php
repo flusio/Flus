@@ -50,6 +50,7 @@ class Searches extends BaseController
                     'tags' => $link->tags,
                     'is_read' => $link->isReadBy($user),
                     'is_read_later' => $link->isInBookmarksOf($user),
+                    'collections' => array_column($link->collections(), 'id'),
                 ],
             ],
         ]);

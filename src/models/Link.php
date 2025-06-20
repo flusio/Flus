@@ -181,7 +181,7 @@ class Link
      */
     public function collections(): array
     {
-        return Collection::listByLinkId($this->id);
+        return Collection::listByLinkId($this->id, 'collection');
     }
 
     /**
