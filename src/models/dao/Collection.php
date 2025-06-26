@@ -38,6 +38,7 @@ trait Collection
 
             WHERE lc.collection_id = c.id
             AND lc.link_id = :link_id
+            AND c.type = 'collection'
         SQL;
 
         $database = Database::get();

@@ -241,6 +241,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $current_user->id,
+            'type' => 'collection',
         ]);
         LinkToCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -268,6 +269,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
+            'type' => 'collection',
         ]);
         LinkToCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -406,6 +408,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
+            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
@@ -428,6 +431,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
+            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
@@ -461,6 +465,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -495,6 +500,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $from = \Minz\Url::for('bookmarks');
 
@@ -517,6 +523,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $url = 'https://github.com/flusio/Flus';
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -548,6 +555,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $url = 'https://github.com/flusio/Flus';
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         LinkFactory::create([
             'user_id' => $another_user->id,
@@ -579,9 +587,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $url = 'https://github.com/flusio/Flus';
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -618,6 +628,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
+            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
@@ -685,6 +696,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $url = 'https://github.com/flusio/Flus';
         $from = \Minz\Url::for('bookmarks');
@@ -706,6 +718,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $from = \Minz\Url::for('bookmarks');
 
@@ -726,6 +739,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $from = \Minz\Url::for('bookmarks');
         /** @var string */
@@ -749,6 +763,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $from = \Minz\Url::for('bookmarks');
 
@@ -769,6 +784,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
+            'type' => 'collection',
         ]);
         $from = \Minz\Url::for('bookmarks');
 
@@ -807,6 +823,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
+            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
@@ -836,6 +853,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
+            'type' => 'collection',
         ]);
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
