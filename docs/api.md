@@ -266,3 +266,51 @@ $ curl -H "Content-Type: application/json" \
        -X POST \
        https://app.flus.fr/api/v1/links/<id>/later
 ```
+
+## List the collections
+
+List the collections of the authenticated user:
+
+```http
+GET /api/v1/collections
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+[
+    {
+        "id": "1833740002943468786",
+        "name": "My favourites",
+        "description": "",
+        "group": null,
+        "is_public": false
+    },
+    {
+        "id": "1833740002944268171",
+        "name": "My shares",
+        "description": "",
+        "group": null,
+        "is_public": true
+    }
+]
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X GET \
+       https://app.flus.fr/api/v1/collections
+```
