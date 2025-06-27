@@ -314,3 +314,113 @@ $ curl -H "Content-Type: application/json" \
        -X GET \
        https://app.flus.fr/api/v1/collections
 ```
+
+## Add a collection to a link
+
+Add a collection to a link:
+
+```http
+PUT /api/v1/links/:link_id/collections/:collection_id
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+{}
+```
+
+`404 Not Found` if the link or the collection don’t exist:
+
+```json
+{
+    "error": "The link does not exist."
+}
+```
+
+```json
+{
+    "error": "The collection does not exist."
+}
+```
+
+`403 Forbidden` if the user doesn't have access to the link or the collection:
+
+```json
+{
+    "error": "You cannot update the link."
+}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X PUT \
+       https://app.flus.fr/api/v1/links/<link_id>/collections/<collection_id>
+```
+
+## Remove a collection from a link
+
+Remove a collection from a link:
+
+```http
+DELETE /api/v1/links/:link_id/collections/:collection_id
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+{}
+```
+
+`404 Not Found` if the link or the collection don’t exist:
+
+```json
+{
+    "error": "The link does not exist."
+}
+```
+
+```json
+{
+    "error": "The collection does not exist."
+}
+```
+
+`403 Forbidden` if the user doesn't have access to the link or the collection:
+
+```json
+{
+    "error": "You cannot update the link."
+}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X DELETE \
+       https://app.flus.fr/api/v1/links/<link_id>/collections/<collection_id>
+```

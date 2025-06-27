@@ -212,6 +212,16 @@ class Router
         $router->addRoute('POST', '/api/v1/links/:id/read', 'api/v1/links/Read#create');
         $router->addRoute('DELETE', '/api/v1/links/:id/read', 'api/v1/links/Read#delete');
         $router->addRoute('POST', '/api/v1/links/:id/later', 'api/v1/links/Later#create');
+        $router->addRoute(
+            'PUT',
+            '/api/v1/links/:link_id/collections/:collection_id',
+            'api/v1/links/Collections#create'
+        );
+        $router->addRoute(
+            'DELETE',
+            '/api/v1/links/:link_id/collections/:collection_id',
+            'api/v1/links/Collections#delete'
+        );
         $router->addRoute('OPTIONS', '/api/*', 'api/v1/BaseController#options');
 
         return $router;
