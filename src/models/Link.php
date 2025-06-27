@@ -197,6 +197,22 @@ class Link
     }
 
     /**
+     * Add the link to a collection.
+     */
+    public function addCollection(Collection $collection): void
+    {
+        LinkToCollection::attach([$this->id], [$collection->id]);
+    }
+
+    /**
+     * Remove the link from a collection.
+     */
+    public function removeCollection(Collection $collection): void
+    {
+        LinkToCollection::detach([$this->id], [$collection->id]);
+    }
+
+    /**
      * Return the notes attached to the current link
      *
      * @return Note[]
