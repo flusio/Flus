@@ -1,3 +1,10 @@
+<?php
+    $default_image = 'collection-card.svg';
+    if (feature_enabled('alpha')) {
+        $default_image = 'collection-card-beta.png';
+    }
+?>
+
 <div class="collections-selector" data-controller="collections-selector">
     <div hidden>
         <select
@@ -13,7 +20,7 @@
                     value="<?= $collection->id ?>"
                     <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
                     <?= $collection->is_public ? 'data-public' : '' ?>
-                    data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>"
+                    data-illustration="<?= url_media('covers', $collection->image_filename, $default_image) ?>"
                 >
                     <?= protect($collection->name()) ?>
                 </option>
@@ -28,7 +35,7 @@
                                 value="<?= $collection->id ?>"
                                 <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
                                 <?= $collection->is_public ? 'data-public' : '' ?>
-                                data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>"
+                                data-illustration="<?= url_media('covers', $collection->image_filename, $default_image) ?>"
                             >
                                 <?= protect($collection->name()) ?>
                             </option>
@@ -44,7 +51,7 @@
                             value="<?= $collection->id ?>"
                             <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
                             <?= $collection->is_public ? 'data-public' : '' ?>
-                            data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.svg') ?>"
+                            data-illustration="<?= url_media('covers', $collection->image_filename, $default_image) ?>"
                             data-by="<?= _f('By %s', protect($collection->owner()->username)) ?>"
                         >
                             <?= protect($collection->name()) ?>
@@ -123,7 +130,7 @@
     <ul class="cards" data-collections-selector-target="collectionCards"></ul>
 
     <template data-collections-selector-target="collectionTemplate">
-        <li class="card card--illustrated" style="background-image: url('<?= url_media('covers', '', 'collection-card.svg') ?>');">
+        <li class="card card--illustrated" style="background-image: url('<?= url_media('covers', '', $default_image) ?>');">
             <div class="card__body">
                 <div class="card__title card__title-ellipsis" data-target="name">
                 </div>

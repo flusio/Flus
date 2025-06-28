@@ -1,5 +1,8 @@
 <?php
 
+use App\auth;
+use App\models;
+
 /**
  * This file contains helper methods to be used in view files. It doesn't
  * declare a namespace on purpose.
@@ -155,6 +158,10 @@ function url_asset(string $filename): string
  */
 function url_media(string $type, ?string $filename, string $default = 'default-card.png'): string
 {
+    if ($default === 'default-card.png' && feature_enabled('alpha')) {
+        $default = 'default-card-beta.png';
+    }
+
     if (!$filename) {
         return url_static($default);
     }
@@ -257,4 +264,10 @@ function collection_publishers(\App\models\Collection $collection, ?\App\models\
     }, $publishers);
 
     return implode(', ', $publishers_as_strings);
+}
+
+function feature_enabled(string $feature): bool
+{
+    $current_user = auth\CurrentUser::get();
+    return $current_user && models\FeatureFlag::isEnabled($feature, $current_user->id);
 }

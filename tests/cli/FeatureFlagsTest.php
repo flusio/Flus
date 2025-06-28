@@ -24,7 +24,7 @@ class FeatureFlagsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('CLI', '/features');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, 'beta');
+        $this->assertResponseEquals($response, "alpha\nbeta");
     }
 
     public function testFlagsRendersCorrectly(): void

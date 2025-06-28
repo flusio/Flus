@@ -13,7 +13,7 @@ class FeatureFlag
 {
     use Database\Recordable;
 
-    public const VALID_TYPES = ['beta'];
+    public const VALID_TYPES = ['alpha', 'beta'];
 
     #[Database\Column]
     public int $id;
