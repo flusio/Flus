@@ -60,24 +60,34 @@
 
 :root {
     --border-radius: 10px;
+    --border-radius-small: 5px;
+    --font-family-text: Raleway, system-ui, sans-serif;
+    --font-family-title: Raleway, system-ui, sans-serif;
 
     --radius-button: var(--border-radius);
 }
 
 body {
-    font-family: Raleway, system-ui, sans-serif;
     line-height: 1.4;
 
     background: #f7f6f4;
 }
 
 a {
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-small);
+}
+
+h1 a {
+    display: inline-block;
 }
 
 a:hover,
 a:focus {
     color: #004635;
+}
+
+h1 a:focus {
+    outline-offset: -2px;
 }
 
 fieldset,
@@ -199,8 +209,14 @@ legend {
     background-color: #e5f2ed;
 }
 
+.group__icon {
+    display: none;
+}
+
 .group__separator {
-    background: #00baa8;
+    height: 2px;
+
+    background: #73dabb;
 }
 
 .reading-nav__container {
@@ -209,6 +225,8 @@ legend {
 }
 
 .reading-nav__anchor {
+    font-weight: 600;
+
     background-color: #caf1e3;
     border-radius: 0;
 }
@@ -226,19 +244,29 @@ legend {
 }
 
 .anchor--action {
+    font-weight: 600;
+
     border-radius: var(--border-radius);
 }
 
 button,
 .button {
     color: currentcolor;
+    font-weight: 600;
 
     background-color: rgb(0 0 0 / 5%);
     border: 1px solid currentcolor;
 }
 
+button[disabled] {
+    cursor: not-allowed;
+    filter: grayscale(.6) opacity(.7);
+}
+
 .button--primary,
 .news__postpone-button {
+    color: #0c3b34;
+
     background-color: #00d7ad;
     border: none;
 }
@@ -253,16 +281,59 @@ button,
     background-color: #00baa8;
 }
 
+.button--primary[disabled],
+.news__postpone-button[disabled] {
+    color: #0c3b34;
+
+    background-color: #00d7ad;
+}
+
+.popup__opener[aria-expanded="true"] .button {
+    background-color: white;
+}
+
+.popup__opener[aria-expanded="true"] .news__postpone-button {
+    background-color: #00baa8;
+}
+
 .button--ghost {
     background-color: transparent;
     border-color: transparent;
+}
+
+.button--danger {
+    color: white;
+
+    background-color: #d91a44;
+    border-color: transparent;
+
+    outline-color: #d91a44;
+}
+
+.button--danger:hover,
+.button--danger:focus {
+    background-color: #ce003d;
+    border-color: transparent;
+}
+
+.popup__item--button {
+    font-weight: 400;
+}
+
+.popup__item--button[disabled] {
+    filter: none;
 }
 
 .groupnav__item {
     border-color: #c5cfcc;
 }
 
-.groupnav__anchor:hover {
+.groupnav__anchor {
+    border-radius: 0;
+}
+
+.groupnav__anchor:hover,
+.groupnav__anchor:focus {
     color: currentcolor;
 
     background-color: #e9f0ee;
@@ -321,7 +392,6 @@ button,
     border: none;
 }
 
-/** TODO à finir */
 .alert--info {
     color: #061309;
 
@@ -333,11 +403,8 @@ button,
     color: currentcolor;
 }
 
-.section__title {
-    font-family: Raleway, system-ui, sans-serif;
-}
-
 .section__title h1 {
+    font-size: 1.5em;
     line-height: 1.1;
 }
 
@@ -346,7 +413,7 @@ button,
     height: 2px;
     margin-top: 0.2em;
 
-    background: linear-gradient(to right, #fdfcff, #00d7ad, #fdfcff);
+    background: #73dabb;
 }
 
 .spinner {
@@ -360,4 +427,33 @@ select {
 select:not([disabled]):hover,
 select:not([disabled]):focus {
     background-color: #fff;
+}
+
+input[type="radio"]:focus + label::before,
+input[type="checkbox"]:focus + label::before {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
+input[type="checkbox"] + .topics-selector__label {
+    border: 1px solid currentcolor;
+}
+
+input[type="checkbox"]:focus + .topics-selector__label {
+    box-shadow: none;
+
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
+input[type="checkbox"]:focus + .topics-selector__label::before {
+    outline-color: transparent;
+}
+
+input[type="checkbox"]:checked + .topics-selector__label {
+    border-color: transparent;
+}
+
+.share {
+    background: #f7f6f4;
 }
