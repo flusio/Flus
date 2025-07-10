@@ -424,3 +424,138 @@ $ curl -H "Content-Type: application/json" \
        -X DELETE \
        https://app.flus.fr/api/v1/links/<link_id>/collections/<collection_id>
 ```
+
+## List the notes of a link
+
+```http
+GET /api/v1/:link_id/notes
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X GET \
+       https://app.flus.fr/api/v1/links/<link_id>/notes
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+[
+   {
+      "created_at": "2025-07-12T09:00:00+00:00",
+      "html_content": "<p>This is very interesting! <a href=\"https://app.flus.fr/links?q=%23tool\">#tool</a> <a href=\"https://app.flus.fr/links?q=%23FreeSoftware\">#FreeSoftware</a></p>",
+      "id": "b52cfda703268bf56540ffaa13ee8279",
+      "tags": [
+         "tool",
+         "FreeSoftware"
+      ],
+      "user": {
+         "username": "Alix Hambourg"
+      }
+   }
+]
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+`403 Forbidden` if the user doesn't have access to the link:
+
+```json
+{
+    "error": "You cannot list the notes of the link."
+}
+```
+
+`404 Not Found` if the link does not exist:
+
+```json
+{
+    "error": "The link does not exist."
+}
+```
+
+## Add a note to a link
+
+```http
+POST /api/v1/links/:link_id/notes
+```
+
+### JSON Parameters
+
+- `content` (string, required): the content of the note, formatted as Markdown
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X POST \
+       -d '{"content": "This is very interesting! #tools #FreeSoftware"}' \
+       https://app.flus.fr/api/v1/links/<link_id>/notes
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+{
+  "created_at": "2025-07-12T09:00:00+00:00",
+  "html_content": "<p>This is very interesting! <a href=\"https://app.flus.fr/links?q=%23tool\">#tool</a> <a href=\"https://app.flus.fr/links?q=%23FreeSoftware\">#FreeSoftware</a></p>",
+  "id": "b52cfda703268bf56540ffaa13ee8279",
+  "tags": [
+     "tool",
+     "FreeSoftware"
+  ],
+  "user": {
+     "username": "Alix Hambourg"
+  }
+}
+```
+
+`400 Bad Request` if the content is empty:
+
+```json
+{
+    "errors": {
+        "content": [
+            {"code": "presence", "description": "The message is required."}
+        ]
+    }
+}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+`403 Forbidden` if the user doesn't have access to the link:
+
+```json
+{
+    "error": "You cannot add notes to the link."
+}
+```
+
+`404 Not Found` if the link does not exist:
+
+```json
+{
+    "error": "The link does not exist."
+}
+```

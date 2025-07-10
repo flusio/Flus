@@ -122,4 +122,19 @@ class Note
 
         return self::fromDatabaseRows($statement->fetchAll());
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toJson(): array
+    {
+        $message_user = $this->user();
+        return [
+            'id' => $this->id,
+            'created_at' => $this->created_at->format(\DateTime::ATOM),
+            'content' => $this->content,
+            'html_content' => $this->contentAsHtml(),
+            'tags' => $this->tags(),
+        ];
+    }
 }
