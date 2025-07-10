@@ -222,6 +222,8 @@ class Router
             '/api/v1/links/:link_id/collections/:collection_id',
             'api/v1/links/Collections#delete'
         );
+        $router->addRoute('GET', '/api/v1/links/:link_id/notes', 'api/v1/links/Notes#index');
+        $router->addRoute('POST', '/api/v1/links/:link_id/notes', 'api/v1/links/Notes#create');
         $router->addRoute('OPTIONS', '/api/*', 'api/v1/BaseController#options');
 
         return $router;

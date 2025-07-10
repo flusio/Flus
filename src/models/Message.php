@@ -102,4 +102,21 @@ class Message
         $markdown = new utils\MiniMarkdown();
         return $markdown->text($this->content);
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toJson(): array
+    {
+        $message_user = $this->user();
+        return [
+            'id' => $this->id,
+            'created_at' => $this->created_at->format(\DateTime::ATOM),
+            'user' => [
+                'username' => $message_user->username,
+            ],
+            'html_content' => $this->contentAsHtml(),
+            'tags' => $this->tags(),
+        ];
+    }
 }
