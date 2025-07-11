@@ -73,6 +73,16 @@ class Note
     }
 
     /**
+     * Return the list of tags in the message.
+     *
+     * @return string[]
+     */
+    public function tags(): array
+    {
+        return utils\Tag::extract($this->content);
+    }
+
+    /**
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt

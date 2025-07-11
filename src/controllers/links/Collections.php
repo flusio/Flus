@@ -8,7 +8,6 @@ use App\auth;
 use App\controllers\BaseController;
 use App\jobs;
 use App\models;
-use App\services;
 use App\utils;
 
 /**
@@ -183,7 +182,7 @@ class Collections extends BaseController
             models\LinkToCollection::markAsRead($user, [$link->id]);
         }
 
-        services\LinkTags::refresh($link);
+        $link->refreshTags();
 
         $mastodon_configured = models\MastodonAccount::existsBy([
             'user_id' => $user->id,

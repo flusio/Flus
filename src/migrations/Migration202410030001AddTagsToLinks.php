@@ -3,7 +3,6 @@
 namespace App\migrations;
 
 use App\models;
-use App\services;
 
 class Migration202410030001AddTagsToLinks
 {
@@ -26,7 +25,7 @@ class Migration202410030001AddTagsToLinks
         $links = models\Link::fromDatabaseRows($statement->fetchAll());
 
         foreach ($links as $link) {
-            services\LinkTags::refresh($link);
+            $link->refreshTags();
         }
 
         return true;
