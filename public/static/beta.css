@@ -416,6 +416,12 @@ button[disabled] {
     background: #73dabb;
 }
 
+@media (min-width: 800px) {
+    .section__image {
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
+}
+
 .spinner {
     background-color: #21e0b6;
 }
@@ -456,4 +462,9 @@ input[type="checkbox"]:checked + .topics-selector__label {
 
 .share {
     background: #f7f6f4;
+}
+
+.turbo-progress-bar {
+    background: linear-gradient(to right, #00d7ad, #0c3b34);
+    border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
 }
