@@ -8,7 +8,6 @@ use App\auth;
 use App\controllers\BaseController;
 use App\jobs;
 use App\models;
-use App\services;
 
 /**
  * Handle the requests related to the notes.
@@ -95,7 +94,7 @@ class Notes extends BaseController
 
         $note->save();
 
-        services\LinkTags::refresh($link);
+        $link->refreshTags();
 
         if ($mastodon_configured && $share_on_mastodon) {
             $share_on_mastodon_job = new jobs\ShareOnMastodon();

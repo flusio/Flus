@@ -2,7 +2,7 @@
 
 namespace App\utils;
 
-use App\services;
+use App\utils;
 
 /**
  * An extension to the Parsedown library.
@@ -70,7 +70,7 @@ class MiniMarkdown extends \Parsedown
      */
     protected function inlineTag(array $excerpt): ?array
     {
-        $result = preg_match(services\LinkTags::TAG_REGEX, $excerpt['text'], $matches);
+        $result = preg_match(utils\Tag::TAG_REGEX, $excerpt['text'], $matches);
 
         if ($result) {
             $tag = $matches['tag'];

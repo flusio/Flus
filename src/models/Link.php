@@ -121,6 +121,18 @@ class Link
         $this->user_id = $user_id;
     }
 
+    public function refreshTags(): void
+    {
+        $tags = [];
+
+        foreach ($this->notes() as $note) {
+            $tags = array_merge($tags, $note->tags());
+        }
+
+        $this->setTags($tags);
+        $this->save();
+    }
+
     /**
      * @param string[] $tags
      */

@@ -6,7 +6,6 @@ use Minz\Request;
 use Minz\Response;
 use App\auth;
 use App\models;
-use App\services;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -98,7 +97,7 @@ class Notes extends BaseController
 
         $note->save();
 
-        services\LinkTags::refresh($note->link());
+        $note->link()->refreshTags();
 
         return Response::found($from);
     }
@@ -136,9 +135,11 @@ class Notes extends BaseController
             return Response::found($redirect_to);
         }
 
-        models\Note::delete($note->id);
+        $link = $note->link();
 
-        services\LinkTags::refresh($note->link());
+        $note->remove();
+
+        $link->refreshTags();
 
         return Response::found($redirect_to);
     }
