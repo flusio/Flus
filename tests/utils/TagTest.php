@@ -1,16 +1,16 @@
 <?php
 
-namespace App\services;
+namespace App\utils;
 
-class LinkTagsTest extends \PHPUnit\Framework\TestCase
+class TagTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param string[] $expected_tags
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('tags')]
-    public function testExtractTags(string $content, array $expected_tags): void
+    public function testExtract(string $content, array $expected_tags): void
     {
-        $tags = LinkTags::extractTags($content);
+        $tags = Tag::extract($content);
 
         $this->assertSame(count($expected_tags), count($tags));
         foreach ($tags as $tag) {

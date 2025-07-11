@@ -6,7 +6,6 @@ use Minz\Request;
 use Minz\Response;
 use App\auth;
 use App\models;
-use App\services;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -98,7 +97,7 @@ class Messages extends BaseController
 
         $message->save();
 
-        services\LinkTags::refresh($message->link());
+        $message->link()->refreshTags();
 
         return Response::found($from);
     }
@@ -138,7 +137,7 @@ class Messages extends BaseController
 
         models\Message::delete($message->id);
 
-        services\LinkTags::refresh($message->link());
+        $message->link()->refreshTags();
 
         return Response::found($redirect_to);
     }
