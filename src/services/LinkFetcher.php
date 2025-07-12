@@ -221,8 +221,8 @@ class LinkFetcher
             return true;
         }
 
-        $in_error = $link->fetched_code < 200 || $link->fetched_code >= 300;
-        $reached_max_retries = $link->fetched_count > 25;
+        $in_error = $link->fetched_code >= 400;
+        $reached_max_retries = $link->fetched_count > 5;
         $should_retry = $in_error && !$reached_max_retries;
 
         return $should_retry;

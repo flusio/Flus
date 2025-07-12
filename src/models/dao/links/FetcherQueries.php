@@ -83,7 +83,7 @@ trait FetcherQueries
             WHERE to_be_fetched = true
             AND (
                 fetched_at IS NULL
-                OR fetched_at < (?::timestamptz - interval '1 second' * (5 + pow(fetched_count, 4)))
+                OR fetched_at < (?::timestamptz - interval '1 second' * (60 + pow(fetched_count, 5)))
             )
             ORDER BY random()
             LIMIT ?
@@ -111,7 +111,7 @@ trait FetcherQueries
             WHERE to_be_fetched = true
             AND (
                 fetched_at IS NULL
-                OR fetched_at < (?::timestamptz - interval '1 second' * (5 + pow(fetched_count, 4)))
+                OR fetched_at < (?::timestamptz - interval '1 second' * (60 + pow(fetched_count, 5)))
             )
         SQL;
 

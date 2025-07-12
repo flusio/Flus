@@ -373,7 +373,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link->to_be_fetched = true;
         $link->fetched_code = 404;
         /** @var int */
-        $fetched_count = $this->fake('numberBetween', 1, 25);
+        $fetched_count = $this->fake('numberBetween', 1, 5);
         $link->fetched_count = $fetched_count;
         /** @var \DateTimeImmutable */
         $fetched_at = $this->fake('dateTime');
@@ -390,7 +390,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link->to_be_fetched = true;
         $link->fetched_code = 200;
         /** @var int */
-        $fetched_count = $this->fake('numberBetween', 1, 25);
+        $fetched_count = $this->fake('numberBetween', 1, 5);
         $link->fetched_count = $fetched_count;
         /** @var \DateTimeImmutable */
         $fetched_at = $this->fake('dateTime');
@@ -407,7 +407,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $link->to_be_fetched = true;
         $link->fetched_code = 404;
         /** @var int */
-        $fetched_count = $this->fake('numberBetween', 26, 42);
+        $fetched_count = $this->fake('numberBetween', 6, 42);
         $link->fetched_count = $fetched_count;
         /** @var \DateTimeImmutable */
         $fetched_at = $this->fake('dateTime');
