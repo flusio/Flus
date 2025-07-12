@@ -2,8 +2,6 @@
 
 ## Get an access token
 
-Create a new session and get an access token:
-
 ```http
 POST /api/v1/sessions
 ```
@@ -13,6 +11,15 @@ POST /api/v1/sessions
 - `email` (string, required): the email of the user to authenticate
 - `password` (string, required): the password of the user to authenticate
 - `app_name` (string, required): the name of the application making the request
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -X POST \
+       -d '{"email": "alix@example.org", "password": "secret", "app_name": "curl request"}' \
+       https://app.flus.fr/api/v1/sessions
+```
 
 ### Response
 
@@ -48,18 +55,7 @@ POST /api/v1/sessions
 }
 ```
 
-### Example
-
-```console
-$ curl -H "Content-Type: application/json" \
-       -X POST \
-       -d '{"email": "alix@example.org", "password": "secret", "app_name": "curl request"}' \
-       https://app.flus.fr/api/v1/sessions
-```
-
 ## Search link information
-
-Retrieve link information by URL:
 
 ```http
 POST /api/v1/search
@@ -68,6 +64,16 @@ POST /api/v1/search
 ### JSON Parameters
 
 - `url` (string, required): a valid HTTP or HTTPS URL
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X POST \
+       -d '{"url": "https://flus.fr"}' \
+       https://app.flus.fr/api/v1/search
+```
 
 ### Response
 
@@ -110,54 +116,10 @@ POST /api/v1/search
 }
 ```
 
-### Example
-
-```console
-$ curl -H "Content-Type: application/json" \
-       -H "Authorization: Bearer <token>" \
-       -X POST \
-       -d '{"url": "https://flus.fr"}' \
-       https://app.flus.fr/api/v1/search
-```
-
 ## Mark a link as read
-
-Mark a link as read for the authenticated user:
 
 ```http
 POST /api/v1/links/:id/read
-```
-
-### Response
-
-`200 OK` on success:
-
-```json
-{}
-```
-
-`404 Not Found` if the link doesn’t exist:
-
-```json
-{
-    "error": "The link does not exist."
-}
-```
-
-`403 Forbidden` if the user doesn't have access to the link:
-
-```json
-{
-    "error": "You cannot update the link."
-}
-```
-
-`401 Unauthorized` if the request is not authenticated:
-
-```json
-{
-    "error": "The request is not authenticated."
-}
 ```
 
 ### Example
@@ -169,14 +131,6 @@ $ curl -H "Content-Type: application/json" \
        https://app.flus.fr/api/v1/links/<id>/read
 ```
 
-## Unmark a link as read
-
-Unmark a link as read for the authenticated user:
-
-```http
-DELETE /api/v1/links/:id/read
-```
-
 ### Response
 
 `200 OK` on success:
@@ -185,11 +139,11 @@ DELETE /api/v1/links/:id/read
 {}
 ```
 
-`404 Not Found` if the link doesn’t exist:
+`401 Unauthorized` if the request is not authenticated:
 
 ```json
 {
-    "error": "The link does not exist."
+    "error": "The request is not authenticated."
 }
 ```
 
@@ -201,12 +155,18 @@ DELETE /api/v1/links/:id/read
 }
 ```
 
-`401 Unauthorized` if the request is not authenticated:
+`404 Not Found` if the link doesn’t exist:
 
 ```json
 {
-    "error": "The request is not authenticated."
+    "error": "The link does not exist."
 }
+```
+
+## Unmark a link as read
+
+```http
+DELETE /api/v1/links/:id/read
 ```
 
 ### Example
@@ -218,14 +178,6 @@ $ curl -H "Content-Type: application/json" \
        https://app.flus.fr/api/v1/links/<id>/read
 ```
 
-## Mark a link to read later
-
-Mark a link to read later for the authenticated user:
-
-```http
-POST /api/v1/links/:id/later
-```
-
 ### Response
 
 `200 OK` on success:
@@ -234,11 +186,11 @@ POST /api/v1/links/:id/later
 {}
 ```
 
-`404 Not Found` if the link doesn’t exist or cannot be updated by the authenticated user:
+`401 Unauthorized` if the request is not authenticated:
 
 ```json
 {
-    "error": "The link does not exist."
+    "error": "The request is not authenticated."
 }
 ```
 
@@ -250,12 +202,18 @@ POST /api/v1/links/:id/later
 }
 ```
 
-`401 Unauthorized` if the request is not authenticated:
+`404 Not Found` if the link doesn’t exist:
 
 ```json
 {
-    "error": "The request is not authenticated."
+    "error": "The link does not exist."
 }
+```
+
+## Mark a link to read later
+
+```http
+POST /api/v1/links/:id/later
 ```
 
 ### Example
@@ -267,12 +225,51 @@ $ curl -H "Content-Type: application/json" \
        https://app.flus.fr/api/v1/links/<id>/later
 ```
 
-## List the collections
+### Response
 
-List the collections of the authenticated user:
+`200 OK` on success:
+
+```json
+{}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+`403 Forbidden` if the user doesn't have access to the link:
+
+```json
+{
+    "error": "You cannot update the link."
+}
+```
+
+`404 Not Found` if the link doesn’t exist or cannot be updated by the authenticated user:
+
+```json
+{
+    "error": "The link does not exist."
+}
+```
+
+## List the collections
 
 ```http
 GET /api/v1/collections
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X GET \
+       https://app.flus.fr/api/v1/collections
 ```
 
 ### Response
@@ -306,59 +303,10 @@ GET /api/v1/collections
 }
 ```
 
-### Example
-
-```console
-$ curl -H "Content-Type: application/json" \
-       -H "Authorization: Bearer <token>" \
-       -X GET \
-       https://app.flus.fr/api/v1/collections
-```
-
 ## Add a collection to a link
-
-Add a collection to a link:
 
 ```http
 PUT /api/v1/links/:link_id/collections/:collection_id
-```
-
-### Response
-
-`200 OK` on success:
-
-```json
-{}
-```
-
-`404 Not Found` if the link or the collection don’t exist:
-
-```json
-{
-    "error": "The link does not exist."
-}
-```
-
-```json
-{
-    "error": "The collection does not exist."
-}
-```
-
-`403 Forbidden` if the user doesn't have access to the link or the collection:
-
-```json
-{
-    "error": "You cannot update the link."
-}
-```
-
-`401 Unauthorized` if the request is not authenticated:
-
-```json
-{
-    "error": "The request is not authenticated."
-}
 ```
 
 ### Example
@@ -370,20 +318,28 @@ $ curl -H "Content-Type: application/json" \
        https://app.flus.fr/api/v1/links/<link_id>/collections/<collection_id>
 ```
 
-## Remove a collection from a link
-
-Remove a collection from a link:
-
-```http
-DELETE /api/v1/links/:link_id/collections/:collection_id
-```
-
 ### Response
 
 `200 OK` on success:
 
 ```json
 {}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+`403 Forbidden` if the user doesn't have access to the link or the collection:
+
+```json
+{
+    "error": "You cannot update the link."
+}
 ```
 
 `404 Not Found` if the link or the collection don’t exist:
@@ -400,12 +356,27 @@ DELETE /api/v1/links/:link_id/collections/:collection_id
 }
 ```
 
-`403 Forbidden` if the user doesn't have access to the link or the collection:
+## Remove a collection from a link
+
+```http
+DELETE /api/v1/links/:link_id/collections/:collection_id
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X DELETE \
+       https://app.flus.fr/api/v1/links/<link_id>/collections/<collection_id>
+```
+
+### Response
+
+`200 OK` on success:
 
 ```json
-{
-    "error": "You cannot update the link."
-}
+{}
 ```
 
 `401 Unauthorized` if the request is not authenticated:
@@ -416,13 +387,26 @@ DELETE /api/v1/links/:link_id/collections/:collection_id
 }
 ```
 
-### Example
+`403 Forbidden` if the user doesn't have access to the link or the collection:
 
-```console
-$ curl -H "Content-Type: application/json" \
-       -H "Authorization: Bearer <token>" \
-       -X DELETE \
-       https://app.flus.fr/api/v1/links/<link_id>/collections/<collection_id>
+```json
+{
+    "error": "You cannot update the link."
+}
+```
+
+`404 Not Found` if the link or the collection don’t exist:
+
+```json
+{
+    "error": "The link does not exist."
+}
+```
+
+```json
+{
+    "error": "The collection does not exist."
+}
 ```
 
 ## List the notes of a link
