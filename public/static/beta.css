@@ -143,14 +143,13 @@ legend {
 }
 
 .card__body:first-child {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 .card__body:last-child,
 .card__footer {
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
 }
 
 .link .link__image-container {
