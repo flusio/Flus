@@ -334,9 +334,9 @@ button[disabled] {
 
 .groupnav__anchor:hover,
 .groupnav__anchor:focus {
-    color: currentcolor;
+    color: #004635;
 
-    background-color: #e9f0ee;
+    background-color: #caf1e3;
 }
 
 .sticker {
@@ -493,4 +493,37 @@ input[type="checkbox"]:checked + .topics-selector__label {
 .turbo-progress-bar {
     background: linear-gradient(to right, #00d7ad, #0c3b34);
     border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+}
+
+.popup__container {
+    background: #f7f6f4;
+    box-shadow: 0 -2px 8px 1px rgb(0 0 0 / 20%);
+}
+
+@media (min-width: 800px) {
+    .popup__container {
+        box-shadow: 0 0 8px 1px rgb(0 0 0 / 20%);
+        border-radius: var(--border-radius);
+    }
+}
+
+.popup__item {
+    border: none;
+    border-radius: var(--border-radius);
+}
+
+.popup__item:focus,
+.popup__item:hover {
+    color: #004635;
+
+    background-color: #caf1e3;
+}
+
+.popup__item:focus {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
+.popup__separator {
+    background-color: #c5cfcc;
 }
