@@ -1,5 +1,16 @@
 # Changelog of Flus
 
+## 2025-07-12 - v1.2.6
+
+### Technical
+
+- Decrease links refetching duration ([02cdc8c6](https://github.com/flusio/Flus/commit/02cdc8c6))
+- Update the dependencies ([6166a470](https://github.com/flusio/Flus/commit/6166a470))
+
+### Beta
+
+- Improve the design according to the website theme ([9bacb7c3](https://github.com/flusio/Flus/commit/9bacb7c3), [fa2f49ed](https://github.com/flusio/Flus/commit/fa2f49ed), [bfcf5d7a](https://github.com/flusio/Flus/commit/bfcf5d7a), [8a1d1c3f](https://github.com/flusio/Flus/commit/8a1d1c3f), [84c80ec0](https://github.com/flusio/Flus/commit/84c80ec0), [775c11e8](https://github.com/flusio/Flus/commit/775c11e8), [89c7f726](https://github.com/flusio/Flus/commit/89c7f726))
+
 ## 2025-06-09 - v1.2.5
 
 ### Improvements
