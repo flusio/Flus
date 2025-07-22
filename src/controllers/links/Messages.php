@@ -60,8 +60,8 @@ class Messages extends BaseController
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('link', ['id' => $link_id]));
 
         $link = models\Link::find($link_id);
-        $can_comment = $link && auth\LinksAccess::canComment($user, $link);
-        if (!$can_comment) {
+        $can_update = $link && auth\LinksAccess::canUpdate($user, $link);
+        if (!$can_update) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -73,7 +73,7 @@ class Messages extends BaseController
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
-                'can_comment' => $can_comment,
+                'can_update' => $can_update,
                 'comment' => $content,
                 'share_on_mastodon' => $share_on_mastodon,
                 'mastodon_configured' => $mastodon_configured,
@@ -87,7 +87,7 @@ class Messages extends BaseController
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
                 'messages' => $link->messages(),
-                'can_comment' => $can_comment,
+                'can_update' => $can_update,
                 'comment' => $content,
                 'share_on_mastodon' => $share_on_mastodon,
                 'mastodon_configured' => $mastodon_configured,

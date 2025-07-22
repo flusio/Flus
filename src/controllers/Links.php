@@ -115,7 +115,7 @@ class Links extends BaseController
         }
 
         $can_view = auth\LinksAccess::canView($user, $link);
-        $can_comment = auth\LinksAccess::canComment($user, $link);
+        $can_update = auth\LinksAccess::canUpdate($user, $link);
         if (!$can_view && $user) {
             return Response::notFound('not_found.phtml');
         } elseif (!$can_view) {
@@ -137,7 +137,7 @@ class Links extends BaseController
         return Response::ok('links/show.phtml', [
             'link' => $link,
             'messages' => $messages,
-            'can_comment' => $can_comment,
+            'can_update' => $can_update,
             'comment' => '',
             'share_on_mastodon' => false,
             'mastodon_configured' => $mastodon_configured,

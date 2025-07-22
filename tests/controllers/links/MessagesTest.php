@@ -69,43 +69,6 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['foo' => 'foo', 'bar' => 'Bar'], $link->tags);
     }
 
-    public function testCreateWorksIfLinkIsInCollectionSharedWithWriteAccess(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        $link = LinkFactory::create([
-            'user_id' => $other_user->id,
-        ]);
-        $collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        CollectionShareFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-            'type' => 'write',
-        ]);
-        $content = $this->fake('paragraphs', 3, true);
-
-        $this->assertSame(0, models\Message::count());
-
-        $response = $this->appRun('POST', "/links/{$link->id}/messages", [
-            'csrf' => \App\Csrf::generate(),
-            'content' => $content,
-        ]);
-
-        $this->assertResponseCode($response, 302, "/links/{$link->id}");
-        $this->assertSame(1, models\Message::count());
-        $message = models\Message::take();
-        $this->assertNotNull($message);
-        $this->assertSame($content, $message->content);
-        $this->assertSame($user->id, $message->user_id);
-        $this->assertSame($link->id, $message->link_id);
-    }
-
     public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
@@ -131,38 +94,6 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-        ]);
-        $content = $this->fake('paragraphs', 3, true);
-
-        $this->assertSame(0, models\Message::count());
-
-        $response = $this->appRun('POST', "/links/{$link->id}/messages", [
-            'csrf' => \App\Csrf::generate(),
-            'content' => $content,
-        ]);
-
-        $this->assertResponseCode($response, 404);
-        $this->assertSame(0, models\Message::count());
-    }
-
-    public function testCreateFailsIfLinkIsInCollectionSharedWithReadAccess(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        $link = LinkFactory::create([
-            'user_id' => $other_user->id,
-        ]);
-        $collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        CollectionShareFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-            'type' => 'read',
         ]);
         $content = $this->fake('paragraphs', 3, true);
 

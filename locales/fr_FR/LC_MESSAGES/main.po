@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-06-01 17:07+0200\n"
-"PO-Revision-Date: 2025-06-01 17:07+0200\n"
+"POT-Creation-Date: 2025-07-22 17:46+0200\n"
+"PO-Revision-Date: 2025-07-22 17:47+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -71,7 +71,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Groups.php:151 controllers/Importations.php:45
 #: controllers/Links.php:472 controllers/Mastodon.php:75
 #: controllers/Messages.php:88 controllers/Messages.php:135
-#: controllers/Sessions.php:146 controllers/collections/Read.php:85
+#: controllers/Sessions.php:136 controllers/collections/Read.php:85
 #: controllers/collections/Read.php:163 controllers/collections/Read.php:235
 #: controllers/importations/Opml.php:69 controllers/importations/Pocket.php:100
 #: controllers/importations/Pocket.php:141
@@ -115,7 +115,7 @@ msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: controllers/Passwords.php:80 forms/Login.php:36
+#: controllers/Passwords.php:80 forms/Login.php:50
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
@@ -194,7 +194,7 @@ msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
 #: controllers/my/Account.php:101 controllers/my/Security.php:203
-#: forms/Login.php:45
+#: forms/Login.php:59
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -237,7 +237,7 @@ msgstr ""
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: forms/Login.php:54
+#: forms/Login.php:68
 msgid "What are you trying to do? You can’t login to the support account."
 msgstr ""
 "Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
@@ -471,48 +471,48 @@ msgstr "%s sur %s"
 msgid "This email has been sent by %s (%s)"
 msgstr "Ce courriel a été envoyé par %s (%s)"
 
-#: utils/view_helpers.php:61
+#: utils/view_helpers.php:64
 #, php-format
 msgid "%d link per day"
 msgid_plural "%d links per day"
 msgstr[0] "%d lien par jour"
 msgstr[1] "%d liens par jour"
 
-#: utils/view_helpers.php:65
+#: utils/view_helpers.php:68
 #, php-format
 msgid "%d link per week"
 msgid_plural "%d links per week"
 msgstr[0] "%d lien par semaine"
 msgstr[1] "%d liens par semaine"
 
-#: utils/view_helpers.php:69
+#: utils/view_helpers.php:72
 #, php-format
 msgid "%d link per month"
 msgid_plural "%d links per month"
 msgstr[0] "%d lien par mois"
 msgstr[1] "%d liens par mois"
 
-#: utils/view_helpers.php:73
+#: utils/view_helpers.php:76
 #, php-format
 msgid "%d link per year"
 msgid_plural "%d links per year"
 msgstr[0] "%d lien par an"
 msgstr[1] "%d liens par an"
 
-#: utils/view_helpers.php:76
+#: utils/view_helpers.php:79
 msgid "Inactive"
 msgstr "Inactif"
 
-#: utils/view_helpers.php:122
+#: utils/view_helpers.php:125
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:124
+#: utils/view_helpers.php:127
 #, php-format
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:251
+#: utils/view_helpers.php:258
 msgid "you"
 msgstr "vous"
 
@@ -583,18 +583,18 @@ msgstr "L’écran des signets de %s sur mobile"
 msgid "Error: "
 msgstr "Erreur : "
 
-#: views/_layouts/connected.phtml:45 views/_layouts/connected_blocked.phtml:41
+#: views/_layouts/connected.phtml:48 views/_layouts/connected_blocked.phtml:41
 #: views/_layouts/not_connected.phtml:59 views/_layouts/onboarding.phtml:41
 msgid "Skip to main content"
 msgstr "Accéder au contenu principal"
 
-#: views/_layouts/connected.phtml:52 views/_layouts/connected_blocked.phtml:48
+#: views/_layouts/connected.phtml:55 views/_layouts/connected_blocked.phtml:48
 #: views/_layouts/not_connected.phtml:66 views/_layouts/onboarding.phtml:48
 #, php-format
 msgid "You need to activate JavaScript in order to use %s."
 msgstr "Vous devez activer JavaScript pour utiliser %s."
 
-#: views/_layouts/connected.phtml:60 views/_layouts/connected_blocked.phtml:56
+#: views/_layouts/connected.phtml:63 views/_layouts/connected_blocked.phtml:56
 #: views/_layouts/not_connected.phtml:74
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
@@ -602,77 +602,77 @@ msgstr ""
 "Vous utilisez une version de démo de %s, les données sont réinitialisées "
 "chaque nuit."
 
-#: views/_layouts/connected.phtml:68 views/_layouts/connected_blocked.phtml:64
+#: views/_layouts/connected.phtml:71 views/_layouts/connected_blocked.phtml:64
 msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
-#: views/_layouts/connected.phtml:85
+#: views/_layouts/connected.phtml:88
 msgid "Reading"
 msgstr "Lecture"
 
-#: views/_layouts/connected.phtml:96 views/links/index.phtml:3
+#: views/_layouts/connected.phtml:99 views/links/index.phtml:3
 #: views/links/index.phtml:19
 msgid "My links"
 msgstr "Mes liens"
 
-#: views/_layouts/connected.phtml:107 views/feeds/index.phtml:3
+#: views/_layouts/connected.phtml:110 views/feeds/index.phtml:3
 #: views/feeds/index.phtml:15
 msgid "Feeds"
 msgstr "Flux"
 
-#: views/_layouts/connected.phtml:120 views/collections/_selector.phtml:83
+#: views/_layouts/connected.phtml:123 views/collections/_selector.phtml:90
 #: views/collections/groups/edit.phtml:88 views/links/searches/show.phtml:9
 #: views/links/searches/show.phtml:21
 msgid "New"
 msgstr "Nouveau"
 
-#: views/_layouts/connected.phtml:129 views/_layouts/connected.phtml:132
+#: views/_layouts/connected.phtml:132 views/_layouts/connected.phtml:135
 #: views/_layouts/connected_blocked.phtml:87
 #: views/_layouts/connected_blocked.phtml:90
 #, php-format
 msgid "Menu of %s"
 msgstr "Menu de %s"
 
-#: views/_layouts/connected.phtml:149
+#: views/_layouts/connected.phtml:152
 #: views/_layouts/connected_blocked.phtml:107 views/my/profile/edit.phtml:3
 #: views/my/profile/edit.phtml:13
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:159
+#: views/_layouts/connected.phtml:162
 #: views/_layouts/connected_blocked.phtml:117 views/my/preferences/edit.phtml:3
 #: views/my/preferences/edit.phtml:12
 msgid "Preferences"
 msgstr "Préférences"
 
-#: views/_layouts/connected.phtml:169
+#: views/_layouts/connected.phtml:172
 #: views/_layouts/connected_blocked.phtml:127 views/my/account/show.phtml:3
 #: views/my/account/show.phtml:11
 msgid "Account & data"
 msgstr "Compte & données"
 
-#: views/_layouts/connected.phtml:181
+#: views/_layouts/connected.phtml:184
 #: views/_layouts/connected_blocked.phtml:139 views/pages/addons.phtml:3
 #: views/pages/addons.phtml:11
 msgid "Add-ons"
 msgstr "Extensions"
 
-#: views/_layouts/connected.phtml:191
+#: views/_layouts/connected.phtml:194
 #: views/_layouts/connected_blocked.phtml:149 views/support/show.phtml:3
 #: views/support/show.phtml:12
 msgid "Help & support"
 msgstr "Aide & support"
 
-#: views/_layouts/connected.phtml:200
+#: views/_layouts/connected.phtml:203
 #: views/_layouts/connected_blocked.phtml:158
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:234 views/_layouts/connected.phtml:235
+#: views/_layouts/connected.phtml:237 views/_layouts/connected.phtml:238
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:243 views/links/searches/show.phtml:59
+#: views/_layouts/connected.phtml:246 views/links/searches/show.phtml:59
 #: views/links/searches/show.phtml:75
 msgid "Search"
 msgstr "Rechercher"
@@ -804,7 +804,7 @@ msgstr "Retour à la page d’accueil"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:31
+#: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:36
 #: views/collections/show.phtml:216 views/collections/show_public.phtml:236
 #: views/links/searches/show.phtml:118 views/news/index.phtml:18
 #: views/news/index.phtml:121 views/read/index.phtml:29
@@ -818,31 +818,31 @@ msgstr[1] "%s liens"
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/collections/_collection.phtml:18 views/links/searches/show.phtml:113
+#: views/collections/_collection.phtml:23 views/links/searches/show.phtml:113
 #, php-format
 msgid "Feed %s"
 msgstr "Flux %s"
 
-#: views/collections/_collection.phtml:20 views/collections/_selector.phtml:48
+#: views/collections/_collection.phtml:25 views/collections/_selector.phtml:55
 #, php-format
 msgid "By %s"
 msgstr "Par %s"
 
-#: views/collections/_collection.phtml:29 views/links/searches/show.phtml:116
+#: views/collections/_collection.phtml:34 views/links/searches/show.phtml:116
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/_collection.phtml:47 views/collections/_selector.phtml:134
+#: views/collections/_collection.phtml:52 views/collections/_selector.phtml:141
 #: views/collections/show.phtml:59
 msgid "public"
 msgstr "publique"
 
-#: views/collections/_collection.phtml:49 views/collections/show.phtml:59
+#: views/collections/_collection.phtml:54 views/collections/show.phtml:59
 #: views/collections/show_public.phtml:98
 msgid "private"
 msgstr "privée"
 
-#: views/collections/_collection.phtml:55 views/collections/show.phtml:64
+#: views/collections/_collection.phtml:60 views/collections/show.phtml:64
 #: views/collections/show_public.phtml:89
 #: views/collections/show_public.phtml:104 views/links/searches/show.phtml:124
 msgid "Publication frequency"
@@ -860,42 +860,42 @@ msgid ""
 msgstr ""
 "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong> (partagée par %s)."
 
-#: views/collections/_selector.phtml:41 views/links/index.phtml:79
+#: views/collections/_selector.phtml:48 views/links/index.phtml:79
 msgid "Shared with me"
 msgstr "Partagées avec moi"
 
-#: views/collections/_selector.phtml:70
+#: views/collections/_selector.phtml:77
 msgid "Select a collection"
 msgstr "Sélectionner une collection"
 
-#: views/collections/_selector.phtml:91
+#: views/collections/_selector.phtml:98
 msgid "What do you want to name the collection?"
 msgstr "Comment voulez-vous nommer la collection ?"
 
-#: views/collections/_selector.phtml:93 views/collections/edit.phtml:31
+#: views/collections/_selector.phtml:100 views/collections/edit.phtml:31
 #: views/collections/groups/edit.phtml:39 views/collections/new.phtml:30
 #: views/groups/edit.phtml:25 views/mastodon/show.phtml:61
 #, php-format
 msgid "(max. %d characters)"
 msgstr "(max. %d caractères)"
 
-#: views/collections/_selector.phtml:109
+#: views/collections/_selector.phtml:116
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/collections/_selector.phtml:113
+#: views/collections/_selector.phtml:120
 msgid "Cancel the creation of the collection"
 msgstr "Annuler la création de la collection"
 
-#: views/collections/_selector.phtml:117
+#: views/collections/_selector.phtml:124
 msgid "Cancel"
 msgstr "Annuler"
 
-#: views/collections/_selector.phtml:135
+#: views/collections/_selector.phtml:142
 msgid "new"
 msgstr "nouvelle"
 
-#: views/collections/_selector.phtml:146
+#: views/collections/_selector.phtml:153
 msgid "Unselect"
 msgstr "Désélectionner"
 
@@ -1128,11 +1128,11 @@ msgstr ""
 msgid ""
 "Sharing read and write access with other users gives them access to the "
 "whole collection, <strong>including their hidden links,</strong> and they "
-"can modify information, add links or comment them."
+"can modify information or add links."
 msgstr ""
 "Partager l’accès en lecture et écriture donne accès à l’ensemble de la "
 "collection, <strong>liens masqués inclus,</strong> et ils et elles peuvent "
-"en modifier les informations, ajouter des liens ou les commenter."
+"en modifier les informations ou ajouter des liens."
 
 #: views/collections/shares/index.phtml:121
 msgid "Shared with:"
@@ -2242,11 +2242,11 @@ msgid ""
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
-#: views/news/index.phtml:277
+#: views/news/index.phtml:278
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: views/news/index.phtml:297
+#: views/news/index.phtml:298
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
 
