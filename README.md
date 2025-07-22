@@ -1,7 +1,7 @@
 <h1 align="center">Flus</h1>
 
 <p align="center">
-    <strong>Collect, organise, comment on and share links from around the Web.</strong>
+    <strong>Collect, organise, annotate on and share links from around the Web.</strong>
 </p>
 
 ---

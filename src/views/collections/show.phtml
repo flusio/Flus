@@ -237,7 +237,7 @@
                 'link' => $link,
                 'from' => \Minz\Url::for('collection', $current_url_params),
                 'display_source' => $link->source_type !== 'bookmarks',
-                'display_comments' => true,
+                'display_notes' => true,
                 'display_hidden' => $collection->is_public && $link->is_hidden,
                 'display_edit' => $link->user_id === $current_user->id,
                 'display_repair' => $link->user_id === $current_user->id,

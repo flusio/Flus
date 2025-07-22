@@ -421,7 +421,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\LinkToCollection::exists($link_to_read_list->id));
     }
 
-    public function testUpdateCreatesComment(): void
+    public function testUpdateCreatesNote(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
@@ -432,22 +432,22 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
         ]);
         /** @var string */
-        $comment = $this->fake('sentence');
+        $content = $this->fake('sentence');
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
-            'comment' => $comment,
+            'content' => $content,
         ]);
 
         $this->assertResponseCode($response, 302, '/bookmarks');
-        $this->assertSame(1, models\Message::count());
-        $message = models\Message::take();
-        $this->assertNotNull($message);
-        $this->assertSame($comment, $message->content);
-        $this->assertSame($user->id, $message->user_id);
-        $this->assertSame($link->id, $message->link_id);
+        $this->assertSame(1, models\Note::count());
+        $note = models\Note::take();
+        $this->assertNotNull($note);
+        $this->assertSame($content, $note->content);
+        $this->assertSame($user->id, $note->user_id);
+        $this->assertSame($link->id, $note->link_id);
     }
 
     public function testUpdateChangesTags(): void
@@ -461,13 +461,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $comment = '#foo #Bar';
+        $content = '#foo #Bar';
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf' => \App\Csrf::generate(),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
-            'comment' => $comment,
+            'content' => $content,
         ]);
 
         $link = $link->reload();

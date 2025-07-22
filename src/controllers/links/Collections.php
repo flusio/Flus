@@ -39,13 +39,13 @@ class Collections extends BaseController
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
-        $messages = [];
+        $notes = [];
         if (!$link || !auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
         if ($link->user_id === $user->id) {
-            $messages = $link->messages();
+            $notes = $link->notes();
         } else {
             $existing_link = models\Link::findBy([
                 'user_id' => $user->id,
@@ -53,7 +53,7 @@ class Collections extends BaseController
             ]);
             if ($existing_link) {
                 $link = $existing_link;
-                $messages = $link->messages();
+                $notes = $link->notes();
             }
         }
 
@@ -94,8 +94,8 @@ class Collections extends BaseController
             'shared_collections' => $shared_collections,
             'collections_by_others' => $collections_by_others,
             'mark_as_read' => $mark_as_read,
-            'messages' => $messages,
-            'comment' => '',
+            'notes' => $notes,
+            'content' => '',
             'share_on_mastodon' => false,
             'mastodon_configured' => $mastodon_configured,
             'from' => $from,
@@ -111,7 +111,7 @@ class Collections extends BaseController
      * @request_param string[] new_collection_names
      * @request_param boolean is_hidden
      * @request_param boolean mark_as_read
-     * @request_param string comment
+     * @request_param string content
      * @request_param string share_on_mastodon
      * @request_param string from
      *
@@ -133,7 +133,7 @@ class Collections extends BaseController
         $new_collection_names = $request->parameters->getArray('new_collection_names', []);
         $is_hidden = $request->parameters->getBoolean('is_hidden');
         $mark_as_read = $request->parameters->getBoolean('mark_as_read');
-        $comment = trim($request->parameters->getString('comment', ''));
+        $content = trim($request->parameters->getString('content', ''));
         $share_on_mastodon = $request->parameters->getBoolean('share_on_mastodon');
         $from = $request->parameters->getString('from', '');
         $csrf = $request->parameters->getString('csrf', '');
@@ -177,9 +177,9 @@ class Collections extends BaseController
 
         models\LinkToCollection::setCollections($link->id, $new_collection_ids);
 
-        if ($comment) {
-            $message = new models\Message($user->id, $link->id, $comment);
-            $message->save();
+        if ($content) {
+            $note = new models\Note($user->id, $link->id, $content);
+            $note->save();
         }
 
         if ($mark_as_read) {
@@ -193,9 +193,9 @@ class Collections extends BaseController
         ]);
 
         if ($mastodon_configured && $share_on_mastodon) {
-            $message_id = isset($message) ? $message->id : null;
+            $note_id = isset($note) ? $note->id : null;
             $share_on_mastodon_job = new jobs\ShareOnMastodon();
-            $share_on_mastodon_job->performAsap($user->id, $link->id, $message_id);
+            $share_on_mastodon_job->performAsap($user->id, $link->id, $note_id);
         }
 
         return Response::found($from);

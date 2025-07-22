@@ -9,7 +9,7 @@ use tests\factories\FollowedCollectionFactory;
 use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
-use tests\factories\MessageFactory;
+use tests\factories\NoteFactory;
 use tests\factories\TopicFactory;
 use tests\factories\UserFactory;
 
@@ -360,28 +360,28 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Flus:hidden', $entry->categories['Flus:hidden']);
     }
 
-    public function testExportCreatesMessagesFiles(): void
+    public function testExportCreatesNotesFiles(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
         /** @var string */
         $link_url = $this->fake('url');
         /** @var string */
-        $message_content = $this->fake('paragraph');
+        $note_content = $this->fake('paragraph');
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $link_url,
             'is_hidden' => true,
         ]);
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'link_id' => $link->id,
-            'content' => $message_content,
+            'content' => $note_content,
         ]);
 
         $filepath = $data_exporter->export($user->id);
 
-        $feed_content = $this->zipGetContents($filepath, "messages/{$link->id}.atom.xml");
+        $feed_content = $this->zipGetContents($filepath, "notes/{$link->id}.atom.xml");
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
         $this->assertSame(\Minz\Url::absoluteFor('link', ['id' => $link->id]), $feed->link);
         $this->assertSame($link_url, $feed->links['via']);
@@ -389,9 +389,9 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Flus:hidden', $feed->categories['Flus:hidden']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
-        $expected_link = \Minz\Url::absoluteFor('link', ['id' => $link->id]) . "#message-{$message->id}";
+        $expected_link = \Minz\Url::absoluteFor('link', ['id' => $link->id]) . "#note-{$note->id}";
         $this->assertSame($expected_link, $entry->link);
-        $this->assertSame($message_content, trim($entry->content));
+        $this->assertSame($note_content, trim($entry->content));
     }
 
     public function testExportFailsIfUserDoesNotExist(): void

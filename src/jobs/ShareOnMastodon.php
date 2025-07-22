@@ -6,14 +6,14 @@ use App\models;
 use App\services;
 
 /**
- * Job to share a link/message on Mastodon.
+ * Job to share a link/note on Mastodon.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class ShareOnMastodon extends \Minz\Job
 {
-    public function perform(string $user_id, string $link_id, ?string $message_id): void
+    public function perform(string $user_id, string $link_id, ?string $note_id): void
     {
         $mastodon_account = models\MastodonAccount::findBy([
             'user_id' => $user_id,
@@ -31,19 +31,19 @@ class ShareOnMastodon extends \Minz\Job
             return;
         }
 
-        $message = null;
+        $note = null;
 
-        if ($message_id) {
-            $message = models\Message::find($message_id);
+        if ($note_id) {
+            $note = models\Note::find($note_id);
 
-            if (!$message) {
-                \Minz\Log::error("[ShareOnMastodon] Message {$message_id} does not exist (shared by user {$user_id})");
+            if (!$note) {
+                \Minz\Log::error("[ShareOnMastodon] Note {$note_id} does not exist (shared by user {$user_id})");
                 return;
             }
         }
 
         $mastodon_server = $mastodon_account->server();
         $mastodon_service = new services\Mastodon($mastodon_server);
-        $mastodon_service->postStatus($mastodon_account, $link, $message);
+        $mastodon_service->postStatus($mastodon_account, $link, $note);
     }
 }

@@ -6,7 +6,7 @@ use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
-use tests\factories\MessageFactory;
+use tests\factories\NoteFactory;
 use tests\factories\UserFactory;
 
 class LinkTest extends \PHPUnit\Framework\TestCase
@@ -103,19 +103,19 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($published_at, $links[0]->published_at);
     }
 
-    public function testListComputedByUserIdCanReturnNumberComments(): void
+    public function testListComputedByUserIdCanReturnNumberNotes(): void
     {
         $user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        MessageFactory::create([
+        NoteFactory::create([
             'link_id' => $link->id,
         ]);
 
-        $links = models\Link::listComputedByUserId($user->id, ['number_comments']);
+        $links = models\Link::listComputedByUserId($user->id, ['number_notes']);
 
-        $this->assertSame(1, $links[0]->number_comments);
+        $this->assertSame(1, $links[0]->number_notes);
     }
 
     public function testListComputedByUserIdCanListSharedOnly(): void

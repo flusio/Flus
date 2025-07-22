@@ -1,6 +1,6 @@
 {
     "name": "flus/flus",
-    "description": "Collect, organise, comment on and share links from around the Web.",
+    "description": "Collect, organise, annotate and share links from around the Web.",
     "type": "project",
     "license": "AGPL-3.0",
     "minimum-stability": "stable",

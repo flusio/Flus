@@ -19,7 +19,7 @@
             [
                 'type' => 'application/atom+xml',
                 'url' => url_full('link feed', ['id' => $link->id]),
-                'title' => _f('Syndication feed of comments on %s', $link->title),
+                'title' => _f('Syndication feed of notes on %s', $link->title),
             ],
         ],
         'open_graph' => $open_graph,
@@ -100,17 +100,17 @@
         </div>
     </section>
 
-    <section class="subsection subsection--small" id="messages">
-        <?php foreach ($messages as $message): ?>
-            <?php $user = $message->user(); ?>
-            <article class="message" id="message-<?= $message->id ?>">
-                <header class="message__header header">
+    <section class="subsection subsection--small" id="notes">
+        <?php foreach ($notes as $note): ?>
+            <?php $user = $note->user(); ?>
+            <article class="note" id="note-<?= $note->id ?>">
+                <header class="note__header header">
                     <div class="header__container header__container--centered">
                         <a tabindex="-1" href="<?= url('profile', ['id' => $user->id]) ?>">
-                            <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+                            <img class="note__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
                         </a>
 
-                        <div class="message__author">
+                        <div class="note__author">
                             <a class="anchor--hidden" href="<?= url('profile', ['id' => $user->id]) ?>">
                                 <?= protect($user->username) ?>
                             </a>
@@ -118,9 +118,9 @@
 
                         <div class="header__separator"></div>
 
-                        <a class="message__date" href="#message-<?= $message->id ?>">
-                            <time datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
-                                <?= _d($message->created_at, 'dd MMM y, HH:mm') ?>
+                        <a class="note__date" href="#note-<?= $note->id ?>">
+                            <time datetime="<?= $note->created_at->format(DATE_ATOM) ?>">
+                                <?= _d($note->created_at, 'dd MMM y, HH:mm') ?>
                             </time>
                         </a>
 
@@ -144,7 +144,7 @@
                                         class="popup__item popup__item--button"
                                         data-controller="modal-opener"
                                         data-action="modal-opener#fetch"
-                                        data-modal-opener-href-value="<?= url('edit message', ['id' => $message->id, 'from' => url('link', ['id' => $link->id])]) ?>"
+                                        data-modal-opener-href-value="<?= url('edit note', ['id' => $note->id, 'from' => url('link', ['id' => $link->id])]) ?>"
                                         aria-haspopup="dialog"
                                         aria-controls="modal"
                                         role="menuitem"
@@ -158,8 +158,8 @@
                                     <form
                                         data-turbo-preserve-scroll
                                         method="post"
-                                        action="<?= url('delete message', ['id' => $message->id]) ?>"
-                                        data-turbo-confirm="<?= _('Are you sure that you want to delete this message?') ?>"
+                                        action="<?= url('delete note', ['id' => $note->id]) ?>"
+                                        data-turbo-confirm="<?= _('Are you sure that you want to delete this note?') ?>"
                                         role="menuitem"
                                     >
                                         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
@@ -176,8 +176,8 @@
                     </div>
                 </header>
 
-                <div class="message__content">
-                    <?= $message->contentAsHtml() ?>
+                <div class="note__content">
+                    <?= $note->contentAsHtml() ?>
                 </div>
             </article>
         <?php endforeach; ?>
@@ -186,7 +186,7 @@
             <form
                 data-turbo-preserve-scroll
                 method="post"
-                action="<?= url('links/create message', ['link_id' => $link->id]) ?>"
+                action="<?= url('links/create note', ['link_id' => $link->id]) ?>"
                 data-controller="autosave"
                 data-action="turbo:submit-start@document->autosave#clear"
             >
@@ -196,7 +196,7 @@
 
                 <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
                     <label for="content">
-                        <?php if (count($messages) === 0): ?>
+                        <?php if (count($notes) === 0): ?>
                             <?= _('What do you think?') ?>
                         <?php else: ?>
                             <?= _('Anything else to add?') ?>
@@ -210,7 +210,7 @@
                         data-controller="text-editor"
                         data-action="text-editor#refresh keyup->autosave#save"
                         aria-describedby="content-desc"
-                    ><?= $comment ?></textarea>
+                    ><?= $content ?></textarea>
 
                     <div id="content-desc">
                         <?php if (isset($errors['content'])): ?>
@@ -221,7 +221,7 @@
                         <?php endif; ?>
 
                         <p class="form-group__caption">
-                            <?= _('You can format your comment in Markdown and use #tags.') ?>
+                            <?= _('You can format the content in Markdown and use #tags.') ?>
                         </p>
                     </div>
                 </div>
@@ -243,14 +243,14 @@
 
                 <div class="form__actions">
                     <button type="submit" class="button--primary">
-                        <?= _('Comment') ?>
+                        <?= _('Add a note') ?>
                     </button>
                 </div>
             </form>
 
             <?php if ($link->is_hidden): ?>
                 <p class="paragraph--centered paragraph--secondary">
-                    <?= _('This link being hidden, the comments are private.') ?>
+                    <?= _('This link being hidden, the notes are private.') ?>
                 </p>
             <?php endif; ?>
         <?php endif; ?>

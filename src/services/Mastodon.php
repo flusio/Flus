@@ -207,12 +207,12 @@ class Mastodon
     public function postStatus(
         models\MastodonAccount $account,
         models\Link $link,
-        ?models\Message $message
+        ?models\Note $note
     ): bool {
-        $status = self::formatStatus($link, $message, $account->options);
+        $status = self::formatStatus($link, $note, $account->options);
 
-        if ($message) {
-            $idempotency_key = $message->tagUri();
+        if ($note) {
+            $idempotency_key = $note->tagUri();
         } else {
             $idempotency_key = $link->tagUri();
         }
@@ -236,7 +236,7 @@ class Mastodon
      */
     public static function formatStatus(
         models\Link $link,
-        ?models\Message $message,
+        ?models\Note $note,
         array $options,
     ): string {
         $max_chars = 500;
@@ -252,14 +252,14 @@ class Mastodon
 
         if (
             $options['link_to_comment'] === 'always' ||
-            ($options['link_to_comment'] === 'auto' && $message)
+            ($options['link_to_comment'] === 'auto' && $note)
         ) {
-            $url_to_comment = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-            $status .= "\n" . $url_to_comment;
+            $url_to_link = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+            $status .= "\n" . $url_to_link;
 
             if (\App\Configuration::$url_options['host'] === 'localhost') {
                 // Mastodon doesn't count localhost links as URLs
-                $count_chars += 1 + mb_strlen($url_to_comment);
+                $count_chars += 1 + mb_strlen($url_to_link);
             } else {
                 $count_chars += 1 + 23;
             }
@@ -271,8 +271,8 @@ class Mastodon
             $count_chars += 2 + mb_strlen($options['post_scriptum']);
         }
 
-        if ($message) {
-            $content = self::truncateString($message->content, $max_chars - $count_chars - 2);
+        if ($note) {
+            $content = self::truncateString($note->content, $max_chars - $count_chars - 2);
             $status = $status . "\n\n" . $content;
         }
 

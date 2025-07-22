@@ -11,12 +11,12 @@ use App\models;
 use App\services;
 
 /**
- * Handle the requests related to the messages.
+ * Handle the requests related to the notes.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Messages extends BaseController
+class Notes extends BaseController
 {
     /**
      * @request_param string link_id
@@ -34,7 +34,7 @@ class Messages extends BaseController
     }
 
     /**
-     * Create a message attached to a link.
+     * Create a note attached to a link.
      *
      * @request_param string link_id
      * @request_param string content
@@ -72,36 +72,36 @@ class Messages extends BaseController
         if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
-                'messages' => $link->messages(),
+                'notes' => $link->notes(),
                 'can_update' => $can_update,
-                'comment' => $content,
+                'content' => $content,
                 'share_on_mastodon' => $share_on_mastodon,
                 'mastodon_configured' => $mastodon_configured,
                 'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $message = new models\Message($user->id, $link->id, $content);
+        $note = new models\Note($user->id, $link->id, $content);
 
-        if (!$message->validate()) {
+        if (!$note->validate()) {
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
-                'messages' => $link->messages(),
+                'notes' => $link->notes(),
                 'can_update' => $can_update,
-                'comment' => $content,
+                'content' => $content,
                 'share_on_mastodon' => $share_on_mastodon,
                 'mastodon_configured' => $mastodon_configured,
-                'errors' => $message->errors(),
+                'errors' => $note->errors(),
             ]);
         }
 
-        $message->save();
+        $note->save();
 
         services\LinkTags::refresh($link);
 
         if ($mastodon_configured && $share_on_mastodon) {
             $share_on_mastodon_job = new jobs\ShareOnMastodon();
-            $share_on_mastodon_job->performAsap($user->id, $link->id, $message->id);
+            $share_on_mastodon_job->performAsap($user->id, $link->id, $note->id);
         }
 
         return Response::redirect('link', ['id' => $link_id]);

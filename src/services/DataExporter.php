@@ -53,9 +53,9 @@ class DataExporter
             $files["collections/{$collection->id}.atom.xml"] = $this->generateCollection($collection);
         }
 
-        $links = models\Link::listByUserIdWithComments($user->id);
+        $links = models\Link::listByUserIdWithNotes($user->id);
         foreach ($links as $link) {
-            $files["messages/{$link->id}.atom.xml"] = $this->generateLink($link);
+            $files["notes/{$link->id}.atom.xml"] = $this->generateLink($link);
         }
 
         $now = \Minz\Time::now();
@@ -129,7 +129,7 @@ class DataExporter
     }
 
     /**
-     * Return an Atom representation of the given link messages.
+     * Return an Atom representation of the given link notes.
      */
     private function generateLink(models\Link $link): string
     {
@@ -137,7 +137,7 @@ class DataExporter
             'brand' => \App\Configuration::$application['brand'],
             'user_agent' => utils\UserAgent::get(),
             'link' => $link,
-            'messages' => $link->messages(),
+            'notes' => $link->notes(),
         ]);
 
         return self::formatXML($view->render());

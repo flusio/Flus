@@ -15,7 +15,7 @@
     </div>
 
     <p class="section__intro">
-        <?= _f('%s lets you share your links and comments on Mastodon.', get_app_configuration('brand')) ?>
+        <?= _f('%s lets you share your links and notes on Mastodon.', get_app_configuration('brand')) ?>
     </p>
 
     <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
@@ -25,17 +25,17 @@
             <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
             <div class="form-group">
-                <label for="link-to-comment">
-                    <?= _('When to link to your comments?') ?>
+                <label for="link-to-note">
+                    <?= _('When to link to your notes?') ?>
                 </label>
 
                 <select
-                    id="link-to-comment"
+                    id="link-to-note"
                     name="link_to_comment"
-                    aria-describedby="link-to-comment-desc"
+                    aria-describedby="link-to-note-desc"
                  >
                     <option <?= $link_to_comment === 'auto' ? 'selected' : '' ?> value="auto">
-                        <?= _('Only when you post a comment') ?>
+                        <?= _('Only when you post a note') ?>
                     </option>
 
                     <option <?= $link_to_comment === 'always' ? 'selected' : '' ?> value="always">
@@ -47,9 +47,9 @@
                     </option>
                 </select>
 
-                <div id="link-to-comment-desc">
+                <div id="link-to-note-desc">
                     <p class="form-group__caption">
-                        <?= _f('Your Mastodon posts can include a link to your comments on %s.', get_app_configuration('brand')) ?>
+                        <?= _f('Your Mastodon posts can include a link to your notes on %s.', get_app_configuration('brand')) ?>
                     </p>
                 </div>
             </div>

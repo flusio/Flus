@@ -8,7 +8,7 @@ use tests\factories\CollectionShareFactory;
 use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
-use tests\factories\MessageFactory;
+use tests\factories\NoteFactory;
 use tests\factories\UserFactory;
 
 class LinksTest extends \PHPUnit\Framework\TestCase
@@ -172,14 +172,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseTemplateName($response, 'links/show.phtml');
     }
 
-    public function testShowDisplaysMessages(): void
+    public function testShowDisplaysNotes(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'fetched_at' => \Minz\Time::now(),
         ]);
-        MessageFactory::create([
+        NoteFactory::create([
             'link_id' => $link->id,
             'content' => '**foo bar**',
         ]);

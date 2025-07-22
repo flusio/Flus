@@ -44,13 +44,13 @@ trait Link
             $published_at_clause = ', l.created_at AS published_at';
         }
 
-        $number_comments_clause = '';
-        if (in_array('number_comments', $selected_computed_props)) {
-            $number_comments_clause = <<<'SQL'
+        $number_notes_clause = '';
+        if (in_array('number_notes', $selected_computed_props)) {
+            $number_notes_clause = <<<'SQL'
                 , (
-                    SELECT COUNT(*) FROM messages m
+                    SELECT COUNT(*) FROM notes m
                     WHERE m.link_id = l.id
-                ) AS number_comments
+                ) AS number_notes
             SQL;
         }
 
@@ -60,7 +60,7 @@ trait Link
             SELECT
                 l.*
                 {$published_at_clause}
-                {$number_comments_clause}
+                {$number_notes_clause}
             FROM links l
             WHERE {$where_statement}
         SQL;
@@ -141,13 +141,13 @@ trait Link
             $order_by_clause = 'ORDER BY published_at DESC, l.id';
         }
 
-        $number_comments_clause = '';
-        if (in_array('number_comments', $selected_computed_props)) {
-            $number_comments_clause = <<<'SQL'
+        $number_notes_clause = '';
+        if (in_array('number_notes', $selected_computed_props)) {
+            $number_notes_clause = <<<'SQL'
                 , (
-                    SELECT COUNT(*) FROM messages m
+                    SELECT COUNT(*) FROM notes m
                     WHERE m.link_id = l.id
-                ) AS number_comments
+                ) AS number_notes
             SQL;
         }
 
@@ -182,7 +182,7 @@ trait Link
             SELECT
                 l.*
                 {$published_at_clause}
-                {$number_comments_clause}
+                {$number_notes_clause}
             FROM links l
 
             {$join_clause}
@@ -294,13 +294,13 @@ trait Link
             $order_by_clause = 'ORDER BY lc.created_at DESC, l.id';
         }
 
-        $number_comments_clause = '';
-        if (in_array('number_comments', $selected_computed_props)) {
-            $number_comments_clause = <<<'SQL'
+        $number_notes_clause = '';
+        if (in_array('number_notes', $selected_computed_props)) {
+            $number_notes_clause = <<<'SQL'
                 , (
-                    SELECT COUNT(*) FROM messages m
+                    SELECT COUNT(*) FROM notes m
                     WHERE m.link_id = l.id
-                ) AS number_comments
+                ) AS number_notes
             SQL;
         }
 
@@ -334,7 +334,7 @@ trait Link
             SELECT
                 l.*
                 {$published_at_clause}
-                {$number_comments_clause}
+                {$number_notes_clause}
             FROM links l, links_to_collections lc
 
             WHERE l.id = lc.link_id

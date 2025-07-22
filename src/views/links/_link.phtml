@@ -3,7 +3,7 @@
     if ($display_published_at && !$link->published_at) {
         $display_published_at = false;
     }
-    $display_comments = $display_comments ?? false;
+    $display_notes = $display_notes ?? false;
     $display_external_comments = $display_external_comments ?? false;
     if ($display_external_comments && !$link->url_replies) {
         $display_external_comments = false;
@@ -192,11 +192,11 @@
                 </div>
             <?php endif; ?>
 
-            <?php if ($display_comments): ?>
+            <?php if ($display_notes): ?>
                 <p class="link__text">
                     <a href="<?= url('link', ['id' => $link->id]) ?>">
-                        <?= icon('comment') ?>
-                        <?= _nf('%s comment', '%s comments', $link->number_comments, format_number($link->number_comments)) ?>
+                        <?= icon('note') ?>
+                        <?= _nf('%s note', '%s notes', $link->number_notes, format_number($link->number_notes)) ?>
                     </a>
 
                     <?php if ($display_hidden): ?>

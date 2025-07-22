@@ -76,40 +76,40 @@
             </label>
         </div>
 
-        <?php if (count($messages) > 0): ?>
+        <?php if (count($notes) > 0): ?>
             <details class="form-details">
                 <summary>
-                    <?= _('You already commented this link.') ?>
+                    <?= _('You already annoted this link.') ?>
                 </summary>
 
                 <div class="form-details__content">
-                    <?php foreach ($messages as $message): ?>
-                        <?php $user = $message->user(); ?>
-                        <article class="message" id="message-<?= $message->id ?>">
-                            <header class="message__header header">
+                    <?php foreach ($notes as $note): ?>
+                        <?php $user = $note->user(); ?>
+                        <article class="note" id="note-<?= $note->id ?>">
+                            <header class="note__header header">
                                 <div class="header__container header__container--centered">
-                                    <img class="message__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+                                    <img class="note__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
 
-                                    <div class="message__author">
+                                    <div class="note__author">
                                         <?= protect($user->username) ?>
                                     </div>
 
                                     <div class="header__separator"></div>
 
-                                    <time class="message__date" datetime="<?= $message->created_at->format(DATE_ATOM) ?>">
-                                        <?= _d($message->created_at, 'dd MMM y, HH:mm') ?>
+                                    <time class="note__date" datetime="<?= $note->created_at->format(DATE_ATOM) ?>">
+                                        <?= _d($note->created_at, 'dd MMM y, HH:mm') ?>
                                     </time>
                                 </div>
                             </header>
 
-                            <div class="message__content">
-                                <?= $message->contentAsHtml() ?>
+                            <div class="note__content">
+                                <?= $note->contentAsHtml() ?>
                             </div>
                         </article>
                     <?php endforeach; ?>
 
                     <div class="form-group">
-                        <label for="comment">
+                        <label for="content">
                             <?= _('Anything else to add?') ?>
                             <span class="label__help">
                                 <?= _('(optional)') ?>
@@ -117,15 +117,15 @@
                         </label>
 
                         <textarea
-                            id="comment"
-                            name="comment"
+                            id="content"
+                            name="content"
                             data-controller="text-editor"
                             data-action="text-editor#refresh keyup->autosave#save"
-                            aria-describedby="comment-desc"
-                        ><?= $comment ?></textarea>
+                            aria-describedby="content-desc"
+                        ><?= $content ?></textarea>
 
-                        <p class="form-group__caption" id="comment-desc">
-                            <?= _('You can format your comment in Markdown and use #tags.') ?>
+                        <p class="form-group__caption" id="content-desc">
+                            <?= _('You can format the content in Markdown and use #tags.') ?>
                         </p>
                     </div>
 
@@ -147,7 +147,7 @@
             </details>
         <?php else: ?>
             <div class="form-group">
-                <label for="comment">
+                <label for="content">
                     <?= _('What do you think?') ?>
                     <span class="label__help">
                         <?= _('(optional)') ?>
@@ -155,15 +155,15 @@
                 </label>
 
                 <textarea
-                    id="comment"
-                    name="comment"
+                    id="content"
+                    name="content"
                     data-controller="text-editor"
                     data-action="text-editor#refresh keyup->autosave#save"
-                    aria-describedby="comment-desc"
-                ><?= $comment ?></textarea>
+                    aria-describedby="content-desc"
+                ><?= $content ?></textarea>
 
-                <p class="form-group__caption" id="comment-desc">
-                    <?= _('You can format your comment in Markdown and use #tags.') ?>
+                <p class="form-group__caption" id="content-desc">
+                    <?= _('You can format the content in Markdown and use #tags.') ?>
                 </p>
             </div>
 

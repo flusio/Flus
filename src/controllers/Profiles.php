@@ -36,7 +36,7 @@ class Profiles extends BaseController
         $current_user = auth\CurrentUser::get();
         $is_current_user_profile = $current_user && $current_user->id === $user->id;
 
-        $links = $user->links(['published_at', 'number_comments'], [
+        $links = $user->links(['published_at', 'number_notes'], [
             'unshared' => false,
             'limit' => 6,
         ]);

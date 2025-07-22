@@ -14,13 +14,13 @@ class LinkTags
 
     public static function refresh(models\Link $link): void
     {
-        $messages = $link->messages();
+        $notes = $link->notes();
 
         $tags = [];
 
-        foreach ($messages as $message) {
-            $message_tags = self::extractTags($message->content);
-            $tags = array_merge($tags, $message_tags);
+        foreach ($notes as $note) {
+            $note_tags = self::extractTags($note->content);
+            $tags = array_merge($tags, $note_tags);
         }
 
         $link->setTags($tags);

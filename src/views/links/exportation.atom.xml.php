@@ -14,24 +14,24 @@
         <name><?= protect($link->owner()->username) ?></name>
     </author>
     <generator><?= $user_agent ?></generator>
-    <?php if (isset($messages[0])): ?>
-        <updated><?= $messages[0]->created_at->format(\DateTimeInterface::ATOM) ?></updated>
+    <?php if (isset($notes[0])): ?>
+        <updated><?= $notes[0]->created_at->format(\DateTimeInterface::ATOM) ?></updated>
     <?php else: ?>
         <updated><?= \Minz\Time::now()->format(\DateTimeInterface::ATOM) ?></updated>
     <?php endif; ?>
 
-    <?php foreach ($messages as $message): ?>
-        <?php $user = $message->user(); ?>
+    <?php foreach ($notes as $note): ?>
+        <?php $user = $note->user(); ?>
         <entry>
-            <title><?= _f('Comment by %s', protect($user->username)) ?></title>
-            <id><?= $message->tagUri() ?></id>
-            <link href="<?= url_full('link', ['id' => $link->id]) ?>#message-<?= $message->id ?>" rel="alternate" type="text/html" />
+            <title><?= _f('Notes by %s', protect($user->username)) ?></title>
+            <id><?= $note->tagUri() ?></id>
+            <link href="<?= url_full('link', ['id' => $link->id]) ?>#note-<?= $note->id ?>" rel="alternate" type="text/html" />
             <author>
                 <name><?= protect($user->username) ?></name>
             </author>
-            <published><?= $message->created_at->format(\DateTimeInterface::ATOM) ?></published>
-            <updated><?= $message->created_at->format(\DateTimeInterface::ATOM) ?></updated>
-            <content type="text"><![CDATA[<?= $message->content ?>]]></content>
+            <published><?= $note->created_at->format(\DateTimeInterface::ATOM) ?></published>
+            <updated><?= $note->created_at->format(\DateTimeInterface::ATOM) ?></updated>
+            <content type="text"><![CDATA[<?= $note->content ?>]]></content>
         </entry>
     <?php endforeach; ?>
 </feed>

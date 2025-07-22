@@ -39,7 +39,7 @@ class Bookmarks extends BaseController
         return Response::ok('bookmarks/index.phtml', [
             'collection' => $bookmarks,
             'links' => $bookmarks->links(
-                ['published_at', 'number_comments'],
+                ['published_at', 'number_notes'],
                 [
                     'offset' => $pagination->currentOffset(),
                     'limit' => $pagination->numberPerPage(),

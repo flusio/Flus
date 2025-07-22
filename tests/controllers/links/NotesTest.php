@@ -9,7 +9,7 @@ use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
-class MessagesTest extends \PHPUnit\Framework\TestCase
+class NotesTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\InitializerHelper;
@@ -19,12 +19,12 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRedirects(): void
     {
-        $response = $this->appRun('GET', '/links/an_id/messages');
+        $response = $this->appRun('GET', '/links/an_id/notes');
 
         $this->assertResponseCode($response, 302, '/links/an_id');
     }
 
-    public function testCreateCreatesMessageAndRedirects(): void
+    public function testCreateCreatesNoteAndRedirects(): void
     {
         $user = $this->login();
         $link = LinkFactory::create([
@@ -32,20 +32,20 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $content = $this->fake('paragraphs', 3, true);
 
-        $this->assertSame(0, models\Message::count());
+        $this->assertSame(0, models\Note::count());
 
-        $response = $this->appRun('POST', "/links/{$link->id}/messages", [
+        $response = $this->appRun('POST', "/links/{$link->id}/notes", [
             'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
-        $this->assertSame(1, models\Message::count());
-        $message = models\Message::take();
-        $this->assertNotNull($message);
-        $this->assertSame($content, $message->content);
-        $this->assertSame($user->id, $message->user_id);
-        $this->assertSame($link->id, $message->link_id);
+        $this->assertSame(1, models\Note::count());
+        $note = models\Note::take();
+        $this->assertNotNull($note);
+        $this->assertSame($content, $note->content);
+        $this->assertSame($user->id, $note->user_id);
+        $this->assertSame($link->id, $note->link_id);
     }
 
     public function testCreateChangesLinkTags(): void
@@ -57,9 +57,9 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $content = '#foo #Bar';
 
-        $this->assertSame(0, models\Message::count());
+        $this->assertSame(0, models\Note::count());
 
-        $response = $this->appRun('POST', "/links/{$link->id}/messages", [
+        $response = $this->appRun('POST', "/links/{$link->id}/notes", [
             'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
@@ -79,13 +79,13 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $content = $this->fake('paragraphs', 3, true);
 
-        $response = $this->appRun('POST', "/links/{$link->id}/messages", [
+        $response = $this->appRun('POST', "/links/{$link->id}/notes", [
             'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
         $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
-        $this->assertSame(0, models\Message::count());
+        $this->assertSame(0, models\Note::count());
     }
 
     public function testCreateFailsIfLinkIsNotOwned(): void
@@ -97,15 +97,15 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $content = $this->fake('paragraphs', 3, true);
 
-        $this->assertSame(0, models\Message::count());
+        $this->assertSame(0, models\Note::count());
 
-        $response = $this->appRun('POST', "/links/{$link->id}/messages", [
+        $response = $this->appRun('POST', "/links/{$link->id}/notes", [
             'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertSame(0, models\Message::count());
+        $this->assertSame(0, models\Note::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid(): void
@@ -116,16 +116,16 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $content = $this->fake('paragraphs', 3, true);
 
-        $this->assertSame(0, models\Message::count());
+        $this->assertSame(0, models\Note::count());
 
-        $response = $this->appRun('POST', "/links/{$link->id}/messages", [
+        $response = $this->appRun('POST', "/links/{$link->id}/notes", [
             'csrf' => 'not the token',
             'content' => $content,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $this->assertSame(0, models\Message::count());
+        $this->assertSame(0, models\Note::count());
     }
 
     public function testCreateFailsIfContentIsEmpty(): void
@@ -136,15 +136,15 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $content = '';
 
-        $this->assertSame(0, models\Message::count());
+        $this->assertSame(0, models\Note::count());
 
-        $response = $this->appRun('POST', "/links/{$link->id}/messages", [
+        $response = $this->appRun('POST', "/links/{$link->id}/notes", [
             'csrf' => \App\Csrf::generate(),
             'content' => $content,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'The message is required');
-        $this->assertSame(0, models\Message::count());
+        $this->assertResponseContains($response, 'The content is required');
+        $this->assertSame(0, models\Note::count());
     }
 }

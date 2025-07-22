@@ -375,12 +375,12 @@ button[disabled],
     background-color: #f7f6f4;
 }
 
-.message__content {
+.note__content {
     padding-right: var(--space-medium);
     padding-left: var(--space-medium);
 }
 
-.message__content blockquote {
+.note__content blockquote {
     --blockquote-icon-size: 40px;
 
     position: relative;
@@ -394,12 +394,12 @@ button[disabled],
 }
 
 @media (min-width: 800px) {
-    .message__content blockquote {
+    .note__content blockquote {
         padding-right: var(--space-large);
     }
 }
 
-.message__content blockquote::before {
+.note__content blockquote::before {
     content: "";
 
     position: absolute;
@@ -418,7 +418,7 @@ button[disabled],
     mask-size: cover;
 }
 
-.message__content blockquote::after {
+.note__content blockquote::after {
     content: "";
 
     position: absolute;

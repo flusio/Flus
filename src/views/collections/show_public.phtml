@@ -243,7 +243,7 @@
                 <?= $this->include('links/_link.phtml', [
                     'link' => $link,
                     'from' => \Minz\Url::for('collection', $current_url_params),
-                    'display_comments' => $collection->type !== 'feed',
+                    'display_notes' => $collection->type !== 'feed',
                     'display_external_comments' => $collection->type === 'feed',
                     'display_hidden' => $collection->is_public && $link->is_hidden,
                     'display_read_later' => $current_user ? 'auto' : false,

@@ -40,7 +40,7 @@ class Searches extends BaseController
         $existing_link = models\Link::findComputedBy([
             'user_id' => $user->id,
             'url_hash' => models\Link::hashUrl($url),
-        ], ['number_comments']);
+        ], ['number_notes']);
         $default_link = models\Link::findBy([
             'user_id' => $support_user->id,
             'url_hash' => models\Link::hashUrl($url),

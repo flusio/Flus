@@ -1,7 +1,7 @@
 {
   "name": "<?= get_app_configuration('brand') ?>",
   "short_name": "<?= get_app_configuration('brand') ?>",
-  "description": "<?= _('Collect, organise, comment on and share links from around the Web.') ?>",
+  "description": "<?= _('Collect, organise, annotate and share links from around the Web.') ?>",
   "start_url": "<?= url('home') ?>",
   "display": "standalone",
   "background_color": "#eeebfb",

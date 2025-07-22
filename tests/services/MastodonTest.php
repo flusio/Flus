@@ -4,7 +4,7 @@ namespace App\services;
 
 use App\models;
 use tests\factories\LinkFactory;
-use tests\factories\MessageFactory;
+use tests\factories\NoteFactory;
 
 class MastodonTest extends \PHPUnit\Framework\TestCase
 {
@@ -24,44 +24,44 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'title' => 'My title',
             'url' => 'https://flus.fr',
         ]);
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'content' => 'This is great content!',
         ]);
         $options = [
             'link_to_comment' => 'auto',
             'post_scriptum' => '#flus',
         ];
-        $comments_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_status = <<<"TEXT"
             My title
 
             https://flus.fr
-            {$comments_url}
+            {$notes_url}
 
             This is great content!
 
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $message, $options);
+        $status = Mastodon::formatStatus($link, $note, $options);
 
         $this->assertSame($expected_status, $status);
     }
 
-    public function testFormatStatusWithNeverLinkToComments(): void
+    public function testFormatStatusWithNeverLinkToNotes(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
             'url' => 'https://flus.fr',
         ]);
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'content' => 'This is great content!',
         ]);
         $options = [
             'link_to_comment' => 'never',
             'post_scriptum' => '#flus',
         ];
-        $comments_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_status = <<<"TEXT"
             My title
 
@@ -72,23 +72,23 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $message, $options);
+        $status = Mastodon::formatStatus($link, $note, $options);
 
         $this->assertSame($expected_status, $status);
     }
 
-    public function testFormatStatusWithNoMessage(): void
+    public function testFormatStatusWithNoNote(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
             'url' => 'https://flus.fr',
         ]);
-        $message = null;
+        $note = null;
         $options = [
             'link_to_comment' => 'auto',
             'post_scriptum' => '#flus',
         ];
-        $comments_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_status = <<<"TEXT"
             My title
 
@@ -97,33 +97,33 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $message, $options);
+        $status = Mastodon::formatStatus($link, $note, $options);
 
         $this->assertSame($expected_status, $status);
     }
 
-    public function testFormatStatusWithNoMessageAndAlwaysLinkToComment(): void
+    public function testFormatStatusWithNoNoteAndAlwaysLinkToNote(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
             'url' => 'https://flus.fr',
         ]);
-        $message = null;
+        $note = null;
         $options = [
             'link_to_comment' => 'always',
             'post_scriptum' => '#flus',
         ];
-        $comments_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_status = <<<"TEXT"
             My title
 
             https://flus.fr
-            {$comments_url}
+            {$notes_url}
 
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $message, $options);
+        $status = Mastodon::formatStatus($link, $note, $options);
 
         $this->assertSame($expected_status, $status);
     }
@@ -134,24 +134,24 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'title' => 'My title',
             'url' => 'https://flus.fr',
         ]);
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'content' => 'This is great content!',
         ]);
         $options = [
             'link_to_comment' => 'auto',
             'post_scriptum' => '',
         ];
-        $comments_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_status = <<<"TEXT"
             My title
 
             https://flus.fr
-            {$comments_url}
+            {$notes_url}
 
             This is great content!
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $message, $options);
+        $status = Mastodon::formatStatus($link, $note, $options);
 
         $this->assertSame($expected_status, $status);
     }
@@ -162,58 +162,58 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'title' => str_repeat('a', 260),
             'url' => 'https://flus.fr',
         ]);
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'content' => 'This is great content!',
         ]);
         $options = [
             'link_to_comment' => 'auto',
             'post_scriptum' => '#flus',
         ];
-        $comments_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_title = str_repeat('a', 249) . '…';
         $expected_status = <<<"TEXT"
             {$expected_title}
 
             https://flus.fr
-            {$comments_url}
+            {$notes_url}
 
             This is great content!
 
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $message, $options);
+        $status = Mastodon::formatStatus($link, $note, $options);
 
         $this->assertSame($expected_status, $status);
     }
 
-    public function testFormatStatusWithALongMessage(): void
+    public function testFormatStatusWithALongNote(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
             'url' => 'https://flus.fr',
         ]);
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'content' => str_repeat('a', 500),
         ]);
         $options = [
             'link_to_comment' => 'auto',
             'post_scriptum' => '#flus',
         ];
-        $comments_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_comment = str_repeat('a', 433) . '…';
+        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $expected_note = str_repeat('a', 433) . '…';
         $expected_status = <<<"TEXT"
             My title
 
             https://flus.fr
-            {$comments_url}
+            {$notes_url}
 
-            {$expected_comment}
+            {$expected_note}
 
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $message, $options);
+        $status = Mastodon::formatStatus($link, $note, $options);
 
         $this->assertSame($expected_status, $status);
     }

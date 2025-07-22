@@ -68,7 +68,7 @@
                 <?= $this->include('links/_link.phtml', [
                     'link' => $link,
                     'from' => \Minz\Url::for('profile', ['id' => $user->id]),
-                    'display_comments' => true,
+                    'display_notes' => true,
                     'display_edit' => $is_current_user_profile,
                     'display_repair' => $is_current_user_profile,
                     'display_delete' => $is_current_user_profile,

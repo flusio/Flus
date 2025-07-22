@@ -28,7 +28,7 @@ class News extends BaseController
         $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('news'));
 
         $news = $user->news();
-        $links = $news->links(['published_at', 'number_comments']);
+        $links = $news->links(['published_at', 'number_notes']);
         $links_timeline = new utils\LinksTimeline($links);
 
         return Response::ok('news/index.phtml', [

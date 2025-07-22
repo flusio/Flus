@@ -41,7 +41,7 @@ class Read extends BaseController
         }
 
         $links = $read_list->links(
-            ['published_at', 'number_comments'],
+            ['published_at', 'number_notes'],
             [
                 'offset' => $pagination->currentOffset(),
                 'limit' => $pagination->numberPerPage(),

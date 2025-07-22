@@ -32,9 +32,9 @@
             <?php endif; ?>
 
             <?php
-                $messages = $link->messages();
-                if ($messages) {
-                    $updated = $messages[count($messages) - 1]->created_at;
+                $notes = $link->notes();
+                if ($notes) {
+                    $updated = $notes[count($notes) - 1]->created_at;
                 } else {
                     $updated = $link->published_at;
                 }
@@ -44,8 +44,8 @@
             <updated><?= $updated->format(\DateTimeInterface::ATOM) ?></updated>
 
             <content type="html"><![CDATA[
-                <?php foreach ($messages as $message): ?>
-                    <div><?= $message->contentAsHtml() ?></div>
+                <?php foreach ($notes as $note): ?>
+                    <div><?= $note->contentAsHtml() ?></div>
                 <?php endforeach; ?>
 
                 <p>

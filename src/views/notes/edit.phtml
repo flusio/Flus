@@ -1,7 +1,7 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => _('Message edition'),
-        'canonical' => url_full('edit message', ['id' => $message->id]),
+        'title' => _('Note edition'),
+        'canonical' => url_full('edit note', ['id' => $note->id]),
         'has_errors' => $error || $errors,
         'modal_enabled' => true,
     ]);
@@ -9,13 +9,13 @@
 
 <div class="section section--small">
     <div class="section__title">
-        <h1 id="modal-title"><?= _('Message edition') ?></h1>
+        <h1 id="modal-title"><?= _('Note edition') ?></h1>
     </div>
 
     <form
         data-turbo-preserve-scroll
         method="post"
-        action="<?= url('update message', ['id' => $message->id]) ?>"
+        action="<?= url('update note', ['id' => $note->id]) ?>"
         data-controller="autosave"
         data-action="turbo:submit-start@document->autosave#clear"
     >
@@ -26,7 +26,7 @@
 
         <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
             <label for="content">
-                <?= _('Your message') ?>
+                <?= _('Your note') ?>
             </label>
 
             <textarea
@@ -36,7 +36,7 @@
                 data-controller="text-editor"
                 data-action="text-editor#refresh keyup->autosave#save"
                 aria-describedby="content-desc"
-            ><?= $comment ?></textarea>
+            ><?= $content ?></textarea>
 
             <div id="content-desc">
                 <?php if (isset($errors['content'])): ?>
@@ -47,7 +47,7 @@
                 <?php endif; ?>
 
                 <p class="form-group__caption">
-                    <?= _('You can format your comment in Markdown and use #tags.') ?>
+                    <?= _('You can format the content in Markdown and use #tags.') ?>
                 </p>
             </div>
         </div>

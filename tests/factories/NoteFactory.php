@@ -6,16 +6,16 @@ use App\models;
 use Minz\Database;
 
 /**
- * @extends Database\Factory<models\Message>
+ * @extends Database\Factory<models\Note>
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class MessageFactory extends Database\Factory
+class NoteFactory extends Database\Factory
 {
     public static function model(): string
     {
-        return models\Message::class;
+        return models\Note::class;
     }
 
     public static function values(): array
