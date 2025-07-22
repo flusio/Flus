@@ -2,7 +2,6 @@ name: flus
 
 services:
     php:
-        image: flus_php:dev
         build:
             context: .
             dockerfile: Dockerfile.php
@@ -16,7 +15,6 @@ services:
         user: $USER
 
     job_worker:
-        image: flus_php:dev
         build:
             context: .
             dockerfile: Dockerfile.php
@@ -54,7 +52,6 @@ services:
             - "1025:1025"
 
     bundler:
-        image: flus_node:dev
         build:
             context: .
             dockerfile: Dockerfile.node
