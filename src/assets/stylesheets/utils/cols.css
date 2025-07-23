@@ -1,0 +1,109 @@
+.cols {
+    display: flex;
+
+    align-items: stretch;
+}
+
+@media (max-width: 799px) {
+    .cols:not(.cols--always) {
+        flex-direction: column;
+    }
+}
+
+.cols--always.cols--center {
+    align-items: center;
+}
+
+.cols--always.cols--baseline {
+    align-items: baseline;
+}
+
+.cols--always.cols--hcenter {
+    justify-content: center;
+}
+
+@media (min-width: 800px) {
+    .cols--center {
+        align-items: center;
+    }
+
+    .cols--baseline {
+        align-items: baseline;
+    }
+
+    .cols--hcenter {
+        justify-content: center;
+    }
+}
+
+.cols--gap {
+    gap: var(--space-medium);
+}
+
+.cols--gap-smaller {
+    gap: var(--space-smaller);
+}
+
+.cols--gap-small {
+    gap: var(--space-small);
+}
+
+.cols--gap-large {
+    gap: var(--space-large);
+}
+
+.cols--gap-larger {
+    gap: var(--space-larger);
+}
+
+.col--extend {
+    flex: 1;
+}
+
+.col--noshrink {
+    flex-shrink: 0;
+}
+
+.col--size1 {
+    flex-basis: calc(1 * 100% / 12);
+}
+
+.col--size2 {
+    flex-basis: calc(2 * 100% / 12);
+}
+
+.col--size3 {
+    flex-basis: calc(3 * 100% / 12);
+}
+
+.col--size4 {
+    flex-basis: calc(4 * 100% / 12);
+}
+
+.col--size5 {
+    flex-basis: calc(5 * 100% / 12);
+}
+
+.col--size6 {
+    flex-basis: calc(6 * 100% / 12);
+}
+
+.col--size7 {
+    flex-basis: calc(7 * 100% / 12);
+}
+
+.col--size8 {
+    flex-basis: calc(8 * 100% / 12);
+}
+
+.col--size9 {
+    flex-basis: calc(9 * 100% / 12);
+}
+
+.col--size10 {
+    flex-basis: calc(10 * 100% / 12);
+}
+
+.col--size11 {
+    flex-basis: calc(11 * 100% / 12);
+}
