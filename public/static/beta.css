@@ -91,6 +91,13 @@ h1 a:focus {
     outline-offset: -2px;
 }
 
+hr {
+    width: 100%;
+    height: 2px;
+
+    background: #6b857f;
+}
+
 fieldset,
 legend {
     background: #f7f6f4;

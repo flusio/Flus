@@ -101,6 +101,12 @@
     </section>
 
     <section class="subsection subsection--small" id="notes">
+        <hr>
+
+        <h2 class="text--center text--normal">
+            <?= _('Notepad') ?>
+        </h2>
+
         <?php foreach ($notes as $note): ?>
             <?php $user = $note->user(); ?>
             <article class="note" id="note-<?= $note->id ?>">
@@ -196,11 +202,7 @@
 
                 <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
                     <label for="content">
-                        <?php if (count($notes) === 0): ?>
-                            <?= _('What do you think?') ?>
-                        <?php else: ?>
-                            <?= _('Anything else to add?') ?>
-                        <?php endif; ?>
+                        <?= _('What do you retain from this content?') ?>
                     </label>
 
                     <textarea

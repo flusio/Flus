@@ -196,7 +196,11 @@
                 <p class="link__text">
                     <a href="<?= url('link', ['id' => $link->id]) ?>">
                         <?= icon('note') ?>
-                        <?= _nf('%s note', '%s notes', $link->number_notes, format_number($link->number_notes)) ?>
+                        <?php if ($link->number_notes > 0): ?>
+                            <?= _f('Notepad (%s)', format_number($link->number_notes)) ?>
+                        <?php else: ?>
+                            <?= _('Notepad') ?>
+                        <?php endif ?>
                     </a>
 
                     <?php if ($display_hidden): ?>
