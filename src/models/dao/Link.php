@@ -356,6 +356,57 @@ trait Link
     }
 
     /**
+     * Return a list of suggested links for the user.
+     *
+     * Suggested links have the same URL as the given one, but are from
+     * other users if they added notes to them.
+     *
+     * @return self[]
+     */
+    public static function listSuggestedFor(models\User $user, models\Link $link): array
+    {
+        $sql = <<<SQL
+            SELECT l.* FROM links l
+
+            -- Select the links with the same URL but not owned by the current
+            -- user, and not the current link.
+            WHERE l.url_hash = :url_hash
+            AND l.user_id != :user_id
+            AND l.id != :link_id
+
+            AND EXISTS (
+                -- Only if it's present in a collection...
+                SELECT 1 FROM links_to_collections lc
+
+                WHERE lc.link_id = l.id
+                AND lc.collection_id IN (
+                    -- ... owned by the user...
+                    SELECT c.id FROM collections c WHERE c.user_id = :user_id
+                    UNION
+                    -- ... or shared with the user.
+                    SELECT cs.collection_id FROM collection_shares cs WHERE cs.user_id = :user_id
+                )
+            )
+
+            -- And only if there are notes attached to the links.
+            AND EXISTS (
+                SELECT 1 FROM notes n
+                WHERE n.link_id = l.id
+            )
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':url_hash' => $link->url_hash,
+            ':link_id' => $link->id,
+            ':user_id' => $user->id,
+        ]);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
      * Count links of the given collection.
      *
      * @param string $collection_id

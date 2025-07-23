@@ -76,37 +76,36 @@
             </label>
         </div>
 
-        <?php if (count($notes) > 0): ?>
+        <?php $notepad = $link->notepad(); ?>
+        <?php if ($notepad): ?>
             <details class="form-details">
                 <summary>
                     <?= _('You already annoted this link.') ?>
                 </summary>
 
-                <div class="form-details__content">
-                    <?php foreach ($notes as $note): ?>
-                        <?php $user = $note->user(); ?>
-                        <article class="note" id="note-<?= $note->id ?>">
-                            <header class="note__header header">
-                                <div class="header__container header__container--centered">
-                                    <img class="note__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
+                <div class="form-details__content flow flow--large">
+                    <article class="notepad flow flow--large">
+                        <?php foreach ($notepad as $date_iso => $notes): ?>
+                            <?php $date = new \DateTimeImmutable($date_iso); ?>
+                            <div id="notepad-<?= $date_iso ?>" class="flow">
+                                <p>
+                                    <span class="notepad__date" href="#notepad-<?= $date_iso ?>">
+                                        <time datetime="<?= $date_iso ?>">
+                                            <?= _d($date, 'dd MMMM y') ?>
+                                        </time>
+                                    </span>
+                                </p>
 
-                                    <div class="note__author">
-                                        <?= protect($user->username) ?>
+                                <?php foreach ($notes as $note): ?>
+                                    <div class="notepad__container">
+                                        <div class="notepad__note">
+                                            <?= $note->contentAsHtml() ?>
+                                        </div>
                                     </div>
-
-                                    <div class="header__separator"></div>
-
-                                    <time class="note__date" datetime="<?= $note->created_at->format(DATE_ATOM) ?>">
-                                        <?= _d($note->created_at, 'dd MMM y, HH:mm') ?>
-                                    </time>
-                                </div>
-                            </header>
-
-                            <div class="note__content">
-                                <?= $note->contentAsHtml() ?>
+                                <?php endforeach; ?>
                             </div>
-                        </article>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </article>
 
                     <div class="form-group">
                         <label for="content">

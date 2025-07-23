@@ -72,7 +72,6 @@ class Notes extends BaseController
         if (!\App\Csrf::validate($csrf)) {
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
-                'notes' => $link->notes(),
                 'can_update' => $can_update,
                 'content' => $content,
                 'share_on_mastodon' => $share_on_mastodon,
@@ -86,7 +85,6 @@ class Notes extends BaseController
         if (!$note->validate()) {
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
-                'notes' => $link->notes(),
                 'can_update' => $can_update,
                 'content' => $content,
                 'share_on_mastodon' => $share_on_mastodon,

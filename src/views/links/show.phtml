@@ -1,6 +1,19 @@
 <?php
     $owner = $link->owner();
-    $owner_is_current_user = $current_user && $current_user->id === $owner->id;
+
+    if ($current_user) {
+        $owner_is_current_user = $current_user->id === $owner->id;
+
+        $suggested_links = $current_user->suggestedLinksFor($link);
+        $owned_link = $current_user->correspondingOwnedLink($link);
+        if ($owned_link && $link->user_id !== $current_user->id) {
+            array_unshift($suggested_links, $owned_link);
+        }
+    } else {
+        $owner_is_current_user = false;
+        $owned_link = null;
+        $suggested_links = [];
+    }
 
     $open_graph = [
         'title' => _f('Shared on %s: %s', get_app_configuration('brand'), $link->title),
@@ -27,7 +40,7 @@
     ]);
 ?>
 
-<div class="section">
+<div class="section section--longbottom">
     <?php if ($link->image_filename): ?>
         <a
             target="_blank"
@@ -100,161 +113,190 @@
         </div>
     </section>
 
-    <section class="subsection subsection--small" id="notes">
+    <section class="wrapper wrapper--text wrapper--center flow flow--larger" id="notepad">
         <hr>
 
-        <h2 class="text--center text--normal">
-            <?= _('Notepad') ?>
-        </h2>
+        <div class="flow flow--large">
+            <div class="flow">
+                <h2 class="text--center text--normal">
+                    <?= _('Notepad') ?>
+                </h2>
 
-        <?php foreach ($notes as $note): ?>
-            <?php $user = $note->user(); ?>
-            <article class="note" id="note-<?= $note->id ?>">
-                <header class="note__header header">
-                    <div class="header__container header__container--centered">
-                        <a tabindex="-1" href="<?= url('profile', ['id' => $user->id]) ?>">
-                            <img class="note__avatar" src="<?= url_avatar($user->avatar_filename) ?>" alt="" />
-                        </a>
-
-                        <div class="note__author">
-                            <a class="anchor--hidden" href="<?= url('profile', ['id' => $user->id]) ?>">
-                                <?= protect($user->username) ?>
-                            </a>
-                        </div>
-
-                        <div class="header__separator"></div>
-
-                        <a class="note__date" href="#note-<?= $note->id ?>">
-                            <time datetime="<?= $note->created_at->format(DATE_ATOM) ?>">
-                                <?= _d($note->created_at, 'dd MMM y, HH:mm') ?>
-                            </time>
-                        </a>
-
-                        <?php if ($current_user && $user->id === $current_user->id): ?>
-                            <details
-                                class="popup"
-                                data-controller="popup"
-                                data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                            >
-                                <summary class="popup__opener" title="<?= _('Actions') ?>">
-                                    <span class="button button--ghost button--smaller">
-                                        <?= icon('menu') ?>
-                                        <span class="sr-only">
-                                            <?= _('Actions') ?>
-                                        </span>
-                                    </span>
-                                </summary>
-
-                                <nav class="popup__container popup__container--left" role="menu">
-                                    <button
-                                        class="popup__item popup__item--button"
-                                        data-controller="modal-opener"
-                                        data-action="modal-opener#fetch"
-                                        data-modal-opener-href-value="<?= url('edit note', ['id' => $note->id, 'from' => url('link', ['id' => $link->id])]) ?>"
-                                        aria-haspopup="dialog"
-                                        aria-controls="modal"
-                                        role="menuitem"
-                                    >
-                                        <?= icon('pencil') ?>
-                                        <?= _('Edit') ?>
-                                    </button>
-
-                                    <div class="popup__separator"></div>
-
-                                    <form
-                                        data-turbo-preserve-scroll
-                                        method="post"
-                                        action="<?= url('delete note', ['id' => $note->id]) ?>"
-                                        data-turbo-confirm="<?= _('Are you sure that you want to delete this note?') ?>"
-                                        role="menuitem"
-                                    >
-                                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                                        <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />
-
-                                        <button type="submit" class="popup__item popup__item--button">
-                                            <?= icon('trash') ?>
-                                            <?= _('Delete') ?>
-                                        </button>
-                                    </form>
-                                </nav>
-                            </details>
-                        <?php endif; ?>
-                    </div>
-                </header>
-
-                <div class="note__content">
-                    <?= $note->contentAsHtml() ?>
-                </div>
-            </article>
-        <?php endforeach; ?>
-
-        <?php if ($can_update): ?>
-            <form
-                data-turbo-preserve-scroll
-                method="post"
-                action="<?= url('links/create note', ['link_id' => $link->id]) ?>"
-                data-controller="autosave"
-                data-action="turbo:submit-start@document->autosave#clear"
-            >
-                <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
-
-                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
-                    <label for="content">
-                        <?= _('What do you retain from this content?') ?>
-                    </label>
-
-                    <textarea
-                        id="content"
-                        name="content"
-                        required
-                        data-controller="text-editor"
-                        data-action="text-editor#refresh keyup->autosave#save"
-                        aria-describedby="content-desc"
-                    ><?= $content ?></textarea>
-
-                    <div id="content-desc">
-                        <?php if (isset($errors['content'])): ?>
-                            <p class="form-group__error">
-                                <span class="sr-only"><?= _('Error') ?></span>
-                                <?= $errors['content'] ?>
-                            </p>
-                        <?php endif; ?>
-
-                        <p class="form-group__caption">
-                            <?= _('You can format the content in Markdown and use #tags.') ?>
-                        </p>
-                    </div>
-                </div>
-
-                <?php if ($mastodon_configured): ?>
-                    <div class="form-group">
-                        <input
-                            type="checkbox"
-                            id="share-on-mastodon"
-                            name="share_on_mastodon"
-                            <?= $share_on_mastodon ? 'checked' : '' ?>
-                        />
-
-                        <label class="label--checkbox" for="share-on-mastodon">
-                            <?= _('Share on Mastodon') ?>
-                        </label>
-                    </div>
+                <?php if ($link->is_hidden): ?>
+                    <p class="paragraph--centered paragraph--secondary">
+                        <?= _('This link being hidden, the notes are private.') ?>
+                    </p>
                 <?php endif; ?>
 
-                <div class="form__actions">
-                    <button type="submit" class="button--primary">
-                        <?= _('Add a note') ?>
-                    </button>
-                </div>
-            </form>
+                <?php $notepad = $link->notepad(); ?>
+                <?php if ($notepad): ?>
+                    <article class="notepad flow flow--large">
+                        <?php foreach ($notepad as $date_iso => $notes): ?>
+                            <?php $date = new \DateTimeImmutable($date_iso); ?>
+                            <div id="notepad-<?= $date_iso ?>" class="flow">
+                                <p>
+                                    <a class="notepad__date" href="#notepad-<?= $date_iso ?>">
+                                        <time datetime="<?= $date_iso ?>">
+                                            <?= _d($date, 'dd MMMM y') ?>
+                                        </time>
+                                    </a>
+                                </p>
 
-            <?php if ($link->is_hidden): ?>
-                <p class="paragraph--centered paragraph--secondary">
-                    <?= _('This link being hidden, the notes are private.') ?>
-                </p>
+                                <?php foreach ($notes as $note): ?>
+                                    <div class="notepad__container cols cols--gap">
+                                        <div class="notepad__note col--extend">
+                                            <?= $note->contentAsHtml() ?>
+                                        </div>
+
+                                        <div class="text--right">
+                                            <?php if ($current_user && $note->user_id === $current_user->id): ?>
+                                                <details
+                                                    class="popup"
+                                                    data-controller="popup"
+                                                    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                                                >
+                                                    <summary class="popup__opener" title="<?= _('Actions') ?>">
+                                                        <span class="button button--ghost button--smaller">
+                                                            <?= icon('menu') ?>
+                                                            <span class="sr-only">
+                                                                <?= _('Actions') ?>
+                                                            </span>
+                                                        </span>
+                                                    </summary>
+
+                                                    <nav class="popup__container popup__container--left" role="menu">
+                                                        <button
+                                                            class="popup__item popup__item--button"
+                                                            data-controller="modal-opener"
+                                                            data-action="modal-opener#fetch"
+                                                            data-modal-opener-href-value="<?= url('edit note', ['id' => $note->id, 'from' => url('link', ['id' => $link->id])]) ?>"
+                                                            aria-haspopup="dialog"
+                                                            aria-controls="modal"
+                                                            role="menuitem"
+                                                        >
+                                                            <?= icon('pencil') ?>
+                                                            <?= _('Edit') ?>
+                                                        </button>
+
+                                                        <div class="popup__separator"></div>
+
+                                                        <form
+                                                            data-turbo-preserve-scroll
+                                                            method="post"
+                                                            action="<?= url('delete note', ['id' => $note->id]) ?>"
+                                                            data-turbo-confirm="<?= _('Are you sure that you want to delete this note?') ?>"
+                                                            role="menuitem"
+                                                        >
+                                                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                                                            <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />
+
+                                                            <button type="submit" class="popup__item popup__item--button">
+                                                                <?= icon('trash') ?>
+                                                                <?= _('Delete') ?>
+                                                            </button>
+                                                        </form>
+                                                    </nav>
+                                                </details>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </article>
+                <?php else: ?>
+                    <article class="panel text--center">
+                        <?= _('No notes have yet been taken.') ?>
+                    </article>
+                <?php endif; ?>
+            </div>
+
+            <?php if ($can_update): ?>
+                <form
+                    data-turbo-preserve-scroll
+                    method="post"
+                    action="<?= url('links/create note', ['link_id' => $link->id]) ?>"
+                    data-controller="autosave"
+                    data-action="turbo:submit-start@document->autosave#clear"
+                >
+                    <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+
+                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                    <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
+                        <label for="content">
+                            <?= _('What do you retain from this content?') ?>
+                        </label>
+
+                        <textarea
+                            id="content"
+                            name="content"
+                            required
+                            data-controller="text-editor"
+                            data-action="text-editor#refresh keyup->autosave#save"
+                            aria-describedby="content-desc"
+                        ><?= $content ?></textarea>
+
+                        <div id="content-desc">
+                            <?php if (isset($errors['content'])): ?>
+                                <p class="form-group__error">
+                                    <span class="sr-only"><?= _('Error') ?></span>
+                                    <?= $errors['content'] ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <p class="form-group__caption">
+                                <?= _('You can format the content in Markdown and use #tags.') ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <?php if ($mastodon_configured): ?>
+                        <div class="form-group">
+                            <input
+                                type="checkbox"
+                                id="share-on-mastodon"
+                                name="share_on_mastodon"
+                                <?= $share_on_mastodon ? 'checked' : '' ?>
+                            />
+
+                            <label class="label--checkbox" for="share-on-mastodon">
+                                <?= _('Share on Mastodon') ?>
+                            </label>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="form__actions">
+                        <button type="submit" class="button--primary">
+                            <?= _('Add a note') ?>
+                        </button>
+                    </div>
+                </form>
             <?php endif; ?>
+        </div>
+
+        <?php if ($suggested_links): ?>
+            <div class="panel flow">
+                <p class="text--bold">
+                    <?= _('See notes from:') ?>
+                </p>
+
+                <ul class="list--no-style flow flow--small">
+                    <?php foreach ($suggested_links as $suggested_link): ?>
+                        <?php $suggested_link_owner = $suggested_link->owner(); ?>
+                        <li>
+                            <img class="avatar" src="<?= url_avatar($suggested_link_owner->avatar_filename) ?>" alt="">
+                            <a class="anchor--discreet" href="<?= url('link', ['id' => $suggested_link->id]) ?>">
+                                <?= $suggested_link_owner->username ?>
+
+                                <?php if ($suggested_link_owner->id === $current_user->id): ?>
+                                    <?= _('(yourself)') ?>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
         <?php endif; ?>
     </section>
 </div>

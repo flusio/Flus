@@ -382,13 +382,13 @@ button[disabled],
     background-color: #f7f6f4;
 }
 
-.note__content {
-    padding-right: var(--space-medium);
-    padding-left: var(--space-medium);
+.notepad__container {
+    --notepad-container-border: #c5cfcc;
 }
 
-.note__content blockquote {
-    --blockquote-icon-size: 40px;
+.notepad blockquote {
+    --blockquote-icon-size: 30px;
+    --blockquote-icon-position: var(--space-medium);
 
     position: relative;
 
@@ -401,16 +401,18 @@ button[disabled],
 }
 
 @media (min-width: 800px) {
-    .note__content blockquote {
+    .notepad blockquote {
+        --blockquote-icon-size: 40px;
+
         padding-right: var(--space-large);
     }
 }
 
-.note__content blockquote::before {
+.notepad blockquote::before {
     content: "";
 
     position: absolute;
-    top: var(--space-medium);
+    top: var(--blockquote-icon-position);
     left: calc(-1 * var(--blockquote-icon-size) / 2);
 
     display: block;
@@ -425,11 +427,11 @@ button[disabled],
     mask-size: cover;
 }
 
-.note__content blockquote::after {
+.notepad blockquote::after {
     content: "";
 
     position: absolute;
-    top: calc(var(--blockquote-icon-size) + var(--space-medium));
+    top: calc(var(--blockquote-icon-size) + var(--blockquote-icon-position));
     bottom: var(--space-medium);
     left: 0;
 
@@ -604,4 +606,8 @@ input[type="checkbox"]:checked + .topics-selector__label {
     height: 1px;
 
     background-color: #dee7e5;
+}
+
+.panel {
+    background-color: #f7f6f4;
 }

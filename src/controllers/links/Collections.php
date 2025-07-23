@@ -44,16 +44,14 @@ class Collections extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if ($link->user_id === $user->id) {
-            $notes = $link->notes();
-        } else {
+        if ($link->user_id !== $user->id) {
             $existing_link = models\Link::findBy([
                 'user_id' => $user->id,
                 'url_hash' => models\Link::hashUrl($link->url),
             ]);
+
             if ($existing_link) {
                 $link = $existing_link;
-                $notes = $link->notes();
             }
         }
 
@@ -94,7 +92,6 @@ class Collections extends BaseController
             'shared_collections' => $shared_collections,
             'collections_by_others' => $collections_by_others,
             'mark_as_read' => $mark_as_read,
-            'notes' => $notes,
             'content' => '',
             'share_on_mastodon' => false,
             'mastodon_configured' => $mastodon_configured,

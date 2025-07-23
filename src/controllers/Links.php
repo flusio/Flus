@@ -124,8 +124,6 @@ class Links extends BaseController
             ]);
         }
 
-        $notes = $link->notes();
-
         if ($user) {
             $mastodon_configured = models\MastodonAccount::existsBy([
                 'user_id' => $user->id,
@@ -136,7 +134,6 @@ class Links extends BaseController
 
         return Response::ok('links/show.phtml', [
             'link' => $link,
-            'notes' => $notes,
             'can_update' => $can_update,
             'content' => '',
             'share_on_mastodon' => false,
