@@ -110,3 +110,11 @@ button[disabled],
 
     line-height: 1.3;
 }
+
+.button--icon {
+    padding: var(--space-small);
+
+    border-radius: 100%;
+
+    aspect-ratio: 1;
+}

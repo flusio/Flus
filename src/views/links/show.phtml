@@ -1,6 +1,8 @@
 <?php
     $owner = $link->owner();
 
+    $current_url = url('link', ['id' => $link->id]);
+
     if ($current_user) {
         $owner_is_current_user = $current_user->id === $owner->id;
 
@@ -9,10 +11,15 @@
         if ($owned_link && $link->user_id !== $current_user->id) {
             array_unshift($suggested_links, $owned_link);
         }
+
+        $in_bookmarks = $link->isInBookmarksOf($current_user);
+        $is_read = $link->isReadBy($current_user);
     } else {
         $owner_is_current_user = false;
         $owned_link = null;
         $suggested_links = [];
+        $in_bookmarks = false;
+        $is_read = false;
     }
 
     $open_graph = [
@@ -91,26 +98,71 @@
         <?php endif; ?>
     </p>
 
-    <section class="section__meta">
-        <p class="section__details">
-            <?php $username = $owner_is_current_user ? _('you') : protect($owner->username); ?>
-            <?= _f('Added by <a href="%s">%s</a>', url('profile', ['id' => $owner->id]), $username) ?>
-        </p>
+    <section class="wrapper wrapper--text wrapper--center flow">
+        <div class="cols cols--always cols--center cols--gap">
+            <p class="col--extend">
+                <?php $username = $owner_is_current_user ? _('you') : protect($owner->username); ?>
+                <?= _f('Added by <a href="%s">%s</a>', url('profile', ['id' => $owner->id]), $username) ?>
+            </p>
 
-        <div class="section__actions">
-            <a
-                class="anchor--action"
-                target="_blank"
-                rel="noopener noreferrer"
-                href="<?= protect($link->url) ?>"
-            >
-                <?= icon('pop-out') ?>
-                <?= _('read') ?>
-                <span class="sr-only">
-                    <?= _('(open a new window)') ?>
-                </span>
-            </a>
+            <div>
+                <a
+                    class="anchor--action"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="<?= protect($link->url) ?>"
+                >
+                    <?= icon('pop-out') ?>
+                    <?= _('read') ?>
+                    <span class="sr-only">
+                        <?= _('(open a new window)') ?>
+                    </span>
+                </a>
+            </div>
         </div>
+
+        <?php if ($current_user): ?>
+            <div class="cols cols--always cols--gap-small">
+                <div class="col--extend cols cols--always cols--gap-small">
+                    <?php if (!$is_read || $in_bookmarks): ?>
+                        <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $current_url]) ?>">
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                            <button class="button--icon" title="<?= _('Mark as read') ?>">
+                                <?= icon('check') ?>
+                                <span class="sr-only">
+                                    <?= _('Mark as read') ?>
+                                </span>
+                            </button>
+                        </form>
+                    <?php endif; ?>
+
+                    <?php if (!$in_bookmarks): ?>
+                        <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => $current_url]) ?>">
+                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                            <button class="button--icon" title="<?= _('Read later') ?>">
+                                <?= icon('bookmark') ?>
+                                <span class="sr-only">
+                                    <?= _('Read later') ?>
+                                </span>
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                </div>
+
+                <button
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'from' => $current_url]) ?>"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    <?= icon('collection') ?>
+                    <?= _('Store the link') ?>
+                </button>
+            </div>
+        <?php endif; ?>
     </section>
 
     <section class="wrapper wrapper--text wrapper--center flow flow--larger" id="notepad">
