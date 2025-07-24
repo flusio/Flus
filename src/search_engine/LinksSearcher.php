@@ -56,9 +56,9 @@ class LinksSearcher
                 l.*,
                 l.created_at AS published_at,
                 (
-                    SELECT COUNT(*) FROM messages m
-                    WHERE m.link_id = l.id
-                ) AS number_comments
+                    SELECT COUNT(*) FROM notes n
+                    WHERE n.link_id = l.id
+                ) AS number_notes
             FROM {$from_statement}
 
             WHERE l.user_id = :user_id

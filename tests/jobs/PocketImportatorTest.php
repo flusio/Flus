@@ -248,9 +248,9 @@ class PocketImportatorTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::findBy(['url' => $url]);
         $this->assertNotNull($link);
         $this->assertEquals([$tag1 => $tag1, $tag2 => $tag2], $link->tags);
-        $messages = $link->messages();
-        $this->assertSame(1, count($messages));
-        $this->assertSame("#{$tag1} #{$tag2}", $messages[0]->content);
+        $notes = $link->notes();
+        $this->assertSame(1, count($notes));
+        $this->assertSame("#{$tag1} #{$tag2}", $notes[0]->content);
     }
 
     public function testImportPocketItemsUsesTimeAddedIfItExists(): void

@@ -32,19 +32,6 @@ class LinksAccess
         return $user && $user->id === $link->user_id;
     }
 
-    public static function canComment(?models\User $user, models\Link $link): bool
-    {
-        if (!$user) {
-            return false;
-        }
-
-        if ($user->id === $link->user_id) {
-            return true;
-        }
-
-        return $link->sharedWith($user, 'write');
-    }
-
     public static function canDelete(?models\User $user, models\Link $link): bool
     {
         return $user && $user->id === $link->user_id;

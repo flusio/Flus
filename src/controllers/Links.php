@@ -115,7 +115,7 @@ class Links extends BaseController
         }
 
         $can_view = auth\LinksAccess::canView($user, $link);
-        $can_comment = auth\LinksAccess::canComment($user, $link);
+        $can_update = auth\LinksAccess::canUpdate($user, $link);
         if (!$can_view && $user) {
             return Response::notFound('not_found.phtml');
         } elseif (!$can_view) {
@@ -123,8 +123,6 @@ class Links extends BaseController
                 'redirect_to' => \Minz\Url::for('link', ['id' => $link_id]),
             ]);
         }
-
-        $messages = $link->messages();
 
         if ($user) {
             $mastodon_configured = models\MastodonAccount::existsBy([
@@ -136,9 +134,8 @@ class Links extends BaseController
 
         return Response::ok('links/show.phtml', [
             'link' => $link,
-            'messages' => $messages,
-            'can_comment' => $can_comment,
-            'comment' => '',
+            'can_update' => $can_update,
+            'content' => '',
             'share_on_mastodon' => false,
             'mastodon_configured' => $mastodon_configured,
         ]);

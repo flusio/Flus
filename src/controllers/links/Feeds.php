@@ -39,7 +39,7 @@ class Feeds extends BaseController
 
         $response = Response::ok('links/feeds/show.atom.xml.php', [
             'link' => $link,
-            'messages' => $link->messages(),
+            'notes' => $link->notes(),
             'user_agent' => utils\UserAgent::get(),
         ]);
         $response->setHeader('X-Content-Type-Options', 'nosniff');

@@ -181,12 +181,12 @@ class Router
         $router->addRoute('GET', '/links/:id/collections', 'links/Collections#index', 'link collections');
         $router->addRoute('POST', '/links/:id/collections', 'links/Collections#update', 'update link collections');
 
-        // Messages
-        $router->addRoute('GET', '/links/:link_id/messages', 'links/Messages#index', 'links/messages');
-        $router->addRoute('POST', '/links/:link_id/messages', 'links/Messages#create', 'links/create message');
-        $router->addRoute('GET', '/messages/:id/edit', 'Messages#edit', 'edit message');
-        $router->addRoute('POST', '/messages/:id/edit', 'Messages#update', 'update message');
-        $router->addRoute('POST', '/messages/:id/delete', 'Messages#delete', 'delete message');
+        // Notes
+        $router->addRoute('GET', '/links/:link_id/notes', 'links/Notes#index', 'links/notes');
+        $router->addRoute('POST', '/links/:link_id/notes', 'links/Notes#create', 'links/create note');
+        $router->addRoute('GET', '/notes/:id/edit', 'Notes#edit', 'edit note');
+        $router->addRoute('POST', '/notes/:id/edit', 'Notes#update', 'update note');
+        $router->addRoute('POST', '/notes/:id/delete', 'Notes#delete', 'delete note');
 
         // Groups
         $router->addRoute('GET', '/groups/:id/edit', 'Groups#edit', 'edit group');

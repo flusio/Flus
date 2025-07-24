@@ -1,3 +1,35 @@
+.text--bold {
+    font-weight: 600;
+}
+
+.text--bolder {
+    font-weight: 700;
+}
+
 .text--center {
     text-align: center;
+}
+
+.text--right {
+    text-align: right;
+}
+
+.text--left {
+    text-align: left;
+}
+
+.text--smaller {
+    font-size: var(--size-smaller);
+}
+
+.text--small {
+    font-size: var(--size-small);
+}
+
+.text--normal {
+    font-size: var(--size-normal);
+}
+
+.text--big {
+    font-size: var(--size-large);
 }

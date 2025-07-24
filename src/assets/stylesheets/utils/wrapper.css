@@ -4,6 +4,10 @@
     max-width: var(--wrapper-max-width);
 }
 
+.wrapper--text {
+    --wrapper-max-width: 55ch;
+}
+
 .wrapper--small {
     --wrapper-max-width: 700px;
 }

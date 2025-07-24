@@ -44,13 +44,13 @@ trait Link
             $published_at_clause = ', l.created_at AS published_at';
         }
 
-        $number_comments_clause = '';
-        if (in_array('number_comments', $selected_computed_props)) {
-            $number_comments_clause = <<<'SQL'
+        $number_notes_clause = '';
+        if (in_array('number_notes', $selected_computed_props)) {
+            $number_notes_clause = <<<'SQL'
                 , (
-                    SELECT COUNT(*) FROM messages m
+                    SELECT COUNT(*) FROM notes m
                     WHERE m.link_id = l.id
-                ) AS number_comments
+                ) AS number_notes
             SQL;
         }
 
@@ -60,7 +60,7 @@ trait Link
             SELECT
                 l.*
                 {$published_at_clause}
-                {$number_comments_clause}
+                {$number_notes_clause}
             FROM links l
             WHERE {$where_statement}
         SQL;
@@ -141,13 +141,13 @@ trait Link
             $order_by_clause = 'ORDER BY published_at DESC, l.id';
         }
 
-        $number_comments_clause = '';
-        if (in_array('number_comments', $selected_computed_props)) {
-            $number_comments_clause = <<<'SQL'
+        $number_notes_clause = '';
+        if (in_array('number_notes', $selected_computed_props)) {
+            $number_notes_clause = <<<'SQL'
                 , (
-                    SELECT COUNT(*) FROM messages m
+                    SELECT COUNT(*) FROM notes m
                     WHERE m.link_id = l.id
-                ) AS number_comments
+                ) AS number_notes
             SQL;
         }
 
@@ -182,7 +182,7 @@ trait Link
             SELECT
                 l.*
                 {$published_at_clause}
-                {$number_comments_clause}
+                {$number_notes_clause}
             FROM links l
 
             {$join_clause}
@@ -294,13 +294,13 @@ trait Link
             $order_by_clause = 'ORDER BY lc.created_at DESC, l.id';
         }
 
-        $number_comments_clause = '';
-        if (in_array('number_comments', $selected_computed_props)) {
-            $number_comments_clause = <<<'SQL'
+        $number_notes_clause = '';
+        if (in_array('number_notes', $selected_computed_props)) {
+            $number_notes_clause = <<<'SQL'
                 , (
-                    SELECT COUNT(*) FROM messages m
+                    SELECT COUNT(*) FROM notes m
                     WHERE m.link_id = l.id
-                ) AS number_comments
+                ) AS number_notes
             SQL;
         }
 
@@ -334,7 +334,7 @@ trait Link
             SELECT
                 l.*
                 {$published_at_clause}
-                {$number_comments_clause}
+                {$number_notes_clause}
             FROM links l, links_to_collections lc
 
             WHERE l.id = lc.link_id
@@ -351,6 +351,57 @@ trait Link
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Return a list of suggested links for the user.
+     *
+     * Suggested links have the same URL as the given one, but are from
+     * other users if they added notes to them.
+     *
+     * @return self[]
+     */
+    public static function listSuggestedFor(models\User $user, models\Link $link): array
+    {
+        $sql = <<<SQL
+            SELECT l.* FROM links l
+
+            -- Select the links with the same URL but not owned by the current
+            -- user, and not the current link.
+            WHERE l.url_hash = :url_hash
+            AND l.user_id != :user_id
+            AND l.id != :link_id
+
+            AND EXISTS (
+                -- Only if it's present in a collection...
+                SELECT 1 FROM links_to_collections lc
+
+                WHERE lc.link_id = l.id
+                AND lc.collection_id IN (
+                    -- ... owned by the user...
+                    SELECT c.id FROM collections c WHERE c.user_id = :user_id
+                    UNION
+                    -- ... or shared with the user.
+                    SELECT cs.collection_id FROM collection_shares cs WHERE cs.user_id = :user_id
+                )
+            )
+
+            -- And only if there are notes attached to the links.
+            AND EXISTS (
+                SELECT 1 FROM notes n
+                WHERE n.link_id = l.id
+            )
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':url_hash' => $link->url_hash,
+            ':link_id' => $link->id,
+            ':user_id' => $user->id,
+        ]);
 
         return self::fromDatabaseRows($statement->fetchAll());
     }

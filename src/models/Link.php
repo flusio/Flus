@@ -102,7 +102,7 @@ class Link
     public ?\DateTimeImmutable $published_at = null;
 
     #[Database\Column(computed: true)]
-    public ?int $number_comments = null;
+    public ?int $number_notes = null;
 
     #[Database\Column(computed: true)]
     public string $search_index;
@@ -184,13 +184,30 @@ class Link
     }
 
     /**
-     * Return the messages attached to the current link
+     * Return the notes attached to the current link
      *
-     * @return Message[]
+     * @return Note[]
      */
-    public function messages(): array
+    public function notes(): array
     {
-        return Message::listByLink($this->id);
+        return Note::listByLink($this);
+    }
+
+    /**
+     * Return the notepad, containing the notes grouped by dates
+     *
+     * @return array<string, Note[]>
+     */
+    public function notepad(): array
+    {
+        $notepad = [];
+
+        foreach ($this->notes() as $note) {
+            $date_iso = $note->created_at->format('Y-m-d');
+            $notepad[$date_iso][] = $note;
+        }
+
+        return $notepad;
     }
 
     public function sourceCollection(): ?Collection

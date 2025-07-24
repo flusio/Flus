@@ -182,7 +182,7 @@ class Collections extends BaseController
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->links(
-                    ['published_at', 'number_comments'],
+                    ['published_at', 'number_notes'],
                     [
                         'offset' => $pagination->currentOffset(),
                         'limit' => $pagination->numberPerPage(),
@@ -195,7 +195,7 @@ class Collections extends BaseController
                 'collection' => $collection,
                 'topics' => $topics,
                 'links' => $collection->links(
-                    ['published_at', 'number_comments'],
+                    ['published_at', 'number_notes'],
                     [
                         'hidden' => $access_is_shared,
                         'offset' => $pagination->currentOffset(),

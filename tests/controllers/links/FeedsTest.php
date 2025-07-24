@@ -3,7 +3,7 @@
 namespace App\controllers\links;
 
 use tests\factories\LinkFactory;
-use tests\factories\MessageFactory;
+use tests\factories\NoteFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
@@ -20,7 +20,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => $title,
             'is_hidden' => false,
         ]);
-        MessageFactory::create([
+        NoteFactory::create([
             'link_id' => $link->id,
             'content' => '**foo bar**',
         ]);
@@ -46,7 +46,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
         /** @var string */
         $content = $this->fake('paragraphs', 3, true);
-        MessageFactory::create([
+        NoteFactory::create([
             'link_id' => $link->id,
             'content' => $content,
         ]);

@@ -22,6 +22,7 @@
 @import './components/modal.css';
 @import './components/paragraphs.css';
 @import './components/pagination.css';
+@import './components/panels.css';
 @import './components/popup.css';
 @import './components/sections.css';
 @import './components/tags.css';
@@ -32,8 +33,8 @@
 @import './custom/form-avatar.css';
 @import './custom/groups.css';
 @import './custom/links.css';
-@import './custom/messages.css';
 @import './custom/news.css';
+@import './custom/notepad.css';
 @import './custom/profiles.css';
 @import './custom/reading-nav.css';
 @import './custom/share.css';

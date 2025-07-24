@@ -447,6 +447,34 @@ class User
     }
 
     /**
+     * Return a link owned by the user, with the same URL, if any.
+     */
+    public function correspondingOwnedLink(Link $link): ?Link
+    {
+        if ($this->id === $link->user_id) {
+            return $link;
+        }
+
+        return Link::findBy([
+            'user_id' => $this->id,
+            'url_hash' => $link->url_hash,
+        ]);
+    }
+
+    /**
+     * Return a list of suggested links for the user.
+     *
+     * Suggested links have the same URL as the given one, but are from
+     * other users if they added notes to them.
+     *
+     * @return Link[]
+     */
+    public function suggestedLinksFor(Link $link): array
+    {
+        return Link::listSuggestedFor($this, $link);
+    }
+
+    /**
      * Set login credentials.
      *
      * The password is not changed if empty.

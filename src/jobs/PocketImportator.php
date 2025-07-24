@@ -142,7 +142,7 @@ class PocketImportator extends \Minz\Job
         $links_to_create = [];
         $collections_to_create = [];
         $links_to_collections_to_create = [];
-        $messages = [];
+        $notes = [];
 
         foreach ($items as $item) {
             /** @var string */
@@ -230,7 +230,7 @@ class PocketImportator extends \Minz\Job
                 $links_to_collections_to_create[] = $link_to_collection;
             }
 
-            // We create a message containing the list of tags if any.
+            // We create a note containing the list of tags if any.
             if ($tags) {
                 $formatted_tags = array_map(function ($tag): string {
                     return "#{$tag}";
@@ -238,10 +238,10 @@ class PocketImportator extends \Minz\Job
 
                 $content = implode(' ', $formatted_tags);
 
-                $message = new models\Message($user->id, $link_id, $content);
-                $message->created_at = $published_at;
+                $note = new models\Note($user->id, $link_id, $content);
+                $note->created_at = $published_at;
 
-                $messages[] = $message;
+                $notes[] = $note;
             }
         }
 
@@ -249,7 +249,7 @@ class PocketImportator extends \Minz\Job
         models\Link::bulkInsert($links_to_create);
         models\Collection::bulkInsert($collections_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
-        models\Message::bulkInsert($messages);
+        models\Note::bulkInsert($notes);
 
         // Delete the collections if they are empty at the end of the
         // importation.

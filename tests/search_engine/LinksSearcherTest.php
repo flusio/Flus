@@ -6,7 +6,6 @@ use App\models;
 use tests\factories\UserFactory;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
-use tests\factories\MessageFactory;
 
 class LinksSearcherTest extends \PHPUnit\Framework\TestCase
 {

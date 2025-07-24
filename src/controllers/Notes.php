@@ -12,10 +12,10 @@ use App\services;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Messages extends BaseController
+class Notes extends BaseController
 {
     /**
-     * Edit a message.
+     * Edit a note.
      *
      * @request_param string id
      * @request_param string from
@@ -23,34 +23,34 @@ class Messages extends BaseController
      * @response 302 /login?redirect_to=:from
      *     If the user is not connected.
      * @response 404
-     *     If the message doesn’t exist or user hasn't access to it.
+     *     If the note doesn’t exist or user hasn't access to it.
      * @response 200
      *     On success.
      */
     public function edit(Request $request): Response
     {
-        $message_id = $request->parameters->getString('id', '');
+        $note_id = $request->parameters->getString('id', '');
         $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        $message = models\Message::findBy([
-            'id' => $message_id,
+        $note = models\Note::findBy([
+            'id' => $note_id,
             'user_id' => $user->id,
         ]);
-        if (!$message) {
+        if (!$note) {
             return Response::notFound('not_found.phtml');
         }
 
-        return Response::ok('messages/edit.phtml', [
-            'message' => $message,
-            'comment' => $message->content,
+        return Response::ok('notes/edit.phtml', [
+            'note' => $note,
+            'content' => $note->content,
             'from' => $from,
         ]);
     }
 
     /**
-     * Update a message.
+     * Update a note.
      *
      * @request_param string id
      * @request_param string content
@@ -60,7 +60,7 @@ class Messages extends BaseController
      * @response 302 /login?redirect_to=:from
      *     If the user is not connected.
      * @response 404
-     *     If the message doesn’t exist or user hasn't access to it.
+     *     If the note doesn’t exist or user hasn't access to it.
      * @response 302
      * @flash error
      *     If the CSRF or the content are invalid.
@@ -69,18 +69,18 @@ class Messages extends BaseController
      */
     public function update(Request $request): Response
     {
-        $message_id = $request->parameters->getString('id');
+        $note_id = $request->parameters->getString('id');
         $content = $request->parameters->getString('content', '');
         $from = $request->parameters->getString('from', '');
         $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        $message = models\Message::findBy([
-            'id' => $message_id,
+        $note = models\Note::findBy([
+            'id' => $note_id,
             'user_id' => $user->id,
         ]);
-        if (!$message) {
+        if (!$note) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -89,45 +89,45 @@ class Messages extends BaseController
             return Response::found($from);
         }
 
-        $message->content = trim($content);
+        $note->content = trim($content);
 
-        if (!$message->validate()) {
-            \Minz\Flash::set('errors', $message->errors());
+        if (!$note->validate()) {
+            \Minz\Flash::set('errors', $note->errors());
             return Response::found($from);
         }
 
-        $message->save();
+        $note->save();
 
-        services\LinkTags::refresh($message->link());
+        services\LinkTags::refresh($note->link());
 
         return Response::found($from);
     }
 
     /**
-     * Delete a message
+     * Delete a note
      *
      * @request_param string id
      * @request_param string redirect_to default is /
      *
      * @response 302 /login?redirect_to=:redirect_to if not connected
-     * @response 404 if the message doesn’t exist or user hasn't access
+     * @response 404 if the note doesn’t exist or user hasn't access
      * @response 302 :redirect_to if csrf is invalid
      * @response 302 :redirect_to on success
      */
     public function delete(Request $request): Response
     {
-        $message_id = $request->parameters->getString('id', '');
+        $note_id = $request->parameters->getString('id', '');
         $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
         $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $redirect_to);
 
-        $message = models\Message::findBy([
-            'id' => $message_id,
+        $note = models\Note::findBy([
+            'id' => $note_id,
             'user_id' => $user->id,
         ]);
 
-        if (!$message) {
+        if (!$note) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -136,9 +136,9 @@ class Messages extends BaseController
             return Response::found($redirect_to);
         }
 
-        models\Message::delete($message->id);
+        models\Note::delete($note->id);
 
-        services\LinkTags::refresh($message->link());
+        services\LinkTags::refresh($note->link());
 
         return Response::found($redirect_to);
     }

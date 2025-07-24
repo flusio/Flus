@@ -4,9 +4,10 @@ namespace App\models\dao;
 
 use App\models;
 use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
-use tests\factories\MessageFactory;
+use tests\factories\NoteFactory;
 use tests\factories\UserFactory;
 
 class LinkTest extends \PHPUnit\Framework\TestCase
@@ -103,19 +104,19 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($published_at, $links[0]->published_at);
     }
 
-    public function testListComputedByUserIdCanReturnNumberComments(): void
+    public function testListComputedByUserIdCanReturnNumberNotes(): void
     {
         $user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        MessageFactory::create([
+        NoteFactory::create([
             'link_id' => $link->id,
         ]);
 
-        $links = models\Link::listComputedByUserId($user->id, ['number_comments']);
+        $links = models\Link::listComputedByUserId($user->id, ['number_notes']);
 
-        $this->assertSame(1, $links[0]->number_comments);
+        $this->assertSame(1, $links[0]->number_notes);
     }
 
     public function testListComputedByUserIdCanListSharedOnly(): void
@@ -308,5 +309,120 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, count($links));
         $this->assertEquals($link_1->id, $links[0]->id);
         $this->assertEquals($link_3->id, $links[1]->id);
+    }
+
+    public function testListSuggestedForWithLinkInOwnedCollection(): void
+    {
+        $url = 'https://flus.fr';
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $other_user = UserFactory::create();
+        $other_link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'url' => $url,
+        ]);
+        NoteFactory::create([
+            'user_id' => $other_user->id,
+            'link_id' => $other_link->id,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+        LinkToCollectionFactory::create([
+            'link_id' => $other_link->id,
+            'collection_id' => $collection->id,
+        ]);
+
+        $links = models\Link::listSuggestedFor($user, $link);
+
+        $this->assertSame(1, count($links));
+        $this->assertSame($other_link->id, $links[0]->id);
+    }
+
+    public function testListSuggestedForWithLinkInSharedCollection(): void
+    {
+        $url = 'https://flus.fr';
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $other_user = UserFactory::create();
+        $other_link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'url' => $url,
+        ]);
+        NoteFactory::create([
+            'user_id' => $other_user->id,
+            'link_id' => $other_link->id,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        LinkToCollectionFactory::create([
+            'link_id' => $other_link->id,
+            'collection_id' => $collection->id,
+        ]);
+        CollectionShareFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection->id,
+        ]);
+
+        $links = models\Link::listSuggestedFor($user, $link);
+
+        $this->assertSame(1, count($links));
+        $this->assertSame($other_link->id, $links[0]->id);
+    }
+
+    public function testListSuggestedForDoesNotReturnLinksNotRelatedToUser(): void
+    {
+        $url = 'https://flus.fr';
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $other_user = UserFactory::create();
+        $other_link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'url' => $url,
+        ]);
+        NoteFactory::create([
+            'user_id' => $other_user->id,
+            'link_id' => $other_link->id,
+        ]);
+
+        $links = models\Link::listSuggestedFor($user, $link);
+
+        $this->assertSame(0, count($links));
+    }
+
+    public function testListSuggestedForDoesNotReturnLinksWithoutNotes(): void
+    {
+        $url = 'https://flus.fr';
+        $user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $other_user = UserFactory::create();
+        $other_link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'url' => $url,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+        LinkToCollectionFactory::create([
+            'link_id' => $other_link->id,
+            'collection_id' => $collection->id,
+        ]);
+
+        $links = models\Link::listSuggestedFor($user, $link);
+
+        $this->assertSame(0, count($links));
     }
 }

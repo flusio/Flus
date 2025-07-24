@@ -13,17 +13,17 @@ use Minz\Database;
 trait DataExporterQueries
 {
     /**
-     * Return links of the given user which have at least one comment.
+     * Return links of the given user which have at least one note.
      *
      * @return self[]
      */
-    public static function listByUserIdWithComments(string $user_id): array
+    public static function listByUserIdWithNotes(string $user_id): array
     {
         $sql = <<<SQL
             SELECT l.*
-            FROM links l, messages m
+            FROM links l, notes n
 
-            WHERE l.id = m.link_id
+            WHERE l.id = n.link_id
             AND l.user_id = :user_id
 
             ORDER BY l.created_at DESC, l.id

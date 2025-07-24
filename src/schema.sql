@@ -212,7 +212,7 @@ CREATE TABLE collection_shares (
 
 CREATE UNIQUE INDEX idx_collection_shares ON collection_shares(user_id, collection_id);
 
-CREATE TABLE messages (
+CREATE TABLE notes (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     content TEXT NOT NULL,
@@ -220,7 +220,7 @@ CREATE TABLE messages (
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE INDEX idx_messages_link_id ON messages(link_id);
+CREATE INDEX idx_notes_link_id ON notes(link_id);
 
 CREATE TABLE topics (
     id TEXT PRIMARY KEY,

@@ -4,10 +4,10 @@ namespace App\controllers;
 
 use App\models;
 use tests\factories\LinkFactory;
-use tests\factories\MessageFactory;
+use tests\factories\NoteFactory;
 use tests\factories\UserFactory;
 
-class MessagesTest extends \PHPUnit\Framework\TestCase
+class NotesTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\InitializerHelper;
@@ -20,18 +20,18 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $content = $this->fake('sentence');
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'content' => $content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('GET', "/messages/{$message->id}/edit", [
+        $response = $this->appRun('GET', "/notes/{$note->id}/edit", [
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'messages/edit.phtml');
+        $this->assertResponseTemplateName($response, 'notes/edit.phtml');
         $this->assertResponseContains($response, $content);
     }
 
@@ -39,49 +39,49 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
     {
         /** @var string */
         $content = $this->fake('sentence');
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'content' => $content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('GET', "/messages/{$message->id}/edit", [
+        $response = $this->appRun('GET', "/notes/{$note->id}/edit", [
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
     }
 
-    public function testEditFailsIfMessageDoesNotExist(): void
+    public function testEditFailsIfNoteDoesNotExist(): void
     {
         $user = $this->login();
         /** @var string */
         $content = $this->fake('sentence');
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'content' => $content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('GET', '/messages/not-an-id/edit', [
+        $response = $this->appRun('GET', '/notes/not-an-id/edit', [
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfUserHasNoAccessToMessage(): void
+    public function testEditFailsIfUserHasNoAccessToNote(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $content = $this->fake('sentence');
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $other_user->id,
             'content' => $content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('GET', "/messages/{$message->id}/edit", [
+        $response = $this->appRun('GET', "/notes/{$note->id}/edit", [
             'from' => $from,
         ]);
 
@@ -95,21 +95,21 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $old_content = $this->fakeUnique('sentence');
         /** @var string */
         $new_content = $this->fakeUnique('sentence');
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
             'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        $message = $message->reload();
-        $this->assertSame($new_content, $message->content);
+        $note = $note->reload();
+        $this->assertSame($new_content, $note->content);
     }
 
     public function testUpdateChangesLinkTags(): void
@@ -120,22 +120,22 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $old_content = '#foo';
         $new_content = '#Bar';
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'link_id' => $link->id,
             'content' => $old_content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
             'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        $message = $message->reload();
-        $this->assertSame($new_content, $message->content);
+        $note = $note->reload();
+        $this->assertSame($new_content, $note->content);
         $link = $link->reload();
         $this->assertEquals(['bar' => 'Bar'], $link->tags);
     }
@@ -149,48 +149,48 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $old_content = $this->fakeUnique('sentence');
         /** @var string */
         $new_content = $this->fakeUnique('sentence');
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
             'csrf' => 'a token',
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $message = $message->reload();
-        $this->assertSame($old_content, $message->content);
+        $note = $note->reload();
+        $this->assertSame($old_content, $note->content);
     }
 
-    public function testUpdateFailsIfMessageDoesNotExist(): void
+    public function testUpdateFailsIfNoteDoesNotExist(): void
     {
         $user = $this->login();
         /** @var string */
         $old_content = $this->fakeUnique('sentence');
         /** @var string */
         $new_content = $this->fakeUnique('sentence');
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('POST', '/messages/not-an-id/edit', [
+        $response = $this->appRun('POST', '/notes/not-an-id/edit', [
             'content' => $new_content,
             'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $message = $message->reload();
-        $this->assertSame($old_content, $message->content);
+        $note = $note->reload();
+        $this->assertSame($old_content, $note->content);
     }
 
-    public function testUpdateFailsIfUserHasNoAccessToMessage(): void
+    public function testUpdateFailsIfUserHasNoAccessToNote(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -198,21 +198,21 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $old_content = $this->fakeUnique('sentence');
         /** @var string */
         $new_content = $this->fakeUnique('sentence');
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $other_user->id,
             'content' => $old_content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
             'csrf' => \App\Csrf::generate(),
             'from' => $from,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $message = $message->reload();
-        $this->assertSame($old_content, $message->content);
+        $note = $note->reload();
+        $this->assertSame($old_content, $note->content);
     }
 
     public function testUpdateFailsIfContentIsEmpty(): void
@@ -221,13 +221,13 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $old_content = $this->fakeUnique('sentence');
         $new_content = '';
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
             'csrf' => \App\Csrf::generate(),
             'from' => $from,
@@ -235,10 +235,10 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, $from);
         $this->assertEquals([
-            'content' => 'The message is required.',
+            'content' => 'The content is required.',
         ], \Minz\Flash::get('errors'));
-        $message = $message->reload();
-        $this->assertSame($old_content, $message->content);
+        $note = $note->reload();
+        $this->assertSame($old_content, $note->content);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid(): void
@@ -248,13 +248,13 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $old_content = $this->fakeUnique('sentence');
         /** @var string */
         $new_content = $this->fakeUnique('sentence');
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
         $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/edit", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
             'csrf' => 'not the token',
             'from' => $from,
@@ -262,23 +262,23 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, $from);
         $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
-        $message = $message->reload();
-        $this->assertSame($old_content, $message->content);
+        $note = $note->reload();
+        $this->assertSame($old_content, $note->content);
     }
 
-    public function testDeleteDeletesMessageAndRedirects(): void
+    public function testDeleteDeletesNoteAndRedirects(): void
     {
         $user = $this->login();
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
             'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse(models\Message::exists($message->id));
+        $this->assertFalse(models\Note::exists($note->id));
     }
 
     public function testDeleteChangesLinkTags(): void
@@ -287,18 +287,18 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'tags' => ['foo'],
         ]);
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
             'link_id' => $link->id,
             'content' => '#foo',
         ]);
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
             'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse(models\Message::exists($message->id));
+        $this->assertFalse(models\Note::exists($note->id));
         $link = $link->reload();
         $this->assertEquals([], $link->tags);
     }
@@ -306,17 +306,17 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
     public function testDeleteRedirectsToRedirectToIfGiven(): void
     {
         $user = $this->login();
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
             'csrf' => \App\Csrf::generate(),
             'redirect_to' => \Minz\Url::for('bookmarks'),
         ]);
 
         $this->assertResponseCode($response, 302, '/bookmarks');
-        $this->assertFalse(models\Message::exists($message->id));
+        $this->assertFalse(models\Note::exists($note->id));
     }
 
     public function testDeleteRedirectsIfNotConnected(): void
@@ -324,47 +324,47 @@ class MessagesTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'csrf' => 'a token',
         ]);
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
             'csrf' => 'a token',
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertTrue(models\Message::exists($message->id));
+        $this->assertTrue(models\Note::exists($note->id));
     }
 
-    public function testDeleteFailsIfMessageIsNotOwned(): void
+    public function testDeleteFailsIfNoteIsNotOwned(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $other_user->id,
         ]);
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
             'csrf' => \App\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertTrue(models\Message::exists($message->id));
+        $this->assertTrue(models\Note::exists($note->id));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $message = MessageFactory::create([
+        $note = NoteFactory::create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('POST', "/messages/{$message->id}/delete", [
+        $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
             'csrf' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
-        $this->assertTrue(models\Message::exists($message->id));
+        $this->assertTrue(models\Note::exists($note->id));
     }
 }
