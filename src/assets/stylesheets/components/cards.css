@@ -24,7 +24,8 @@
     flex-direction: column;
     flex-grow: 1;
 
-    box-shadow: 0 1px 4px 1px var(--color-grey-2);
+    box-shadow: 0 0 3px 0 var(--color-grey-3);
+    border-radius: var(--border-radius);
 
     transition:
         background-color 0.5s ease-in-out,
@@ -67,8 +68,6 @@
 }
 
 .card--action {
-    padding: 3px;
-
     align-items: stretch;
     justify-content: center;
 
@@ -109,9 +108,16 @@
 
     flex: 1;
 
-    background-color: var(--color-purple-1);
+    color: var(--color-white);
+
+    background-color: var(--color-accent-text);
     border: none;
-    border-radius: 0;
+    border-radius: var(--border-radius);
+}
+
+.card__button:hover,
+.card__button:focus {
+    background: var(--color-accent-text-contrast);
 }
 
 @media (min-width: 800px) {
@@ -166,6 +172,16 @@
     flex-grow: 1;
 
     background-color: var(--color-white);
+}
+
+.card__body:first-child {
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.card__body:last-child,
+.card__footer {
+    border-bottom-right-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
 }
 
 .card--illustrated .card__body {

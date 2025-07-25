@@ -20,24 +20,11 @@
 
 .news__postpone-button {
     font-size: 1.2em;
-
-    background-color: var(--color-purple-1);
-    border-color: var(--color-purple-4);
 }
 
 .news__source-group {
     margin-top: var(--space-medium);
     margin-bottom: var(--space-medium);
-}
-
-@media (min-width: 800px) {
-    .news__source-group {
-        margin-left: var(--space-small);
-        padding-right: var(--space-smaller);
-        padding-left: var(--space-smaller);
-
-        border-left: var(--width-border-bold) solid var(--color-purple-1);
-    }
 }
 
 .news__source-title {

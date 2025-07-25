@@ -1,0 +1,86 @@
+:root {
+    --color-white: #fff;
+    --color-pampas: #f7f6f4;
+    --color-rangoon: #061309;
+    --color-gable: #0c3b34;
+    --color-topaz: #00baa8;
+    --color-caribbean: #00d7ad;
+
+    --color-teal1: #eef5f2;
+    --color-teal2: #e5f2ed;
+    --color-teal3: #caf1e3;
+    --color-teal4: #aeedd8;
+    --color-teal5: #92e5cb;
+    --color-teal6: #73dabb;
+    --color-teal7: #43caa7;
+    --color-teal8: #00b58d;
+    --color-teal9: #21e0b6;
+    --color-teal10: #00d5ab;
+    --color-teal11: #006f54;
+    --color-teal12: #004635;
+
+    --color-teal-dark1: #131b19;
+    --color-teal-dark2: #16211d;
+    --color-teal-dark3: #143129;
+    --color-teal-dark4: #0c3e31;
+    --color-teal-dark5: #124a3b;
+    --color-teal-dark6: #1c5848;
+    --color-teal-dark7: #246957;
+    --color-teal-dark8: #297f69;
+    --color-teal-dark9: #21e0b6;
+    --color-teal-dark10: #00d5ac;
+    --color-teal-dark11: #05d9af;
+    --color-teal-dark12: #acf0da;
+
+    --color-olive1: #f3f5f5;
+    --color-olive2: #e9f0ee;
+    --color-olive3: #dee7e5;
+    --color-olive4: #d6dfdc;
+    --color-olive5: #cdd7d5;
+    --color-olive6: #c5cfcc;
+    --color-olive7: #b8c4c1;
+    --color-olive8: #a4b1ae;
+    --color-olive9: #6b857f;
+    --color-olive10: #637b75;
+    --color-olive11: #4a5c58;
+    --color-olive12: #08251f;
+
+    --color-olive-dark1: #161a19;
+    --color-olive-dark2: #1c201f;
+    --color-olive-dark3: #242928;
+    --color-olive-dark4: #292f2e;
+    --color-olive-dark5: #2f3634;
+    --color-olive-dark6: #363e3c;
+    --color-olive-dark7: #414b49;
+    --color-olive-dark8: #566460;
+    --color-olive-dark9: #5a736d;
+    --color-olive-dark10: #68807a;
+    --color-olive-dark11: #a7b7b3;
+    --color-olive-dark12: #eaefed;
+
+    --color-red1: #f6f2f2;
+    --color-red2: #f5eded;
+    --color-red3: #f5dfdf;
+    --color-red4: #facfd0;
+    --color-red5: #f7c1c2;
+    --color-red6: #f1b0b2;
+    --color-red7: #e89c9f;
+    --color-red8: #df8186;
+    --color-red9: #d91a44;
+    --color-red10: #ce003d;
+    --color-red11: #c40035;
+    --color-red12: #690e20;
+
+    --color-red-dark1: #201617;
+    --color-red-dark2: #251819;
+    --color-red-dark3: #411419;
+    --color-red-dark4: #560e1a;
+    --color-red-dark5: #661221;
+    --color-red-dark6: #771f2c;
+    --color-red-dark7: #902d3a;
+    --color-red-dark8: #bc3b4c;
+    --color-red-dark9: #e0214b;
+    --color-red-dark10: #bc3b4c;
+    --color-red-dark11: #ff8e96;
+    --color-red-dark12: #ffd0d1;
+}

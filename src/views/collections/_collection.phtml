@@ -2,14 +2,9 @@
     $display_by = $display_by ?? true;
     $display_visibility = $display_visibility ?? true;
     $display_number_links = $display_number_links ?? true;
-
-    $default_image = 'collection-card.svg';
-    if (feature_enabled('beta')) {
-        $default_image = 'collection-card-beta.png';
-    }
 ?>
 
-<div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $collection->image_filename, $default_image) ?>');">
+<div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $collection->image_filename, 'collection-card.png') ?>');">
     <a class="card__body card__body--large" href="<?= url('collection', ['id' => $collection->id]) ?>">
         <div class="card__title card__title-ellipsis">
             <?= protect($collection->name) ?>

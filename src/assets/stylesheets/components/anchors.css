@@ -3,14 +3,24 @@ a {
     text-decoration: underline;
     text-decoration-thickness: 0.1em;
 
+    border-radius: var(--border-radius-small);
+
     transition:
         color 0.3s ease-in-out,
         border-color 0.3s ease-in-out;
 }
 
+h1 a {
+    display: inline-block;
+}
+
 a:hover,
 a:focus {
-    color: var(--color-link);
+    color: var(--color-accent-text-contrast);
+}
+
+h1 a:focus {
+    outline-offset: -2px;
 }
 
 .anchor--discreet {
@@ -39,11 +49,12 @@ a:focus {
     display: inline-block;
     padding: var(--space-smaller) var(--space-medium);
 
+    font-weight: 600;
     line-height: 1.5;
     text-decoration: none;
 
     border: 0.1em solid currentcolor;
-    border-radius: var(--radius-button);
+    border-radius: var(--border-radius);
 }
 
 .anchor--action.icon {

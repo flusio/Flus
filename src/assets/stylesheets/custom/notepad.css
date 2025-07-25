@@ -11,7 +11,7 @@
 }
 
 .notepad__container {
-    --notepad-container-border: var(--color-turquoise-1);
+    --notepad-container-border: var(--color-grey-line);
 
     padding: var(--space-smaller);
 
@@ -98,25 +98,62 @@
 }
 
 .notepad blockquote {
+    --blockquote-icon-size: 30px;
+    --blockquote-icon-position: var(--space-medium);
+
+    position: relative;
+
     margin-right: 0;
     margin-left: 0;
-    padding: var(--space-medium) var(--space-small);
+    padding: var(--space-smaller) var(--space-medium) var(--space-smaller) var(--space-medium);
 
+    color: var(--color-accent-text-contrast);
     font-style: italic;
 
-    background-color: var(--color-turquoise-3);
-    background-image: url('../../icons/block-quote.svg');
-    background-repeat: no-repeat;
-    background-size: 45px;
-    border-radius: var(--radius);
+    background: var(--color-accent-bg-subtle);
+    border-radius: var(--border-radius);
 }
 
 @media (min-width: 800px) {
     .notepad blockquote {
-        padding: var(--space-smaller) var(--space-larger);
+        --blockquote-icon-size: 40px;
 
-        background-size: 75px;
+        padding-right: var(--space-large);
+        padding-left: var(--space-large);
     }
+}
+
+.notepad blockquote::before {
+    content: "";
+
+    position: absolute;
+    top: var(--blockquote-icon-position);
+    left: calc(-1 * var(--blockquote-icon-size) / 2);
+
+    display: block;
+    width: var(--blockquote-icon-size);
+    height: var(--blockquote-icon-size);
+
+    background-color: var(--color-caribbean);
+
+    mask-image: url("../../icons/block-quote.svg");
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: cover;
+}
+
+.notepad blockquote::after {
+    content: "";
+
+    position: absolute;
+    top: calc(var(--blockquote-icon-size) + var(--blockquote-icon-position));
+    bottom: var(--space-medium);
+    left: 0;
+
+    display: block;
+    width: 2px;
+
+    background: linear-gradient(to bottom, var(--color-caribbean), var(--color-pampas));
 }
 
 .notepad__note > *:first-child {

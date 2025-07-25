@@ -158,10 +158,6 @@ function url_asset(string $filename): string
  */
 function url_media(string $type, ?string $filename, string $default = 'default-card.png'): string
 {
-    if ($default === 'default-card.png' && feature_enabled('beta')) {
-        $default = 'default-card-beta.png';
-    }
-
     if (!$filename) {
         return url_static($default);
     }

@@ -115,7 +115,8 @@ input[type="radio"]:focus + label::before {
 }
 
 input[type="checkbox"]:focus + label::before {
-    outline: var(--width-border-bold) solid var(--color-purple-4);
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
 }
 
 input[type="checkbox"]:checked + label::before,
@@ -191,6 +192,7 @@ select {
 select:not([multiple]) {
     padding-right: 3.5rem;
 
+    background-color: var(--color-white);
     background-image: url("../../icons/angle-down.svg");
     background-repeat: no-repeat;
     background-position: right 0.75rem top 58%;
@@ -203,7 +205,7 @@ select:not([multiple]) {
 
 select:not([disabled]):hover,
 select:not([disabled]):focus {
-    background-color: var(--color-turquoise-1);
+    background-color: var(--color-white);
 }
 
 select:not([disabled]):focus {
@@ -217,13 +219,14 @@ select[disabled] {
 }
 
 fieldset {
+    --fieldset-background: var(--color-pampas);
+
     min-width: auto;
     margin-top: var(--space-medium);
     margin-bottom: var(--space-medium);
     padding: var(--space-small);
 
-    background-image: linear-gradient(to bottom, var(--color-grey-1), var(--color-purple-1));
-    box-shadow: 1px 1px 1px var(--color-purple-2);
+    background-color: var(--fieldset-background);
     border: none;
     border-radius: var(--radius);
 }
@@ -237,7 +240,7 @@ fieldset {
 legend {
     padding: var(--space-smaller) var(--space-small);
 
-    background-color: var(--color-grey-1);
+    background-color: var(--fieldset-background);
     border-radius: var(--radius);
 }
 

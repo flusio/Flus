@@ -36,6 +36,8 @@
 
 .header__link {
     padding: var(--space-medium) var(--space-large);
+
+    border-radius: 0;
 }
 
 .header__link:focus {
@@ -52,9 +54,15 @@
     text-align: center;
     text-decoration: none;
 
-    background-color: var(--color-turquoise-4);
+    background-color: var(--color-accent-solid);
     border: var(--width-border) solid currentcolor;
     border-radius: var(--radius-button);
+}
+
+@media (max-width: 799px) {
+    .header__action {
+        border-radius: 100%;
+    }
 }
 
 @media (min-width: 800px) {

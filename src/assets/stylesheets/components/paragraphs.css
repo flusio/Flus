@@ -11,9 +11,9 @@
 .paragraph--contrasted {
     padding: var(--space-medium);
 
-    color: var(--color-white);
+    color: var(--color-rangoon);
 
-    background-image: radial-gradient(circle at top, var(--color-purple-6) 80%, var(--color-purple-7));
+    background-color: var(--color-caribbean);
     border-radius: var(--radius);
 }
 

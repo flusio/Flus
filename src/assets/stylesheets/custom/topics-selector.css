@@ -18,7 +18,7 @@
     padding: var(--space-small) var(--space-medium);
 
     background-color: var(--color-white);
-    border: var(--width-border) solid var(--color-border);
+    border: 1px solid currentcolor;
     border-radius: var(--radius-button);
 
     transition:
@@ -27,16 +27,18 @@
 }
 
 input[type="checkbox"]:focus + .topics-selector__label {
-    box-shadow: 0 0 0 1px var(--color-purple-5);
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
 }
 
 input[type="checkbox"]:focus + .topics-selector__label::before {
     box-shadow: none;
+    outline-color: transparent;
 }
 
 input[type="checkbox"]:checked + .topics-selector__label {
     background-color: var(--color-turquoise-3);
-    border-color: var(--color-turquoise-6);
+    border-color: transparent;
 }
 
 input[type="checkbox"]:checked + .topics-selector__label::before {

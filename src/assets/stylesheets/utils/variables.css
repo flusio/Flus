@@ -65,8 +65,8 @@
     --space-large: calc(var(--space-base) * 2);
     --space-larger: calc(var(--space-base) * 4);
 
-    --font-family-text: "Open Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", "sans-serif";
-    --font-family-title: "Comfortaa", "sans-serif";
+    --font-family-text: "Raleway", system-ui, sans-serif;
+    --font-family-title: "Raleway", system-ui, sans-serif;
 
     /** Semantic variables **/
     --color-back-error: var(--color-red-1);
@@ -83,7 +83,6 @@
     --color-border-search: var(--color-grey-3);
     --color-border-warning: var(--color-orange-2);
 
-    --color-text: var(--color-purple-9);
     --color-text-error: var(--color-red-6);
     --color-text-info: var(--color-purple-6);
     --color-text-secondary: var(--color-grey-7);
@@ -91,11 +90,11 @@
     --color-text-success: var(--color-turquoise-7);
     --color-text-warning: var(--color-orange-9);
 
-    --width-border: 0.2rem;
-    --width-border-bold: 0.3rem;
+    --width-border: 0.1em;
+    --width-border-bold: 0.2em;
 
-    --radius: 0.75rem;
-    --radius-button: 3rem;
+    --radius: var(--border-radius);
+    --radius-button: var(--border-radius);
 
     /** Components variables **/
     --color-body: var(--color-turquoise-1);

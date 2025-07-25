@@ -4,8 +4,8 @@
   "description": "<?= _('Collect, organise, annotate and share links from around the Web.') ?>",
   "start_url": "<?= url('home') ?>",
   "display": "standalone",
-  "background_color": "#eeebfb",
-  "theme_color": "#00d0ad",
+  "background_color": "#f7f6f4",
+  "theme_color": "#00d7ad",
   "share_target": {
     "enctype": "application/x-www-form-urlencoded",
     "action": "<?= url('share') ?>",

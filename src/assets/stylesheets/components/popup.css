@@ -19,12 +19,22 @@
 }
 
 .popup__opener:focus > * {
-    outline: var(--width-border-bold) solid var(--color-purple-4);
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
 }
 
 .popup__opener:focus > .button,
 .popup__opener:active > .button {
     border-color: var(--color-border-active);
+}
+
+.popup__opener[aria-expanded="true"] .button {
+    background-color: var(--color-white);
+    border-color: var(--color-border-active);
+}
+
+.popup__opener[aria-expanded="true"] .button--primary {
+    background-color: var(--color-topaz);
 }
 
 .popup__container {
@@ -34,9 +44,11 @@
     bottom: var(--height-header);
     left: 0;
 
-    padding: var(--space-medium) var(--space-small);
+    padding: var(--space-small) var(--space-smaller);
 
-    background: linear-gradient(135deg, var(--color-turquoise-2) 0%, var(--color-turquoise-3) 100%);
+    background-color: var(--color-pampas);
+    box-shadow: 0 -2px 8px 0 rgb(0 70 53 / 15%);
+    border-top: 1px solid var(--color-grey-border);
 }
 
 @media (min-width: 800px) {
@@ -48,7 +60,8 @@
 
         font-size: var(--size-small);
 
-        box-shadow: 0 0 2px 0 var(--color-turquoise-6);
+        box-shadow: 0 2px 8px 0 rgb(0 70 53 / 15%);
+        border: 1px solid var(--color-grey-border);
         border-radius: var(--radius);
     }
 
@@ -90,11 +103,11 @@
 }
 
 .popup__separator {
-    height: var(--height-separator);
+    height: 1px;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 
-    background-color: var(--color-turquoise-4);
+    background-color: var(--color-grey-bg);
     border-radius: var(--radius);
 }
 
@@ -112,6 +125,7 @@
 .popup__item--button {
     width: 100%;
 
+    font-weight: 400;
     text-align: left;
 
     background-color: transparent;
@@ -128,7 +142,6 @@
     display: block;
     padding: var(--space-small);
 
-    border: var(--width-border) solid transparent;
     border-radius: var(--radius);
 
     transition:
@@ -144,11 +157,14 @@
 
 .popup__item:hover,
 .popup__item:focus {
-    background-color: var(--color-turquoise-2);
-    border-color: var(--color-turquoise-5);
+    background-color: var(--color-accent-bg);
+}
+
+.popup__item:focus {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
 }
 
 .popup__item[disabled] {
-    background-color: var(--color-turquoise-2);
-    border-color: var(--color-turquoise-3);
+    background-color: var(--color-accent-bg);
 }
