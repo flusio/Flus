@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-07-24 11:47+0200\n"
-"PO-Revision-Date: 2025-07-24 11:47+0200\n"
+"POT-Creation-Date: 2025-08-19 17:23+0200\n"
+"PO-Revision-Date: 2025-08-19 17:24+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -516,7 +516,7 @@ msgstr "< 1 min"
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:258
+#: utils/view_helpers.php:254
 msgid "you"
 msgstr "vous"
 
@@ -587,18 +587,18 @@ msgstr "L’écran des signets de %s sur mobile"
 msgid "Error: "
 msgstr "Erreur : "
 
-#: views/_layouts/connected.phtml:48 views/_layouts/connected_blocked.phtml:41
+#: views/_layouts/connected.phtml:45 views/_layouts/connected_blocked.phtml:41
 #: views/_layouts/not_connected.phtml:59 views/_layouts/onboarding.phtml:41
 msgid "Skip to main content"
 msgstr "Accéder au contenu principal"
 
-#: views/_layouts/connected.phtml:55 views/_layouts/connected_blocked.phtml:48
+#: views/_layouts/connected.phtml:52 views/_layouts/connected_blocked.phtml:48
 #: views/_layouts/not_connected.phtml:66 views/_layouts/onboarding.phtml:48
 #, php-format
 msgid "You need to activate JavaScript in order to use %s."
 msgstr "Vous devez activer JavaScript pour utiliser %s."
 
-#: views/_layouts/connected.phtml:63 views/_layouts/connected_blocked.phtml:56
+#: views/_layouts/connected.phtml:60 views/_layouts/connected_blocked.phtml:56
 #: views/_layouts/not_connected.phtml:74
 #, php-format
 msgid "You’re using a demo version of %s, the data are reset every night."
@@ -606,77 +606,77 @@ msgstr ""
 "Vous utilisez une version de démo de %s, les données sont réinitialisées "
 "chaque nuit."
 
-#: views/_layouts/connected.phtml:71 views/_layouts/connected_blocked.phtml:64
+#: views/_layouts/connected.phtml:68 views/_layouts/connected_blocked.phtml:64
 msgid "You must validate your account&nbsp;→"
 msgstr "Vous devez valider votre compte&nbsp;→"
 
-#: views/_layouts/connected.phtml:88
+#: views/_layouts/connected.phtml:85
 msgid "Reading"
 msgstr "Lecture"
 
-#: views/_layouts/connected.phtml:99 views/links/index.phtml:3
+#: views/_layouts/connected.phtml:96 views/links/index.phtml:3
 #: views/links/index.phtml:19
 msgid "My links"
 msgstr "Mes liens"
 
-#: views/_layouts/connected.phtml:110 views/feeds/index.phtml:3
+#: views/_layouts/connected.phtml:107 views/feeds/index.phtml:3
 #: views/feeds/index.phtml:15
 msgid "Feeds"
 msgstr "Flux"
 
-#: views/_layouts/connected.phtml:123 views/collections/_selector.phtml:90
+#: views/_layouts/connected.phtml:120 views/collections/_selector.phtml:83
 #: views/collections/groups/edit.phtml:88 views/links/searches/show.phtml:9
 #: views/links/searches/show.phtml:21
 msgid "New"
 msgstr "Nouveau"
 
-#: views/_layouts/connected.phtml:132 views/_layouts/connected.phtml:135
+#: views/_layouts/connected.phtml:129 views/_layouts/connected.phtml:132
 #: views/_layouts/connected_blocked.phtml:87
 #: views/_layouts/connected_blocked.phtml:90
 #, php-format
 msgid "Menu of %s"
 msgstr "Menu de %s"
 
-#: views/_layouts/connected.phtml:152
+#: views/_layouts/connected.phtml:149
 #: views/_layouts/connected_blocked.phtml:107 views/my/profile/edit.phtml:3
 #: views/my/profile/edit.phtml:13
 msgid "Profile"
 msgstr "Profil"
 
-#: views/_layouts/connected.phtml:162
+#: views/_layouts/connected.phtml:159
 #: views/_layouts/connected_blocked.phtml:117 views/my/preferences/edit.phtml:3
 #: views/my/preferences/edit.phtml:12
 msgid "Preferences"
 msgstr "Préférences"
 
-#: views/_layouts/connected.phtml:172
+#: views/_layouts/connected.phtml:169
 #: views/_layouts/connected_blocked.phtml:127 views/my/account/show.phtml:3
 #: views/my/account/show.phtml:11
 msgid "Account & data"
 msgstr "Compte & données"
 
-#: views/_layouts/connected.phtml:184
+#: views/_layouts/connected.phtml:181
 #: views/_layouts/connected_blocked.phtml:139 views/pages/addons.phtml:3
 #: views/pages/addons.phtml:11
 msgid "Add-ons"
 msgstr "Extensions"
 
-#: views/_layouts/connected.phtml:194
+#: views/_layouts/connected.phtml:191
 #: views/_layouts/connected_blocked.phtml:149 views/support/show.phtml:3
 #: views/support/show.phtml:12
 msgid "Help & support"
 msgstr "Aide & support"
 
-#: views/_layouts/connected.phtml:203
+#: views/_layouts/connected.phtml:200
 #: views/_layouts/connected_blocked.phtml:158
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/_layouts/connected.phtml:237 views/_layouts/connected.phtml:238
+#: views/_layouts/connected.phtml:234 views/_layouts/connected.phtml:235
 msgid "Search links by words or URL"
 msgstr "Rechercher des liens par mots ou URL"
 
-#: views/_layouts/connected.phtml:246 views/links/searches/show.phtml:59
+#: views/_layouts/connected.phtml:243 views/links/searches/show.phtml:59
 #: views/links/searches/show.phtml:75
 msgid "Search"
 msgstr "Rechercher"
@@ -808,7 +808,7 @@ msgstr "Retour à la page d’accueil"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:36
+#: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:31
 #: views/collections/show.phtml:216 views/collections/show_public.phtml:236
 #: views/links/searches/show.phtml:118 views/news/index.phtml:18
 #: views/news/index.phtml:121 views/read/index.phtml:29
@@ -822,31 +822,31 @@ msgstr[1] "%s liens"
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/collections/_collection.phtml:23 views/links/searches/show.phtml:113
+#: views/collections/_collection.phtml:18 views/links/searches/show.phtml:113
 #, php-format
 msgid "Feed %s"
 msgstr "Flux %s"
 
-#: views/collections/_collection.phtml:25 views/collections/_selector.phtml:55
+#: views/collections/_collection.phtml:20 views/collections/_selector.phtml:48
 #, php-format
 msgid "By %s"
 msgstr "Par %s"
 
-#: views/collections/_collection.phtml:34 views/links/searches/show.phtml:116
+#: views/collections/_collection.phtml:29 views/links/searches/show.phtml:116
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/_collection.phtml:52 views/collections/_selector.phtml:141
+#: views/collections/_collection.phtml:47 views/collections/_selector.phtml:134
 #: views/collections/show.phtml:59
 msgid "public"
 msgstr "publique"
 
-#: views/collections/_collection.phtml:54 views/collections/show.phtml:59
+#: views/collections/_collection.phtml:49 views/collections/show.phtml:59
 #: views/collections/show_public.phtml:98
 msgid "private"
 msgstr "privée"
 
-#: views/collections/_collection.phtml:60 views/collections/show.phtml:64
+#: views/collections/_collection.phtml:55 views/collections/show.phtml:64
 #: views/collections/show_public.phtml:89
 #: views/collections/show_public.phtml:104 views/links/searches/show.phtml:124
 msgid "Publication frequency"
@@ -864,42 +864,42 @@ msgid ""
 msgstr ""
 "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong> (partagée par %s)."
 
-#: views/collections/_selector.phtml:48 views/links/index.phtml:79
+#: views/collections/_selector.phtml:41 views/links/index.phtml:79
 msgid "Shared with me"
 msgstr "Partagées avec moi"
 
-#: views/collections/_selector.phtml:77
+#: views/collections/_selector.phtml:70
 msgid "Select a collection"
 msgstr "Sélectionner une collection"
 
-#: views/collections/_selector.phtml:98
+#: views/collections/_selector.phtml:91
 msgid "What do you want to name the collection?"
 msgstr "Comment voulez-vous nommer la collection ?"
 
-#: views/collections/_selector.phtml:100 views/collections/edit.phtml:31
+#: views/collections/_selector.phtml:93 views/collections/edit.phtml:31
 #: views/collections/groups/edit.phtml:39 views/collections/new.phtml:30
 #: views/groups/edit.phtml:25 views/mastodon/show.phtml:61
 #, php-format
 msgid "(max. %d characters)"
 msgstr "(max. %d caractères)"
 
-#: views/collections/_selector.phtml:116
+#: views/collections/_selector.phtml:109
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/collections/_selector.phtml:120
+#: views/collections/_selector.phtml:113
 msgid "Cancel the creation of the collection"
 msgstr "Annuler la création de la collection"
 
-#: views/collections/_selector.phtml:124
+#: views/collections/_selector.phtml:117
 msgid "Cancel"
 msgstr "Annuler"
 
-#: views/collections/_selector.phtml:142
+#: views/collections/_selector.phtml:135
 msgid "new"
 msgstr "nouvelle"
 
-#: views/collections/_selector.phtml:153
+#: views/collections/_selector.phtml:146
 msgid "Unselect"
 msgstr "Désélectionner"
 
@@ -1182,8 +1182,8 @@ msgstr "Actions"
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show.phtml:127 views/groups/_group.phtml:23
-#: views/groups/_group.phtml:37 views/links/_link.phtml:287
+#: views/collections/show.phtml:127 views/groups/_group.phtml:19
+#: views/groups/_group.phtml:33 views/links/_link.phtml:287
 #: views/links/show.phtml:230 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
@@ -2454,23 +2454,23 @@ msgstr "Commencer à utiliser %s"
 msgid "Make your life easier by using the Web extension on"
 msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
 
-#: views/onboarding/step6.phtml:44
+#: views/onboarding/step6.phtml:43
 msgid "or"
 msgstr "ou"
 
-#: views/onboarding/step6.phtml:55
+#: views/onboarding/step6.phtml:53
 msgid "Tip: if you use Pocket, you can import your links:"
 msgstr "Astuce : si vous utilisez Pocket, vous pouvez importer vos liens :"
 
-#: views/onboarding/step6.phtml:60
+#: views/onboarding/step6.phtml:58
 msgid "Import from Pocket"
 msgstr "Importer depuis Pocket"
 
-#: views/onboarding/step6.phtml:65
+#: views/onboarding/step6.phtml:63
 msgid "More of a user of <abbr>RSS</abbr>?"
 msgstr "Plutôt un ou une utilisatrice de <abbr>RSS</abbr> ?"
 
-#: views/onboarding/step6.phtml:70
+#: views/onboarding/step6.phtml:68
 msgid "Import an <abbr>OPML</abbr> file"
 msgstr "Importer un fichier <abbr>OPML</abbr>"
 
@@ -2519,10 +2519,12 @@ msgstr "Crédits"
 #: views/pages/about.phtml:58
 msgid ""
 "the user experience and interface have been designed with the help of <a "
-"href=\"https://www.maiwann.net/\">Maiwann</a>;"
+"href=\"https://www.maiwann.net/\">Maiwann</a> and <a href=\"https://"
+"fr.linkedin.com/in/elina-bufferne\">Elina Bufferne</a>;"
 msgstr ""
 "l’expérience utilisateur et l’interface ont été conçues avec l’aide de <a "
-"href=\"https://www.maiwann.net/\">Maiwann</a> ;"
+"href=\"https://www.maiwann.net/\">Maiwann</a> et <a href=\"https://"
+"fr.linkedin.com/in/elina-bufferne\">Elina Bufferne</a> ;"
 
 #: views/pages/about.phtml:59
 msgid ""

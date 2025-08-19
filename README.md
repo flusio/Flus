@@ -32,7 +32,7 @@ Flus is licensed under [AGPL 3](/LICENSE.txt).
 
 Flus is built upon the work of many other people:
 
-- the user experience and interface have been designed with the help of [Maiwann](https://www.maiwann.net/);
+- the user experience and interface have been designed with the help of [Maiwann](https://www.maiwann.net/) and [Elina Bufferne](https://fr.linkedin.com/in/elina-bufferne);
 - the logo has been made by [Clara Chambon](https://www.clara-chambon.fr/);
 - the font [Comfortaa](https://fonts.google.com/specimen/Comfortaa), by Johan Aakerlund;
 - the font [Open Sans](https://fonts.google.com/specimen/Open+Sans), by Steve Matteson;
