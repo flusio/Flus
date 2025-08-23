@@ -33,7 +33,12 @@ class JsonParser
         $feed->type = 'json';
 
         $feed->title = self::getSecureString($json_document, 'title');
-        $feed->description = $json_document['description'] ?? '';
+
+        $description = $json_document['description'] ?? '';
+        if (!is_string($description)) {
+            $description = '';
+        }
+        $feed->description = $description;
 
         $link_url = self::getSecureString($json_document, 'home_page_url');
         if ($link_url) {
@@ -70,7 +75,11 @@ class JsonParser
 
         $entry->title = self::getSecureString($json_item, 'title');
 
-        $entry->id = $json_item['id'] ?? '';
+        $id = $json_item['id'] ?? '';
+        if (!is_string($id)) {
+            $id = '';
+        }
+        $entry->id = $id;
 
         $published_at = Date::parse($json_item['date_published'] ?? '');
         if ($published_at) {

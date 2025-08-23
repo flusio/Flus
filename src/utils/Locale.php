@@ -125,7 +125,7 @@ class Locale
 
         // We now need to sort the accepted languages by their weight
         $languages = $matches['language'];
-        $weights = array_map(function ($weight): float {
+        $weights = array_map(function (string $weight): float {
             if ($weight === '') {
                 return 1.0;
             } else {

@@ -40,7 +40,7 @@ class Media
             throw new \Exception('Cannot read the media directories.');
         }
 
-        $subdir_names_depth_1 = array_filter($subdir_names_depth_1, function ($subdir_name): bool {
+        $subdir_names_depth_1 = array_filter($subdir_names_depth_1, function (string $subdir_name): bool {
             // Exclude files or dirs starting with a dot.
             return $subdir_name[0] !== '.';
         });

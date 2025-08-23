@@ -34,7 +34,7 @@
     padding-right: var(--space-medium);
     padding-left: var(--space-medium);
 
-    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .notepad h1 {

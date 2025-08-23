@@ -143,21 +143,21 @@ class HtmlSanitizer
             $healthy_node = $this->healthy_dom->createElement($dirty_node->tagName);
 
             $allowed_attributes = $this->allowed_elements[$dirty_node->tagName];
-            if ($dirty_node->attributes) {
-                foreach ($dirty_node->attributes as $dirty_attr_name => $dirty_attr_node) {
-                    if (
-                        !in_array($dirty_attr_name, $allowed_attributes)
-                    ) {
-                        continue;
-                    }
 
-                    $healty_attr_node = new \DOMAttr(
-                        $dirty_attr_node->name,
-                        $dirty_attr_node->value,
-                    );
-
-                    $healthy_node->appendChild($healty_attr_node);
+            foreach ($dirty_node->attributes as $dirty_attr_name => $dirty_attr_node) {
+                if (
+                    !($dirty_attr_node instanceof \DOMAttr) ||
+                    !in_array($dirty_attr_name, $allowed_attributes)
+                ) {
+                    continue;
                 }
+
+                $healty_attr_node = new \DOMAttr(
+                    $dirty_attr_node->name,
+                    $dirty_attr_node->value,
+                );
+
+                $healthy_node->appendChild($healty_attr_node);
             }
 
             $healthy_parent_node->appendChild($healthy_node);

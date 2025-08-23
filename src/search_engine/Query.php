@@ -27,7 +27,7 @@ class Query
             return $this->conditions;
         }
 
-        return array_filter($this->conditions, function ($condition) use ($type) {
+        return array_filter($this->conditions, function (Query\Condition $condition) use ($type) {
             if ($type === 'text') {
                 return $condition->isTextCondition();
             } elseif ($type === 'qualifier') {

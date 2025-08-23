@@ -248,7 +248,7 @@ function collection_publishers(\App\models\Collection $collection, ?\App\models\
     }, $shares);
     array_unshift($publishers, $owner);
 
-    $publishers_as_strings = array_map(function ($user) use ($current_user): string {
+    $publishers_as_strings = array_map(function (\App\models\User $user) use ($current_user): string {
         $url_profile = url('profile', ['id' => $user->id]);
         if ($current_user && $user->id === $current_user->id) {
             $username = _('you');

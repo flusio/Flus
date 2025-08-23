@@ -74,7 +74,7 @@ body {
     position: absolute;
 
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: rect(0 0 0 0);
 
     width: 1px;
     height: 1px;
@@ -100,7 +100,7 @@ body {
     position: absolute;
 
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: rect(0 0 0 0);
 
     width: 1px;
     height: 1px;
@@ -110,7 +110,7 @@ body {
     top: 0.75rem;
     left: 2rem;
 
-    clip: auto;
+    clip-path: initial;
 
     width: auto;
     height: auto;
