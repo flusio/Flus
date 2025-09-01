@@ -1,5 +1,26 @@
 # Changelog of Flus
 
+## 2025-09-01 - v2.0.0
+
+### New
+
+- Provide a new design ([967bf76f](https://github.com/flusio/Flus/commit/967bf76f), [12706c3d](https://github.com/flusio/Flus/commit/12706c3d), [080ce351](https://github.com/flusio/Flus/commit/080ce351))
+- Provide an API ([4a06a833](https://github.com/flusio/Flus/commit/4a06a833), [e219656a](https://github.com/flusio/Flus/commit/e219656a))
+- Replace the comments by a notepad ([2fc30209](https://github.com/flusio/Flus/commit/2fc30209))
+- Allow to do common actions on the link page ([d53b4ade](https://github.com/flusio/Flus/commit/d53b4ade))
+
+### Technical
+
+- Update the dependencies ([2425de1f](https://github.com/flusio/Flus/commit/2425de1f))
+
+### Developers
+
+- Provide a CSS columns system ([4ab21dc5](https://github.com/flusio/Flus/commit/4ab21dc5))
+- Refactor tags extraction ([e1523366](https://github.com/flusio/Flus/commit/e1523366))
+- List only "collection" type in Link::collections ([51feae86](https://github.com/flusio/Flus/commit/51feae86))
+- Limit the Session name to 50 chars ([a003ae7a](https://github.com/flusio/Flus/commit/a003ae7a))
+- Remove useless image names from docker-compose.yml ([d2c00415](https://github.com/flusio/Flus/commit/d2c00415))
+
 ## 2025-07-12 - v1.2.6
 
 ### Technical
