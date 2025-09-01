@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-08-19 17:23+0200\n"
-"PO-Revision-Date: 2025-08-19 17:24+0200\n"
+"POT-Creation-Date: 2025-09-01 10:41+0200\n"
+"PO-Revision-Date: 2025-09-01 10:43+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -44,7 +44,7 @@ msgstr "Afficher"
 #: controllers/Feeds.php:100 controllers/Groups.php:84
 #: controllers/Links.php:255 controllers/Links.php:416
 #: controllers/Mastodon.php:187 controllers/Mastodon.php:267
-#: controllers/News.php:66 controllers/Passwords.php:89
+#: controllers/News.php:64 controllers/Passwords.php:89
 #: controllers/Passwords.php:192 controllers/Registrations.php:103
 #: controllers/Support.php:62 controllers/collections/Filters.php:98
 #: controllers/collections/Followers.php:47
@@ -52,7 +52,7 @@ msgstr "Afficher"
 #: controllers/collections/Groups.php:115
 #: controllers/collections/Images.php:106 controllers/collections/Links.php:98
 #: controllers/collections/Shares.php:99 controllers/collections/Shares.php:212
-#: controllers/links/Notes.php:79 controllers/links/Repairing.php:94
+#: controllers/links/Notes.php:78 controllers/links/Repairing.php:94
 #: controllers/links/Searches.php:100 controllers/my/Account.php:94
 #: controllers/my/Preferences.php:75 controllers/my/Profile.php:66
 #: controllers/my/Security.php:83 controllers/my/Security.php:195
@@ -70,13 +70,13 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Collections.php:364 controllers/Exportations.php:54
 #: controllers/Groups.php:151 controllers/Importations.php:45
 #: controllers/Links.php:469 controllers/Mastodon.php:75
-#: controllers/Notes.php:88 controllers/Notes.php:135
+#: controllers/Notes.php:87 controllers/Notes.php:134
 #: controllers/Sessions.php:136 controllers/collections/Read.php:85
-#: controllers/collections/Read.php:163 controllers/collections/Read.php:235
+#: controllers/collections/Read.php:162 controllers/collections/Read.php:233
 #: controllers/importations/Opml.php:69 controllers/importations/Pocket.php:100
 #: controllers/importations/Pocket.php:141
 #: controllers/importations/Pocket.php:231
-#: controllers/links/Collections.php:151 controllers/links/Read.php:44
+#: controllers/links/Collections.php:150 controllers/links/Read.php:44
 #: controllers/links/Read.php:90 controllers/links/Read.php:136
 #: controllers/links/Read.php:181 controllers/my/Avatar.php:42
 msgid "A security verification failed."
@@ -98,7 +98,7 @@ msgstr "Vous avez déjà un groupe portant le même nom."
 msgid "The link must be associated to a collection."
 msgstr "Le lien doit être associé à une collection."
 
-#: controllers/Links.php:305 controllers/links/Collections.php:146
+#: controllers/Links.php:305 controllers/links/Collections.php:145
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
@@ -308,19 +308,19 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
-#: models/Collection.php:123 models/Collection.php:185
+#: models/Collection.php:133 models/Collection.php:195
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:134 models/Collection.php:187
+#: models/Collection.php:144 models/Collection.php:197
 msgid "Links read"
 msgstr "Liens lus"
 
-#: models/Collection.php:145
+#: models/Collection.php:155
 msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
-#: models/Collection.php:156 models/Collection.php:189
+#: models/Collection.php:166 models/Collection.php:199
 msgid "News"
 msgstr "Journal"
 
@@ -351,6 +351,10 @@ msgstr "Le lien est obligatoire."
 #: models/Link.php:41
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
+
+#: models/Link.php:58
+msgid "The reading time must be greater or equal to 0."
+msgstr "Le temps de lecture doit être supérieur ou égal à 0."
 
 #: models/Note.php:29
 msgid "The content is required."
