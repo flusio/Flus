@@ -102,6 +102,7 @@ class Http
         curl_setopt($curl_handle, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl_handle, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($curl_handle, CURLOPT_USERAGENT, $user_agent);
+        curl_setopt($curl_handle, CURLOPT_ENCODING, '');
 
         if ($method === 'post') {
             if ($this->isJsonContentType($request_headers)) {
