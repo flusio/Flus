@@ -19,8 +19,8 @@
 }
 
 .popup__opener:focus > * {
-    outline: 2px solid currentcolor;
-    outline-offset: 2px;
+    outline: var(--outline-width) solid var(--outline-color);
+    outline-offset: var(--outline-offset);
 }
 
 .popup__opener[aria-expanded="true"] .button {
@@ -112,8 +112,6 @@
 .popup__item--link:hover,
 .popup__item--link:focus {
     color: initial;
-
-    outline: 0;
 }
 
 .popup__item--button {
@@ -126,10 +124,6 @@
     border: none;
 
     transition: none;
-}
-
-.popup__item--button:focus {
-    outline: 0;
 }
 
 .popup__item {
@@ -152,11 +146,6 @@
 .popup__item:hover,
 .popup__item:focus {
     background-color: var(--color-accent-bg);
-}
-
-.popup__item:focus {
-    outline: 2px solid currentcolor;
-    outline-offset: 2px;
 }
 
 .popup__item[disabled] {

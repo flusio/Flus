@@ -1,4 +1,6 @@
 .header__container {
+    --outline-color: currentcolor;
+
     display: flex;
     max-width: var(--width-content);
     height: 100%;
@@ -41,7 +43,7 @@
 }
 
 .header__link:focus {
-    outline-offset: -0.3rem;
+    --outline-offset: -2px;
 }
 
 .header__action {

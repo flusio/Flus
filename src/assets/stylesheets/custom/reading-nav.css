@@ -20,6 +20,9 @@
 }
 
 .reading-nav__anchor {
+    --outline-color: currentcolor;
+    --outline-offset: -2px;
+
     display: inline-block;
     width: 100%;
     height: 100%;
@@ -31,8 +34,6 @@
     background-color: var(--color-accent-bg);
     border-radius: 0;
 
-    outline-offset: -0.3rem;
-
     transition:
         color 0.3s ease-in-out,
         background-color 0.3s ease-in-out;
@@ -40,10 +41,6 @@
 
 .reading-nav__anchor:hover {
     background-color: var(--color-accent-bg-hover);
-}
-
-.reading-nav__anchor:focus {
-    outline-offset: -2px;
 }
 
 .reading-nav__anchor[aria-current="page"] {

@@ -76,6 +76,8 @@
 }
 
 .layout__back a {
+    --outline-offset: -3px;
+
     overflow: hidden;
 
     display: inline-block;
@@ -88,7 +90,7 @@
     vertical-align: top;
     white-space: nowrap;
 
-    outline-offset: calc(-1 * var(--width-border-bold));
+    border-radius: var(--border-radius);
 }
 
 @media (min-width: 800px) {

@@ -1,0 +1,40 @@
+:root {
+    --outline-color: var(--color-accent-solid-hover);
+    --outline-offset: 2px;
+    --outline-width: 2px;
+}
+
+*:focus {
+    outline: var(--outline-width) solid var(--outline-color);
+    outline-offset: var(--outline-offset);
+}
+
+.sr-only {
+    position: absolute;
+
+    overflow: hidden;
+    clip-path: rect(0 0 0 0);
+
+    width: 1px;
+    height: 1px;
+}
+
+.accessibility-nav {
+    position: absolute;
+
+    overflow: hidden;
+    clip-path: rect(0 0 0 0);
+
+    width: 1px;
+    height: 1px;
+}
+
+.accessibility-nav:focus {
+    top: 0.75rem;
+    left: 2rem;
+
+    clip-path: initial;
+
+    width: auto;
+    height: auto;
+}

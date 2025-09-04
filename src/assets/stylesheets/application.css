@@ -2,6 +2,7 @@
 @import "./variables/colors.dark.css";
 @import "./variables/colors.light.css";
 @import "./variables/sizes.css";
+@import './utils/accessibility.css';
 @import './utils/cols.css';
 @import './utils/flow.css';
 @import './utils/variables.css';
@@ -65,21 +66,6 @@ body {
     background-color: var(--color-background);
 }
 
-*:focus {
-    outline: 2px solid currentcolor;
-    outline-offset: 2px;
-}
-
-.sr-only {
-    position: absolute;
-
-    overflow: hidden;
-    clip-path: rect(0 0 0 0);
-
-    width: 1px;
-    height: 1px;
-}
-
 .js-only {
     display: none;
 }
@@ -94,26 +80,6 @@ body {
     .only-mobile {
         display: none;
     }
-}
-
-.accessibility-nav {
-    position: absolute;
-
-    overflow: hidden;
-    clip-path: rect(0 0 0 0);
-
-    width: 1px;
-    height: 1px;
-}
-
-.accessibility-nav:focus {
-    top: 0.75rem;
-    left: 2rem;
-
-    clip-path: initial;
-
-    width: auto;
-    height: auto;
 }
 
 hr {

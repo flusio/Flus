@@ -13,27 +13,21 @@
     margin: var(--space-smaller);
 }
 
-.topics-selector__label {
+input[type="checkbox"] + .topics-selector__label {
     margin-bottom: 0;
     padding: var(--space-small) var(--space-medium);
 
     background-color: var(--color-white);
     border: 1px solid currentcolor;
-    border-radius: var(--radius-button);
+    border-radius: var(--border-radius);
 
     transition:
         background-color 0.2s ease-in-out,
         border-color 0.2s ease-in-out;
 }
 
-input[type="checkbox"]:focus + .topics-selector__label {
-    outline: 2px solid currentcolor;
-    outline-offset: 2px;
-}
-
 input[type="checkbox"]:focus + .topics-selector__label::before {
     box-shadow: none;
-    outline-color: transparent;
 }
 
 input[type="checkbox"]:checked + .topics-selector__label {

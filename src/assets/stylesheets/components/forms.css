@@ -78,6 +78,14 @@ input[type="radio"] + label {
     display: inline-flex;
 
     align-items: baseline;
+
+    border-radius: var(--border-radius-small);
+}
+
+input[type="checkbox"]:focus + label,
+input[type="radio"]:focus + label {
+    outline: var(--outline-width) solid var(--outline-color);
+    outline-offset: var(--outline-offset);
 }
 
 input[type="checkbox"] + label::before,
@@ -104,11 +112,6 @@ input[type="radio"] + label::before {
 
 input[type="radio"] + label::before {
     border-radius: 50%;
-}
-
-input[type="checkbox"]:focus + label::before {
-    outline: 2px solid currentcolor;
-    outline-offset: 2px;
 }
 
 input[type="checkbox"]:checked + label::after,

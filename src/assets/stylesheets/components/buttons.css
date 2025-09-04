@@ -84,12 +84,12 @@ button[disabled],
 
 .button--danger,
 .button--danger[disabled] {
+    --outline-color: var(--color-danger-solid);
+
     color: var(--color-white);
 
     background-color: var(--color-danger-solid);
     border-color: transparent;
-
-    outline-color: var(--color-danger-solid);
 }
 
 .button--danger:hover,
