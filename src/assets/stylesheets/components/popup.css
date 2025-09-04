@@ -23,14 +23,8 @@
     outline-offset: 2px;
 }
 
-.popup__opener:focus > .button,
-.popup__opener:active > .button {
-    border-color: var(--color-border-active);
-}
-
 .popup__opener[aria-expanded="true"] .button {
     background-color: var(--color-white);
-    border-color: var(--color-border-active);
 }
 
 .popup__opener[aria-expanded="true"] .button--primary {

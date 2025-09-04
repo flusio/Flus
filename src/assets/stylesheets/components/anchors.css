@@ -36,15 +36,6 @@ h1 a:focus {
     color: initial;
 }
 
-.anchor--inverted {
-    color: var(--color-white);
-}
-
-.anchor--inverted:hover,
-.anchor--inverted:focus {
-    color: var(--color-purple-2);
-}
-
 .anchor--action {
     display: inline-block;
     padding: var(--space-smaller) var(--space-medium);

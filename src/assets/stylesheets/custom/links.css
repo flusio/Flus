@@ -230,9 +230,6 @@
     justify-content: space-between;
 
     background-color: var(--color-pampas);
-    background-repeat: repeat-x;
-    background-position: 0 100%;
-    background-size: 100% 3px;
     border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
 

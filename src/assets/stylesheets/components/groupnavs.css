@@ -76,7 +76,7 @@
 
 .groupnav__item--featured .groupnav__anchor,
 .groupnav__item--featured .groupnav__button {
-    color: var(--color-purple-6);
+    color: var(--color-accent-text);
     font-weight: bold;
 }
 

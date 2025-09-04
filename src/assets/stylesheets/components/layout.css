@@ -194,17 +194,17 @@
 
 .banner__container {
     display: block;
-    padding: var(--space-smaller);
+    padding: var(--space-small);
 
+    color: var(--color-pampas);
+    font-weight: bold;
     text-align: center;
 
-    background-color: var(--color-purple-1);
-    border-bottom: var(--width-border) solid var(--color-purple-2);
+    background-color: var(--color-accent-text);
 }
 
 .layout__banner--alert .banner__container {
-    background-color: var(--color-red-1);
-    border-bottom-color: var(--color-red-2);
+    background-color: var(--color-danger-solid);
 }
 
 .banner__container--anchor {
@@ -213,9 +213,9 @@
 
 .banner__container--anchor:hover,
 .banner__container--anchor:focus {
-    color: initial;
+    color: var(--color-pampas);
 
-    background-color: var(--color-purple-2);
+    background-color: var(--color-accent-text-contrast);
 }
 
 .layout--error {
@@ -244,8 +244,8 @@
 
     padding: var(--space-medium) var(--space-large);
 
-    color: var(--color-body);
+    color: var(--color-white);
     text-align: left;
 
-    background-color: var(--color-text);
+    background-color: var(--color-rangoon);
 }

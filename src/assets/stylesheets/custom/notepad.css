@@ -64,7 +64,7 @@
 
     font-size: var(--size-small);
 
-    background-color: var(--color-turquoise-1);
+    background-color: var(--color-accent-bg-subtle);
     border-radius: var(--radius);
 }
 
@@ -75,9 +75,8 @@
 
     color: var(--color-white);
 
-    background-color: var(--color-turquoise-9);
-    border-top: var(--width-border) solid var(--color-turquoise-5);
-    border-bottom: var(--width-border-bold) solid var(--color-turquoise-5);
+    background-color: var(--color-rangoon);
+    border-bottom: var(--width-border-bold) solid var(--color-caribbean);
     border-radius: var(--radius);
 }
 

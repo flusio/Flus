@@ -37,11 +37,11 @@ input[type="checkbox"]:focus + .topics-selector__label::before {
 }
 
 input[type="checkbox"]:checked + .topics-selector__label {
-    background-color: var(--color-turquoise-3);
+    background-color: var(--color-accent-solid);
     border-color: transparent;
 }
 
 input[type="checkbox"]:checked + .topics-selector__label::before {
-    border-color: var(--color-turquoise-7);
+    background-color: transparent;
     border-color: transparent;
 }

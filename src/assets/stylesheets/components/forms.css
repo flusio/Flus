@@ -106,23 +106,9 @@ input[type="radio"] + label::before {
     border-radius: 50%;
 }
 
-input[type="checkbox"]:hover + label::before,
-input[type="checkbox"]:focus + label::before,
-input[type="radio"]:hover + label::before,
-input[type="radio"]:focus + label::before {
-    background-color: var(--color-turquoise-1);
-    border-color: var(--color-turquoise-6);
-}
-
 input[type="checkbox"]:focus + label::before {
     outline: 2px solid currentcolor;
     outline-offset: 2px;
-}
-
-input[type="checkbox"]:checked + label::before,
-input[type="radio"]:checked + label::before {
-    background-color: var(--color-turquoise-3);
-    border-color: var(--color-turquoise-8);
 }
 
 input[type="checkbox"]:checked + label::after,
@@ -157,11 +143,6 @@ input[type="radio"]:checked + label::after {
 input[aria-invalid="true"],
 textarea[aria-invalid="true"] {
     border-color: var(--color-border-error);
-}
-
-input:focus,
-textarea:focus {
-    border-color: var(--color-border-active);
 }
 
 select {
@@ -206,10 +187,6 @@ select:not([multiple]) {
 select:not([disabled]):hover,
 select:not([disabled]):focus {
     background-color: var(--color-white);
-}
-
-select:not([disabled]):focus {
-    border-color: var(--color-border-active);
 }
 
 select[disabled] {
@@ -348,7 +325,7 @@ legend {
 .form-group--terms {
     padding: var(--space-medium);
 
-    background-color: var(--color-purple-1);
+    background-color: var(--color-pampas);
     border-radius: var(--radius);
 }
 

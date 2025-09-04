@@ -12,26 +12,6 @@
     --color-grey-8: #2f2e3b;
     --color-grey-9: #100f18;
 
-    --color-purple-1: #eeebfb;
-    --color-purple-2: #ccc4f3;
-    --color-purple-3: #aa9deb;
-    --color-purple-4: #8876e3;
-    --color-purple-5: #7762df;
-    --color-purple-6: #6856c3;
-    --color-purple-7: #4a3d8b;
-    --color-purple-8: #2d2554;
-    --color-purple-9: #0f0c1c;
-
-    --color-turquoise-1: #dff9f5;
-    --color-turquoise-2: #9fede0;
-    --color-turquoise-3: #60e2cc;
-    --color-turquoise-4: #20d6b7;
-    --color-turquoise-5: #00d0ad;
-    --color-turquoise-6: #00b697;
-    --color-turquoise-7: #00826c;
-    --color-turquoise-8: #004e41;
-    --color-turquoise-9: #001a16;
-
     --color-orange-1: #fff1e7;
     --color-orange-2: #ffdcc3;
     --color-orange-3: #ffcca7;
@@ -69,25 +49,16 @@
     --font-family-title: "Raleway", system-ui, sans-serif;
 
     /** Semantic variables **/
-    --color-back-error: var(--color-red-1);
-    --color-back-info: var(--color-purple-1);
-    --color-back-success: var(--color-turquoise-1);
     --color-back-warning: var(--color-orange-1);
 
     --color-border: var(--color-grey-6);
-    --color-border-active: var(--color-turquoise-5);
     --color-border-disabled: var(--color-grey-3);
     --color-border-error: var(--color-red-5);
-    --color-border-info: var(--color-purple-5);
-    --color-border-success: var(--color-turquoise-6);
     --color-border-search: var(--color-grey-3);
-    --color-border-warning: var(--color-orange-2);
 
     --color-text-error: var(--color-red-6);
-    --color-text-info: var(--color-purple-6);
     --color-text-secondary: var(--color-grey-7);
     --color-text-disabled: var(--color-grey-6);
-    --color-text-success: var(--color-turquoise-7);
     --color-text-warning: var(--color-orange-9);
 
     --width-border: 0.1em;
@@ -95,10 +66,6 @@
 
     --radius: var(--border-radius);
     --radius-button: var(--border-radius);
-
-    /** Components variables **/
-    --color-body: var(--color-turquoise-1);
-    --color-link: var(--color-purple-6);
 
     --width-content: 1100px;
 
