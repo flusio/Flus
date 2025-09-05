@@ -67,6 +67,14 @@
     box-shadow: none;
 }
 
+.card--illustrated {
+    min-height: 150px;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
 .card__button {
     min-height: 150px;
     padding: var(--space-medium) var(--space-small);
