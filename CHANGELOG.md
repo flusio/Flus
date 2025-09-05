@@ -1,5 +1,16 @@
 # Changelog of Flus
 
+## 2025-09-05 - v2.0.1
+
+### Improvements
+
+- Remove remaining purple and turquoise colors ([a32188a0](https://github.com/flusio/Flus/commit/a32188a0))
+- Improve the look of the focus outline ([c6fa43b2](https://github.com/flusio/Flus/commit/c6fa43b2))
+
+### Technical
+
+- Uncompress gzipped HTTP responses ([f094b292](https://github.com/flusio/Flus/commit/f094b292))
+
 ## 2025-09-01 - v2.0.0
 
 ### New
