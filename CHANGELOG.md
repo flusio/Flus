@@ -1,5 +1,11 @@
 # Changelog of Flus
 
+## 2025-09-05 - v2.0.2
+
+### Bug fixes
+
+- Fix illustrated cards' background ([9179402f](https://github.com/flusio/Flus/commit/9179402f))
+
 ## 2025-09-05 - v2.0.1
 
 ### Improvements
