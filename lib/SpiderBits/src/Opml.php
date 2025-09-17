@@ -82,7 +82,7 @@ class Opml
         $outline = [];
 
         foreach ($dom_element->attributes as $attribute_name => $attribute) {
-            if ($attribute instanceof \DOMAttr) {
+            if (is_string($attribute_name)) {
                 $outline[$attribute_name] = $attribute->value;
             }
         }

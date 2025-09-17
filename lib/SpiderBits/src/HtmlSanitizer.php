@@ -145,10 +145,7 @@ class HtmlSanitizer
             $allowed_attributes = $this->allowed_elements[$dirty_node->tagName];
 
             foreach ($dirty_node->attributes as $dirty_attr_name => $dirty_attr_node) {
-                if (
-                    !($dirty_attr_node instanceof \DOMAttr) ||
-                    !in_array($dirty_attr_name, $allowed_attributes)
-                ) {
+                if (!in_array($dirty_attr_name, $allowed_attributes)) {
                     continue;
                 }
 

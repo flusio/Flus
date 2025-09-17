@@ -19,6 +19,10 @@ class Locale extends \Minz\Validable\PropertyCheck
             return true;
         }
 
+        if (!is_string($value)) {
+            return false;
+        }
+
         $available_locales = utils\Locale::availableLocales();
 
         return isset($available_locales[$value]);
