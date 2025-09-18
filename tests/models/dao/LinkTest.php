@@ -425,4 +425,38 @@ class LinkTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, count($links));
     }
+
+    public function testListToFetchWithSerie(): void
+    {
+        $link1 = LinkFactory::create([
+            'id' => '42',
+            'to_be_fetched' => true,
+            'fetched_at' => null,
+        ]);
+        $link2 = LinkFactory::create([
+            'id' => '43',
+            'to_be_fetched' => true,
+            'fetched_at' => null,
+        ]);
+        $link3 = LinkFactory::create([
+            'id' => '44',
+            'to_be_fetched' => true,
+            'fetched_at' => null,
+        ]);
+
+        $serie = ['total' => 3, 'number' => 0];
+        $links = models\Link::listToFetch(serie: $serie);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link1->id, $links[0]->id);
+
+        $serie = ['total' => 3, 'number' => 1];
+        $links = models\Link::listToFetch(serie: $serie);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link2->id, $links[0]->id);
+
+        $serie = ['total' => 3, 'number' => 2];
+        $links = models\Link::listToFetch(serie: $serie);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link3->id, $links[0]->id);
+    }
 }

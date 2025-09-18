@@ -14,6 +14,8 @@ use App\utils;
  */
 class LinksSync extends \Minz\Job
 {
+    use \App\jobs\traits\JobInSerie;
+
     /**
      * Install the correct number of jobs in database.
      */
@@ -21,9 +23,7 @@ class LinksSync extends \Minz\Job
     {
         $number_jobs_to_install = \App\Configuration::$application['job_links_sync_count'];
 
-        $jobs = \Minz\Job::listBy([
-            'name' => self::class,
-        ]);
+        $jobs = self::listJobsInSerie();
 
         $diff_count = $number_jobs_to_install - count($jobs);
         if ($diff_count > 0) {
@@ -57,7 +57,9 @@ class LinksSync extends \Minz\Job
     {
         $fetch_service = new services\LinkFetcher();
 
-        $links = models\Link::listToFetch(max: 25);
+        $serie = $this->currentSerie();
+        $links = models\Link::listToFetch(max: 25, serie: $serie);
+
         foreach ($links as $link) {
             $has_lock = $link->lock();
             if (!$has_lock) {

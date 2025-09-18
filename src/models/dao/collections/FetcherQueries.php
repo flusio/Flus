@@ -7,59 +7,40 @@ use Minz\Database;
 /**
  * Add methods providing SQL queries specific to the Fetcher.
  *
+ * @phpstan-import-type Serie from \App\jobs\traits\JobInSerie
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 trait FetcherQueries
 {
     /**
-     * List (randomly) active feeds to be fetched.
+     * List the feeds to be fetched.
      *
-     * An active feed is a feed followed by at least one active user (i.e.
-     * account has been validated)
+     * A "serie" can be passed in order to only return the feeds with an id
+     * matching the serie. This allows to fetch the feeds with several jobs in
+     * parallel.
+     *
+     * The list is limited by the $max parameter.
+     *
+     * @param ?Serie $serie
      *
      * @return self[]
      */
-    public static function listActiveFeedsToFetch(int $limit): array
+    public static function listFeedsToFetch(int $max = 25, ?array $serie = null): array
     {
-        $sql = <<<SQL
-            SELECT c.*
-            FROM collections c, followed_collections fc, users u
-
-            WHERE c.type = 'feed'
-            AND (
-                c.feed_fetched_next_at <= :before
-                OR c.feed_fetched_next_at IS NULL
-            )
-
-            AND c.id = fc.collection_id
-            AND u.id = fc.user_id
-
-            -- We prioritize feeds followed by active users. We ignore for now
-            -- expired subscriptions, but it could be checked too.
-            AND u.validated_at IS NOT NULL
-
-            ORDER BY random()
-            LIMIT :limit
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
+        $parameters = [
             ':before' => \Minz\Time::now()->format(Database\Column::DATETIME_FORMAT),
-            ':limit' => $limit,
-        ]);
+            ':max' => $max,
+        ];
 
-        return self::fromDatabaseRows($statement->fetchAll());
-    }
+        $clause_serie = '';
+        if ($serie && $serie['total'] > 1) {
+            $clause_serie = 'AND MOD(c.id::int, :total_number_series) = :serie_number';
+            $parameters[':total_number_series'] = $serie['total'];
+            $parameters[':serie_number'] = $serie['number'];
+        }
 
-    /**
-     * List feeds that haven't been fetched for the longest time.
-     *
-     * @return self[]
-     */
-    public static function listOldestFeedsToFetch(int $limit): array
-    {
         $sql = <<<SQL
             SELECT c.*
             FROM collections c
@@ -70,16 +51,15 @@ trait FetcherQueries
                 OR c.feed_fetched_next_at IS NULL
             )
 
+            {$clause_serie}
+
             ORDER BY feed_fetched_next_at NULLS FIRST
-            LIMIT :limit
+            LIMIT :max
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
-        $statement->execute([
-            ':before' => \Minz\Time::now()->format(Database\Column::DATETIME_FORMAT),
-            ':limit' => $limit,
-        ]);
+        $statement->execute($parameters);
 
         return self::fromDatabaseRows($statement->fetchAll());
     }

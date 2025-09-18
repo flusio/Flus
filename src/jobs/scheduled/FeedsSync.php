@@ -13,6 +13,8 @@ use App\services;
  */
 class FeedsSync extends \Minz\Job
 {
+    use \App\jobs\traits\JobInSerie;
+
     /**
      * Install the correct number of jobs in database.
      */
@@ -20,9 +22,7 @@ class FeedsSync extends \Minz\Job
     {
         $number_jobs_to_install = \App\Configuration::$application['job_feeds_sync_count'];
 
-        $jobs = \Minz\Job::listBy([
-            'name' => self::class,
-        ]);
+        $jobs = self::listJobsInSerie();
 
         $diff_count = $number_jobs_to_install - count($jobs);
         if ($diff_count > 0) {
@@ -56,19 +56,8 @@ class FeedsSync extends \Minz\Job
     {
         $feed_fetcher_service = new services\FeedFetcher();
 
-        // There are two strategies to sync feeds. The first one is to select
-        // randomly 25 active feeds (i.e. followed by at least one active user).
-        // The second strategy is to select the 25 feeds that haven’t been
-        // fetched for the longest time. This second strategy is triggered only
-        // 1 out of 6. This allows multiple jobs to run in parallel on (mostly)
-        // different feeds (first strategy), while being sure to sync all the
-        // feeds (second strategy).
-        $strategy_choice = random_int(1, 6);
-        if ($strategy_choice < 6) {
-            $collections = models\Collection::listActiveFeedsToFetch(limit: 25);
-        } else {
-            $collections = models\Collection::listOldestFeedsToFetch(limit: 25);
-        }
+        $serie = $this->currentSerie();
+        $collections = models\Collection::listFeedsToFetch(max: 25, serie: $serie);
 
         foreach ($collections as $collection) {
             $has_lock = $collection->lock();

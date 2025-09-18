@@ -332,7 +332,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
      */
     public function testListComputedFollowedByUserIdDoesNotExcludeHiddenLinksWhenFilteringFeeds(): void
     {
-
         $user = UserFactory::create();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -360,5 +359,39 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($collections));
         $this->assertSame($collection->id, $collections[0]->id);
         $this->assertSame(1, $collections[0]->number_links);
+    }
+
+    public function testListFeedsToFetchWithSerie(): void
+    {
+        $feed1 = CollectionFactory::create([
+            'id' => '42',
+            'type' => 'feed',
+            'feed_fetched_next_at' => null,
+        ]);
+        $feed2 = CollectionFactory::create([
+            'id' => '43',
+            'type' => 'feed',
+            'feed_fetched_next_at' => null,
+        ]);
+        $feed3 = CollectionFactory::create([
+            'id' => '44',
+            'type' => 'feed',
+            'feed_fetched_next_at' => null,
+        ]);
+
+        $serie = ['total' => 3, 'number' => 0];
+        $feeds = models\Collection::listFeedsToFetch(serie: $serie);
+        $this->assertSame(1, count($feeds));
+        $this->assertSame($feed1->id, $feeds[0]->id);
+
+        $serie = ['total' => 3, 'number' => 1];
+        $feeds = models\Collection::listFeedsToFetch(serie: $serie);
+        $this->assertSame(1, count($feeds));
+        $this->assertSame($feed2->id, $feeds[0]->id);
+
+        $serie = ['total' => 3, 'number' => 2];
+        $feeds = models\Collection::listFeedsToFetch(serie: $serie);
+        $this->assertSame(1, count($feeds));
+        $this->assertSame($feed3->id, $feeds[0]->id);
     }
 }
