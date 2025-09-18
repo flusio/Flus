@@ -12,6 +12,13 @@ services:
         environment:
             - SEED
             - MOCK_HOST=http://nginx:8001
+        healthcheck:
+            test: "php-fpm -t"
+            interval: 5s
+            retries: 30
+        depends_on:
+            database:
+                condition: service_healthy
         user: $USER
 
     job_worker:
@@ -23,6 +30,9 @@ services:
         volumes:
             - ../..:/var/www/html:z
             - composer:/tmp
+        depends_on:
+            database:
+                condition: service_healthy
         user: $USER
 
     nginx:
@@ -34,6 +44,9 @@ services:
         volumes:
             - ../..:/var/www/html:z
             - ./nginx.conf:/etc/nginx/conf.d/default.conf:z
+        depends_on:
+            php:
+                condition: service_healthy
 
     database:
         image: postgres:13-alpine
@@ -41,8 +54,13 @@ services:
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: flus_development
         ports:
             - "5432:5432"
+        healthcheck:
+            test: "pg_isready -U postgres -d flus_development"
+            interval: 5s
+            retries: 30
 
     mailpit:
         image: axllent/mailpit
