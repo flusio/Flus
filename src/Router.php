@@ -299,6 +299,8 @@ class Router
         $router->addRoute('CLI', '/jobs/unfail', 'Jobs#unfail');
         $router->addRoute('CLI', '/jobs/unlock', 'Jobs#unlock');
 
+        $router->addRoute('CLI', '/pocket/import', 'Pocket#import');
+
         return $router;
     }
 }
