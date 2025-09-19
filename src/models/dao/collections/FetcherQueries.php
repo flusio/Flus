@@ -36,7 +36,7 @@ trait FetcherQueries
 
         $clause_serie = '';
         if ($serie && $serie['total'] > 1) {
-            $clause_serie = 'AND MOD(c.id::int, :total_number_series) = :serie_number';
+            $clause_serie = 'AND MOD(c.id::bigint, :total_number_series) = :serie_number';
             $parameters[':total_number_series'] = $serie['total'];
             $parameters[':serie_number'] = $serie['number'];
         }
