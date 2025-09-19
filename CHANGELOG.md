@@ -1,5 +1,11 @@
 # Changelog of Flus
 
+## 2025-09-19 - v2.0.4
+
+### Bug fixes
+
+- Fix the series SQL fetch queries ([fd2e7721](https://github.com/flusio/Flus/commit/fd2e7721))
+
 ## 2025-09-19 - v2.0.3
 
 ### API
