@@ -61,8 +61,8 @@ class LinksSync extends \Minz\Job
         $links = models\Link::listToFetch(max: 25, serie: $serie);
 
         foreach ($links as $link) {
-            $has_lock = $link->lock();
-            if (!$has_lock) {
+            $lock = services\Lock::acquire("link:{$link->url_hash}");
+            if (!$lock) {
                 continue;
             }
 
@@ -73,7 +73,7 @@ class LinksSync extends \Minz\Job
                 \Minz\Log::error("Error while syncing link {$link->id}: {$e->getMessage()}");
             }
 
-            $link->unlock();
+            $lock->release();
         }
     }
 }

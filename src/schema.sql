@@ -16,6 +16,12 @@ CREATE TABLE jobs (
     failed_at TIMESTAMPTZ
 );
 
+CREATE TABLE locks (
+    key TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    expired_at TIMESTAMPTZ NOT NULL
+);
+
 CREATE TABLE tokens (
     token TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
@@ -143,7 +149,6 @@ CREATE INDEX idx_collections_image_filename ON collections(image_filename) WHERE
 CREATE TABLE links (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
-    locked_at TIMESTAMPTZ,
     is_hidden BOOLEAN NOT NULL DEFAULT false,
 
     title TEXT NOT NULL,

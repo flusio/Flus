@@ -3,8 +3,10 @@
 namespace App\jobs\scheduled;
 
 use App\http;
+use App\services;
 use tests\factories\FetchLogFactory;
 use tests\factories\LinkFactory;
+use tests\factories\LockFactory;
 
 class LinksSyncTest extends \PHPUnit\Framework\TestCase
 {
@@ -84,7 +86,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame(1, $link->fetched_count);
-        $this->assertNull($link->locked_at);
     }
 
     public function testPerformLogsFetch(): void
@@ -230,7 +231,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($fetched_count, $link->fetched_count);
     }
 
-    public function testPerformDoesNotFetchLinkIfLockedDuringLastHour(): void
+    public function testPerformDoesNotFetchLinkIfLocked(): void
     {
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -238,14 +239,17 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $minutes = $this->fake('numberBetween', 0, 59);
-        $locked_at = \Minz\Time::ago($minutes, 'minutes');
+        $minutes = $this->fake('numberBetween', 1, 60);
+        $lock_expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'to_be_fetched' => true,
             'fetched_at' => null,
-            'locked_at' => $locked_at,
+        ]);
+        $lock = LockFactory::create([
+            'key' => "link:{$link->url_hash}",
+            'expired_at' => $lock_expired_at,
         ]);
         $links_fetcher_job = new LinksSync();
 
@@ -256,10 +260,10 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link->fetched_at);
         $this->assertSame(0, $link->fetched_code);
         $this->assertSame(0, $link->fetched_count);
-        $this->assertNotNull($link->locked_at);
+        $this->assertTrue(services\Lock::exists($lock->key));
     }
 
-    public function testPerformFetchesLinkIfLockedAfterAnHour(): void
+    public function testPerformFetchesLinkIfLockIsExpired(): void
     {
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -267,14 +271,17 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         /** @var int */
-        $minutes = $this->fake('numberBetween', 60, 1000);
-        $locked_at = \Minz\Time::ago($minutes, 'minutes');
+        $minutes = $this->fake('numberBetween', 0, 60);
+        $lock_expired_at = \Minz\Time::ago($minutes, 'minutes');
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'to_be_fetched' => true,
             'fetched_at' => null,
-            'locked_at' => $locked_at,
+        ]);
+        $lock = LockFactory::create([
+            'key' => "link:{$link->url_hash}",
+            'expired_at' => $lock_expired_at,
         ]);
         $links_fetcher_job = new LinksSync();
 
@@ -285,6 +292,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame(1, $link->fetched_count);
-        $this->assertNull($link->locked_at);
+        $this->assertFalse(services\Lock::exists($lock->key));
     }
 }

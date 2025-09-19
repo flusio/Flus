@@ -25,9 +25,6 @@ class Link
     public \DateTimeImmutable $created_at;
 
     #[Database\Column]
-    public ?\DateTimeImmutable $locked_at = null;
-
-    #[Database\Column]
     #[Validable\Presence(
         message: new Translatable('The title is required.'),
     )]
