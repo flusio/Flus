@@ -14,7 +14,7 @@ services:
             - MOCK_HOST=http://nginx:8001
         healthcheck:
             test: "php-fpm -t"
-            interval: 5s
+            interval: 1s
             retries: 30
         depends_on:
             database:
@@ -59,7 +59,7 @@ services:
             - "5432:5432"
         healthcheck:
             test: "pg_isready -U postgres -d flus_development"
-            interval: 5s
+            interval: 1s
             retries: 30
 
     mailpit:
