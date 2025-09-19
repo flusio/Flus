@@ -88,6 +88,7 @@ class Help
         $usage .= "\n";
         $usage .= "  urls show                Show the HTTP response returned by an URL\n";
         $usage .= "      --url=TEXT           where TEXT is an external URL\n";
+        $usage .= "      [--user-agent=TEXT]  where TEXT is an optional User-Agent\n";
         $usage .= "  urls uncache             Clear the cache of the given URL\n";
         $usage .= "      --url=TEXT           where TEXT is an external URL\n";
         $usage .= "\n";

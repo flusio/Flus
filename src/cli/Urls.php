@@ -2,6 +2,7 @@
 
 namespace App\cli;
 
+use App\http;
 use Minz\Request;
 use Minz\Response;
 
@@ -15,6 +16,7 @@ class Urls
      * Show the HTTP response returned by an URL.
      *
      * @request_param string url
+     * @request_param string user-agent
      *
      * @response 400
      *     If the URL is invalid.
@@ -25,16 +27,23 @@ class Urls
     public function show(Request $request): Response
     {
         $url = $request->parameters->getString('url', '');
+        $user_agent = $request->parameters->getString('user-agent');
+
         $url_is_valid = filter_var($url, FILTER_VALIDATE_URL) !== false;
 
         if (!$url_is_valid || empty($url)) {
             return Response::text(400, "`{$url}` is not a valid URL.");
         }
 
+        $fetcher = new http\Fetcher(
+            ignore_cache: true,
+            ignore_rate_limit: true,
+            user_agent: $user_agent,
+        );
+
         try {
-            $http = new \SpiderBits\Http();
-            $response = $http->get($url);
-        } catch (\SpiderBits\HttpError $error) {
+            $response = $fetcher->get($url);
+        } catch (http\UnexpectedHttpError $error) {
             return Response::text(500, $error->getMessage());
         }
 

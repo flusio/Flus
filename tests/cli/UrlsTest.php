@@ -37,6 +37,21 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Hello World!');
     }
 
+    public function testShowWithUserAgent(): void
+    {
+        /** @var string */
+        $url = $this->fake('url');
+        $this->mockHttpWithEcho($url);
+
+        $response = $this->appRun('CLI', '/urls/show', [
+            'url' => $url,
+            'user-agent' => 'FlusBot',
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '"HTTP_USER_AGENT":"FlusBot"');
+    }
+
     public function testShowFailsWithInvalidUrl(): void
     {
         $url = 'not an url';
@@ -58,7 +73,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 500);
-        $this->assertResponseEquals($response, 'Could not resolve host: unresolvable-url');
+        $this->assertResponseContains($response, 'Could not resolve host: unresolvable-url');
     }
 
     public function testUncacheClearsCacheOfGivenUrl(): void

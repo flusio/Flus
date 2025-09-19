@@ -28,6 +28,7 @@ class Fetcher
         private bool $ignore_rate_limit = false,
         /** @var array<string, string> */
         private array $headers = [],
+        private ?string $user_agent = null,
     ) {
         $this->http = new \SpiderBits\Http();
         $this->http->timeout = $this->http_timeout;
@@ -124,6 +125,10 @@ class Fetcher
      */
     private function getUserAgent(string $url): string
     {
+        if ($this->user_agent) {
+            return $this->user_agent;
+        }
+
         $user_agent = utils\UserAgent::get();
 
         // If we fetch Twitter or Youtube, we need to alter our user agent
