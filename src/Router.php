@@ -207,6 +207,8 @@ class Router
 
         // API v1
         $router->addRoute('POST', '/api/v1/sessions', 'api/v1/Sessions#create');
+        $router->addRoute('DELETE', '/api/v1/session', 'api/v1/Sessions#delete');
+
         $router->addRoute('GET', '/api/v1/collections', 'api/v1/Collections#index');
         $router->addRoute('POST', '/api/v1/collections', 'api/v1/Collections#create');
         $router->addRoute('GET', '/api/v1/collections/:id', 'api/v1/Collections#show');

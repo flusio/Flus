@@ -134,4 +134,27 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             ['invalid_credentials', 'The credentials are invalid.']
         );
     }
+
+    public function testDeleteInvalidatesCurrentSession(): void
+    {
+        $user = $this->login();
+        $session = auth\CurrentUser::session();
+
+        $this->assertNotNull($session);
+
+        $response = $this->apiRun('DELETE', '/api/v1/session');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertFalse(models\Session::exists($session->id));
+    }
+
+    public function testDeleteFailsIfNotConnected(): void
+    {
+        $response = $this->apiRun('DELETE', '/api/v1/session');
+
+        $this->assertResponseCode($response, 401);
+        $this->assertApiResponse($response, [
+            'error' => 'The request is not authenticated.',
+        ]);
+    }
 }

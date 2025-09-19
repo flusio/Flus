@@ -39,4 +39,18 @@ class Sessions extends BaseController
             'token' => $session->token,
         ]);
     }
+
+    /**
+     * @response 401
+     *     If the request is not correctly authenticated.
+     * @response 200
+     */
+    public function delete(Request $request): Response
+    {
+        $this->requireCurrentUser();
+
+        auth\CurrentUser::deleteSession();
+
+        return Response::json(200, []);
+    }
 }

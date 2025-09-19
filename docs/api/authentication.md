@@ -54,3 +54,34 @@ $ curl -H "Content-Type: application/json" \
     }
 }
 ```
+
+## Delete current session
+
+```http
+DELETE /api/v1/session
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X DELETE \
+       "https://app.flus.fr/api/v1/session"
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+{}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
