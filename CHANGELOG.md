@@ -1,5 +1,25 @@
 # Changelog of Flus
 
+## 2025-09-19 - v2.0.3
+
+### API
+
+- Add an endpoint to delete the current session ([6c7b4847](https://github.com/flusio/Flus/commit/6c7b4847))
+
+### CLI
+
+- Allow to pass a User-Agent to the `urls show` command ([1dcf0b0e](https://github.com/flusio/Flus/commit/1dcf0b0e))
+
+### Technical
+
+- Improve getting the collections and links to fetch ([45db972c](https://github.com/flusio/Flus/commit/45db972c))
+- Lock links' URLs during synchronization ([27f082bc](https://github.com/flusio/Flus/commit/27f082bc))
+- Update the dependencies ([7f79b359](https://github.com/flusio/Flus/commit/7f79b359), [60f63b33](https://github.com/flusio/Flus/commit/60f63b33), [9bbf0244](https://github.com/flusio/Flus/commit/9bbf0244))
+
+### Developers
+
+- Add healthchecks and dependencies in `docker-compose.yml` ([ce4a8c29](https://github.com/flusio/Flus/commit/ce4a8c29), [c97cf21f](https://github.com/flusio/Flus/commit/c97cf21f))
+
 ## 2025-09-05 - v2.0.2
 
 ### Bug fixes
