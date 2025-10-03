@@ -47,6 +47,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Refresh the journal
 
 ```http
@@ -79,6 +83,10 @@ $ curl -H "Content-Type: application/json" \
     "error": "The request is not authenticated."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added
 
 ## Mark the links of the journal as read
 
@@ -117,6 +125,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Mark the links of the journal to read later
 
 ```http
@@ -154,6 +166,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Remove the links from the journal
 
 ```http
@@ -190,6 +206,10 @@ $ curl -H "Content-Type: application/json" \
     "error": "The request is not authenticated."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added
 
 ## Remove a single link from the journal
 
@@ -237,3 +257,7 @@ $ curl -H "Content-Type: application/json" \
     "error": "The link does not exist."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added

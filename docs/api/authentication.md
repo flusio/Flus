@@ -55,6 +55,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Delete current session
 
 ```http
@@ -85,3 +89,7 @@ $ curl -H "Content-Type: application/json" \
     "error": "The request is not authenticated."
 }
 ```
+
+### Changelog
+
+- 2.0.3: added

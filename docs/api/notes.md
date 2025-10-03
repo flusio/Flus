@@ -58,6 +58,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Add a note to a link
 
 ```http
@@ -130,6 +134,10 @@ $ curl -H "Content-Type: application/json" \
     "error": "The link does not exist."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added
 
 ## Update a note
 
@@ -204,6 +212,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Delete a note
 
 ```http
@@ -250,3 +262,7 @@ $ curl -H "Content-Type: application/json" \
     "error": "The note does not exist."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added

@@ -46,6 +46,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Create a collection
 
 ```http
@@ -114,6 +118,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Get a collection
 
 ```http
@@ -166,6 +174,10 @@ $ curl -H "Content-Type: application/json" \
     "error": "The collection does not exist."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added
 
 ## Update a collection
 
@@ -251,6 +263,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Delete a collection
 
 ```http
@@ -297,3 +313,7 @@ $ curl -H "Content-Type: application/json" \
     "error": "The collection does not exist."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added

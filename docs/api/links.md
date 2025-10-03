@@ -66,6 +66,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## List the links
 
 ```http
@@ -143,6 +147,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Get a link
 
 ```http
@@ -203,6 +211,10 @@ $ curl -H "Content-Type: application/json" \
     "error": "The link does not exist."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added
 
 ## Update a link
 
@@ -295,6 +307,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Delete a link
 
 ```http
@@ -341,6 +357,10 @@ $ curl -H "Content-Type: application/json" \
     "error": "The link does not exist."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added
 
 ## Mark a link as read
 
@@ -389,6 +409,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Unmark a link as read
 
 ```http
@@ -436,6 +460,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Mark a link to read later
 
 ```http
@@ -482,6 +510,10 @@ $ curl -H "Content-Type: application/json" \
     "error": "The link does not exist."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added
 
 ## Add a collection to a link
 
@@ -536,6 +568,10 @@ $ curl -H "Content-Type: application/json" \
 }
 ```
 
+### Changelog
+
+- 2.0.0: added
+
 ## Remove a collection from a link
 
 ```http
@@ -588,3 +624,7 @@ $ curl -H "Content-Type: application/json" \
     "error": "The collection does not exist."
 }
 ```
+
+### Changelog
+
+- 2.0.0: added
