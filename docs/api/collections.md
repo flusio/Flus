@@ -317,3 +317,97 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+
+## Follow a collection (or feed)
+
+```http
+POST /api/v1/collections/:id/follow
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X POST \
+       "https://app.flus.fr/api/v1/collections/<id>/follow"
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+{}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+`403 Forbidden` if the user doesn't have access to the collection:
+
+```json
+{
+    "error": "You cannot follow the collection."
+}
+```
+
+`404 Not Found` if the collection doesn’t exist:
+
+```json
+{
+    "error": "The collection does not exist."
+}
+```
+
+### Changelog
+
+- 2.0.5: added
+
+## Unfollow a collection (or feed)
+
+```http
+DELETE /api/v1/collections/:id/follow
+```
+
+### Example
+
+```console
+$ curl -H "Content-Type: application/json" \
+       -H "Authorization: Bearer <token>" \
+       -X DELETE \
+       "https://app.flus.fr/api/v1/collections/<id>/follow"
+```
+
+### Response
+
+`200 OK` on success:
+
+```json
+{}
+```
+
+`401 Unauthorized` if the request is not authenticated:
+
+```json
+{
+    "error": "The request is not authenticated."
+}
+```
+
+`404 Not Found` if the collection doesn’t exist:
+
+```json
+{
+    "error": "The collection does not exist."
+}
+```
+
+### Changelog
+
+- 2.0.5: added

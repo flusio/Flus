@@ -214,6 +214,8 @@ class Router
         $router->addRoute('GET', '/api/v1/collections/:id', 'api/v1/Collections#show');
         $router->addRoute('PATCH', '/api/v1/collections/:id', 'api/v1/Collections#update');
         $router->addRoute('DELETE', '/api/v1/collections/:id', 'api/v1/Collections#delete');
+        $router->addRoute('POST', '/api/v1/collections/:id/follow', 'api/v1/collections/Follow#create');
+        $router->addRoute('DELETE', '/api/v1/collections/:id/follow', 'api/v1/collections/Follow#delete');
         $router->addRoute('POST', '/api/v1/search', 'api/v1/Searches#create');
         $router->addRoute('GET', '/api/v1/journal', 'api/v1/Journal#show');
         $router->addRoute('POST', '/api/v1/journal', 'api/v1/Journal#create');
