@@ -13,24 +13,31 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     use \tests\ApiHelper;
     use \tests\MockHttpHelper;
 
-    public function testCreateCreatesALinkAndReturnsIt(): void
+    public function testCreateCreatesLinkAndFeedsAndReturnsThem(): void
     {
         $user = $this->login();
         $url = 'https://flus.fr/carnet/';
+        $url_feed = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $this->mockHttpWithFixture($url_feed, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->apiRun('POST', '/api/v1/search', [
             'url' => $url,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertSame(1, models\Link::count());
-        $link = models\Link::take();
+        $link = models\Link::findBy([
+            'url' => $url,
+        ]);
         $this->assertNotNull($link);
         $this->assertSame($user->id, $link->user_id);
-        $this->assertSame($url, $link->url);
+        $feed = models\Collection::findBy([
+            'feed_url' => $url_feed,
+        ]);
+        $this->assertNotNull($feed);
         $this->assertApiResponse($response, [
             'links' => [$link->toJson($user)],
+            'feeds' => [$feed->toJson($user)],
         ]);
     }
 
@@ -46,6 +53,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'title' => $title,
             'reading_time' => $reading_time,
+            'url_feeds' => [],
         ]);
 
         $response = $this->apiRun('POST', '/api/v1/search', [
@@ -56,6 +64,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Link::count());
         $this->assertApiResponse($response, [
             'links' => [$link->toJson($user)],
+            'feeds' => [],
         ]);
     }
 

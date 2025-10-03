@@ -417,12 +417,24 @@ class Collection
      */
     public function toJson(User $context_user): array
     {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'group' => $this->groupForUser($context_user->id)?->name,
-            'is_public' => $this->is_public,
-        ];
+        if ($this->type === 'feed') {
+            return [
+                'id' => $this->id,
+                'name' => $this->name,
+                'description' => $this->description,
+                'group' => $this->groupForUser($context_user->id)?->name,
+                'url' => $this->feed_url,
+                'type' => $this->feed_type,
+                'site_url' => $this->feed_site_url,
+            ];
+        } else {
+            return [
+                'id' => $this->id,
+                'name' => $this->name,
+                'description' => $this->description,
+                'group' => $this->groupForUser($context_user->id)?->name,
+                'is_public' => $this->is_public,
+            ];
+        }
     }
 }

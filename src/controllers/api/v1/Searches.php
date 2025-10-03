@@ -36,11 +36,15 @@ class Searches extends BaseController
         }
 
         $link = $form->link();
+        $feeds = $form->feeds();
 
         return Response::json(200, [
             'links' => [
                 $link->toJson(context_user: $user)
             ],
+            'feeds' => array_map(function (models\Collection $feed) use ($user): array {
+                return $feed->toJson(context_user: $user);
+            }, $feeds),
         ]);
     }
 }
