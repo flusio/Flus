@@ -39,16 +39,7 @@ class Searches extends BaseController
 
         return Response::json(200, [
             'links' => [
-                [
-                    'id' => $link->id,
-                    'title' => $link->title,
-                    'url' => $link->url,
-                    'reading_time' => $link->reading_time,
-                    'tags' => $link->tags,
-                    'is_read' => $link->isReadBy($user),
-                    'is_read_later' => $link->isInBookmarksOf($user),
-                    'collections' => array_column($link->collections(), 'id'),
-                ],
+                $link->toJson(context_user: $user)
             ],
         ]);
     }

@@ -69,6 +69,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 2.0.5: add missing `created_at`, `is_hidden`, `source`, `published_at`, `number_notes`
 
 ## List the links
 

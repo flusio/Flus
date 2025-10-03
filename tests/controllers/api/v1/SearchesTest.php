@@ -30,18 +30,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->id, $link->user_id);
         $this->assertSame($url, $link->url);
         $this->assertApiResponse($response, [
-            'links' => [
-                [
-                    'id' => $link->id,
-                    'title' => 'Carnet de Flus',
-                    'url' => $url,
-                    'reading_time' => 0,
-                    'tags' => [],
-                    'is_read' => false,
-                    'is_read_later' => false,
-                    'collections' => [],
-                ],
-            ],
+            'links' => [$link->toJson($user)],
         ]);
     }
 
@@ -66,18 +55,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertSame(1, models\Link::count());
         $this->assertApiResponse($response, [
-            'links' => [
-                [
-                    'id' => $link->id,
-                    'title' => $title,
-                    'url' => $url,
-                    'reading_time' => $reading_time,
-                    'tags' => [],
-                    'is_read' => false,
-                    'is_read_later' => false,
-                    'collections' => [],
-                ],
-            ],
+            'links' => [$link->toJson($user)],
         ]);
     }
 
