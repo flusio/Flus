@@ -54,6 +54,8 @@ class Read extends BaseController
      *
      * @response 401
      *     If the request is not correctly authenticated.
+     * @response 403
+     *     If the user doesn't have access to the link.
      * @response 404
      *     If the link does not exist.
      * @response 200
