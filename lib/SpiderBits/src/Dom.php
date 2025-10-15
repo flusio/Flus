@@ -14,8 +14,8 @@ class Dom
 
     private ?string $xpath_query = null;
 
-    /** @var ?\DOMNodeList<\DOMNode> */
-    private ?\DOMNodeList $nodes_selected = null;
+    /** @var ?\DOMNode[] */
+    private ?array $nodes_selected = null;
 
     /**
      * Return a new Dom object from text.
@@ -98,15 +98,11 @@ class Dom
     /**
      * Return the selected nodes.
      *
-     * @return \DOMNodeList<\DOMNode>|array{}
+     * @return \DOMNode[]
      */
-    public function list(): mixed
+    public function list(): array
     {
-        if ($this->nodes_selected) {
-            return $this->nodes_selected;
-        } else {
-            return [];
-        }
+        return $this->nodes_selected ?? [];
     }
 
     /**
@@ -152,9 +148,9 @@ class Dom
      *
      * @throws \DomainException if the xpath is invalid or matches no nodes
      *
-     * @return \DOMNodeList<\DOMNode>
+     * @return \DOMNode[]
      */
-    private static function xpathQuery(\DOMDocument $dom, string $xpath_query): \DOMNodeList
+    private static function xpathQuery(\DOMDocument $dom, string $xpath_query): array
     {
         $dom_xpath = new \DomXPath($dom);
         $nodes_selected = @$dom_xpath->query($xpath_query);
@@ -167,6 +163,11 @@ class Dom
             throw new \DomainException('XPath query matches no nodes');
         }
 
-        return $nodes_selected;
+        $nodes = iterator_to_array($nodes_selected);
+        $nodes = array_filter($nodes, function (\DOMNameSpaceNode|\DOMNode $node): bool {
+            return $node instanceof \DOMNode;
+        });
+
+        return $nodes;
     }
 }
