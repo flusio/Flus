@@ -426,6 +426,7 @@ class Collection
                 'url' => $this->feed_url,
                 'type' => $this->feed_type,
                 'site_url' => $this->feed_site_url,
+                'is_followed' => $context_user->isFollowing($this->id),
             ];
         } else {
             return [
@@ -434,6 +435,7 @@ class Collection
                 'description' => $this->description,
                 'group' => $this->groupForUser($context_user->id)?->name,
                 'is_public' => $this->is_public,
+                'is_followed' => $context_user->isFollowing($this->id),
             ];
         }
     }

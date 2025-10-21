@@ -26,14 +26,16 @@ $ curl -H "Content-Type: application/json" \
         "name": "My favourites",
         "description": "",
         "group": null,
-        "is_public": false
+        "is_public": false,
+        "is_followed": false
     },
     {
         "id": "1833740002944268171",
         "name": "My shares",
         "description": "",
         "group": null,
-        "is_public": true
+        "is_public": true,
+        "is_followed": false
     }
 ]
 ```
@@ -49,6 +51,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 2.0.5: `is_followed` attribute added
 
 ## Create a collection
 
@@ -82,7 +85,8 @@ $ curl -H "Content-Type: application/json" \
     "name": "My collection",
     "description": "The description",
     "group": null,
-    "is_public": true
+    "is_public": true,
+    "is_followed": false
 }
 ```
 
@@ -121,6 +125,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 2.0.5: `is_followed` attribute added
 
 ## Get a collection
 
@@ -147,7 +152,8 @@ $ curl -H "Content-Type: application/json" \
     "name": "My collection",
     "description": "The description",
     "group": null,
-    "is_public": true
+    "is_public": true,
+    "is_followed": false
 }
 ```
 
@@ -178,6 +184,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 2.0.5: `is_followed` attribute added
 
 ## Update a collection
 
@@ -211,7 +218,8 @@ $ curl -H "Content-Type: application/json" \
     "name": "The collection",
     "description": "The description",
     "group": null,
-    "is_public": false
+    "is_public": false,
+    "is_followed": false
 }
 ```
 
@@ -266,6 +274,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 2.0.5: `is_followed` attribute added
 
 ## Delete a collection
 

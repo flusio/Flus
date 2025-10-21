@@ -51,7 +51,8 @@ $ curl -H "Content-Type: application/json" \
             "group": null,
             "url": "https://flus.fr/carnet/feeds/all.atom.xml",
             "type": "atom",
-            "site_url": "https://flus.fr/carnet/"
+            "site_url": "https://flus.fr/carnet/",
+            "is_followed": false
         }
     ]
 }
