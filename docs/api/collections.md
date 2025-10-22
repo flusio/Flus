@@ -27,7 +27,8 @@ $ curl -H "Content-Type: application/json" \
         "description": "",
         "group": null,
         "is_public": false,
-        "is_followed": false
+        "is_followed": false,
+        "publication_frequency_per_year": 4
     },
     {
         "id": "1833740002944268171",
@@ -35,7 +36,8 @@ $ curl -H "Content-Type: application/json" \
         "description": "",
         "group": null,
         "is_public": true,
-        "is_followed": false
+        "is_followed": false,
+        "publication_frequency_per_year": 42
     }
 ]
 ```
@@ -51,7 +53,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.0.5: `is_followed` attribute added
+- 2.0.5: `is_followed` and `publication_frequency_per_year` attributes added
 
 ## Create a collection
 
@@ -86,7 +88,8 @@ $ curl -H "Content-Type: application/json" \
     "description": "The description",
     "group": null,
     "is_public": true,
-    "is_followed": false
+    "is_followed": false,
+    "publication_frequency_per_year": 0
 }
 ```
 
@@ -125,7 +128,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.0.5: `is_followed` attribute added
+- 2.0.5: `is_followed` and `publication_frequency_per_year` attributes added
 
 ## Get a collection
 
@@ -153,7 +156,8 @@ $ curl -H "Content-Type: application/json" \
     "description": "The description",
     "group": null,
     "is_public": true,
-    "is_followed": false
+    "is_followed": false,
+    "publication_frequency_per_year": 0
 }
 ```
 
@@ -184,7 +188,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.0.5: `is_followed` attribute added
+- 2.0.5: `is_followed` and `publication_frequency_per_year` attributes added
 
 ## Update a collection
 
@@ -219,7 +223,8 @@ $ curl -H "Content-Type: application/json" \
     "description": "The description",
     "group": null,
     "is_public": false,
-    "is_followed": false
+    "is_followed": false,
+    "publication_frequency_per_year": 0
 }
 ```
 
@@ -274,7 +279,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.0.5: `is_followed` attribute added
+- 2.0.5: `is_followed` and `publication_frequency_per_year` attributes added
 
 ## Delete a collection
 

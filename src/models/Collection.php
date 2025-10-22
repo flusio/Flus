@@ -431,6 +431,7 @@ class Collection
                 'type' => $this->feed_type,
                 'site_url' => $this->feed_site_url,
                 'is_followed' => $context_user->isFollowing($this->id),
+                'publication_frequency_per_year' => $this->publication_frequency_per_year,
             ];
         } else {
             return [
@@ -440,6 +441,7 @@ class Collection
                 'group' => $this->groupForUser($context_user->id)?->name,
                 'is_public' => $this->is_public,
                 'is_followed' => $context_user->isFollowing($this->id),
+                'publication_frequency_per_year' => $this->publication_frequency_per_year,
             ];
         }
     }
