@@ -1,6 +1,6 @@
 # Changelog of Flus
 
-## unreleased
+## 2025-10-22 - v2.0.5
 
 ### Migration notes
 
@@ -16,6 +16,21 @@ Depending on the number of collections in the database, this operation can take 
 
 This operation is not required as it will be run everyday at 3AM then.
 It just allows to have coherent publication frequencies in the interface.
+
+### API
+
+- Add enpoints to follow/unfollow a collection/feed ([ae8c3904](https://github.com/flusio/Flus/commit/ae8c3904))
+- Return feeds on the search enpoint ([83d333d1](https://github.com/flusio/Flus/commit/83d333d1))
+- Add the `is_followed` attribute to the collections/feeds objects ([26c196ce](https://github.com/flusio/Flus/commit/26c196ce))
+- Add the `publication_frequency_per_year` attribute to the collections/feeds objects ([39419a55](https://github.com/flusio/Flus/commit/39419a55))
+- Add the missing link `created_at`, `is_hidden`, `source`, `published_at`, `number_notes` attributes to the search response ([8669729a](https://github.com/flusio/Flus/commit/8669729a))
+- Document a changelog for each API endpoints ([8989c305](https://github.com/flusio/Flus/commit/8989c305))
+
+### Technical
+
+- Store the publication frequency in database ([c1895833](https://github.com/flusio/Flus/commit/c1895833))
+- Optimize calculation of publication frequency ([59074931](https://github.com/flusio/Flus/commit/59074931))
+- Update the dependencies ([573f0196](https://github.com/flusio/Flus/commit/573f0196))
 
 ## 2025-09-19 - v2.0.4
 
