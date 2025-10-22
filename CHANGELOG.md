@@ -1,5 +1,22 @@
 # Changelog of Flus
 
+## unreleased
+
+### Migration notes
+
+After the update, you may want to run the new `CollectionsPublicationFrequencySync` job:
+
+```console
+$ php cli jobs
+$ # Get the id of the job
+$ php cli jobs run --id=<ID>
+```
+
+Depending on the number of collections in the database, this operation can take a long time or not.
+
+This operation is not required as it will be run everyday at 3AM then.
+It just allows to have coherent publication frequencies in the interface.
+
 ## 2025-09-19 - v2.0.4
 
 ### Bug fixes

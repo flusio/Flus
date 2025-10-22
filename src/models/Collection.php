@@ -394,23 +394,23 @@ class Collection
         $today = \Minz\Time::now();
         $one_year_ago = \Minz\Time::ago(1, 'year');
 
-        $last_year_links = Link::listByCollectionSince($this, since: $one_year_ago, max: 500);
-        $count_links = count($last_year_links);
+        $count_links = Link::countByCollectionId($this->id, [
+            'since' => $one_year_ago,
+        ]);
 
         if ($count_links === 0) {
             $this->publication_frequency_per_year = 0;
             return;
         }
 
-        $oldest_link = $last_year_links[0];
+        $oldest_published_at = Link::getOldestPublicationDateSince($this->id, $one_year_ago);
 
-        unset($last_year_links);
-
-        if ($oldest_link->published_at === null) {
-            throw new \LogicException('Link published_at must be set');
+        if ($oldest_published_at === null) {
+            $this->publication_frequency_per_year = 0;
+            return;
         }
 
-        $diff_since_oldest_link = $today->diff($oldest_link->published_at);
+        $diff_since_oldest_link = $today->diff($oldest_published_at);
         $number_of_days = intval($diff_since_oldest_link->format('%a')) + 1;
 
         $this->publication_frequency_per_year = (int) round($count_links / $number_of_days * 365);

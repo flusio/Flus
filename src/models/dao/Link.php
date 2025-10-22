@@ -203,40 +203,6 @@ trait Link
         return self::fromDatabaseRows($statement->fetchAll());
     }
 
-
-    /**
-     * Return the links of the given collection since the given time.
-     *
-     * @return self[]
-     */
-    public static function listByCollectionSince(
-        models\Collection $collection,
-        \DateTimeImmutable $since,
-        int $max,
-    ): array {
-        $sql = <<<SQL
-            SELECT l.*, lc.created_at AS published_at
-            FROM links l, links_to_collections lc
-
-            WHERE lc.link_id = l.id
-            AND lc.collection_id = :collection_id
-            AND lc.created_at >= :since
-
-            ORDER BY lc.created_at
-            LIMIT :limit
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':collection_id' => $collection->id,
-            ':since' => $since->format(Database\Column::DATETIME_FORMAT),
-            ':limit' => $max,
-        ]);
-
-        return self::fromDatabaseRows($statement->fetchAll());
-    }
-
     /**
      * Return links of the given collection with its computed properties.
      *
@@ -412,22 +378,36 @@ trait Link
      *     The collection id the links must match.
      * @param array{
      *     'hidden'?: bool,
+     *     'since'?: \DateTimeImmutable,
      * } $options
      *
      * Description of the options:
      *
      * - hidden (default to true), indicates if hidden links must be included
+     * - since (default to null), counts links that have been added since the
+     *   given date only
      */
     public static function countByCollectionId(string $collection_id, array $options = []): int
     {
         $default_options = [
             'hidden' => true,
+            'since' => null,
         ];
         $options = array_merge($default_options, $options);
+
+        $parameters = [
+            ':collection_id' => $collection_id,
+        ];
 
         $visibility_clause = '';
         if (!$options['hidden']) {
             $visibility_clause = 'AND l.is_hidden = false';
+        }
+
+        $since_clause = '';
+        if ($options['since']) {
+            $since_clause = 'AND lc.created_at >= :since';
+            $parameters[':since'] = $options['since']->format(Database\Column::DATETIME_FORMAT);
         }
 
         $sql = <<<SQL
@@ -437,14 +417,14 @@ trait Link
             WHERE l.id = lc.link_id
             AND lc.collection_id = :collection_id
 
+            {$since_clause}
+
             {$visibility_clause}
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
-        $statement->execute([
-            ':collection_id' => $collection_id,
-        ]);
+        $statement->execute($parameters);
 
         return intval($statement->fetchColumn());
     }
@@ -531,5 +511,48 @@ trait Link
         $statement = $database->prepare($sql);
         $statement->execute([$table_name]);
         return intval($statement->fetchColumn());
+    }
+
+    /**
+     * Return the oldest publication date in the collection since the given date.
+     */
+    public static function getOldestPublicationDateSince(
+        string $collection_id,
+        \DateTimeImmutable $since
+    ): ?\DateTimeImmutable {
+        $sql = <<<SQL
+            SELECT created_at
+            FROM links_to_collections
+
+            WHERE collection_id = :collection_id
+            AND created_at >= :since
+
+            ORDER BY created_at ASC
+            LIMIT 1
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':collection_id' => $collection_id,
+            ':since' => $since->format(Database\Column::DATETIME_FORMAT),
+        ]);
+
+        $published_at = $statement->fetchColumn();
+
+        if (!is_string($published_at)) {
+            return null;
+        }
+
+        $published_at = \DateTimeImmutable::createFromFormat(
+            Database\Column::DATETIME_FORMAT,
+            $published_at,
+        );
+
+        if ($published_at === false) {
+            return null;
+        }
+
+        return $published_at;
     }
 }
