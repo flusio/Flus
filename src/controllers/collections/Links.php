@@ -128,7 +128,7 @@ class Links extends BaseController
             $link_fetcher_service->fetch($link);
         }
 
-        models\LinkToCollection::attach([$link->id], [$collection->id]);
+        $link->addCollection($collection);
 
         return Response::found($from);
     }

@@ -55,6 +55,12 @@ class FeedFetcher
             return;
         }
 
+        // As the frequency evolves each day (= it depends on the current date),
+        // and the feed can be in error during several days, it's important to
+        // sync the frequency at the beginning of the method (and also at then
+        // end, once the links have been imported).
+        $collection->syncPublicationFrequencyPerYear();
+
         $collection->feed_fetched_at = \Minz\Time::now();
         $collection->feed_fetched_next_at = $this->calculateNextFetchedAt($collection);
         $collection->feed_fetched_code = $info['status'];
@@ -224,6 +230,8 @@ class FeedFetcher
         // We now can insert the links and links_to_collections via a bulkInsert
         models\Link::bulkInsert($links_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
+
+        $collection->syncPublicationFrequencyPerYear();
 
         $collection->feed_fetched_next_at = $this->calculateNextFetchedAt($collection);
         $collection->save();
@@ -416,7 +424,7 @@ class FeedFetcher
         $min_minutes = 60;
         $max_minutes = 60 * 24;
 
-        $publication_frequency = $feed->publicationFrequencyPerYear();
+        $publication_frequency = $feed->publication_frequency_per_year;
 
         if ($publication_frequency === 0) {
             return \Minz\Time::fromNow($max_minutes, 'minutes');

@@ -151,6 +151,15 @@ class Collections extends BaseController
             return Response::found($from);
         }
 
+        $link_collections = [];
+
+        foreach ($new_collection_ids as $collection_id) {
+            $collection = models\Collection::find($collection_id);
+            if ($collection) {
+                $link_collections[] = $collection;
+            }
+        }
+
         foreach ($new_collection_names as $name) {
             $new_collection = models\Collection::init($user->id, $name, '', false);
 
@@ -160,7 +169,7 @@ class Collections extends BaseController
             }
 
             $new_collection->save();
-            $new_collection_ids[] = $new_collection->id;
+            $link_collections[] = $new_collection;
         }
 
         if (!auth\LinksAccess::canUpdate($user, $link)) {
@@ -171,7 +180,7 @@ class Collections extends BaseController
         $link->is_hidden = $is_hidden;
         $link->save();
 
-        models\LinkToCollection::setCollections($link->id, $new_collection_ids);
+        $link->setCollections($link_collections);
 
         if ($content) {
             $note = new models\Note($user->id, $link->id, $content);

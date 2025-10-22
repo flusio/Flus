@@ -131,6 +131,7 @@ CREATE TABLE collections (
     image_fetched_at TIMESTAMPTZ,
     user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
     group_id TEXT REFERENCES groups ON DELETE SET NULL ON UPDATE CASCADE,
+    publication_frequency_per_year INTEGER NOT NULL DEFAULT 0,
 
     feed_url TEXT,
     feed_type TEXT,

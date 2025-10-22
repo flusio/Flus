@@ -198,11 +198,59 @@ class Link
     }
 
     /**
+     * Set the link's collections.
+     *
+     * @param Collection[] $collections
+     */
+    public function setCollections(array $collections, ?\DateTimeImmutable $at = null): void
+    {
+        $collection_ids = array_column($collections, 'id');
+        LinkToCollection::setCollections($this->id, $collection_ids, $at);
+
+        foreach ($collections as $collection) {
+            $collection->syncPublicationFrequencyPerYear();
+            $collection->save();
+        }
+    }
+
+    /**
+     * Add the link to the collections.
+     *
+     * @param Collection[] $collections
+     */
+    public function addCollections(array $collections, ?\DateTimeImmutable $at = null): void
+    {
+        $collection_ids = array_column($collections, 'id');
+        LinkToCollection::attach([$this->id], $collection_ids, $at);
+
+        foreach ($collections as $collection) {
+            $collection->syncPublicationFrequencyPerYear();
+            $collection->save();
+        }
+    }
+
+    /**
      * Add the link to a collection.
      */
     public function addCollection(Collection $collection, ?\DateTimeImmutable $at = null): void
     {
-        LinkToCollection::attach([$this->id], [$collection->id], $at);
+        $this->addCollections([$collection], $at);
+    }
+
+    /**
+     * Remove the link from the collections.
+     *
+     * @param Collection[] $collections
+     */
+    public function removeCollections(array $collections): void
+    {
+        $collection_ids = array_column($collections, 'id');
+        LinkToCollection::detach([$this->id], $collection_ids);
+
+        foreach ($collections as $collection) {
+            $collection->syncPublicationFrequencyPerYear();
+            $collection->save();
+        }
     }
 
     /**
@@ -210,7 +258,7 @@ class Link
      */
     public function removeCollection(Collection $collection): void
     {
-        LinkToCollection::detach([$this->id], [$collection->id]);
+        $this->removeCollections([$collection]);
     }
 
     /**

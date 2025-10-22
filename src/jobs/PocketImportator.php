@@ -136,11 +136,10 @@ class PocketImportator extends \Minz\Job
         $collection_ids_by_names = models\Collection::listNamesToIdsByUserId($user->id);
 
         // This will store the items that we effectively need to create. We
-        // don't create links, collections and their relation on the fly because
-        // it would be too intensive. We rather prefer to insert them all at
-        // once (see calls to `bulkInsert` below).
+        // don't create links and their relation on the fly because it would be
+        // too intensive. We rather prefer to insert them all at once (see
+        // calls to `bulkInsert` below).
         $links_to_create = [];
-        $collections_to_create = [];
         $links_to_collections_to_create = [];
         $notes = [];
 
@@ -247,7 +246,6 @@ class PocketImportator extends \Minz\Job
 
         // Finally, let the big import (in DB) begin!
         models\Link::bulkInsert($links_to_create);
-        models\Collection::bulkInsert($collections_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
         models\Note::bulkInsert($notes);
 
@@ -256,13 +254,22 @@ class PocketImportator extends \Minz\Job
         $count_pocket_links = models\Link::countByCollectionId($pocket_collection->id);
         if ($count_pocket_links === 0) {
             $pocket_collection->remove();
+        } else {
+            $pocket_collection->syncPublicationFrequencyPerYear();
+            $pocket_collection->save();
         }
 
         if ($options['import_favorites']) {
             $count_favorite_links = models\Link::countByCollectionId($favorite_collection->id);
             if ($count_favorite_links === 0) {
                 $favorite_collection->remove();
+            } else {
+                $favorite_collection->syncPublicationFrequencyPerYear();
+                $favorite_collection->save();
             }
         }
+
+        $bookmarks_collection->syncPublicationFrequencyPerYear();
+        $bookmarks_collection->save();
     }
 }

@@ -66,6 +66,9 @@ class Collection
     public ?string $group_id = null;
 
     #[Database\Column]
+    public int $publication_frequency_per_year = 0;
+
+    #[Database\Column]
     public ?string $feed_url = null;
 
     #[Database\Column]
@@ -384,9 +387,9 @@ class Collection
     }
 
     /**
-     * Return the publication frequency of the collection.
+     * Calculate and set the publication frequency of the collection.
      */
-    public function publicationFrequencyPerYear(): int
+    public function syncPublicationFrequencyPerYear(): void
     {
         $today = \Minz\Time::now();
         $one_year_ago = \Minz\Time::ago(1, 'year');
@@ -395,7 +398,8 @@ class Collection
         $count_links = count($last_year_links);
 
         if ($count_links === 0) {
-            return 0;
+            $this->publication_frequency_per_year = 0;
+            return;
         }
 
         $oldest_link = $last_year_links[0];
@@ -409,7 +413,7 @@ class Collection
         $diff_since_oldest_link = $today->diff($oldest_link->published_at);
         $number_of_days = intval($diff_since_oldest_link->format('%a')) + 1;
 
-        return (int) round($count_links / $number_of_days * 365);
+        $this->publication_frequency_per_year = (int) round($count_links / $number_of_days * 365);
     }
 
     /**

@@ -307,6 +307,15 @@ class Links extends BaseController
             ]);
         }
 
+        $link_collections = [];
+
+        foreach ($collection_ids as $collection_id) {
+            $collection = models\Collection::find($collection_id);
+            if ($collection) {
+                $link_collections[] = $collection;
+            }
+        }
+
         foreach ($new_collection_names as $name) {
             $new_collection = models\Collection::init($user->id, $name, '', false);
 
@@ -326,7 +335,7 @@ class Links extends BaseController
             }
 
             $new_collection->save();
-            $collection_ids[] = $new_collection->id;
+            $link_collections[] = $new_collection;
         }
 
         $existing_link = models\Link::findBy([
@@ -343,7 +352,7 @@ class Links extends BaseController
             $link_fetcher_service->fetch($link);
         }
 
-        models\LinkToCollection::attach([$link->id], $collection_ids);
+        $link->addCollections($link_collections);
 
         return Response::found($from);
     }

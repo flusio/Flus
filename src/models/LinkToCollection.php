@@ -124,8 +124,11 @@ class LinkToCollection
      *
      * @param string[] $collection_ids
      */
-    public static function setCollections(string $link_id, array $collection_ids): bool
-    {
+    public static function setCollections(
+        string $link_id,
+        array $collection_ids,
+        ?\DateTimeImmutable $at = null
+    ): bool {
         $previous_attachments = self::listBy(['link_id' => $link_id]);
         $previous_collection_ids = array_column($previous_attachments, 'collection_id');
         $ids_to_attach = array_diff($collection_ids, $previous_collection_ids);
@@ -135,7 +138,7 @@ class LinkToCollection
         $database->beginTransaction();
 
         if ($ids_to_attach) {
-            self::attach([$link_id], $ids_to_attach);
+            self::attach([$link_id], $ids_to_attach, $at);
         }
 
         if ($ids_to_detach) {

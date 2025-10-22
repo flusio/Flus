@@ -87,5 +87,8 @@ class AtomImportator
 
         models\Link::bulkInsert($links_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
+
+        $collection->syncPublicationFrequencyPerYear();
+        $collection->save();
     }
 }

@@ -13,7 +13,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
 
-    public function testPublicationFrequencyPerYear(): void
+    public function testSyncPublicationFrequencyPerYear(): void
     {
         $collection = CollectionFactory::create();
         LinkToCollectionFactory::create([
@@ -21,12 +21,12 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'created_at' => \Minz\Time::ago(11, 'months'),
         ]);
 
-        $frequency_per_year = $collection->publicationFrequencyPerYear();
+        $collection->syncPublicationFrequencyPerYear();
 
-        $this->assertSame(1, $frequency_per_year);
+        $this->assertSame(1, $collection->publication_frequency_per_year);
     }
 
-    public function testPublicationFrequencyPerYearWithSeveralPublicationsOverTheYear(): void
+    public function testSyncPublicationFrequencyPerYearWithSeveralPublicationsOverTheYear(): void
     {
         $collection = CollectionFactory::create();
         LinkToCollectionFactory::create([
@@ -54,12 +54,12 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'created_at' => \Minz\Time::ago(6, 'months'),
         ]);
 
-        $frequency_per_year = $collection->publicationFrequencyPerYear();
+        $collection->syncPublicationFrequencyPerYear();
 
-        $this->assertSame(12, $frequency_per_year);
+        $this->assertSame(12, $collection->publication_frequency_per_year);
     }
 
-    public function testPublicationFrequencyPerYearWithOnePublicationRightNow(): void
+    public function testSyncPublicationFrequencyPerYearWithOnePublicationRightNow(): void
     {
         $collection = CollectionFactory::create();
         LinkToCollectionFactory::create([
@@ -67,21 +67,21 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'created_at' => \Minz\Time::now(),
         ]);
 
-        $frequency_per_year = $collection->publicationFrequencyPerYear();
+        $collection->syncPublicationFrequencyPerYear();
 
-        $this->assertSame(365, $frequency_per_year);
+        $this->assertSame(365, $collection->publication_frequency_per_year);
     }
 
-    public function testPublicationFrequencyPerYearWithNoPublications(): void
+    public function testSyncPublicationFrequencyPerYearWithNoPublications(): void
     {
         $collection = CollectionFactory::create();
 
-        $frequency_per_year = $collection->publicationFrequencyPerYear();
+        $collection->syncPublicationFrequencyPerYear();
 
-        $this->assertSame(0, $frequency_per_year);
+        $this->assertSame(0, $collection->publication_frequency_per_year);
     }
 
-    public function testPublicationFrequencyPerYearWithNoPublicationsOverTheYear(): void
+    public function testSyncPublicationFrequencyPerYearWithNoPublicationsOverTheYear(): void
     {
         $collection = CollectionFactory::create();
         LinkToCollectionFactory::create([
@@ -89,8 +89,8 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'created_at' => \Minz\Time::ago(13, 'months'),
         ]);
 
-        $frequency_per_year = $collection->publicationFrequencyPerYear();
+        $collection->syncPublicationFrequencyPerYear();
 
-        $this->assertSame(0, $frequency_per_year);
+        $this->assertSame(0, $collection->publication_frequency_per_year);
     }
 }

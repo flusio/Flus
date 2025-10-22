@@ -181,6 +181,12 @@ class Pocket
         $count_pocket_links = models\Link::countByCollectionId($pocket_collection->id);
         if ($count_pocket_links === 0) {
             $pocket_collection->remove();
+        } else {
+            $pocket_collection->syncPublicationFrequencyPerYear();
+            $pocket_collection->save();
         }
+
+        $bookmarks_collection->syncPublicationFrequencyPerYear();
+        $bookmarks_collection->save();
     }
 }

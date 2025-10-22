@@ -459,4 +459,30 @@ trait Collection
 
         return self::fromDatabaseRows($statement->fetchAll());
     }
+
+    /**
+     * List the collections for which we want to synchronize the publication
+     * frequency.
+     *
+     * Note that it doesn't return feeds as they are already sync every day.
+     *
+     * @return self[]
+     */
+    public static function listToSyncPublicationFrequency(): array
+    {
+        $sql = <<<'SQL'
+            SELECT *
+            FROM collections
+
+            WHERE type = 'bookmarks'
+            OR type = 'read'
+            OR type = 'collection'
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute();
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
 }
