@@ -1107,6 +1107,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
         $this->assertTrue(models\Link::exists($link->id));
-        $this->assertStringContainsString('A security verification failed', \Minz\Flash::get('error'));
+        $error = \Minz\Flash::get('error');
+        $this->assertTrue(is_string($error));
+        $this->assertStringContainsString('A security verification failed', $error);
     }
 }
